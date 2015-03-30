@@ -144,11 +144,10 @@ BEGIN
 	WHERE screenID = @piScreenID
 		AND ASRSysControls.columnID > 0
 	UNION
-	SELECT DISTINCT ASRSysColumns.tableID 
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	WHERE ASRSysOrderItems.type = 'O' 
-		AND ASRSysOrderItems.orderID = @piOrderID;
+	SELECT DISTINCT c.tableID 
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	WHERE oi.type = 'O' AND oi.orderID = @piOrderID;
 	
 	OPEN tablesCursor;
 	FETCH NEXT FROM tablesCursor INTO @iTempTableID;
@@ -509,17 +508,13 @@ BEGIN
 	
 	/* Create the order string. */
 	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT ASRSysColumns.tableID,
-			ASRSysOrderItems.columnID, 
-			ASRSysColumns.columnName,
-	    		ASRSysTables.tableName,
-			ASRSysOrderItems.ascending
-		FROM ASRSysOrderItems
-		INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-		INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-		WHERE ASRSysOrderItems.orderID = @piOrderID
-			AND ASRSysOrderItems.type = 'O'
-		ORDER BY ASRSysOrderItems.sequence;
+		SELECT c.tableID, oi.columnID, c.columnName, t.tableName, oi.ascending
+		FROM ASRSysOrderItems oi
+			INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+			INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+		WHERE oi.orderID = @piOrderID AND oi.type = 'O'
+			AND c.dataType <> -4 AND c.datatype <> -3
+		ORDER BY oi.sequence;
 		
 	OPEN orderCursor;
 	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending;

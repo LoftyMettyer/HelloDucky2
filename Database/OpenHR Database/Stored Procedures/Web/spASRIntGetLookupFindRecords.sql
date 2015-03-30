@@ -319,14 +319,14 @@ BEGIN
 
 	/* Create the order select strings. */
 	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.columnName
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-		AND ASRSysOrderItems.columnID <> @piLookupColumnID
-	ORDER BY ASRSysOrderItems.sequence
+	SELECT c.columnName
+	FROM ASRSysOrderItems oi
+	INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @iOrderID AND oi.type = 'F'
+		AND oi.columnID <> @piLookupColumnID
+		AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence;
 
 	OPEN orderCursor
 	FETCH NEXT FROM orderCursor INTO @sColumnName2

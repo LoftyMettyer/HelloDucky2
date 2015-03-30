@@ -111,12 +111,12 @@ BEGIN
 		selectGranted	bit);
 
 	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID, ASRSysTables.tableType, ASRSysTables.tableName
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	INNER JOIN ASRSysTables ON ASRSysColumns.tableID= ASRSysTables.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F';
+	SELECT DISTINCT c.tableID, t.tableType, t.tableName
+	FROM ASRSysOrderItems oi
+	INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	INNER JOIN ASRSysTables t ON c.tableID= t.tableID
+	WHERE oi.orderID = @iOrderID
+		AND oi.type = 'F';
 
 	OPEN tablesCursor;
 	FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
@@ -198,20 +198,13 @@ BEGIN
 
 	/* Create the order select strings. */
 	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT 
-		ASRSysColumns.columnName,
-		ASRSysColumns.dataType,
-		ASRSysColumns.tableID,
-		ASRSysTables.tableType,
-		ASRSysTables.tableName
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-		AND ASRSysColumns.datatype <> -3
-		AND ASRSysColumns.datatype <> -4
-	ORDER BY ASRSysOrderItems.sequence;
+	SELECT c.columnName, c.dataType, c.tableID, t.tableType, t.tableName
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @iOrderID AND oi.type = 'F'
+		AND c.datatype <> -3 AND c.datatype <> -4
+	ORDER BY oi.sequence;
 
 	OPEN orderCursor;
 	FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName;

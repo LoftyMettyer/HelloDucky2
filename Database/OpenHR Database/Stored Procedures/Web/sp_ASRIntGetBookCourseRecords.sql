@@ -258,10 +258,10 @@ BEGIN
 
 	/* Loop through the tables used in the order, getting the column permissions for each one. */
 	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	WHERE ASRSysOrderItems.orderID = @piOrderID
+	SELECT DISTINCT c.tableID
+		FROM ASRSysOrderItems oi
+	INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	WHERE oi.orderID = @piOrderID
 
 	OPEN tablesCursor
 	FETCH NEXT FROM tablesCursor INTO @iTempTableID
@@ -351,20 +351,13 @@ BEGIN
 
 	/* Create the order select strings. */
 	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	ORDER BY ASRSysOrderItems.sequence
+	SELECT c.tableID, oi.columnID, c.columnName, t.tableName, oi.ascending, oi.type, c.dataType, c.size, c.decimals
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @piOrderID
+		AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence
 
 	OPEN orderCursor
 	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs

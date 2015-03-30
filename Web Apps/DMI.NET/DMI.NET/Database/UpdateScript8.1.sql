@@ -671,30 +671,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntNewUser]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntMakeBulkBookings]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntMakeBulkBookings]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTransferCourseRecords]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetTransferCourseRecords]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTransferBookingRecords]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetTransferBookingRecords]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTBEmployeeColumns]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetTBEmployeeColumns]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTablesInfo]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetTablesInfo]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTableOrders]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetTableOrders]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetScreenOrder]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetScreenOrder]
 GO
@@ -775,28 +751,12 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntGetEmpIDFromTBID]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetDefaultOrderColumns]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetDefaultOrderColumns]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetColumns]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetColumns]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetBulkBookingRecords]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetBulkBookingRecords]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetBookCourseRecords]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetBookCourseRecords]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetAvailableLogins]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetAvailableLogins]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetAddFromWaitingListRecords]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetAddFromWaitingListRecords]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetAbsenceTypes]    Script Date: 23/07/2013 11:18:30 ******/
@@ -4002,1063 +3962,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetAddFromWaitingListRecords]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetAddFromWaitingListRecords] (
-	@piTableID 			integer, 
-	@piViewID 			integer, 
-	@piOrderID 			integer,
-	@piCourseRecordID	integer,
-	@pfError 			bit 			OUTPUT,
-	@piRecordsRequired	integer,
-	@pfFirstPage		bit				OUTPUT,
-	@pfLastPage			bit				OUTPUT,
-	@psLocateValue		varchar(MAX),
-	@piColumnType		integer			OUTPUT,
-	@psAction			varchar(255),
-	@piTotalRecCount	integer			OUTPUT,
-	@piFirstRecPos		integer			OUTPUT,
-	@piCurrentRecCount	integer,
-	@psErrorMessage		varchar(MAX)	OUTPUT,
-	@piColumnSize		integer			OUTPUT,
-	@piColumnDecimals	integer			OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iUserGroupID	integer,
-		@sUserGroupName		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@sRealSource 		sysname,
-		@iChildViewID 		integer,
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		sysname,
-		@sColumnTableName 	sysname,
-		@fAscending 		bit,
-		@sType	 			varchar(10),
-		@iDataType 			integer,
-		@fSelectGranted 	bit,
-		@sSelectSQL			varchar(MAX),
-		@sOrderSQL 			varchar(MAX),
-		@sExecString		nvarchar(MAX),
-		@sTempString		varchar(MAX),
-		@fSelectDenied		bit,
-		@iTempCount 		integer,
-		@sSubString			varchar(MAX),
-		@sViewName 			varchar(255),
-		@sTableViewName 	sysname,
-		@iJoinTableID 		integer,
-		@iTemp				integer,
-		@sRemainingSQL		varchar(MAX),
-		@iLastCharIndex		integer,
-		@iCharIndex 		integer,
-		@sDESCstring		varchar(5),
-		@sTempExecString	nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@fFirstColumnAsc	bit,
-		@sFirstColCode		varchar(MAX),
-		@sLocateCode		varchar(MAX),
-		@sReverseOrderSQL 	varchar(MAX),
-		@iCount				integer,
-		@fWhereDone			bit,
-		@iWLCourseTitleColumnID	integer,
-		@sWLCourseTitleColumnName	sysname,
-		@iCourseTitleColumnID	integer,
-		@sCourseTitleColumnName	sysname,
-		@iWLOverrideColumnID	integer,
-		@sWLOverrideColumnName	sysname,
-		@iGetCount			integer,
-		@sCourseTitle		varchar(MAX),
-		@iCourseTableID		integer,
-		@iCourseRecordID	integer,
-		@iWLTableID			integer,
-		@sWLTableName		sysname,
-		@sWLRealSource		varchar(255),
-		@sCourseSource		sysname,
-		@iColSize			integer,
-		@iColDecs			integer,
-		@sActualUserName	sysname;
-
-	/* Initialise variables. */
-	SET @pfError = 0;
-	SET @psErrorMessage = '';
-	SET @sRealSource = '';
-	SET @sSelectSQL = '';
-	SET @sOrderSQL = '';
-	SET @fSelectDenied = 0;
-	SET @sExecString = '';
-	SET @sDESCstring = ' DESC';
-	SET @fFirstColumnAsc = 1;
-	SET @sFirstColCode = '';
-	SET @sReverseOrderSQL = '';
-	SET @fWhereDone = 0;
-
-	/* Clean the input string parameters. */
-	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''');
-
-	/* Get the current user's group ID. */
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	/* Get the current course title. */
-	/* Get the Course table id. */
-	SELECT @iCourseTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTable'
-	IF @iCourseTableID IS NULL SET @iCourseTableID = 0;
-
-	SELECT @iCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTitle'
-	IF @iCourseTitleColumnID IS NULL SET @iCourseTitleColumnID = 0;
-	
-	IF @iCourseTitleColumnID > 0 
-	BEGIN
-		SELECT @sCourseTitleColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseTitleColumnID;
-	END
-	IF @sCourseTitleColumnName IS NULL SET @sCourseTitleColumnName = '';
-
-	/* Get the @sCourseTitle value for the given course record. */
-	DECLARE courseSourceCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT sysobjects.name
-	FROM sysprotects
-	INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-	INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-	WHERE sysprotects.uid = @iUserGroupID
-		AND sysprotects.action = 193 
-		AND (sysprotects.protectType = 205 OR sysprotects.protectType = 204)
-		AND syscolumns.name = @sCourseTitleColumnName
-		AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-			ASRSysTables.tableID = @iCourseTableID 
-			UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iCourseTableID)
-		AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-		OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		
-	OPEN courseSourceCursor;
-	FETCH NEXT FROM courseSourceCursor INTO @sCourseSource;
-	WHILE (@@fetch_status = 0) AND (@sCourseTitle IS null)
-	BEGIN
-		SET @sTempExecString = 'SELECT @sCourseTitle = ' + @sCourseTitleColumnName + 
-			' FROM ' + @sCourseSource +
-			' WHERE id = ' + convert(nvarchar(255), @piCourseRecordID);
-		SET @sTempParamDefinition = N'@sCourseTitle varchar(MAX) OUTPUT';
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @sCourseTitle OUTPUT;
-
-		FETCH NEXT FROM courseSourceCursor INTO @sCourseSource;
-	END
-	CLOSE courseSourceCursor;
-	DEALLOCATE courseSourceCursor;
-
-	IF @sCourseTitle IS null
-	BEGIN
-		SET @pfError = 1;
-		SET @psErrorMessage = 'Unable to read the course title from the current Course record.';
-		RETURN		
-	END
-
-	/* Get the WL table real source. */
-	/* NB. To reach this point we have already checked that the user has 'read' permission on the Training Booking - Status column. */
-	SELECT @iWLTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_WaitListTable';
-	IF @iWLTableID IS NULL SET @iWLTableID = 0;
-
-	SELECT @sWLTableName = tableName
-	FROM ASRSysTables
-	WHERE tableID = @iWLTableID;
-
-	SELECT @iWLCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_WaitListCourseTitle';
-	IF @iWLCourseTitleColumnID IS NULL SET @iWLCourseTitleColumnID = 0;
-	
-	IF @iWLCourseTitleColumnID > 0 
-	BEGIN
-		SELECT @sWLCourseTitleColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iWLCourseTitleColumnID;
-	END
-	IF @sWLCourseTitleColumnName IS NULL SET @sWLCourseTitleColumnName = '';
-
-	SELECT @iWLOverrideColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_WaitListOverRideColumn';
-	IF @iWLOverrideColumnID IS NULL SET @iWLOverrideColumnID = 0;
-
-	IF @iWLOverrideColumnID > 0 
-	BEGIN
-		SELECT @sWLOverrideColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iWLOverrideColumnID;
-	END
-	IF @sWLOverrideColumnName IS NULL SET @sWLOverrideColumnName = '';
-
-	SELECT @iChildViewID = childViewID
-	FROM ASRSysChildViews2
-	WHERE tableID = @iWLTableID
-		AND [role] = @sUserGroupName;
-	IF @iChildViewID IS null SET @iChildViewID = 0;
-		
-	IF @iChildViewID > 0 
-	BEGIN
-		SET @sWLRealSource = 'ASRSysCV' + 
-			convert(varchar(1000), @iChildViewID) +
-			'#' + replace(@sWLTableName, ' ', '_') +
-			'#' + replace(@sUserGroupName, ' ', '_');
-		SET @sWLRealSource = left(@sWLRealSource, 255);
-	END
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000;
-	SET @psAction = UPPER(@psAction);
-	IF (@psAction <> 'MOVEPREVIOUS') AND 
-		(@psAction <> 'MOVENEXT') AND 
-		(@psAction <> 'MOVELAST') AND 
-		(@psAction <> 'LOCATE')
-	BEGIN
-		SET @psAction = 'MOVEFIRST';
-	END
-
-	/* Get the table type and name. */
-	SELECT @iTableType = ASRSysTables.tableType,
-		@sTableName = ASRSysTables.tableName
-	FROM ASRSysTables
-	WHERE ASRSysTables.tableID = @piTableID;
-
-	/* Get the real source of the given table/view. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN	
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID;
-		END
-		ELSE
-		BEGIN
-			SET @sRealSource = @sTableName;
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @piTableID
-			AND [role] = @sUserGroupName;
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0;
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_');
-			SET @sRealSource = left(@sRealSource, 255);
-		END
-	END
-
-	IF len(@sRealSource) = 0
-	BEGIN
-		SET @pfError = 1;
-		RETURN;
-	END
-
-	/* Create a temporary table to hold the tables/views that need to be joined. */
-	DECLARE @joinParents TABLE(
-		tableViewName	sysname,
-		tableID			integer);
-
-	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	/* Loop through the tables used in the order, getting the column permissions for each one. */
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	WHERE ASRSysOrderItems.orderID = @piOrderID;
-
-	OPEN tablesCursor;
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableID = @piTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name = @sRealSource
-				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID;
-	END
-	CLOSE tablesCursor;
-	DEALLOCATE tablesCursor;
-
-	/*Get the permissions for the override column if it has been set*/
-	IF @iWLOverrideColumnID > 0 
-	BEGIN
-		INSERT INTO @columnPermissions
-		SELECT 
-			@iWLTableID,
-			@sWLRealSource,
-			syscolumns.name,
-			CASE protectType
-				WHEN 205 THEN 1
-				WHEN 204 THEN 1
-				ELSE 0
-			END 
-		FROM sysprotects
-		INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-		INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-		WHERE sysprotects.uid = @iUserGroupID
-			AND sysprotects.action = 193 
-			AND syscolumns.name <> 'timestamp'
-			AND sysobjects.name = @sWLRealSource
-			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-
-		/* Get the select permission on the column. */
-		SELECT @fSelectGranted = selectGranted
-		FROM @columnPermissions
-		WHERE tableViewName = @sWLRealSource
-			AND columnName = @sWLOverrideColumnName;
-
-		IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-
-		IF @fSelectGranted = 1
-		BEGIN
-			/* The user DOES have SELECT permission on the column in the current table/view. */
-			/* Find column. */
-			SET @sTempString = CASE 
-					WHEN (len(@sSelectSQL) > 0) THEN ',' 
-					ELSE '' 
-				END + 
-				@sWLRealSource + '.' + @sWLOverrideColumnName;				
-			SET @sSelectSQL = @sSelectSQL + @sTempString;
-
-			/* Override Column. */
-			IF len(@sOrderSQL) = 0 
-			BEGIN
-				SET @fAscending = 1;
-				SELECT 
-					@iDataType = ASRSysColumns.dataType,
-					@iColSize = ASRSysColumns.size,
-					@iColDecs = ASRSysColumns.decimals
-				FROM ASRSysColumns 
-				WHERE ASRSysColumns.columnID = @iWLOverrideColumnID;
-
-				SET @piColumnType = @iDataType;
-				SET @fFirstColumnAsc = @fAscending;
-				SET @sFirstColCode = @sWLRealSource + '.' + @sWLOverrideColumnName;
-				SET @piColumnSize = @iColSize;
-				SET @piColumnDecimals = @iColDecs;
-			END
-			SET @sOrderSQL = @sOrderSQL + 
-			CASE 
-				WHEN len(@sOrderSQL) > 0 THEN ',' 
-				ELSE '' 
-			END + 
-			@sWLRealSource + '.' + @sWLOverrideColumnName +
-			CASE 
-				WHEN @fAscending = 0 THEN ' DESC' 
-				ELSE '' 
-			END		
-		END			
-	END
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	ORDER BY ASRSysOrderItems.sequence;
-
-	OPEN orderCursor;
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs;
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		SET @pfError = 1;
-		RETURN;
-	END
-
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0;
-
-		IF @iColumnTableId = @piTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName;
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-
-			IF @fSelectGranted = 1
-			BEGIN
-				/* The user DOES have SELECT permission on the column in the current table/view. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName;
-					SET @sSelectSQL = @sSelectSQL + @sTempString;
-
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType;
-						SET @fFirstColumnAsc = @fAscending;
-						SET @sFirstColCode = @sRealSource + '.' + @sColumnName;
-						SET @piColumnSize = @iColSize;
-						SET @piColumnDecimals = @iColDecs;
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName +
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END;		
-				END
-			END
-			ELSE
-			BEGIN
-				/* The user does NOT have SELECT permission on the column in the current table/view. */
-				SET @fSelectDenied = 1;
-			END	
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName;
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				/* The user DOES have SELECT permission on the column in the parent table. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName;
-					SET @sSelectSQL = @sSelectSQL + @sTempString;
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType;
-						SET @fFirstColumnAsc = @fAscending;
-						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName;
-						SET @piColumnSize = @iColSize;
-						SET @piColumnDecimals = @iColDecs;
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName + 
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END;
-				END
-
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @joinParents
-				WHERE tableViewName = @sColumnTableName;
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID);
-				END
-			END
-			ELSE	
-			BEGIN
-				SET @sSubString = '';
-
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND selectGranted = 1;
-
-				OPEN viewCursor;
-				FETCH NEXT FROM viewCursor INTO @sViewName;
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					IF len(@sSubString) = 0 SET @sSubString = 'CASE';
-
-					SET @sSubString = @sSubString +
-						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName;
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-					WHERE tableViewname = @sViewName;
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId);
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName;
-				END
-				CLOSE viewCursor;
-				DEALLOCATE viewCursor;
-
-				IF len(@sSubString) > 0
-				BEGIN
-					SET @sSubString = @sSubString +	' ELSE NULL END';
-
-					IF @sType = 'F'
-					BEGIN
-						/* Find column. */
-						SET @sTempString = CASE 
-								WHEN (len(@sSelectSQL) > 0) THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END;
-						SET @sSelectSQL = @sSelectSQL + @sTempString;
-					END
-					ELSE
-					BEGIN
-						/* Order column. */
-						IF len(@sOrderSQL) = 0 
-						BEGIN
-							SET @piColumnType = @iDataType;
-							SET @fFirstColumnAsc = @fAscending;
-							SET @sFirstColCode = @sSubString;
-							SET @piColumnSize = @iColSize;
-							SET @piColumnDecimals = @iColDecs;
-						END
-
-						SET @sOrderSQL = @sOrderSQL + 
-							CASE 
-								WHEN len(@sOrderSQL) > 0 THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END + 
-							CASE 
-								WHEN @fAscending = 0 THEN ' DESC' 
-								ELSE '' 
-							END;		
-					END
-				END
-				ELSE
-				BEGIN
-					/* The user does NOT have SELECT permission on the column any of the parent views. */
-					SET @fSelectDenied = 1;
-				END	
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs;
-	END
-	CLOSE orderCursor;
-	DEALLOCATE orderCursor;
-
-	/* Add the ID column to the order string. */
-	SET @sOrderSQL = @sOrderSQL + 
-		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
-		@sRealSource + '.ID';
-
-	/* Create the reverse order string if required. */
-	IF (@psAction <> 'MOVEFIRST') 
-	BEGIN
-		SET @sRemainingSQL = @sOrderSQL;
-
-		SET @iLastCharIndex = 0;
-		SET @iCharIndex = CHARINDEX(',', @sOrderSQL);
-		WHILE @iCharIndex > 0 
-		BEGIN
- 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', ';
-			END
-			ELSE
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', ';
-			END
-
-			SET @iLastCharIndex = @iCharIndex;
-			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1);
-	
-			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex);
-		END
-		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring;
-	END
-
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource +
-		' INNER JOIN ' + @sWLRealSource +
-		' ON (' + @sRealSource + '.id = ' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) +
-		' AND ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + ' = ''' + replace(@sCourseTitle,'''','''''') + ''')';
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT';
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT;
-	SET @piTotalRecCount = @iCount;
-
-	IF (len(@sSelectSQL) > 0)
-	BEGIN
-		SET @sTempString = ',' + @sRealSource + '.ID';
-		SET @sSelectSQL = @sSelectSQL + @sTempString;
-
-		SET @sExecString = 'SELECT ';
-
-		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE'
-		BEGIN
-			SET @sTempString = 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' ';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-		
-		SET @sTempString = @sSelectSQL;
-		SET @sExecString = @sExecString + @sTempString;
-
-		SET @sTempString = ' FROM ' + @sWLRealSource;
-		SET @sExecString = @sExecString + @sTempString;
-
-		SET @sTempString = ' INNER JOIN ' + @sRealSource +
-			' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
-			' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + ''''
-		SET @sExecString = @sExecString + @sTempString;
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, tableID
-			FROM @joinParents;
-
-		OPEN joinCursor;
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID';
-			SET @sExecString = @sExecString + @sTempString;
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
-		END
-		CLOSE joinCursor;
-		DEALLOCATE joinCursor;
-
-		IF (@psAction = 'MOVELAST')
-		BEGIN
-			SET @fWhereDone = 1;
-			
-			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sWLRealSource + '.ID' +
-				' FROM ' + @sWLRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-
-			SET @sTempString = ' INNER JOIN ' + @sRealSource +
-				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
-				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
-			SET @sExecString = @sExecString + @sTempString;
-
-		END
-
-		IF @psAction = 'MOVENEXT' 
-		BEGIN
-			SET @fWhereDone = 1
-			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-			BEGIN
-				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1);
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired;
-			END
-
-			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sWLRealSource + '.ID' +
-				' FROM ' + @sWLRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-				
-			SET @sTempString = ' INNER JOIN ' + @sRealSource +
-				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
-				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
-			SET @sExecString = @sExecString + @sTempString;
-
-			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sWLRealSource + '.ID' +
-				' FROM ' + @sWLRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-
-			SET @sTempString = ' INNER JOIN ' + @sRealSource +
-				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
-				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
-			SET @sExecString = @sExecString + @sTempString;
-
-		END
-
-		IF @psAction = 'MOVEPREVIOUS'
-		BEGIN
-			SET @fWhereDone = 1;
-			IF @piFirstRecPos <= @piRecordsRequired
-			BEGIN
-				SET @iGetCount = @piFirstRecPos - 1;
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired;		
-			END
-
-			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sWLRealSource + '.ID' +
-				' FROM ' + @sWLRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-				
-			SET @sTempString = ' INNER JOIN ' + @sRealSource +
-				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
-				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
-			SET @sExecString = @sExecString + @sTempString;
-
-			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sWLRealSource + '.ID' +
-				' FROM ' + @sWLRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-
-			SET @sTempString = ' INNER JOIN ' + @sRealSource +
-				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
-				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-
-		/* Add the filter code. */
-
-		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-
-		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-
-		IF (@psAction = 'LOCATE')
-		BEGIN
-			SET @fWhereDone = 1;
-			SET @sLocateCode = ' AND (' + @sFirstColCode;
-
-			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + '''';
-
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL';
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
-						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL';
-				END
-
-			END
-
-			IF @piColumnType = 11 /* Date column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL';
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + '''';
-					END
-				END
-				ELSE
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NULL';
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL';
-					END
-				END
-			END
-
-			IF @piColumnType = -7 /* Logic column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END;
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END;
-				END
-			END
-
-			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue;
-
-					IF convert(float, @psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL';
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL';
-				END
-			END
-
-			SET @sLocateCode = @sLocateCode + ')';
-			SET @sTempString = @sLocateCode;
-			SET @sExecString = @sExecString + @sTempString;
-
-		END
-
-		/* Add the ORDER BY code to the find record selection string if required. */
-		SET @sTempString = ' ORDER BY ' + @sOrderSQL;
-		SET @sExecString = @sExecString + @sTempString;
-
-	END
-
-	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
-	IF @psAction = 'MOVEFIRST'
-	BEGIN
-		SET @piFirstRecPos = 1;
-		SET @pfFirstPage = 1;
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-				ELSE 0
-			END;
-	END
-	IF @psAction = 'MOVENEXT'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount;
-		SET @pfFirstPage = 0;
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END;
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos - @iGetCount;
-		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1;
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END;
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END;
-	END
-	IF @psAction = 'MOVELAST'
-	BEGIN
-		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1;
-		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1;
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END;
-		SET @pfLastPage = 1;
-	END
-
-	IF @psAction = 'LOCATE'
-	BEGIN
-		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource + 
-			' INNER JOIN ' + @sWLRealSource +
-			' ON (' + @sRealSource + '.id = ' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) +
-			' AND ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + ' = ''' + replace(@sCourseTitle,'''','''''') + ''')';
-			
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, tableID
-		FROM @joinParents;
-
-		OPEN joinCursor;
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempExecString = @sTempExecString + 
-				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID';
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
-		END
-		CLOSE joinCursor;
-		DEALLOCATE joinCursor;
-
-		SET @sTempExecString = @sTempExecString + @sLocateCode;
-
-		SET @sTempParamDefinition = N'@recordCount integer OUTPUT';
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT;
-
-		IF @iTemp <=0 
-
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount + 1;
-		END
-		ELSE
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1;
-		END
-
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END;
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piFirstRecPos + @piRecordsRequired THEN 1
-				ELSE 0
-			END;
-	END
-
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	IF (len(@sExecString) > 0)
-	BEGIN
-		EXECUTE sp_executeSQL @sExecString;
-	END
-END
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetAvailableLogins]    Script Date: 23/07/2013 11:18:30 ******/
 SET ANSI_NULLS ON
@@ -5084,1434 +3987,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetBookCourseRecords]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetBookCourseRecords] (
-	@piTableID 			integer, 
-	@piViewID 			integer, 
-	@piOrderID 			integer,
-	@piWLRecordID		integer,
-	@pfError 			bit 		OUTPUT,
-	@piRecordsRequired	integer,
-	@pfFirstPage		bit			OUTPUT,
-	@pfLastPage			bit			OUTPUT,
-	@psLocateValue		varchar(MAX),
-	@piColumnType		integer		OUTPUT,
-	@psAction			varchar(255),
-	@piTotalRecCount	integer		OUTPUT,
-	@piFirstRecPos		integer		OUTPUT,
-	@piCurrentRecCount	integer,
-	@piColumnSize		integer		OUTPUT,
-	@piColumnDecimals	integer		OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iUserGroupID	integer,
-		@sUserGroupName		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@sRealSource 		sysname,
-		@iChildViewID 		integer,
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		sysname,
-		@sColumnTableName 	sysname,
-		@fAscending 		bit,
-		@sType	 			varchar(10),
-		@iDataType 			integer,
-		@fSelectGranted 	bit,
-		@sSelectSQL			varchar(MAX),
-		@sOrderSQL 			varchar(MAX),
-		@sExecString		nvarchar(MAX),
-		@sTempString		varchar(MAX),
-		@fSelectDenied		bit,
-		@iTempCount 		integer,
-		@sSubString			varchar(MAX),
-		@sViewName 			varchar(255),
-		@sTableViewName 	sysname,
-		@iJoinTableID 		integer,
-		@iTemp				integer,
-		@sRemainingSQL		varchar(MAX),
-		@iLastCharIndex		integer,
-		@iCharIndex 		integer,
-		@sDESCstring		varchar(4),
-		@sTempExecString	nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@fFirstColumnAsc	bit,
-		@sFirstColCode		varchar(MAX),
-		@sLocateCode		varchar(MAX),
-		@sReverseOrderSQL 	varchar(MAX),
-		@iCount				integer,
-		@fWhereDone			bit,
-		@iWLCourseTitleColumnID		integer,
-		@sWLCourseTitleColumnName	sysname,
-		@iCourseTitleColumnID		integer,
-		@sCourseTitleColumnName		sysname,
-		@iCourseStartDateColumnID	integer,
-		@sCourseStartDateColumnName	sysname,
-		@sCourseCancelDateColumnID	integer,
-		@sCourseCancelDateColumnName	sysname,
-		@iGetCount					integer,
-		@sCourseTitle				varchar(MAX),
-		@iWLTableID					integer,
-		@sWLTableName				sysname,
-		@sWLRealSource				varchar(255),
-		@iColSize					integer,
-		@iColDecs					integer,
-		@sActualUserName			sysname;
-
-	/* Initialise variables. */
-	SET @pfError = 0;
-	SET @sRealSource = '';
-	SET @sSelectSQL = '';
-	SET @sOrderSQL = '';
-	SET @fSelectDenied = 0;
-	SET @sExecString = '';
-	SET @sDESCstring = ' DESC';
-	SET @fFirstColumnAsc = 1;
-	SET @sFirstColCode = '';
-	SET @sReverseOrderSQL = '';
-	SET @fWhereDone = 0;
-
-	/* Clean the input string parameters. */
-	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''');
-
-	/* Get the current user's group ID. */
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	/* Get the course title from the given WL record. */
-	/* NB. To reach this point we have already checked that the user has 'read' permission on the Waiting List - Course Title column. */
-	SELECT @iWLTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_WaitListTable';
-	IF @iWLTableID IS NULL SET @iWLTableID = 0;
-
-	SELECT @sWLTableName = tableName
-	FROM [dbo].[ASRSysTables]
-	WHERE tableID = @iWLTableID;
-	
-	SELECT @iWLCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_WaitListCourseTitle'
-	IF @iWLCourseTitleColumnID IS NULL SET @iWLCourseTitleColumnID = 0
-	
-	IF @iWLCourseTitleColumnID > 0 
-	BEGIN
-		SELECT @sWLCourseTitleColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iWLCourseTitleColumnID
-	END
-	IF @sWLCourseTitleColumnName IS NULL SET @sWLCourseTitleColumnName = ''
-
-	SELECT @iChildViewID = childViewID
-	FROM ASRSysChildViews2
-	WHERE tableID = @iWLTableID
-		AND role = @sUserGroupName
-		
-	IF @iChildViewID IS null SET @iChildViewID = 0
-		
-	IF @iChildViewID > 0 
-	BEGIN
-		SET @sWLRealSource = 'ASRSysCV' + 
-			convert(varchar(1000), @iChildViewID) +
-			'#' + replace(@sWLTableName, ' ', '_') +
-			'#' + replace(@sUserGroupName, ' ', '_')
-		SET @sWLRealSource = left(@sWLRealSource, 255)
-	END
-
-	SET @sTempExecString = 'SELECT @sCourseTitle = ' + @sWLCourseTitleColumnName +
-		' FROM ' + @sWLRealSource +
-		' WHERE id = ' + convert(nvarchar(100), @piWLRecordID)
-	SET @sTempParamDefinition = N'@sCourseTitle varchar(MAX) OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @sCourseTitle OUTPUT
-
-	SELECT @iCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTitle'
-	IF @iCourseTitleColumnID IS NULL SET @iCourseTitleColumnID = 0
-	
-	IF @iCourseTitleColumnID > 0 
-	BEGIN
-		SELECT @sCourseTitleColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseTitleColumnID
-	END
-	IF @sCourseTitleColumnName IS NULL SET @sCourseTitleColumnName = ''
-
-	SELECT @iCourseStartDateColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseStartDate'
-	IF @iCourseStartDateColumnID IS NULL SET @iCourseStartDateColumnID = 0
-
-	IF @iCourseStartDateColumnID > 0 
-	BEGIN
-		SELECT @sCourseStartDateColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseStartDateColumnID
-	END
-	IF @sCourseStartDateColumnName IS NULL SET @sCourseStartDateColumnName = ''
-
-	/* Get Cancel date Column*/
-	SELECT @sCourseCancelDateColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseCancelDate'
-	IF @sCourseCancelDateColumnID IS NULL SET @sCourseCancelDateColumnID = 0
-	IF @sCourseCancelDateColumnID > 0 
-	BEGIN
-		SELECT @sCourseCancelDateColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @sCourseCancelDateColumnID
-	END
-	IF @sCourseCancelDateColumnName IS NULL SET @sCourseCancelDateColumnName = ''
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
-	SET @psAction = UPPER(@psAction)
-	IF (@psAction <> 'MOVEPREVIOUS') AND 
-		(@psAction <> 'MOVENEXT') AND 
-		(@psAction <> 'MOVELAST') AND 
-		(@psAction <> 'LOCATE')
-	BEGIN
-		SET @psAction = 'MOVEFIRST'
-	END
-
-	/* Get the table type and name. */
-	SELECT @iTableType = ASRSysTables.tableType,
-		@sTableName = ASRSysTables.tableName
-	FROM ASRSysTables
-	WHERE ASRSysTables.tableID = @piTableID
-
-	/* Get the real source of the given table/view. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN	
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID
-		END
-		ELSE
-		BEGIN
-			SET @sRealSource = @sTableName
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @piTableID
-			AND role = @sUserGroupName
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_')
-			SET @sRealSource = left(@sRealSource, 255)
-		END
-	END
-
-	IF len(@sRealSource) = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	/* Create a temporary table to hold the tables/views that need to be joined. */
-	DECLARE @joinParents TABLE(
-		tableViewName	sysname,
-		tableID			integer);
-
-	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	/* Loop through the tables used in the order, getting the column permissions for each one. */
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-
-	OPEN tablesCursor
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableID = @piTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name = @sRealSource
-				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	END
-	CLOSE tablesCursor
-	DEALLOCATE tablesCursor
-
-	SET @fSelectGranted = 0
-	SELECT @fSelectGranted = selectGranted
-	FROM @columnPermissions
-	WHERE tableViewName = @sRealSource
-		AND columnName = @sCourseTitleColumnName
-	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	IF @fSelectGranted = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	SET @fSelectGranted = 0
-	SELECT @fSelectGranted = selectGranted
-	FROM @columnPermissions
-	WHERE tableViewName = @sRealSource
-		AND columnName = @sCourseStartDateColumnName
-	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	IF @fSelectGranted = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-		
-		IF @iColumnTableId = @piTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-
-			IF @fSelectGranted = 1
-			BEGIN
-				/* The user DOES have SELECT permission on the column in the current table/view. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName
-					SET @sSelectSQL = @sSelectSQL + @sTempString
-
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sRealSource + '.' + @sColumnName
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName +
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-			END
-			ELSE
-			BEGIN
-				/* The user does NOT have SELECT permission on the column in the current table/view. */
-				SET @fSelectDenied = 1
-			END	
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				/* The user DOES have SELECT permission on the column in the parent table. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName
-					SET @sSelectSQL = @sSelectSQL + @sTempString
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName + 
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @joinParents
-				WHERE tableViewName = @sColumnTableName
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
-				END
-			END
-			ELSE	
-			BEGIN
-				SET @sSubString = ''
-
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND selectGranted = 1
-
-				OPEN viewCursor
-				FETCH NEXT FROM viewCursor INTO @sViewName
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					IF len(@sSubString) = 0 SET @sSubString = 'CASE'
-
-					SET @sSubString = @sSubString +
-						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName 
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-					WHERE tableViewname = @sViewName
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName
-				END
-				CLOSE viewCursor
-				DEALLOCATE viewCursor
-
-				IF len(@sSubString) > 0
-				BEGIN
-					SET @sSubString = @sSubString +
-						' ELSE NULL END'
-
-					IF @sType = 'F'
-					BEGIN
-						/* Find column. */
-						SET @sTempString = CASE 
-								WHEN (len(@sSelectSQL) > 0) THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END
-						SET @sSelectSQL = @sSelectSQL + @sTempString
-
-					END
-					ELSE
-					BEGIN
-						/* Order column. */
-						IF len(@sOrderSQL) = 0 
-						BEGIN
-							SET @piColumnType = @iDataType
-							SET @fFirstColumnAsc = @fAscending
-							SET @sFirstColCode = @sSubString
-							SET @piColumnSize = @iColSize
-							SET @piColumnDecimals = @iColDecs
-						END
-
-						SET @sOrderSQL = @sOrderSQL + 
-							CASE 
-								WHEN len(@sOrderSQL) > 0 THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END + 
-							CASE 
-								WHEN @fAscending = 0 THEN ' DESC' 
-								ELSE '' 
-							END				
-					END
-				END
-				ELSE
-				BEGIN
-					/* The user does NOT have SELECT permission on the column any of the parent views. */
-					SET @fSelectDenied = 1
-				END	
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	/* Add the ID column to the order string. */
-	SET @sOrderSQL = @sOrderSQL + 
-		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
-		@sRealSource + '.ID'
-
-	/* Create the reverse order string if required. */
-	IF (@psAction <> 'MOVEFIRST') 
-	BEGIN
-		SET @sRemainingSQL = @sOrderSQL
-
-		SET @iLastCharIndex = 0
-		SET @iCharIndex = CHARINDEX(',', @sOrderSQL)
-		WHILE @iCharIndex > 0 
-		BEGIN
- 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', '
-			END
-			ELSE
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', '
-			END
-
-			SET @iLastCharIndex = @iCharIndex
-			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1)
-	
-			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex)
-		END
-		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring
-	END
-
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource +
-		' WHERE (' +
-		@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND '	+
-		@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101))) AND ' + 
-		@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL'
-
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
-	SET @piTotalRecCount = @iCount
-
-	IF (len(@sSelectSQL) > 0)
-	BEGIN
-		SET @sTempString = ',' + @sRealSource + '.ID'
-		SET @sSelectSQL = @sSelectSQL + @sTempString
-
-		SET @sExecString = 'SELECT ' 
-
-		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
-		BEGIN
-			SET @sTempString = 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
-			SET @sExecString = @sExecString + @sTempString
-		END
-		
-		SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents;
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-			SET @sExecString = @sExecString + @sTempString
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		IF (@psAction = 'MOVELAST')
-		BEGIN
-			SET @fWhereDone = 1
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-
-		END
-
-		IF @psAction = 'MOVENEXT' 
-		BEGIN
-			SET @fWhereDone = 1
-			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-			BEGIN
-				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired
-			END
-			
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-				
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-
-		END
-
-		IF @psAction = 'MOVEPREVIOUS'
-		BEGIN
-			SET @fWhereDone = 1
-			IF @piFirstRecPos <= @piRecordsRequired
-			BEGIN
-				SET @iGetCount = @piFirstRecPos - 1
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired				
-			END
-			
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-
-				
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-
-		END
-
-		/* Add the filter code. */
-		SET @sTempString = ' WHERE (' +
-			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND '	+
-			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101))) AND ' +
-			@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL'
-		SET @sExecString = @sExecString + @sTempString
-
-		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')'
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')'
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF (@psAction = 'LOCATE')
-		BEGIN
-			SET @fWhereDone = 1
-			SET @sLocateCode = ' AND (' + @sFirstColCode 
-
-			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
-						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL'
-				END
-
-			END
-
-			IF @piColumnType = 11 /* Date column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-					END
-				END
-				ELSE
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-			END
-
-			IF @piColumnType = -7 /* Logic column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-			END
-
-			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
-
-					IF convert(float, @psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL'
-				END
-			END
-
-			SET @sLocateCode = @sLocateCode + ')'
-
-			SET @sTempString = @sLocateCode
-			SET @sExecString = @sExecString + @sTempString
-
-		END
-
-		/* Add the ORDER BY code to the find record selection string if required. */
-		SET @sTempString = ' ORDER BY ' + @sOrderSQL
-		SET @sExecString = @sExecString + @sTempString
-
-	END
-
-	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
-	IF @psAction = 'MOVEFIRST'
-	BEGIN
-		SET @piFirstRecPos = 1
-		SET @pfFirstPage = 1
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVENEXT'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
-		SET @pfFirstPage = 0
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
-		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVELAST'
-	BEGIN
-		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
-		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 1
-	END
-	IF @psAction = 'LOCATE'
-	BEGIN
-		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource + 
-			' WHERE (' +
-			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND '	+
-			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101))) AND ' +
-			@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL'
-			
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents;
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempExecString = @sTempExecString + 
-				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		SET @sTempExecString = @sTempExecString + @sLocateCode
-			
-		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
-
-		IF @iTemp <=0 
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount + 1
-		END
-		ELSE
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
-		END
-
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piFirstRecPos + @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	IF (len(@sExecString) > 0)
-	BEGIN
-		EXECUTE sp_executeSQL @sExecString;
-	END
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetBulkBookingRecords]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetBulkBookingRecords] (
-	@psSelectionType	varchar(MAX),
-	@piSelectionID		integer,
-	@psSelectedIDs		varchar(MAX),
-	@psPromptSQL		varchar(MAX),
-	@psErrorMessage		varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the required 'employee' table records. */
-	DECLARE
-		@iUserGroupID			integer,
-		@sUserGroupName			sysname,
-		@iID					integer,
-		@iEmployeeTableID		integer,
-		@iTableType				integer,
-		@sTableName				sysname,
-		@sEmpRealSource			sysname,
-		@iChildViewID			integer,
-		@iTemp					integer,
-		@sTemp					varchar(MAX),
-		@sActualUserName		sysname,
-		@sExecString			nvarchar(MAX),
-		@sTempString			varchar(MAX),
-		@iColumnCount			integer,
-		@iOrderID				integer,
-		@sSubSQL				varchar(MAX),
-		@sJoinViews				varchar(MAX),
-		@sSubViews				varchar(MAX),
-		@sJoinTables			varchar(MAX),
-		@fDelegateSelect		bit,
-		@sWhereSQL				varchar(MAX),
-		@iTempTableType			integer,
-		@sTempTableName			sysname,
-		@iTempTableID 			integer,
-		@sTempRealSource		sysname,
-		@sColumnName 			sysname,
-		@iDataType 				integer,
-		@iTableID 				integer,
-		@fSelectGranted 		bit,
-		@iIndex					integer,
-		@iViewID				integer, 
-		@sViewName				sysname,
-		@iTempID				integer;
-		
-	/* Clean the input string parameters. */
-	IF len(@psSelectedIDs) > 0 SET @psSelectedIDs = replace(@psSelectedIDs, '''', '''''');
-
-	SET @sJoinViews = ','
-	SET @sJoinTables = ',';
-	SET @fDelegateSelect = 0;
-	SET @sWhereSQL = '';
-
-	/* Get the current user's group ID. */
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	/* Get the EMPLOYEE table information. */
-	SELECT @iEmployeeTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_EmployeeTable';
-	IF @iEmployeeTableID IS NULL SET @iEmployeeTableID = 0;
-
-	SELECT @iOrderID = defaultOrderID, 
-		@iTableType = tableType,
-		@sTableName = tableName
-	FROM ASRSysTables
-	WHERE tableID = @iEmployeeTableID;
-
-	/* Get the real source of the employee table. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		SET @sEmpRealSource = @sTableName;
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @iEmployeeTableID
-			AND [role] = @sUserGroupName;
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0;
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sEmpRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_');
-			SET @sEmpRealSource = left(@sEmpRealSource, 255);
-		END
-	END	
-	
-	SET @sExecString = 'SELECT ';
-	SET @iColumnCount = 0;
-
-	/* Create a temporary table to hold the find columns that the user can see. */
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID, ASRSysTables.tableType, ASRSysTables.tableName
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysColumns.tableID= ASRSysTables.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F';
-
-	OPEN tablesCursor;
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName 
-					FROM ASRSysViews 
-					WHERE ASRSysViews.viewTableID = @iTempTableID)
-					AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-					OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM ASRSysChildViews2
-			WHERE tableID = @iTempTableID
-				AND [role] = @sUserGroupName;
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0;
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(1000), @iChildViewID) +
-					'#' + replace(@sTempTableName, ' ', '_') +
-					'#' + replace(@sUserGroupName, ' ', '_');
-				SET @sTempRealSource = left(@sTempRealSource, 255);
-
-				INSERT INTO @columnPermissions
-				SELECT 
-					@iTempTableID,
-					sysobjects.name,
-					syscolumns.name,
-					CASE protectType
-					        	WHEN 205 THEN 1
-						WHEN 204 THEN 1
-						ELSE 0
-					END 
-				FROM sysprotects
-				INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-				INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-				WHERE sysprotects.uid = @iUserGroupID
-					AND sysprotects.action = 193 
-					AND syscolumns.name <> 'timestamp'
-					AND sysobjects.name =@sTempRealSource
-						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-			END
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
-	END
-	CLOSE tablesCursor;
-	DEALLOCATE tablesCursor;
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT 
-		ASRSysColumns.columnName,
-		ASRSysColumns.dataType,
-		ASRSysColumns.tableID,
-		ASRSysTables.tableType,
-		ASRSysTables.tableName
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-	ORDER BY ASRSysOrderItems.sequence;
-
-	OPEN orderCursor;
-	FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0;
-
-		/* Get the real source of the employee table. */
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			SET @sTempRealSource = @sTempTableName;
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM ASRSysChildViews2
-			WHERE tableID = @iTableID
-				AND [role] = @sUserGroupName;
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0;
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(1000), @iChildViewID) +
-					'#' + replace(@sTempTableName, ' ', '_') +
-					'#' + replace(@sUserGroupName, ' ', '_');
-				SET @sTempRealSource = left(@sTempRealSource, 255);
-			END
-		END	
-
-		SELECT @fSelectGranted = selectGranted
-		FROM @columnPermissions
-		WHERE tableID = @iTableID
-			AND tableViewName = @sTempRealSource
-			AND columnName = @sColumnName;
-
-		IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-
-		IF @fSelectGranted = 1
-		BEGIN
-			/* Add the column code to the 'select' string. */
-			SET @sTempString = CASE 
-					WHEN @iColumnCount > 0 THEN ','
-					ELSE ''
-				END +
-				@sTempRealSource + '.' + @sColumnName;
-			SET @sExecString = @sExecString + @sTempString;
-			SET @iColumnCount = @iColumnCount + 1;
-				
-			IF @iTableID = @iEmployeeTableID
-			BEGIN
-				SET @fDelegateSelect = 1;
-			END 
-			ELSE
-			BEGIN
-				/* Add the table to the list of join tables if required. */
-				SELECT @iIndex = CHARINDEX(',' + @sTempRealSource + ',', @sJoinTables);
-				IF @iIndex = 0 SET @sJoinTables = @sJoinTables + @sTempRealSource + ',';
-			END
-		END
-		ELSE
-		BEGIN
-			/* The column CANNOT be read from the Delegate table, or directly from a parent table.
-			Try to read it from the views on the table. */
-			SET @sSubViews = ',';
-
-			DECLARE viewsCursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT viewID,
-				viewName
-			FROM ASRSysViews
-			WHERE viewTableID = @iTableID;
-
-			OPEN viewsCursor;
-			FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
-			WHILE (@@fetch_status = 0)
-			BEGIN
-				SET @fSelectGranted = 0;
-
-				SELECT @fSelectGranted = selectGranted
-				FROM @columnPermissions
-				WHERE tableID = @iTableID
-					AND tableViewName = @sViewName
-					AND columnName = @sColumnName;
-
-				IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-
-				IF @fSelectGranted = 1	
-				BEGIN
-					/* Add the view to the list of join views if required. */
-					SELECT @iIndex = CHARINDEX(',' + @sViewName + ',', @sJoinViews);
-					IF @iIndex = 0 SET @sJoinViews = @sJoinViews + @sViewName + ',';
-
-					SET @sSubViews = @sSubViews + @sViewName + ',';
-				END
-
-				FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
-			END
-			CLOSE viewsCursor;
-			DEALLOCATE viewsCursor;
-
-			IF len(@sSubViews) > 1
-			BEGIN
-				SET @sSubSQL = '';
-
-				WHILE len(@sSubViews) > 1
-				BEGIN
-					SELECT @iIndex = charindex(',', @sSubViews, 2);
-					SET @sViewName = substring(@sSubViews, 2, @iIndex - 2);
-					SET @sSubViews = substring(@sSubViews, @iIndex, len(@sSubViews) -@iIndex + 1);
-
-					IF len(@sSubSQL) > 0 SET @sSubSQL = @sSubSQL + ',';
-					SET @sSubSQL = @sSubSQL + @sViewName + '.' + @sColumnName;
-				END
-
-				SET @sSubSQL = 'COALESCE(' + @sSubSQL + ') AS [' + @sColumnName + ']';
-                
-				/* Add the column code to the 'select' string. */
-				SET @sTempString = CASE 
-						WHEN @iColumnCount > 0 THEN ','
-						ELSE ''
-					END +
-					@sSubSQL;
-
-				SET @sExecString = @sExecString + @sTempString;
-				SET @iColumnCount = @iColumnCount + 1;
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName;
-	END
-	CLOSE orderCursor;
-	DEALLOCATE orderCursor;
-
-	/* Add the ID column. */
-	SET @iColumnCount = @iColumnCount + 1;
-	SET @sTempString = ',' +
-		@sEmpRealSource + '.id' +
-		' FROM ' + @sEmpRealSource;
-	SET @sExecString = @sExecString + @sTempString;
-        
-	/* Join any other tables and views that are used. */
-	WHILE len(@sJoinTables) > 1
-	BEGIN
-		SELECT @iIndex = charindex(',', @sJoinTables, 2);
-		SET @sTableName = substring(@sJoinTables, 2, @iIndex - 2);
-		SET @sJoinTables = substring(@sJoinTables, @iIndex, len(@sJoinTables) -@iIndex + 1);
-
-		SELECT @iTempID = tableID
-		FROM ASRSysTables
-		WHERE tableName = @sTableName;
-
-		SET @sTempString = ' LEFT OUTER JOIN ' + @sTableName +
-			' ON ' + @sEmpRealSource + '.ID_' + convert(varchar(8000), @iTempID) + ' = ' + @sTableName + '.ID';
-		SET @sExecString = @sExecString + @sTempString;
-
-	END
-
-	WHILE len(@sJoinViews) > 1
-	BEGIN
-		SELECT @iIndex = charindex(',', @sJoinViews, 2);
-		SET @sViewName = substring(@sJoinViews, 2, @iIndex - 2);
-		SET @sJoinViews = substring(@sJoinViews, @iIndex, len(@sJoinViews) -@iIndex + 1);
-
-		SELECT @iTempID = viewTableID
-		FROM ASRSysViews
-		WHERE viewName = @sViewName;
-
-		IF @iTempID = @iEmployeeTableID
-		BEGIN
-			SET @sTempString = ' LEFT OUTER JOIN ' + @sViewName +
-				' ON ' + @sEmpRealSource + '.ID = ' + @sViewName + '.ID';
-			SET @sExecString = @sExecString + @sTempString;
-
-			IF @fDelegateSelect = 0
-			BEGIN
-				SET @sWhereSQL = @sWhereSQL + 
-					CASE
-						WHEN len(@sWhereSQL) > 0 THEN ' OR ('
-						ELSE '('
-					END +
-					@sEmpRealSource + '.ID IN (SELECT ID FROM ' + @sViewName +  '))';
-			END
-		END
-		ELSE
-		BEGIN
-			SET @sTempString = ' LEFT OUTER JOIN ' + @sViewName +
-				' ON ' + @sEmpRealSource + '.ID_' + convert(varchar(8000), @iTempID) + ' = ' + @sViewName + '.ID';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-	END
-
-	IF len(@sWhereSQL) > 0
-	BEGIN
-		SET @sTempString = ' WHERE (' + @sWhereSQL + ')';
-		SET @sExecString = @sExecString + @sTempString;
-	END
-	
-	/* Get the list of selected IDs. */
-	
-	IF len(@psSelectedIDs) = 0 SET @psSelectedIDs = '0';
-	
-	IF UPPER(@psSelectionType) = 'PICKLIST'
-	BEGIN
-		DECLARE picklistCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT recordID
-		FROM ASRSysPicklistItems
-		WHERE picklistID = @piSelectionID;
-	
-		OPEN picklistCursor;
-		FETCH NEXT FROM picklistCursor INTO @iID;
-
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @psSelectedIDs = @psSelectedIDs + ',' + convert(varchar(255), @iID);
-			FETCH NEXT FROM picklistCursor INTO @iID;
-		END
-		CLOSE picklistCursor;
-		DEALLOCATE picklistCursor;
-	END
-	
-	/* Get the required find records. */
-	SET @sTempString = CASE
-			WHEN (charindex(' WHERE ', @sExecString) > 0) THEN ' AND ('
-			ELSE ' WHERE ('
-		END +
-		'(' + @sEmpRealSource + '.id IN (' + @psSelectedIDs + '))';
-		
-	SET @sExecString = @sExecString + @sTempString;
-
-	IF (UPPER(@psSelectionType) = 'FILTER') AND (len(@psPromptSQL) > 0)
-	BEGIN
-		SET @sTempString = ' OR (' + 
-			convert(varchar(255), @sEmpRealSource) + '.id IN (' + @psPromptSQL + '))';
-		SET @sExecString = @sExecString + @sTempString;
-
-	END
-
-	SET @sTempString = ') ORDER BY 1';
-	SET @sExecString = @sExecString + @sTempString;
-		
-	/* Count the number of commas before the ' FROM ' to see how many columns are in the select statement. */
-	SET @iTemp = 2;
-	WHILE @iTemp <= @iColumnCount
-	BEGIN
-		SET @sTempString = ',' + convert(varchar(8000), @iTemp);
-		SET @sExecString = @sExecString + @sTempString;
-		SET @iTemp = @iTemp + 1;
-	END
-
-	-- Return generated SQL	
-	EXEC sp_executeSQL @sExecString;
-	
-END
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetColumns]    Script Date: 23/07/2013 11:18:30 ******/
 SET ANSI_NULLS ON
 GO
@@ -6534,331 +4009,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetDefaultOrderColumns]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetDefaultOrderColumns] (
-	@piTableID				integer,
-	@psErrorMsg 			varchar(max)	OUTPUT,
-	@ps1000SeparatorCols 	varchar(8000)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the 'employee' table find columns that the user has 'read' permission on. */
-	DECLARE 
-		@iUserGroupID		integer,
-		@sUserGroupName		sysname,
-		@iOrderID			integer,
-		@sColumnName 		sysname,
-		@iDataType 			integer,
-		@iTableID 			integer,
-		@iCount				integer,
-		@sTemp				sysname,
-		@iIndex				integer,
-		@sRealSource		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@iTempTableType		integer,
-		@sTempTableName		sysname,
-		@iChildViewID		integer,
-		@sTempRealSource	sysname,
-		@iViewID			integer, 
-		@sViewName			sysname,
-		@iTempID			integer,
-		@sActualUserName	sysname,
-		@iTempTableID 		integer,
-		@fSelectGranted 	bit,
-		@bUse1000Separator	bit,
-		@fSomeReadable		bit,
-		@fViewReadable		bit;
-
-	SET @psErrorMsg = '';
-	SET @ps1000SeparatorCols = '';
-	SET @fSomeReadable = 0;
-
-	/* Get the current user's group ID. */
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	SELECT @iOrderID = defaultOrderID, 
-		@iTableType = tableType,
-		@sTableName = tableName
-	FROM [dbo].[ASRSysTables]
-	WHERE tableID = @piTableID;
-
-	/* Get the real source of the employee table. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		SET @sRealSource = @sTableName;
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM [dbo].[ASRSysChildViews2]
-		WHERE tableID = @piTableID
-			AND [role] = @sUserGroupName;
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0;
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(CONVERT(varchar(255),@sTableName), ' ', '_') +
-				'#' + replace(CONVERT(varchar(255),@sUserGroupName), ' ', '_')
-			SET @sRealSource = left(CONVERT(varchar(255),@sRealSource), 255);
-		END
-	END	
-	
-	/* Create a temporary table to hold the find columns that the user can see. */
-	DECLARE @findColumns TABLE
-		(columnName	sysname,
-		dataType	integer)	
-
-	DECLARE @columnPermissions TABLE
-		(tableID		integer,
-		tableViewName	sysname,
-		columnName	sysname,
-		selectGranted	bit);
-
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT DISTINCT ASRSysColumns.tableID, ASRSysTables.tableType, ASRSysTables.tableName
-		FROM ASRSysOrderItems 
-		INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-		INNER JOIN ASRSysTables ON ASRSysColumns.tableID= ASRSysTables.tableID
-		WHERE ASRSysOrderItems.orderID = @iOrderID
-			AND ASRSysOrderItems.type = 'F';
-
-	OPEN tablesCursor;
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName 
-					FROM ASRSysViews 
-					WHERE ASRSysViews.viewTableID = @iTempTableID)
-					AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-					OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM [dbo].[ASRSysChildViews2]
-			WHERE tableID = @iTempTableID
-				AND [role] = @sUserGroupName;
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0;
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(500), @iChildViewID) +
-					'#' + replace(@sTempTableName, ' ', '_') +
-					'#' + replace(@sUserGroupName, ' ', '_');
-				SET @sTempRealSource = left(@sTempRealSource, 255);
-
-				INSERT INTO @columnPermissions
-				SELECT 
-					@iTempTableID,
-					sysobjects.name,
-					syscolumns.name,
-					CASE protectType
-					        	WHEN 205 THEN 1
-						WHEN 204 THEN 1
-						ELSE 0
-					END 
-				FROM sysprotects
-				INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-				INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-				WHERE sysprotects.uid = @iUserGroupID
-					AND sysprotects.action = 193 
-					AND syscolumns.name <> 'timestamp'
-					AND sysobjects.name =@sTempRealSource
-						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-			END
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
-	END
-	
-	CLOSE tablesCursor;
-	DEALLOCATE tablesCursor;
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT 
-		ASRSysColumns.columnName,
-		ASRSysColumns.dataType,
-		ASRSysColumns.tableID,
-		ASRSysTables.tableType,
-		ASRSysTables.tableName,
-		ASRSysColumns.Use1000Separator
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-	ORDER BY ASRSysOrderItems.sequence;
-
-	OPEN orderCursor;
-	FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName, @bUse1000Separator;
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		SET @psErrorMsg = 'Unable to read the table''s default order.';
-		RETURN;
-	END
-
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0;
-
-		/* Get the real source of the table. */
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			SET @sTempRealSource = @sTempTableName;
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM [dbo].[ASRSysChildViews2]
-			WHERE tableID = @iTableID
-				AND [role] = @sUserGroupName;
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0;
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(1000), @iChildViewID) +
-					'#' + replace(CONVERT(varchar(255),@sTempTableName), ' ', '_') +
-					'#' + replace(CONVERT(varchar(255),@sUserGroupName), ' ', '_');
-				SET @sTempRealSource = left(CONVERT(varchar(8000),@sTempRealSource), 255);
-			END
-		END	
-
-		SELECT @fSelectGranted = selectGranted
-		FROM @columnPermissions
-		WHERE tableID = @iTableID
-			AND tableViewName = @sTempRealSource
-			AND columnName = @sColumnName;
-
-		IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-		
-		IF @fSelectGranted = 1
-		BEGIN
-			SET @fSomeReadable = 1;
-
-			SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
-				CASE
-					WHEN @bUse1000Separator = 1 THEN '1'
-					ELSE '0'
-				END;
-
-			INSERT INTO @findColumns (columnName, dataType) VALUES (@sColumnName, @iDataType);
-		END
-		ELSE
-		BEGIN
-			/* The column CANNOT be read from the table, or directly from a parent table.
-			Try to read it from the views on the table. */
-			SET @fViewReadable = 0;
-
-			DECLARE viewsCursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT viewID,
-				viewName
-			FROM [dbo].[ASRSysViews]
-			WHERE viewTableID = @iTableID;
-
-			OPEN viewsCursor;
-			FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
-			WHILE (@@fetch_status = 0)
-			BEGIN
-				SELECT @fSelectGranted = selectGranted
-				FROM @columnPermissions
-				WHERE tableID = @iTableID
-					AND tableViewName = @sViewName
-					AND columnName = @sColumnName;
-
-				IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-
-				IF @fSelectGranted = 1	
-				BEGIN
-					SET @fViewReadable = 1;
-				END
-
-				FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
-			END
-			CLOSE viewsCursor;
-			DEALLOCATE viewsCursor;
-
-			IF @fViewReadable = 1
-			BEGIN
-				INSERT INTO @findColumns (columnName, dataType) VALUES (@sColumnName, @iDataType);
-
-				SET @fSomeReadable = 1;
-
-				SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
-					CASE
-						WHEN @bUse1000Separator = 1 THEN '1'
-						ELSE '0'
-					END;
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName, @bUse1000Separator;
-
-	END
-	CLOSE orderCursor;
-	DEALLOCATE orderCursor;
-
-	IF @fSomeReadable = 0
-	BEGIN
-		/* Flag to the user that they cannot see any of the find columns. */
-		SET @psErrorMsg = 'You do not have permission to read the table''s find columns.';
-	END
-	ELSE
-	BEGIN
-		/* Add the ID column. */
-		INSERT INTO @findColumns (columnName, dataType) VALUES ('ID', 4);
-	END
-
-	SELECT * FROM @findColumns;
-END
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetEmpIDFromTBID]    Script Date: 23/07/2013 11:18:30 ******/
 SET ANSI_NULLS ON
@@ -8518,2691 +5668,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTableOrders]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetTableOrders] (
-	@piTableID 		integer, 
-	@piViewID 		integer)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-	
-	/* Return a recordset of the orders for the current table/view and order IDs.
-		@piTableID = the ID of the table on which the order is based.
-		@piViewID = the ID of the view on which the order is based.
-	*/
-
-	IF @piViewID > 0 
-	BEGIN
-		SELECT DISTINCT ASRSysOrders.name AS Name, 
-			ASRSysOrders.orderID
-		FROM ASRSysOrders
-		INNER JOIN ASRSysOrderItems ON ASRSysOrders.orderID = ASRSysOrderItems.orderID
-		INNER JOIN ASRSysViewColumns ON ASRSysOrderItems.columnID = ASRSysViewColumns.columnID
-		WHERE ASRSysOrders.tableID = @piTableID
-			AND ASRSysOrders.[type] = 1
-			AND ASRSysViewColumns.inView = 1
-			AND ASRSysOrderItems.[type] = 'O'
-			AND ASRSysViewColumns.viewID = @piViewID
-		ORDER BY ASRSysOrders.name;
-	END
-	ELSE
-	BEGIN
-		SELECT name AS Name, orderID
-		FROM ASRSysOrders
-		WHERE tableID= @piTableID
-			AND ASRSysOrders.[type] = 1
-		ORDER BY name;
-	END
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTablesInfo]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetTablesInfo]
-AS
-BEGIN
-	/* Return a set of information for all of the tables in the system. */
-	/* The information required is :
-		table id
-		table name
-		table type
-		string listing the ids of the table's children.
-		string listing the ids of the table's parents.
-		string listing the ids of all the tables's relations.
-	
-	NB. The tables are return in name order. */
-	
-	SET NOCOUNT ON;
-	
-	DECLARE	@iTableID		integer,
-			@sTableName		sysname,
-			@iTableType		integer,
-			@sChildren		varchar(MAX),
-			@sChildrenNames varchar(MAX),
-			@sParents		varchar(MAX),
-			@iChildID		integer,
-			@sChildName		varchar(255),
-			@iParentID		integer,			
-			@sRelations		varchar(MAX),
-			@sRelationName	varchar(MAX),
-			@iRelationID	integer;
-
-	DECLARE @tableInfo TABLE (
-		tableID		integer,
-		tableName	sysname,
-		tableType	integer,
-		childrenString	varchar(MAX),
-		childrenNames	varchar(MAX),
-		parentsString	varchar(MAX),
-		relatedString   varchar(MAX));
-
-	DECLARE tableCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT tableID,
-		tableName,
-		tableType
-	FROM [dbo].[ASRSysTables];
-
-	OPEN tableCursor;
-	FETCH NEXT FROM tableCursor INTO @iTableID, @sTableName, @iTableType;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @sChildren = '';
-		SET @sParents = '';
-		SET @sChildrenNames = '';
-		SET @sRelations = '' ;
-		
-		DECLARE childCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT ASRSysRelations.childID, ASRSysTables.TableName
-			FROM [dbo].[ASRSysRelations]
-			INNER JOIN ASRSysTables ON ASRSysRelations.childID = ASRSysTables.tableID
-			WHERE ASRSysRelations.parentID = @iTableID
-			ORDER BY ASRSysTables.tableName;
-
-		OPEN childCursor;
-		FETCH NEXT FROM childCursor INTO @iChildID, @sChildName;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sChildren = @sChildren + 
-				convert(varchar(MAX), @iChildID) + char(9);
-
-			SET @sChildrenNames = @sChildrenNames +
-				convert(varchar(MAX), @iChildID) + char(9) + convert(varchar(2000), @sChildName) + char(9);
-
-			FETCH NEXT FROM childCursor INTO @iChildID, @sChildName;
-		END
-		
-		CLOSE childCursor;
-		DEALLOCATE childCursor;
-
-		DECLARE parentCursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT ASRSysRelations.parentID
-			FROM [dbo].[ASRSysRelations]
-			INNER JOIN ASRSysTables ON ASRSysRelations.parentID = ASRSysTables.tableID
-			WHERE ASRSysRelations.childID = @iTableID
-			ORDER BY ASRSysTables.tableName;
-
-		OPEN parentCursor;
-		FETCH NEXT FROM parentCursor INTO @iParentID;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sParents = @sParents + 
-				convert(varchar(2000), @iParentID) + char(9);
-			FETCH NEXT FROM parentCursor INTO @iParentID;
-		END
-		CLOSE parentCursor;
-		DEALLOCATE parentCursor;
-
-		DECLARE relatedCursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT ASRSysRelations.childID, ASRSysTables.TableName
-			FROM [dbo].[ASRSysRelations]
-			INNER JOIN ASRSysTables ON ASRSysRelations.childID = ASRSysTables.tableID
-			WHERE ASRSysRelations.parentID = @iTableID
-			UNION
-			SELECT ASRSysRelations.parentID, ASRSysTables.TableName 
-			FROM [dbo].[ASRSysRelations]
-			INNER JOIN ASRSysTables ON ASRSysRelations.parentID = ASRSysTables.tableID
-			WHERE ASRSysRelations.childID = @iTableID
-			UNION
-			SELECT ASRSysTables.TableID, ASRSysTables.TableName 
-			FROM [dbo].[ASRSysTables]
-			WHERE ASRSysTables.TableID = @iTableID
-			ORDER BY ASRSysTables.tableName;
-
-		OPEN relatedCursor;
-		FETCH NEXT FROM relatedCursor INTO @iRelationID, @sRelationName;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			
-			SET @sRelations = @sRelations +
-				convert(varchar(MAX), @iRelationID) + char(9) + convert(varchar(2000), @sRelationName) + char(9);
-
-			FETCH NEXT FROM relatedCursor INTO @iRelationID, @sRelationName;
-		END
-		CLOSE relatedCursor;
-		DEALLOCATE relatedCursor;
-
-		INSERT INTO @tableInfo (tableID, tableName, tableType, childrenString, childrenNames, parentsString, relatedString) 
-			VALUES (@iTableID, @sTableName, @iTableType, @sChildren, @sChildrenNames, @sParents, @sRelations);
-
-		FETCH NEXT FROM tableCursor INTO @iTableID, @sTableName, @iTableType;
-	END
-	CLOSE tableCursor;
-	DEALLOCATE tableCursor;
-
-	SELECT *
-		FROM @tableInfo 
-		ORDER BY tableName;
-
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTBEmployeeColumns]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetTBEmployeeColumns] (
-	@psErrorMsg 			varchar(MAX)	OUTPUT,
-	@ps1000SeparatorCols 	varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the 'employee' table find columns that the user has 'read' permission on. */
-	DECLARE 
-		@iUserGroupID		integer,
-		@sUserGroupName		sysname,
-		@iEmployeeTableID	integer,
-		@iOrderID			integer,
-		@sColumnName 		sysname,
-		@iDataType 			integer,
-		@iTableID 			integer,
-		@iCount				integer,
-		@sTemp				sysname,
-		@iIndex				integer,
-		@sEmpRealSource		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@iTempTableType		integer,
-		@sTempTableName		sysname,
-		@iChildViewID		integer,
-		@sTempRealSource	sysname,
-		@iViewID			integer, 
-		@sViewName			sysname,
-		@iTempID			integer,
-		@sActualUserName	sysname,
-		@iTempTableID 		integer,
-		@fSelectGranted 	bit,
-		@bUse1000Separator	bit,
-		@fSomeReadable		bit,
-		@fViewReadable		bit;
-
-	SET @psErrorMsg = ''
-	SET @ps1000SeparatorCols = ''
-	SET @fSomeReadable = 0
-	
-	/* Get the current user's group ID. */
-	EXEC spASRIntGetActualUserDetails
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT
-
-	/* Get the EMPLOYEE table information. */
-	SELECT @iEmployeeTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_EmployeeTable'
-	IF @iEmployeeTableID IS NULL SET @iEmployeeTableID = 0
-
-	SELECT @iOrderID = defaultOrderID, 
-		@iTableType = tableType,
-		@sTableName = tableName
-	FROM ASRSysTables
-	WHERE tableID = @iEmployeeTableID
-
-	/* Get the real source of the employee table. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		SET @sEmpRealSource = @sTableName
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @iEmployeeTableID
-			AND role = @sUserGroupName
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sEmpRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_')
-			SET @sEmpRealSource = left(@sEmpRealSource, 255)
-		END
-	END	
-	
-	/* Create a temporary table to hold the find columns that the user can see. */
-	DECLARE @findColumns TABLE(
-		columnName		sysname,
-		dataType		integer);
-
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID, ASRSysTables.tableType, ASRSysTables.tableName
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysColumns.tableID= ASRSysTables.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-
-	OPEN tablesCursor
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName 
-					FROM ASRSysViews 
-					WHERE ASRSysViews.viewTableID = @iTempTableID)
-					AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-					OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM ASRSysChildViews2
-			WHERE tableID = @iTempTableID
-				AND role = @sUserGroupName
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(1000), @iChildViewID) +
-					'#' + replace(@sTempTableName, ' ', '_') +
-					'#' + replace(@sUserGroupName, ' ', '_')
-				SET @sTempRealSource = left(@sTempRealSource, 255)
-
-				INSERT INTO @columnPermissions
-				SELECT 
-					@iTempTableID,
-					sysobjects.name,
-					syscolumns.name,
-					CASE protectType
-					        	WHEN 205 THEN 1
-						WHEN 204 THEN 1
-						ELSE 0
-					END 
-				FROM sysprotects
-				INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-				INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-				WHERE sysprotects.uid = @iUserGroupID
-					AND sysprotects.action = 193 
-					AND syscolumns.name <> 'timestamp'
-					AND sysobjects.name =@sTempRealSource
-						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-			END
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName
-	END
-	CLOSE tablesCursor
-	DEALLOCATE tablesCursor
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT 
-		ASRSysColumns.columnName,
-		ASRSysColumns.dataType,
-		ASRSysColumns.tableID,
-		ASRSysTables.tableType,
-		ASRSysTables.tableName,
-		ASRSysColumns.Use1000Separator
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName, @bUse1000Separator
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		SET @psErrorMsg = 'Unable to read the Employee table default order.'
-		RETURN
-	END
-
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-
-		/* Get the real source of the employee table. */
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			SET @sTempRealSource = @sTempTableName
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM ASRSysChildViews2
-			WHERE tableID = @iTableID
-				AND role = @sUserGroupName
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(1000), @iChildViewID) +
-					'#' + replace(@sTempTableName, ' ', '_') +
-					'#' + replace(@sUserGroupName, ' ', '_')
-				SET @sTempRealSource = left(@sTempRealSource, 255)
-			END
-		END	
-
-		SELECT @fSelectGranted = selectGranted
-		FROM @columnPermissions
-		WHERE tableID = @iTableID
-			AND tableViewName = @sTempRealSource
-			AND columnName = @sColumnName
-
-		IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-
-		IF @fSelectGranted = 1
-		BEGIN
-			SET @fSomeReadable = 1
-
-			SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
-				CASE
-					WHEN @bUse1000Separator = 1 THEN '1'
-					ELSE '0'
-				END
-
-			INSERT INTO @findColumns (columnName, dataType) VALUES (@sColumnName, @iDataType)
-		END
-		ELSE
-		BEGIN
-			/* The column CANNOT be read from the Delegate table, or directly from a parent table.
-			Try to read it from the views on the table. */
-			SET @fViewReadable = 0
-
-			DECLARE viewsCursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT viewID,
-				viewName
-			FROM ASRSysViews
-			WHERE viewTableID = @iTableID
-
-			OPEN viewsCursor
-			FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName
-			WHILE (@@fetch_status = 0)
-			BEGIN
-				SELECT @fSelectGranted = selectGranted
-				FROM @columnPermissions
-				WHERE tableID = @iTableID
-					AND tableViewName = @sViewName
-					AND columnName = @sColumnName
-
-				IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-
-				IF @fSelectGranted = 1	
-				BEGIN
-					SET @fViewReadable = 1
-				END
-
-				FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName
-			END
-			CLOSE viewsCursor
-			DEALLOCATE viewsCursor
-
-			IF @fViewReadable = 1
-			BEGIN
-				INSERT INTO @findColumns (columnName, dataType) VALUES (@sColumnName, @iDataType)
-
-				/* Add the column code to the 'select' string. */
-				SET @fSomeReadable = 1
-
-				SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
-					CASE
-						WHEN @bUse1000Separator = 1 THEN '1'
-						ELSE '0'
-					END
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName, @bUse1000Separator
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	IF @fSomeReadable = 0
-	BEGIN
-		/* Flag to the user that they cannot see any of the find columns. */
-		SET @psErrorMsg = 'You do not have permission to read the Employee table find columns.'
-	END
-	ELSE
-	BEGIN
-		/* Add the ID column. */
-		INSERT INTO @findColumns (columnName, dataType) VALUES ('ID', 4)
-	END
-
-	SELECT * FROM @findColumns;
-	
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTransferBookingRecords]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetTransferBookingRecords] (
-	@piTableID 			integer, 
-	@piViewID 			integer, 
-	@piOrderID 			integer,
-	@piTBRecordID		integer,
-	@pfError 			bit 			OUTPUT,
-	@piRecordsRequired	integer,
-	@pfFirstPage		bit				OUTPUT,
-	@pfLastPage			bit				OUTPUT,
-	@psLocateValue		varchar(MAX),
-	@piColumnType		integer			OUTPUT,
-	@psAction			varchar(255),
-	@piTotalRecCount	integer			OUTPUT,
-	@piFirstRecPos		integer			OUTPUT,
-	@piCurrentRecCount	integer,
-	@psErrorMessage		varchar(MAX)	OUTPUT,
-	@piColumnSize		integer			OUTPUT,
-	@piColumnDecimals	integer			OUTPUT,
-	@psStatus			varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iUserGroupID	integer,
-		@sUserGroupName		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@sRealSource 		sysname,
-		@iChildViewID 		integer,
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		sysname,
-		@sColumnTableName 	sysname,
-		@fAscending 		bit,
-		@sType	 			varchar(10),
-		@iDataType 			integer,
-		@fSelectGranted 	bit,
-		@sSelectSQL			varchar(MAX),
-		@sOrderSQL 			varchar(MAX),
-		@sExecString		nvarchar(MAX),
-		@sTempString		varchar(MAX),
-		@fSelectDenied		bit,
-		@iTempCount 		integer,
-		@sSubString			varchar(MAX),
-		@sViewName 			varchar(255),
-		@sTableViewName 	sysname,
-		@iJoinTableID 		integer,
-		@iTemp				integer,
-		@sRemainingSQL		varchar(MAX),
-		@iLastCharIndex		integer,
-		@iCharIndex 		integer,
-		@sDESCstring		varchar(4),
-		@sTempExecString	nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@fFirstColumnAsc	bit,
-		@sFirstColCode		varchar(MAX),
-		@sLocateCode		varchar(MAX),
-		@sReverseOrderSQL 	varchar(MAX),
-		@iCount				integer,
-		@fWhereDone			bit,
-		@iTBStatusColumnID	integer,
-		@sTBStatusColumnName	sysname,
-		@iCourseTitleColumnID	integer,
-		@sCourseTitleColumnName	sysname,
-		@iCourseStartDateColumnID	integer,
-		@sCourseStartDateColumnName	sysname,
-		@iGetCount			integer,
-		@sCourseTitle		varchar(MAX),
-		@sStatus			varchar(MAX),
-		@iEmpTableID		integer,
-		@iCourseTableID		integer,
-		@iEmpRecordID		integer,
-		@iCourseRecordID	integer,
-		@iTBTableID			integer,
-		@sTBRealSource		varchar(255),
-		@sCourseSource		sysname,
-		@iColSize			integer,
-		@iColDecs			integer,
-		@sTBTableName		sysname,
-		@sActualUserName	sysname
-
-	/* Initialise variables. */
-	SET @pfError = 0
-	SET @psErrorMessage = ''
-	SET @sRealSource = ''
-	SET @sSelectSQL = ''
-	SET @sOrderSQL = ''
-	SET @fSelectDenied = 0
-	SET @sExecString = ''
-	SET @sDESCstring = ' DESC'
-	SET @fFirstColumnAsc = 1
-	SET @sFirstColCode = ''
-	SET @sReverseOrderSQL = ''
-	SET @fWhereDone = 0
-
-	/* Clean the input string parameters. */
-	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''')
-
-	/* Get the current user's group ID. */
-	EXEC spASRIntGetActualUserDetails
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT
-
-	/* Get the employee table id. */
-	SELECT @iEmpTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_EmployeeTable'
-	IF @iEmpTableID IS NULL SET @iEmpTableID = 0
-
-	/* Get the Course table id. */
-	SELECT @iCourseTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTable'
-	IF @iCourseTableID IS NULL SET @iCourseTableID = 0
-
-	/* Get the status, employee id and course id from the given TB record. */
-	/* NB. To reach this point we have already checked that the user has 'read' permission on the Training Booking - Status column. */
-	SELECT @iTBTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_TrainBookTable'
-	IF @iTBTableID IS NULL SET @iTBTableID = 0
-
-	SELECT @sTBTableName = tableName
-	FROM ASRSysTables
-	WHERE tableID = @iTBTableID
-	
-	SELECT @iTBStatusColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_TrainBookStatus'
-	IF @iTBStatusColumnID IS NULL SET @iTBStatusColumnID = 0
-	
-	IF @iTBStatusColumnID > 0 
-	BEGIN
-		SELECT @sTBStatusColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iTBStatusColumnID
-	END
-	IF @sTBStatusColumnName IS NULL SET @sTBStatusColumnName = ''
-
-	SELECT @iChildViewID = childViewID
-	FROM ASRSysChildViews2
-	WHERE tableID = @iTBTableID
-		AND role = @sUserGroupName
-		
-	IF @iChildViewID IS null SET @iChildViewID = 0
-		
-	IF @iChildViewID > 0 
-	BEGIN
-		SET @sTBRealSource = 'ASRSysCV' + 
-			convert(varchar(1000), @iChildViewID) +
-			'#' + replace(@sTBTableName, ' ', '_') +
-			'#' + replace(@sUserGroupName, ' ', '_')
-		SET @sTBRealSource = left(@sTBRealSource, 255)
-	END
-
-	SET @sTempExecString = 'SELECT @sStatus = ' + @sTBStatusColumnName + 
-		', @iEmpRecordID = id_' + convert(nvarchar(100), @iEmpTableID) +
-		', @iCourseRecordID = id_' + convert(nvarchar(100), @iCourseTableID) +
-		' FROM ' + @sTBRealSource +
-		' WHERE id = ' + convert(nvarchar(100), @piTBRecordID)
-	SET @sTempParamDefinition = N'@sStatus varchar(255) OUTPUT, @iEmpRecordID integer OUTPUT, @iCourseRecordID integer OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @sStatus OUTPUT, @iEmpRecordID OUTPUT,	@iCourseRecordID OUTPUT
-
-	SET @psStatus = @sStatus
-	
-	/* We can only transfer 'Booked' and 'Provisionally Booked' records that have valid course and employee records. */
-	IF (ltrim(rtrim(upper(@sStatus))) <> 'B') AND (ltrim(rtrim(upper(@sStatus))) <> 'P')
-	BEGIN
-		SET @pfError = 1
-		SET @psErrorMessage = 'Training booking records can only be transferred if they have ''Booked'''
-
-		SELECT @iCount = COUNT(*)
-		FROM ASRSysColumnControlValues
-		WHERE columnID = @iTBStatusColumnID
-			AND upper(value) = 'P'
-		
-		IF @iCount > 0
-		BEGIN
-			SET @psErrorMessage = @psErrorMessage + ' or ''Provisional'''
-		END
-
-		SET @psErrorMessage = @psErrorMessage + ' status.'
-		RETURN
-	END
-	ELSE
-	BEGIN
-		IF (@iEmpRecordID <= 0) OR (@iEmpRecordID IS null)
-		BEGIN
-			SET @pfError = 1
-			SET @psErrorMessage = 'The selected Training Booking record has no associated Employee record.'
-			RETURN
-		END
-		ELSE
-		BEGIN
-			IF (@iCourseRecordID <= 0) OR (@iCourseRecordID IS null)
-			BEGIN
-				SET @pfError = 1
-				SET @psErrorMessage = 'The selected Training Booking record has no associated Course record.'
-				RETURN
-			END	
-		END
-	END
-	
-	SELECT @iCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTitle'
-	IF @iCourseTitleColumnID IS NULL SET @iCourseTitleColumnID = 0
-	
-	IF @iCourseTitleColumnID > 0 
-	BEGIN
-		SELECT @sCourseTitleColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseTitleColumnID
-	END
-	IF @sCourseTitleColumnName IS NULL SET @sCourseTitleColumnName = ''
-
-	SELECT @iCourseStartDateColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseStartDate'
-	IF @iCourseStartDateColumnID IS NULL SET @iCourseStartDateColumnID = 0
-
-	IF @iCourseStartDateColumnID > 0 
-	BEGIN
-		SELECT @sCourseStartDateColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseStartDateColumnID
-	END
-	IF @sCourseStartDateColumnName IS NULL SET @sCourseStartDateColumnName = ''
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
-	SET @psAction = UPPER(@psAction)
-	IF (@psAction <> 'MOVEPREVIOUS') AND 
-		(@psAction <> 'MOVENEXT') AND 
-		(@psAction <> 'MOVELAST') AND 
-		(@psAction <> 'LOCATE')
-	BEGIN
-		SET @psAction = 'MOVEFIRST'
-	END
-
-	/* Get the table type and name. */
-	SELECT @iTableType = ASRSysTables.tableType,
-		@sTableName = ASRSysTables.tableName
-	FROM ASRSysTables
-	WHERE ASRSysTables.tableID = @piTableID
-
-	/* Get the real source of the given table/view. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN	
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID
-		END
-		ELSE
-		BEGIN
-			SET @sRealSource = @sTableName
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @piTableID
-			AND role = @sUserGroupName
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_')
-			SET @sRealSource = left(@sRealSource, 255)
-		END
-	END
-
-	IF len(@sRealSource) = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	/* Create a temporary table to hold the tables/views that need to be joined. */
-	DECLARE @joinParents TABLE(
-		tableViewName	sysname,
-		tableID			integer);
-
-	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	/* Loop through the tables used in the order, getting the column permissions for each one. */
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-
-	OPEN tablesCursor
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableID = @piTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name = @sRealSource
-				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	END
-	CLOSE tablesCursor
-	DEALLOCATE tablesCursor
-
-	/* Get the @sCourseTitle value for the given TB record. */
-	DECLARE courseSourceCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT sysobjects.name
-	FROM sysprotects
-	INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-	INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-	WHERE sysprotects.uid = @iUserGroupID
-		AND sysprotects.action = 193 
-		AND (sysprotects.protectType = 205 OR sysprotects.protectType = 204)
-		AND syscolumns.name = @sCourseTitleColumnName
-		AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-			ASRSysTables.tableID = @iCourseTableID 
-			UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iCourseTableID)
-		AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-		OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-	OPEN courseSourceCursor
-	FETCH NEXT FROM courseSourceCursor INTO @sCourseSource
-	WHILE (@@fetch_status = 0) AND (@sCourseTitle IS null)
-	BEGIN
-		SET @sTempExecString = 'SELECT @sCourseTitle = ' + @sCourseTitleColumnName + 
-			' FROM ' + @sCourseSource +
-			' WHERE id = ' + convert(nvarchar(100), @iCourseRecordID)
-		SET @sTempParamDefinition = N'@sCourseTitle varchar(MAX) OUTPUT'
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @sCourseTitle OUTPUT
-
-		FETCH NEXT FROM courseSourceCursor INTO @sCourseSource
-	END
-	CLOSE courseSourceCursor
-	DEALLOCATE courseSourceCursor
-
-	IF @sCourseTitle IS null
-	BEGIN
-		SET @pfError = 1
-		SET @psErrorMessage = 'Unable to read the course title from the associated Course record.'
-		RETURN		
-	END
-
-	SET @fSelectGranted = 0
-	SELECT @fSelectGranted = selectGranted
-	FROM @columnPermissions
-	WHERE tableViewName = @sRealSource
-		AND columnName = @sCourseTitleColumnName
-	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	IF @fSelectGranted = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	SET @fSelectGranted = 0
-	SELECT @fSelectGranted = selectGranted
-	FROM @columnPermissions
-	WHERE tableViewName = @sRealSource
-		AND columnName = @sCourseStartDateColumnName
-	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	IF @fSelectGranted = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-		
-		IF @iColumnTableId = @piTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-
-			IF @fSelectGranted = 1
-			BEGIN
-				/* The user DOES have SELECT permission on the column in the current table/view. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName
-					SET @sSelectSQL = @sSelectSQL + @sTempString
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sRealSource + '.' + @sColumnName
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName +
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-			END
-			ELSE
-			BEGIN
-				/* The user does NOT have SELECT permission on the column in the current table/view. */
-				SET @fSelectDenied = 1
-			END	
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				/* The user DOES have SELECT permission on the column in the parent table. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName
-					SET @sSelectSQL = @sSelectSQL + @sTempString
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName + 
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @joinParents
-				WHERE tableViewName = @sColumnTableName
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
-				END
-			END
-			ELSE	
-			BEGIN
-				SET @sSubString = ''
-
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND selectGranted = 1
-
-				OPEN viewCursor
-				FETCH NEXT FROM viewCursor INTO @sViewName
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					IF len(@sSubString) = 0 SET @sSubString = 'CASE'
-
-					SET @sSubString = @sSubString +
-						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName 
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-					WHERE tableViewname = @sViewName
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName
-				END
-				CLOSE viewCursor
-				DEALLOCATE viewCursor
-
-				IF len(@sSubString) > 0
-				BEGIN
-					SET @sSubString = @sSubString +
-						' ELSE NULL END'
-
-					IF @sType = 'F'
-					BEGIN
-						/* Find column. */
-						SET @sTempString = CASE 
-								WHEN (len(@sSelectSQL) > 0) THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END
-						SET @sSelectSQL = @sSelectSQL + @sTempString
-					END
-					ELSE
-					BEGIN
-						/* Order column. */
-						IF len(@sOrderSQL) = 0 
-						BEGIN
-							SET @piColumnType = @iDataType
-							SET @fFirstColumnAsc = @fAscending
-							SET @sFirstColCode = @sSubString
-							SET @piColumnSize = @iColSize
-							SET @piColumnDecimals = @iColDecs
-						END
-
-						SET @sOrderSQL = @sOrderSQL + 
-							CASE 
-								WHEN len(@sOrderSQL) > 0 THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END + 
-							CASE 
-								WHEN @fAscending = 0 THEN ' DESC' 
-								ELSE '' 
-							END				
-					END
-				END
-				ELSE
-				BEGIN
-					/* The user does NOT have SELECT permission on the column any of the parent views. */
-					SET @fSelectDenied = 1
-				END	
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	/* Add the ID column to the order string. */
-	SET @sOrderSQL = @sOrderSQL + 
-		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
-		@sRealSource + '.ID'
-
-	/* Create the reverse order string if required. */
-	IF (@psAction <> 'MOVEFIRST') 
-	BEGIN
-		SET @sRemainingSQL = @sOrderSQL
-
-		SET @iLastCharIndex = 0
-		SET @iCharIndex = CHARINDEX(',', @sOrderSQL)
-		WHILE @iCharIndex > 0 
-		BEGIN
- 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', '
-			END
-			ELSE
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', '
-			END
-
-			SET @iLastCharIndex = @iCharIndex
-			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1)
-	
-			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex)
-		END
-		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring
-	END
-
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource +
-		' WHERE (' +
-		@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND ' +
-		@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
-		@sRealSource + '.id <> ' + convert(nvarchar(100), @iCourseRecordID) + ')'
-
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
-	SET @piTotalRecCount = @iCount
-
-	IF (len(@sSelectSQL) > 0) 
-	BEGIN
-		SET @sTempString = ',' + @sRealSource + '.ID'
-		SET @sSelectSQL = @sSelectSQL + @sTempString
-
-		SET @sExecString = 'SELECT ' 
-
-		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
-		BEGIN
-			SET @sTempString = 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
-			SET @sExecString = @sExecString + @sTempString
-		END
-		
-		SET @sTempString = @sSelectSQL + ' FROM ' + @sRealSource
-		SET @sExecString = @sExecString + @sTempString
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-			SET @sExecString = @sExecString + @sTempString
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		IF (@psAction = 'MOVELAST')
-		BEGIN
-			SET @fWhereDone = 1
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF @psAction = 'MOVENEXT' 
-		BEGIN
-			SET @fWhereDone = 1
-			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-			BEGIN
-				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired
-			END
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF @psAction = 'MOVEPREVIOUS'
-		BEGIN
-			SET @fWhereDone = 1
-			IF @piFirstRecPos <= @piRecordsRequired
-			BEGIN
-				SET @iGetCount = @piFirstRecPos - 1
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired				
-			END
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		/* Add the filter code. */
-		SET @sTempString = ' WHERE (' +
-			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND ' +
-			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
-			@sRealSource + '.id <> ' + convert(nvarchar(100), @iCourseRecordID) + ')'
-		SET @sExecString = @sExecString + @sTempString
-
-		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')'
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')'
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF (@psAction = 'LOCATE')
-		BEGIN
-			SET @fWhereDone = 1
-			SET @sLocateCode = ' AND (' + @sFirstColCode 
-
-			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
-						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL'
-				END
-
-			END
-
-			IF @piColumnType = 11 /* Date column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-					END
-				END
-				ELSE
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-			END
-
-			IF @piColumnType = -7 /* Logic column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + 
-
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-			END
-
-			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
-
-					IF convert(float, @psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL'
-				END
-			END
-
-			SET @sLocateCode = @sLocateCode + ')'
-
-			SET @sTempString = @sLocateCode
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		/* Add the ORDER BY code to the find record selection string if required. */
-		SET @sTempString = ' ORDER BY ' + @sOrderSQL
-		SET @sExecString = @sExecString + @sTempString
-	END
-
-	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
-	IF @psAction = 'MOVEFIRST'
-	BEGIN
-		SET @piFirstRecPos = 1
-		SET @pfFirstPage = 1
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVENEXT'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
-		SET @pfFirstPage = 0
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
-		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVELAST'
-	BEGIN
-		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
-		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 1
-	END
-	IF @psAction = 'LOCATE'
-	BEGIN
-		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempExecString = @sTempExecString + 
-				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-		
-		SET @sTempExecString = @sTempExecString + 
-			' WHERE (' +
-			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND ' +
-			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
-			@sRealSource + '.id <> ' + convert(nvarchar(100), @iCourseRecordID) + ')' + @sLocateCode
-
-		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
-
-		IF @iTemp <=0 
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount + 1
-		END
-		ELSE
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
-		END
-
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piFirstRecPos + @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	IF (len(@sExecString) > 0)
-	BEGIN
-		EXECUTE sp_executeSQL @sExecString;
-	END
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTransferCourseRecords]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetTransferCourseRecords] (
-	@piTableID 			integer, 
-	@piViewID 			integer, 
-	@piOrderID 			integer,
-	@psCourseTitle 		varchar(MAX),
-	@piCourseRecordID	integer,
-	@pfError 			bit 		OUTPUT,
-	@piRecordsRequired	integer,
-	@pfFirstPage		bit			OUTPUT,
-	@pfLastPage			bit			OUTPUT,
-	@psLocateValue		varchar(MAX),
-	@piColumnType		integer		OUTPUT,
-	@psAction			varchar(255),
-	@piTotalRecCount	integer		OUTPUT,
-	@piFirstRecPos		integer		OUTPUT,
-	@piCurrentRecCount	integer,
-	@piColumnSize		integer		OUTPUT,
-	@piColumnDecimals	integer		OUTPUT
-)
-AS
-BEGIN
-	/* Return a recordset of the link find records for the current user, given the table/view and order IDs.
-		@piTableID = the ID of the table on which the find is based.
-		@piViewID = the ID of the view on which the find is based.
-		@piOrderID = the ID of the order we are using.
-		@pfError = 1 if errors occured in getting the find records. Else 0.
-	*/
-	SET NOCOUNT ON;
-	
-	DECLARE @iUserGroupID	integer,
-		@sUserGroupName		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@sRealSource 		sysname,
-		@iChildViewID 		integer,
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		sysname,
-		@sColumnTableName 	sysname,
-		@fAscending 		bit,
-		@sType	 			varchar(10),
-		@iDataType 			integer,
-		@fSelectGranted 	bit,
-		@sSelectSQL			varchar(MAX),
-		@sOrderSQL 			varchar(MAX),
-		@sExecString		nvarchar(MAX),
-		@sTempString		varchar(MAX),
-		@fSelectDenied		bit,
-		@iTempCount 		integer,
-		@sSubString			varchar(MAX),
-		@sViewName 			varchar(255),
-		@sTableViewName 	sysname,
-		@iJoinTableID 		integer,
-		@iTemp				integer,
-		@sRemainingSQL		varchar(MAX),
-		@iLastCharIndex		integer,
-		@iCharIndex 		integer,
-		@sDESCstring		varchar(4),
-		@sTempExecString	nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@fFirstColumnAsc	bit,
-		@sFirstColCode		varchar(MAX),
-		@sLocateCode		varchar(MAX),
-		@sReverseOrderSQL 	varchar(MAX),
-		@iCount				integer,
-		@fWhereDone			bit,
-		@iCourseTitleColumnID	integer,
-		@sCourseTitleColumnName	sysname,
-		@iCourseStartDateColumnID	integer,
-		@sCourseStartDateColumnName	sysname,
-		@sCourseCancelDateColumnID	integer,
-		@sCourseCancelDateColumnName	sysname,
-		@iGetCount			integer,
-		@iColSize			integer,
-		@iColDecs			integer,
-		@sActualUserName	sysname;
-
-	/* Initialise variables. */
-	SET @pfError = 0
-	SET @sRealSource = ''
-	SET @sSelectSQL = ''
-	SET @sOrderSQL = ''
-	SET @fSelectDenied = 0
-	SET @sExecString = ''
-	SET @sDESCstring = ' DESC'
-	SET @fFirstColumnAsc = 1
-	SET @sFirstColCode = ''
-	SET @sReverseOrderSQL = ''
-	SET @fWhereDone = 0
-
-	/* Clean the input string parameters. */
-	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''')
-	IF len(@psCourseTitle) > 0 SET @psCourseTitle = replace(@psCourseTitle, '''', '''''')
-
-	/* Get the current user's group ID. */
-	EXEC spASRIntGetActualUserDetails
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT
-
-	SELECT @iCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTitle'
-	IF @iCourseTitleColumnID IS NULL SET @iCourseTitleColumnID = 0
-	
-	IF @iCourseTitleColumnID > 0 
-	BEGIN
-		SELECT @sCourseTitleColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseTitleColumnID
-	END
-	IF @sCourseTitleColumnName IS NULL SET @sCourseTitleColumnName = ''
-
-	SELECT @iCourseStartDateColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseStartDate'
-	IF @iCourseStartDateColumnID IS NULL SET @iCourseStartDateColumnID = 0
-
-	IF @iCourseStartDateColumnID > 0 
-	BEGIN
-		SELECT @sCourseStartDateColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseStartDateColumnID
-	END
-	IF @sCourseStartDateColumnName IS NULL SET @sCourseStartDateColumnName = ''
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
-	SET @psAction = UPPER(@psAction)
-	IF (@psAction <> 'MOVEPREVIOUS') AND 
-		(@psAction <> 'MOVENEXT') AND 
-		(@psAction <> 'MOVELAST') AND 
-		(@psAction <> 'LOCATE')
-	BEGIN
-		SET @psAction = 'MOVEFIRST'
-	END
-
-	/* Get Cancel date Column*/
-	SELECT @sCourseCancelDateColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseCancelDate'
-	IF @sCourseCancelDateColumnID IS NULL SET @sCourseCancelDateColumnID = 0
-	IF @sCourseCancelDateColumnID > 0 
-	BEGIN
-		SELECT @sCourseCancelDateColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @sCourseCancelDateColumnID
-	END
-	IF @sCourseCancelDateColumnName IS NULL SET @sCourseCancelDateColumnName = ''
-
-	/* Get the table type and name. */
-	SELECT @iTableType = ASRSysTables.tableType,
-		@sTableName = ASRSysTables.tableName
-	FROM ASRSysTables
-	WHERE ASRSysTables.tableID = @piTableID
-
-	/* Get the real source of the given table/view. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN	
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID
-		END
-		ELSE
-		BEGIN
-			SET @sRealSource = @sTableName
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @piTableID
-			AND role = @sUserGroupName
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_')
-			SET @sRealSource = left(@sRealSource, 255)
-		END
-	END
-
-	IF len(@sRealSource) = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	/* Create a temporary table to hold the tables/views that need to be joined. */
-	DECLARE @joinParents TABLE(
-		tableViewName	sysname,
-		tableID			integer);
-
-	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	/* Loop through the tables used in the order, getting the column permissions for each one. */
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-
-	OPEN tablesCursor
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableID = @piTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name = @sRealSource
-				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	END
-	CLOSE tablesCursor
-	DEALLOCATE tablesCursor
-
-	SET @fSelectGranted = 0
-	SELECT @fSelectGranted = selectGranted
-	FROM @columnPermissions
-	WHERE tableViewName = @sRealSource
-		AND columnName = @sCourseTitleColumnName
-	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	IF @fSelectGranted = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	SET @fSelectGranted = 0
-	SELECT @fSelectGranted = selectGranted
-	FROM @columnPermissions
-	WHERE tableViewName = @sRealSource
-		AND columnName = @sCourseStartDateColumnName
-	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	IF @fSelectGranted = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-	
-		IF @iColumnTableId = @piTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-
-			IF @fSelectGranted = 1
-			BEGIN
-				/* The user DOES have SELECT permission on the column in the current table/view. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName
-					SET @sSelectSQL = @sSelectSQL + @sTempString
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sRealSource + '.' + @sColumnName
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName +
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-			END
-			ELSE
-			BEGIN
-				/* The user does NOT have SELECT permission on the column in the current table/view. */
-				SET @fSelectDenied = 1
-			END	
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				/* The user DOES have SELECT permission on the column in the parent table. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName
-					SET @sSelectSQL = @sSelectSQL + @sTempString
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName + 
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @joinParents
-				WHERE tableViewName = @sColumnTableName
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
-				END
-			END
-			ELSE	
-			BEGIN
-				SET @sSubString = ''
-
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND selectGranted = 1
-
-				OPEN viewCursor
-				FETCH NEXT FROM viewCursor INTO @sViewName
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					IF len(@sSubString) = 0 SET @sSubString = 'CASE'
-
-					SET @sSubString = @sSubString +
-						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName 
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-					WHERE tableViewname = @sViewName
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName
-				END
-				CLOSE viewCursor
-				DEALLOCATE viewCursor
-
-				IF len(@sSubString) > 0
-				BEGIN
-					SET @sSubString = @sSubString +
-						' ELSE NULL END'
-
-					IF @sType = 'F'
-					BEGIN
-						/* Find column. */
-						SET @sTempString = CASE 
-								WHEN (len(@sSelectSQL) > 0) THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END
-						SET @sSelectSQL = @sSelectSQL + @sTempString
-					END
-					ELSE
-					BEGIN
-						/* Order column. */
-						IF len(@sOrderSQL) = 0 
-						BEGIN
-							SET @piColumnType = @iDataType
-							SET @fFirstColumnAsc = @fAscending
-							SET @sFirstColCode = @sSubString
-							SET @piColumnSize = @iColSize
-							SET @piColumnDecimals = @iColDecs
-						END
-
-						SET @sOrderSQL = @sOrderSQL + 
-							CASE 
-								WHEN len(@sOrderSQL) > 0 THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END + 
-							CASE 
-								WHEN @fAscending = 0 THEN ' DESC' 
-								ELSE '' 
-							END				
-					END
-				END
-				ELSE
-				BEGIN
-					/* The user does NOT have SELECT permission on the column any of the parent views. */
-					SET @fSelectDenied = 1
-				END	
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	/* Add the ID column to the order string. */
-	SET @sOrderSQL = @sOrderSQL + 
-		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
-		@sRealSource + '.ID'
-
-	/* Create the reverse order string if required. */
-	IF (@psAction <> 'MOVEFIRST') 
-	BEGIN
-		SET @sRemainingSQL = @sOrderSQL
-
-		SET @iLastCharIndex = 0
-		SET @iCharIndex = CHARINDEX(',', @sOrderSQL)
-		WHILE @iCharIndex > 0 
-		BEGIN
- 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', '
-			END
-			ELSE
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', '
-			END
-
-			SET @iLastCharIndex = @iCharIndex
-			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1)
-	
-			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex)
-		END
-		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring
-	END
-
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource +
-		' WHERE (' +
-		@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + @psCourseTitle + ''' AND '	+
-		@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
-		@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL AND ' + 
-		@sRealSource + '.id <> ' + convert(nvarchar(100), @piCourseRecordID) + ')'
-
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
-	SET @piTotalRecCount = @iCount
-
-	IF (len(@sSelectSQL) > 0)
-	BEGIN
-		SET @sTempString = ',' + @sRealSource + '.ID'
-		SET @sSelectSQL = @sSelectSQL + @sTempString
-
-		SET @sExecString = 'SELECT ' 
-
-		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
-		BEGIN
-			SET @sTempString = 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-			SET @sExecString = @sExecString + @sTempString
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		IF (@psAction = 'MOVELAST')
-		BEGIN
-			SET @fWhereDone = 1
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF @psAction = 'MOVENEXT' 
-		BEGIN
-			SET @fWhereDone = 1
-			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-			BEGIN
-				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired
-			END
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-				
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF @psAction = 'MOVEPREVIOUS'
-		BEGIN
-			SET @fWhereDone = 1
-
-			IF @piFirstRecPos <= @piRecordsRequired
-			BEGIN
-				SET @iGetCount = @piFirstRecPos - 1
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired				
-			END
-				
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-				
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		/* Add the filter code. */
-		SET @sTempString = ' WHERE (' +
-			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + @psCourseTitle + ''' AND '	+
-			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
-			@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL AND ' + 
-			@sRealSource + '.id <> ' + convert(nvarchar(100), @piCourseRecordID) + ')'
-		SET @sExecString = @sExecString + @sTempString
-
-		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')'
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')'
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF (@psAction = 'LOCATE')
-		BEGIN
-			SET @fWhereDone = 1
-			SET @sLocateCode = ' AND (' + @sFirstColCode 
-
-			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
-						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL'
-				END
-
-			END
-
-			IF @piColumnType = 11 /* Date column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-					END
-				END
-				ELSE
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-			END
-
-			IF @piColumnType = -7 /* Logic column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-			END
-
-			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
-
-					IF convert(float, @psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL'
-				END
-			END
-
-			SET @sLocateCode = @sLocateCode + ')'
-
-			SET @sTempString = @sLocateCode
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		/* Add the ORDER BY code to the find record selection string if required. */
-		SET @sTempString = ' ORDER BY ' + @sOrderSQL
-		SET @sExecString = @sExecString + @sTempString
-	END
-
-	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
-	IF @psAction = 'MOVEFIRST'
-	BEGIN
-		SET @piFirstRecPos = 1
-		SET @pfFirstPage = 1
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVENEXT'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
-		SET @pfFirstPage = 0
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
-		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVELAST'
-	BEGIN
-		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
-		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 1
-	END
-	
-	IF @psAction = 'LOCATE'
-	BEGIN
-		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource 
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempExecString = @sTempExecString + 
-				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		SET @sTempExecString = @sTempExecString + 
-			' WHERE (' +
-			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + @psCourseTitle + ''' AND '	+
-			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
-			@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL AND ' + 
-			@sRealSource + '.id <> ' + convert(nvarchar(100), @piCourseRecordID) + ')' + @sLocateCode
-		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
-
-		IF @iTemp <=0 
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount + 1
-		END
-		ELSE
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
-		END
-
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piFirstRecPos + @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	IF (len(@sExecString) > 0)
-	BEGIN
-		EXECUTE sp_executeSQL @sExecString;
-	END
-END
-GO
-
-
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntMakeBulkBookings]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntMakeBulkBookings] (
-	@piCourseRecordID		integer,
-	@psEmployeeRecordIDs	varchar(MAX),
-	@psStatus				varchar(MAX)
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iUserGroupID		integer,
-		@sUserGroupName			sysname,
-		@iEmpTableID			integer,
-		@iEmployeeID			integer,
-		@iCourseTableID			integer,
-		@iCourseTitleColumnID	integer,
-		@sCourseTitleColumnName	sysname,
-		@sCourseTitle			varchar(MAX),
-		@sCourseSource			sysname,
-		@iTBTableID				integer,
-		@sTBTableName			sysname,
-		@sTBRealSource			varchar(MAX),
-		@iTBStatusColumnID		integer,
-		@sTBStatusColumnName	sysname,
-		@iWLTableID				integer,
-		@sWLTableName			sysname,
-		@sWLRealSource			varchar(MAX),
-		@iWLCourseTitleColumnID	integer,
-		@sWLCourseTitleColumnName	sysname,
-		@iIndex					integer,
-		@iChildViewID			integer,
-		@sTempExecString		nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@sActualUserName		sysname;
-
-	/* Clean the input string parameters. */
-	IF len(@psEmployeeRecordIDs) > 0 SET @psEmployeeRecordIDs = replace(@psEmployeeRecordIDs, '''', '''''');
-	IF len(@psStatus) > 0 SET @psStatus = replace(@psStatus, '''', '''''');
-
-	/* Get the current user's group ID. */
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	/* Get the EMPLOYEE table information. */
-	SELECT @iEmpTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_EmployeeTable';
-	IF @iEmpTableID IS NULL SET @iEmpTableID = 0;
-
-	/* Get the COURSE table information. */
-	SELECT @iCourseTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTable';
-	IF @iCourseTableID IS NULL SET @iCourseTableID = 0;
-
-	SELECT @iCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTitle';
-	IF @iCourseTitleColumnID IS NULL SET @iCourseTitleColumnID = 0;
-
-	SELECT @sCourseTitleColumnName = columnName
-	FROM ASRSysColumns
-	WHERE columnID = @iCourseTitleColumnID;
-
-	/* Get the TRAINING BOOKING table information. */
-	SELECT @iTBTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_TrainBookTable';
-	IF @iTBTableID IS NULL SET @iTBTableID = 0;
-
-	SELECT @sTBTableName = tableName
-	FROM ASRSysTables
-	WHERE tableID = @iTBTableID;
-	
-	SELECT @iTBStatusColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_TrainBookStatus';
-	IF @iTBStatusColumnID IS NULL SET @iTBStatusColumnID = 0;
-
-	SELECT @sTBStatusColumnName = columnName
-	FROM ASRSysColumns
-	WHERE columnID = @iTBStatusColumnID;
-
-	/* Get the WAITING LIST table information. */
-	SELECT @iWLTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_WaitListTable';
-	IF @iWLTableID IS NULL SET @iWLTableID = 0;
-
-	SELECT @sWLTableName = tableName
-	FROM ASRSysTables
-	WHERE tableID = @iWLTableID;
-	
-	SELECT @iWLCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_WaitListCourseTitle';
-	IF @iWLCourseTitleColumnID IS NULL SET @iWLCourseTitleColumnID = 0;
-
-	SELECT @sWLCourseTitleColumnName = columnName
-	FROM ASRSysColumns
-	WHERE columnID = @iWLCourseTitleColumnID;
-
-	SELECT @iChildViewID = childViewID
-	FROM ASRSysChildViews2
-	WHERE tableID = @iWLTableID
-		AND [role] = @sUserGroupName;
-		
-	IF @iChildViewID IS null SET @iChildViewID = 0;
-		
-	IF @iChildViewID > 0 
-	BEGIN
-		SET @sWLRealSource = 'ASRSysCV' + 
-			convert(varchar(1000), @iChildViewID) +
-			'#' + replace(@sWLTableName, ' ', '_') +
-			'#' + replace(@sUserGroupName, ' ', '_');
-		SET @sWLRealSource = left(@sWLRealSource, 255);
-	END
-
-	SELECT @iChildViewID = childViewID
-	FROM ASRSysChildViews2
-	WHERE tableID = @iTBTableID
-		AND [role] = @sUserGroupName;
-		
-	IF @iChildViewID IS null SET @iChildViewID = 0;
-		
-	IF @iChildViewID > 0 
-	BEGIN
-		SET @sTBRealSource = 'ASRSysCV' + 
-			convert(varchar(1000), @iChildViewID) +
-			'#' + replace(@sTBTableName, ' ', '_') +
-			'#' + replace(@sUserGroupName, ' ', '_');
-		SET @sTBRealSource = left(@sTBRealSource, 255);
-	END
-
-	/* Get the @sCourseTitle value for the given course record. */
-	DECLARE courseSourceCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT sysobjects.name
-	FROM sysprotects
-	INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-	INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-	WHERE sysprotects.uid = @iUserGroupID
-		AND sysprotects.action = 193 
-		AND (sysprotects.protectType = 205 OR sysprotects.protectType = 204)
-		AND syscolumns.name = @sCourseTitleColumnName
-		AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-			ASRSysTables.tableID = @iCourseTableID 
-			UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iCourseTableID)
-		AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-		OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-	OPEN courseSourceCursor;
-	FETCH NEXT FROM courseSourceCursor INTO @sCourseSource;
-	WHILE (@@fetch_status = 0) AND (@sCourseTitle IS null)
-	BEGIN
-		SET @sTempExecString = 'SELECT @sCourseTitle = ' + @sCourseTitleColumnName + 
-			' FROM ' + @sCourseSource +
-			' WHERE id = ' + convert(nvarchar(100), @piCourseRecordID);
-		SET @sTempParamDefinition = N'@sCourseTitle varchar(MAX) OUTPUT';
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @sCourseTitle OUTPUT;
-
-		FETCH NEXT FROM courseSourceCursor INTO @sCourseSource;
-	END
-	CLOSE courseSourceCursor;
-	DEALLOCATE courseSourceCursor;
-
-	WHILE len(@psEmployeeRecordIDs) > 0
-	BEGIN
-		/* Rip out the individual empoyee record ID from the given comma-delimited string of employee IDs. */
-		SELECT @iIndex = charindex(',', @psEmployeeRecordIDs);
-		IF @iIndex > 0
-		BEGIN
-			SET  @iEmployeeID = substring(@psEmployeeRecordIDs, 1, @iIndex - 1);
-			SELECT @psEmployeeRecordIDs = substring(@psEmployeeRecordIDs, @iIndex + 1, len(@psEmployeeRecordIDs));
-		END
-		ELSE
-		BEGIN
-			SET  @iEmployeeID = @psEmployeeRecordIDs;
-			SET @psEmployeeRecordIDs = '';
-		END
-
-		/* Create the new booking record. */
-		SET @sTempExecString = 'INSERT INTO ' + @sTBRealSource + 
-			' (' + @sTBStatusColumnName +
-			', id_' + convert(nvarchar(100), @iEmpTableID) +
-			', id_' + convert(nvarchar(100), @iCourseTableID) +
-			') VALUES (''' + @psStatus + '''' +
-			', ' + convert(nvarchar(100), @iEmployeeID) +
-			', ' + convert(nvarchar(100), @piCourseRecordID) + ')';
-		EXEC sp_executesql @sTempExecString;
-
-		/* Remove any Waiting List records. */
-		SET @sTempExecString = 'DELETE FROM ' + @sWLRealSource + 
-			' WHERE id_' + convert(nvarchar(MAX), @iEmpTableID) + ' = ' + convert(nvarchar(100), @iEmployeeID) +
-			' AND ' + @sWLCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + '''';
-		EXEC sp_executesql @sTempExecString;
-	END
-END
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntNewUser]    Script Date: 23/07/2013 11:18:30 ******/
 SET ANSI_NULLS ON
@@ -12500,10 +6965,6 @@ GO
 DROP PROCEDURE [dbo].[spASRIntGetSingleRecordViewID]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetScreenStrings]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntGetScreenStrings]
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetRecordSelection]    Script Date: 23/07/2013 11:19:27 ******/
 DROP PROCEDURE [dbo].[spASRIntGetRecordSelection]
 GO
@@ -12530,19 +6991,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetLookupViews]    Script Date: 23/07/2013 11:19:27 ******/
 DROP PROCEDURE [dbo].[spASRIntGetLookupViews]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetLookupFindRecords2]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntGetLookupFindRecords2]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetLookupFindRecords]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntGetLookupFindRecords]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetLookupFindColumnInfo]    Script Date: 23/07/2013 11:19:27 ******/
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetLookupFindColumnInfo]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[spASRIntGetLookupFindColumnInfo]
 GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetLookupFilterValue]    Script Date: 23/07/2013 11:19:27 ******/
@@ -14781,1678 +9229,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetLookupFindRecords]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntGetLookupFindRecords] (
-	@piLookupColumnID 	integer,
-	@piRecordsRequired	integer,
-	@pfFirstPage		bit			OUTPUT,
-	@pfLastPage			bit			OUTPUT,
-	@psLocateValue		varchar(MAX),
-	@piColumnType		integer		OUTPUT,
-	@piColumnSize		integer		OUTPUT,
-	@piColumnDecimals	integer		OUTPUT,
-	@psAction			varchar(255),
-	@piTotalRecCount	integer		OUTPUT,
-	@piFirstRecPos		integer		OUTPUT,
-	@piCurrentRecCount	integer,
-	@psFilterValue		varchar(MAX),
-	@piCallingColumnID	integer,
-	@pfOverrideFilter	bit
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the lookup find records, given the table and column IDs.
-		@piTableID = the ID of the table on which the find is based.
-		@piLookupColumnID = the ID of the column on which the find is based.
-	NB. No permissions need to be read, as all users have read permission on lookup tables.
-	*/
-	DECLARE @sTableName		sysname,
-		@iTableID 			integer, 
-		@sColumnName 		sysname,
-		@sColumnName2 		sysname,
-		@iOrderID			integer,
-		@sSelectSQL			varchar(MAX),
-		@sOrderSQL 			varchar(MAX),
-		@sFilterValuesSQL	varchar(MAX),
-		@sExecString		nvarchar(MAX),
-		@iTemp				integer,
-		@sRemainingSQL		varchar(MAX),
-		@iLastCharIndex		integer,
-		@iCharIndex 		integer,
-		@sTempExecString	nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@sLocateCode		varchar(MAX),
-		@sReverseOrderSQL 	varchar(MAX),
-		@iCount				integer,
-		@iGetCount			integer,
-		@sColumnTemp		sysname,
-		@iLookupFilterColumnID	integer,
-		@iLookupFilterOperator	integer,
-		@iLookupFilterColumnDataType	integer;
-
-	/* Initialise variables. */
-	SET @sSelectSQL = ''
-	SET @sOrderSQL = ''
-	SET @sFilterValuesSQL = ''
-	SET @sExecString = ''
-	SET @sReverseOrderSQL = ''
-
-	/* Clean the input string parameters. */
-	IF len(@psFilterValue) > 0 SET @psFilterValue = replace(@psFilterValue, '''', '''''')
-	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''')
-	
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
-	SET @psAction = UPPER(@psAction)
-	IF (@psAction <> 'MOVEPREVIOUS') AND 
-		(@psAction <> 'MOVENEXT') AND 
-		(@psAction <> 'MOVELAST') AND 
-		(@psAction <> 'LOCATE')
-	BEGIN
-		SET @psAction = 'MOVEFIRST'
-	END
-
-	/* Get the column name. */
-	SELECT @sColumnName = ASRSysColumns.columnName,
-		@iTableID = ASRSysColumns.tableID,
-		@piColumnType = ASRSysColumns.dataType,
-		@piColumnSize = ASRSysColumns.size,
-		@piColumnDecimals = ASRSysColumns.decimals
-	FROM ASRSysColumns
-	WHERE ASRSysColumns.columnID = @piLookupColumnID
-
-	/* Get the table name and default order. */
-	SELECT @sTableName = ASRSysTables.tableName,
-		@iOrderID = ASRSysTables.defaultOrderID
-	FROM ASRSysTables
-	WHERE ASRSysTables.tableID = @iTableID
-
-	SET @sSelectSQL = @sTableName + '.' + @sColumnName
-	SET @sOrderSQL = @sTableName + '.' + @sColumnName
-
-	/* Filter the values if required */
-	SELECT @iLookupFilterColumnID  = ASRSysColumns.LookupFilterColumnID,
-		@iLookupFilterOperator = ASRSysColumns.LookupFilterOperator
-	FROM ASRSysColumns
-	WHERE ASRSysColumns.columnID = @piCallingColumnID
-
-	IF (@iLookupFilterColumnID > 0) and (@pfOverrideFilter = 0)
-	BEGIN
-		SELECT @sColumnTemp = ASRSysColumns.columnName,
-			@iLookupFilterColumnDataType = ASRSysColumns.dataType
-		FROM ASRSysColumns
-		WHERE ASRSysColumns.columnID = @iLookupFilterColumnID
-
-		IF @iLookupFilterColumnDataType = -7 /* Boolean */
-		BEGIN
-			SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = ' 
-				+ CASE
-					WHEN UPPER(@psFilterValue) = 'TRUE' THEN '1'
-					WHEN UPPER(@psFilterValue) = 'FALSE' THEN '0'
-					ELSE @psFilterValue
-				END
-				+ ') '
-		END
-		ELSE
-		BEGIN
-			IF (@iLookupFilterColumnDataType = 2) OR (@iLookupFilterColumnDataType = 4) /* Numeric, Integer */
-			BEGIN
-				IF @iLookupFilterOperator = 1 /* Equals */
-				BEGIN
-					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = ' + @psFilterValue + ') '
-					IF convert(float, @psFilterValue) = 0
-					BEGIN
-						SET @sFilterValuesSQL = @sFilterValuesSQL +
-							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-					END
-				END
-
-				IF @iLookupFilterOperator = 2 /* NOT Equal To */
-				BEGIN
-					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <> ' + @psFilterValue + ') '
-					IF convert(float, @psFilterValue) = 0
-					BEGIN
-						SET @sFilterValuesSQL = @sFilterValuesSQL +
-							' AND (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
-					END
-				END
-
-				IF @iLookupFilterOperator = 3 /* Is At Most */
-				BEGIN
-					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <= ' + @psFilterValue + ') '
-					IF convert(float, @psFilterValue) >= 0
-					BEGIN
-						SET @sFilterValuesSQL = @sFilterValuesSQL +
-							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-					END
-				END
-
-				IF @iLookupFilterOperator = 4 /* Is At Least */
-				BEGIN
-					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' >= ' + @psFilterValue + ') '
-					IF convert(float, @psFilterValue) <= 0
-					BEGIN
-						SET @sFilterValuesSQL = @sFilterValuesSQL +
-							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-					END
-				END
-
-				IF @iLookupFilterOperator = 5 /* Is More Than */
-				BEGIN
-					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' > ' + @psFilterValue + ') '
-					IF convert(float, @psFilterValue) < 0
-					BEGIN
-						SET @sFilterValuesSQL = @sFilterValuesSQL +
-							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-					END
-				END
-
-				IF @iLookupFilterOperator = 6 /* Is Less Than */
-				BEGIN
-					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' < ' + @psFilterValue + ') '
-					IF convert(float, @psFilterValue) > 0
-					BEGIN
-						SET @sFilterValuesSQL = @sFilterValuesSQL +
-							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-					END
-				END
-			END
-			ELSE
-			BEGIN
-				IF (@iLookupFilterColumnDataType = 11) /* Date */
-				BEGIN
-					IF @iLookupFilterOperator = 7 /* On */
-					BEGIN
-						IF len(@psFilterValue) = 10
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = ''' + @psFilterValue + ''') '
-						END
-						ELSE
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 8 /* NOT On */
-					BEGIN
-						IF len(@psFilterValue) = 10
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <> ''' + @psFilterValue + ''') ' +
-								' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-						END
-						ELSE
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 12 /* On OR Before*/
-					BEGIN
-						IF len(@psFilterValue) = 10
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <= ''' + @psFilterValue + ''') ' +
-								' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-						END
-						ELSE
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 11 /* On OR After*/
-					BEGIN
-						IF len(@psFilterValue) = 10
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' >= ''' + @psFilterValue + ''') ' 
-						END
-						ELSE
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null)' +
-								' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null)'
-						END
-					END
-
-					IF @iLookupFilterOperator = 9 /* After*/
-					BEGIN
-						IF len(@psFilterValue) = 10
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' > ''' + @psFilterValue + ''') ' 
-						END
-						ELSE
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null)'
-						END
-					END
-
-					IF @iLookupFilterOperator = 10 /* Before*/
-					BEGIN
-						IF len(@psFilterValue) = 10
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' < ''' + @psFilterValue + ''') ' +
-								' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-						END
-						ELSE
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null)' +
-								' AND (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null)'
-						END
-					END
-				END
-				ELSE
-				BEGIN
-					IF (@iLookupFilterColumnDataType = 12) OR (@iLookupFilterColumnDataType = -3) OR (@iLookupFilterColumnDataType = -1) /* varchar, working patter, photo*/
-					BEGIN
-						IF @iLookupFilterOperator = 14 /* Is */
-						BEGIN
-							IF len(@psFilterValue) = 0
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = '''') ' +
-									' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = ''' + @psFilterValue + ''') '
-							END
-						END
-
-						IF @iLookupFilterOperator = 16 /* Is NOT*/
-						BEGIN
-							IF len(@psFilterValue) = 0
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <> '''') ' +
-									' AND (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <> ''' + @psFilterValue + ''') '
-							END
-						END
-
-						IF @iLookupFilterOperator = 13 /* Contains*/
-						BEGIN
-							IF len(@psFilterValue) = 0
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null) ' +
-									' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' LIKE ''%' + @psFilterValue + '%'') '
-							END
-						END
-
-						IF @iLookupFilterOperator = 15 /* Does NOT Contain*/
-						BEGIN
-							IF len(@psFilterValue) = 0
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null) ' +
-									' AND (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' NOT LIKE ''%' + @psFilterValue + '%'') '
-							END
-						END
-					END
-				END
-			END
-		END
-	END
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.columnName
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-		AND ASRSysOrderItems.columnID <> @piLookupColumnID
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @sColumnName2
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @sSelectSQL = @sSelectSQL +  ','  + @sTableName + '.' + @sColumnName2
-
-		FETCH NEXT FROM orderCursor INTO @sColumnName2
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	/* Create the reverse order string if required. */
-	IF (@psAction <> 'MOVEFIRST') 
-	BEGIN
-		SET @sReverseOrderSQL = @sTableName + '.' + @sColumnName + ' DESC, ' + @sTableName + '.ID DESC'
-	END
-
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(*) ' +
-												 'FROM (SELECT DISTINCT ' + @sSelectSQL +
-															' FROM ' + @sTableName 
-	IF len(@sFilterValuesSQL) > 0 SET @sTempExecString = @sTempExecString + ' WHERE ' + @sFilterValuesSQL
-	SET @sTempExecString = @sTempExecString	+ ') ' + 'distinctTable'
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
-	SET @piTotalRecCount = @iCount
-
-	SET @sExecString = 'SELECT DISTINCT ' 
-
-	IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
-	BEGIN
-		SET @sExecString = @sExecString + 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
-	END
-	SET @sExecString = @sExecString + @sSelectSQL +
-		' FROM ' + @sTableName
-
-	IF (@psAction = 'MOVEFIRST') AND LEN(@sFilterValuesSQL) > 0
-	BEGIN
-		SET @sExecString = @sExecString + ' WHERE ' + @sFilterValuesSQL
-	END
-
-	IF (@psAction = 'MOVELAST') 
-	BEGIN
-		IF LEN(@sFilterValuesSQL) > 0 SET @sFilterValuesSQL = @sFilterValuesSQL + ' AND '
-
-		SET @sExecString = @sExecString + 
-			' WHERE '  + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sTableName + '.ID' +
-			' FROM ' + @sTableName
-	END
-	IF @psAction = 'MOVENEXT' 
-	BEGIN
-		IF LEN(@sFilterValuesSQL) > 0 SET @sFilterValuesSQL = @sFilterValuesSQL + ' AND '
-
-		IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-		BEGIN
-			SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
-		END
-		ELSE
-		BEGIN
-			SET @iGetCount = @piRecordsRequired
-		END
-		SET @sExecString = @sExecString + 
-			' WHERE ' + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sTableName + '.ID' +
-			' FROM ' + @sTableName
-
-		SET @sExecString = @sExecString + 
-			' WHERE ' + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired  - 1) + ' ' + @sTableName + '.ID' +
-			' FROM ' + @sTableName
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		IF LEN(@sFilterValuesSQL) > 0 SET @sFilterValuesSQL = @sFilterValuesSQL + ' AND '
-
-		IF @piFirstRecPos <= @piRecordsRequired
-		BEGIN
-			SET @iGetCount = @piFirstRecPos - 1
-		END
-		ELSE
-		BEGIN
-			SET @iGetCount = @piRecordsRequired
-		END
-		SET @sExecString = @sExecString + 
-			' WHERE ' + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sTableName + '.ID' +
-			' FROM ' + @sTableName
-
-		SET @sExecString = @sExecString + 
-			' WHERE ' + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sTableName + '.ID' +
-			' FROM ' + @sTableName
-	END
-
-	IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
-	BEGIN
-		SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL + ')'
-	END
-
-	IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
-	BEGIN
-		SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL + ')'
-	END
-
-	IF (@psAction = 'LOCATE')
-	BEGIN
-		IF LEN(@sFilterValuesSQL) > 0
-			SET @sLocateCode = ' WHERE ((' +@sFilterValuesSQL + ') AND ' +@sTableName + '.' + @sColumnName 
-		ELSE 
-			SET @sLocateCode = ' WHERE (' + @sTableName + '.' + @sColumnName
-
-		IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
-		BEGIN
-			SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-
-			IF len(@psLocateValue) = 0
-			BEGIN
-				SET @sLocateCode = @sLocateCode + ' OR ' + @sTableName + '.' + @sColumnName + ' IS NULL'
-			END
-		END
-
-		IF @piColumnType = 11 /* Date column */
-		BEGIN
-			IF len(@psLocateValue) = 0
-			BEGIN
-				SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sTableName + '.' + @sColumnName + ' IS NULL'
-			END
-			ELSE
-			BEGIN
-				SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-			END
-		END
-
-		IF @piColumnType = -7 /* Logic column */
-		BEGIN
-			SET @sLocateCode = @sLocateCode + ' >= ' + 
-				CASE
-					WHEN @psLocateValue = 'True' THEN '1'
-					ELSE '0'
-				END
-		END
-
-		IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
-		BEGIN
-			SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
-
-			IF convert(float, @psLocateValue) = 0
-			BEGIN
-				SET @sLocateCode = @sLocateCode + ' OR ' + @sTableName + '.' + @sColumnName + ' IS NULL'
-			END
-		END
-
-		SET @sLocateCode = @sLocateCode + ')'
-		SET @sExecString = @sExecString + @sLocateCode
-	END
-
-	/* Add the ORDER BY code to the find record selection string if required. */
-	SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL
-
-	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
-	IF @psAction = 'MOVEFIRST'
-	BEGIN
-		SET @piFirstRecPos = 1
-		SET @pfFirstPage = 1
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVENEXT'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
-		SET @pfFirstPage = 0
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
-		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVELAST'
-	BEGIN
-		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
-		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 1
-	END
-	IF @psAction = 'LOCATE'
-	BEGIN
-		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sTableName + '.id) FROM ' + @sTableName + @sLocateCode
-		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
-
-		IF @iTemp <=0 
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount + 1
-		END
-		ELSE
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
-		END
-
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	EXECUTE sp_executeSQL @sExecString;
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetLookupFindRecords2]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntGetLookupFindRecords2] (
-	@piTableID 			integer, 
-	@piViewID 			integer, 
-	@piOrderID 			integer,
-	@piLookupColumnID 	integer,
-	@piRecordsRequired	integer,
-	@pfFirstPage		bit		OUTPUT,
-	@pfLastPage			bit		OUTPUT,
-	@psLocateValue		varchar(MAX),
-	@piColumnType		integer		OUTPUT,
-	@piColumnSize		integer		OUTPUT,
-	@piColumnDecimals	integer		OUTPUT,
-	@psAction			varchar(MAX),
-	@piTotalRecCount	integer		OUTPUT,
-	@piFirstRecPos		integer		OUTPUT,
-	@piCurrentRecCount	integer,
-	@psFilterValue		varchar(MAX),
-	@piCallingColumnID	integer,
-	@piLookupColumnGridNumber	integer		OUTPUT,
-	@pfOverrideFilter	bit
-)
-AS
-BEGIN
-	/* Return a recordset of the link find records for the current user, given the table/view and order IDs.
-		@piTableID = the ID of the table on which the find is based.
-		@piViewID = the ID of the view on which the find is based.
-		@piOrderID = the ID of the order we are using.
-		@pfError = 1 if errors occured in getting the find records. Else 0.
-	*/
-	
-	SET NOCOUNT ON;
-	
-	DECLARE @iUserGroupID	integer,
-		@sUserGroupName		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@sRealSource 		sysname,
-		@iChildViewID 		integer,
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		sysname,
-		@sColumnTableName 	sysname,
-		@fAscending 		bit,
-		@sType	 			varchar(10),
-		@iDataType 			integer,
-		@fSelectGranted 	bit,
-		@sSelectSQL			varchar(MAX),
-		@sOrderSQL 			varchar(MAX),
-		@sExecString		nvarchar(MAX),
-		@fSelectDenied		bit,
-		@iTempCount 		integer,
-		@sSubString			varchar(MAX),
-		@sViewName 			varchar(255),
-		@sTableViewName 	sysname,
-		@iJoinTableID 		integer,
-		@iTemp				integer,
-		@sRemainingSQL		varchar(MAX),
-		@iLastCharIndex		integer,
-		@iCharIndex 		integer,
-		@sDESCstring		varchar(5),
-		@sTempExecString	nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@fFirstColumnAsc	bit,
-		@sFirstColCode		varchar(MAX),
-		@sLocateCode		varchar(MAX),
-		@sReverseOrderSQL 	varchar(MAX),
-		@iCount				integer,
-		@iGetCount			integer,
-		@iColSize			integer,
-		@iColDecs			integer,
-		@fLookupColumnDone	bit,
-		@sLookupColumnName	sysname,
-		@iLookupTableID		integer,
-		@iLookupColumnType	integer,
-		@iLookupColumnSize	integer,
-		@iLookupColumnDecimals integer,
-		@iCount2			integer,
-		@sFilterSQL			nvarchar(MAX),
-		@sColumnTemp		sysname,
-		@iLookupFilterColumnID	integer,
-		@iLookupFilterOperator	integer,
-		@iLookupFilterColumnDataType	integer,
-		@sActualUserName	sysname;
-
-	/* Initialise variables. */
-	SET @sRealSource = ''
-	SET @sSelectSQL = ''
-	SET @sOrderSQL = ''
-	SET @fSelectDenied = 0
-	SET @sExecString = ''
-	SET @sDESCstring = ' DESC'
-	SET @fFirstColumnAsc = 1
-	SET @sFirstColCode = ''
-	SET @sReverseOrderSQL = ''
-	SET @fLookupColumnDone = 0
-	SET @piLookupColumnGridNumber = 0
-	SET @sFilterSQL = ''
-
-	/* Clean the input string parameters. */
-	IF len(@psFilterValue) > 0 SET @psFilterValue = replace(@psFilterValue, '''', '''''')
-	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''')
-	
-	/* Get the current user's group ID. */
-	EXEC spASRIntGetActualUserDetails
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
-	SET @psAction = UPPER(@psAction)
-	IF (@psAction <> 'MOVEPREVIOUS') AND 
-		(@psAction <> 'MOVENEXT') AND 
-		(@psAction <> 'MOVELAST') AND 
-		(@psAction <> 'LOCATE')
-	BEGIN
-		SET @psAction = 'MOVEFIRST'
-	END
-
-	/* Get the column name. */
-	SELECT @sLookupColumnName = ASRSysColumns.columnName,
-		@iLookupTableID = ASRSysColumns.tableID,
-		@iLookupColumnType = ASRSysColumns.dataType,
-		@iLookupColumnSize = ASRSysColumns.size,
-		@iLookupColumnDecimals = ASRSysColumns.decimals
-	FROM ASRSysColumns
-	WHERE ASRSysColumns.columnID = @piLookupColumnID
-
-	/* Get the table type and name. */
-	SELECT @iTableType = ASRSysTables.tableType,
-		@sTableName = ASRSysTables.tableName
-	FROM ASRSysTables
-	WHERE ASRSysTables.tableID = @piTableID
-
-	/* Get the real source of the given table/view. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN	
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID
-		END
-		ELSE
-		BEGIN
-			SET @sRealSource = @sTableName
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @piTableID
-			AND role = @sUserGroupName
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_')
-			SET @sRealSource = left(@sRealSource, 255)
-		END
-	END
-
-	IF len(@sRealSource) = 0
-	BEGIN
-		RETURN
-	END
-
-	/* Create a temporary table to hold the tables/views that need to be joined. */
-	DECLARE @joinParents TABLE(
-		tableViewName	sysname,
-		tableID			integer);
-
-	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	/* Loop through the tables used in the order, getting the column permissions for each one. */
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-
-	OPEN tablesCursor
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableID = @piTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name = @sRealSource
-				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	END
-	CLOSE tablesCursor
-	DEALLOCATE tablesCursor
-
-	/* Create the lookup filter string. NB. We already know that the user has SELECT permission on this from the spASRIntGetLookupViews stored procedure.*/
-	SELECT @iLookupFilterColumnID = ASRSysColumns.LookupFilterColumnID,
-		@iLookupFilterOperator = ASRSysColumns.LookupFilterOperator
-	FROM ASRSysColumns
-	WHERE ASRSysColumns.columnID = @piCallingColumnID
-
-	IF (@iLookupFilterColumnID > 0) and (@pfOverrideFilter = 0)
-	BEGIN
-		SELECT @sColumnTemp = ASRSysColumns.columnName,
-			@iLookupFilterColumnDataType = ASRSysColumns.dataType
-		FROM ASRSysColumns
-		WHERE ASRSysColumns.columnID = @iLookupFilterColumnID
-
-		SELECT @iCount = COUNT(*)
-		FROM @columnPermissions
-		WHERE columnName = @sColumnTemp
-			AND selectGranted = 1
-
-		IF @iCount > 0
-		BEGIN
-			IF @iLookupFilterColumnDataType = -7 /* Boolean */
-			BEGIN
-				SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' = '
-					+ CASE
-						WHEN UPPER(@psFilterValue) = 'TRUE' THEN '1'
-						WHEN UPPER(@psFilterValue) = 'FALSE' THEN '0'
-						ELSE @psFilterValue
-					END
-					+ ') '
-			END
-			ELSE
-			BEGIN
-				IF (@iLookupFilterColumnDataType = 2) OR (@iLookupFilterColumnDataType = 4) /* Numeric, Integer */
-				BEGIN
-					IF @iLookupFilterOperator = 1 /* Equals */
-					BEGIN
-						SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' = ' + @psFilterValue + ') '
-						IF convert(float, @psFilterValue) = 0
-						BEGIN
-							SET @sFilterSQL = @sFilterSQL +
-								' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 2 /* NOT Equal To */
-					BEGIN
-						SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' <> ' + @psFilterValue + ') '
-						IF convert(float, @psFilterValue) = 0
-						BEGIN
-							SET @sFilterSQL = @sFilterSQL +
-								' AND (' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 3 /* Is At Most */
-					BEGIN
-						SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' <= ' + @psFilterValue + ') '
-						IF convert(float, @psFilterValue) >= 0
-						BEGIN
-							SET @sFilterSQL = @sFilterSQL +
-								' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 4 /* Is At Least */
-					BEGIN
-						SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' >= ' + @psFilterValue + ') '
-						IF convert(float, @psFilterValue) <= 0
-						BEGIN
-							SET @sFilterSQL = @sFilterSQL +
-								' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 5 /* Is More Than */
-					BEGIN
-						SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' > ' + @psFilterValue + ') '
-						IF convert(float, @psFilterValue) < 0
-						BEGIN
-							SET @sFilterSQL = @sFilterSQL +
-								' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 6 /* Is Less Than */
-					BEGIN
-						SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' < ' + @psFilterValue + ') '
-						IF convert(float, @psFilterValue) > 0
-						BEGIN
-							SET @sFilterSQL = @sFilterSQL +
-								' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-				END
-				ELSE
-				BEGIN
-					IF (@iLookupFilterColumnDataType = 11) /* Date */
-					BEGIN
-						IF @iLookupFilterOperator = 7 /* On */
-						BEGIN
-							IF len(@psFilterValue) = 10
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' = ''' + @psFilterValue + ''') '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-							END
-						END
-
-						IF @iLookupFilterOperator = 8 /* NOT On */
-						BEGIN
-							IF len(@psFilterValue) = 10
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' <> ''' + @psFilterValue + ''') ' +
-									' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null) '
-							END
-						END
-
-						IF @iLookupFilterOperator = 12 /* On OR Before*/
-						BEGIN
-							IF len(@psFilterValue) = 10
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' <= ''' + @psFilterValue + ''') ' +
-									' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-							END
-						END
-
-						IF @iLookupFilterOperator = 11 /* On OR After*/
-						BEGIN
-							IF len(@psFilterValue) = 10
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' >= ''' + @psFilterValue + ''') ' 
-							END
-							ELSE
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS null)' +
-									' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null)'
-							END
-						END
-
-						IF @iLookupFilterOperator = 9 /* After*/
-						BEGIN
-							IF len(@psFilterValue) = 10
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' > ''' + @psFilterValue + ''') ' 
-							END
-							ELSE
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null)'
-							END
-						END
-
-						IF @iLookupFilterOperator = 10 /* Before*/
-						BEGIN
-							IF len(@psFilterValue) = 10
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' < ''' + @psFilterValue + ''') ' +
-									' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS null)' +
-									' AND (' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null)'
-							END
-						END
-					END
-					ELSE
-					BEGIN
-						IF (@iLookupFilterColumnDataType = 12) OR (@iLookupFilterColumnDataType = -3) OR (@iLookupFilterColumnDataType = -1) /* varchar, working patter, photo*/
-						BEGIN
-							IF @iLookupFilterOperator = 14 /* Is */
-							BEGIN
-								IF len(@psFilterValue) = 0
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' = '''') ' +
-										' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-								END
-								ELSE
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' = ''' + @psFilterValue + ''') '
-								END
-							END
-
-							IF @iLookupFilterOperator = 16 /* Is NOT*/
-							BEGIN
-								IF len(@psFilterValue) = 0
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' <> '''') ' +
-										' AND (' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null) '
-								END
-								ELSE
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' <> ''' + @psFilterValue + ''') '
-								END
-							END
-
-							IF @iLookupFilterOperator = 13 /* Contains*/
-							BEGIN
-								IF len(@psFilterValue) = 0
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS null) ' +
-										' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null) '
-								END
-								ELSE
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' LIKE ''%' + @psFilterValue + '%'') '
-								END
-							END
-
-							IF @iLookupFilterOperator = 15 /* Does NOT Contain*/
-							BEGIN
-								IF len(@psFilterValue) = 0
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS null) ' +
-										' AND (' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null) '
-								END
-								ELSE
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' NOT LIKE ''%' + @psFilterValue + '%'') '
-								END
-							END
-						END
-					END
-				END
-			END
-		END
-	END
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		RETURN
-	END
-	SET @iCount2 = 0
-
-	WHILE (@@fetch_status = 0) OR (@fLookupColumnDone = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-
-		IF (@@fetch_status <> 0)
-		BEGIN
-			SET @iColumnTableId = @iLookupTableID
-			SET @iColumnId = @piLookupColumnID
-			SET @sColumnName = @sLookupColumnName
-			SET @sColumnTableName = @sTableName
-			SET @fAscending = 1
-			SET @sType = 'F'
-			SET @iDataType = @iLookupColumnType
-			SET @iColSize = @iLookupColumnSize
-			SET @iColDecs = @iLookupColumnDecimals
-		END
-
-		IF (@iColumnId  = @piLookupColumnID ) AND (@sType = 'F')
-		BEGIN
-			SET @fLookupColumnDone = 1
-			SET @piLookupColumnGridNumber = @iCount2
-		END
-
-		IF @iColumnTableId = @piTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-
-			IF @fSelectGranted = 1
-			BEGIN
-				/* The user DOES have SELECT permission on the column in the current table/view. */
-				IF @sType = 'F'
-				BEGIN
-
-					/* Find column. */
-					SET @sSelectSQL = @sSelectSQL + 
-						CASE 
-							WHEN len(@sSelectSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName
-					SET @iCount2 = @iCount2 + 1
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sRealSource + '.' + @sColumnName
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName +
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-			END
-			ELSE
-			BEGIN
-				/* The user does NOT have SELECT permission on the column in the current table/view. */
-				SET @fSelectDenied = 1
-			END	
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				/* The user DOES have SELECT permission on the column in the parent table. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sSelectSQL = @sSelectSQL + 
-						CASE 
-							WHEN len(@sSelectSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName
-					SET @iCount2 = @iCount2 + 1
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName + 
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-
-				FROM @joinParents
-				WHERE tableViewName = @sColumnTableName
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
-				END
-			END
-			ELSE	
-			BEGIN
-				SET @sSubString = ''
-
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND selectGranted = 1
-
-				OPEN viewCursor
-				FETCH NEXT FROM viewCursor INTO @sViewName
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					IF len(@sSubString) = 0 SET @sSubString = 'CASE'
-
-					SET @sSubString = @sSubString +
-						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName 
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-					WHERE tableViewname = @sViewName
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName
-				END
-				CLOSE viewCursor
-				DEALLOCATE viewCursor
-
-				IF len(@sSubString) > 0
-				BEGIN
-					SET @sSubString = @sSubString +
-						' ELSE NULL END'
-
-					IF @sType = 'F'
-					BEGIN
-						/* Find column. */
-						SET @sSubString = @sSubString +
-							' AS [' + @sColumnName + ']'
-
-						SET @sSelectSQL = @sSelectSQL + 
-							CASE 
-								WHEN len(@sSelectSQL) > 0 THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END
-						SET @iCount2 = @iCount2 + 1
-					END
-					ELSE
-					BEGIN
-						/* Order column. */
-						IF len(@sOrderSQL) = 0 
-						BEGIN
-							SET @piColumnType = @iDataType
-							SET @piColumnSize = @iColSize
-							SET @piColumnDecimals = @iColDecs
-							SET @fFirstColumnAsc = @fAscending
-							SET @sFirstColCode = @sSubString
-						END
-
-						SET @sOrderSQL = @sOrderSQL + 
-							CASE 
-								WHEN len(@sOrderSQL) > 0 THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END + 
-							CASE 
-								WHEN @fAscending = 0 THEN ' DESC' 
-								ELSE '' 
-							END				
-					END
-				END
-				ELSE
-				BEGIN
-					/* The user does NOT have SELECT permission on the column any of the parent views. */
-					SET @fSelectDenied = 1
-				END	
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	/* Add the ID column to the order string. */
-	SET @sOrderSQL = @sOrderSQL + 
-		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
-		@sRealSource + '.ID'
-
-	/* Create the reverse order string if required. */
-	IF (@psAction <> 'MOVEFIRST') 
-	BEGIN
-		SET @sRemainingSQL = @sOrderSQL
-
-		SET @iLastCharIndex = 0
-		SET @iCharIndex = CHARINDEX(',', @sOrderSQL)
-		WHILE @iCharIndex > 0 
-		BEGIN
- 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', '
-			END
-			ELSE
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', '
-			END
-
-			SET @iLastCharIndex = @iCharIndex
-			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1)
-	
-			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex)
-		END
-		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring
-
-	END
-
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource
-
-	IF len(@sFilterSQL) > 0 SET @sTempExecString = @sTempExecString + ' WHERE ' + @sFilterSQL
-
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
-	SET @piTotalRecCount = @iCount
-
-	IF len(@sSelectSQL) > 0 
-	BEGIN
-		SET @sSelectSQL = @sSelectSQL + ',' + @sRealSource + '.ID'
-		SET @sExecString = 'SELECT ' 
-
-		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
-		BEGIN
-			SET @sExecString = @sExecString + 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
-		END
-		SET @sExecString = @sExecString + @sSelectSQL + 
-			' FROM ' + @sRealSource
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sExecString = @sExecString + 
-				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		IF (@psAction = 'MOVELAST')
-		BEGIN
-			SET @sExecString = @sExecString + 
-				' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-		END
-
-		IF @psAction = 'MOVENEXT' 
-		BEGIN
-			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-			BEGIN
-				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired
-			END
-			SET @sExecString = @sExecString + 
-				' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-
-			SET @sExecString = @sExecString + 
-				' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired  - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-		END
-		IF @psAction = 'MOVEPREVIOUS'
-		BEGIN
-			IF @piFirstRecPos <= @piRecordsRequired
-			BEGIN
-				SET @iGetCount = @piFirstRecPos - 1
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired
-			END
-			SET @sExecString = @sExecString + 
-				' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-
-			SET @sExecString = @sExecString + 
-				' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-		END
-
-		IF len(@sFilterSQL) > 0 SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL
-
-		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL + ')'
-		END
-
-		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL + ')'
-		END
-
-		IF (@psAction = 'LOCATE')
-		BEGIN
-			IF len(@sFilterSQL) > 0 
-			BEGIN
-				SET @sLocateCode = ' AND (' + @sFirstColCode 
-			END
-			ELSE
-			BEGIN
-				SET @sLocateCode = ' WHERE (' + @sFirstColCode 
-			END
-
-			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
-						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL'
-				END
-
-			END
-
-			IF @piColumnType = 11 /* Date column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-
-						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-					END
-				END
-				ELSE
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-			END
-
-			IF @piColumnType = -7 /* Logic column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-			END
-
-			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
-
-					IF convert(float, @psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL'
-				END
-
-			END
-
-			SET @sLocateCode = @sLocateCode + ')'
-			SET @sExecString = @sExecString + @sLocateCode
-		END
-
-		/* Add the ORDER BY code to the find record selection string if required. */
-		SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL
-	END
-
-	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
-	IF @psAction = 'MOVEFIRST'
-	BEGIN
-		SET @piFirstRecPos = 1
-		SET @pfFirstPage = 1
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVENEXT'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
-		SET @pfFirstPage = 0
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
-		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVELAST'
-	BEGIN
-		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
-		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 1
-	END
-
-	IF @psAction = 'LOCATE'
-	BEGIN
-		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempExecString = @sTempExecString + 
-				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		IF len(@sFilterSQL) > 0 SET @sTempExecString = @sTempExecString + ' WHERE ' + @sFilterSQL
-
-		SET @sTempExecString = @sTempExecString + @sLocateCode
-
-		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
-
-		IF @iTemp <=0 
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount + 1
-		END
-		ELSE
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
-		END
-
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	IF (len(@sExecString) > 0)
-	BEGIN
-		EXEC sp_executeSQL @sExecString;
-	END
-END
-GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetLookupViews]    Script Date: 23/07/2013 11:19:27 ******/
 SET ANSI_NULLS ON
@@ -17645,663 +10421,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetScreenStrings]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntGetScreenStrings] (
-	@piScreenID 	integer,
-	@piViewID 		integer,
-	@psSelectSQL	nvarchar(MAX)	OUTPUT,
-	@psFromDef		varchar(MAX)	OUTPUT,
-	@psOrderSQL		varchar(MAX)	OUTPUT,
-	@piOrderID		integer			OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of strings describing of the controls in the given screen. */
-	DECLARE @iUserGroupID	integer,
-		@iScreenTableID		integer,
-		@iScreenTableType	integer,
-		@sScreenTableName	varchar(255),
-		@iScreenOrderID 	integer,
-		@sRealSource 		varchar(255),
-		@iChildViewID 		integer,
-		@sJoinCode 			varchar(MAX),
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		varchar(255),
-		@sColumnTableName 	varchar(255),
-		@iColumnDataType	integer,
-		@fSelectGranted 	bit,
-		@fUpdateGranted 	bit,
-		@sSelectString 		varchar(MAX),
-		@iTempCount 		integer,
-		@sViewName 			varchar(255),
-		@fAscending 		bit,
-		@sOrderString 		varchar(MAX),
-		@sTableViewName 	varchar(255),
-		@iJoinTableID 		integer,
-		@sParentRealSource	varchar(255),
-		@iParentChildViewID	integer,
-		@iParentTableType	integer,
-		@sParentTableName	sysname,
-		@iColumnType		integer,
-		@iLinkTableID		integer,
-		@lngPermissionCount	integer,
-		@iLinkChildViewID	integer,
-		@sLinkRealSource	varchar(255),
-		@sLinkTableName		varchar(255),
-		@iLinkTableType		integer,
-		@sNewBit			varchar(MAX),
-		@iID				integer,
-		@iCount				integer,
-		@iUserType			integer,
-		@sRoleName			sysname,
-		@sActualUserName	sysname;
-		
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sRoleName OUTPUT,
-		@iUserGroupID OUTPUT;
-		
-	/* Get the table type and name. */
-	SELECT @iScreenTableID = ASRSysScreens.tableID,
-		@iScreenTableType = ASRSysTables.tableType,
-		@sScreenTableName = ASRSysTables.tableName,
-		@iScreenOrderID = 
-				CASE 
-					WHEN ASRSysScreens.orderID > 0 THEN ASRSysScreens.orderID
-					ELSE ASRSysTables.defaultOrderID 
-				END
-	FROM ASRSysScreens
-	INNER JOIN ASRSysTables ON ASRSysScreens.tableID = ASRSysTables.tableID
-	WHERE ASRSysScreens.screenID = @piScreenID;
-	
-	IF @iScreenOrderID IS NULL SET @iScreenOrderID = 0;
-	
-	IF @piOrderID <= 0 SET @piOrderID = @iScreenOrderID;
-	
-	/* Get the real source of the given screen's table/view. */
-	IF @iScreenTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID;
-		END
-		ELSE
-		BEGIN
-			/* RealSource is the table. */	
-			SET @sRealSource = @sScreenTableName;
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @iScreenTableID
-			AND role = @sRoleName;
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0;
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sScreenTableName, ' ', '_') +
-				'#' + replace(@sRoleName, ' ', '_');
-			SET @sRealSource = left(@sRealSource, 255);
-		END
-	END
-
-	/* Initialise the select and order parameters. */
-	SET @psSelectSQL = '';
-	SET @psFromDef = '';
-	SET @psOrderSQL = '';
-	SET @sJoinCode = '';
-	
-	-- Create a temporary table to hold the tables/views that need to be joined.
-	DECLARE @JoinParents TABLE(tableViewName sysname, tableID int);
-	
-	-- Create a temporary table of the column permissions for all tables/views used in the screen.
-	DECLARE @columnPermissions TABLE(tableID integer,
-					tableViewName	sysname,
-					columnName		sysname,
-					action			int,		
-					granted			bit);
-
-	-- Temporary view of the sysprotects
-	DECLARE @SysProtects TABLE ([ID] int,
-					action tinyint,
-					protecttype tinyint,
-					columns varbinary(8000));
-	INSERT INTO @SysProtects
-	SELECT DISTINCT p.[ID], p.[Action], p.[ProtectType], p.[Columns]
-		FROM sys.sysprotects p
-		WHERE (p.[Action] = 193 OR p.[Action] = 197)
-			AND [uid] = @iUserGroupID;
-
-	-- Loop through the tables used in the screen, getting the column permissions for each one.
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysControls.tableID
-	FROM ASRSysControls
-	WHERE screenID = @piScreenID
-		AND ASRSysControls.columnID > 0
-	UNION
-	SELECT DISTINCT ASRSysColumns.tableID 
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	WHERE ASRSysOrderItems.type = 'O' 
-		AND ASRSysOrderItems.orderID = @piOrderID;
-	
-	OPEN tablesCursor;
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-
-		IF @iTempTableID = @iScreenTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				p.action,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM @SysProtects p
-			INNER JOIN syscolumns ON p.id = syscolumns.id
-			WHERE syscolumns.name <> 'timestamp'
-				AND OBJECT_NAME(p.ID) = @sRealSource
-				AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			SELECT @iParentTableType = tableType,
-				@sParentTableName = tableName
-			FROM ASRSysTables
-			WHERE tableID = @iTempTableID;
-			
-			IF @iParentTableType <> 2 /* ie. top-level or lookup */
-			BEGIN
-
-				INSERT INTO @columnPermissions
-				SELECT 
-					@iTempTableID,
-					OBJECT_NAME(p.ID),
-					syscolumns.name,
-					p.action,
-					CASE protectType
-					   	WHEN 205 THEN 1
-						WHEN 204 THEN 1
-						ELSE 0
-					END 
-				FROM @SysProtects p
-				INNER JOIN syscolumns ON p.id = syscolumns.id
-				WHERE syscolumns.name <> 'timestamp'
-					AND OBJECT_NAME(p.id) IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE ASRSysTables.tableID = @iTempTableID 
-						UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-					AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-					AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-					OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-					AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-			END
-			ELSE
-			BEGIN
-
-				/* Get permitted child view on the parent table. */
-				SELECT @iParentChildViewID = childViewID
-				FROM ASRSysChildViews2
-				WHERE tableID = @iTempTableID
-					AND role = @sRoleName;
-					
-				IF @iParentChildViewID IS null SET @iParentChildViewID = 0;
-					
-				IF @iParentChildViewID > 0 
-				BEGIN
-					SET @sParentRealSource = 'ASRSysCV' + 
-						convert(varchar(1000), @iParentChildViewID) +
-						'#' + replace(@sParentTableName, ' ', '_') +
-						'#' + replace(@sRoleName, ' ', '_');
-					SET @sParentRealSource = left(@sParentRealSource, 255);
-					INSERT INTO @columnPermissions
-					SELECT 
-						@iTempTableID,
-						@sParentRealSource,
-						syscolumns.name,
-						p.action,
-						CASE protectType
-							WHEN 205 THEN 1
-							WHEN 204 THEN 1
-							ELSE 0
-						END 
-					FROM @sysprotects p
-					INNER JOIN syscolumns ON p.id = syscolumns.id
-					WHERE syscolumns.name <> 'timestamp'
-						AND OBJECT_NAME(p.ID) = @sParentRealSource
-						AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-
-				END
-			END
-		END
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID;
-	END
-	
-	CLOSE tablesCursor;
-	DEALLOCATE tablesCursor;
-
-	SET @iUserType = 1;
-	
-	SELECT @iID = ASRSysPermissionItems.itemID
-		FROM ASRSysPermissionItems
-		INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-		WHERE ASRSysPermissionItems.itemKey = 'INTRANET'
-			AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS';
-			
-	IF @iID IS NULL SET @iID = 0;
-	IF @iID > 0
-	BEGIN
-		/* The permission does exist in the current version so check if the user is granted this permission. */
-		SELECT @iCount = count(*)
-		FROM ASRSysGroupPermissions 
-		WHERE ASRSysGroupPermissions.itemID = @iID
-			AND ASRSysGroupPermissions.groupName = @sRoleName
-			AND ASRSysGroupPermissions.permitted = 1;
-			
-		IF @iCount > 0 SET @iUserType = 0;
-
-	END
-	/* Create a temporary table of the column info for all columns used in the screen controls. */
-	/* Populate the temporary table with info for all columns used in the screen controls. */
-	/* Create the select string for getting the column values. */
-	DECLARE columnsCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysControls.tableID, 
-		ASRSysControls.columnID, 
-		ASRSysColumns.columnName, 
-		ASRSysTables.tableName,
-		ASRSysColumns.dataType,
-		ASRSysColumns.columnType,
-		ASRSysColumns.linkTableID
-	FROM ASRSysControls
-		LEFT OUTER JOIN ASRSysTables ON ASRSysControls.tableID = ASRSysTables.tableID 
-		LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID AND ASRSysColumns.columnID = ASRSysControls.columnID
-	WHERE screenID = @piScreenID
-		AND ASRSysControls.columnID > 0;
-	
-	OPEN columnsCursor;
-	FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType, @iColumnType, @iLinkTableID;	
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0;
-		SET @fUpdateGranted = 0;
-		IF @iColumnTableID = @iScreenTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = granted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-				AND action = 193;
-				
-			/* Get the update permission on the column. */
-			SELECT @fUpdateGranted = granted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-				AND action = 197;
-
-			/* If the column is a link column, ensure that the link table can be seen. */
-			IF (@fUpdateGranted = 1) AND (@iColumnType = 4)
-			BEGIN
-				SELECT @sLinkTableName = tableName,
-					@iLinkTableType = tableType
-				FROM ASRSysTables
-				WHERE tableID = @iLinkTableID;
-				
-				IF @iLinkTableType = 1
-				BEGIN
-					/* Top-level table. */
-					SELECT @lngPermissionCount = COUNT(*)
-					FROM @sysprotects p
-					INNER JOIN syscolumns ON p.id = syscolumns.id
-					WHERE p.action = 193
-						AND p.protectType <> 206
-						AND syscolumns.name <> 'timestamp'
-						AND syscolumns.name <> 'ID'
-						AND OBJECT_NAME(p.ID) = @sLinkTableName
-						AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-						
-					IF @lngPermissionCount = 0 
-					BEGIN
-						/* No permission on the table itself check the views. */
-						SELECT @lngPermissionCount = COUNT(*)
-						FROM ASRSysViews
-						INNER JOIN sysobjects ON ASRSysViews.viewName = sysobjects.name
-						INNER JOIN @sysprotects p ON sysobjects.id = p.id  
-						WHERE ASRSysViews.viewTableID = @iLinkTableID
-							AND p.action = 193
-							AND p.protecttype <> 206;
-						IF @lngPermissionCount = 0 SET @fUpdateGranted = 0;
-					END
-				END
-				ELSE
-				BEGIN
-					/* Child/history table. */
-					SELECT @iLinkChildViewID = childViewID
-					FROM ASRSysChildViews2
-					WHERE tableID = @iLinkTableID
-						AND role = @sRoleName;
-						
-					IF @iLinkChildViewID IS null SET @iLinkChildViewID = 0;
-						
-					IF @iLinkChildViewID > 0 
-					BEGIN
-						SET @sLinkRealSource = 'ASRSysCV' + 
-							convert(varchar(1000), @iLinkChildViewID) +
-							'#' + replace(@sLinkTableName, ' ', '_') +
-							'#' + replace(@sRoleName, ' ', '_');
-						SET @sLinkRealSource = left(@sLinkRealSource, 255);
-					END
-					SELECT @lngPermissionCount = COUNT(p.ID)
-					FROM @sysprotects p 
-					WHERE p.protectType <> 206
-						AND p.action = 193
-						AND OBJECT_NAME(p.ID) = @sLinkRealSource;
-		
-					IF @lngPermissionCount = 0 SET @fUpdateGranted = 0;
-				END
-			END
-
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Get the select string for the column. */
-				IF LEN(@psSelectSQL) > 0 
-					SET @psSelectSQL = @psSelectSQL + ',';
-			
-				IF @iColumnDataType = 11 /* Date */
-				BEGIN
-					 /* Date */
-					SET @sNewBit = 'convert(varchar(10), ' + @sRealSource + '.' + @sColumnName + ', 101) AS [' + convert(varchar(100), @iColumnID) + ']';
-					SET @psSelectSQL = @psSelectSQL + @sNewBit;
-				END
-				ELSE
-				BEGIN
-					 /* Non-date */
-					SET @sNewBit = @sRealSource + '.' + @sColumnName + ' AS [' + convert(varchar(100), @iColumnID) + ']';
-					SET @psSelectSQL = @psSelectSQL + @sNewBit;
-				END
-			END
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = granted
-			FROM @columnPermissions
-			WHERE tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-				AND action = 193;
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-
-				/* Column COULD be read directly from the parent table. */
-				IF len(@psSelectSQL) > 0 
-					SET @psSelectSQL = @psSelectSQL + ',';
-
-				IF @iColumnDataType = 11 /* Date */
-				BEGIN
-					 /* Date */
-					SET @sNewBit = 'convert(varchar(10), ' + @sColumnTableName + '.' + @sColumnName + ', 101) AS [' + convert(varchar(100), @iColumnID) + ']';
-					SET @psSelectSQL = @psSelectSQL + @sNewBit;
-				END
-				ELSE
-				BEGIN
-					 /* Non-date */
-					SET @sNewBit = @sColumnTableName + '.' + @sColumnName + ' AS [' + convert(varchar(100), @iColumnID) + ']';
-					SET @psSelectSQL = @psSelectSQL + @sNewBit;
-				END
-				
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @JoinParents
-					WHERE tableViewName = @sColumnTableName;
-					
-				IF @iTempCount = 0
-					INSERT INTO @JoinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID);
-					
-			END
-			ELSE	
-			BEGIN
-				/* Column could NOT be read directly from the parent table, so try the views. */
-				SET @sSelectString = '';
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-					SELECT tableViewName
-					FROM @columnPermissions
-					WHERE tableID = @iColumnTableID
-						AND tableViewName <> @sColumnTableName
-						AND columnName = @sColumnName
-						AND action = 193
-						AND granted = 1;
-						
-				OPEN viewCursor;
-				FETCH NEXT FROM viewCursor INTO @sViewName;
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					SET @fSelectGranted = 1;
-					IF len(@sSelectString) = 0 SET @sSelectString = 'CASE';
-	
-					IF @iColumnDataType = 11 /* Date */
-					BEGIN
-						 /* Date */
-						SET @sSelectString = @sSelectString +
-							' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN convert(varchar(10), ' + @sViewName + '.' + @sColumnName + ', 101)';
-					END
-					ELSE
-					BEGIN
-						 /* Non-date */
-						SET @sSelectString = @sSelectString +
-							' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName;
-					END
-
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-						WHERE tableViewName = @sViewName;
-						
-					IF @iTempCount = 0
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableID);
-
-					FETCH NEXT FROM viewCursor INTO @sViewName;
-				END
-
-				CLOSE viewCursor;
-				DEALLOCATE viewCursor;
-				
-				IF len(@sSelectString) > 0
-				BEGIN
-					SET @sSelectString = @sSelectString +
-						' ELSE NULL END AS [' + convert(varchar(100), @iColumnID) + ']';
-					IF len(@psSelectSQL) > 0 SET @psSelectSQL = @psSelectSQL + ',';
-					SET @psSelectSQL = @psSelectSQL + @sSelectString;
-				END
-			END
-		END
-		FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType, @iColumnType, @iLinkTableID;
-	END
-
-	CLOSE columnsCursor;
-	DEALLOCATE columnsCursor;
-	
-	/* Create the order string. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT ASRSysColumns.tableID,
-			ASRSysOrderItems.columnID, 
-			ASRSysColumns.columnName,
-	    		ASRSysTables.tableName,
-			ASRSysOrderItems.ascending
-		FROM ASRSysOrderItems
-		INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-		INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-		WHERE ASRSysOrderItems.orderID = @piOrderID
-			AND ASRSysOrderItems.type = 'O'
-		ORDER BY ASRSysOrderItems.sequence;
-		
-	OPEN orderCursor;
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0;
-		IF @iColumnTableId = @iScreenTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = granted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-				AND action = 193;
-			IF @fSelectGranted = 1
-			BEGIN
-				/* Get the order string for the column. */
-				IF len(@psOrderSQL) > 0 SET @psOrderSQL = @psOrderSQL + ', ';
-				SET @psOrderSQL = @psOrderSQL + @sRealSource + '.' + @sColumnName + CASE WHEN @fAscending = 0 THEN ' DESC' ELSE '' END;
-			END
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = granted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-				AND action = 193;
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				/* Get the order string for the column. */
-				IF len(@psOrderSQL) > 0 
-					SET @psOrderSQL = @psOrderSQL + ', ';
-				SET @psOrderSQL = @psOrderSQL + @sColumnTableName + '.' + @sColumnName + CASE WHEN @fAscending = 0 THEN ' DESC' ELSE '' END;
-				
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @joinParents
-					WHERE tableViewName = @sColumnTableName;
-					
-				IF @iTempCount = 0
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID);
-					
-			END
-			ELSE	
-			BEGIN
-				/* Column could NOT be read directly from the parent table, so try the views. */
-				SET @sOrderString = ''
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND action = 193
-					AND granted = 1;
-					
-				OPEN viewCursor;
-				FETCH NEXT FROM viewCursor INTO @sViewName;
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					IF len(@sOrderString) = 0 SET @sOrderString = 'CASE';
-					SET @sOrderString = @sOrderString +
-						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName;
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-						WHERE tableViewname = @sViewName;
-						
-					IF @iTempCount = 0
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId);
-						
-					FETCH NEXT FROM viewCursor INTO @sViewName;
-				END
-
-				CLOSE viewCursor;
-				DEALLOCATE viewCursor;
-				
-				IF len(@sOrderString) > 0
-				BEGIN
-					SET @sOrderString = @sOrderString +	' ELSE NULL END';
-					IF len(@psOrderSQL) > 0 
-						SET @psOrderSQL = @psOrderSQL + ', ';
-
-					SET @psOrderSQL = @psOrderSQL + @sOrderString + CASE WHEN @fAscending = 0 THEN ' DESC' ELSE '' END;
-				END
-			END
-		END
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending;
-	END
-	
-	CLOSE orderCursor;
-	DEALLOCATE orderCursor;
-
-	
-	-- Add the ID column to the order string.
-	IF LEN(@psOrderSQL) > 0 SET @psOrderSQL = @psOrderSQL + ', ';
-	SET @psOrderSQL = @psOrderSQL + @sRealSource + '.ID';
-
-	-- Add columns from the screen.
-	SELECT @psSelectSQL = @psSelectSQL 
-		+ CASE LEN(@psSelectSQL) WHEN 0 THEN '' ELSE ', ' END
-		+ @sRealSource + '.' + [columnName]	+ ' AS [' + convert(varchar(10), [ColumnID]) + ']'
-	FROM ASRSysColumns
-	WHERE tableID = @iScreenTableID
-		AND columnType = 3;
-
-	-- Add timestamp to the select statement.
-	SET @psSelectSQL = @psSelectSQL + ', CONVERT(integer, ' + @sRealSource + '.TimeStamp) AS timestamp ';
-
-	-- Create the FROM code.
-	SET @psFromDef = @sRealSource + '	';
-	SELECT @psFromDef = @psFromDef + tableViewName + '	'
-		+ convert(varchar(10), tableID) + '	'
-	FROM @joinParents;
-
-END
-GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetSingleRecordViewID]    Script Date: 23/07/2013 11:19:27 ******/
 SET ANSI_NULLS ON
@@ -19070,10 +11189,6 @@ GO
 DROP PROCEDURE [dbo].[spASRIntGetSingleRecordViewID]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetScreenStrings]    Script Date: 13/09/2013 08:57:58 ******/
-DROP PROCEDURE [dbo].[spASRIntGetScreenStrings]
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetRecordSelection]    Script Date: 13/09/2013 08:57:58 ******/
 DROP PROCEDURE [dbo].[spASRIntGetRecordSelection]
 GO
@@ -19115,14 +11230,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetLookupTables]    Script Date: 13/09/2013 08:57:58 ******/
 DROP PROCEDURE [dbo].[spASRIntGetLookupTables]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetLookupFindRecords2]    Script Date: 13/09/2013 08:57:58 ******/
-DROP PROCEDURE [dbo].[spASRIntGetLookupFindRecords2]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetLookupFindRecords]    Script Date: 13/09/2013 08:57:58 ******/
-DROP PROCEDURE [dbo].[spASRIntGetLookupFindRecords]
 GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetLookupFilterValue]    Script Date: 13/09/2013 08:57:58 ******/
@@ -21778,1768 +13885,8 @@ BEGIN
 		END
 	END
 END
-
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetLookupFindColumnInfo]    Script Date: 29/01/2015 15:49:21 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[spASRIntGetLookupFindColumnInfo] (
-	@piLookupColumnID 		integer,
-	@ps1000SeparatorCols	varchar(MAX)	OUTPUT,
-	@psBlanIfZeroCols		varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE 
-		@iTableID			integer,
-		@bUse1000Separator	bit,
-		@bBlankIfZero		bit,
-		@iOrderID			integer;
-		
-	/* Get the column name. */
-	SELECT @iTableID = tableID,
-		@bUse1000Separator = Use1000Separator,
-		@bBlankIfZero = BlankIfZero
-	FROM [dbo].[ASRSysColumns]
-	WHERE columnID = @piLookupColumnID;
-
-	SET @ps1000SeparatorCols = 
-		CASE
-			WHEN @bUse1000Separator = 1 THEN '1'
-			ELSE '0'
-		END;
-
-	SET @psBlanIfZeroCols =
-		CASE
-			WHEN @bBlankIfZero = 1 THEN '1'
-			ELSE '0'
-		END;
-
-	/* Get the table name and default order. */
-	SELECT @iOrderID = defaultOrderID
-	FROM [dbo].[ASRSysTables]
-	WHERE tableID = @iTableID;
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.Use1000Separator, ASRSysColumns.BlankIfZero
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-		AND ASRSysOrderItems.columnID <> @piLookupColumnID
-	ORDER BY ASRSysOrderItems.sequence;
-
-	OPEN orderCursor;
-	FETCH NEXT FROM orderCursor INTO @bUse1000Separator, @bBlankIfZero;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
-			CASE
-				WHEN @bUse1000Separator = 1 THEN '1'
-				ELSE '0'
-			END;
-
-		SET @psBlanIfZeroCols = @psBlanIfZeroCols +
-			CASE
-				WHEN @bBlankIfZero = 1 THEN '1'
-				ELSE '0'
-			END;
-
-		FETCH NEXT FROM orderCursor INTO @bUse1000Separator, @bBlankIfZero;
-	END
-	CLOSE orderCursor;
-	DEALLOCATE orderCursor;
-
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetLookupFindRecords]    Script Date: 13/09/2013 08:57:59 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[spASRIntGetLookupFindRecords] (
-	@piLookupColumnID 	integer,
-	@piRecordsRequired	integer,
-	@pfFirstPage		bit			OUTPUT,
-	@pfLastPage			bit			OUTPUT,
-	@psLocateValue		varchar(MAX),
-	@piColumnType		integer		OUTPUT,
-	@piColumnSize		integer		OUTPUT,
-	@piColumnDecimals	integer		OUTPUT,
-	@psAction			varchar(255),
-	@piTotalRecCount	integer		OUTPUT,
-	@piFirstRecPos		integer		OUTPUT,
-	@piCurrentRecCount	integer,
-	@psFilterValue		varchar(MAX),
-	@piCallingColumnID	integer,
-	@pfOverrideFilter	bit
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the lookup find records, given the table and column IDs.
-		@piTableID = the ID of the table on which the find is based.
-		@piLookupColumnID = the ID of the column on which the find is based.
-	NB. No permissions need to be read, as all users have read permission on lookup tables.
-	*/
-	DECLARE @sTableName		sysname,
-		@iTableID 			integer, 
-		@sColumnName 		sysname,
-		@sColumnName2 		sysname,
-		@iOrderID			integer,
-		@sSelectSQL			varchar(MAX),
-		@sOrderSQL 			varchar(MAX),
-		@sFilterValuesSQL	varchar(MAX),
-		@sExecString		nvarchar(MAX),
-		@iTemp				integer,
-		@sRemainingSQL		varchar(MAX),
-		@iLastCharIndex		integer,
-		@iCharIndex 		integer,
-		@sTempExecString	nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@sLocateCode		varchar(MAX),
-		@sReverseOrderSQL 	varchar(MAX),
-		@iCount				integer,
-		@iGetCount			integer,
-		@sColumnTemp		sysname,
-		@iLookupFilterColumnID	integer,
-		@iLookupFilterOperator	integer,
-		@iLookupFilterColumnDataType	integer;
-
-	/* Initialise variables. */
-	SET @sSelectSQL = ''
-	SET @sOrderSQL = ''
-	SET @sFilterValuesSQL = ''
-	SET @sExecString = ''
-	SET @sReverseOrderSQL = ''
-
-	/* Clean the input string parameters. */
-	IF len(@psFilterValue) > 0 SET @psFilterValue = replace(@psFilterValue, '''', '''''')
-	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''')
-	
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
-	SET @psAction = UPPER(@psAction)
-	IF (@psAction <> 'MOVEPREVIOUS') AND 
-		(@psAction <> 'MOVENEXT') AND 
-		(@psAction <> 'MOVELAST') AND 
-		(@psAction <> 'LOCATE')
-	BEGIN
-		SET @psAction = 'MOVEFIRST'
-	END
-
-	/* Get the column name. */
-	SELECT @sColumnName = ASRSysColumns.columnName,
-		@iTableID = ASRSysColumns.tableID,
-		@piColumnType = ASRSysColumns.dataType,
-		@piColumnSize = ASRSysColumns.size,
-		@piColumnDecimals = ASRSysColumns.decimals
-	FROM ASRSysColumns
-	WHERE ASRSysColumns.columnID = @piLookupColumnID
-
-	/* Get the table name and default order. */
-	SELECT @sTableName = ASRSysTables.tableName,
-		@iOrderID = ASRSysTables.defaultOrderID
-	FROM ASRSysTables
-	WHERE ASRSysTables.tableID = @iTableID
-
-	SET @sSelectSQL = @sTableName + '.' + @sColumnName
-	SET @sOrderSQL = @sTableName + '.' + @sColumnName
-
-	/* Filter the values if required */
-	SELECT @iLookupFilterColumnID  = ASRSysColumns.LookupFilterColumnID,
-		@iLookupFilterOperator = ASRSysColumns.LookupFilterOperator
-	FROM ASRSysColumns
-	WHERE ASRSysColumns.columnID = @piCallingColumnID
-
-	IF (@iLookupFilterColumnID > 0) and (@pfOverrideFilter = 0)
-	BEGIN
-		SELECT @sColumnTemp = ASRSysColumns.columnName,
-			@iLookupFilterColumnDataType = ASRSysColumns.dataType
-		FROM ASRSysColumns
-		WHERE ASRSysColumns.columnID = @iLookupFilterColumnID
-
-		IF @iLookupFilterColumnDataType = -7 /* Boolean */
-		BEGIN
-			SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = ' 
-				+ CASE
-					WHEN UPPER(@psFilterValue) = 'TRUE' THEN '1'
-					WHEN UPPER(@psFilterValue) = 'FALSE' THEN '0'
-					ELSE @psFilterValue
-				END
-				+ ') '
-		END
-		ELSE
-		BEGIN
-			IF (@iLookupFilterColumnDataType = 2) OR (@iLookupFilterColumnDataType = 4) /* Numeric, Integer */
-			BEGIN
-				IF @iLookupFilterOperator = 1 /* Equals */
-				BEGIN
-					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = ' + @psFilterValue + ') '
-					IF convert(float, @psFilterValue) = 0
-					BEGIN
-						SET @sFilterValuesSQL = @sFilterValuesSQL +
-							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-					END
-				END
-
-				IF @iLookupFilterOperator = 2 /* NOT Equal To */
-				BEGIN
-					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <> ' + @psFilterValue + ') '
-					IF convert(float, @psFilterValue) = 0
-					BEGIN
-						SET @sFilterValuesSQL = @sFilterValuesSQL +
-							' AND (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
-					END
-				END
-
-				IF @iLookupFilterOperator = 3 /* Is At Most */
-				BEGIN
-					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <= ' + @psFilterValue + ') '
-					IF convert(float, @psFilterValue) >= 0
-					BEGIN
-						SET @sFilterValuesSQL = @sFilterValuesSQL +
-							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-					END
-				END
-
-				IF @iLookupFilterOperator = 4 /* Is At Least */
-				BEGIN
-					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' >= ' + @psFilterValue + ') '
-					IF convert(float, @psFilterValue) <= 0
-					BEGIN
-						SET @sFilterValuesSQL = @sFilterValuesSQL +
-							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-					END
-				END
-
-				IF @iLookupFilterOperator = 5 /* Is More Than */
-				BEGIN
-					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' > ' + @psFilterValue + ') '
-					IF convert(float, @psFilterValue) < 0
-					BEGIN
-						SET @sFilterValuesSQL = @sFilterValuesSQL +
-							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-					END
-				END
-
-				IF @iLookupFilterOperator = 6 /* Is Less Than */
-				BEGIN
-					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' < ' + @psFilterValue + ') '
-					IF convert(float, @psFilterValue) > 0
-					BEGIN
-						SET @sFilterValuesSQL = @sFilterValuesSQL +
-							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-					END
-				END
-			END
-			ELSE
-			BEGIN
-				IF (@iLookupFilterColumnDataType = 11) /* Date */
-				BEGIN
-					IF @iLookupFilterOperator = 7 /* On */
-					BEGIN
-						IF len(@psFilterValue) = 10
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = ''' + @psFilterValue + ''') '
-						END
-						ELSE
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 8 /* NOT On */
-					BEGIN
-						IF len(@psFilterValue) = 10
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <> ''' + @psFilterValue + ''') ' +
-								' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-						END
-						ELSE
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 12 /* On OR Before*/
-					BEGIN
-						IF len(@psFilterValue) = 10
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <= ''' + @psFilterValue + ''') ' +
-								' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-						END
-						ELSE
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 11 /* On OR After*/
-					BEGIN
-						IF len(@psFilterValue) = 10
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' >= ''' + @psFilterValue + ''') ' 
-						END
-						ELSE
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null)' +
-								' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null)'
-						END
-					END
-
-					IF @iLookupFilterOperator = 9 /* After*/
-					BEGIN
-						IF len(@psFilterValue) = 10
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' > ''' + @psFilterValue + ''') ' 
-						END
-						ELSE
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null)'
-						END
-					END
-
-					IF @iLookupFilterOperator = 10 /* Before*/
-					BEGIN
-						IF len(@psFilterValue) = 10
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' < ''' + @psFilterValue + ''') ' +
-								' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-						END
-						ELSE
-						BEGIN
-							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null)' +
-								' AND (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null)'
-						END
-					END
-				END
-				ELSE
-				BEGIN
-					IF (@iLookupFilterColumnDataType = 12) OR (@iLookupFilterColumnDataType = -3) OR (@iLookupFilterColumnDataType = -1) /* varchar, working patter, photo*/
-					BEGIN
-						IF @iLookupFilterOperator = 14 /* Is */
-						BEGIN
-							IF len(@psFilterValue) = 0
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = '''') ' +
-									' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = ''' + @psFilterValue + ''') '
-							END
-						END
-
-						IF @iLookupFilterOperator = 16 /* Is NOT*/
-						BEGIN
-							IF len(@psFilterValue) = 0
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <> '''') ' +
-									' AND (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <> ''' + @psFilterValue + ''') '
-							END
-						END
-
-						IF @iLookupFilterOperator = 13 /* Contains*/
-						BEGIN
-							IF len(@psFilterValue) = 0
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null) ' +
-									' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' LIKE ''%' + @psFilterValue + '%'') '
-							END
-						END
-
-						IF @iLookupFilterOperator = 15 /* Does NOT Contain*/
-						BEGIN
-							IF len(@psFilterValue) = 0
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null) ' +
-									' AND (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' NOT LIKE ''%' + @psFilterValue + '%'') '
-							END
-						END
-					END
-				END
-			END
-		END
-	END
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.columnName
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-		AND ASRSysOrderItems.columnID <> @piLookupColumnID
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @sColumnName2
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @sSelectSQL = @sSelectSQL +  ','  + @sTableName + '.' + @sColumnName2
-
-		FETCH NEXT FROM orderCursor INTO @sColumnName2
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	/* Create the reverse order string if required. */
-	IF (@psAction <> 'MOVEFIRST') 
-	BEGIN
-		SET @sReverseOrderSQL = @sTableName + '.' + @sColumnName + ' DESC, ' + @sTableName + '.ID DESC'
-	END
-
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(*) ' +
-												 'FROM (SELECT DISTINCT ' + @sSelectSQL +
-															' FROM ' + @sTableName 
-	IF len(@sFilterValuesSQL) > 0 SET @sTempExecString = @sTempExecString + ' WHERE ' + @sFilterValuesSQL
-	SET @sTempExecString = @sTempExecString	+ ') ' + 'distinctTable'
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
-	SET @piTotalRecCount = @iCount
-
-	SET @sExecString = 'SELECT DISTINCT ' 
-
-	IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
-	BEGIN
-		SET @sExecString = @sExecString + 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
-	END
-	SET @sExecString = @sExecString + @sSelectSQL +
-		' FROM ' + @sTableName
-
-	IF (@psAction = 'MOVEFIRST') AND LEN(@sFilterValuesSQL) > 0
-	BEGIN
-		SET @sExecString = @sExecString + ' WHERE ' + @sFilterValuesSQL
-	END
-
-	IF (@psAction = 'MOVELAST') 
-	BEGIN
-		IF LEN(@sFilterValuesSQL) > 0 SET @sFilterValuesSQL = @sFilterValuesSQL + ' AND '
-
-		SET @sExecString = @sExecString + 
-			' WHERE '  + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sTableName + '.ID' +
-			' FROM ' + @sTableName
-	END
-	IF @psAction = 'MOVENEXT' 
-	BEGIN
-		IF LEN(@sFilterValuesSQL) > 0 SET @sFilterValuesSQL = @sFilterValuesSQL + ' AND '
-
-		IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-		BEGIN
-			SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
-		END
-		ELSE
-		BEGIN
-			SET @iGetCount = @piRecordsRequired
-		END
-		SET @sExecString = @sExecString + 
-			' WHERE ' + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sTableName + '.ID' +
-			' FROM ' + @sTableName
-
-		SET @sExecString = @sExecString + 
-			' WHERE ' + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired  - 1) + ' ' + @sTableName + '.ID' +
-			' FROM ' + @sTableName
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		IF LEN(@sFilterValuesSQL) > 0 SET @sFilterValuesSQL = @sFilterValuesSQL + ' AND '
-
-		IF @piFirstRecPos <= @piRecordsRequired
-		BEGIN
-			SET @iGetCount = @piFirstRecPos - 1
-		END
-		ELSE
-		BEGIN
-			SET @iGetCount = @piRecordsRequired
-		END
-		SET @sExecString = @sExecString + 
-			' WHERE ' + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sTableName + '.ID' +
-			' FROM ' + @sTableName
-
-		SET @sExecString = @sExecString + 
-			' WHERE ' + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sTableName + '.ID' +
-			' FROM ' + @sTableName
-	END
-
-	IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
-	BEGIN
-		SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL + ')'
-	END
-
-	IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
-	BEGIN
-		SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL + ')'
-	END
-
-	IF (@psAction = 'LOCATE')
-	BEGIN
-		IF LEN(@sFilterValuesSQL) > 0
-			SET @sLocateCode = ' WHERE ((' +@sFilterValuesSQL + ') AND ' +@sTableName + '.' + @sColumnName 
-		ELSE 
-			SET @sLocateCode = ' WHERE (' + @sTableName + '.' + @sColumnName
-
-		IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
-		BEGIN
-			SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-
-			IF len(@psLocateValue) = 0
-			BEGIN
-				SET @sLocateCode = @sLocateCode + ' OR ' + @sTableName + '.' + @sColumnName + ' IS NULL'
-			END
-		END
-
-		IF @piColumnType = 11 /* Date column */
-		BEGIN
-			IF len(@psLocateValue) = 0
-			BEGIN
-				SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sTableName + '.' + @sColumnName + ' IS NULL'
-			END
-			ELSE
-			BEGIN
-				SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-			END
-		END
-
-		IF @piColumnType = -7 /* Logic column */
-		BEGIN
-			SET @sLocateCode = @sLocateCode + ' >= ' + 
-				CASE
-					WHEN @psLocateValue = 'True' THEN '1'
-					ELSE '0'
-				END
-		END
-
-		IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
-		BEGIN
-			SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
-
-			IF convert(float, @psLocateValue) = 0
-			BEGIN
-				SET @sLocateCode = @sLocateCode + ' OR ' + @sTableName + '.' + @sColumnName + ' IS NULL'
-			END
-		END
-
-		SET @sLocateCode = @sLocateCode + ')'
-		SET @sExecString = @sExecString + @sLocateCode
-	END
-
-	/* Add the ORDER BY code to the find record selection string if required. */
-	SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL
-
-	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
-	IF @psAction = 'MOVEFIRST'
-	BEGIN
-		SET @piFirstRecPos = 1
-		SET @pfFirstPage = 1
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVENEXT'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
-		SET @pfFirstPage = 0
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
-		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVELAST'
-	BEGIN
-		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
-		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 1
-	END
-	IF @psAction = 'LOCATE'
-	BEGIN
-		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sTableName + '.id) FROM ' + @sTableName + @sLocateCode
-		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
-
-		IF @iTemp <=0 
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount + 1
-		END
-		ELSE
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
-		END
-
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	EXECUTE sp_executeSQL @sExecString;
-END
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetLookupFindRecords2]    Script Date: 13/09/2013 08:57:59 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[spASRIntGetLookupFindRecords2] (
-	@piTableID 			integer, 
-	@piViewID 			integer, 
-	@piOrderID 			integer,
-	@piLookupColumnID 	integer,
-	@piRecordsRequired	integer,
-	@pfFirstPage		bit		OUTPUT,
-	@pfLastPage			bit		OUTPUT,
-	@psLocateValue		varchar(MAX),
-	@piColumnType		integer		OUTPUT,
-	@piColumnSize		integer		OUTPUT,
-	@piColumnDecimals	integer		OUTPUT,
-	@psAction			varchar(MAX),
-	@piTotalRecCount	integer		OUTPUT,
-	@piFirstRecPos		integer		OUTPUT,
-	@piCurrentRecCount	integer,
-	@psFilterValue		varchar(MAX),
-	@piCallingColumnID	integer,
-	@piLookupColumnGridNumber	integer		OUTPUT,
-	@pfOverrideFilter	bit
-)
-AS
-BEGIN
-	/* Return a recordset of the link find records for the current user, given the table/view and order IDs.
-		@piTableID = the ID of the table on which the find is based.
-		@piViewID = the ID of the view on which the find is based.
-		@piOrderID = the ID of the order we are using.
-		@pfError = 1 if errors occured in getting the find records. Else 0.
-	*/
-	
-	SET NOCOUNT ON;
-	
-	DECLARE @iUserGroupID	integer,
-		@sUserGroupName		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@sRealSource 		sysname,
-		@iChildViewID 		integer,
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		sysname,
-		@sColumnTableName 	sysname,
-		@fAscending 		bit,
-		@sType	 			varchar(10),
-		@iDataType 			integer,
-		@fSelectGranted 	bit,
-		@sSelectSQL			varchar(MAX),
-		@sOrderSQL 			varchar(MAX),
-		@sExecString		nvarchar(MAX),
-		@fSelectDenied		bit,
-		@iTempCount 		integer,
-		@sSubString			varchar(MAX),
-		@sViewName 			varchar(255),
-		@sTableViewName 	sysname,
-		@iJoinTableID 		integer,
-		@iTemp				integer,
-		@sRemainingSQL		varchar(MAX),
-		@iLastCharIndex		integer,
-		@iCharIndex 		integer,
-		@sDESCstring		varchar(5),
-		@sTempExecString	nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@fFirstColumnAsc	bit,
-		@sFirstColCode		varchar(MAX),
-		@sLocateCode		varchar(MAX),
-		@sReverseOrderSQL 	varchar(MAX),
-		@iCount				integer,
-		@iGetCount			integer,
-		@iColSize			integer,
-		@iColDecs			integer,
-		@fLookupColumnDone	bit,
-		@sLookupColumnName	sysname,
-		@iLookupTableID		integer,
-		@iLookupColumnType	integer,
-		@iLookupColumnSize	integer,
-		@iLookupColumnDecimals integer,
-		@iCount2			integer,
-		@sFilterSQL			nvarchar(MAX),
-		@sColumnTemp		sysname,
-		@iLookupFilterColumnID	integer,
-		@iLookupFilterOperator	integer,
-		@iLookupFilterColumnDataType	integer,
-		@sActualUserName	sysname;
-
-	/* Initialise variables. */
-	SET @sRealSource = ''
-	SET @sSelectSQL = ''
-	SET @sOrderSQL = ''
-	SET @fSelectDenied = 0
-	SET @sExecString = ''
-	SET @sDESCstring = ' DESC'
-	SET @fFirstColumnAsc = 1
-	SET @sFirstColCode = ''
-	SET @sReverseOrderSQL = ''
-	SET @fLookupColumnDone = 0
-	SET @piLookupColumnGridNumber = 0
-	SET @sFilterSQL = ''
-
-	/* Clean the input string parameters. */
-	IF len(@psFilterValue) > 0 SET @psFilterValue = replace(@psFilterValue, '''', '''''')
-	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''')
-	
-	/* Get the current user's group ID. */
-	EXEC spASRIntGetActualUserDetails
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
-	SET @psAction = UPPER(@psAction)
-	IF (@psAction <> 'MOVEPREVIOUS') AND 
-		(@psAction <> 'MOVENEXT') AND 
-		(@psAction <> 'MOVELAST') AND 
-		(@psAction <> 'LOCATE')
-	BEGIN
-		SET @psAction = 'MOVEFIRST'
-	END
-
-	/* Get the column name. */
-	SELECT @sLookupColumnName = ASRSysColumns.columnName,
-		@iLookupTableID = ASRSysColumns.tableID,
-		@iLookupColumnType = ASRSysColumns.dataType,
-		@iLookupColumnSize = ASRSysColumns.size,
-		@iLookupColumnDecimals = ASRSysColumns.decimals
-	FROM ASRSysColumns
-	WHERE ASRSysColumns.columnID = @piLookupColumnID
-
-	/* Get the table type and name. */
-	SELECT @iTableType = ASRSysTables.tableType,
-		@sTableName = ASRSysTables.tableName
-	FROM ASRSysTables
-	WHERE ASRSysTables.tableID = @piTableID
-
-	/* Get the real source of the given table/view. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN	
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID
-		END
-		ELSE
-		BEGIN
-			SET @sRealSource = @sTableName
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @piTableID
-			AND role = @sUserGroupName
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_')
-			SET @sRealSource = left(@sRealSource, 255)
-		END
-	END
-
-	IF len(@sRealSource) = 0
-	BEGIN
-		RETURN
-	END
-
-	/* Create a temporary table to hold the tables/views that need to be joined. */
-	DECLARE @joinParents TABLE(
-		tableViewName	sysname,
-		tableID			integer);
-
-	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	/* Loop through the tables used in the order, getting the column permissions for each one. */
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-
-	OPEN tablesCursor
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableID = @piTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name = @sRealSource
-				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	END
-	CLOSE tablesCursor
-	DEALLOCATE tablesCursor
-
-	/* Create the lookup filter string. NB. We already know that the user has SELECT permission on this from the spASRIntGetLookupViews stored procedure.*/
-	SELECT @iLookupFilterColumnID = ASRSysColumns.LookupFilterColumnID,
-		@iLookupFilterOperator = ASRSysColumns.LookupFilterOperator
-	FROM ASRSysColumns
-	WHERE ASRSysColumns.columnID = @piCallingColumnID
-
-	IF (@iLookupFilterColumnID > 0) and (@pfOverrideFilter = 0)
-	BEGIN
-		SELECT @sColumnTemp = ASRSysColumns.columnName,
-			@iLookupFilterColumnDataType = ASRSysColumns.dataType
-		FROM ASRSysColumns
-		WHERE ASRSysColumns.columnID = @iLookupFilterColumnID
-
-		SELECT @iCount = COUNT(*)
-		FROM @columnPermissions
-		WHERE columnName = @sColumnTemp
-			AND selectGranted = 1
-
-		IF @iCount > 0
-		BEGIN
-			IF @iLookupFilterColumnDataType = -7 /* Boolean */
-			BEGIN
-				SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' = '
-					+ CASE
-						WHEN UPPER(@psFilterValue) = 'TRUE' THEN '1'
-						WHEN UPPER(@psFilterValue) = 'FALSE' THEN '0'
-						ELSE @psFilterValue
-					END
-					+ ') '
-			END
-			ELSE
-			BEGIN
-				IF (@iLookupFilterColumnDataType = 2) OR (@iLookupFilterColumnDataType = 4) /* Numeric, Integer */
-				BEGIN
-					IF @iLookupFilterOperator = 1 /* Equals */
-					BEGIN
-						SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' = ' + @psFilterValue + ') '
-						IF convert(float, @psFilterValue) = 0
-						BEGIN
-							SET @sFilterSQL = @sFilterSQL +
-								' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 2 /* NOT Equal To */
-					BEGIN
-						SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' <> ' + @psFilterValue + ') '
-						IF convert(float, @psFilterValue) = 0
-						BEGIN
-							SET @sFilterSQL = @sFilterSQL +
-								' AND (' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 3 /* Is At Most */
-					BEGIN
-						SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' <= ' + @psFilterValue + ') '
-						IF convert(float, @psFilterValue) >= 0
-						BEGIN
-							SET @sFilterSQL = @sFilterSQL +
-								' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 4 /* Is At Least */
-					BEGIN
-						SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' >= ' + @psFilterValue + ') '
-						IF convert(float, @psFilterValue) <= 0
-						BEGIN
-							SET @sFilterSQL = @sFilterSQL +
-								' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 5 /* Is More Than */
-					BEGIN
-						SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' > ' + @psFilterValue + ') '
-						IF convert(float, @psFilterValue) < 0
-						BEGIN
-							SET @sFilterSQL = @sFilterSQL +
-								' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-
-					IF @iLookupFilterOperator = 6 /* Is Less Than */
-					BEGIN
-						SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' < ' + @psFilterValue + ') '
-						IF convert(float, @psFilterValue) > 0
-						BEGIN
-							SET @sFilterSQL = @sFilterSQL +
-								' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-						END
-					END
-				END
-				ELSE
-				BEGIN
-					IF (@iLookupFilterColumnDataType = 11) /* Date */
-					BEGIN
-						IF @iLookupFilterOperator = 7 /* On */
-						BEGIN
-							IF len(@psFilterValue) = 10
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' = ''' + @psFilterValue + ''') '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-							END
-						END
-
-						IF @iLookupFilterOperator = 8 /* NOT On */
-						BEGIN
-							IF len(@psFilterValue) = 10
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' <> ''' + @psFilterValue + ''') ' +
-									' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null) '
-							END
-						END
-
-						IF @iLookupFilterOperator = 12 /* On OR Before*/
-						BEGIN
-							IF len(@psFilterValue) = 10
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' <= ''' + @psFilterValue + ''') ' +
-									' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-							END
-						END
-
-						IF @iLookupFilterOperator = 11 /* On OR After*/
-						BEGIN
-							IF len(@psFilterValue) = 10
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' >= ''' + @psFilterValue + ''') ' 
-							END
-							ELSE
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS null)' +
-									' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null)'
-							END
-						END
-
-						IF @iLookupFilterOperator = 9 /* After*/
-						BEGIN
-							IF len(@psFilterValue) = 10
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' > ''' + @psFilterValue + ''') ' 
-							END
-							ELSE
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null)'
-							END
-						END
-
-						IF @iLookupFilterOperator = 10 /* Before*/
-						BEGIN
-							IF len(@psFilterValue) = 10
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' < ''' + @psFilterValue + ''') ' +
-									' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-							END
-							ELSE
-							BEGIN
-								SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS null)' +
-									' AND (' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null)'
-							END
-						END
-					END
-					ELSE
-					BEGIN
-						IF (@iLookupFilterColumnDataType = 12) OR (@iLookupFilterColumnDataType = -3) OR (@iLookupFilterColumnDataType = -1) /* varchar, working patter, photo*/
-						BEGIN
-							IF @iLookupFilterOperator = 14 /* Is */
-							BEGIN
-								IF len(@psFilterValue) = 0
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' = '''') ' +
-										' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS null) '
-								END
-								ELSE
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' = ''' + @psFilterValue + ''') '
-								END
-							END
-
-							IF @iLookupFilterOperator = 16 /* Is NOT*/
-							BEGIN
-								IF len(@psFilterValue) = 0
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' <> '''') ' +
-										' AND (' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null) '
-								END
-								ELSE
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' <> ''' + @psFilterValue + ''') '
-								END
-							END
-
-							IF @iLookupFilterOperator = 13 /* Contains*/
-							BEGIN
-								IF len(@psFilterValue) = 0
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS null) ' +
-										' OR (' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null) '
-								END
-								ELSE
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' LIKE ''%' + @psFilterValue + '%'') '
-								END
-							END
-
-							IF @iLookupFilterOperator = 15 /* Does NOT Contain*/
-							BEGIN
-								IF len(@psFilterValue) = 0
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' IS null) ' +
-										' AND (' + @sRealSource + '.' + @sColumnTemp  + ' IS NOT null) '
-								END
-								ELSE
-								BEGIN
-									SET @sFilterSQL = '(' + @sRealSource + '.' + @sColumnTemp  + ' NOT LIKE ''%' + @psFilterValue + '%'') '
-								END
-							END
-						END
-					END
-				END
-			END
-		END
-	END
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		RETURN
-	END
-	SET @iCount2 = 0
-
-	WHILE (@@fetch_status = 0) OR (@fLookupColumnDone = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-
-		IF (@@fetch_status <> 0)
-		BEGIN
-			SET @iColumnTableId = @iLookupTableID
-			SET @iColumnId = @piLookupColumnID
-			SET @sColumnName = @sLookupColumnName
-			SET @sColumnTableName = @sTableName
-			SET @fAscending = 1
-			SET @sType = 'F'
-			SET @iDataType = @iLookupColumnType
-			SET @iColSize = @iLookupColumnSize
-			SET @iColDecs = @iLookupColumnDecimals
-		END
-
-		IF (@iColumnId  = @piLookupColumnID ) AND (@sType = 'F')
-		BEGIN
-			SET @fLookupColumnDone = 1
-			SET @piLookupColumnGridNumber = @iCount2
-		END
-
-		IF @iColumnTableId = @piTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-
-			IF @fSelectGranted = 1
-			BEGIN
-				/* The user DOES have SELECT permission on the column in the current table/view. */
-				IF @sType = 'F'
-				BEGIN
-
-					/* Find column. */
-					SET @sSelectSQL = @sSelectSQL + 
-						CASE 
-							WHEN len(@sSelectSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName
-					SET @iCount2 = @iCount2 + 1
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sRealSource + '.' + @sColumnName
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName +
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-			END
-			ELSE
-			BEGIN
-				/* The user does NOT have SELECT permission on the column in the current table/view. */
-				SET @fSelectDenied = 1
-			END	
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				/* The user DOES have SELECT permission on the column in the parent table. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sSelectSQL = @sSelectSQL + 
-						CASE 
-							WHEN len(@sSelectSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName
-					SET @iCount2 = @iCount2 + 1
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName + 
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-
-				FROM @joinParents
-				WHERE tableViewName = @sColumnTableName
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
-				END
-			END
-			ELSE	
-			BEGIN
-				SET @sSubString = ''
-
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND selectGranted = 1
-
-				OPEN viewCursor
-				FETCH NEXT FROM viewCursor INTO @sViewName
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					IF len(@sSubString) = 0 SET @sSubString = 'CASE'
-
-					SET @sSubString = @sSubString +
-						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName 
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-					WHERE tableViewname = @sViewName
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName
-				END
-				CLOSE viewCursor
-				DEALLOCATE viewCursor
-
-				IF len(@sSubString) > 0
-				BEGIN
-					SET @sSubString = @sSubString +
-						' ELSE NULL END'
-
-					IF @sType = 'F'
-					BEGIN
-						/* Find column. */
-						SET @sSubString = @sSubString +
-							' AS [' + @sColumnName + ']'
-
-						SET @sSelectSQL = @sSelectSQL + 
-							CASE 
-								WHEN len(@sSelectSQL) > 0 THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END
-						SET @iCount2 = @iCount2 + 1
-					END
-					ELSE
-					BEGIN
-						/* Order column. */
-						IF len(@sOrderSQL) = 0 
-						BEGIN
-							SET @piColumnType = @iDataType
-							SET @piColumnSize = @iColSize
-							SET @piColumnDecimals = @iColDecs
-							SET @fFirstColumnAsc = @fAscending
-							SET @sFirstColCode = @sSubString
-						END
-
-						SET @sOrderSQL = @sOrderSQL + 
-							CASE 
-								WHEN len(@sOrderSQL) > 0 THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END + 
-							CASE 
-								WHEN @fAscending = 0 THEN ' DESC' 
-								ELSE '' 
-							END				
-					END
-				END
-				ELSE
-				BEGIN
-					/* The user does NOT have SELECT permission on the column any of the parent views. */
-					SET @fSelectDenied = 1
-				END	
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	/* Add the ID column to the order string. */
-	SET @sOrderSQL = @sOrderSQL + 
-		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
-		@sRealSource + '.ID'
-
-	/* Create the reverse order string if required. */
-	IF (@psAction <> 'MOVEFIRST') 
-	BEGIN
-		SET @sRemainingSQL = @sOrderSQL
-
-		SET @iLastCharIndex = 0
-		SET @iCharIndex = CHARINDEX(',', @sOrderSQL)
-		WHILE @iCharIndex > 0 
-		BEGIN
- 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', '
-			END
-			ELSE
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', '
-			END
-
-			SET @iLastCharIndex = @iCharIndex
-			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1)
-	
-			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex)
-		END
-		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring
-
-	END
-
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource
-
-	IF len(@sFilterSQL) > 0 SET @sTempExecString = @sTempExecString + ' WHERE ' + @sFilterSQL
-
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
-	SET @piTotalRecCount = @iCount
-
-	IF len(@sSelectSQL) > 0 
-	BEGIN
-		SET @sSelectSQL = @sSelectSQL + ',' + @sRealSource + '.ID'
-		SET @sExecString = 'SELECT ' 
-
-		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
-		BEGIN
-			SET @sExecString = @sExecString + 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
-		END
-		SET @sExecString = @sExecString + @sSelectSQL + 
-			' FROM ' + @sRealSource
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sExecString = @sExecString + 
-				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		IF (@psAction = 'MOVELAST')
-		BEGIN
-			SET @sExecString = @sExecString + 
-				' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-		END
-
-		IF @psAction = 'MOVENEXT' 
-		BEGIN
-			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-			BEGIN
-				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired
-			END
-			SET @sExecString = @sExecString + 
-				' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-
-			SET @sExecString = @sExecString + 
-				' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired  - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-		END
-		IF @psAction = 'MOVEPREVIOUS'
-		BEGIN
-			IF @piFirstRecPos <= @piRecordsRequired
-			BEGIN
-				SET @iGetCount = @piFirstRecPos - 1
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired
-			END
-			SET @sExecString = @sExecString + 
-				' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-
-			SET @sExecString = @sExecString + 
-				' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-		END
-
-		IF len(@sFilterSQL) > 0 SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL
-
-		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL + ')'
-		END
-
-		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL + ')'
-		END
-
-		IF (@psAction = 'LOCATE')
-		BEGIN
-			IF len(@sFilterSQL) > 0 
-			BEGIN
-				SET @sLocateCode = ' AND (' + @sFirstColCode 
-			END
-			ELSE
-			BEGIN
-				SET @sLocateCode = ' WHERE (' + @sFirstColCode 
-			END
-
-			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
-						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL'
-				END
-
-			END
-
-			IF @piColumnType = 11 /* Date column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-
-						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-					END
-				END
-				ELSE
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-			END
-
-			IF @piColumnType = -7 /* Logic column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-			END
-
-			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
-
-					IF convert(float, @psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL'
-				END
-
-			END
-
-			SET @sLocateCode = @sLocateCode + ')'
-			SET @sExecString = @sExecString + @sLocateCode
-		END
-
-		/* Add the ORDER BY code to the find record selection string if required. */
-		SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL
-	END
-
-	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
-	IF @psAction = 'MOVEFIRST'
-	BEGIN
-		SET @piFirstRecPos = 1
-		SET @pfFirstPage = 1
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVENEXT'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
-		SET @pfFirstPage = 0
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
-		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVELAST'
-	BEGIN
-		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
-		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 1
-	END
-
-	IF @psAction = 'LOCATE'
-	BEGIN
-		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempExecString = @sTempExecString + 
-				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		IF len(@sFilterSQL) > 0 SET @sTempExecString = @sTempExecString + ' WHERE ' + @sFilterSQL
-
-		SET @sTempExecString = @sTempExecString + @sLocateCode
-
-		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
-
-		IF @iTemp <=0 
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount + 1
-		END
-		ELSE
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
-		END
-
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	IF (len(@sExecString) > 0)
-	BEGIN
-		EXEC sp_executeSQL @sExecString;
-	END
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetLookupTables]    Script Date: 13/09/2013 08:58:00 ******/
 SET ANSI_NULLS ON
@@ -25299,667 +15646,6 @@ BEGIN
 		END
 	END
 END
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetScreenStrings]    Script Date: 13/09/2013 08:58:00 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[spASRIntGetScreenStrings] (
-	@piScreenID 	integer,
-	@piViewID 		integer,
-	@psSelectSQL	nvarchar(MAX)	OUTPUT,
-	@psFromDef		varchar(MAX)	OUTPUT,
-	@psOrderSQL		varchar(MAX)	OUTPUT,
-	@piOrderID		integer			OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of strings describing of the controls in the given screen. */
-	DECLARE @iUserGroupID	integer,
-		@iScreenTableID		integer,
-		@iScreenTableType	integer,
-		@sScreenTableName	varchar(255),
-		@iScreenOrderID 	integer,
-		@sRealSource 		varchar(255),
-		@iChildViewID 		integer,
-		@sJoinCode 			varchar(MAX),
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		varchar(255),
-		@sColumnTableName 	varchar(255),
-		@iColumnDataType	integer,
-		@fSelectGranted 	bit,
-		@fUpdateGranted 	bit,
-		@sSelectString 		varchar(MAX),
-		@iTempCount 		integer,
-		@sViewName 			varchar(255),
-		@fAscending 		bit,
-		@sOrderString 		varchar(MAX),
-		@sTableViewName 	varchar(255),
-		@iJoinTableID 		integer,
-		@sParentRealSource	varchar(255),
-		@iParentChildViewID	integer,
-		@iParentTableType	integer,
-		@sParentTableName	sysname,
-		@iColumnType		integer,
-		@iLinkTableID		integer,
-		@lngPermissionCount	integer,
-		@iLinkChildViewID	integer,
-		@sLinkRealSource	varchar(255),
-		@sLinkTableName		varchar(255),
-		@iLinkTableType		integer,
-		@sNewBit			varchar(MAX),
-		@iID				integer,
-		@iCount				integer,
-		@iUserType			integer,
-		@sRoleName			sysname,
-		@sActualUserName	sysname;
-		
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sRoleName OUTPUT,
-		@iUserGroupID OUTPUT;
-		
-	/* Get the table type and name. */
-	SELECT @iScreenTableID = ASRSysScreens.tableID,
-		@iScreenTableType = ASRSysTables.tableType,
-		@sScreenTableName = ASRSysTables.tableName,
-		@iScreenOrderID = 
-				CASE 
-					WHEN ASRSysScreens.orderID > 0 THEN ASRSysScreens.orderID
-					ELSE ASRSysTables.defaultOrderID 
-				END
-	FROM ASRSysScreens
-	INNER JOIN ASRSysTables ON ASRSysScreens.tableID = ASRSysTables.tableID
-	WHERE ASRSysScreens.screenID = @piScreenID;
-	
-	IF @iScreenOrderID IS NULL SET @iScreenOrderID = 0;
-	
-	IF @piOrderID <= 0 SET @piOrderID = @iScreenOrderID;
-	
-	/* Get the real source of the given screen's table/view. */
-	IF @iScreenTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID;
-		END
-		ELSE
-		BEGIN
-			/* RealSource is the table. */	
-			SET @sRealSource = @sScreenTableName;
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @iScreenTableID
-			AND role = @sRoleName;
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0;
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sScreenTableName, ' ', '_') +
-				'#' + replace(@sRoleName, ' ', '_');
-			SET @sRealSource = left(@sRealSource, 255);
-		END
-	END
-
-	/* Initialise the select and order parameters. */
-	SET @psSelectSQL = '';
-	SET @psFromDef = '';
-	SET @psOrderSQL = '';
-	SET @sJoinCode = '';
-	
-	-- Create a temporary table to hold the tables/views that need to be joined.
-	DECLARE @JoinParents TABLE(tableViewName sysname, tableID int);
-	
-	-- Create a temporary table of the column permissions for all tables/views used in the screen.
-	DECLARE @columnPermissions TABLE(tableID integer,
-					tableViewName	sysname,
-					columnName		sysname,
-					action			int,		
-					granted			bit);
-
-	-- Temporary view of the sysprotects
-	DECLARE @SysProtects TABLE ([ID] int,
-					action tinyint,
-					protecttype tinyint,
-					columns varbinary(8000));
-	INSERT INTO @SysProtects
-	SELECT DISTINCT p.[ID], p.[Action], p.[ProtectType], p.[Columns]
-		FROM sys.sysprotects p
-		WHERE (p.[Action] = 193 OR p.[Action] = 197)
-			AND [uid] = @iUserGroupID;
-
-	-- Loop through the tables used in the screen, getting the column permissions for each one.
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysControls.tableID
-	FROM ASRSysControls
-	WHERE screenID = @piScreenID
-		AND ASRSysControls.columnID > 0
-	UNION
-	SELECT DISTINCT ASRSysColumns.tableID 
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	WHERE ASRSysOrderItems.type = 'O' 
-		AND ASRSysOrderItems.orderID = @piOrderID;
-	
-	OPEN tablesCursor;
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-
-		IF @iTempTableID = @iScreenTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				p.action,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM @SysProtects p
-			INNER JOIN syscolumns ON p.id = syscolumns.id
-			WHERE syscolumns.name <> 'timestamp'
-				AND OBJECT_NAME(p.ID) = @sRealSource
-				AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			SELECT @iParentTableType = tableType,
-				@sParentTableName = tableName
-			FROM ASRSysTables
-			WHERE tableID = @iTempTableID;
-			
-			IF @iParentTableType <> 2 /* ie. top-level or lookup */
-			BEGIN
-
-				INSERT INTO @columnPermissions
-				SELECT 
-					@iTempTableID,
-					OBJECT_NAME(p.ID),
-					syscolumns.name,
-					p.action,
-					CASE protectType
-					   	WHEN 205 THEN 1
-						WHEN 204 THEN 1
-						ELSE 0
-					END 
-				FROM @SysProtects p
-				INNER JOIN syscolumns ON p.id = syscolumns.id
-				WHERE syscolumns.name <> 'timestamp'
-					AND OBJECT_NAME(p.id) IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE ASRSysTables.tableID = @iTempTableID 
-						UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-					AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-					AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-					OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-					AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-			END
-			ELSE
-			BEGIN
-
-				/* Get permitted child view on the parent table. */
-				SELECT @iParentChildViewID = childViewID
-				FROM ASRSysChildViews2
-				WHERE tableID = @iTempTableID
-					AND role = @sRoleName;
-					
-				IF @iParentChildViewID IS null SET @iParentChildViewID = 0;
-					
-				IF @iParentChildViewID > 0 
-				BEGIN
-					SET @sParentRealSource = 'ASRSysCV' + 
-						convert(varchar(1000), @iParentChildViewID) +
-						'#' + replace(@sParentTableName, ' ', '_') +
-						'#' + replace(@sRoleName, ' ', '_');
-					SET @sParentRealSource = left(@sParentRealSource, 255);
-					INSERT INTO @columnPermissions
-					SELECT 
-						@iTempTableID,
-						@sParentRealSource,
-						syscolumns.name,
-						p.action,
-						CASE protectType
-							WHEN 205 THEN 1
-							WHEN 204 THEN 1
-							ELSE 0
-						END 
-					FROM @sysprotects p
-					INNER JOIN syscolumns ON p.id = syscolumns.id
-					WHERE syscolumns.name <> 'timestamp'
-						AND OBJECT_NAME(p.ID) = @sParentRealSource
-						AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-
-				END
-			END
-		END
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID;
-	END
-	
-	CLOSE tablesCursor;
-	DEALLOCATE tablesCursor;
-
-	SET @iUserType = 1;
-	
-	SELECT @iID = ASRSysPermissionItems.itemID
-		FROM ASRSysPermissionItems
-		INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-		WHERE ASRSysPermissionItems.itemKey = 'INTRANET'
-			AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS';
-			
-	IF @iID IS NULL SET @iID = 0;
-	IF @iID > 0
-	BEGIN
-		/* The permission does exist in the current version so check if the user is granted this permission. */
-		SELECT @iCount = count(*)
-		FROM ASRSysGroupPermissions 
-		WHERE ASRSysGroupPermissions.itemID = @iID
-			AND ASRSysGroupPermissions.groupName = @sRoleName
-			AND ASRSysGroupPermissions.permitted = 1;
-			
-		IF @iCount > 0 SET @iUserType = 0;
-
-	END
-	/* Create a temporary table of the column info for all columns used in the screen controls. */
-	/* Populate the temporary table with info for all columns used in the screen controls. */
-	/* Create the select string for getting the column values. */
-	DECLARE columnsCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysControls.tableID, 
-		ASRSysControls.columnID, 
-		ASRSysColumns.columnName, 
-		ASRSysTables.tableName,
-		ASRSysColumns.dataType,
-		ASRSysColumns.columnType,
-		ASRSysColumns.linkTableID
-	FROM ASRSysControls
-		LEFT OUTER JOIN ASRSysTables ON ASRSysControls.tableID = ASRSysTables.tableID 
-		LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID AND ASRSysColumns.columnID = ASRSysControls.columnID
-	WHERE screenID = @piScreenID
-		AND ASRSysControls.columnID > 0;
-	
-	OPEN columnsCursor;
-	FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType, @iColumnType, @iLinkTableID;	
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0;
-		SET @fUpdateGranted = 0;
-		IF @iColumnTableID = @iScreenTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = granted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-				AND action = 193;
-				
-			/* Get the update permission on the column. */
-			SELECT @fUpdateGranted = granted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-				AND action = 197;
-
-			/* If the column is a link column, ensure that the link table can be seen. */
-			IF (@fUpdateGranted = 1) AND (@iColumnType = 4)
-			BEGIN
-				SELECT @sLinkTableName = tableName,
-					@iLinkTableType = tableType
-				FROM ASRSysTables
-				WHERE tableID = @iLinkTableID;
-				
-				IF @iLinkTableType = 1
-				BEGIN
-					/* Top-level table. */
-					SELECT @lngPermissionCount = COUNT(*)
-					FROM @sysprotects p
-					INNER JOIN syscolumns ON p.id = syscolumns.id
-					WHERE p.action = 193
-						AND p.protectType <> 206
-						AND syscolumns.name <> 'timestamp'
-						AND syscolumns.name <> 'ID'
-						AND OBJECT_NAME(p.ID) = @sLinkTableName
-						AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-						
-					IF @lngPermissionCount = 0 
-					BEGIN
-						/* No permission on the table itself check the views. */
-						SELECT @lngPermissionCount = COUNT(*)
-						FROM ASRSysViews
-						INNER JOIN sysobjects ON ASRSysViews.viewName = sysobjects.name
-						INNER JOIN @sysprotects p ON sysobjects.id = p.id  
-						WHERE ASRSysViews.viewTableID = @iLinkTableID
-							AND p.action = 193
-							AND p.protecttype <> 206;
-						IF @lngPermissionCount = 0 SET @fUpdateGranted = 0;
-					END
-				END
-				ELSE
-				BEGIN
-					/* Child/history table. */
-					SELECT @iLinkChildViewID = childViewID
-					FROM ASRSysChildViews2
-					WHERE tableID = @iLinkTableID
-						AND role = @sRoleName;
-						
-					IF @iLinkChildViewID IS null SET @iLinkChildViewID = 0;
-						
-					IF @iLinkChildViewID > 0 
-					BEGIN
-						SET @sLinkRealSource = 'ASRSysCV' + 
-							convert(varchar(1000), @iLinkChildViewID) +
-							'#' + replace(@sLinkTableName, ' ', '_') +
-							'#' + replace(@sRoleName, ' ', '_');
-						SET @sLinkRealSource = left(@sLinkRealSource, 255);
-					END
-					SELECT @lngPermissionCount = COUNT(p.ID)
-					FROM @sysprotects p 
-					WHERE p.protectType <> 206
-						AND p.action = 193
-						AND OBJECT_NAME(p.ID) = @sLinkRealSource;
-		
-					IF @lngPermissionCount = 0 SET @fUpdateGranted = 0;
-				END
-			END
-
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Get the select string for the column. */
-				IF LEN(@psSelectSQL) > 0 
-					SET @psSelectSQL = @psSelectSQL + ',';
-			
-				IF @iColumnDataType = 11 /* Date */
-				BEGIN
-					 /* Date */
-					SET @sNewBit = 'convert(varchar(10), ' + @sRealSource + '.' + @sColumnName + ', 101) AS [' + convert(varchar(100), @iColumnID) + ']';
-					SET @psSelectSQL = @psSelectSQL + @sNewBit;
-				END
-				ELSE
-				BEGIN
-					 /* Non-date */
-					SET @sNewBit = @sRealSource + '.' + @sColumnName + ' AS [' + convert(varchar(100), @iColumnID) + ']';
-					SET @psSelectSQL = @psSelectSQL + @sNewBit;
-				END
-			END
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = granted
-			FROM @columnPermissions
-			WHERE tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-				AND action = 193;
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-
-				/* Column COULD be read directly from the parent table. */
-				IF len(@psSelectSQL) > 0 
-					SET @psSelectSQL = @psSelectSQL + ',';
-
-				IF @iColumnDataType = 11 /* Date */
-				BEGIN
-					 /* Date */
-					SET @sNewBit = 'convert(varchar(10), ' + @sColumnTableName + '.' + @sColumnName + ', 101) AS [' + convert(varchar(100), @iColumnID) + ']';
-					SET @psSelectSQL = @psSelectSQL + @sNewBit;
-				END
-				ELSE
-				BEGIN
-					 /* Non-date */
-					SET @sNewBit = @sColumnTableName + '.' + @sColumnName + ' AS [' + convert(varchar(100), @iColumnID) + ']';
-					SET @psSelectSQL = @psSelectSQL + @sNewBit;
-				END
-				
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @JoinParents
-					WHERE tableViewName = @sColumnTableName;
-					
-				IF @iTempCount = 0
-					INSERT INTO @JoinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID);
-					
-			END
-			ELSE	
-			BEGIN
-				/* Column could NOT be read directly from the parent table, so try the views. */
-				SET @sSelectString = '';
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-					SELECT tableViewName
-					FROM @columnPermissions
-					WHERE tableID = @iColumnTableID
-						AND tableViewName <> @sColumnTableName
-						AND columnName = @sColumnName
-						AND action = 193
-						AND granted = 1;
-						
-				OPEN viewCursor;
-				FETCH NEXT FROM viewCursor INTO @sViewName;
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					SET @fSelectGranted = 1;
-					IF len(@sSelectString) = 0 SET @sSelectString = 'CASE';
-	
-					IF @iColumnDataType = 11 /* Date */
-					BEGIN
-						 /* Date */
-						SET @sSelectString = @sSelectString +
-							' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN convert(varchar(10), ' + @sViewName + '.' + @sColumnName + ', 101)';
-					END
-					ELSE
-					BEGIN
-						 /* Non-date */
-						SET @sSelectString = @sSelectString +
-							' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName;
-					END
-
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-						WHERE tableViewName = @sViewName;
-						
-					IF @iTempCount = 0
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableID);
-
-					FETCH NEXT FROM viewCursor INTO @sViewName;
-				END
-
-				CLOSE viewCursor;
-				DEALLOCATE viewCursor;
-				
-				IF len(@sSelectString) > 0
-				BEGIN
-					SET @sSelectString = @sSelectString +
-						' ELSE NULL END AS [' + convert(varchar(100), @iColumnID) + ']';
-					IF len(@psSelectSQL) > 0 SET @psSelectSQL = @psSelectSQL + ',';
-					SET @psSelectSQL = @psSelectSQL + @sSelectString;
-				END
-			END
-		END
-		FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType, @iColumnType, @iLinkTableID;
-	END
-
-	CLOSE columnsCursor;
-	DEALLOCATE columnsCursor;
-	
-	/* Create the order string. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT ASRSysColumns.tableID,
-			ASRSysOrderItems.columnID, 
-			ASRSysColumns.columnName,
-	    		ASRSysTables.tableName,
-			ASRSysOrderItems.ascending
-		FROM ASRSysOrderItems
-		INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-		INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-		WHERE ASRSysOrderItems.orderID = @piOrderID
-			AND ASRSysOrderItems.type = 'O'
-		ORDER BY ASRSysOrderItems.sequence;
-		
-	OPEN orderCursor;
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0;
-		IF @iColumnTableId = @iScreenTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = granted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-				AND action = 193;
-			IF @fSelectGranted = 1
-			BEGIN
-				/* Get the order string for the column. */
-				IF len(@psOrderSQL) > 0 SET @psOrderSQL = @psOrderSQL + ', ';
-				SET @psOrderSQL = @psOrderSQL + @sRealSource + '.' + @sColumnName + CASE WHEN @fAscending = 0 THEN ' DESC' ELSE '' END;
-			END
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = granted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-				AND action = 193;
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				/* Get the order string for the column. */
-				IF len(@psOrderSQL) > 0 
-					SET @psOrderSQL = @psOrderSQL + ', ';
-				SET @psOrderSQL = @psOrderSQL + @sColumnTableName + '.' + @sColumnName + CASE WHEN @fAscending = 0 THEN ' DESC' ELSE '' END;
-				
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @joinParents
-					WHERE tableViewName = @sColumnTableName;
-					
-				IF @iTempCount = 0
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID);
-					
-			END
-			ELSE	
-			BEGIN
-				/* Column could NOT be read directly from the parent table, so try the views. */
-				SET @sOrderString = ''
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND action = 193
-					AND granted = 1;
-					
-				OPEN viewCursor;
-				FETCH NEXT FROM viewCursor INTO @sViewName;
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					IF len(@sOrderString) = 0 SET @sOrderString = 'CASE';
-					SET @sOrderString = @sOrderString +
-						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName;
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-						WHERE tableViewname = @sViewName;
-						
-					IF @iTempCount = 0
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId);
-						
-					FETCH NEXT FROM viewCursor INTO @sViewName;
-				END
-
-				CLOSE viewCursor;
-				DEALLOCATE viewCursor;
-				
-				IF len(@sOrderString) > 0
-				BEGIN
-					SET @sOrderString = @sOrderString +	' ELSE NULL END';
-					IF len(@psOrderSQL) > 0 
-						SET @psOrderSQL = @psOrderSQL + ', ';
-
-					SET @psOrderSQL = @psOrderSQL + @sOrderString + CASE WHEN @fAscending = 0 THEN ' DESC' ELSE '' END;
-				END
-			END
-		END
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending;
-	END
-	
-	CLOSE orderCursor;
-	DEALLOCATE orderCursor;
-
-	
-	-- Add the ID column to the order string.
-	IF LEN(@psOrderSQL) > 0 SET @psOrderSQL = @psOrderSQL + ', ';
-	SET @psOrderSQL = @psOrderSQL + @sRealSource + '.ID';
-
-	-- Add columns from the screen.
-	SELECT @psSelectSQL = @psSelectSQL 
-		+ CASE LEN(@psSelectSQL) WHEN 0 THEN '' ELSE ', ' END
-		+ @sRealSource + '.' + [columnName]	+ ' AS [' + convert(varchar(10), [ColumnID]) + ']'
-	FROM ASRSysColumns
-	WHERE tableID = @iScreenTableID
-		AND columnType = 3;
-
-	-- Add timestamp to the select statement.
-	SET @psSelectSQL = @psSelectSQL + ', CONVERT(integer, ' + @sRealSource + '.TimeStamp) AS timestamp ';
-
-	-- Create the FROM code.
-	SET @psFromDef = @sRealSource + '	';
-	SELECT @psFromDef = @psFromDef + tableViewName + '	'
-		+ convert(varchar(10), tableID) + '	'
-	FROM @joinParents;
-
-END
-
 GO
 
 
@@ -28158,32 +17844,9 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntGetUniqueColumns]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTransferCourseRecords]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetTransferCourseRecords]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTransferBookingRecords]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetTransferBookingRecords]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTBEmployeeColumns]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetTBEmployeeColumns]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTablesInfo]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetTablesInfo]
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTableScreensMenu]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetTableScreensMenu]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTableOrders]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetTableOrders]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetSelectedPicklistRecords]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetSelectedPicklistRecords]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetScreenOrder]    Script Date: 13/09/2013 08:59:32 ******/
@@ -28234,10 +17897,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntGetPersonnelParameters]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetOrderSQL]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetOrderSQL]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetOrders]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetOrders]
 GO
@@ -28257,10 +17916,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetLinkParentValues]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetLinkParentValues]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetLinkFindRecords]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetLinkFindRecords]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetHistoryMainMenu]    Script Date: 13/09/2013 08:59:32 ******/
@@ -28323,10 +17978,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntGetEmpIDFromTBID]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetDefaultOrderColumns]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetDefaultOrderColumns]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetCrossTabTablesInfo]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetCrossTabTablesInfo]
 GO
@@ -28339,20 +17990,8 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntGetColumns]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetBulkBookingRecords]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetBulkBookingRecords]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetBookCourseRecords]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetBookCourseRecords]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetAvailableLogins]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetAvailableLogins]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetAddFromWaitingListRecords]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetAddFromWaitingListRecords]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetAbsenceTypes]    Script Date: 13/09/2013 08:59:32 ******/
@@ -36439,1066 +26078,6 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetAddFromWaitingListRecords]    Script Date: 13/09/2013 08:59:33 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetAddFromWaitingListRecords] (
-	@piTableID 			integer, 
-	@piViewID 			integer, 
-	@piOrderID 			integer,
-	@piCourseRecordID	integer,
-	@pfError 			bit 			OUTPUT,
-	@piRecordsRequired	integer,
-	@pfFirstPage		bit				OUTPUT,
-	@pfLastPage			bit				OUTPUT,
-	@psLocateValue		varchar(MAX),
-	@piColumnType		integer			OUTPUT,
-	@psAction			varchar(255),
-	@piTotalRecCount	integer			OUTPUT,
-	@piFirstRecPos		integer			OUTPUT,
-	@piCurrentRecCount	integer,
-	@psErrorMessage		varchar(MAX)	OUTPUT,
-	@piColumnSize		integer			OUTPUT,
-	@piColumnDecimals	integer			OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iUserGroupID	integer,
-		@sUserGroupName		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@sRealSource 		sysname,
-		@iChildViewID 		integer,
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		sysname,
-		@sColumnTableName 	sysname,
-		@fAscending 		bit,
-		@sType	 			varchar(10),
-		@iDataType 			integer,
-		@fSelectGranted 	bit,
-		@sSelectSQL			varchar(MAX),
-		@sOrderSQL 			varchar(MAX),
-		@sExecString		nvarchar(MAX),
-		@sTempString		varchar(MAX),
-		@fSelectDenied		bit,
-		@iTempCount 		integer,
-		@sSubString			varchar(MAX),
-		@sViewName 			varchar(255),
-		@sTableViewName 	sysname,
-		@iJoinTableID 		integer,
-		@iTemp				integer,
-		@sRemainingSQL		varchar(MAX),
-		@iLastCharIndex		integer,
-		@iCharIndex 		integer,
-		@sDESCstring		varchar(5),
-		@sTempExecString	nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@fFirstColumnAsc	bit,
-		@sFirstColCode		varchar(MAX),
-		@sLocateCode		varchar(MAX),
-		@sReverseOrderSQL 	varchar(MAX),
-		@iCount				integer,
-		@fWhereDone			bit,
-		@iWLCourseTitleColumnID	integer,
-		@sWLCourseTitleColumnName	sysname,
-		@iCourseTitleColumnID	integer,
-		@sCourseTitleColumnName	sysname,
-		@iWLOverrideColumnID	integer,
-		@sWLOverrideColumnName	sysname,
-		@iGetCount			integer,
-		@sCourseTitle		varchar(MAX),
-		@iCourseTableID		integer,
-		@iCourseRecordID	integer,
-		@iWLTableID			integer,
-		@sWLTableName		sysname,
-		@sWLRealSource		varchar(255),
-		@sCourseSource		sysname,
-		@iColSize			integer,
-		@iColDecs			integer,
-		@sActualUserName	sysname;
-
-	/* Initialise variables. */
-	SET @pfError = 0;
-	SET @psErrorMessage = '';
-	SET @sRealSource = '';
-	SET @sSelectSQL = '';
-	SET @sOrderSQL = '';
-	SET @fSelectDenied = 0;
-	SET @sExecString = '';
-	SET @sDESCstring = ' DESC';
-	SET @fFirstColumnAsc = 1;
-	SET @sFirstColCode = '';
-	SET @sReverseOrderSQL = '';
-	SET @fWhereDone = 0;
-
-	/* Clean the input string parameters. */
-	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''');
-
-	/* Get the current user's group ID. */
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	/* Get the current course title. */
-	/* Get the Course table id. */
-	SELECT @iCourseTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTable'
-	IF @iCourseTableID IS NULL SET @iCourseTableID = 0;
-
-	SELECT @iCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTitle'
-	IF @iCourseTitleColumnID IS NULL SET @iCourseTitleColumnID = 0;
-	
-	IF @iCourseTitleColumnID > 0 
-	BEGIN
-		SELECT @sCourseTitleColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseTitleColumnID;
-	END
-	IF @sCourseTitleColumnName IS NULL SET @sCourseTitleColumnName = '';
-
-	/* Get the @sCourseTitle value for the given course record. */
-	DECLARE courseSourceCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT sysobjects.name
-	FROM sysprotects
-	INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-	INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-	WHERE sysprotects.uid = @iUserGroupID
-		AND sysprotects.action = 193 
-		AND (sysprotects.protectType = 205 OR sysprotects.protectType = 204)
-		AND syscolumns.name = @sCourseTitleColumnName
-		AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-			ASRSysTables.tableID = @iCourseTableID 
-			UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iCourseTableID)
-		AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-		OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		
-	OPEN courseSourceCursor;
-	FETCH NEXT FROM courseSourceCursor INTO @sCourseSource;
-	WHILE (@@fetch_status = 0) AND (@sCourseTitle IS null)
-	BEGIN
-		SET @sTempExecString = 'SELECT @sCourseTitle = ' + @sCourseTitleColumnName + 
-			' FROM ' + @sCourseSource +
-			' WHERE id = ' + convert(nvarchar(255), @piCourseRecordID);
-		SET @sTempParamDefinition = N'@sCourseTitle varchar(MAX) OUTPUT';
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @sCourseTitle OUTPUT;
-
-		FETCH NEXT FROM courseSourceCursor INTO @sCourseSource;
-	END
-	CLOSE courseSourceCursor;
-	DEALLOCATE courseSourceCursor;
-
-	IF @sCourseTitle IS null
-	BEGIN
-		SET @pfError = 1;
-		SET @psErrorMessage = 'Unable to read the course title from the current Course record.';
-		RETURN		
-	END
-
-	/* Get the WL table real source. */
-	/* NB. To reach this point we have already checked that the user has 'read' permission on the Training Booking - Status column. */
-	SELECT @iWLTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_WaitListTable';
-	IF @iWLTableID IS NULL SET @iWLTableID = 0;
-
-	SELECT @sWLTableName = tableName
-	FROM ASRSysTables
-	WHERE tableID = @iWLTableID;
-
-	SELECT @iWLCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_WaitListCourseTitle';
-	IF @iWLCourseTitleColumnID IS NULL SET @iWLCourseTitleColumnID = 0;
-	
-	IF @iWLCourseTitleColumnID > 0 
-	BEGIN
-		SELECT @sWLCourseTitleColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iWLCourseTitleColumnID;
-	END
-	IF @sWLCourseTitleColumnName IS NULL SET @sWLCourseTitleColumnName = '';
-
-	SELECT @iWLOverrideColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_WaitListOverRideColumn';
-	IF @iWLOverrideColumnID IS NULL SET @iWLOverrideColumnID = 0;
-
-	IF @iWLOverrideColumnID > 0 
-	BEGIN
-		SELECT @sWLOverrideColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iWLOverrideColumnID;
-	END
-	IF @sWLOverrideColumnName IS NULL SET @sWLOverrideColumnName = '';
-
-	SELECT @iChildViewID = childViewID
-	FROM ASRSysChildViews2
-	WHERE tableID = @iWLTableID
-		AND [role] = @sUserGroupName;
-	IF @iChildViewID IS null SET @iChildViewID = 0;
-		
-	IF @iChildViewID > 0 
-	BEGIN
-		SET @sWLRealSource = 'ASRSysCV' + 
-			convert(varchar(1000), @iChildViewID) +
-			'#' + replace(@sWLTableName, ' ', '_') +
-			'#' + replace(@sUserGroupName, ' ', '_');
-		SET @sWLRealSource = left(@sWLRealSource, 255);
-	END
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000;
-	SET @psAction = UPPER(@psAction);
-	IF (@psAction <> 'MOVEPREVIOUS') AND 
-		(@psAction <> 'MOVENEXT') AND 
-		(@psAction <> 'MOVELAST') AND 
-		(@psAction <> 'LOCATE')
-	BEGIN
-		SET @psAction = 'MOVEFIRST';
-	END
-
-	/* Get the table type and name. */
-	SELECT @iTableType = ASRSysTables.tableType,
-		@sTableName = ASRSysTables.tableName
-	FROM ASRSysTables
-	WHERE ASRSysTables.tableID = @piTableID;
-
-	/* Get the real source of the given table/view. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN	
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID;
-		END
-		ELSE
-		BEGIN
-			SET @sRealSource = @sTableName;
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @piTableID
-			AND [role] = @sUserGroupName;
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0;
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_');
-			SET @sRealSource = left(@sRealSource, 255);
-		END
-	END
-
-	IF len(@sRealSource) = 0
-	BEGIN
-		SET @pfError = 1;
-		RETURN;
-	END
-
-	/* Create a temporary table to hold the tables/views that need to be joined. */
-	DECLARE @joinParents TABLE(
-		tableViewName	sysname,
-		tableID			integer);
-
-	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	/* Loop through the tables used in the order, getting the column permissions for each one. */
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	WHERE ASRSysOrderItems.orderID = @piOrderID;
-
-	OPEN tablesCursor;
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableID = @piTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name = @sRealSource
-				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID;
-	END
-	CLOSE tablesCursor;
-	DEALLOCATE tablesCursor;
-
-	/*Get the permissions for the override column if it has been set*/
-	IF @iWLOverrideColumnID > 0 
-	BEGIN
-		INSERT INTO @columnPermissions
-		SELECT 
-			@iWLTableID,
-			@sWLRealSource,
-			syscolumns.name,
-			CASE protectType
-				WHEN 205 THEN 1
-				WHEN 204 THEN 1
-				ELSE 0
-			END 
-		FROM sysprotects
-		INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-		INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-		WHERE sysprotects.uid = @iUserGroupID
-			AND sysprotects.action = 193 
-			AND syscolumns.name <> 'timestamp'
-			AND sysobjects.name = @sWLRealSource
-			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-
-		/* Get the select permission on the column. */
-		SELECT @fSelectGranted = selectGranted
-		FROM @columnPermissions
-		WHERE tableViewName = @sWLRealSource
-			AND columnName = @sWLOverrideColumnName;
-
-		IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-
-		IF @fSelectGranted = 1
-		BEGIN
-			/* The user DOES have SELECT permission on the column in the current table/view. */
-			/* Find column. */
-			SET @sTempString = CASE 
-					WHEN (len(@sSelectSQL) > 0) THEN ',' 
-					ELSE '' 
-				END + 
-				@sWLRealSource + '.' + @sWLOverrideColumnName;				
-			SET @sSelectSQL = @sSelectSQL + @sTempString;
-
-			/* Override Column. */
-			IF len(@sOrderSQL) = 0 
-			BEGIN
-				SET @fAscending = 1;
-				SELECT 
-					@iDataType = ASRSysColumns.dataType,
-					@iColSize = ASRSysColumns.size,
-					@iColDecs = ASRSysColumns.decimals
-				FROM ASRSysColumns 
-				WHERE ASRSysColumns.columnID = @iWLOverrideColumnID;
-
-				SET @piColumnType = @iDataType;
-				SET @fFirstColumnAsc = @fAscending;
-				SET @sFirstColCode = @sWLRealSource + '.' + @sWLOverrideColumnName;
-				SET @piColumnSize = @iColSize;
-				SET @piColumnDecimals = @iColDecs;
-			END
-			SET @sOrderSQL = @sOrderSQL + 
-			CASE 
-				WHEN len(@sOrderSQL) > 0 THEN ',' 
-				ELSE '' 
-			END + 
-			@sWLRealSource + '.' + @sWLOverrideColumnName +
-			CASE 
-				WHEN @fAscending = 0 THEN ' DESC' 
-				ELSE '' 
-			END		
-		END			
-	END
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	ORDER BY ASRSysOrderItems.sequence;
-
-	OPEN orderCursor;
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs;
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		SET @pfError = 1;
-		RETURN;
-	END
-
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0;
-
-		IF @iColumnTableId = @piTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName;
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-
-			IF @fSelectGranted = 1
-			BEGIN
-				/* The user DOES have SELECT permission on the column in the current table/view. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName;
-					SET @sSelectSQL = @sSelectSQL + @sTempString;
-
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType;
-						SET @fFirstColumnAsc = @fAscending;
-						SET @sFirstColCode = @sRealSource + '.' + @sColumnName;
-						SET @piColumnSize = @iColSize;
-						SET @piColumnDecimals = @iColDecs;
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName +
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END;		
-				END
-			END
-			ELSE
-			BEGIN
-				/* The user does NOT have SELECT permission on the column in the current table/view. */
-				SET @fSelectDenied = 1;
-			END	
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName;
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				/* The user DOES have SELECT permission on the column in the parent table. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName;
-					SET @sSelectSQL = @sSelectSQL + @sTempString;
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType;
-						SET @fFirstColumnAsc = @fAscending;
-						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName;
-						SET @piColumnSize = @iColSize;
-						SET @piColumnDecimals = @iColDecs;
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName + 
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END;
-				END
-
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @joinParents
-				WHERE tableViewName = @sColumnTableName;
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID);
-				END
-			END
-			ELSE	
-			BEGIN
-				SET @sSubString = '';
-
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND selectGranted = 1;
-
-				OPEN viewCursor;
-				FETCH NEXT FROM viewCursor INTO @sViewName;
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					IF len(@sSubString) = 0 SET @sSubString = 'CASE';
-
-					SET @sSubString = @sSubString +
-						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName;
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-					WHERE tableViewname = @sViewName;
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId);
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName;
-				END
-				CLOSE viewCursor;
-				DEALLOCATE viewCursor;
-
-				IF len(@sSubString) > 0
-				BEGIN
-					SET @sSubString = @sSubString +	' ELSE NULL END';
-
-					IF @sType = 'F'
-					BEGIN
-						/* Find column. */
-						SET @sTempString = CASE 
-								WHEN (len(@sSelectSQL) > 0) THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END;
-						SET @sSelectSQL = @sSelectSQL + @sTempString;
-					END
-					ELSE
-					BEGIN
-						/* Order column. */
-						IF len(@sOrderSQL) = 0 
-						BEGIN
-							SET @piColumnType = @iDataType;
-							SET @fFirstColumnAsc = @fAscending;
-							SET @sFirstColCode = @sSubString;
-							SET @piColumnSize = @iColSize;
-							SET @piColumnDecimals = @iColDecs;
-						END
-
-						SET @sOrderSQL = @sOrderSQL + 
-							CASE 
-								WHEN len(@sOrderSQL) > 0 THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END + 
-							CASE 
-								WHEN @fAscending = 0 THEN ' DESC' 
-								ELSE '' 
-							END;		
-					END
-				END
-				ELSE
-				BEGIN
-					/* The user does NOT have SELECT permission on the column any of the parent views. */
-					SET @fSelectDenied = 1;
-				END	
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs;
-	END
-	CLOSE orderCursor;
-	DEALLOCATE orderCursor;
-
-	/* Add the ID column to the order string. */
-	SET @sOrderSQL = @sOrderSQL + 
-		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
-		@sRealSource + '.ID';
-
-	/* Create the reverse order string if required. */
-	IF (@psAction <> 'MOVEFIRST') 
-	BEGIN
-		SET @sRemainingSQL = @sOrderSQL;
-
-		SET @iLastCharIndex = 0;
-		SET @iCharIndex = CHARINDEX(',', @sOrderSQL);
-		WHILE @iCharIndex > 0 
-		BEGIN
- 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', ';
-			END
-			ELSE
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', ';
-			END
-
-			SET @iLastCharIndex = @iCharIndex;
-			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1);
-	
-			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex);
-		END
-		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring;
-	END
-
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource +
-		' INNER JOIN ' + @sWLRealSource +
-		' ON (' + @sRealSource + '.id = ' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) +
-		' AND ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + ' = ''' + replace(@sCourseTitle,'''','''''') + ''')';
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT';
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT;
-	SET @piTotalRecCount = @iCount;
-
-	IF (len(@sSelectSQL) > 0)
-	BEGIN
-		SET @sTempString = ',' + @sRealSource + '.ID';
-		SET @sSelectSQL = @sSelectSQL + @sTempString;
-
-		SET @sExecString = 'SELECT ';
-
-		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE'
-		BEGIN
-			SET @sTempString = 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' ';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-		
-		SET @sTempString = @sSelectSQL;
-		SET @sExecString = @sExecString + @sTempString;
-
-		SET @sTempString = ' FROM ' + @sWLRealSource;
-		SET @sExecString = @sExecString + @sTempString;
-
-		SET @sTempString = ' INNER JOIN ' + @sRealSource +
-			' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
-			' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + ''''
-		SET @sExecString = @sExecString + @sTempString;
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, tableID
-			FROM @joinParents;
-
-		OPEN joinCursor;
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID';
-			SET @sExecString = @sExecString + @sTempString;
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
-		END
-		CLOSE joinCursor;
-		DEALLOCATE joinCursor;
-
-		IF (@psAction = 'MOVELAST')
-		BEGIN
-			SET @fWhereDone = 1;
-			
-			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sWLRealSource + '.ID' +
-				' FROM ' + @sWLRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-
-			SET @sTempString = ' INNER JOIN ' + @sRealSource +
-				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
-				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
-			SET @sExecString = @sExecString + @sTempString;
-
-		END
-
-		IF @psAction = 'MOVENEXT' 
-		BEGIN
-			SET @fWhereDone = 1
-			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-			BEGIN
-				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1);
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired;
-			END
-
-			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sWLRealSource + '.ID' +
-				' FROM ' + @sWLRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-				
-			SET @sTempString = ' INNER JOIN ' + @sRealSource +
-				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
-				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
-			SET @sExecString = @sExecString + @sTempString;
-
-			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sWLRealSource + '.ID' +
-				' FROM ' + @sWLRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-
-			SET @sTempString = ' INNER JOIN ' + @sRealSource +
-				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
-				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
-			SET @sExecString = @sExecString + @sTempString;
-
-		END
-
-		IF @psAction = 'MOVEPREVIOUS'
-		BEGIN
-			SET @fWhereDone = 1;
-			IF @piFirstRecPos <= @piRecordsRequired
-			BEGIN
-				SET @iGetCount = @piFirstRecPos - 1;
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired;		
-			END
-
-			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sWLRealSource + '.ID' +
-				' FROM ' + @sWLRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-				
-			SET @sTempString = ' INNER JOIN ' + @sRealSource +
-				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
-				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
-			SET @sExecString = @sExecString + @sTempString;
-
-			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sWLRealSource + '.ID' +
-				' FROM ' + @sWLRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-
-			SET @sTempString = ' INNER JOIN ' + @sRealSource +
-				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
-				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-
-		/* Add the filter code. */
-
-		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-
-		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-
-		IF (@psAction = 'LOCATE')
-		BEGIN
-			SET @fWhereDone = 1;
-			SET @sLocateCode = ' AND (' + @sFirstColCode;
-
-			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + '''';
-
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL';
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
-						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL';
-				END
-
-			END
-
-			IF @piColumnType = 11 /* Date column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL';
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + '''';
-					END
-				END
-				ELSE
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NULL';
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL';
-					END
-				END
-			END
-
-			IF @piColumnType = -7 /* Logic column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END;
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END;
-				END
-			END
-
-			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue;
-
-					IF convert(float, @psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL';
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL';
-				END
-			END
-
-			SET @sLocateCode = @sLocateCode + ')';
-			SET @sTempString = @sLocateCode;
-			SET @sExecString = @sExecString + @sTempString;
-
-		END
-
-		/* Add the ORDER BY code to the find record selection string if required. */
-		SET @sTempString = ' ORDER BY ' + @sOrderSQL;
-		SET @sExecString = @sExecString + @sTempString;
-
-	END
-
-	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
-	IF @psAction = 'MOVEFIRST'
-	BEGIN
-		SET @piFirstRecPos = 1;
-		SET @pfFirstPage = 1;
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-				ELSE 0
-			END;
-	END
-	IF @psAction = 'MOVENEXT'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount;
-		SET @pfFirstPage = 0;
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END;
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos - @iGetCount;
-		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1;
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END;
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END;
-	END
-	IF @psAction = 'MOVELAST'
-	BEGIN
-		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1;
-		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1;
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END;
-		SET @pfLastPage = 1;
-	END
-
-	IF @psAction = 'LOCATE'
-	BEGIN
-		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource + 
-			' INNER JOIN ' + @sWLRealSource +
-			' ON (' + @sRealSource + '.id = ' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) +
-			' AND ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + ' = ''' + replace(@sCourseTitle,'''','''''') + ''')';
-			
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, tableID
-		FROM @joinParents;
-
-		OPEN joinCursor;
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempExecString = @sTempExecString + 
-				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID';
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
-		END
-		CLOSE joinCursor;
-		DEALLOCATE joinCursor;
-
-		SET @sTempExecString = @sTempExecString + @sLocateCode;
-
-		SET @sTempParamDefinition = N'@recordCount integer OUTPUT';
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT;
-
-		IF @iTemp <=0 
-
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount + 1;
-		END
-		ELSE
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1;
-		END
-
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END;
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piFirstRecPos + @piRecordsRequired THEN 1
-				ELSE 0
-			END;
-	END
-
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	IF (len(@sExecString) > 0)
-	BEGIN
-		EXECUTE sp_executeSQL @sExecString;
-	END
-END
-
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetAvailableLogins]    Script Date: 13/09/2013 08:59:33 ******/
 SET ANSI_NULLS ON
 GO
@@ -37521,1438 +26100,6 @@ BEGIN
 	AND name != 'NT AUTHORITY\SYSTEM'
 	AND is_disabled = 0;
 
-END
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetBookCourseRecords]    Script Date: 13/09/2013 08:59:33 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetBookCourseRecords] (
-	@piTableID 			integer, 
-	@piViewID 			integer, 
-	@piOrderID 			integer,
-	@piWLRecordID		integer,
-	@pfError 			bit 		OUTPUT,
-	@piRecordsRequired	integer,
-	@pfFirstPage		bit			OUTPUT,
-	@pfLastPage			bit			OUTPUT,
-	@psLocateValue		varchar(MAX),
-	@piColumnType		integer		OUTPUT,
-	@psAction			varchar(255),
-	@piTotalRecCount	integer		OUTPUT,
-	@piFirstRecPos		integer		OUTPUT,
-	@piCurrentRecCount	integer,
-	@piColumnSize		integer		OUTPUT,
-	@piColumnDecimals	integer		OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iUserGroupID	integer,
-		@sUserGroupName		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@sRealSource 		sysname,
-		@iChildViewID 		integer,
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		sysname,
-		@sColumnTableName 	sysname,
-		@fAscending 		bit,
-		@sType	 			varchar(10),
-		@iDataType 			integer,
-		@fSelectGranted 	bit,
-		@sSelectSQL			varchar(MAX),
-		@sOrderSQL 			varchar(MAX),
-		@sExecString		nvarchar(MAX),
-		@sTempString		varchar(MAX),
-		@fSelectDenied		bit,
-		@iTempCount 		integer,
-		@sSubString			varchar(MAX),
-		@sViewName 			varchar(255),
-		@sTableViewName 	sysname,
-		@iJoinTableID 		integer,
-		@iTemp				integer,
-		@sRemainingSQL		varchar(MAX),
-		@iLastCharIndex		integer,
-		@iCharIndex 		integer,
-		@sDESCstring		varchar(4),
-		@sTempExecString	nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@fFirstColumnAsc	bit,
-		@sFirstColCode		varchar(MAX),
-		@sLocateCode		varchar(MAX),
-		@sReverseOrderSQL 	varchar(MAX),
-		@iCount				integer,
-		@fWhereDone			bit,
-		@iWLCourseTitleColumnID		integer,
-		@sWLCourseTitleColumnName	sysname,
-		@iCourseTitleColumnID		integer,
-		@sCourseTitleColumnName		sysname,
-		@iCourseStartDateColumnID	integer,
-		@sCourseStartDateColumnName	sysname,
-		@sCourseCancelDateColumnID	integer,
-		@sCourseCancelDateColumnName	sysname,
-		@iGetCount					integer,
-		@sCourseTitle				varchar(MAX),
-		@iWLTableID					integer,
-		@sWLTableName				sysname,
-		@sWLRealSource				varchar(255),
-		@iColSize					integer,
-		@iColDecs					integer,
-		@sActualUserName			sysname;
-
-	/* Initialise variables. */
-	SET @pfError = 0;
-	SET @sRealSource = '';
-	SET @sSelectSQL = '';
-	SET @sOrderSQL = '';
-	SET @fSelectDenied = 0;
-	SET @sExecString = '';
-	SET @sDESCstring = ' DESC';
-	SET @fFirstColumnAsc = 1;
-	SET @sFirstColCode = '';
-	SET @sReverseOrderSQL = '';
-	SET @fWhereDone = 0;
-
-	/* Clean the input string parameters. */
-	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''');
-
-	/* Get the current user's group ID. */
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	/* Get the course title from the given WL record. */
-	/* NB. To reach this point we have already checked that the user has 'read' permission on the Waiting List - Course Title column. */
-	SELECT @iWLTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_WaitListTable';
-	IF @iWLTableID IS NULL SET @iWLTableID = 0;
-
-	SELECT @sWLTableName = tableName
-	FROM [dbo].[ASRSysTables]
-	WHERE tableID = @iWLTableID;
-	
-	SELECT @iWLCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_WaitListCourseTitle'
-	IF @iWLCourseTitleColumnID IS NULL SET @iWLCourseTitleColumnID = 0
-	
-	IF @iWLCourseTitleColumnID > 0 
-	BEGIN
-		SELECT @sWLCourseTitleColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iWLCourseTitleColumnID
-	END
-	IF @sWLCourseTitleColumnName IS NULL SET @sWLCourseTitleColumnName = ''
-
-	SELECT @iChildViewID = childViewID
-	FROM ASRSysChildViews2
-	WHERE tableID = @iWLTableID
-		AND role = @sUserGroupName
-		
-	IF @iChildViewID IS null SET @iChildViewID = 0
-		
-	IF @iChildViewID > 0 
-	BEGIN
-		SET @sWLRealSource = 'ASRSysCV' + 
-			convert(varchar(1000), @iChildViewID) +
-			'#' + replace(@sWLTableName, ' ', '_') +
-			'#' + replace(@sUserGroupName, ' ', '_')
-		SET @sWLRealSource = left(@sWLRealSource, 255)
-	END
-
-	SET @sTempExecString = 'SELECT @sCourseTitle = ' + @sWLCourseTitleColumnName +
-		' FROM ' + @sWLRealSource +
-		' WHERE id = ' + convert(nvarchar(100), @piWLRecordID)
-	SET @sTempParamDefinition = N'@sCourseTitle varchar(MAX) OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @sCourseTitle OUTPUT
-
-	SELECT @iCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTitle'
-	IF @iCourseTitleColumnID IS NULL SET @iCourseTitleColumnID = 0
-	
-	IF @iCourseTitleColumnID > 0 
-	BEGIN
-		SELECT @sCourseTitleColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseTitleColumnID
-	END
-	IF @sCourseTitleColumnName IS NULL SET @sCourseTitleColumnName = ''
-
-	SELECT @iCourseStartDateColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseStartDate'
-	IF @iCourseStartDateColumnID IS NULL SET @iCourseStartDateColumnID = 0
-
-	IF @iCourseStartDateColumnID > 0 
-	BEGIN
-		SELECT @sCourseStartDateColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseStartDateColumnID
-	END
-	IF @sCourseStartDateColumnName IS NULL SET @sCourseStartDateColumnName = ''
-
-	/* Get Cancel date Column*/
-	SELECT @sCourseCancelDateColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseCancelDate'
-	IF @sCourseCancelDateColumnID IS NULL SET @sCourseCancelDateColumnID = 0
-	IF @sCourseCancelDateColumnID > 0 
-	BEGIN
-		SELECT @sCourseCancelDateColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @sCourseCancelDateColumnID
-	END
-	IF @sCourseCancelDateColumnName IS NULL SET @sCourseCancelDateColumnName = ''
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
-	SET @psAction = UPPER(@psAction)
-	IF (@psAction <> 'MOVEPREVIOUS') AND 
-		(@psAction <> 'MOVENEXT') AND 
-		(@psAction <> 'MOVELAST') AND 
-		(@psAction <> 'LOCATE')
-	BEGIN
-		SET @psAction = 'MOVEFIRST'
-	END
-
-	/* Get the table type and name. */
-	SELECT @iTableType = ASRSysTables.tableType,
-		@sTableName = ASRSysTables.tableName
-	FROM ASRSysTables
-	WHERE ASRSysTables.tableID = @piTableID
-
-	/* Get the real source of the given table/view. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN	
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID
-		END
-		ELSE
-		BEGIN
-			SET @sRealSource = @sTableName
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @piTableID
-			AND role = @sUserGroupName
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_')
-			SET @sRealSource = left(@sRealSource, 255)
-		END
-	END
-
-	IF len(@sRealSource) = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	/* Create a temporary table to hold the tables/views that need to be joined. */
-	DECLARE @joinParents TABLE(
-		tableViewName	sysname,
-		tableID			integer);
-
-	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	/* Loop through the tables used in the order, getting the column permissions for each one. */
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-
-	OPEN tablesCursor
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableID = @piTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name = @sRealSource
-				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	END
-	CLOSE tablesCursor
-	DEALLOCATE tablesCursor
-
-	SET @fSelectGranted = 0
-	SELECT @fSelectGranted = selectGranted
-	FROM @columnPermissions
-	WHERE tableViewName = @sRealSource
-		AND columnName = @sCourseTitleColumnName
-	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	IF @fSelectGranted = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	SET @fSelectGranted = 0
-	SELECT @fSelectGranted = selectGranted
-	FROM @columnPermissions
-	WHERE tableViewName = @sRealSource
-		AND columnName = @sCourseStartDateColumnName
-	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	IF @fSelectGranted = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-		
-		IF @iColumnTableId = @piTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-
-			IF @fSelectGranted = 1
-			BEGIN
-				/* The user DOES have SELECT permission on the column in the current table/view. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName
-					SET @sSelectSQL = @sSelectSQL + @sTempString
-
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sRealSource + '.' + @sColumnName
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName +
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-			END
-			ELSE
-			BEGIN
-				/* The user does NOT have SELECT permission on the column in the current table/view. */
-				SET @fSelectDenied = 1
-			END	
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				/* The user DOES have SELECT permission on the column in the parent table. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName
-					SET @sSelectSQL = @sSelectSQL + @sTempString
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName + 
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @joinParents
-				WHERE tableViewName = @sColumnTableName
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
-				END
-			END
-			ELSE	
-			BEGIN
-				SET @sSubString = ''
-
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND selectGranted = 1
-
-				OPEN viewCursor
-				FETCH NEXT FROM viewCursor INTO @sViewName
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					IF len(@sSubString) = 0 SET @sSubString = 'CASE'
-
-					SET @sSubString = @sSubString +
-						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName 
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-					WHERE tableViewname = @sViewName
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName
-				END
-				CLOSE viewCursor
-				DEALLOCATE viewCursor
-
-				IF len(@sSubString) > 0
-				BEGIN
-					SET @sSubString = @sSubString +
-						' ELSE NULL END'
-
-					IF @sType = 'F'
-					BEGIN
-						/* Find column. */
-						SET @sTempString = CASE 
-								WHEN (len(@sSelectSQL) > 0) THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END
-						SET @sSelectSQL = @sSelectSQL + @sTempString
-
-					END
-					ELSE
-					BEGIN
-						/* Order column. */
-						IF len(@sOrderSQL) = 0 
-						BEGIN
-							SET @piColumnType = @iDataType
-							SET @fFirstColumnAsc = @fAscending
-							SET @sFirstColCode = @sSubString
-							SET @piColumnSize = @iColSize
-							SET @piColumnDecimals = @iColDecs
-						END
-
-						SET @sOrderSQL = @sOrderSQL + 
-							CASE 
-								WHEN len(@sOrderSQL) > 0 THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END + 
-							CASE 
-								WHEN @fAscending = 0 THEN ' DESC' 
-								ELSE '' 
-							END				
-					END
-				END
-				ELSE
-				BEGIN
-					/* The user does NOT have SELECT permission on the column any of the parent views. */
-					SET @fSelectDenied = 1
-				END	
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	/* Add the ID column to the order string. */
-	SET @sOrderSQL = @sOrderSQL + 
-		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
-		@sRealSource + '.ID'
-
-	/* Create the reverse order string if required. */
-	IF (@psAction <> 'MOVEFIRST') 
-	BEGIN
-		SET @sRemainingSQL = @sOrderSQL
-
-		SET @iLastCharIndex = 0
-		SET @iCharIndex = CHARINDEX(',', @sOrderSQL)
-		WHILE @iCharIndex > 0 
-		BEGIN
- 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', '
-			END
-			ELSE
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', '
-			END
-
-			SET @iLastCharIndex = @iCharIndex
-			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1)
-	
-			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex)
-		END
-		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring
-	END
-
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource +
-		' WHERE (' +
-		@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND '	+
-		@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101))) AND ' + 
-		@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL'
-
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
-	SET @piTotalRecCount = @iCount
-
-	IF (len(@sSelectSQL) > 0)
-	BEGIN
-		SET @sTempString = ',' + @sRealSource + '.ID'
-		SET @sSelectSQL = @sSelectSQL + @sTempString
-
-		SET @sExecString = 'SELECT ' 
-
-		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
-		BEGIN
-			SET @sTempString = 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
-			SET @sExecString = @sExecString + @sTempString
-		END
-		
-		SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents;
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-			SET @sExecString = @sExecString + @sTempString
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		IF (@psAction = 'MOVELAST')
-		BEGIN
-			SET @fWhereDone = 1
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-
-		END
-
-		IF @psAction = 'MOVENEXT' 
-		BEGIN
-			SET @fWhereDone = 1
-			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-			BEGIN
-				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired
-			END
-			
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-				
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-
-		END
-
-		IF @psAction = 'MOVEPREVIOUS'
-		BEGIN
-			SET @fWhereDone = 1
-			IF @piFirstRecPos <= @piRecordsRequired
-			BEGIN
-				SET @iGetCount = @piFirstRecPos - 1
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired				
-			END
-			
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-
-				
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-
-		END
-
-		/* Add the filter code. */
-		SET @sTempString = ' WHERE (' +
-			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND '	+
-			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101))) AND ' +
-			@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL'
-		SET @sExecString = @sExecString + @sTempString
-
-		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')'
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')'
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF (@psAction = 'LOCATE')
-		BEGIN
-			SET @fWhereDone = 1
-			SET @sLocateCode = ' AND (' + @sFirstColCode 
-
-			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
-						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL'
-				END
-
-			END
-
-			IF @piColumnType = 11 /* Date column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-					END
-				END
-				ELSE
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-			END
-
-			IF @piColumnType = -7 /* Logic column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-			END
-
-			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
-
-					IF convert(float, @psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL'
-				END
-			END
-
-			SET @sLocateCode = @sLocateCode + ')'
-
-			SET @sTempString = @sLocateCode
-			SET @sExecString = @sExecString + @sTempString
-
-		END
-
-		/* Add the ORDER BY code to the find record selection string if required. */
-		SET @sTempString = ' ORDER BY ' + @sOrderSQL
-		SET @sExecString = @sExecString + @sTempString
-
-	END
-
-	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
-	IF @psAction = 'MOVEFIRST'
-	BEGIN
-		SET @piFirstRecPos = 1
-		SET @pfFirstPage = 1
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVENEXT'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
-		SET @pfFirstPage = 0
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
-		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVELAST'
-	BEGIN
-		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
-		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 1
-	END
-	IF @psAction = 'LOCATE'
-	BEGIN
-		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource + 
-			' WHERE (' +
-			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND '	+
-			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101))) AND ' +
-			@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL'
-			
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents;
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempExecString = @sTempExecString + 
-				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		SET @sTempExecString = @sTempExecString + @sLocateCode
-			
-		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
-
-		IF @iTemp <=0 
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount + 1
-		END
-		ELSE
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
-		END
-
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piFirstRecPos + @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	IF (len(@sExecString) > 0)
-	BEGIN
-		EXECUTE sp_executeSQL @sExecString;
-	END
-END
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetBulkBookingRecords]    Script Date: 13/09/2013 08:59:33 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetBulkBookingRecords] (
-	@psSelectionType	varchar(MAX),
-	@piSelectionID		integer,
-	@psSelectedIDs		varchar(MAX),
-	@psPromptSQL		varchar(MAX),
-	@psErrorMessage		varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the required 'employee' table records. */
-	DECLARE
-		@iUserGroupID			integer,
-		@sUserGroupName			sysname,
-		@iID					integer,
-		@iEmployeeTableID		integer,
-		@iTableType				integer,
-		@sTableName				sysname,
-		@sEmpRealSource			sysname,
-		@iChildViewID			integer,
-		@iTemp					integer,
-		@sTemp					varchar(MAX),
-		@sActualUserName		sysname,
-		@sExecString			nvarchar(MAX),
-		@sTempString			varchar(MAX),
-		@iColumnCount			integer,
-		@iOrderID				integer,
-		@sSubSQL				varchar(MAX),
-		@sJoinViews				varchar(MAX),
-		@sSubViews				varchar(MAX),
-		@sJoinTables			varchar(MAX),
-		@fDelegateSelect		bit,
-		@sWhereSQL				varchar(MAX),
-		@iTempTableType			integer,
-		@sTempTableName			sysname,
-		@iTempTableID 			integer,
-		@sTempRealSource		sysname,
-		@sColumnName 			sysname,
-		@iDataType 				integer,
-		@iTableID 				integer,
-		@fSelectGranted 		bit,
-		@iIndex					integer,
-		@iViewID				integer, 
-		@sViewName				sysname,
-		@iTempID				integer;
-		
-	/* Clean the input string parameters. */
-	IF len(@psSelectedIDs) > 0 SET @psSelectedIDs = replace(@psSelectedIDs, '''', '''''');
-
-	SET @sJoinViews = ','
-	SET @sJoinTables = ',';
-	SET @fDelegateSelect = 0;
-	SET @sWhereSQL = '';
-
-	/* Get the current user's group ID. */
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	/* Get the EMPLOYEE table information. */
-	SELECT @iEmployeeTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_EmployeeTable';
-	IF @iEmployeeTableID IS NULL SET @iEmployeeTableID = 0;
-
-	SELECT @iOrderID = defaultOrderID, 
-		@iTableType = tableType,
-		@sTableName = tableName
-	FROM ASRSysTables
-	WHERE tableID = @iEmployeeTableID;
-
-	/* Get the real source of the employee table. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		SET @sEmpRealSource = @sTableName;
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @iEmployeeTableID
-			AND [role] = @sUserGroupName;
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0;
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sEmpRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_');
-			SET @sEmpRealSource = left(@sEmpRealSource, 255);
-		END
-	END	
-	
-	SET @sExecString = 'SELECT ';
-	SET @iColumnCount = 0;
-
-	/* Create a temporary table to hold the find columns that the user can see. */
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID, ASRSysTables.tableType, ASRSysTables.tableName
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysColumns.tableID= ASRSysTables.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F';
-
-	OPEN tablesCursor;
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName 
-					FROM ASRSysViews 
-					WHERE ASRSysViews.viewTableID = @iTempTableID)
-					AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-					OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM ASRSysChildViews2
-			WHERE tableID = @iTempTableID
-				AND [role] = @sUserGroupName;
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0;
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(1000), @iChildViewID) +
-					'#' + replace(@sTempTableName, ' ', '_') +
-					'#' + replace(@sUserGroupName, ' ', '_');
-				SET @sTempRealSource = left(@sTempRealSource, 255);
-
-				INSERT INTO @columnPermissions
-				SELECT 
-					@iTempTableID,
-					sysobjects.name,
-					syscolumns.name,
-					CASE protectType
-					        	WHEN 205 THEN 1
-						WHEN 204 THEN 1
-						ELSE 0
-					END 
-				FROM sysprotects
-				INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-				INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-				WHERE sysprotects.uid = @iUserGroupID
-					AND sysprotects.action = 193 
-					AND syscolumns.name <> 'timestamp'
-					AND sysobjects.name =@sTempRealSource
-						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-			END
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
-	END
-	CLOSE tablesCursor;
-	DEALLOCATE tablesCursor;
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT 
-		ASRSysColumns.columnName,
-		ASRSysColumns.dataType,
-		ASRSysColumns.tableID,
-		ASRSysTables.tableType,
-		ASRSysTables.tableName
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-	ORDER BY ASRSysOrderItems.sequence;
-
-	OPEN orderCursor;
-	FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0;
-
-		/* Get the real source of the employee table. */
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			SET @sTempRealSource = @sTempTableName;
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM ASRSysChildViews2
-			WHERE tableID = @iTableID
-				AND [role] = @sUserGroupName;
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0;
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(1000), @iChildViewID) +
-					'#' + replace(@sTempTableName, ' ', '_') +
-					'#' + replace(@sUserGroupName, ' ', '_');
-				SET @sTempRealSource = left(@sTempRealSource, 255);
-			END
-		END	
-
-		SELECT @fSelectGranted = selectGranted
-		FROM @columnPermissions
-		WHERE tableID = @iTableID
-			AND tableViewName = @sTempRealSource
-			AND columnName = @sColumnName;
-
-		IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-
-		IF @fSelectGranted = 1
-		BEGIN
-			/* Add the column code to the 'select' string. */
-			SET @sTempString = CASE 
-					WHEN @iColumnCount > 0 THEN ','
-					ELSE ''
-				END +
-				@sTempRealSource + '.' + @sColumnName;
-			SET @sExecString = @sExecString + @sTempString;
-			SET @iColumnCount = @iColumnCount + 1;
-				
-			IF @iTableID = @iEmployeeTableID
-			BEGIN
-				SET @fDelegateSelect = 1;
-			END 
-			ELSE
-			BEGIN
-				/* Add the table to the list of join tables if required. */
-				SELECT @iIndex = CHARINDEX(',' + @sTempRealSource + ',', @sJoinTables);
-				IF @iIndex = 0 SET @sJoinTables = @sJoinTables + @sTempRealSource + ',';
-			END
-		END
-		ELSE
-		BEGIN
-			/* The column CANNOT be read from the Delegate table, or directly from a parent table.
-			Try to read it from the views on the table. */
-			SET @sSubViews = ',';
-
-			DECLARE viewsCursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT viewID,
-				viewName
-			FROM ASRSysViews
-			WHERE viewTableID = @iTableID;
-
-			OPEN viewsCursor;
-			FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
-			WHILE (@@fetch_status = 0)
-			BEGIN
-				SET @fSelectGranted = 0;
-
-				SELECT @fSelectGranted = selectGranted
-				FROM @columnPermissions
-				WHERE tableID = @iTableID
-					AND tableViewName = @sViewName
-					AND columnName = @sColumnName;
-
-				IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-
-				IF @fSelectGranted = 1	
-				BEGIN
-					/* Add the view to the list of join views if required. */
-					SELECT @iIndex = CHARINDEX(',' + @sViewName + ',', @sJoinViews);
-					IF @iIndex = 0 SET @sJoinViews = @sJoinViews + @sViewName + ',';
-
-					SET @sSubViews = @sSubViews + @sViewName + ',';
-				END
-
-				FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
-			END
-			CLOSE viewsCursor;
-			DEALLOCATE viewsCursor;
-
-			IF len(@sSubViews) > 1
-			BEGIN
-				SET @sSubSQL = '';
-
-				WHILE len(@sSubViews) > 1
-				BEGIN
-					SELECT @iIndex = charindex(',', @sSubViews, 2);
-					SET @sViewName = substring(@sSubViews, 2, @iIndex - 2);
-					SET @sSubViews = substring(@sSubViews, @iIndex, len(@sSubViews) -@iIndex + 1);
-
-					IF len(@sSubSQL) > 0 SET @sSubSQL = @sSubSQL + ',';
-					SET @sSubSQL = @sSubSQL + @sViewName + '.' + @sColumnName;
-				END
-
-				SET @sSubSQL = 'COALESCE(' + @sSubSQL + ') AS [' + @sColumnName + ']';
-                
-				/* Add the column code to the 'select' string. */
-				SET @sTempString = CASE 
-						WHEN @iColumnCount > 0 THEN ','
-						ELSE ''
-					END +
-					@sSubSQL;
-
-				SET @sExecString = @sExecString + @sTempString;
-				SET @iColumnCount = @iColumnCount + 1;
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName;
-	END
-	CLOSE orderCursor;
-	DEALLOCATE orderCursor;
-
-	/* Add the ID column. */
-	SET @iColumnCount = @iColumnCount + 1;
-	SET @sTempString = ',' +
-		@sEmpRealSource + '.id' +
-		' FROM ' + @sEmpRealSource;
-	SET @sExecString = @sExecString + @sTempString;
-        
-	/* Join any other tables and views that are used. */
-	WHILE len(@sJoinTables) > 1
-	BEGIN
-		SELECT @iIndex = charindex(',', @sJoinTables, 2);
-		SET @sTableName = substring(@sJoinTables, 2, @iIndex - 2);
-		SET @sJoinTables = substring(@sJoinTables, @iIndex, len(@sJoinTables) -@iIndex + 1);
-
-		SELECT @iTempID = tableID
-		FROM ASRSysTables
-		WHERE tableName = @sTableName;
-
-		SET @sTempString = ' LEFT OUTER JOIN ' + @sTableName +
-			' ON ' + @sEmpRealSource + '.ID_' + convert(varchar(8000), @iTempID) + ' = ' + @sTableName + '.ID';
-		SET @sExecString = @sExecString + @sTempString;
-
-	END
-
-	WHILE len(@sJoinViews) > 1
-	BEGIN
-		SELECT @iIndex = charindex(',', @sJoinViews, 2);
-		SET @sViewName = substring(@sJoinViews, 2, @iIndex - 2);
-		SET @sJoinViews = substring(@sJoinViews, @iIndex, len(@sJoinViews) -@iIndex + 1);
-
-		SELECT @iTempID = viewTableID
-		FROM ASRSysViews
-		WHERE viewName = @sViewName;
-
-		IF @iTempID = @iEmployeeTableID
-		BEGIN
-			SET @sTempString = ' LEFT OUTER JOIN ' + @sViewName +
-				' ON ' + @sEmpRealSource + '.ID = ' + @sViewName + '.ID';
-			SET @sExecString = @sExecString + @sTempString;
-
-			IF @fDelegateSelect = 0
-			BEGIN
-				SET @sWhereSQL = @sWhereSQL + 
-					CASE
-						WHEN len(@sWhereSQL) > 0 THEN ' OR ('
-						ELSE '('
-					END +
-					@sEmpRealSource + '.ID IN (SELECT ID FROM ' + @sViewName +  '))';
-			END
-		END
-		ELSE
-		BEGIN
-			SET @sTempString = ' LEFT OUTER JOIN ' + @sViewName +
-				' ON ' + @sEmpRealSource + '.ID_' + convert(varchar(8000), @iTempID) + ' = ' + @sViewName + '.ID';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-	END
-
-	IF len(@sWhereSQL) > 0
-	BEGIN
-		SET @sTempString = ' WHERE (' + @sWhereSQL + ')';
-		SET @sExecString = @sExecString + @sTempString;
-	END
-	
-	/* Get the list of selected IDs. */
-	
-	IF len(@psSelectedIDs) = 0 SET @psSelectedIDs = '0';
-	
-	IF UPPER(@psSelectionType) = 'PICKLIST'
-	BEGIN
-		DECLARE picklistCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT recordID
-		FROM ASRSysPicklistItems
-		WHERE picklistID = @piSelectionID;
-	
-		OPEN picklistCursor;
-		FETCH NEXT FROM picklistCursor INTO @iID;
-
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @psSelectedIDs = @psSelectedIDs + ',' + convert(varchar(255), @iID);
-			FETCH NEXT FROM picklistCursor INTO @iID;
-		END
-		CLOSE picklistCursor;
-		DEALLOCATE picklistCursor;
-	END
-	
-	/* Get the required find records. */
-	SET @sTempString = CASE
-			WHEN (charindex(' WHERE ', @sExecString) > 0) THEN ' AND ('
-			ELSE ' WHERE ('
-		END +
-		'(' + @sEmpRealSource + '.id IN (' + @psSelectedIDs + '))';
-		
-	SET @sExecString = @sExecString + @sTempString;
-
-	IF (UPPER(@psSelectionType) = 'FILTER') AND (len(@psPromptSQL) > 0)
-	BEGIN
-		SET @sTempString = ' OR (' + 
-			convert(varchar(255), @sEmpRealSource) + '.id IN (' + @psPromptSQL + '))';
-		SET @sExecString = @sExecString + @sTempString;
-
-	END
-
-	SET @sTempString = ') ORDER BY 1';
-	SET @sExecString = @sExecString + @sTempString;
-		
-	/* Count the number of commas before the ' FROM ' to see how many columns are in the select statement. */
-	SET @iTemp = 2;
-	WHILE @iTemp <= @iColumnCount
-	BEGIN
-		SET @sTempString = ',' + convert(varchar(8000), @iTemp);
-		SET @sExecString = @sExecString + @sTempString;
-		SET @iTemp = @iTemp + 1;
-	END
-
-	-- Return generated SQL	
-	EXEC sp_executeSQL @sExecString;
-	
 END
 
 GO
@@ -39115,333 +26262,6 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetDefaultOrderColumns]    Script Date: 13/09/2013 08:59:33 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetDefaultOrderColumns] (
-	@piTableID				integer,
-	@psErrorMsg 			varchar(max)	OUTPUT,
-	@ps1000SeparatorCols 	varchar(8000)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the 'employee' table find columns that the user has 'read' permission on. */
-	DECLARE 
-		@iUserGroupID		integer,
-		@sUserGroupName		sysname,
-		@iOrderID			integer,
-		@sColumnName 		sysname,
-		@iDataType 			integer,
-		@iTableID 			integer,
-		@iCount				integer,
-		@sTemp				sysname,
-		@iIndex				integer,
-		@sRealSource		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@iTempTableType		integer,
-		@sTempTableName		sysname,
-		@iChildViewID		integer,
-		@sTempRealSource	sysname,
-		@iViewID			integer, 
-		@sViewName			sysname,
-		@iTempID			integer,
-		@sActualUserName	sysname,
-		@iTempTableID 		integer,
-		@fSelectGranted 	bit,
-		@bUse1000Separator	bit,
-		@fSomeReadable		bit,
-		@fViewReadable		bit;
-
-	SET @psErrorMsg = '';
-	SET @ps1000SeparatorCols = '';
-	SET @fSomeReadable = 0;
-
-	/* Get the current user's group ID. */
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	SELECT @iOrderID = defaultOrderID, 
-		@iTableType = tableType,
-		@sTableName = tableName
-	FROM [dbo].[ASRSysTables]
-	WHERE tableID = @piTableID;
-
-	/* Get the real source of the employee table. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		SET @sRealSource = @sTableName;
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM [dbo].[ASRSysChildViews2]
-		WHERE tableID = @piTableID
-			AND [role] = @sUserGroupName;
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0;
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(CONVERT(varchar(255),@sTableName), ' ', '_') +
-				'#' + replace(CONVERT(varchar(255),@sUserGroupName), ' ', '_')
-			SET @sRealSource = left(CONVERT(varchar(255),@sRealSource), 255);
-		END
-	END	
-	
-	/* Create a temporary table to hold the find columns that the user can see. */
-	DECLARE @findColumns TABLE
-		(columnName	sysname,
-		dataType	integer)	
-
-	DECLARE @columnPermissions TABLE
-		(tableID		integer,
-		tableViewName	sysname,
-		columnName	sysname,
-		selectGranted	bit);
-
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT DISTINCT ASRSysColumns.tableID, ASRSysTables.tableType, ASRSysTables.tableName
-		FROM ASRSysOrderItems 
-		INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-		INNER JOIN ASRSysTables ON ASRSysColumns.tableID= ASRSysTables.tableID
-		WHERE ASRSysOrderItems.orderID = @iOrderID
-			AND ASRSysOrderItems.type = 'F';
-
-	OPEN tablesCursor;
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName 
-					FROM ASRSysViews 
-					WHERE ASRSysViews.viewTableID = @iTempTableID)
-					AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-					OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM [dbo].[ASRSysChildViews2]
-			WHERE tableID = @iTempTableID
-				AND [role] = @sUserGroupName;
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0;
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(500), @iChildViewID) +
-					'#' + replace(@sTempTableName, ' ', '_') +
-					'#' + replace(@sUserGroupName, ' ', '_');
-				SET @sTempRealSource = left(@sTempRealSource, 255);
-
-				INSERT INTO @columnPermissions
-				SELECT 
-					@iTempTableID,
-					sysobjects.name,
-					syscolumns.name,
-					CASE protectType
-					        	WHEN 205 THEN 1
-						WHEN 204 THEN 1
-						ELSE 0
-					END 
-				FROM sysprotects
-				INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-				INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-				WHERE sysprotects.uid = @iUserGroupID
-					AND sysprotects.action = 193 
-					AND syscolumns.name <> 'timestamp'
-					AND sysobjects.name =@sTempRealSource
-						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-			END
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
-	END
-	
-	CLOSE tablesCursor;
-	DEALLOCATE tablesCursor;
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT 
-		ASRSysColumns.columnName,
-		ASRSysColumns.dataType,
-		ASRSysColumns.tableID,
-		ASRSysTables.tableType,
-		ASRSysTables.tableName,
-		ASRSysColumns.Use1000Separator
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-	ORDER BY ASRSysOrderItems.sequence;
-
-	OPEN orderCursor;
-	FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName, @bUse1000Separator;
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		SET @psErrorMsg = 'Unable to read the table''s default order.';
-		RETURN;
-	END
-
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0;
-
-		/* Get the real source of the table. */
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			SET @sTempRealSource = @sTempTableName;
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM [dbo].[ASRSysChildViews2]
-			WHERE tableID = @iTableID
-				AND [role] = @sUserGroupName;
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0;
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(1000), @iChildViewID) +
-					'#' + replace(CONVERT(varchar(255),@sTempTableName), ' ', '_') +
-					'#' + replace(CONVERT(varchar(255),@sUserGroupName), ' ', '_');
-				SET @sTempRealSource = left(CONVERT(varchar(8000),@sTempRealSource), 255);
-			END
-		END	
-
-		SELECT @fSelectGranted = selectGranted
-		FROM @columnPermissions
-		WHERE tableID = @iTableID
-			AND tableViewName = @sTempRealSource
-			AND columnName = @sColumnName;
-
-		IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-		
-		IF @fSelectGranted = 1
-		BEGIN
-			SET @fSomeReadable = 1;
-
-			SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
-				CASE
-					WHEN @bUse1000Separator = 1 THEN '1'
-					ELSE '0'
-				END;
-
-			INSERT INTO @findColumns (columnName, dataType) VALUES (@sColumnName, @iDataType);
-		END
-		ELSE
-		BEGIN
-			/* The column CANNOT be read from the table, or directly from a parent table.
-			Try to read it from the views on the table. */
-			SET @fViewReadable = 0;
-
-			DECLARE viewsCursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT viewID,
-				viewName
-			FROM [dbo].[ASRSysViews]
-			WHERE viewTableID = @iTableID;
-
-			OPEN viewsCursor;
-			FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
-			WHILE (@@fetch_status = 0)
-			BEGIN
-				SELECT @fSelectGranted = selectGranted
-				FROM @columnPermissions
-				WHERE tableID = @iTableID
-					AND tableViewName = @sViewName
-					AND columnName = @sColumnName;
-
-				IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-
-				IF @fSelectGranted = 1	
-				BEGIN
-					SET @fViewReadable = 1;
-				END
-
-				FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
-			END
-			CLOSE viewsCursor;
-			DEALLOCATE viewsCursor;
-
-			IF @fViewReadable = 1
-			BEGIN
-				INSERT INTO @findColumns (columnName, dataType) VALUES (@sColumnName, @iDataType);
-
-				SET @fSomeReadable = 1;
-
-				SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
-					CASE
-						WHEN @bUse1000Separator = 1 THEN '1'
-						ELSE '0'
-					END;
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName, @bUse1000Separator;
-
-	END
-	CLOSE orderCursor;
-	DEALLOCATE orderCursor;
-
-	IF @fSomeReadable = 0
-	BEGIN
-		/* Flag to the user that they cannot see any of the find columns. */
-		SET @psErrorMsg = 'You do not have permission to read the table''s find columns.';
-	END
-	ELSE
-	BEGIN
-		/* Add the ID column. */
-		INSERT INTO @findColumns (columnName, dataType) VALUES ('ID', 4);
-	END
-
-	SELECT * FROM @findColumns;
-END
-
-GO
 
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetEmpIDFromTBID]    Script Date: 13/09/2013 08:59:33 ******/
@@ -40645,851 +27465,6 @@ BEGIN
 		childTableScreenName DESC
 END
 
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetLinkFindRecords]    Script Date: 13/09/2013 08:59:33 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetLinkFindRecords]
-	(
-	@piTableID 			integer, 
-	@piViewID 			integer, 
-	@piOrderID 			integer,
-	@pfError 			bit 					OUTPUT,
-	@piRecordsRequired	integer,
-	@pfFirstPage		bit						OUTPUT,
-	@pfLastPage			bit						OUTPUT,
-	@psLocateValue		varchar(MAX),
-	@piColumnType		integer					OUTPUT,
-	@psAction			varchar(100),
-	@piTotalRecCount	integer					OUTPUT,
-	@piFirstRecPos		integer					OUTPUT,
-	@piCurrentRecCount	integer,
-	@psExcludedIDs		varchar(MAX),
-	@piColumnSize		integer					OUTPUT,
-	@piColumnDecimals	integer					OUTPUT
-	)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the link find records for the current user, given the table/view and order IDs.
-		@piTableID = the ID of the table on which the find is based.
-		@piViewID = the ID of the view on which the find is based.
-		@piOrderID = the ID of the order we are using.
-		@pfError = 1 if errors occured in getting the find records. Else 0.
-	*/
-	DECLARE 
-		@iUserGroupID			integer,
-		@sUserGroupName			sysname,
-		@iTableType				integer,
-		@sTableName				sysname,
-		@sRealSource 			sysname,
-		@iChildViewID 			integer,
-		@iTempTableID 			integer,
-		@iColumnTableID			integer,
-		@iColumnID 				integer,
-		@sColumnName 			sysname,
-		@sColumnTableName		sysname,
-		@fAscending 			bit,
-		@sType	 				varchar(10),
-		@iDataType 				integer,
-		@fSelectGranted 		bit,
-		@sSelectSQL				varchar(MAX),
-		@sOrderSQL 				varchar(MAX),
-		@sExecString			nvarchar(MAX),
-		@sTempString			varchar(MAX),
-		@fSelectDenied			bit,
-		@iTempCount 			integer,
-		@sSubString				varchar(MAX),
-		@sViewName 				varchar(255),
-		@sTableViewName 		sysname,
-		@iJoinTableID 			integer,
-		@iTemp					integer,
-		@sRemainingSQL			varchar(MAX),
-		@iLastCharIndex			integer,
-		@iCharIndex 			integer,
-		@sDESCstring			varchar(5),
-		@sTempExecString		nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@fFirstColumnAsc		bit,
-		@sFirstColCode			varchar(MAX),
-		@sLocateCode			varchar(MAX),
-		@sReverseOrderSQL 		varchar(MAX),
-		@iCount					integer,
-		@iGetCount				integer,
-		@iColSize				integer,
-		@iColDecs				integer,
-		@sActualUserName		sysname,
-		@sTempName				sysname;
-
-	/* Clean the input string parameters. */
-	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''');
-	IF len(@psExcludedIDs) > 0 SET @psExcludedIDs = replace(@psExcludedIDs, '''', '''''');
-
-	/* Initialise variables. */
-	SET @pfError = 0;
-	SET @sRealSource = '';
-	SET @sSelectSQL = '';
-	SET @sOrderSQL = '';
-	SET @fSelectDenied = 0;
-	SET @sExecString = '';
-	SET @sDESCstring = ' DESC';
-	SET @fFirstColumnAsc = 1;
-	SET @sFirstColCode = '';
-	SET @sReverseOrderSQL = '';
-	IF len(@psExcludedIDs) = 0 SET @psExcludedIDs = '0';
-	
-	/* Get the current user's group ID. */
-	EXEC [DBO].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
-	SET @psAction = UPPER(@psAction)
-	IF (@psAction <> 'MOVEPREVIOUS') AND 
-		(@psAction <> 'MOVENEXT') AND 
-		(@psAction <> 'MOVELAST') AND 
-		(@psAction <> 'LOCATE')
-	BEGIN
-		SET @psAction = 'MOVEFIRST';
-	END
-
-	/* Get the table type and name. */
-	SELECT @iTableType = ASRSysTables.tableType,
-		@sTableName = ASRSysTables.tableName
-	FROM [dbo].[ASRSysTables]
-	WHERE ASRSysTables.tableID = @piTableID;
-
-	/* Get the real source of the given table/view. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN	
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM [dbo].[ASRSysViews]
-			WHERE viewID = @piViewID;
-		END
-		ELSE
-		BEGIN
-			SET @sRealSource = @sTableName;
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM [dbo].[ASRSysChildViews2]
-		WHERE tableID = @piTableID
-			AND role = @sUserGroupName;
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0;
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_');
-			SET @sRealSource = left(@sRealSource, 255);
-		END
-	END
-
-	IF len(@sRealSource) = 0
-	BEGIN
-		SET @pfError = 1;
-		RETURN;
-	END
-
-	EXECUTE [dbo].[sp_ASRUniqueObjectName] @sTempName OUTPUT, 'ASRSysTempInt', 3;
-	EXECUTE ('CREATE TABLE ' + @sTempName + ' (ID INT)');
-	IF @psExcludedIDs <> '0' EXECUTE('INSERT INTO ' + @sTempName + ' (ID) SELECT ID FROM ' + @sRealSource + ' WHERE ID IN (' + @psExcludedIDs + ')');
-
-	/* Create a temporary table to hold the tables/views that need to be joined. */
-	DECLARE @joinParents TABLE(
-		tableViewName	sysname,
-		tableID		integer);
-
-	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
-	DECLARE @columnPermissions TABLE(
-		tableID		integer,
-		tableViewName	sysname,
-		columnName	sysname,
-		selectGranted	bit);
-
-	/* Loop through the tables used in the order, getting the column permissions for each one. */
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-
-	OPEN tablesCursor
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableID = @piTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name = @sRealSource
-				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	END
-	CLOSE tablesCursor
-	DEALLOCATE tablesCursor
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	AND ASRSysColumns.datatype <> -3
-	AND ASRSysColumns.datatype <> -4
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-
-		SET @pfError = 1
-		EXECUTE sp_ASRDropUniqueObject @sTempName, 3
-		RETURN
-	END
-
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-		IF @iColumnTableId = @piTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-
-			IF @fSelectGranted = 1
-			BEGIN
-				/* The user DOES have SELECT permission on the column in the current table/view. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName;
-					SET @sSelectSQL = @sSelectSQL + @sTempString;
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sRealSource + '.' + @sColumnName
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName +
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-			END
-			ELSE
-			BEGIN
-				/* The user does NOT have SELECT permission on the column in the current table/view. */
-				SET @fSelectDenied = 1
-			END	
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				/* The user DOES have SELECT permission on the column in the parent table. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName;
-					SET @sSelectSQL = @sSelectSQL + @sTempString;
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName + 
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-
-				FROM @joinParents
-				WHERE tableViewName = @sColumnTableName
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
-				END
-			END
-			ELSE	
-			BEGIN
-				SET @sSubString = '';
-
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND selectGranted = 1;
-
-				OPEN viewCursor
-				FETCH NEXT FROM viewCursor INTO @sViewName
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					IF len(@sSubString) = 0 SET @sSubString = 'CASE';
-
-					SET @sSubString = @sSubString +
-						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName;
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-					WHERE tableViewname = @sViewName;
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId);
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName;
-				END
-				CLOSE viewCursor;
-				DEALLOCATE viewCursor;
-
-				IF len(@sSubString) > 0
-				BEGIN
-					SET @sSubString = @sSubString +	' ELSE NULL END';
-
-					IF @sType = 'F'
-					BEGIN
-						/* Find column. */
-						SET @sTempString = CASE 
-								WHEN (len(@sSelectSQL) > 0) THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END;
-						SET @sSelectSQL = @sSelectSQL + @sTempString;
-					END
-					ELSE
-					BEGIN
-						/* Order column. */
-						IF len(@sOrderSQL) = 0 
-						BEGIN
-							SET @piColumnType = @iDataType
-							SET @piColumnSize = @iColSize
-							SET @piColumnDecimals = @iColDecs
-							SET @fFirstColumnAsc = @fAscending
-							SET @sFirstColCode = @sSubString
-						END
-
-						SET @sOrderSQL = @sOrderSQL + 
-							CASE 
-								WHEN len(@sOrderSQL) > 0 THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END + 
-							CASE 
-								WHEN @fAscending = 0 THEN ' DESC' 
-								ELSE '' 
-							END				
-					END
-				END
-				ELSE
-				BEGIN
-					/* The user does NOT have SELECT permission on the column any of the parent views. */
-					SET @fSelectDenied = 1
-				END	
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	/* Add the ID column to the order string. */
-	SET @sOrderSQL = @sOrderSQL + 
-		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
-		@sRealSource + '.ID'
-
-	/* Create the reverse order string if required. */
-	IF (@psAction <> 'MOVEFIRST') 
-	BEGIN
-		SET @sRemainingSQL = @sOrderSQL
-
-		SET @iLastCharIndex = 0
-		SET @iCharIndex = CHARINDEX(',', @sOrderSQL)
-		WHILE @iCharIndex > 0 
-		BEGIN
- 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', '
-			END
-			ELSE
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', '
-			END
-
-			SET @iLastCharIndex = @iCharIndex
-			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1)
-	
-			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex)
-		END
-		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring
-
-	END
-
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource
-	IF @psExcludedIDs <> '0' SET @sTempExecString = @sTempExecString + ' WHERE ' + @sRealSource + '.ID NOT IN (SELECT ID FROM ' + @sTempName + ')'
-
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
-	SET @piTotalRecCount = @iCount
-
-	IF (len(@sSelectSQL) > 0)
-	BEGIN
-	
-		SET @sTempString = ',' + @sRealSource + '.ID';
-		SET @sSelectSQL = @sSelectSQL + @sTempString;
-		SET @sExecString = 'SELECT ';
-
-		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE'
-		BEGIN
-			SET @sTempString = 'TOP ' + convert(varchar(MAX), @piRecordsRequired) + ' ';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-
-		SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID';
-			SET @sExecString = @sExecString + @sTempString;
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		IF (@psAction = 'MOVELAST')
-		BEGIN
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID' +	' FROM ' + @sRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-		END
-
-		IF @psAction = 'MOVENEXT' 
-		BEGIN
-			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-			BEGIN
-				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired
-			END
-				
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired  - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-		END
-		
-		IF @psAction = 'MOVEPREVIOUS'
-		BEGIN
-			IF @piFirstRecPos <= @piRecordsRequired
-			BEGIN
-				SET @iGetCount = @piFirstRecPos - 1;
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired;
-			END
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-				
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource;
-			SET @sExecString = @sExecString + @sTempString;
-		END
-
-		IF @psExcludedIDs <> '0' 
-		BEGIN
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID NOT IN (SELECT ID FROM ' + @sTempName + ')';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-		
-		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-
-		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')';
-			SET @sExecString = @sExecString + @sTempString;
-		END
-
-		IF (@psAction = 'LOCATE')
-		BEGIN
-			IF @psExcludedIDs <> '0'
-			BEGIN
-				SET @sLocateCode = ' AND (' + @sFirstColCode;
-			END
-			ELSE
-			BEGIN
-				SET @sLocateCode = ' WHERE (' + @sFirstColCode;
-			END
-
-			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + '''';
-
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL';
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
-						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL';
-				END
-
-			END
-
-			IF @piColumnType = 11 /* Date column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL';
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + '''';
-					END
-				END
-				ELSE
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NULL';
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL';
-					END
-				END
-			END
-
-			IF @piColumnType = -7 /* Logic column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END;
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END;
-				END
-			END
-
-			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue;
-
-					IF convert(float, @psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL';
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL';
-				END
-
-			END
-
-			SET @sLocateCode = @sLocateCode + ')';
-			SET @sTempString = @sLocateCode;
-			SET @sExecString = @sExecString + @sTempString;
-			
-		END
-
-		/* Add the ORDER BY code to the find record selection string if required. */
-		SET @sTempString = ' ORDER BY ' + @sOrderSQL;
-		SET @sExecString = @sExecString + @sTempString;
-		
-	END
-
-	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
-	IF @psAction = 'MOVEFIRST'
-	BEGIN
-		SET @piFirstRecPos = 1;
-		SET @pfFirstPage = 1;
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-				ELSE 0
-			END;
-	END
-	IF @psAction = 'MOVENEXT'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount;
-		SET @pfFirstPage = 0;
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END;
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos - @iGetCount;
-		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1;
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END;
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END;
-	END
-	IF @psAction = 'MOVELAST'
-	BEGIN
-		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1;
-		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1;
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END;
-		SET @pfLastPage = 1;
-	END
-
-	IF @psAction = 'LOCATE'
-	BEGIN
-		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource;
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents;
-
-		OPEN joinCursor;
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempExecString = @sTempExecString + 
-				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID';
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
-		END
-		CLOSE joinCursor;
-		DEALLOCATE joinCursor;
-
-		IF @psExcludedIDs <> '0' SET @sTempExecString = @sTempExecString + ' WHERE ' + @sRealSource + '.ID NOT IN (SELECT ID FROM ' + @sTempName + ')';
-		SET @sTempExecString = @sTempExecString + @sLocateCode;
-
-		SET @sTempParamDefinition = N'@recordCount integer OUTPUT';
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT;
-
-		IF @iTemp <=0 
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount + 1;
-		END
-		ELSE
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1;
-		END
-
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END;
-			
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @piRecordsRequired THEN 1
-				ELSE 0
-			END;
-	END
-
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	IF (len(@sExecString) > 0)
-	BEGIN
-		EXEC (@sExecString) --+ @sExecString2)
-	END
-
-	EXECUTE sp_ASRDropUniqueObject @sTempName, 3
-END
-
-GO
-
-
 
 GO
 
@@ -42172,530 +28147,6 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetOrderSQL]    Script Date: 13/09/2013 08:59:34 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetOrderSQL] (
-	@piScreenID 	integer,
-	@piViewID 		integer,
-	@piOrderID		integer,
-	@psFromDef		varchar(MAX) OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of strings describing of the controls in the given screen. */
-	DECLARE @iUserGroupID	integer,
-		@sUserGroupName		sysname,
-		@iScreenTableID		integer,
-		@iScreenTableType	integer,
-		@sScreenTableName	varchar(255),
-		@fSysSecMgr			bit,
-		@sRealSource 		varchar(255),
-		@sParentSource		varchar(255),
-		@iChildViewID 		integer,
-		@sJoinCode 			varchar(MAX),
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		varchar(255),
-		@sColumnTableName 	varchar(255),
-		@iColumnDataType	integer,
-		@fSelectGranted 	bit,
-		@iTempCount 		integer,
-		@sViewName 			varchar(255),
-		@fAscending 		bit,
-		@sTableViewName 	varchar(255),
-		@iJoinTableID 		integer,
-		@sParentRealSource	varchar(255),
-		@iParentTableType	integer,
-		@sParentTableName	sysname,
-		@sActualUserName	sysname;
-
-	/* Get the current user's group ID. */
-	EXEC spASRIntGetActualUserDetails
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT
-
-	/* Get the table type and name. */
-	SELECT @iScreenTableID = ASRSysScreens.tableID,
-		@iScreenTableType = ASRSysTables.tableType,
-		@sScreenTableName = ASRSysTables.tableName
-	FROM ASRSysScreens
-	INNER JOIN ASRSysTables ON ASRSysScreens.tableID = ASRSysTables.tableID
-	WHERE ASRSysScreens.screenID = @piScreenID
-
-	/* Check if the current user is a System or Security manager. */
-	IF UPPER(LTRIM(RTRIM(SYSTEM_USER))) = 'SA'
-	BEGIN
-		SET @fSysSecMgr = 1
-	END
-	ELSE
-	BEGIN	
-
-		SELECT @fSysSecMgr = CASE WHEN count(*) > 0 THEN 1 ELSE 0 END
-		FROM ASRSysGroupPermissions
-		INNER JOIN ASRSysPermissionItems ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
-		INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-		INNER JOIN sysusers ON ASRSysGroupPermissions.groupName = sysusers.name
-		WHERE sysusers.uid = @iUserGroupID
-			AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
-			OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
-			AND ASRSysGroupPermissions.permitted = 1
-			AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS'
-	END
-
-	/* Get the real source of the given screen's table/view. */
-	IF @iScreenTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID	
-		END
-		ELSE
-		BEGIN
-			/* RealSource is the table. */	
-			SET @sRealSource = @sScreenTableName
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @iScreenTableID
-			AND role = @sUserGroupName
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sScreenTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_')
-			SET @sRealSource = left(@sRealSource, 255)
-		END
-	END
-
-	/* Initialise the select and order parameters. */
-	SET @psFromDef = ''
-	SET @sJoinCode = ''
-
-	/* Create a temporary table to hold the tables/views that need to be joined. */
-	DECLARE @joinParents TABLE(
-		tableViewName	sysname,
-		tableID			integer);
-
-	/* Create a temporary table of the column permissions for all tables/views used in the screen. */
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		granted			bit);
-
-	/* Loop through the controls used in the screen, getting the column permissions for each one. */
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysControls.tableID
-	FROM ASRSysControls
-	WHERE screenID = @piScreenID
-		AND ASRSysControls.columnID > 0
-	UNION
-	SELECT DISTINCT ASRSysColumns.tableID 
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	WHERE ASRSysOrderItems.type = 'O' 
-		AND ASRSysOrderItems.orderID = @piOrderID
-
-	OPEN tablesCursor
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @fSysSecMgr =1
-		BEGIN
-			IF @iTempTableID = @iScreenTableID
-			BEGIN
-				/* Base table - use the real source. */
-				INSERT INTO @columnPermissions
-				SELECT 
-					@iTempTableID,
-					@sRealSource,
-					ASRSysColumns.columnName,
-					1
-				FROM ASRSysColumns
-				WHERE ASRSysColumns.tableID = @iTempTableID
-			END
-			ELSE
-			BEGIN
-				/* Parent of the base table - get permissions for the table, and any associated views. */
-				SELECT @iParentTableType = tableType,
-					@sParentSource = tableName
-				FROM ASRSysTables
-				WHERE tableID = @iTempTableID
-
-				IF @iParentTableType <> 2 
-				BEGIN
-					/* ie. top-level or lookup */
-					INSERT INTO @columnPermissions
-					SELECT 
-						@iTempTableID,
-						@sParentSource,
-						ASRSysColumns.columnName,
-						1
-					FROM ASRSysColumns
-					WHERE ASRSysColumns.tableID = @iTempTableID
-				END	
-				ELSE
-				BEGIN
-					/* RealSource is the child view on the table which is derived from full access on the table's parents. */	
-					SELECT @iChildViewID = childViewID
-					FROM ASRSysChildViews2
-					WHERE tableID = @iTempTableID
-						AND role = @sUserGroupName
-						
-					IF @iChildViewID IS null SET @iChildViewID = 0
-						
-					IF @iChildViewID > 0 
-					BEGIN
-						SET @sParentSource = 'ASRSysCV' + 
-							convert(varchar(1000), @iChildViewID) +
-							'#' + replace(@sParentSource, ' ', '_') +
-							'#' + replace(@sUserGroupName, ' ', '_')
-						SET @sParentSource = left(@sParentSource, 255)
-					END
-
-					INSERT INTO @columnPermissions
-					SELECT 
-						@iTempTableID,
-						@sParentSource,
-						ASRSysColumns.columnName,
-						1
-					FROM ASRSysColumns
-					WHERE ASRSysColumns.tableID = @iTempTableID
-				END
-			END
-		END
-		ELSE
-		BEGIN
-			IF @iTempTableID = @iScreenTableID
-			BEGIN
-				/* Base table - use the real source. */
-				INSERT INTO @columnPermissions
-				SELECT 
-					@iTempTableID,
-					@sRealSource,
-					syscolumns.name,
-					CASE protectType
-						WHEN 205 THEN 1
-						WHEN 204 THEN 1
-						ELSE 0
-					END 
-				FROM sysprotects
-				INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-				INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-				WHERE sysprotects.uid = @iUserGroupID
-					AND sysprotects.action = 193 
-					AND syscolumns.name <> 'timestamp'
-					AND sysobjects.name = @sRealSource
-					AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-					OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-			END
-			ELSE
-			BEGIN
-				/* Parent of the base table - get permissions for the table, and any associated views. */
-				SELECT @iParentTableType = tableType,
-					@sParentTableName = tableName
-				FROM ASRSysTables
-				WHERE tableID = @iTempTableID
-
-				IF @iParentTableType <> 2 
-				BEGIN
-					/* ie. top-level or lookup */
-					INSERT INTO @columnPermissions
-					SELECT 
-						@iTempTableID,
-						sysobjects.name,
-						syscolumns.name,
-						CASE protectType
-						        	WHEN 205 THEN 1
-							WHEN 204 THEN 1
-							ELSE 0
-						END 
-					FROM sysprotects
-					INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-					INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-					WHERE sysprotects.uid = @iUserGroupID
-						AND sysprotects.action = 193
-						AND syscolumns.name <> 'timestamp'
-						AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE ASRSysTables.tableID = @iTempTableID 
-							UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-				END	
-				ELSE
-				BEGIN
-					/* Get permitted child view on the parent table. */
-					SELECT @iChildViewID = childViewID
-					FROM ASRSysChildViews2
-					WHERE tableID = @iTempTableID
-						AND role = @sUserGroupName
-						
-					IF @iChildViewID IS null SET @iChildViewID = 0
-						
-					IF @iChildViewID > 0 
-					BEGIN
-						SET @sParentRealSource = 'ASRSysCV' + 
-							convert(varchar(1000), @iChildViewID) +
-							'#' + replace(@sParentTableName, ' ', '_') +
-							'#' + replace(@sUserGroupName, ' ', '_')
-						SET @sParentRealSource = left(@sParentRealSource, 255)
-
-						INSERT INTO @columnPermissions
-						SELECT 
-							@iTempTableID,
-							@sParentRealSource,
-							syscolumns.name,
-							CASE protectType
-								WHEN 205 THEN 1
-								WHEN 204 THEN 1
-								ELSE 0
-							END 
-						FROM sysprotects
-						INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-						INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-						WHERE sysprotects.uid = @iUserGroupID
-							AND sysprotects.action = 193 
-							AND syscolumns.name <> 'timestamp'
-							AND sysobjects.name = @sParentRealSource
-							AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-							AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-							OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-							AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-					END
-				END
-			END
-		END
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	END
-	CLOSE tablesCursor
-	DEALLOCATE tablesCursor
-
-	/* Create a temporary table of the column info for all columns used in the screen controls. */
-	/* Populate the temporary table with info for all columns used in the screen controls. */
-	DECLARE columnsCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysControls.tableID, 
-		ASRSysControls.columnID, 
-		ASRSysColumns.columnName, 
-		ASRSysTables.tableName,
-		ASRSysColumns.dataType
-	FROM ASRSysControls
-	LEFT OUTER JOIN ASRSysTables ON ASRSysControls.tableID = ASRSysTables.tableID 
-	LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID AND ASRSysColumns.columnID = ASRSysControls.columnID
-	WHERE screenID = @piScreenID
-		AND ASRSysControls.columnID > 0
-
-	OPEN columnsCursor
-	FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-
-		IF @iColumnTableID <> @iScreenTableID
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = granted
-			FROM @columnPermissions
-			WHERE tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @joinParents
-				WHERE tableViewName = @sColumnTableName
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
-				END
-			END
-			ELSE	
-			BEGIN
-				/* Column could NOT be read directly from the parent table, so try the views. */
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableID
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND granted = 1
-
-				OPEN viewCursor
-				FETCH NEXT FROM viewCursor INTO @sViewName
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					SET @fSelectGranted = 1 
-
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-					WHERE tableViewName = @sViewName
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableID)
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName
-				END
-				CLOSE viewCursor
-				DEALLOCATE viewCursor
-			END
-		END
-
-		FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType
-	END
-	CLOSE columnsCursor
-	DEALLOCATE columnsCursor
-
-	/* Create the order string. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-		AND ASRSysOrderItems.type = 'O'
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-
-		IF @iColumnTableId = @iScreenTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = granted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = granted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @joinParents
-				WHERE tableViewName = @sColumnTableName
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
-				END
-			END
-			ELSE	
-			BEGIN
-				/* Column could NOT be read directly from the parent table, so try the views. */
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND granted = 1
-
-				OPEN viewCursor
-				FETCH NEXT FROM viewCursor INTO @sViewName
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-					WHERE tableViewname = @sViewName
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName
-				END
-				CLOSE viewCursor
-				DEALLOCATE viewCursor
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	/* Create the FROM code. */
-	SET @psFromDef = @sRealSource + '	'
-	DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT tableViewName, 
-		tableID
-	FROM @joinParents
-
-	OPEN joinCursor
-	FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @psFromDef = @psFromDef + @sTableViewName + '	' + convert(varchar(100), @iJoinTableID) + '	'
-
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-	END
-	CLOSE joinCursor
-	DEALLOCATE joinCursor
-
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetPersonnelParameters]    Script Date: 13/09/2013 08:59:34 ******/
 SET ANSI_NULLS ON
@@ -43731,537 +29182,8 @@ BEGIN
 		SET @plngOrderID = @lngDefaultOrderID;
 	END
 END
-
 GO
 
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetSelectedPicklistRecords]    Script Date: 13/09/2013 08:59:34 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetSelectedPicklistRecords]
-	(
-	@psSelectionType		varchar(255),
-	@piSelectionID			integer,
-	@psSelectedIDs			varchar(MAX),
-	@psPromptSQL			varchar(MAX),
-	@piTableID				integer,
-	@psErrorMessage			varchar(MAX)	OUTPUT,
-	@piExpectedRecords		integer			OUTPUT
-	)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE
-		@iUserGroupID		integer,
-		@sUserGroupName		sysname,
-		@iID				integer,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@sRealSource		sysname,
-		@sColumnName 		sysname,
-		@iDataType 			integer,
-		@iTableID 			integer,
-		@iChildViewID		integer,
-		@sTempRealSource	sysname,
-		@iTemp				integer,
-		@sTemp				varchar(MAX),
-		@sSubViews			varchar(MAX),
-		@sSQL 				nvarchar(MAX),
-		@sPositionParamDefinition 	nvarchar(500),
-		@sActualUserName	sysname,
-		@sSelectSQL2		varchar(MAX),
-		@sSelectSQL3		varchar(MAX),
-		@sSelectSQL5		varchar(MAX),
-		@sSelectSQL			varchar(MAX),
-		@sFromSQL			varchar(MAX),
-		@iOrderID			integer,
-		@sJoinTables		varchar(MAX),
-		@sJoinViews			varchar(MAX),
-		@sWhereSQL			varchar(MAX),
-		@fBaseSelect		bit,
-		@iTempTableType		integer,
-		@sTempTableName		sysname,
-		@iTempTableID 		integer,
-		@fSelectGranted 	bit,
-		@iIndex				integer,
-		@iViewID			integer, 
-		@sViewName			sysname,
-		@iTempID			integer,
-		@sSubSQL			varchar(MAX),
-		@sExecuteSQL		nvarchar(MAX);
-	
-	/* Clean the input string parameters. */
-	IF len(@psSelectedIDs) > 0 SET @psSelectedIDs = replace(@psSelectedIDs, '''', '''''');
-
-	SET @sSelectSQL = '';
-	SET @sSelectSQL2 = '';
-	SET @sSelectSQL3 = '';
-	SET @sSelectSQL5 = '';
-		
-	SET @sJoinTables = ',';
-	SET @sJoinViews = ',';
-	SET @sWhereSQL = '';
-	SET @fBaseSelect = 0;
-	SET @sFromSQL = '';
-	
-	/* Get the current user's group ID. */
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	SELECT @iOrderID = defaultOrderID, 
-		@iTableType = tableType,
-		@sTableName = tableName
-	FROM ASRSysTables
-	WHERE tableID = @piTableID;
-
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		SET @sRealSource = @sTableName;
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @piTableID
-			AND role = @sUserGroupName;
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0;
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(CONVERT(varchar(255),@sTableName), ' ', '_') +
-				'#' + replace(CONVERT(varchar(255),@sUserGroupName), ' ', '_');
-			SET @sRealSource = left(CONVERT(varchar(255),@sRealSource), 255);
-		END
-	END	
-
-	SET @sSelectSQL = '';
-
-	/* Create a temporary table to hold the find columns that the user can see. */
-	DECLARE @columnPermissions TABLE
-		(tableID		integer,
-		tableViewName	sysname,
-		columnName	sysname,
-		selectGranted	bit);
-
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID, ASRSysTables.tableType, ASRSysTables.tableName
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	INNER JOIN ASRSysTables ON ASRSysColumns.tableID= ASRSysTables.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F';
-
-	OPEN tablesCursor;
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName 
-					FROM ASRSysViews 
-					WHERE ASRSysViews.viewTableID = @iTempTableID)
-					AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-					OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM ASRSysChildViews2
-			WHERE tableID = @iTempTableID
-				AND [role] = @sUserGroupName;
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0;
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(1000), @iChildViewID) +
-					'#' + replace(@sTempTableName, ' ', '_') +
-					'#' + replace(@sUserGroupName, ' ', '_');
-				SET @sTempRealSource = left(@sTempRealSource, 255);
-
-				INSERT INTO @columnPermissions
-				SELECT 
-					@iTempTableID,
-					sysobjects.name,
-					syscolumns.name,
-					CASE protectType
-					        	WHEN 205 THEN 1
-						WHEN 204 THEN 1
-						ELSE 0
-					END 
-				FROM sysprotects
-				INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-				INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-				WHERE sysprotects.uid = @iUserGroupID
-					AND sysprotects.action = 193 
-					AND syscolumns.name <> 'timestamp'
-					AND sysobjects.name =@sTempRealSource
-						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-			END
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
-	END
-	CLOSE tablesCursor;
-	DEALLOCATE tablesCursor;
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT 
-		ASRSysColumns.columnName,
-		ASRSysColumns.dataType,
-		ASRSysColumns.tableID,
-		ASRSysTables.tableType,
-		ASRSysTables.tableName
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-		AND ASRSysColumns.datatype <> -3
-		AND ASRSysColumns.datatype <> -4
-	ORDER BY ASRSysOrderItems.sequence;
-
-	OPEN orderCursor;
-	FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0;
-
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			SET @sTempRealSource = @sTempTableName;
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM ASRSysChildViews2
-			WHERE tableID = @iTableID
-				AND [role] = @sUserGroupName;
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0;
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(1000), @iChildViewID) +
-					'#' + replace(@sTempTableName, ' ', '_') +
-					'#' + replace(@sUserGroupName, ' ', '_');
-				SET @sTempRealSource = left(@sTempRealSource, 255);
-			END
-		END	
-
-		SELECT @fSelectGranted = selectGranted
-		FROM @columnPermissions
-		WHERE tableID = @iTableID
-			AND tableViewName = @sTempRealSource
-			AND columnName = @sColumnName;
-
-		IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-
-		IF @fSelectGranted = 1
-		BEGIN
-			/* Add the column code to the 'select' string. */
-			SET @sSelectSQL = @sSelectSQL +
-				CASE 
-					WHEN len(@sSelectSQL) > 0 THEN ','
-					ELSE ''
-				END +
-				@sTempRealSource + '.' + @sColumnName;
-
-			IF @iTableID = @piTableID
-			BEGIN
-				SET @fBaseSelect = 1;
-			END 
-			ELSE
-			BEGIN
-				/* Add the table to the list of join tables if required. */
-				SELECT @iIndex = CHARINDEX(',' + @sTempRealSource + ',', @sJoinTables);
-				IF @iIndex = 0 SET @sJoinTables = @sJoinTables + @sTempRealSource + ',';
-			END
-		END
-		ELSE
-		BEGIN
-			/* The column CANNOT be read from the Delegate table, or directly from a parent table.
-			Try to read it from the views on the table. */
-			SET @sSubViews = ',';
-
-			DECLARE viewsCursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT viewID,
-				viewName
-			FROM ASRSysViews
-			WHERE viewTableID = @iTableID;
-
-			OPEN viewsCursor;
-			FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
-			WHILE (@@fetch_status = 0)
-			BEGIN
-				SET @fSelectGranted = 0
-
-				SELECT @fSelectGranted = selectGranted
-				FROM @columnPermissions
-				WHERE tableID = @iTableID
-					AND tableViewName = @sViewName
-					AND columnName = @sColumnName;
-
-				IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-
-				IF @fSelectGranted = 1	
-				BEGIN
-					/* Add the view to the list of join views if required. */
-					SELECT @iIndex = CHARINDEX(',' + @sViewName + ',', @sJoinViews);
-					IF @iIndex = 0 SET @sJoinViews = @sJoinViews + @sViewName + ',';
-
-					SET @sSubViews = @sSubViews + @sViewName + ',';
-				END
-
-				FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
-			END
-			CLOSE viewsCursor;
-			DEALLOCATE viewsCursor;
-
-			IF len(@sSubViews) > 1
-			BEGIN
-				SET @sSubSQL = '';
-
-				WHILE len(@sSubViews) > 1
-				BEGIN
-					SELECT @iIndex = charindex(',', @sSubViews, 2);
-					SET @sViewName = substring(@sSubViews, 2, @iIndex - 2);
-					SET @sSubViews = substring(@sSubViews, @iIndex, len(@sSubViews) -@iIndex + 1);
-
-					IF len(@sSubSQL) > 0 SET @sSubSQL = @sSubSQL + ',';
-					SET @sSubSQL = @sSubSQL + @sViewName + '.' + @sColumnName;
-				END
-
-				SET @sSubSQL = 'COALESCE(' + @sSubSQL + ', NULL) AS [' + @sColumnName + ']';
-                
-				/* Add the column code to the 'select' string. */
-				SET @sSelectSQL = @sSelectSQL +
-					CASE 
-						WHEN len(@sSelectSQL) > 0 THEN ','
-						ELSE ''
-					END +
-					@sSubSQL;
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName;
-	END
-	
-	CLOSE orderCursor;
-	DEALLOCATE orderCursor;
-
-	/* Add the ID column. */
-	SET @sFromSQL = ' FROM ' + @sRealSource;
-        
-	/* Join any other tables and views that are used. */
-	WHILE len(@sJoinTables) > 1
-	BEGIN
-		SELECT @iIndex = charindex(',', @sJoinTables, 2);
-		SET @sTableName = substring(@sJoinTables, 2, @iIndex - 2);
-		SET @sJoinTables = substring(@sJoinTables, @iIndex, len(@sJoinTables) -@iIndex + 1);
-
-		SELECT @iTempID = tableID
-		FROM ASRSysTables
-		WHERE tableName = @sTableName;
-
-		SET @sFromSQL = @sFromSQL + 		
-			' LEFT OUTER JOIN ' + @sTableName +
-			' ON ' + @sRealSource + '.ID_' + convert(varchar(255), @iTempID) + ' = ' + @sTableName + '.ID';
-	END
-
-	WHILE len(@sJoinViews) > 1
-	BEGIN
-		SELECT @iIndex = charindex(',', @sJoinViews, 2);
-		SET @sViewName = substring(@sJoinViews, 2, @iIndex - 2);
-		SET @sJoinViews = substring(@sJoinViews, @iIndex, len(@sJoinViews) -@iIndex + 1);
-
-		SELECT @iTempID = viewTableID
-		FROM ASRSysViews
-		WHERE viewName = @sViewName;
-
-		IF @iTempID = @piTableID
-		BEGIN
-			SET @sFromSQL = @sFromSQL + 		
-				' LEFT OUTER JOIN ' + @sViewName +
-				' ON ' + @sRealSource + '.ID = ' + @sViewName + '.ID';
-
-			IF @fBaseSelect = 0
-			BEGIN
-				SET @sWhereSQL = @sWhereSQL + 
-					CASE
-						WHEN len(@sWhereSQL) > 0 THEN ' OR ('
-						ELSE '('
-					END +
-					@sRealSource + '.ID IN (SELECT ID FROM ' + @sViewName +  '))';
-			END
-		END
-		ELSE
-		BEGIN
-			SET @sFromSQL = @sFromSQL + 		
-				' LEFT OUTER JOIN ' + @sViewName +
-				' ON ' + @sRealSource + '.ID_' + convert(varchar(255), @iTempID) + ' = ' + @sViewName + '.ID';
-		END
-	END
-
-	IF len(@sWhereSQL) > 0
-	BEGIN
-		SET @sFromSQL = @sFromSQL + 
-			' WHERE (' + @sWhereSQL + ')'	;
-	END
-	
-	/* Get the list of selected IDs. */
-	IF len(@psSelectedIDs) = 0 SET @psSelectedIDs = '0';
-
-	/* PICKLIST = gets the items from the original definition */
-	IF UPPER(@psSelectionType) = 'PICKLIST'
-	BEGIN
-		SET @psSelectedIDs = ' (SELECT recordID FROM ASRSysPicklistItems WHERE picklistID = ' + CONVERT(varchar(255), @piSelectionID) + ') ';
-	END
-		
-	/* ALLRECORDS = gets all the remaining records */
-	IF UPPER(@psSelectionType) <> 'ALLRECORDS'
-	BEGIN
-		/* Get the required find records. */
-		SET @sSelectSQL2 = @sSelectSQL2 +
-			CASE
-				WHEN charindex(' WHERE ', @sFromSQL) > 0 THEN ' AND ('
-				ELSE ' WHERE ('
-			END +
-			'(' + CONVERT(varchar(255), @sRealSource) + '.id IN (' ;
-						
-		SET @sSelectSQL3 = @psSelectedIDs;
-		SET @sSelectSQL5 = @sSelectSQL5 + ')))';
-	END
-
-	/* FILTER = gets all the filtered records that are not yet selected */
-	IF (UPPER(@psSelectionType) = 'FILTER') AND (len(@psPromptSQL) > 0)
-	BEGIN
-		SET @sSelectSQL5 = @sSelectSQL5 + ' OR (' + 
-			CONVERT(varchar(255), @sRealSource) + '.id IN (' + @psPromptSQL + '))';
-	END
-	
-
-	/* Add the 'order by part. */
-	SET @sSelectSQL5 = @sSelectSQL5 +
-		' ORDER BY 1';
-		
-	/* Count the number of commas before the ' FROM ' to see how many columns are in the select statement. */
-	SELECT @iTemp = CHARINDEX(' FROM ', @sFromSQL);
-	SET @sTemp = SUBSTRING(@sFromSQL, 1, @iTemp);
-	SET @iTemp = 2;
-	WHILE charindex(',', @sTemp) > 0
-	BEGIN
-		SET @sSelectSQL5 = @sSelectSQL5 +
-			',' + convert(varchar(MAX), @iTemp);
-		SET @sTemp = substring(@sTemp, charindex(',', @sTemp)+1, len(@sTemp) - charindex(',', @sTemp));
-		SET @iTemp = @iTemp + 1;
-	END
-	
-	SET @piExpectedRecords = 0;
-	IF UPPER(@psSelectionType) = 'ALL'
-	BEGIN
-		SET @sSQL = 'SELECT @recordPosition = COUNT(ID)' +
-			' FROM ' + CONVERT(varchar(255), @sRealSource) +
-			' WHERE ID IN(' + @psSelectedIDs + ')';
-		SET @sPositionParamDefinition = N'@recordPosition integer OUTPUT';
-		EXEC sp_executesql @sSQL, @sPositionParamDefinition, @piExpectedRecords OUTPUT;
-	END
-
-	SET @sExecuteSQL = 'SELECT ' + @sSelectSQL + ',' +
-		@sRealSource + '.id ' + @sFromSQL +
-		@sSelectSQL2 + @sSelectSQL3 + @sSelectSQL5;
-
-	-- Execute the generated string
-	EXECUTE sp_executeSQL @sExecuteSQL;
-
-END
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTableOrders]    Script Date: 13/09/2013 08:59:34 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetTableOrders] (
-	@piTableID 		integer, 
-	@piViewID 		integer)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-	
-	/* Return a recordset of the orders for the current table/view and order IDs.
-		@piTableID = the ID of the table on which the order is based.
-		@piViewID = the ID of the view on which the order is based.
-	*/
-
-	IF @piViewID > 0 
-	BEGIN
-		SELECT DISTINCT ASRSysOrders.name AS Name, 
-			ASRSysOrders.orderID
-		FROM ASRSysOrders
-		INNER JOIN ASRSysOrderItems ON ASRSysOrders.orderID = ASRSysOrderItems.orderID
-		INNER JOIN ASRSysViewColumns ON ASRSysOrderItems.columnID = ASRSysViewColumns.columnID
-		WHERE ASRSysOrders.tableID = @piTableID
-			AND ASRSysOrders.[type] = 1
-			AND ASRSysViewColumns.inView = 1
-			AND ASRSysOrderItems.[type] = 'O'
-			AND ASRSysViewColumns.viewID = @piViewID
-		ORDER BY ASRSysOrders.name;
-	END
-	ELSE
-	BEGIN
-		SELECT name AS Name, orderID
-		FROM ASRSysOrders
-		WHERE tableID= @piTableID
-			AND ASRSysOrders.[type] = 1
-		ORDER BY name;
-	END
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTableScreensMenu]    Script Date: 13/09/2013 08:59:34 ******/
 SET ANSI_NULLS ON
@@ -44304,2439 +29226,8 @@ BEGIN
 		AND sysprotects.protecttype = 205
 	ORDER BY ASRSysTables.tableName DESC
 END
-
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTablesInfo]    Script Date: 13/09/2013 08:59:34 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetTablesInfo]
-AS
-BEGIN
-	/* Return a set of information for all of the tables in the system. */
-	/* The information required is :
-		table id
-		table name
-		table type
-		string listing the ids of the table's children.
-		string listing the ids of the table's parents.
-		string listing the ids of all the tables's relations.
-	
-	NB. The tables are return in name order. */
-	
-	SET NOCOUNT ON;
-	
-	DECLARE	@iTableID		integer,
-			@sTableName		sysname,
-			@iTableType		integer,
-			@sChildren		varchar(MAX),
-			@sChildrenNames varchar(MAX),
-			@sParents		varchar(MAX),
-			@iChildID		integer,
-			@sChildName		varchar(255),
-			@iParentID		integer,			
-			@sRelations		varchar(MAX),
-			@sRelationName	varchar(MAX),
-			@iRelationID	integer;
-
-	DECLARE @tableInfo TABLE (
-		tableID		integer,
-		tableName	sysname,
-		tableType	integer,
-		childrenString	varchar(MAX),
-		childrenNames	varchar(MAX),
-		parentsString	varchar(MAX),
-		relatedString   varchar(MAX));
-
-	DECLARE tableCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT tableID,
-		tableName,
-		tableType
-	FROM [dbo].[ASRSysTables];
-
-	OPEN tableCursor;
-	FETCH NEXT FROM tableCursor INTO @iTableID, @sTableName, @iTableType;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @sChildren = '';
-		SET @sParents = '';
-		SET @sChildrenNames = '';
-		SET @sRelations = '' ;
-		
-		DECLARE childCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT ASRSysRelations.childID, ASRSysTables.TableName
-			FROM [dbo].[ASRSysRelations]
-			INNER JOIN ASRSysTables ON ASRSysRelations.childID = ASRSysTables.tableID
-			WHERE ASRSysRelations.parentID = @iTableID
-			ORDER BY ASRSysTables.tableName;
-
-		OPEN childCursor;
-		FETCH NEXT FROM childCursor INTO @iChildID, @sChildName;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sChildren = @sChildren + 
-				convert(varchar(MAX), @iChildID) + char(9);
-
-			SET @sChildrenNames = @sChildrenNames +
-				convert(varchar(MAX), @iChildID) + char(9) + convert(varchar(2000), @sChildName) + char(9);
-
-			FETCH NEXT FROM childCursor INTO @iChildID, @sChildName;
-		END
-		
-		CLOSE childCursor;
-		DEALLOCATE childCursor;
-
-		DECLARE parentCursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT ASRSysRelations.parentID
-			FROM [dbo].[ASRSysRelations]
-			INNER JOIN ASRSysTables ON ASRSysRelations.parentID = ASRSysTables.tableID
-			WHERE ASRSysRelations.childID = @iTableID
-			ORDER BY ASRSysTables.tableName;
-
-		OPEN parentCursor;
-		FETCH NEXT FROM parentCursor INTO @iParentID;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sParents = @sParents + 
-				convert(varchar(2000), @iParentID) + char(9);
-			FETCH NEXT FROM parentCursor INTO @iParentID;
-		END
-		CLOSE parentCursor;
-		DEALLOCATE parentCursor;
-
-		DECLARE relatedCursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT ASRSysRelations.childID, ASRSysTables.TableName
-			FROM [dbo].[ASRSysRelations]
-			INNER JOIN ASRSysTables ON ASRSysRelations.childID = ASRSysTables.tableID
-			WHERE ASRSysRelations.parentID = @iTableID
-			UNION
-			SELECT ASRSysRelations.parentID, ASRSysTables.TableName 
-			FROM [dbo].[ASRSysRelations]
-			INNER JOIN ASRSysTables ON ASRSysRelations.parentID = ASRSysTables.tableID
-			WHERE ASRSysRelations.childID = @iTableID
-			UNION
-			SELECT ASRSysTables.TableID, ASRSysTables.TableName 
-			FROM [dbo].[ASRSysTables]
-			WHERE ASRSysTables.TableID = @iTableID
-			ORDER BY ASRSysTables.tableName;
-
-		OPEN relatedCursor;
-		FETCH NEXT FROM relatedCursor INTO @iRelationID, @sRelationName;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			
-			SET @sRelations = @sRelations +
-				convert(varchar(MAX), @iRelationID) + char(9) + convert(varchar(2000), @sRelationName) + char(9);
-
-			FETCH NEXT FROM relatedCursor INTO @iRelationID, @sRelationName;
-		END
-		CLOSE relatedCursor;
-		DEALLOCATE relatedCursor;
-
-		INSERT INTO @tableInfo (tableID, tableName, tableType, childrenString, childrenNames, parentsString, relatedString) 
-			VALUES (@iTableID, @sTableName, @iTableType, @sChildren, @sChildrenNames, @sParents, @sRelations);
-
-		FETCH NEXT FROM tableCursor INTO @iTableID, @sTableName, @iTableType;
-	END
-	CLOSE tableCursor;
-	DEALLOCATE tableCursor;
-
-	SELECT *
-		FROM @tableInfo 
-		ORDER BY tableName;
-
-END
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTBEmployeeColumns]    Script Date: 13/09/2013 08:59:34 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetTBEmployeeColumns] (
-	@psErrorMsg 			varchar(MAX)	OUTPUT,
-	@ps1000SeparatorCols 	varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the 'employee' table find columns that the user has 'read' permission on. */
-	DECLARE 
-		@iUserGroupID		integer,
-		@sUserGroupName		sysname,
-		@iEmployeeTableID	integer,
-		@iOrderID			integer,
-		@sColumnName 		sysname,
-		@iDataType 			integer,
-		@iTableID 			integer,
-		@iCount				integer,
-		@sTemp				sysname,
-		@iIndex				integer,
-		@sEmpRealSource		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@iTempTableType		integer,
-		@sTempTableName		sysname,
-		@iChildViewID		integer,
-		@sTempRealSource	sysname,
-		@iViewID			integer, 
-		@sViewName			sysname,
-		@iTempID			integer,
-		@sActualUserName	sysname,
-		@iTempTableID 		integer,
-		@fSelectGranted 	bit,
-		@bUse1000Separator	bit,
-		@fSomeReadable		bit,
-		@fViewReadable		bit;
-
-	SET @psErrorMsg = ''
-	SET @ps1000SeparatorCols = ''
-	SET @fSomeReadable = 0
-	
-	/* Get the current user's group ID. */
-	EXEC spASRIntGetActualUserDetails
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT
-
-	/* Get the EMPLOYEE table information. */
-	SELECT @iEmployeeTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_EmployeeTable'
-	IF @iEmployeeTableID IS NULL SET @iEmployeeTableID = 0
-
-	SELECT @iOrderID = defaultOrderID, 
-		@iTableType = tableType,
-		@sTableName = tableName
-	FROM ASRSysTables
-	WHERE tableID = @iEmployeeTableID
-
-	/* Get the real source of the employee table. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		SET @sEmpRealSource = @sTableName
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @iEmployeeTableID
-			AND role = @sUserGroupName
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sEmpRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_')
-			SET @sEmpRealSource = left(@sEmpRealSource, 255)
-		END
-	END	
-	
-	/* Create a temporary table to hold the find columns that the user can see. */
-	DECLARE @findColumns TABLE(
-		columnName		sysname,
-		dataType		integer);
-
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID, ASRSysTables.tableType, ASRSysTables.tableName
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysColumns.tableID= ASRSysTables.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-
-	OPEN tablesCursor
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName 
-					FROM ASRSysViews 
-					WHERE ASRSysViews.viewTableID = @iTempTableID)
-					AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-					OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM ASRSysChildViews2
-			WHERE tableID = @iTempTableID
-				AND role = @sUserGroupName
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(1000), @iChildViewID) +
-					'#' + replace(@sTempTableName, ' ', '_') +
-					'#' + replace(@sUserGroupName, ' ', '_')
-				SET @sTempRealSource = left(@sTempRealSource, 255)
-
-				INSERT INTO @columnPermissions
-				SELECT 
-					@iTempTableID,
-					sysobjects.name,
-					syscolumns.name,
-					CASE protectType
-					        	WHEN 205 THEN 1
-						WHEN 204 THEN 1
-						ELSE 0
-					END 
-				FROM sysprotects
-				INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-				INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-				WHERE sysprotects.uid = @iUserGroupID
-					AND sysprotects.action = 193 
-					AND syscolumns.name <> 'timestamp'
-					AND sysobjects.name =@sTempRealSource
-						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-			END
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName
-	END
-	CLOSE tablesCursor
-	DEALLOCATE tablesCursor
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT 
-		ASRSysColumns.columnName,
-		ASRSysColumns.dataType,
-		ASRSysColumns.tableID,
-		ASRSysTables.tableType,
-		ASRSysTables.tableName,
-		ASRSysColumns.Use1000Separator
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @iOrderID
-		AND ASRSysOrderItems.type = 'F'
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName, @bUse1000Separator
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		SET @psErrorMsg = 'Unable to read the Employee table default order.'
-		RETURN
-	END
-
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-
-		/* Get the real source of the employee table. */
-		IF @iTempTableType <> 2 /* ie. top-level or lookup */
-		BEGIN
-			SET @sTempRealSource = @sTempTableName
-		END
-		ELSE
-		BEGIN
-			SELECT @iChildViewID = childViewID
-			FROM ASRSysChildViews2
-			WHERE tableID = @iTableID
-				AND role = @sUserGroupName
-				
-			IF @iChildViewID IS null SET @iChildViewID = 0
-				
-			IF @iChildViewID > 0 
-			BEGIN
-				SET @sTempRealSource = 'ASRSysCV' + 
-					convert(varchar(1000), @iChildViewID) +
-					'#' + replace(@sTempTableName, ' ', '_') +
-					'#' + replace(@sUserGroupName, ' ', '_')
-				SET @sTempRealSource = left(@sTempRealSource, 255)
-			END
-		END	
-
-		SELECT @fSelectGranted = selectGranted
-		FROM @columnPermissions
-		WHERE tableID = @iTableID
-			AND tableViewName = @sTempRealSource
-			AND columnName = @sColumnName
-
-		IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-
-		IF @fSelectGranted = 1
-		BEGIN
-			SET @fSomeReadable = 1
-
-			SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
-				CASE
-					WHEN @bUse1000Separator = 1 THEN '1'
-					ELSE '0'
-				END
-
-			INSERT INTO @findColumns (columnName, dataType) VALUES (@sColumnName, @iDataType)
-		END
-		ELSE
-		BEGIN
-			/* The column CANNOT be read from the Delegate table, or directly from a parent table.
-			Try to read it from the views on the table. */
-			SET @fViewReadable = 0
-
-			DECLARE viewsCursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT viewID,
-				viewName
-			FROM ASRSysViews
-			WHERE viewTableID = @iTableID
-
-			OPEN viewsCursor
-			FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName
-			WHILE (@@fetch_status = 0)
-			BEGIN
-				SELECT @fSelectGranted = selectGranted
-				FROM @columnPermissions
-				WHERE tableID = @iTableID
-					AND tableViewName = @sViewName
-					AND columnName = @sColumnName
-
-				IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-
-				IF @fSelectGranted = 1	
-				BEGIN
-					SET @fViewReadable = 1
-				END
-
-				FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName
-			END
-			CLOSE viewsCursor
-			DEALLOCATE viewsCursor
-
-			IF @fViewReadable = 1
-			BEGIN
-				INSERT INTO @findColumns (columnName, dataType) VALUES (@sColumnName, @iDataType)
-
-				/* Add the column code to the 'select' string. */
-				SET @fSomeReadable = 1
-
-				SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
-					CASE
-						WHEN @bUse1000Separator = 1 THEN '1'
-						ELSE '0'
-					END
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName, @bUse1000Separator
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	IF @fSomeReadable = 0
-	BEGIN
-		/* Flag to the user that they cannot see any of the find columns. */
-		SET @psErrorMsg = 'You do not have permission to read the Employee table find columns.'
-	END
-	ELSE
-	BEGIN
-		/* Add the ID column. */
-		INSERT INTO @findColumns (columnName, dataType) VALUES ('ID', 4)
-	END
-
-	SELECT * FROM @findColumns;
-	
-END
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTransferBookingRecords]    Script Date: 13/09/2013 08:59:34 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetTransferBookingRecords] (
-	@piTableID 			integer, 
-	@piViewID 			integer, 
-	@piOrderID 			integer,
-	@piTBRecordID		integer,
-	@pfError 			bit 			OUTPUT,
-	@piRecordsRequired	integer,
-	@pfFirstPage		bit				OUTPUT,
-	@pfLastPage			bit				OUTPUT,
-	@psLocateValue		varchar(MAX),
-	@piColumnType		integer			OUTPUT,
-	@psAction			varchar(255),
-	@piTotalRecCount	integer			OUTPUT,
-	@piFirstRecPos		integer			OUTPUT,
-	@piCurrentRecCount	integer,
-	@psErrorMessage		varchar(MAX)	OUTPUT,
-	@piColumnSize		integer			OUTPUT,
-	@piColumnDecimals	integer			OUTPUT,
-	@psStatus			varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iUserGroupID	integer,
-		@sUserGroupName		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@sRealSource 		sysname,
-		@iChildViewID 		integer,
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		sysname,
-		@sColumnTableName 	sysname,
-		@fAscending 		bit,
-		@sType	 			varchar(10),
-		@iDataType 			integer,
-		@fSelectGranted 	bit,
-		@sSelectSQL			varchar(MAX),
-		@sOrderSQL 			varchar(MAX),
-		@sExecString		nvarchar(MAX),
-		@sTempString		varchar(MAX),
-		@fSelectDenied		bit,
-		@iTempCount 		integer,
-		@sSubString			varchar(MAX),
-		@sViewName 			varchar(255),
-		@sTableViewName 	sysname,
-		@iJoinTableID 		integer,
-		@iTemp				integer,
-		@sRemainingSQL		varchar(MAX),
-		@iLastCharIndex		integer,
-		@iCharIndex 		integer,
-		@sDESCstring		varchar(4),
-		@sTempExecString	nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@fFirstColumnAsc	bit,
-		@sFirstColCode		varchar(MAX),
-		@sLocateCode		varchar(MAX),
-		@sReverseOrderSQL 	varchar(MAX),
-		@iCount				integer,
-		@fWhereDone			bit,
-		@iTBStatusColumnID	integer,
-		@sTBStatusColumnName	sysname,
-		@iCourseTitleColumnID	integer,
-		@sCourseTitleColumnName	sysname,
-		@iCourseStartDateColumnID	integer,
-		@sCourseStartDateColumnName	sysname,
-		@iGetCount			integer,
-		@sCourseTitle		varchar(MAX),
-		@sStatus			varchar(MAX),
-		@iEmpTableID		integer,
-		@iCourseTableID		integer,
-		@iEmpRecordID		integer,
-		@iCourseRecordID	integer,
-		@iTBTableID			integer,
-		@sTBRealSource		varchar(255),
-		@sCourseSource		sysname,
-		@iColSize			integer,
-		@iColDecs			integer,
-		@sTBTableName		sysname,
-		@sActualUserName	sysname
-
-	/* Initialise variables. */
-	SET @pfError = 0
-	SET @psErrorMessage = ''
-	SET @sRealSource = ''
-	SET @sSelectSQL = ''
-	SET @sOrderSQL = ''
-	SET @fSelectDenied = 0
-	SET @sExecString = ''
-	SET @sDESCstring = ' DESC'
-	SET @fFirstColumnAsc = 1
-	SET @sFirstColCode = ''
-	SET @sReverseOrderSQL = ''
-	SET @fWhereDone = 0
-
-	/* Clean the input string parameters. */
-	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''')
-
-	/* Get the current user's group ID. */
-	EXEC spASRIntGetActualUserDetails
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT
-
-	/* Get the employee table id. */
-	SELECT @iEmpTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_EmployeeTable'
-	IF @iEmpTableID IS NULL SET @iEmpTableID = 0
-
-	/* Get the Course table id. */
-	SELECT @iCourseTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTable'
-	IF @iCourseTableID IS NULL SET @iCourseTableID = 0
-
-	/* Get the status, employee id and course id from the given TB record. */
-	/* NB. To reach this point we have already checked that the user has 'read' permission on the Training Booking - Status column. */
-	SELECT @iTBTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_TrainBookTable'
-	IF @iTBTableID IS NULL SET @iTBTableID = 0
-
-	SELECT @sTBTableName = tableName
-	FROM ASRSysTables
-	WHERE tableID = @iTBTableID
-	
-	SELECT @iTBStatusColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_TrainBookStatus'
-	IF @iTBStatusColumnID IS NULL SET @iTBStatusColumnID = 0
-	
-	IF @iTBStatusColumnID > 0 
-	BEGIN
-		SELECT @sTBStatusColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iTBStatusColumnID
-	END
-	IF @sTBStatusColumnName IS NULL SET @sTBStatusColumnName = ''
-
-	SELECT @iChildViewID = childViewID
-	FROM ASRSysChildViews2
-	WHERE tableID = @iTBTableID
-		AND role = @sUserGroupName
-		
-	IF @iChildViewID IS null SET @iChildViewID = 0
-		
-	IF @iChildViewID > 0 
-	BEGIN
-		SET @sTBRealSource = 'ASRSysCV' + 
-			convert(varchar(1000), @iChildViewID) +
-			'#' + replace(@sTBTableName, ' ', '_') +
-			'#' + replace(@sUserGroupName, ' ', '_')
-		SET @sTBRealSource = left(@sTBRealSource, 255)
-	END
-
-	SET @sTempExecString = 'SELECT @sStatus = ' + @sTBStatusColumnName + 
-		', @iEmpRecordID = id_' + convert(nvarchar(100), @iEmpTableID) +
-		', @iCourseRecordID = id_' + convert(nvarchar(100), @iCourseTableID) +
-		' FROM ' + @sTBRealSource +
-		' WHERE id = ' + convert(nvarchar(100), @piTBRecordID)
-	SET @sTempParamDefinition = N'@sStatus varchar(255) OUTPUT, @iEmpRecordID integer OUTPUT, @iCourseRecordID integer OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @sStatus OUTPUT, @iEmpRecordID OUTPUT,	@iCourseRecordID OUTPUT
-
-	SET @psStatus = @sStatus
-	
-	/* We can only transfer 'Booked' and 'Provisionally Booked' records that have valid course and employee records. */
-	IF (ltrim(rtrim(upper(@sStatus))) <> 'B') AND (ltrim(rtrim(upper(@sStatus))) <> 'P')
-	BEGIN
-		SET @pfError = 1
-		SET @psErrorMessage = 'Training booking records can only be transferred if they have ''Booked'''
-
-		SELECT @iCount = COUNT(*)
-		FROM ASRSysColumnControlValues
-		WHERE columnID = @iTBStatusColumnID
-			AND upper(value) = 'P'
-		
-		IF @iCount > 0
-		BEGIN
-			SET @psErrorMessage = @psErrorMessage + ' or ''Provisional'''
-		END
-
-		SET @psErrorMessage = @psErrorMessage + ' status.'
-		RETURN
-	END
-	ELSE
-	BEGIN
-		IF (@iEmpRecordID <= 0) OR (@iEmpRecordID IS null)
-		BEGIN
-			SET @pfError = 1
-			SET @psErrorMessage = 'The selected Training Booking record has no associated Employee record.'
-			RETURN
-		END
-		ELSE
-		BEGIN
-			IF (@iCourseRecordID <= 0) OR (@iCourseRecordID IS null)
-			BEGIN
-				SET @pfError = 1
-				SET @psErrorMessage = 'The selected Training Booking record has no associated Course record.'
-				RETURN
-			END	
-		END
-	END
-	
-	SELECT @iCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTitle'
-	IF @iCourseTitleColumnID IS NULL SET @iCourseTitleColumnID = 0
-	
-	IF @iCourseTitleColumnID > 0 
-	BEGIN
-		SELECT @sCourseTitleColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseTitleColumnID
-	END
-	IF @sCourseTitleColumnName IS NULL SET @sCourseTitleColumnName = ''
-
-	SELECT @iCourseStartDateColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseStartDate'
-	IF @iCourseStartDateColumnID IS NULL SET @iCourseStartDateColumnID = 0
-
-	IF @iCourseStartDateColumnID > 0 
-	BEGIN
-		SELECT @sCourseStartDateColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseStartDateColumnID
-	END
-	IF @sCourseStartDateColumnName IS NULL SET @sCourseStartDateColumnName = ''
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
-	SET @psAction = UPPER(@psAction)
-	IF (@psAction <> 'MOVEPREVIOUS') AND 
-		(@psAction <> 'MOVENEXT') AND 
-		(@psAction <> 'MOVELAST') AND 
-		(@psAction <> 'LOCATE')
-	BEGIN
-		SET @psAction = 'MOVEFIRST'
-	END
-
-	/* Get the table type and name. */
-	SELECT @iTableType = ASRSysTables.tableType,
-		@sTableName = ASRSysTables.tableName
-	FROM ASRSysTables
-	WHERE ASRSysTables.tableID = @piTableID
-
-	/* Get the real source of the given table/view. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN	
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID
-		END
-		ELSE
-		BEGIN
-			SET @sRealSource = @sTableName
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @piTableID
-			AND role = @sUserGroupName
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_')
-			SET @sRealSource = left(@sRealSource, 255)
-		END
-	END
-
-	IF len(@sRealSource) = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	/* Create a temporary table to hold the tables/views that need to be joined. */
-	DECLARE @joinParents TABLE(
-		tableViewName	sysname,
-		tableID			integer);
-
-	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	/* Loop through the tables used in the order, getting the column permissions for each one. */
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-
-	OPEN tablesCursor
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableID = @piTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name = @sRealSource
-				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	END
-	CLOSE tablesCursor
-	DEALLOCATE tablesCursor
-
-	/* Get the @sCourseTitle value for the given TB record. */
-	DECLARE courseSourceCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT sysobjects.name
-	FROM sysprotects
-	INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-	INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-	WHERE sysprotects.uid = @iUserGroupID
-		AND sysprotects.action = 193 
-		AND (sysprotects.protectType = 205 OR sysprotects.protectType = 204)
-		AND syscolumns.name = @sCourseTitleColumnName
-		AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-			ASRSysTables.tableID = @iCourseTableID 
-			UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iCourseTableID)
-		AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-		OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-	OPEN courseSourceCursor
-	FETCH NEXT FROM courseSourceCursor INTO @sCourseSource
-	WHILE (@@fetch_status = 0) AND (@sCourseTitle IS null)
-	BEGIN
-		SET @sTempExecString = 'SELECT @sCourseTitle = ' + @sCourseTitleColumnName + 
-			' FROM ' + @sCourseSource +
-			' WHERE id = ' + convert(nvarchar(100), @iCourseRecordID)
-		SET @sTempParamDefinition = N'@sCourseTitle varchar(MAX) OUTPUT'
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @sCourseTitle OUTPUT
-
-		FETCH NEXT FROM courseSourceCursor INTO @sCourseSource
-	END
-	CLOSE courseSourceCursor
-	DEALLOCATE courseSourceCursor
-
-	IF @sCourseTitle IS null
-	BEGIN
-		SET @pfError = 1
-		SET @psErrorMessage = 'Unable to read the course title from the associated Course record.'
-		RETURN		
-	END
-
-	SET @fSelectGranted = 0
-	SELECT @fSelectGranted = selectGranted
-	FROM @columnPermissions
-	WHERE tableViewName = @sRealSource
-		AND columnName = @sCourseTitleColumnName
-	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	IF @fSelectGranted = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	SET @fSelectGranted = 0
-	SELECT @fSelectGranted = selectGranted
-	FROM @columnPermissions
-	WHERE tableViewName = @sRealSource
-		AND columnName = @sCourseStartDateColumnName
-	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	IF @fSelectGranted = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-		
-		IF @iColumnTableId = @piTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-
-			IF @fSelectGranted = 1
-			BEGIN
-				/* The user DOES have SELECT permission on the column in the current table/view. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName
-					SET @sSelectSQL = @sSelectSQL + @sTempString
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sRealSource + '.' + @sColumnName
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName +
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-			END
-			ELSE
-			BEGIN
-				/* The user does NOT have SELECT permission on the column in the current table/view. */
-				SET @fSelectDenied = 1
-			END	
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				/* The user DOES have SELECT permission on the column in the parent table. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName
-					SET @sSelectSQL = @sSelectSQL + @sTempString
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName + 
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @joinParents
-				WHERE tableViewName = @sColumnTableName
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
-				END
-			END
-			ELSE	
-			BEGIN
-				SET @sSubString = ''
-
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND selectGranted = 1
-
-				OPEN viewCursor
-				FETCH NEXT FROM viewCursor INTO @sViewName
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					IF len(@sSubString) = 0 SET @sSubString = 'CASE'
-
-					SET @sSubString = @sSubString +
-						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName 
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-					WHERE tableViewname = @sViewName
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName
-				END
-				CLOSE viewCursor
-				DEALLOCATE viewCursor
-
-				IF len(@sSubString) > 0
-				BEGIN
-					SET @sSubString = @sSubString +
-						' ELSE NULL END'
-
-					IF @sType = 'F'
-					BEGIN
-						/* Find column. */
-						SET @sTempString = CASE 
-								WHEN (len(@sSelectSQL) > 0) THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END
-						SET @sSelectSQL = @sSelectSQL + @sTempString
-					END
-					ELSE
-					BEGIN
-						/* Order column. */
-						IF len(@sOrderSQL) = 0 
-						BEGIN
-							SET @piColumnType = @iDataType
-							SET @fFirstColumnAsc = @fAscending
-							SET @sFirstColCode = @sSubString
-							SET @piColumnSize = @iColSize
-							SET @piColumnDecimals = @iColDecs
-						END
-
-						SET @sOrderSQL = @sOrderSQL + 
-							CASE 
-								WHEN len(@sOrderSQL) > 0 THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END + 
-							CASE 
-								WHEN @fAscending = 0 THEN ' DESC' 
-								ELSE '' 
-							END				
-					END
-				END
-				ELSE
-				BEGIN
-					/* The user does NOT have SELECT permission on the column any of the parent views. */
-					SET @fSelectDenied = 1
-				END	
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	/* Add the ID column to the order string. */
-	SET @sOrderSQL = @sOrderSQL + 
-		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
-		@sRealSource + '.ID'
-
-	/* Create the reverse order string if required. */
-	IF (@psAction <> 'MOVEFIRST') 
-	BEGIN
-		SET @sRemainingSQL = @sOrderSQL
-
-		SET @iLastCharIndex = 0
-		SET @iCharIndex = CHARINDEX(',', @sOrderSQL)
-		WHILE @iCharIndex > 0 
-		BEGIN
- 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', '
-			END
-			ELSE
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', '
-			END
-
-			SET @iLastCharIndex = @iCharIndex
-			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1)
-	
-			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex)
-		END
-		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring
-	END
-
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource +
-		' WHERE (' +
-		@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND ' +
-		@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
-		@sRealSource + '.id <> ' + convert(nvarchar(100), @iCourseRecordID) + ')'
-
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
-	SET @piTotalRecCount = @iCount
-
-	IF (len(@sSelectSQL) > 0) 
-	BEGIN
-		SET @sTempString = ',' + @sRealSource + '.ID'
-		SET @sSelectSQL = @sSelectSQL + @sTempString
-
-		SET @sExecString = 'SELECT ' 
-
-		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
-		BEGIN
-			SET @sTempString = 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
-			SET @sExecString = @sExecString + @sTempString
-		END
-		
-		SET @sTempString = @sSelectSQL + ' FROM ' + @sRealSource
-		SET @sExecString = @sExecString + @sTempString
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-			SET @sExecString = @sExecString + @sTempString
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		IF (@psAction = 'MOVELAST')
-		BEGIN
-			SET @fWhereDone = 1
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF @psAction = 'MOVENEXT' 
-		BEGIN
-			SET @fWhereDone = 1
-			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-			BEGIN
-				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired
-			END
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF @psAction = 'MOVEPREVIOUS'
-		BEGIN
-			SET @fWhereDone = 1
-			IF @piFirstRecPos <= @piRecordsRequired
-			BEGIN
-				SET @iGetCount = @piFirstRecPos - 1
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired				
-			END
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		/* Add the filter code. */
-		SET @sTempString = ' WHERE (' +
-			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND ' +
-			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
-			@sRealSource + '.id <> ' + convert(nvarchar(100), @iCourseRecordID) + ')'
-		SET @sExecString = @sExecString + @sTempString
-
-		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')'
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')'
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF (@psAction = 'LOCATE')
-		BEGIN
-			SET @fWhereDone = 1
-			SET @sLocateCode = ' AND (' + @sFirstColCode 
-
-			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
-						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL'
-				END
-
-			END
-
-			IF @piColumnType = 11 /* Date column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-					END
-				END
-				ELSE
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-			END
-
-			IF @piColumnType = -7 /* Logic column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + 
-
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-			END
-
-			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
-
-					IF convert(float, @psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL'
-				END
-			END
-
-			SET @sLocateCode = @sLocateCode + ')'
-
-			SET @sTempString = @sLocateCode
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		/* Add the ORDER BY code to the find record selection string if required. */
-		SET @sTempString = ' ORDER BY ' + @sOrderSQL
-		SET @sExecString = @sExecString + @sTempString
-	END
-
-	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
-	IF @psAction = 'MOVEFIRST'
-	BEGIN
-		SET @piFirstRecPos = 1
-		SET @pfFirstPage = 1
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVENEXT'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
-		SET @pfFirstPage = 0
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
-		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVELAST'
-	BEGIN
-		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
-		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 1
-	END
-	IF @psAction = 'LOCATE'
-	BEGIN
-		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempExecString = @sTempExecString + 
-				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-		
-		SET @sTempExecString = @sTempExecString + 
-			' WHERE (' +
-			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND ' +
-			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
-			@sRealSource + '.id <> ' + convert(nvarchar(100), @iCourseRecordID) + ')' + @sLocateCode
-
-		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
-
-		IF @iTemp <=0 
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount + 1
-		END
-		ELSE
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
-		END
-
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piFirstRecPos + @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	IF (len(@sExecString) > 0)
-	BEGIN
-		EXECUTE sp_executeSQL @sExecString;
-	END
-END
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTransferCourseRecords]    Script Date: 13/09/2013 08:59:34 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetTransferCourseRecords] (
-	@piTableID 			integer, 
-	@piViewID 			integer, 
-	@piOrderID 			integer,
-	@psCourseTitle 		varchar(MAX),
-	@piCourseRecordID	integer,
-	@pfError 			bit 		OUTPUT,
-	@piRecordsRequired	integer,
-	@pfFirstPage		bit			OUTPUT,
-	@pfLastPage			bit			OUTPUT,
-	@psLocateValue		varchar(MAX),
-	@piColumnType		integer		OUTPUT,
-	@psAction			varchar(255),
-	@piTotalRecCount	integer		OUTPUT,
-	@piFirstRecPos		integer		OUTPUT,
-	@piCurrentRecCount	integer,
-	@piColumnSize		integer		OUTPUT,
-	@piColumnDecimals	integer		OUTPUT
-)
-AS
-BEGIN
-	/* Return a recordset of the link find records for the current user, given the table/view and order IDs.
-		@piTableID = the ID of the table on which the find is based.
-		@piViewID = the ID of the view on which the find is based.
-		@piOrderID = the ID of the order we are using.
-		@pfError = 1 if errors occured in getting the find records. Else 0.
-	*/
-	SET NOCOUNT ON;
-	
-	DECLARE @iUserGroupID	integer,
-		@sUserGroupName		sysname,
-		@iTableType			integer,
-		@sTableName			sysname,
-		@sRealSource 		sysname,
-		@iChildViewID 		integer,
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		sysname,
-		@sColumnTableName 	sysname,
-		@fAscending 		bit,
-		@sType	 			varchar(10),
-		@iDataType 			integer,
-		@fSelectGranted 	bit,
-		@sSelectSQL			varchar(MAX),
-		@sOrderSQL 			varchar(MAX),
-		@sExecString		nvarchar(MAX),
-		@sTempString		varchar(MAX),
-		@fSelectDenied		bit,
-		@iTempCount 		integer,
-		@sSubString			varchar(MAX),
-		@sViewName 			varchar(255),
-		@sTableViewName 	sysname,
-		@iJoinTableID 		integer,
-		@iTemp				integer,
-		@sRemainingSQL		varchar(MAX),
-		@iLastCharIndex		integer,
-		@iCharIndex 		integer,
-		@sDESCstring		varchar(4),
-		@sTempExecString	nvarchar(MAX),
-		@sTempParamDefinition	nvarchar(500),
-		@fFirstColumnAsc	bit,
-		@sFirstColCode		varchar(MAX),
-		@sLocateCode		varchar(MAX),
-		@sReverseOrderSQL 	varchar(MAX),
-		@iCount				integer,
-		@fWhereDone			bit,
-		@iCourseTitleColumnID	integer,
-		@sCourseTitleColumnName	sysname,
-		@iCourseStartDateColumnID	integer,
-		@sCourseStartDateColumnName	sysname,
-		@sCourseCancelDateColumnID	integer,
-		@sCourseCancelDateColumnName	sysname,
-		@iGetCount			integer,
-		@iColSize			integer,
-		@iColDecs			integer,
-		@sActualUserName	sysname;
-
-	/* Initialise variables. */
-	SET @pfError = 0
-	SET @sRealSource = ''
-	SET @sSelectSQL = ''
-	SET @sOrderSQL = ''
-	SET @fSelectDenied = 0
-	SET @sExecString = ''
-	SET @sDESCstring = ' DESC'
-	SET @fFirstColumnAsc = 1
-	SET @sFirstColCode = ''
-	SET @sReverseOrderSQL = ''
-	SET @fWhereDone = 0
-
-	/* Clean the input string parameters. */
-	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''')
-	IF len(@psCourseTitle) > 0 SET @psCourseTitle = replace(@psCourseTitle, '''', '''''')
-
-	/* Get the current user's group ID. */
-	EXEC spASRIntGetActualUserDetails
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT
-
-	SELECT @iCourseTitleColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseTitle'
-	IF @iCourseTitleColumnID IS NULL SET @iCourseTitleColumnID = 0
-	
-	IF @iCourseTitleColumnID > 0 
-	BEGIN
-		SELECT @sCourseTitleColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseTitleColumnID
-	END
-	IF @sCourseTitleColumnName IS NULL SET @sCourseTitleColumnName = ''
-
-	SELECT @iCourseStartDateColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseStartDate'
-	IF @iCourseStartDateColumnID IS NULL SET @iCourseStartDateColumnID = 0
-
-	IF @iCourseStartDateColumnID > 0 
-	BEGIN
-		SELECT @sCourseStartDateColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @iCourseStartDateColumnID
-	END
-	IF @sCourseStartDateColumnName IS NULL SET @sCourseStartDateColumnName = ''
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
-	SET @psAction = UPPER(@psAction)
-	IF (@psAction <> 'MOVEPREVIOUS') AND 
-		(@psAction <> 'MOVENEXT') AND 
-		(@psAction <> 'MOVELAST') AND 
-		(@psAction <> 'LOCATE')
-	BEGIN
-		SET @psAction = 'MOVEFIRST'
-	END
-
-	/* Get Cancel date Column*/
-	SELECT @sCourseCancelDateColumnID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
-		AND parameterKey = 'Param_CourseCancelDate'
-	IF @sCourseCancelDateColumnID IS NULL SET @sCourseCancelDateColumnID = 0
-	IF @sCourseCancelDateColumnID > 0 
-	BEGIN
-		SELECT @sCourseCancelDateColumnName = columnName
-		FROM ASRSysColumns
-		WHERE columnID = @sCourseCancelDateColumnID
-	END
-	IF @sCourseCancelDateColumnName IS NULL SET @sCourseCancelDateColumnName = ''
-
-	/* Get the table type and name. */
-	SELECT @iTableType = ASRSysTables.tableType,
-		@sTableName = ASRSysTables.tableName
-	FROM ASRSysTables
-	WHERE ASRSysTables.tableID = @piTableID
-
-	/* Get the real source of the given table/view. */
-	IF @iTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN	
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID
-		END
-		ELSE
-		BEGIN
-			SET @sRealSource = @sTableName
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @piTableID
-			AND role = @sUserGroupName
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sTableName, ' ', '_') +
-				'#' + replace(@sUserGroupName, ' ', '_')
-			SET @sRealSource = left(@sRealSource, 255)
-		END
-	END
-
-	IF len(@sRealSource) = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	/* Create a temporary table to hold the tables/views that need to be joined. */
-	DECLARE @joinParents TABLE(
-		tableViewName	sysname,
-		tableID			integer);
-
-	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
-	DECLARE @columnPermissions TABLE(
-		tableID			integer,
-		tableViewName	sysname,
-		columnName		sysname,
-		selectGranted	bit);
-
-	/* Loop through the tables used in the order, getting the column permissions for each one. */
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-
-	OPEN tablesCursor
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableID = @piTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name = @sRealSource
-				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			INSERT INTO @columnPermissions
-			SELECT 
-				@iTempTableID,
-				sysobjects.name,
-				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM sysprotects
-			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-			WHERE sysprotects.uid = @iUserGroupID
-				AND sysprotects.action = 193 
-				AND syscolumns.name <> 'timestamp'
-				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
-					ASRSysTables.tableID = @iTempTableID 
-					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	END
-	CLOSE tablesCursor
-	DEALLOCATE tablesCursor
-
-	SET @fSelectGranted = 0
-	SELECT @fSelectGranted = selectGranted
-	FROM @columnPermissions
-	WHERE tableViewName = @sRealSource
-		AND columnName = @sCourseTitleColumnName
-	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	IF @fSelectGranted = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	SET @fSelectGranted = 0
-	SELECT @fSelectGranted = selectGranted
-	FROM @columnPermissions
-	WHERE tableViewName = @sRealSource
-		AND columnName = @sCourseStartDateColumnName
-	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	IF @fSelectGranted = 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	/* Create the order select strings. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-
-	/* Check if the order exists. */
-	IF  @@fetch_status <> 0
-	BEGIN
-		SET @pfError = 1
-		RETURN
-	END
-
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-	
-		IF @iColumnTableId = @piTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-
-			IF @fSelectGranted = 1
-			BEGIN
-				/* The user DOES have SELECT permission on the column in the current table/view. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName
-					SET @sSelectSQL = @sSelectSQL + @sTempString
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sRealSource + '.' + @sColumnName
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sRealSource + '.' + @sColumnName +
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-			END
-			ELSE
-			BEGIN
-				/* The user does NOT have SELECT permission on the column in the current table/view. */
-				SET @fSelectDenied = 1
-			END	
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = selectGranted
-			FROM @columnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				/* The user DOES have SELECT permission on the column in the parent table. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					SET @sTempString = CASE 
-							WHEN (len(@sSelectSQL) > 0) THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName
-					SET @sSelectSQL = @sSelectSQL + @sTempString
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderSQL) = 0 
-					BEGIN
-						SET @piColumnType = @iDataType
-						SET @fFirstColumnAsc = @fAscending
-						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName
-						SET @piColumnSize = @iColSize
-						SET @piColumnDecimals = @iColDecs
-					END
-
-					SET @sOrderSQL = @sOrderSQL + 
-						CASE 
-							WHEN len(@sOrderSQL) > 0 THEN ',' 
-							ELSE '' 
-						END + 
-						@sColumnTableName + '.' + @sColumnName + 
-						CASE 
-							WHEN @fAscending = 0 THEN ' DESC' 
-							ELSE '' 
-						END				
-				END
-
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @joinParents
-				WHERE tableViewName = @sColumnTableName
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
-				END
-			END
-			ELSE	
-			BEGIN
-				SET @sSubString = ''
-
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @columnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND selectGranted = 1
-
-				OPEN viewCursor
-				FETCH NEXT FROM viewCursor INTO @sViewName
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-					IF len(@sSubString) = 0 SET @sSubString = 'CASE'
-
-					SET @sSubString = @sSubString +
-						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName 
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @joinParents
-					WHERE tableViewname = @sViewName
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName
-				END
-				CLOSE viewCursor
-				DEALLOCATE viewCursor
-
-				IF len(@sSubString) > 0
-				BEGIN
-					SET @sSubString = @sSubString +
-						' ELSE NULL END'
-
-					IF @sType = 'F'
-					BEGIN
-						/* Find column. */
-						SET @sTempString = CASE 
-								WHEN (len(@sSelectSQL) > 0) THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END
-						SET @sSelectSQL = @sSelectSQL + @sTempString
-					END
-					ELSE
-					BEGIN
-						/* Order column. */
-						IF len(@sOrderSQL) = 0 
-						BEGIN
-							SET @piColumnType = @iDataType
-							SET @fFirstColumnAsc = @fAscending
-							SET @sFirstColCode = @sSubString
-							SET @piColumnSize = @iColSize
-							SET @piColumnDecimals = @iColDecs
-						END
-
-						SET @sOrderSQL = @sOrderSQL + 
-							CASE 
-								WHEN len(@sOrderSQL) > 0 THEN ',' 
-								ELSE '' 
-							END + 
-							CASE
-
-								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
-								ELSE @sSubString 
-							END + 
-							CASE 
-								WHEN @fAscending = 0 THEN ' DESC' 
-								ELSE '' 
-							END				
-					END
-				END
-				ELSE
-				BEGIN
-					/* The user does NOT have SELECT permission on the column any of the parent views. */
-					SET @fSelectDenied = 1
-				END	
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	/* Add the ID column to the order string. */
-	SET @sOrderSQL = @sOrderSQL + 
-		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
-		@sRealSource + '.ID'
-
-	/* Create the reverse order string if required. */
-	IF (@psAction <> 'MOVEFIRST') 
-	BEGIN
-		SET @sRemainingSQL = @sOrderSQL
-
-		SET @iLastCharIndex = 0
-		SET @iCharIndex = CHARINDEX(',', @sOrderSQL)
-		WHILE @iCharIndex > 0 
-		BEGIN
- 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', '
-			END
-			ELSE
-			BEGIN
-				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', '
-			END
-
-			SET @iLastCharIndex = @iCharIndex
-			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1)
-	
-			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex)
-		END
-		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring
-	END
-
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource +
-		' WHERE (' +
-		@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + @psCourseTitle + ''' AND '	+
-		@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
-		@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL AND ' + 
-		@sRealSource + '.id <> ' + convert(nvarchar(100), @piCourseRecordID) + ')'
-
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
-	SET @piTotalRecCount = @iCount
-
-	IF (len(@sSelectSQL) > 0)
-	BEGIN
-		SET @sTempString = ',' + @sRealSource + '.ID'
-		SET @sSelectSQL = @sSelectSQL + @sTempString
-
-		SET @sExecString = 'SELECT ' 
-
-		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
-		BEGIN
-			SET @sTempString = 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-			SET @sExecString = @sExecString + @sTempString
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		IF (@psAction = 'MOVELAST')
-		BEGIN
-			SET @fWhereDone = 1
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF @psAction = 'MOVENEXT' 
-		BEGIN
-			SET @fWhereDone = 1
-			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-			BEGIN
-				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired
-			END
-
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-				
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF @psAction = 'MOVEPREVIOUS'
-		BEGIN
-			SET @fWhereDone = 1
-
-			IF @piFirstRecPos <= @piRecordsRequired
-			BEGIN
-				SET @iGetCount = @piFirstRecPos - 1
-			END
-			ELSE
-			BEGIN
-				SET @iGetCount = @piRecordsRequired				
-			END
-				
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-				
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID' +
-				' FROM ' + @sRealSource
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		/* Add the filter code. */
-		SET @sTempString = ' WHERE (' +
-			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + @psCourseTitle + ''' AND '	+
-			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
-			@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL AND ' + 
-			@sRealSource + '.id <> ' + convert(nvarchar(100), @piCourseRecordID) + ')'
-		SET @sExecString = @sExecString + @sTempString
-
-		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')'
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
-		BEGIN
-			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')'
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		IF (@psAction = 'LOCATE')
-		BEGIN
-			SET @fWhereDone = 1
-			SET @sLocateCode = ' AND (' + @sFirstColCode 
-
-			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
-						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL'
-				END
-
-			END
-
-			IF @piColumnType = 11 /* Date column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
-					END
-				END
-				ELSE
-				BEGIN
-					IF len(@psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' IS NULL'
-					END
-					ELSE
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-			END
-
-			IF @piColumnType = -7 /* Logic column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + 
-						CASE
-							WHEN @psLocateValue = 'True' THEN '1'
-							ELSE '0'
-						END
-				END
-			END
-
-			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
-			BEGIN
-				IF @fFirstColumnAsc = 1
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
-
-					IF convert(float, @psLocateValue) = 0
-					BEGIN
-						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
-					END
-				END
-				ELSE
-				BEGIN
-					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL'
-				END
-			END
-
-			SET @sLocateCode = @sLocateCode + ')'
-
-			SET @sTempString = @sLocateCode
-			SET @sExecString = @sExecString + @sTempString
-		END
-
-		/* Add the ORDER BY code to the find record selection string if required. */
-		SET @sTempString = ' ORDER BY ' + @sOrderSQL
-		SET @sExecString = @sExecString + @sTempString
-	END
-
-	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
-	IF @psAction = 'MOVEFIRST'
-	BEGIN
-		SET @piFirstRecPos = 1
-		SET @pfFirstPage = 1
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVENEXT'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
-		SET @pfFirstPage = 0
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVEPREVIOUS'
-	BEGIN
-		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
-		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-				ELSE 0
-			END
-	END
-	IF @psAction = 'MOVELAST'
-	BEGIN
-		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
-		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 1
-	END
-	
-	IF @psAction = 'LOCATE'
-	BEGIN
-		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource 
-
-		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT tableViewName, 
-			tableID
-		FROM @joinParents
-
-		OPEN joinCursor
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SET @sTempExecString = @sTempExecString + 
-				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
-
-			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
-		END
-		CLOSE joinCursor
-		DEALLOCATE joinCursor
-
-		SET @sTempExecString = @sTempExecString + 
-			' WHERE (' +
-			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + @psCourseTitle + ''' AND '	+
-			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
-			@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL AND ' + 
-			@sRealSource + '.id <> ' + convert(nvarchar(100), @piCourseRecordID) + ')' + @sLocateCode
-		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
-		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
-
-		IF @iTemp <=0 
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount + 1
-		END
-		ELSE
-		BEGIN
-			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
-		END
-
-		SET @pfFirstPage = 
-			CASE 
-				WHEN @piFirstRecPos = 1 THEN 1
-				ELSE 0
-			END
-		SET @pfLastPage = 
-			CASE 
-				WHEN @piTotalRecCount <= @piFirstRecPos + @piRecordsRequired THEN 1
-				ELSE 0
-			END
-	END
-
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	IF (len(@sExecString) > 0)
-	BEGIN
-		EXECUTE sp_executeSQL @sExecString;
-	END
-END
-
-GO
 
 SET ANSI_NULLS ON
 GO
@@ -54248,9 +36739,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntGetScreenDefinition]
 GO
 
-DROP PROCEDURE [dbo].[sp_ASRIntGetScreenControlsString2]
-GO
-
 DROP PROCEDURE [dbo].[spASRIntGetSummaryValues]
 GO
 
@@ -54263,77 +36751,6 @@ GO
 DROP PROCEDURE [dbo].[spASRIntAllTablePermissions]
 GO
 
-
-
--- Redundant stored procedures
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetColumnTableID]') AND xtype = 'P')
-	DROP PROCEDURE [dbo].[spASRIntGetColumnTableID]
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetSystemPermissions]') AND xtype = 'P')
-	DROP PROCEDURE [dbo].[sp_ASRIntGetSystemPermissions]
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetMiscParameters]') AND xtype = 'P')
-	DROP PROCEDURE [dbo].[spASRIntGetMiscParameters]
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetTableName]') AND xtype = 'P')
-	DROP PROCEDURE [dbo].[sp_ASRIntGetTableName]
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntIsLookupTable]') AND xtype = 'P')
-	DROP PROCEDURE [dbo].[spASRIntIsLookupTable]
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetMinimumPasswordLength]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[sp_ASRIntGetMinimumPasswordLength]
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntPasswordOK]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[sp_ASRIntPasswordOK]
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntAuditAccess]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[sp_ASRIntAuditAccess]
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntPoll]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[sp_ASRIntPoll]
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntCheckPolls]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[sp_ASRIntCheckPolls]
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetTables]') AND type in (N'P'))
-	DROP PROCEDURE [dbo].[sp_ASRIntGetTables]
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetRecord]') AND xtype = 'P')
-	DROP PROCEDURE [dbo].[sp_ASRIntGetRecord]
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetRecordEditWindowTitle]') AND xtype = 'P')
-	DROP PROCEDURE [dbo].[sp_ASRIntGetRecordEditWindowTitle]
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetFindRecords]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[sp_ASRIntGetFindRecords]
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetFindRecords2]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[sp_ASRIntGetFindRecords2]
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetFindRecords3]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[sp_ASRIntGetFindRecords3]
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetFilterPromptedValuesRecordset]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[sp_ASRIntGetFilterPromptedValuesRecordset]
-GO
 
 
 
@@ -54637,820 +37054,6 @@ BEGIN
 END
 GO
 
-
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetScreenControlsString2] (
-	@piScreenID 	integer,
-	@piViewID 		integer,
-	@psSelectSQL	varchar(MAX) OUTPUT,
-	@psFromDef		varchar(MAX) OUTPUT,
-	@piOrderID		integer	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of strings describing of the controls in the given screen. */
-	DECLARE @iUserGroupID	integer,
-		@iScreenTableID		integer,
-		@iScreenTableType	integer,
-		@sScreenTableName	varchar(255),
-		@iScreenOrderID 	integer,
-		@sRealSource 		varchar(255),
-		@iChildViewID 		integer,
-		@sJoinCode 			varchar(MAX),
-		@iTempTableID 		integer,
-		@iColumnTableID 	integer,
-		@iColumnID 			integer,
-		@sColumnName 		varchar(255),
-		@sColumnTableName 	varchar(255),
-		@iColumnDataType	integer,
-		@fSelectGranted 	bit,
-		@fUpdateGranted 	bit,
-		@sSelectString 		varchar(MAX),
-		@iTempCount 		integer,
-		@sViewName 			varchar(255),
-		@fAscending 		bit,
-		@sTableViewName 	varchar(255),
-		@iJoinTableID 		integer,
-		@sParentRealSource	varchar(255),
-		@iParentChildViewID	integer,
-		@iParentTableType	integer,
-		@sParentTableName	sysname,
-		@iColumnType		integer,
-		@iLinkTableID		integer,
-		@lngPermissionCount	integer,
-		@iLinkChildViewID	integer,
-		@sLinkRealSource	varchar(255),
-		@sLinkTableName		varchar(255),
-		@iLinkTableType		integer,
-		@sNewBit			varchar(max),
-		@iID				integer,
-		@iCount				integer,
-		@iUserType			integer,
-		@sRoleName			sysname,
-		@iEmployeeTableID	integer,
-		@sActualUserName	sysname,
-		@AppName varchar(50),
-		@ItemKey varchar(20);
-
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sRoleName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-
-	DECLARE @SysProtects TABLE([ID] int, Columns varbinary(8000)
-								, [Action] tinyint
-								, ProtectType tinyint)
-	INSERT INTO @SysProtects
-	SELECT p.[ID], p.[Columns], p.[Action], p.ProtectType FROM ASRSysProtectsCache p
-		INNER JOIN SysColumns c ON (c.id = p.id
-			AND c.[Name] = 'timestamp'
-			AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-			AND (convert(int,substring(p.columns,c.colid/8+1,1))&power(2,c.colid&7)) != 0)
-			OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-			AND (convert(int,substring(p.columns,c.colid/8+1,1))&power(2,c.colid&7)) = 0)))
-		WHERE p.UID = @iUserGroupID
-			AND [ProtectType] IN (204, 205)
-			AND [Action] IN (193, 197);
-
-
-	/* Create a temporary table to hold the tables/views that need to be joined. */
-	DECLARE @JoinParents TABLE(tableViewName	sysname,
-								tableID		integer);
-
-	/* Create a temporary table of the column permissions for all tables/views used in the screen. */
-	DECLARE @ColumnPermissions TABLE(tableID		integer,
-										tableViewName	sysname,
-										columnName	sysname,
-										action		int,		
-										granted		bit);
-
-
-	/* Get the table type and name. */
-	SELECT @iScreenTableID = ASRSysScreens.tableID,
-		@iScreenTableType = ASRSysTables.tableType,
-		@sScreenTableName = ASRSysTables.tableName,
-		@iScreenOrderID = 
-				CASE 
-					WHEN ASRSysScreens.orderID > 0 THEN ASRSysScreens.orderID
-					ELSE ASRSysTables.defaultOrderID 
-				END
-	FROM ASRSysScreens
-	INNER JOIN ASRSysTables ON ASRSysScreens.tableID = ASRSysTables.tableID
-	WHERE ASRSysScreens.ScreenID = @piScreenID;
-
-	IF @iScreenOrderID IS NULL SET @iScreenOrderID = 0;
-
-	IF @piOrderID <= 0 SET @piOrderID = @iScreenOrderID;
-
-	/* Get the real source of the given screen's table/view. */
-	IF @iScreenTableType <> 2 /* ie. top-level or lookup */
-	BEGIN
-		IF @piViewID > 0 
-		BEGIN
-			/* RealSource is the view. */	
-			SELECT @sRealSource = viewName
-			FROM ASRSysViews
-			WHERE viewID = @piViewID;
-		END
-		ELSE
-		BEGIN
-			/* RealSource is the table. */	
-			SET @sRealSource = @sScreenTableName;
-		END 
-	END
-	ELSE
-	BEGIN
-		SELECT @iChildViewID = childViewID
-		FROM ASRSysChildViews2
-		WHERE tableID = @iScreenTableID
-			AND role = @sRoleName;
-			
-		IF @iChildViewID IS null SET @iChildViewID = 0;
-			
-		IF @iChildViewID > 0 
-		BEGIN
-			SET @sRealSource = 'ASRSysCV' + 
-				convert(varchar(1000), @iChildViewID) +
-				'#' + replace(@sScreenTableName, ' ', '_') +
-				'#' + replace(@sRoleName, ' ', '_');
-			SET @sRealSource = left(@sRealSource, 255);
-		END
-	END
-
-	/* Initialise the select and order parameters. */
-	SET @psSelectSQL = '';
-	SET @psFromDef = '';
-	SET @sJoinCode = '';
-
-	/* Loop through the tables used in the screen, getting the column permissions for each one. */
-	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysControls.tableID
-	FROM ASRSysControls
-	WHERE screenID = @piScreenID
-		AND ASRSysControls.columnID > 0
-	UNION
-	SELECT DISTINCT ASRSysColumns.tableID 
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	WHERE ASRSysOrderItems.type = 'O' 
-		AND ASRSysOrderItems.orderID = @piOrderID;
-
-	OPEN tablesCursor;
-	FETCH NEXT FROM tablesCursor INTO @iTempTableID;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF @iTempTableID = @iScreenTableID
-		BEGIN
-			/* Base table - use the real source. */
-			INSERT INTO @ColumnPermissions
-			SELECT 
-				@iTempTableID,
-				@sRealSource,
-				syscolumns.name,
-				p.action,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM @SysProtects p
-			INNER JOIN sysobjects ON p.id = sysobjects.id
-			INNER JOIN syscolumns ON p.id = syscolumns.id
-			WHERE syscolumns.name <> 'timestamp'
-				AND sysobjects.name = @sRealSource
-				AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table - get permissions for the table, and any associated views. */
-			SELECT @iParentTableType = tableType,
-				@sParentTableName = tableName
-			FROM ASRSysTables
-			WHERE tableID = @iTempTableID
-
-			IF @iParentTableType <> 2 /* ie. top-level or lookup */
-			BEGIN
-				INSERT INTO @ColumnPermissions
-				SELECT 
-					@iTempTableID,
-					sysobjects.name,
-					syscolumns.name,
-					p.[action],
-					CASE p.protectType
-					        	WHEN 205 THEN 1
-						WHEN 204 THEN 1
-						ELSE 0
-					END 
-				FROM @sysprotects p
-				INNER JOIN sysobjects ON p.id = sysobjects.id
-				INNER JOIN syscolumns ON p.id = syscolumns.id
-				WHERE syscolumns.name <> 'timestamp'
-					AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE ASRSysTables.tableID = @iTempTableID 
-						UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-					AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-					AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-					OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-					AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-			END
-			ELSE
-			BEGIN
-				/* Get permitted child view on the parent table. */
-				SELECT @iParentChildViewID = childViewID
-				FROM ASRSysChildViews2
-				WHERE tableID = @iTempTableID
-					AND role = @sRoleName
-					
-				IF @iParentChildViewID IS null SET @iParentChildViewID = 0
-					
-				IF @iParentChildViewID > 0 
-				BEGIN
-					SET @sParentRealSource = 'ASRSysCV' + 
-						convert(varchar(1000), @iParentChildViewID) +
-						'#' + replace(@sParentTableName, ' ', '_') +
-						'#' + replace(@sRoleName, ' ', '_')
-					SET @sParentRealSource = left(@sParentRealSource, 255)
-
-					INSERT INTO @ColumnPermissions
-					SELECT 
-						@iTempTableID,
-						@sParentRealSource,
-						syscolumns.name,
-						p.[action],
-						CASE p.protectType
-							WHEN 205 THEN 1
-							WHEN 204 THEN 1
-							ELSE 0
-						END 
-					FROM @sysprotects p
-					INNER JOIN sysobjects ON p.id = sysobjects.id
-					INNER JOIN syscolumns ON p.id = syscolumns.id
-					WHERE syscolumns.name <> 'timestamp'
-						AND sysobjects.name = @sParentRealSource
-						AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-				END
-			END
-		END
-
-		FETCH NEXT FROM tablesCursor INTO @iTempTableID
-	END
-	CLOSE tablesCursor
-	DEALLOCATE tablesCursor
-
-	SET @iUserType = 1
-
-	/*Ascertain application name in order to select by correct item key  */
-	SELECT @AppName = APP_NAME()
-	IF @AppName = 'OPENHR SELF-SERVICE INTRANET'
-	BEGIN
-		SET @ItemKey = 'SSINTRANET'
-	END
-	ELSE
-	BEGIN
-		SET @ItemKey = 'INTRANET'
-	END
-
-	SELECT @iID = ASRSysPermissionItems.itemID
-	FROM ASRSysPermissionItems
-	INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-	WHERE ASRSysPermissionItems.itemKey = @ItemKey
-		AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS'
-
-	IF @iID IS NULL SET @iID = 0
-	IF @iID > 0
-	BEGIN
-		/* The permission does exist in the current version so check if the user is granted this permission. */
-		SELECT @iCount = count(ASRSysGroupPermissions.itemID)
-		FROM ASRSysGroupPermissions 
-		WHERE ASRSysGroupPermissions.itemID = @iID
-			AND ASRSysGroupPermissions.groupName = @sRoleName
-			AND ASRSysGroupPermissions.permitted = 1
-			
-		IF @iCount > 0
-		BEGIN
-			SET @iUserType = 0
-		END
-	END
-
-	/* Get the EMPLOYEE table information. */
-	SELECT @iEmployeeTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_PERSONNEL'
-		AND parameterKey = 'Param_TablePersonnel'
-	IF @iEmployeeTableID IS NULL SET @iEmployeeTableID = 0
-
-	/* Create a temporary table of the column info for all columns used in the screen controls. */
-	DECLARE @columnInfo TABLE
-	(
-		columnID	integer,
-		selectGranted	bit,
-		updateGranted	bit
-	)
-
-	/* Populate the temporary table with info for all columns used in the screen controls. */
-	/* Create the select string for getting the column values. */
-	DECLARE columnsCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysControls.tableID, 
-		ASRSysControls.columnID, 
-		ASRSysColumns.columnName, 
-		ASRSysTables.tableName,
-		ASRSysColumns.dataType,
-		ASRSysColumns.columnType,
-		ASRSysColumns.linkTableID
-	FROM ASRSysControls
-	LEFT OUTER JOIN ASRSysTables ON ASRSysControls.tableID = ASRSysTables.tableID 
-	LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID AND ASRSysColumns.columnId = ASRSysControls.columnID
-	WHERE screenID = @piScreenID
-	AND ASRSysControls.columnID > 0
-
-	OPEN columnsCursor
-	FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType, @iColumnType, @iLinkTableID
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-		SET @fUpdateGranted = 0
-
-		IF @iColumnTableID = @iScreenTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = granted
-			FROM @ColumnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-				AND action = 193
-
-			/* Get the update permission on the column. */
-			SELECT @fUpdateGranted = granted
-			FROM @ColumnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-				AND action = 197
-
-			/* If the column is a link column, ensure that the link table can be seen. */
-			IF (@fUpdateGranted = 1) AND (@iColumnType = 4)
-			BEGIN
-				SELECT @sLinkTableName = tableName,
-					@iLinkTableType = tableType
-				FROM ASRSysTables
-				WHERE tableID = @iLinkTableID
-
-				IF @iLinkTableType = 1
-				BEGIN
-					/* Top-level table. */
-					SELECT @lngPermissionCount = COUNT(sysprotects.uid)
-					FROM sysprotects
-					INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-					INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
-					WHERE sysprotects.uid = @iUserGroupID
-						AND sysprotects.action = 193
-						AND sysprotects.protectType <> 206
-						AND syscolumns.name <> 'timestamp'
-						AND syscolumns.name <> 'ID'
-						AND sysobjects.name = @sLinkTableName
-						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
-						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
-
-					IF @lngPermissionCount = 0 
-					BEGIN
-						/* No permission on the table itself check the views. */
-						SELECT @lngPermissionCount = COUNT(ASRSysViews.viewTableID)
-						FROM ASRSysViews
-						INNER JOIN sysobjects ON ASRSysViews.viewName = sysobjects.name
-						INNER JOIN sysprotects ON sysobjects.id = sysprotects.id  
-						WHERE ASRSysViews.viewTableID = @iLinkTableID
-							AND sysprotects.uid = @iUserGroupID
-							AND sysprotects.action = 193
-							AND sysprotects.protecttype <> 206
-
-						IF @lngPermissionCount = 0 SET @fUpdateGranted = 0
-					END
-				END
-				ELSE
-				BEGIN
-					/* Child/history table. */
-					SELECT @iLinkChildViewID = childViewID
-					FROM ASRSysChildViews2
-					WHERE tableID = @iLinkTableID
-						AND role = @sRoleName
-						
-					IF @iLinkChildViewID IS null SET @iLinkChildViewID = 0
-						
-					IF @iLinkChildViewID > 0 
-					BEGIN
-						SET @sLinkRealSource = 'ASRSysCV' + 
-							convert(varchar(1000), @iLinkChildViewID) +
-							'#' + replace(@sLinkTableName, ' ', '_') +
-							'#' + replace(@sRoleName, ' ', '_')
-						SET @sLinkRealSource = left(@sLinkRealSource, 255)
-					END
-
-					SELECT @lngPermissionCount = COUNT(sysobjects.name)
-					FROM sysprotects 
-					INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
-					WHERE sysprotects.uid = @iUserGroupID
-						AND sysprotects.protectType <> 206
-						AND sysprotects.action = 193
-						AND sysobjects.name = @sLinkRealSource
-		
-					IF @lngPermissionCount = 0 SET @fUpdateGranted = 0
-				END
-			END
-
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Get the select string for the column. */
-				IF len(@psSelectSQL) > 0 
-					SET @psSelectSQL = @psSelectSQL + ',';
-			
-				IF @iColumnDataType = 11 /* Date */
-				BEGIN
-					 /* Date */
-					SET @sNewBit = 'convert(varchar(10), ' + @sRealSource + '.' + @sColumnName + ', 101) AS [' + convert(varchar(255), @iColumnID) + ']';
-					SET @psSelectSQL = @psSelectSQL + @sNewBit;
-				END
-				ELSE
-				BEGIN
-					 /* Non-date */
-					SET @sNewBit = @sRealSource + '.' + @sColumnName + ' AS [' + convert(varchar(100), @iColumnID) + ']';
-					SET @psSelectSQL = @psSelectSQL + @sNewBit;
-				END
-			END
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = granted
-			FROM @ColumnPermissions
-			WHERE tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-				AND action = 193;
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				IF len(@psSelectSQL) > 0 
-					SET @psSelectSQL = @psSelectSQL + ',';
-	
-				IF @iColumnDataType = 11 /* Date */
-				BEGIN
-					 /* Date */
-					SET @sNewBit = 'convert(varchar(10), ' + @sColumnTableName + '.' + @sColumnName + ', 101) AS [' + convert(varchar(100), @iColumnID) + ']';
-					SET @psSelectSQL = @psSelectSQL + @sNewBit;
-				END
-				ELSE
-				BEGIN
-					 /* Non-date */
-					SET @sNewBit = @sColumnTableName + '.' + @sColumnName + ' AS [' + convert(varchar(100), @iColumnID) + ']';
-					SET @psSelectSQL = @psSelectSQL + @sNewBit;
-				END
-			
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-					FROM @JoinParents
-					WHERE tableViewName = @sColumnTableName;
-
-				IF @iTempCount = 0
-					INSERT INTO @JoinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID);
-					
-			END
-			ELSE	
-			BEGIN
-				/* Column could NOT be read directly from the parent table, so try the views. */
-				SET @sSelectString = '';
-
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @ColumnPermissions
-				WHERE tableID = @iColumnTableID
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND action = 193
-					AND granted = 1;
-
-				OPEN viewCursor;
-				FETCH NEXT FROM viewCursor INTO @sViewName;
-				WHILE (@@fetch_status = 0)
-
-				BEGIN
-					/* Column CAN be read from the view. */
-					SET @fSelectGranted = 1;
-
-					IF len(@sSelectString) = 0 SET @sSelectString = 'CASE';
-	
-					IF @iColumnDataType = 11 /* Date */
-					BEGIN
-						 /* Date */
-						SET @sSelectString = @sSelectString +
-							' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN convert(varchar(10), ' + @sViewName + '.' + @sColumnName + ', 101)';
-					END
-					ELSE
-					BEGIN
-						 /* Non-date */
-						SET @sSelectString = @sSelectString +
-							' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName;
-					END
-
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-						FROM @JoinParents
-						WHERE tableViewName = @sViewName;
-
-					IF @iTempCount = 0
-						INSERT INTO @JoinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableID);
-
-					FETCH NEXT FROM viewCursor INTO @sViewName;
-				END
-				CLOSE viewCursor;
-				DEALLOCATE viewCursor;
-
-				IF len(@sSelectString) > 0
-				BEGIN
-					SET @sSelectString = @sSelectString +
-						' ELSE NULL END AS [' + convert(varchar(100), @iColumnID) + ']';
-
-					IF len(@psSelectSQL) > 0 
-						SET @psSelectSQL = @psSelectSQL + ',';
-
-					SET @psSelectSQL = @psSelectSQL + @sSelectString;
-				END
-			END
-
-			/* Reset the update permission on the column. */
-			SET @fUpdateGranted = 0
-		END
-
-		IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-		IF @fUpdateGranted IS NULL SET @fUpdateGranted = 0
-
-		IF (@iUserType = 1) 
-			AND (@iScreenTableType = 1)
-			AND (@iScreenTableID <> @iEmployeeTableID)
-		BEGIN
-			SET @fUpdateGranted = 0
-		END
-
-		INSERT INTO @columnInfo (columnID, selectGranted, updateGranted)
-			VALUES (@iColumnId, @fSelectGranted, @fUpdateGranted)
-
-		FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType, @iColumnType, @iLinkTableID
-	END
-	CLOSE columnsCursor
-	DEALLOCATE columnsCursor
-
-	/* Create the order string. */
-	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-		AND ASRSysOrderItems.type = 'O'
-	ORDER BY ASRSysOrderItems.sequence
-
-	OPEN orderCursor
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @fSelectGranted = 0
-
-		IF @iColumnTableId = @iScreenTableID
-		BEGIN
-			/* Base table. */
-			/* Get the select permission on the column. */
-			SELECT @fSelectGranted = granted
-			FROM @ColumnPermissions
-			WHERE tableViewName = @sRealSource
-				AND columnName = @sColumnName
-				AND action = 193
-		END
-		ELSE
-		BEGIN
-			/* Parent of the base table. */
-			/* Get the select permission on the column. */
-
-			/* Check if the column is selectable directly from the table. */
-			SELECT @fSelectGranted = granted
-			FROM @ColumnPermissions
-			WHERE tableID = @iColumnTableId
-				AND tableViewName = @sColumnTableName
-				AND columnName = @sColumnName
-				AND action = 193
-
-			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
-	
-			IF @fSelectGranted = 1 
-			BEGIN
-				/* Column COULD be read directly from the parent table. */
-				
-				/* Add the table to the array of tables/views to join if it has not already been added. */
-				SELECT @iTempCount = COUNT(tableViewName)
-				FROM @JoinParents
-				WHERE tableViewName = @sColumnTableName
-
-				IF @iTempCount = 0
-				BEGIN
-					INSERT INTO @JoinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
-				END
-			END
-			ELSE	
-			BEGIN
-				/* Column could NOT be read directly from the parent table, so try the views. */
-
-				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
-				SELECT tableViewName
-				FROM @ColumnPermissions
-				WHERE tableID = @iColumnTableId
-					AND tableViewName <> @sColumnTableName
-					AND columnName = @sColumnName
-					AND action = 193
-					AND granted = 1
-
-				OPEN viewCursor
-				FETCH NEXT FROM viewCursor INTO @sViewName
-				WHILE (@@fetch_status = 0)
-				BEGIN
-					/* Column CAN be read from the view. */
-		
-					/* Add the view to the array of tables/views to join if it has not already been added. */
-					SELECT @iTempCount = COUNT(tableViewName)
-					FROM @JoinParents
-					WHERE tableViewname = @sViewName
-
-					IF @iTempCount = 0
-					BEGIN
-						INSERT INTO @JoinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
-					END
-
-					FETCH NEXT FROM viewCursor INTO @sViewName
-				END
-				CLOSE viewCursor
-				DEALLOCATE viewCursor
-			END
-		END
-
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending
-	END
-	CLOSE orderCursor
-	DEALLOCATE orderCursor
-
-	/* Add the id and timestamp columns to the select string. */
-	DECLARE columnsCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.columnId, 
-		ASRSysColumns.columnName
-	FROM ASRSysColumns
-	WHERE tableID = @iScreenTableID
-		AND columnType = 3
-
-	OPEN columnsCursor
-	FETCH NEXT FROM columnsCursor INTO @iColumnID, @sColumnName
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		IF len(@psSelectSQL) > 0 
-			SET @psSelectSQL = @psSelectSQL + ',';
-
-		SET @sNewBit = @sRealSource + '.' + @sColumnName + ' AS [' + convert(varchar(100), @iColumnID) + ']';
-		SET @psSelectSQL = @psSelectSQL + @sNewBit;
-
-		FETCH NEXT FROM columnsCursor INTO @iColumnID, @sColumnName;
-	END
-	CLOSE columnsCursor;
-	DEALLOCATE columnsCursor;
-
-	SET @sNewBit = ', CONVERT(integer, ' + @sRealSource + '.TimeStamp) AS timestamp ';
-	SET @psSelectSQL = @psSelectSQL + @sNewBit;
-
-	/* Create the FROM code. */
-	SET @psFromDef = @sRealSource + '	'
-	DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT tableViewName, tableID
-		FROM @JoinParents;
-
-	OPEN joinCursor;
-	FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @psFromDef = @psFromDef + @sTableViewName + '	' + convert(varchar(100), @iJoinTableID) + '	';
-		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
-	END
-	CLOSE joinCursor;
-	DEALLOCATE joinCursor;
-
-	SELECT
-		convert(varchar(MAX), case when ASRSysControls.pageNo IS null then '' else ASRSysControls.pageNo end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.tableID IS null then '' else ASRSysControls.tableID end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.columnID IS null then '' else ASRSysControls.columnID end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.controlType IS null then '' else ASRSysControls.controlType end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.topCoord IS null then '' else ASRSysControls.topCoord end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.leftCoord IS null then '' else ASRSysControls.leftCoord end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.height IS null then '' else ASRSysControls.height end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.width IS null then '' else ASRSysControls.width end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.caption IS null then '' else ASRSysControls.caption end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.backColor IS null then '' else ASRSysControls.backColor end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.foreColor IS null then '' else ASRSysControls.foreColor end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.fontName IS null then '' else ASRSysControls.fontName end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.fontSize IS null then '' else ASRSysControls.fontSize end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.fontBold IS null then '' else ASRSysControls.fontBold end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.fontItalic IS null then '' else ASRSysControls.fontItalic end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.fontStrikethru IS null then '' else ASRSysControls.fontStrikethru end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.fontUnderline IS null then '' else ASRSysControls.fontUnderline end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.displayType IS null then '' else ASRSysControls.displayType end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.tabIndex IS null then '' else ASRSysControls.tabIndex end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.borderStyle IS null then '' else ASRSysControls.borderStyle end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.alignment IS null then '' else ASRSysControls.alignment end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.columnName IS null then '' else ASRSysColumns.columnName end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.columnType IS null then '' else ASRSysColumns.columnType end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.datatype IS null then '' else ASRSysColumns.datatype end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.defaultValue IS null then '' else ASRSysColumns.defaultValue end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.size IS null then '' else convert(nvarchar(max),ASRSysColumns.size) end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.decimals IS null then '' else ASRSysColumns.decimals end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.lookupTableID IS null then '' else ASRSysColumns.lookupTableID end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.lookupColumnID IS null then '' else ASRSysColumns.lookupColumnID end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.spinnerMinimum IS null then '' else ASRSysColumns.spinnerMinimum end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.spinnerMaximum IS null then '' else ASRSysColumns.spinnerMaximum end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.spinnerIncrement IS null then '' else ASRSysColumns.spinnerIncrement end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.mandatory IS null then '' else ASRSysColumns.mandatory end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.uniquechecktype IS null then '' when ASRSysColumns.uniquechecktype <> 0 then 1 else 0 end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.convertcase IS null then '' else ASRSysColumns.convertcase end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.mask IS null then '' else rtrim(ASRSysColumns.mask) end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.blankIfZero IS null then '' else ASRSysColumns.blankIfZero end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.multiline IS null then '' else ASRSysColumns.multiline end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.alignment IS null then '' else ASRSysColumns.alignment end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.dfltValueExprID IS null then '' else ASRSysColumns.dfltValueExprID end) + char(9) +
-		convert(varchar(MAX), case when isnull(ASRSysColumns.readOnly,0) = 1 then 1 else CASE WHEN ASRSysColumns.tableid = @iScreenTableID THEN 0 ELSE 1 END end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.statusBarMessage IS null then '' else ASRSysColumns.statusBarMessage end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.linkTableID IS null then '' else ASRSysColumns.linkTableID end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.linkOrderID IS null then '' else ASRSysColumns.linkOrderID end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.linkViewID IS null then '' else ASRSysColumns.linkViewID end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.Afdenabled IS null then '' else ASRSysColumns.Afdenabled end) + char(9) +
-		convert(varchar(MAX), case when ASRSysTables.TableName IS null then '' else ASRSysTables.TableName end) + char(9) +
-		convert(varchar(MAX), case when ci.selectGranted IS null then '' else ci.selectGranted end) + char(9) +
-		convert(varchar(MAX), case when ci.updateGranted IS null then '' else ci.updateGranted end) + char(9) +
-		'' + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.pictureID IS null then '' else ASRSysControls.pictureID end)+ char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.trimming IS null then '' else ASRSysColumns.trimming end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.Use1000Separator IS null then '' else ASRSysColumns.Use1000Separator end) + char(9) +	
-		convert(varchar(MAX), case when ASRSysColumns.lookupFilterColumnID IS null then '' else ASRSysColumns.lookupFilterColumnID end) + char(9) +	
-		convert(varchar(MAX), case when ASRSysColumns.LookupFilterValueID IS null then '' else ASRSysColumns.LookupFilterValueID end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.OLEType IS null then '' else ASRSysColumns.OLEType end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.MaxOLESizeEnabled IS null then '' else ASRSysColumns.MaxOLESizeEnabled end) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.MaxOLESize IS null then '' else ASRSysColumns.MaxOLESize end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.NavigateTo IS null then '' else ASRSysControls.NavigateTo end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.NavigateIn IS null then '' else ASRSysControls.NavigateIn end) + char(9) +
-		convert(varchar(MAX), case when ASRSysControls.NavigateOnSave IS null then '' else ASRSysControls.NavigateOnSave end) + char(9) +
-		convert(varchar(MAX), case when isnull(ASRSysControls.readOnly,0) = 1 then 1 else 0 end)
-		AS [controlDefinition],
-		ASRSysControls.pageNo AS [pageNo],
-		ASRSysControls.controlLevel AS [controlLevel],
-		ASRSysControls.tabIndex AS [tabIndex]
-	FROM ASRSysControls
-	LEFT OUTER JOIN ASRSysTables ON ASRSysControls.tableID = ASRSysTables.tableID 
-	LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID AND ASRSysColumns.columnId = ASRSysControls.columnID
-	LEFT OUTER JOIN @columnInfo ci ON ASRSysColumns.columnId = ci.columnID
-	WHERE screenID = @piScreenID
-	UNION
-	SELECT 
-		convert(varchar(MAX), -1) + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.columnId IS null then '' else ASRSysColumns.columnId end)  + char(9) +
-		convert(varchar(MAX), case when ASRSysColumns.columnName IS null then '' else ASRSysColumns.columnName end) 
-		AS [controlDefinition],
-		0 AS [pageNo],
-		0 AS [controlLevel],
-		0 AS [tabIndex]
-	FROM ASRSysColumns
-	WHERE tableID = @iScreenTableID
-		AND columnType = 3
-	ORDER BY [pageNo],
-		[controlLevel] DESC, 
-		[tabIndex];
-
-END
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetScreenDefinition]    Script Date: 02/01/2014 20:50:38 ******/
 SET ANSI_NULLS ON
@@ -56398,12 +38001,6 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGe
 	DROP PROCEDURE [dbo].[spASRIntGet1000SeparatorBlankIfZeroFindColumns]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGet1000SeparatorBlankIfZeroFindColumns]    Script Date: 29/01/2015 15:31:22 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
 CREATE PROCEDURE [dbo].[spASRIntGet1000SeparatorBlankIfZeroFindColumns] (
 	@pfError 				bit 			OUTPUT, 
 	@piTableID 				integer, 
@@ -56513,10 +38110,10 @@ BEGIN
 
 	/* Loop through the tables used in the order, getting the column permissions for each one. */
 	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	WHERE ASRSysOrderItems.orderID = @piOrderID;
+	SELECT DISTINCT c.tableID
+	FROM ASRSysOrderItems oi
+	INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	WHERE oi.orderID = @piOrderID;
 
 	OPEN tablesCursor;
 	FETCH NEXT FROM tablesCursor INTO @iTempTableID;
@@ -56580,18 +38177,13 @@ BEGIN
 
 	/* Create the order select strings. */
 	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.tableID,
-		ASRSysColumns.columnName,
-		ASRSysTables.tableName,
-		ASRSysOrderItems.type,
-		ASRSysColumns.Use1000Separator,
-		ASRSysColumns.BlankIfZero
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-		AND ASRSysOrderItems.type = 'F'
-	ORDER BY ASRSysOrderItems.sequence;
+	SELECT c.tableID, c.columnName, t.tableName, oi.type, c.Use1000Separator, c.BlankIfZero
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @piOrderID AND oi.type = 'F'
+			AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence;
 
 	OPEN orderCursor;
 	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @sColumnName, @sColumnTableName, @sType, @bUse1000Separator, @bBlankIfZero;
@@ -58404,6 +39996,75 @@ GRANT EXEC ON TYPE::[dbo].[DataPermissions] TO ASRSysGroup
 
 
 ---- Drop redundant functions (or renamed)
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetColumnTableID]') AND xtype = 'P')
+	DROP PROCEDURE [dbo].[spASRIntGetColumnTableID]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetSystemPermissions]') AND xtype = 'P')
+	DROP PROCEDURE [dbo].[sp_ASRIntGetSystemPermissions]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetMiscParameters]') AND xtype = 'P')
+	DROP PROCEDURE [dbo].[spASRIntGetMiscParameters]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetTableName]') AND xtype = 'P')
+	DROP PROCEDURE [dbo].[sp_ASRIntGetTableName]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntIsLookupTable]') AND xtype = 'P')
+	DROP PROCEDURE [dbo].[spASRIntIsLookupTable]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetMinimumPasswordLength]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetMinimumPasswordLength]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntPasswordOK]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntPasswordOK]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntAuditAccess]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntAuditAccess]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntPoll]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntPoll]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntCheckPolls]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntCheckPolls]
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetTables]') AND type in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetTables]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetRecord]') AND xtype = 'P')
+	DROP PROCEDURE [dbo].[sp_ASRIntGetRecord]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetRecordEditWindowTitle]') AND xtype = 'P')
+	DROP PROCEDURE [dbo].[sp_ASRIntGetRecordEditWindowTitle]
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetFindRecords]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetFindRecords]
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetFindRecords2]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetFindRecords2]
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetFindRecords3]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetFindRecords3]
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetFilterPromptedValuesRecordset]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetFilterPromptedValuesRecordset]
+GO
+
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetMailMergeDefinition]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRIntGetMailMergeDefinition];
 GO
@@ -58519,6 +40180,11 @@ GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetScreenStrings]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [dbo].[sp_ASRIntGetScreenStrings]
 GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetTablesInfo]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetTablesInfo]
+GO
+
 
 
 
@@ -70646,10 +52312,10 @@ BEGIN
 
 	/* Loop through the tables used in the order, getting the column permissions for each one. */
 	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT DISTINCT ASRSysColumns.tableID
-	FROM ASRSysOrderItems 
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	WHERE ASRSysOrderItems.orderID = @piOrderID
+	SELECT DISTINCT c.tableID
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	WHERE oi.orderID = @piOrderID;
 
 	OPEN tablesCursor
 	FETCH NEXT FROM tablesCursor INTO @iTempTableID
@@ -70953,20 +52619,13 @@ BEGIN
 	/* Create the order select strings. */
 	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
 
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals
-	FROM ASRSysOrderItems
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	ORDER BY ASRSysOrderItems.sequence
+	SELECT c.tableID, oi.columnID, c.columnName, t.tableName, oi.ascending, oi.type, c.dataType, c.size, c.decimals
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @piOrderID
+		AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence;
 
 	OPEN orderCursor
 	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
@@ -73150,6 +54809,9003 @@ BEGIN
 END
 GO
 
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetAddFromWaitingListRecords]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetAddFromWaitingListRecords]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetAddFromWaitingListRecords] (
+	@piTableID 			integer, 
+	@piViewID 			integer, 
+	@piOrderID 			integer,
+	@piCourseRecordID	integer,
+	@pfError 			bit 			OUTPUT,
+	@piRecordsRequired	integer,
+	@pfFirstPage		bit				OUTPUT,
+	@pfLastPage			bit				OUTPUT,
+	@psLocateValue		varchar(MAX),
+	@piColumnType		integer			OUTPUT,
+	@psAction			varchar(255),
+	@piTotalRecCount	integer			OUTPUT,
+	@piFirstRecPos		integer			OUTPUT,
+	@piCurrentRecCount	integer,
+	@psErrorMessage		varchar(MAX)	OUTPUT,
+	@piColumnSize		integer			OUTPUT,
+	@piColumnDecimals	integer			OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE @iUserGroupID	integer,
+		@sUserGroupName		sysname,
+		@iTableType			integer,
+		@sTableName			sysname,
+		@sRealSource 		sysname,
+		@iChildViewID 		integer,
+		@iTempTableID 		integer,
+		@iColumnTableID 	integer,
+		@iColumnID 			integer,
+		@sColumnName 		sysname,
+		@sColumnTableName 	sysname,
+		@fAscending 		bit,
+		@sType	 			varchar(10),
+		@iDataType 			integer,
+		@fSelectGranted 	bit,
+		@sSelectSQL			varchar(MAX),
+		@sOrderSQL 			varchar(MAX),
+		@sExecString		nvarchar(MAX),
+		@sTempString		varchar(MAX),
+		@fSelectDenied		bit,
+		@iTempCount 		integer,
+		@sSubString			varchar(MAX),
+		@sViewName 			varchar(255),
+		@sTableViewName 	sysname,
+		@iJoinTableID 		integer,
+		@iTemp				integer,
+		@sRemainingSQL		varchar(MAX),
+		@iLastCharIndex		integer,
+		@iCharIndex 		integer,
+		@sDESCstring		varchar(5),
+		@sTempExecString	nvarchar(MAX),
+		@sTempParamDefinition	nvarchar(500),
+		@fFirstColumnAsc	bit,
+		@sFirstColCode		varchar(MAX),
+		@sLocateCode		varchar(MAX),
+		@sReverseOrderSQL 	varchar(MAX),
+		@iCount				integer,
+		@fWhereDone			bit,
+		@iWLCourseTitleColumnID	integer,
+		@sWLCourseTitleColumnName	sysname,
+		@iCourseTitleColumnID	integer,
+		@sCourseTitleColumnName	sysname,
+		@iWLOverrideColumnID	integer,
+		@sWLOverrideColumnName	sysname,
+		@iGetCount			integer,
+		@sCourseTitle		varchar(MAX),
+		@iCourseTableID		integer,
+		@iCourseRecordID	integer,
+		@iWLTableID			integer,
+		@sWLTableName		sysname,
+		@sWLRealSource		varchar(255),
+		@sCourseSource		sysname,
+		@iColSize			integer,
+		@iColDecs			integer,
+		@sActualUserName	sysname;
+
+	/* Initialise variables. */
+	SET @pfError = 0;
+	SET @psErrorMessage = '';
+	SET @sRealSource = '';
+	SET @sSelectSQL = '';
+	SET @sOrderSQL = '';
+	SET @fSelectDenied = 0;
+	SET @sExecString = '';
+	SET @sDESCstring = ' DESC';
+	SET @fFirstColumnAsc = 1;
+	SET @sFirstColCode = '';
+	SET @sReverseOrderSQL = '';
+	SET @fWhereDone = 0;
+
+	/* Clean the input string parameters. */
+	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''');
+
+	/* Get the current user's group ID. */
+	EXEC [dbo].[spASRIntGetActualUserDetails]
+		@sActualUserName OUTPUT,
+		@sUserGroupName OUTPUT,
+		@iUserGroupID OUTPUT;
+
+	/* Get the current course title. */
+	/* Get the Course table id. */
+	SELECT @iCourseTableID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_CourseTable'
+	IF @iCourseTableID IS NULL SET @iCourseTableID = 0;
+
+	SELECT @iCourseTitleColumnID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_CourseTitle'
+	IF @iCourseTitleColumnID IS NULL SET @iCourseTitleColumnID = 0;
+	
+	IF @iCourseTitleColumnID > 0 
+	BEGIN
+		SELECT @sCourseTitleColumnName = columnName
+		FROM ASRSysColumns
+		WHERE columnID = @iCourseTitleColumnID;
+	END
+	IF @sCourseTitleColumnName IS NULL SET @sCourseTitleColumnName = '';
+
+	/* Get the @sCourseTitle value for the given course record. */
+	DECLARE courseSourceCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT sysobjects.name
+	FROM sysprotects
+	INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+	INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+	WHERE sysprotects.uid = @iUserGroupID
+		AND sysprotects.action = 193 
+		AND (sysprotects.protectType = 205 OR sysprotects.protectType = 204)
+		AND syscolumns.name = @sCourseTitleColumnName
+		AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
+			ASRSysTables.tableID = @iCourseTableID 
+			UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iCourseTableID)
+		AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+		OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+		
+	OPEN courseSourceCursor;
+	FETCH NEXT FROM courseSourceCursor INTO @sCourseSource;
+	WHILE (@@fetch_status = 0) AND (@sCourseTitle IS null)
+	BEGIN
+		SET @sTempExecString = 'SELECT @sCourseTitle = ' + @sCourseTitleColumnName + 
+			' FROM ' + @sCourseSource +
+			' WHERE id = ' + convert(nvarchar(255), @piCourseRecordID);
+		SET @sTempParamDefinition = N'@sCourseTitle varchar(MAX) OUTPUT';
+		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @sCourseTitle OUTPUT;
+
+		FETCH NEXT FROM courseSourceCursor INTO @sCourseSource;
+	END
+	CLOSE courseSourceCursor;
+	DEALLOCATE courseSourceCursor;
+
+	IF @sCourseTitle IS null
+	BEGIN
+		SET @pfError = 1;
+		SET @psErrorMessage = 'Unable to read the course title from the current Course record.';
+		RETURN		
+	END
+
+	/* Get the WL table real source. */
+	/* NB. To reach this point we have already checked that the user has 'read' permission on the Training Booking - Status column. */
+	SELECT @iWLTableID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_WaitListTable';
+	IF @iWLTableID IS NULL SET @iWLTableID = 0;
+
+	SELECT @sWLTableName = tableName
+	FROM ASRSysTables
+	WHERE tableID = @iWLTableID;
+
+	SELECT @iWLCourseTitleColumnID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_WaitListCourseTitle';
+	IF @iWLCourseTitleColumnID IS NULL SET @iWLCourseTitleColumnID = 0;
+	
+	IF @iWLCourseTitleColumnID > 0 
+	BEGIN
+		SELECT @sWLCourseTitleColumnName = columnName
+		FROM ASRSysColumns
+		WHERE columnID = @iWLCourseTitleColumnID;
+	END
+	IF @sWLCourseTitleColumnName IS NULL SET @sWLCourseTitleColumnName = '';
+
+	SELECT @iWLOverrideColumnID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_WaitListOverRideColumn';
+	IF @iWLOverrideColumnID IS NULL SET @iWLOverrideColumnID = 0;
+
+	IF @iWLOverrideColumnID > 0 
+	BEGIN
+		SELECT @sWLOverrideColumnName = columnName
+		FROM ASRSysColumns
+		WHERE columnID = @iWLOverrideColumnID;
+	END
+	IF @sWLOverrideColumnName IS NULL SET @sWLOverrideColumnName = '';
+
+	SELECT @iChildViewID = childViewID
+	FROM ASRSysChildViews2
+	WHERE tableID = @iWLTableID
+		AND [role] = @sUserGroupName;
+	IF @iChildViewID IS null SET @iChildViewID = 0;
+		
+	IF @iChildViewID > 0 
+	BEGIN
+		SET @sWLRealSource = 'ASRSysCV' + 
+			convert(varchar(1000), @iChildViewID) +
+			'#' + replace(@sWLTableName, ' ', '_') +
+			'#' + replace(@sUserGroupName, ' ', '_');
+		SET @sWLRealSource = left(@sWLRealSource, 255);
+	END
+
+	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000;
+	SET @psAction = UPPER(@psAction);
+	IF (@psAction <> 'MOVEPREVIOUS') AND 
+		(@psAction <> 'MOVENEXT') AND 
+		(@psAction <> 'MOVELAST') AND 
+		(@psAction <> 'LOCATE')
+	BEGIN
+		SET @psAction = 'MOVEFIRST';
+	END
+
+	/* Get the table type and name. */
+	SELECT @iTableType = ASRSysTables.tableType,
+		@sTableName = ASRSysTables.tableName
+	FROM ASRSysTables
+	WHERE ASRSysTables.tableID = @piTableID;
+
+	/* Get the real source of the given table/view. */
+	IF @iTableType <> 2 /* ie. top-level or lookup */
+	BEGIN
+		IF @piViewID > 0 
+		BEGIN	
+			/* RealSource is the view. */	
+			SELECT @sRealSource = viewName
+			FROM ASRSysViews
+			WHERE viewID = @piViewID;
+		END
+		ELSE
+		BEGIN
+			SET @sRealSource = @sTableName;
+		END 
+	END
+	ELSE
+	BEGIN
+		SELECT @iChildViewID = childViewID
+		FROM ASRSysChildViews2
+		WHERE tableID = @piTableID
+			AND [role] = @sUserGroupName;
+			
+		IF @iChildViewID IS null SET @iChildViewID = 0;
+			
+		IF @iChildViewID > 0 
+		BEGIN
+			SET @sRealSource = 'ASRSysCV' + 
+				convert(varchar(1000), @iChildViewID) +
+				'#' + replace(@sTableName, ' ', '_') +
+				'#' + replace(@sUserGroupName, ' ', '_');
+			SET @sRealSource = left(@sRealSource, 255);
+		END
+	END
+
+	IF len(@sRealSource) = 0
+	BEGIN
+		SET @pfError = 1;
+		RETURN;
+	END
+
+	/* Create a temporary table to hold the tables/views that need to be joined. */
+	DECLARE @joinParents TABLE(
+		tableViewName	sysname,
+		tableID			integer);
+
+	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
+	DECLARE @columnPermissions TABLE(
+		tableID			integer,
+		tableViewName	sysname,
+		columnName		sysname,
+		selectGranted	bit);
+
+	/* Loop through the tables used in the order, getting the column permissions for each one. */
+	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT c.tableID
+	FROM ASRSysOrderItems  oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	WHERE oi.orderID = @piOrderID;
+
+	OPEN tablesCursor;
+	FETCH NEXT FROM tablesCursor INTO @iTempTableID;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		IF @iTempTableID = @piTableID
+		BEGIN
+			/* Base table - use the real source. */
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				@sRealSource,
+				syscolumns.name,
+				CASE protectType
+					WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name = @sRealSource
+				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table - get permissions for the table, and any associated views. */
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				sysobjects.name,
+				syscolumns.name,
+				CASE protectType
+				        	WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
+					ASRSysTables.tableID = @iTempTableID 
+					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
+			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+		END
+
+		FETCH NEXT FROM tablesCursor INTO @iTempTableID;
+	END
+	CLOSE tablesCursor;
+	DEALLOCATE tablesCursor;
+
+	/*Get the permissions for the override column if it has been set*/
+	IF @iWLOverrideColumnID > 0 
+	BEGIN
+		INSERT INTO @columnPermissions
+		SELECT 
+			@iWLTableID,
+			@sWLRealSource,
+			syscolumns.name,
+			CASE protectType
+				WHEN 205 THEN 1
+				WHEN 204 THEN 1
+				ELSE 0
+			END 
+		FROM sysprotects
+		INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+		INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+		WHERE sysprotects.uid = @iUserGroupID
+			AND sysprotects.action = 193 
+			AND syscolumns.name <> 'timestamp'
+			AND sysobjects.name = @sWLRealSource
+			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+
+		/* Get the select permission on the column. */
+		SELECT @fSelectGranted = selectGranted
+		FROM @columnPermissions
+		WHERE tableViewName = @sWLRealSource
+			AND columnName = @sWLOverrideColumnName;
+
+		IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
+
+		IF @fSelectGranted = 1
+		BEGIN
+			/* The user DOES have SELECT permission on the column in the current table/view. */
+			/* Find column. */
+			SET @sTempString = CASE 
+					WHEN (len(@sSelectSQL) > 0) THEN ',' 
+					ELSE '' 
+				END + 
+				@sWLRealSource + '.' + @sWLOverrideColumnName;				
+			SET @sSelectSQL = @sSelectSQL + @sTempString;
+
+			/* Override Column. */
+			IF len(@sOrderSQL) = 0 
+			BEGIN
+				SET @fAscending = 1;
+				SELECT 
+					@iDataType = ASRSysColumns.dataType,
+					@iColSize = ASRSysColumns.size,
+					@iColDecs = ASRSysColumns.decimals
+				FROM ASRSysColumns 
+				WHERE ASRSysColumns.columnId = @iWLOverrideColumnID;
+
+				SET @piColumnType = @iDataType;
+				SET @fFirstColumnAsc = @fAscending;
+				SET @sFirstColCode = @sWLRealSource + '.' + @sWLOverrideColumnName;
+				SET @piColumnSize = @iColSize;
+				SET @piColumnDecimals = @iColDecs;
+			END
+			SET @sOrderSQL = @sOrderSQL + 
+			CASE 
+				WHEN len(@sOrderSQL) > 0 THEN ',' 
+				ELSE '' 
+			END + 
+			@sWLRealSource + '.' + @sWLOverrideColumnName +
+			CASE 
+				WHEN @fAscending = 0 THEN ' DESC' 
+				ELSE '' 
+			END		
+		END			
+	END
+
+	/* Create the order select strings. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT c.tableID,	oi.columnID, c.columnName, t.tableName,	oi.ascending,	oi.type, c.dataType, c.size, c.decimals
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @piOrderID
+		AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence;
+
+	OPEN orderCursor;
+	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs;
+
+	/* Check if the order exists. */
+	IF  @@fetch_status <> 0
+	BEGIN
+		SET @pfError = 1;
+		RETURN;
+	END
+
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0;
+
+		IF @iColumnTableId = @piTableID
+		BEGIN
+			/* Base table. */
+			/* Get the select permission on the column. */
+			SELECT @fSelectGranted = selectGranted
+			FROM @columnPermissions
+			WHERE tableViewName = @sRealSource
+				AND columnName = @sColumnName;
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
+
+			IF @fSelectGranted = 1
+			BEGIN
+				/* The user DOES have SELECT permission on the column in the current table/view. */
+				IF @sType = 'F'
+				BEGIN
+					/* Find column. */
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						@sRealSource + '.' + @sColumnName;
+					SET @sSelectSQL = @sSelectSQL + @sTempString;
+
+				END
+				ELSE
+				BEGIN
+					/* Order column. */
+
+					IF len(@sOrderSQL) = 0 
+					BEGIN
+						SET @piColumnType = @iDataType;
+						SET @fFirstColumnAsc = @fAscending;
+						SET @sFirstColCode = @sRealSource + '.' + @sColumnName;
+						SET @piColumnSize = @iColSize;
+						SET @piColumnDecimals = @iColDecs;
+					END
+
+					SET @sOrderSQL = @sOrderSQL + 
+						CASE 
+							WHEN len(@sOrderSQL) > 0 THEN ',' 
+							ELSE '' 
+						END + 
+						@sRealSource + '.' + @sColumnName +
+						CASE 
+							WHEN @fAscending = 0 THEN ' DESC' 
+							ELSE '' 
+						END;		
+				END
+			END
+			ELSE
+			BEGIN
+				/* The user does NOT have SELECT permission on the column in the current table/view. */
+				SET @fSelectDenied = 1;
+			END	
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table. */
+			/* Get the select permission on the column. */
+
+			/* Check if the column is selectable directly from the table. */
+			SELECT @fSelectGranted = selectGranted
+			FROM @columnPermissions
+			WHERE tableID = @iColumnTableId
+				AND tableViewName = @sColumnTableName
+				AND columnName = @sColumnName;
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
+	
+			IF @fSelectGranted = 1 
+			BEGIN
+				/* Column COULD be read directly from the parent table. */
+				/* The user DOES have SELECT permission on the column in the parent table. */
+				IF @sType = 'F'
+				BEGIN
+					/* Find column. */
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						@sColumnTableName + '.' + @sColumnName;
+					SET @sSelectSQL = @sSelectSQL + @sTempString;
+				END
+				ELSE
+				BEGIN
+					/* Order column. */
+					IF len(@sOrderSQL) = 0 
+					BEGIN
+						SET @piColumnType = @iDataType;
+						SET @fFirstColumnAsc = @fAscending;
+						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName;
+						SET @piColumnSize = @iColSize;
+						SET @piColumnDecimals = @iColDecs;
+					END
+
+					SET @sOrderSQL = @sOrderSQL + 
+						CASE 
+							WHEN len(@sOrderSQL) > 0 THEN ',' 
+							ELSE '' 
+						END + 
+						@sColumnTableName + '.' + @sColumnName + 
+						CASE 
+							WHEN @fAscending = 0 THEN ' DESC' 
+							ELSE '' 
+						END;
+				END
+
+				/* Add the table to the array of tables/views to join if it has not already been added. */
+				SELECT @iTempCount = COUNT(tableViewName)
+				FROM @joinParents
+				WHERE tableViewName = @sColumnTableName;
+
+				IF @iTempCount = 0
+				BEGIN
+					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID);
+				END
+			END
+			ELSE	
+			BEGIN
+				SET @sSubString = '';
+
+				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
+				SELECT tableViewName
+				FROM @columnPermissions
+				WHERE tableID = @iColumnTableId
+					AND tableViewName <> @sColumnTableName
+					AND columnName = @sColumnName
+					AND selectGranted = 1;
+
+				OPEN viewCursor;
+				FETCH NEXT FROM viewCursor INTO @sViewName;
+				WHILE (@@fetch_status = 0)
+				BEGIN
+					/* Column CAN be read from the view. */
+					IF len(@sSubString) = 0 SET @sSubString = 'CASE';
+
+					SET @sSubString = @sSubString +
+						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName;
+		
+					/* Add the view to the array of tables/views to join if it has not already been added. */
+					SELECT @iTempCount = COUNT(tableViewName)
+					FROM @joinParents
+					WHERE tableViewname = @sViewName;
+
+					IF @iTempCount = 0
+					BEGIN
+						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId);
+					END
+
+					FETCH NEXT FROM viewCursor INTO @sViewName;
+				END
+				CLOSE viewCursor;
+				DEALLOCATE viewCursor;
+
+				IF len(@sSubString) > 0
+				BEGIN
+					SET @sSubString = @sSubString +	' ELSE NULL END';
+
+					IF @sType = 'F'
+					BEGIN
+						/* Find column. */
+						SET @sTempString = CASE 
+								WHEN (len(@sSelectSQL) > 0) THEN ',' 
+								ELSE '' 
+							END + 
+							CASE
+								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
+								ELSE @sSubString 
+							END;
+						SET @sSelectSQL = @sSelectSQL + @sTempString;
+					END
+					ELSE
+					BEGIN
+						/* Order column. */
+						IF len(@sOrderSQL) = 0 
+						BEGIN
+							SET @piColumnType = @iDataType;
+							SET @fFirstColumnAsc = @fAscending;
+							SET @sFirstColCode = @sSubString;
+							SET @piColumnSize = @iColSize;
+							SET @piColumnDecimals = @iColDecs;
+						END
+
+						SET @sOrderSQL = @sOrderSQL + 
+							CASE 
+								WHEN len(@sOrderSQL) > 0 THEN ',' 
+								ELSE '' 
+							END + 
+							CASE
+								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
+								ELSE @sSubString 
+							END + 
+							CASE 
+								WHEN @fAscending = 0 THEN ' DESC' 
+								ELSE '' 
+							END;		
+					END
+				END
+				ELSE
+				BEGIN
+					/* The user does NOT have SELECT permission on the column any of the parent views. */
+					SET @fSelectDenied = 1;
+				END	
+			END
+		END
+
+		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs;
+	END
+	CLOSE orderCursor;
+	DEALLOCATE orderCursor;
+
+	/* Add the ID column to the order string. */
+	SET @sOrderSQL = @sOrderSQL + 
+		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
+		@sRealSource + '.ID';
+
+	/* Create the reverse order string if required. */
+	IF (@psAction <> 'MOVEFIRST') 
+	BEGIN
+		SET @sRemainingSQL = @sOrderSQL;
+
+		SET @iLastCharIndex = 0;
+		SET @iCharIndex = CHARINDEX(',', @sOrderSQL);
+		WHILE @iCharIndex > 0 
+		BEGIN
+ 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
+			BEGIN
+				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', ';
+			END
+			ELSE
+			BEGIN
+				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', ';
+			END
+
+			SET @iLastCharIndex = @iCharIndex;
+			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1);
+	
+			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex);
+		END
+		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring;
+	END
+
+	/* Get the total number of records. */
+	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource +
+		' INNER JOIN ' + @sWLRealSource +
+		' ON (' + @sRealSource + '.id = ' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) +
+		' AND ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + ' = ''' + replace(@sCourseTitle,'''','''''') + ''')';
+	SET @sTempParamDefinition = N'@recordCount integer OUTPUT';
+	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT;
+	SET @piTotalRecCount = @iCount;
+
+	IF (len(@sSelectSQL) > 0)
+	BEGIN
+		SET @sTempString = ',' + @sRealSource + '.ID';
+		SET @sSelectSQL = @sSelectSQL + @sTempString;
+
+		SET @sExecString = 'SELECT ';
+
+		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE'
+		BEGIN
+			SET @sTempString = 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' ';
+			SET @sExecString = @sExecString + @sTempString;
+		END
+		
+		SET @sTempString = @sSelectSQL;
+		SET @sExecString = @sExecString + @sTempString;
+
+		SET @sTempString = ' FROM ' + @sWLRealSource;
+		SET @sExecString = @sExecString + @sTempString;
+
+		SET @sTempString = ' INNER JOIN ' + @sRealSource +
+			' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
+			' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + ''''
+		SET @sExecString = @sExecString + @sTempString;
+
+		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT tableViewName, tableID
+			FROM @joinParents;
+
+		OPEN joinCursor;
+		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID';
+			SET @sExecString = @sExecString + @sTempString;
+
+			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
+		END
+		CLOSE joinCursor;
+		DEALLOCATE joinCursor;
+
+		IF (@psAction = 'MOVELAST')
+		BEGIN
+			SET @fWhereDone = 1;
+			
+			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sWLRealSource + '.ID' +
+				' FROM ' + @sWLRealSource;
+			SET @sExecString = @sExecString + @sTempString;
+
+			SET @sTempString = ' INNER JOIN ' + @sRealSource +
+				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
+				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
+			SET @sExecString = @sExecString + @sTempString;
+
+		END
+
+		IF @psAction = 'MOVENEXT' 
+		BEGIN
+			SET @fWhereDone = 1
+			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
+			BEGIN
+				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1);
+			END
+			ELSE
+			BEGIN
+				SET @iGetCount = @piRecordsRequired;
+			END
+
+			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sWLRealSource + '.ID' +
+				' FROM ' + @sWLRealSource;
+			SET @sExecString = @sExecString + @sTempString;
+				
+			SET @sTempString = ' INNER JOIN ' + @sRealSource +
+				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
+				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
+			SET @sExecString = @sExecString + @sTempString;
+
+			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sWLRealSource + '.ID' +
+				' FROM ' + @sWLRealSource;
+			SET @sExecString = @sExecString + @sTempString;
+
+			SET @sTempString = ' INNER JOIN ' + @sRealSource +
+				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
+				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
+			SET @sExecString = @sExecString + @sTempString;
+
+		END
+
+		IF @psAction = 'MOVEPREVIOUS'
+		BEGIN
+			SET @fWhereDone = 1;
+			IF @piFirstRecPos <= @piRecordsRequired
+			BEGIN
+				SET @iGetCount = @piFirstRecPos - 1;
+			END
+			ELSE
+			BEGIN
+				SET @iGetCount = @piRecordsRequired;		
+			END
+
+			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sWLRealSource + '.ID' +
+				' FROM ' + @sWLRealSource;
+			SET @sExecString = @sExecString + @sTempString;
+				
+			SET @sTempString = ' INNER JOIN ' + @sRealSource +
+				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
+				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
+			SET @sExecString = @sExecString + @sTempString;
+
+			SET @sTempString = ' AND ' + @sWLRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sWLRealSource + '.ID' +
+				' FROM ' + @sWLRealSource;
+			SET @sExecString = @sExecString + @sTempString;
+
+			SET @sTempString = ' INNER JOIN ' + @sRealSource +
+				' ON (' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) + '=' + @sRealSource + '.id)' +
+				' WHERE ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + '=''' + replace(@sCourseTitle,'''','''''') + '''';
+			SET @sExecString = @sExecString + @sTempString;
+		END
+
+		/* Add the filter code. */
+
+		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
+		BEGIN
+			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')';
+			SET @sExecString = @sExecString + @sTempString;
+		END
+
+		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
+		BEGIN
+			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')';
+			SET @sExecString = @sExecString + @sTempString;
+		END
+
+		IF (@psAction = 'LOCATE')
+		BEGIN
+			SET @fWhereDone = 1;
+			SET @sLocateCode = ' AND (' + @sFirstColCode;
+
+			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + '''';
+
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL';
+					END
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
+						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL';
+				END
+
+			END
+
+			IF @piColumnType = 11 /* Date column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL';
+					END
+					ELSE
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + '''';
+					END
+				END
+				ELSE
+				BEGIN
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' IS NULL';
+					END
+					ELSE
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL';
+					END
+				END
+			END
+
+			IF @piColumnType = -7 /* Logic column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ' + 
+						CASE
+							WHEN @psLocateValue = 'True' THEN '1'
+							ELSE '0'
+						END;
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ' + 
+						CASE
+							WHEN @psLocateValue = 'True' THEN '1'
+							ELSE '0'
+						END;
+				END
+			END
+
+			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue;
+
+					IF convert(float, @psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL';
+					END
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL';
+				END
+			END
+
+			SET @sLocateCode = @sLocateCode + ')';
+			SET @sTempString = @sLocateCode;
+			SET @sExecString = @sExecString + @sTempString;
+
+		END
+
+		/* Add the ORDER BY code to the find record selection string if required. */
+		SET @sTempString = ' ORDER BY ' + @sOrderSQL;
+		SET @sExecString = @sExecString + @sTempString;
+
+	END
+
+	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
+	IF @psAction = 'MOVEFIRST'
+	BEGIN
+		SET @piFirstRecPos = 1;
+		SET @pfFirstPage = 1;
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
+				ELSE 0
+			END;
+	END
+	IF @psAction = 'MOVENEXT'
+	BEGIN
+		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount;
+		SET @pfFirstPage = 0;
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
+				ELSE 0
+			END;
+	END
+	IF @psAction = 'MOVEPREVIOUS'
+	BEGIN
+		SET @piFirstRecPos = @piFirstRecPos - @iGetCount;
+		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1;
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END;
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
+				ELSE 0
+			END;
+	END
+	IF @psAction = 'MOVELAST'
+	BEGIN
+		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1;
+		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1;
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END;
+		SET @pfLastPage = 1;
+	END
+
+	IF @psAction = 'LOCATE'
+	BEGIN
+		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource + 
+			' INNER JOIN ' + @sWLRealSource +
+			' ON (' + @sRealSource + '.id = ' + @sWLRealSource + '.id_' + convert(nvarchar(255), @piTableID) +
+			' AND ' + @sWLRealSource + '.' + @sWLCourseTitleColumnName + ' = ''' + replace(@sCourseTitle,'''','''''') + ''')';
+			
+		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT tableViewName, tableID
+		FROM @joinParents;
+
+		OPEN joinCursor;
+		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			SET @sTempExecString = @sTempExecString + 
+				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID';
+
+			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
+		END
+		CLOSE joinCursor;
+		DEALLOCATE joinCursor;
+
+		SET @sTempExecString = @sTempExecString + @sLocateCode;
+
+		SET @sTempParamDefinition = N'@recordCount integer OUTPUT';
+		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT;
+
+		IF @iTemp <=0 
+
+		BEGIN
+			SET @piFirstRecPos = @piTotalRecCount + 1;
+		END
+		ELSE
+		BEGIN
+			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1;
+		END
+
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END;
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount <= @piFirstRecPos + @piRecordsRequired THEN 1
+				ELSE 0
+			END;
+	END
+
+	/* Return a recordset of the required columns in the required order from the given table/view. */
+	IF (len(@sExecString) > 0)
+	BEGIN
+		EXECUTE sp_executeSQL @sExecString;
+	END
+END
+
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetBookCourseRecords]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetBookCourseRecords]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetBookCourseRecords] (
+	@piTableID 			integer, 
+	@piViewID 			integer, 
+	@piOrderID 			integer,
+	@piWLRecordID		integer,
+	@pfError 			bit 		OUTPUT,
+	@piRecordsRequired	integer,
+	@pfFirstPage		bit			OUTPUT,
+	@pfLastPage			bit			OUTPUT,
+	@psLocateValue		varchar(MAX),
+	@piColumnType		integer		OUTPUT,
+	@psAction			varchar(255),
+	@piTotalRecCount	integer		OUTPUT,
+	@piFirstRecPos		integer		OUTPUT,
+	@piCurrentRecCount	integer,
+	@piColumnSize		integer		OUTPUT,
+	@piColumnDecimals	integer		OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE @iUserGroupID	integer,
+		@sUserGroupName		sysname,
+		@iTableType			integer,
+		@sTableName			sysname,
+		@sRealSource 		sysname,
+		@iChildViewID 		integer,
+		@iTempTableID 		integer,
+		@iColumnTableID 	integer,
+		@iColumnID 			integer,
+		@sColumnName 		sysname,
+		@sColumnTableName 	sysname,
+		@fAscending 		bit,
+		@sType	 			varchar(10),
+		@iDataType 			integer,
+		@fSelectGranted 	bit,
+		@sSelectSQL			varchar(MAX),
+		@sOrderSQL 			varchar(MAX),
+		@sExecString		nvarchar(MAX),
+		@sTempString		varchar(MAX),
+		@fSelectDenied		bit,
+		@iTempCount 		integer,
+		@sSubString			varchar(MAX),
+		@sViewName 			varchar(255),
+		@sTableViewName 	sysname,
+		@iJoinTableID 		integer,
+		@iTemp				integer,
+		@sRemainingSQL		varchar(MAX),
+		@iLastCharIndex		integer,
+		@iCharIndex 		integer,
+		@sDESCstring		varchar(4),
+		@sTempExecString	nvarchar(MAX),
+		@sTempParamDefinition	nvarchar(500),
+		@fFirstColumnAsc	bit,
+		@sFirstColCode		varchar(MAX),
+		@sLocateCode		varchar(MAX),
+		@sReverseOrderSQL 	varchar(MAX),
+		@iCount				integer,
+		@fWhereDone			bit,
+		@iWLCourseTitleColumnID		integer,
+		@sWLCourseTitleColumnName	sysname,
+		@iCourseTitleColumnID		integer,
+		@sCourseTitleColumnName		sysname,
+		@iCourseStartDateColumnID	integer,
+		@sCourseStartDateColumnName	sysname,
+		@sCourseCancelDateColumnID	integer,
+		@sCourseCancelDateColumnName	sysname,
+		@iGetCount					integer,
+		@sCourseTitle				varchar(MAX),
+		@iWLTableID					integer,
+		@sWLTableName				sysname,
+		@sWLRealSource				varchar(255),
+		@iColSize					integer,
+		@iColDecs					integer,
+		@sActualUserName			sysname;
+
+	/* Initialise variables. */
+	SET @pfError = 0;
+	SET @sRealSource = '';
+	SET @sSelectSQL = '';
+	SET @sOrderSQL = '';
+	SET @fSelectDenied = 0;
+	SET @sExecString = '';
+	SET @sDESCstring = ' DESC';
+	SET @fFirstColumnAsc = 1;
+	SET @sFirstColCode = '';
+	SET @sReverseOrderSQL = '';
+	SET @fWhereDone = 0;
+
+	/* Clean the input string parameters. */
+	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''');
+
+	/* Get the current user's group ID. */
+	EXEC [dbo].[spASRIntGetActualUserDetails]
+		@sActualUserName OUTPUT,
+		@sUserGroupName OUTPUT,
+		@iUserGroupID OUTPUT;
+
+	/* Get the course title from the given WL record. */
+	/* NB. To reach this point we have already checked that the user has 'read' permission on the Waiting List - Course Title column. */
+	SELECT @iWLTableID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_WaitListTable';
+	IF @iWLTableID IS NULL SET @iWLTableID = 0;
+
+	SELECT @sWLTableName = tableName
+	FROM [dbo].[ASRSysTables]
+	WHERE tableID = @iWLTableID;
+	
+	SELECT @iWLCourseTitleColumnID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_WaitListCourseTitle'
+	IF @iWLCourseTitleColumnID IS NULL SET @iWLCourseTitleColumnID = 0
+	
+	IF @iWLCourseTitleColumnID > 0 
+	BEGIN
+		SELECT @sWLCourseTitleColumnName = columnName
+		FROM ASRSysColumns
+		WHERE columnID = @iWLCourseTitleColumnID
+	END
+	IF @sWLCourseTitleColumnName IS NULL SET @sWLCourseTitleColumnName = ''
+
+	SELECT @iChildViewID = childViewID
+	FROM ASRSysChildViews2
+	WHERE tableID = @iWLTableID
+		AND role = @sUserGroupName
+		
+	IF @iChildViewID IS null SET @iChildViewID = 0
+		
+	IF @iChildViewID > 0 
+	BEGIN
+		SET @sWLRealSource = 'ASRSysCV' + 
+			convert(varchar(1000), @iChildViewID) +
+			'#' + replace(@sWLTableName, ' ', '_') +
+			'#' + replace(@sUserGroupName, ' ', '_')
+		SET @sWLRealSource = left(@sWLRealSource, 255)
+	END
+
+	SET @sTempExecString = 'SELECT @sCourseTitle = ' + @sWLCourseTitleColumnName +
+		' FROM ' + @sWLRealSource +
+		' WHERE id = ' + convert(nvarchar(100), @piWLRecordID)
+	SET @sTempParamDefinition = N'@sCourseTitle varchar(MAX) OUTPUT'
+	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @sCourseTitle OUTPUT
+
+	SELECT @iCourseTitleColumnID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_CourseTitle'
+	IF @iCourseTitleColumnID IS NULL SET @iCourseTitleColumnID = 0
+	
+	IF @iCourseTitleColumnID > 0 
+	BEGIN
+		SELECT @sCourseTitleColumnName = columnName
+		FROM ASRSysColumns
+		WHERE columnID = @iCourseTitleColumnID
+	END
+	IF @sCourseTitleColumnName IS NULL SET @sCourseTitleColumnName = ''
+
+	SELECT @iCourseStartDateColumnID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_CourseStartDate'
+	IF @iCourseStartDateColumnID IS NULL SET @iCourseStartDateColumnID = 0
+
+	IF @iCourseStartDateColumnID > 0 
+	BEGIN
+		SELECT @sCourseStartDateColumnName = columnName
+		FROM ASRSysColumns
+		WHERE columnID = @iCourseStartDateColumnID
+	END
+	IF @sCourseStartDateColumnName IS NULL SET @sCourseStartDateColumnName = ''
+
+	/* Get Cancel date Column*/
+	SELECT @sCourseCancelDateColumnID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_CourseCancelDate'
+	IF @sCourseCancelDateColumnID IS NULL SET @sCourseCancelDateColumnID = 0
+	IF @sCourseCancelDateColumnID > 0 
+	BEGIN
+		SELECT @sCourseCancelDateColumnName = columnName
+		FROM ASRSysColumns
+		WHERE columnID = @sCourseCancelDateColumnID
+	END
+	IF @sCourseCancelDateColumnName IS NULL SET @sCourseCancelDateColumnName = ''
+
+	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
+	SET @psAction = UPPER(@psAction)
+	IF (@psAction <> 'MOVEPREVIOUS') AND 
+		(@psAction <> 'MOVENEXT') AND 
+		(@psAction <> 'MOVELAST') AND 
+		(@psAction <> 'LOCATE')
+	BEGIN
+		SET @psAction = 'MOVEFIRST'
+	END
+
+	/* Get the table type and name. */
+	SELECT @iTableType = ASRSysTables.tableType,
+		@sTableName = ASRSysTables.tableName
+	FROM ASRSysTables
+	WHERE ASRSysTables.tableID = @piTableID
+
+	/* Get the real source of the given table/view. */
+	IF @iTableType <> 2 /* ie. top-level or lookup */
+	BEGIN
+		IF @piViewID > 0 
+		BEGIN	
+			/* RealSource is the view. */	
+			SELECT @sRealSource = viewName
+			FROM ASRSysViews
+			WHERE viewID = @piViewID
+		END
+		ELSE
+		BEGIN
+			SET @sRealSource = @sTableName
+		END 
+	END
+	ELSE
+	BEGIN
+		SELECT @iChildViewID = childViewID
+		FROM ASRSysChildViews2
+		WHERE tableID = @piTableID
+			AND role = @sUserGroupName
+			
+		IF @iChildViewID IS null SET @iChildViewID = 0
+			
+		IF @iChildViewID > 0 
+		BEGIN
+			SET @sRealSource = 'ASRSysCV' + 
+				convert(varchar(1000), @iChildViewID) +
+				'#' + replace(@sTableName, ' ', '_') +
+				'#' + replace(@sUserGroupName, ' ', '_')
+			SET @sRealSource = left(@sRealSource, 255)
+		END
+	END
+
+	IF len(@sRealSource) = 0
+	BEGIN
+		SET @pfError = 1
+		RETURN
+	END
+
+	/* Create a temporary table to hold the tables/views that need to be joined. */
+	DECLARE @joinParents TABLE(
+		tableViewName	sysname,
+		tableID			integer);
+
+	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
+	DECLARE @columnPermissions TABLE(
+		tableID			integer,
+		tableViewName	sysname,
+		columnName		sysname,
+		selectGranted	bit);
+
+	/* Loop through the tables used in the order, getting the column permissions for each one. */
+	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT c.tableID
+		FROM ASRSysOrderItems oi
+	INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	WHERE oi.orderID = @piOrderID
+
+	OPEN tablesCursor
+	FETCH NEXT FROM tablesCursor INTO @iTempTableID
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		IF @iTempTableID = @piTableID
+		BEGIN
+			/* Base table - use the real source. */
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				@sRealSource,
+				syscolumns.name,
+				CASE protectType
+					WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name = @sRealSource
+				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table - get permissions for the table, and any associated views. */
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				sysobjects.name,
+				syscolumns.name,
+				CASE protectType
+				        	WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
+					ASRSysTables.tableID = @iTempTableID 
+					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
+			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+		END
+
+		FETCH NEXT FROM tablesCursor INTO @iTempTableID
+	END
+	CLOSE tablesCursor
+	DEALLOCATE tablesCursor
+
+	SET @fSelectGranted = 0
+	SELECT @fSelectGranted = selectGranted
+	FROM @columnPermissions
+	WHERE tableViewName = @sRealSource
+		AND columnName = @sCourseTitleColumnName
+	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+	IF @fSelectGranted = 0
+	BEGIN
+		SET @pfError = 1
+		RETURN
+	END
+
+	SET @fSelectGranted = 0
+	SELECT @fSelectGranted = selectGranted
+	FROM @columnPermissions
+	WHERE tableViewName = @sRealSource
+		AND columnName = @sCourseStartDateColumnName
+	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+	IF @fSelectGranted = 0
+	BEGIN
+		SET @pfError = 1
+		RETURN
+	END
+
+	/* Create the order select strings. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT c.tableID, oi.columnID, c.columnName, t.tableName, oi.ascending, oi.type, c.dataType, c.size, c.decimals
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @piOrderID
+		AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence
+
+	OPEN orderCursor
+	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
+
+	/* Check if the order exists. */
+	IF  @@fetch_status <> 0
+	BEGIN
+		SET @pfError = 1
+		RETURN
+	END
+
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0
+		
+		IF @iColumnTableId = @piTableID
+		BEGIN
+			/* Base table. */
+			/* Get the select permission on the column. */
+			SELECT @fSelectGranted = selectGranted
+			FROM @columnPermissions
+			WHERE tableViewName = @sRealSource
+				AND columnName = @sColumnName
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+
+			IF @fSelectGranted = 1
+			BEGIN
+				/* The user DOES have SELECT permission on the column in the current table/view. */
+				IF @sType = 'F'
+				BEGIN
+					/* Find column. */
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						@sRealSource + '.' + @sColumnName
+					SET @sSelectSQL = @sSelectSQL + @sTempString
+
+				END
+				ELSE
+				BEGIN
+					/* Order column. */
+					IF len(@sOrderSQL) = 0 
+					BEGIN
+						SET @piColumnType = @iDataType
+						SET @fFirstColumnAsc = @fAscending
+						SET @sFirstColCode = @sRealSource + '.' + @sColumnName
+						SET @piColumnSize = @iColSize
+						SET @piColumnDecimals = @iColDecs
+					END
+
+					SET @sOrderSQL = @sOrderSQL + 
+						CASE 
+							WHEN len(@sOrderSQL) > 0 THEN ',' 
+							ELSE '' 
+						END + 
+						@sRealSource + '.' + @sColumnName +
+						CASE 
+							WHEN @fAscending = 0 THEN ' DESC' 
+							ELSE '' 
+						END				
+				END
+			END
+			ELSE
+			BEGIN
+				/* The user does NOT have SELECT permission on the column in the current table/view. */
+				SET @fSelectDenied = 1
+			END	
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table. */
+			/* Get the select permission on the column. */
+
+			/* Check if the column is selectable directly from the table. */
+			SELECT @fSelectGranted = selectGranted
+			FROM @columnPermissions
+			WHERE tableID = @iColumnTableId
+				AND tableViewName = @sColumnTableName
+				AND columnName = @sColumnName
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+	
+			IF @fSelectGranted = 1 
+			BEGIN
+				/* Column COULD be read directly from the parent table. */
+				/* The user DOES have SELECT permission on the column in the parent table. */
+				IF @sType = 'F'
+				BEGIN
+					/* Find column. */
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						@sColumnTableName + '.' + @sColumnName
+					SET @sSelectSQL = @sSelectSQL + @sTempString
+				END
+				ELSE
+				BEGIN
+					/* Order column. */
+					IF len(@sOrderSQL) = 0 
+					BEGIN
+						SET @piColumnType = @iDataType
+						SET @fFirstColumnAsc = @fAscending
+						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName
+						SET @piColumnSize = @iColSize
+						SET @piColumnDecimals = @iColDecs
+					END
+
+					SET @sOrderSQL = @sOrderSQL + 
+						CASE 
+							WHEN len(@sOrderSQL) > 0 THEN ',' 
+							ELSE '' 
+						END + 
+						@sColumnTableName + '.' + @sColumnName + 
+						CASE 
+							WHEN @fAscending = 0 THEN ' DESC' 
+							ELSE '' 
+						END				
+				END
+
+				/* Add the table to the array of tables/views to join if it has not already been added. */
+				SELECT @iTempCount = COUNT(tableViewName)
+				FROM @joinParents
+				WHERE tableViewName = @sColumnTableName
+
+				IF @iTempCount = 0
+				BEGIN
+					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
+				END
+			END
+			ELSE	
+			BEGIN
+				SET @sSubString = ''
+
+				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
+				SELECT tableViewName
+				FROM @columnPermissions
+				WHERE tableID = @iColumnTableId
+					AND tableViewName <> @sColumnTableName
+					AND columnName = @sColumnName
+					AND selectGranted = 1
+
+				OPEN viewCursor
+				FETCH NEXT FROM viewCursor INTO @sViewName
+				WHILE (@@fetch_status = 0)
+				BEGIN
+					/* Column CAN be read from the view. */
+					IF len(@sSubString) = 0 SET @sSubString = 'CASE'
+
+					SET @sSubString = @sSubString +
+						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName 
+		
+					/* Add the view to the array of tables/views to join if it has not already been added. */
+					SELECT @iTempCount = COUNT(tableViewName)
+					FROM @joinParents
+					WHERE tableViewname = @sViewName
+
+					IF @iTempCount = 0
+					BEGIN
+						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
+					END
+
+					FETCH NEXT FROM viewCursor INTO @sViewName
+				END
+				CLOSE viewCursor
+				DEALLOCATE viewCursor
+
+				IF len(@sSubString) > 0
+				BEGIN
+					SET @sSubString = @sSubString +
+						' ELSE NULL END'
+
+					IF @sType = 'F'
+					BEGIN
+						/* Find column. */
+						SET @sTempString = CASE 
+								WHEN (len(@sSelectSQL) > 0) THEN ',' 
+								ELSE '' 
+							END + 
+							CASE
+								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
+								ELSE @sSubString 
+							END
+						SET @sSelectSQL = @sSelectSQL + @sTempString
+
+					END
+					ELSE
+					BEGIN
+						/* Order column. */
+						IF len(@sOrderSQL) = 0 
+						BEGIN
+							SET @piColumnType = @iDataType
+							SET @fFirstColumnAsc = @fAscending
+							SET @sFirstColCode = @sSubString
+							SET @piColumnSize = @iColSize
+							SET @piColumnDecimals = @iColDecs
+						END
+
+						SET @sOrderSQL = @sOrderSQL + 
+							CASE 
+								WHEN len(@sOrderSQL) > 0 THEN ',' 
+								ELSE '' 
+							END + 
+							CASE
+								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
+								ELSE @sSubString 
+							END + 
+							CASE 
+								WHEN @fAscending = 0 THEN ' DESC' 
+								ELSE '' 
+							END				
+					END
+				END
+				ELSE
+				BEGIN
+					/* The user does NOT have SELECT permission on the column any of the parent views. */
+					SET @fSelectDenied = 1
+				END	
+			END
+		END
+
+		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
+	END
+	CLOSE orderCursor
+	DEALLOCATE orderCursor
+
+	/* Add the ID column to the order string. */
+	SET @sOrderSQL = @sOrderSQL + 
+		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
+		@sRealSource + '.ID'
+
+	/* Create the reverse order string if required. */
+	IF (@psAction <> 'MOVEFIRST') 
+	BEGIN
+		SET @sRemainingSQL = @sOrderSQL
+
+		SET @iLastCharIndex = 0
+		SET @iCharIndex = CHARINDEX(',', @sOrderSQL)
+		WHILE @iCharIndex > 0 
+		BEGIN
+ 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
+			BEGIN
+				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', '
+			END
+			ELSE
+			BEGIN
+				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', '
+			END
+
+			SET @iLastCharIndex = @iCharIndex
+			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1)
+	
+			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex)
+		END
+		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring
+	END
+
+	/* Get the total number of records. */
+	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource +
+		' WHERE (' +
+		@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND '	+
+		@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101))) AND ' + 
+		@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL'
+
+	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
+	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
+	SET @piTotalRecCount = @iCount
+
+	IF (len(@sSelectSQL) > 0)
+	BEGIN
+		SET @sTempString = ',' + @sRealSource + '.ID'
+		SET @sSelectSQL = @sSelectSQL + @sTempString
+
+		SET @sExecString = 'SELECT ' 
+
+		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
+		BEGIN
+			SET @sTempString = 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
+			SET @sExecString = @sExecString + @sTempString
+		END
+		
+		SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource
+
+		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT tableViewName, 
+			tableID
+		FROM @joinParents;
+
+		OPEN joinCursor
+		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
+			SET @sExecString = @sExecString + @sTempString
+
+			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+		END
+		CLOSE joinCursor
+		DEALLOCATE joinCursor
+
+		IF (@psAction = 'MOVELAST')
+		BEGIN
+			SET @fWhereDone = 1
+
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+
+		END
+
+		IF @psAction = 'MOVENEXT' 
+		BEGIN
+			SET @fWhereDone = 1
+			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
+			BEGIN
+				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
+			END
+			ELSE
+			BEGIN
+				SET @iGetCount = @piRecordsRequired
+			END
+			
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+				
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+
+		END
+
+		IF @psAction = 'MOVEPREVIOUS'
+		BEGIN
+			SET @fWhereDone = 1
+			IF @piFirstRecPos <= @piRecordsRequired
+			BEGIN
+				SET @iGetCount = @piFirstRecPos - 1
+			END
+			ELSE
+			BEGIN
+				SET @iGetCount = @piRecordsRequired				
+			END
+			
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+
+				
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+
+		END
+
+		/* Add the filter code. */
+		SET @sTempString = ' WHERE (' +
+			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND '	+
+			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101))) AND ' +
+			@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL'
+		SET @sExecString = @sExecString + @sTempString
+
+		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
+		BEGIN
+			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')'
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
+		BEGIN
+			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')'
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		IF (@psAction = 'LOCATE')
+		BEGIN
+			SET @fWhereDone = 1
+			SET @sLocateCode = ' AND (' + @sFirstColCode 
+
+			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
+
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
+					END
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
+						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL'
+				END
+
+			END
+
+			IF @piColumnType = 11 /* Date column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL'
+					END
+					ELSE
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
+					END
+				END
+				ELSE
+				BEGIN
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' IS NULL'
+					END
+					ELSE
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL'
+					END
+				END
+			END
+
+			IF @piColumnType = -7 /* Logic column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ' + 
+						CASE
+							WHEN @psLocateValue = 'True' THEN '1'
+							ELSE '0'
+						END
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ' + 
+						CASE
+							WHEN @psLocateValue = 'True' THEN '1'
+							ELSE '0'
+						END
+				END
+			END
+
+			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
+
+					IF convert(float, @psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
+					END
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL'
+				END
+			END
+
+			SET @sLocateCode = @sLocateCode + ')'
+
+			SET @sTempString = @sLocateCode
+			SET @sExecString = @sExecString + @sTempString
+
+		END
+
+		/* Add the ORDER BY code to the find record selection string if required. */
+		SET @sTempString = ' ORDER BY ' + @sOrderSQL
+		SET @sExecString = @sExecString + @sTempString
+
+	END
+
+	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
+	IF @psAction = 'MOVEFIRST'
+	BEGIN
+		SET @piFirstRecPos = 1
+		SET @pfFirstPage = 1
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
+				ELSE 0
+			END
+	END
+	IF @psAction = 'MOVENEXT'
+	BEGIN
+		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
+		SET @pfFirstPage = 0
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
+				ELSE 0
+			END
+	END
+	IF @psAction = 'MOVEPREVIOUS'
+	BEGIN
+		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
+		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
+				ELSE 0
+			END
+	END
+	IF @psAction = 'MOVELAST'
+	BEGIN
+		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
+		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END
+		SET @pfLastPage = 1
+	END
+	IF @psAction = 'LOCATE'
+	BEGIN
+		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource + 
+			' WHERE (' +
+			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND '	+
+			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101))) AND ' +
+			@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL'
+			
+		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT tableViewName, 
+			tableID
+		FROM @joinParents;
+
+		OPEN joinCursor
+		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			SET @sTempExecString = @sTempExecString + 
+				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
+
+			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+		END
+		CLOSE joinCursor
+		DEALLOCATE joinCursor
+
+		SET @sTempExecString = @sTempExecString + @sLocateCode
+			
+		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
+		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
+
+		IF @iTemp <=0 
+		BEGIN
+			SET @piFirstRecPos = @piTotalRecCount + 1
+		END
+		ELSE
+		BEGIN
+			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
+		END
+
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount <= @piFirstRecPos + @piRecordsRequired THEN 1
+				ELSE 0
+			END
+	END
+
+	/* Return a recordset of the required columns in the required order from the given table/view. */
+	IF (len(@sExecString) > 0)
+	BEGIN
+		EXECUTE sp_executeSQL @sExecString;
+	END
+END
+GO
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetBulkBookingRecords]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetBulkBookingRecords]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetBulkBookingRecords] (
+	@psSelectionType	varchar(MAX),
+	@piSelectionID		integer,
+	@psSelectedIDs		varchar(MAX),
+	@psPromptSQL		varchar(MAX),
+	@psErrorMessage		varchar(MAX)	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	/* Return a recordset of the required 'employee' table records. */
+	DECLARE
+		@iUserGroupID			integer,
+		@sUserGroupName			sysname,
+		@iID					integer,
+		@iEmployeeTableID		integer,
+		@iTableType				integer,
+		@sTableName				sysname,
+		@sEmpRealSource			sysname,
+		@iChildViewID			integer,
+		@iTemp					integer,
+		@sTemp					varchar(MAX),
+		@sActualUserName		sysname,
+		@sExecString			nvarchar(MAX),
+		@sTempString			varchar(MAX),
+		@iColumnCount			integer,
+		@iOrderID				integer,
+		@sSubSQL				varchar(MAX),
+		@sJoinViews				varchar(MAX),
+		@sSubViews				varchar(MAX),
+		@sJoinTables			varchar(MAX),
+		@fDelegateSelect		bit,
+		@sWhereSQL				varchar(MAX),
+		@iTempTableType			integer,
+		@sTempTableName			sysname,
+		@iTempTableID 			integer,
+		@sTempRealSource		sysname,
+		@sColumnName 			sysname,
+		@iDataType 				integer,
+		@iTableID 				integer,
+		@fSelectGranted 		bit,
+		@iIndex					integer,
+		@iViewID				integer, 
+		@sViewName				sysname,
+		@iTempID				integer;
+		
+	/* Clean the input string parameters. */
+	IF len(@psSelectedIDs) > 0 SET @psSelectedIDs = replace(@psSelectedIDs, '''', '''''');
+
+	SET @sJoinViews = ','
+	SET @sJoinTables = ',';
+	SET @fDelegateSelect = 0;
+	SET @sWhereSQL = '';
+
+	/* Get the current user's group ID. */
+	EXEC [dbo].[spASRIntGetActualUserDetails]
+		@sActualUserName OUTPUT,
+		@sUserGroupName OUTPUT,
+		@iUserGroupID OUTPUT;
+
+	/* Get the EMPLOYEE table information. */
+	SELECT @iEmployeeTableID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_EmployeeTable';
+	IF @iEmployeeTableID IS NULL SET @iEmployeeTableID = 0;
+
+	SELECT @iOrderID = defaultOrderID, 
+		@iTableType = tableType,
+		@sTableName = tableName
+	FROM ASRSysTables
+	WHERE tableID = @iEmployeeTableID;
+
+	/* Get the real source of the employee table. */
+	IF @iTableType <> 2 /* ie. top-level or lookup */
+	BEGIN
+		SET @sEmpRealSource = @sTableName;
+	END
+	ELSE
+	BEGIN
+		SELECT @iChildViewID = childViewID
+		FROM ASRSysChildViews2
+		WHERE tableID = @iEmployeeTableID
+			AND [role] = @sUserGroupName;
+			
+		IF @iChildViewID IS null SET @iChildViewID = 0;
+			
+		IF @iChildViewID > 0 
+		BEGIN
+			SET @sEmpRealSource = 'ASRSysCV' + 
+				convert(varchar(1000), @iChildViewID) +
+				'#' + replace(@sTableName, ' ', '_') +
+				'#' + replace(@sUserGroupName, ' ', '_');
+			SET @sEmpRealSource = left(@sEmpRealSource, 255);
+		END
+	END	
+	
+	SET @sExecString = 'SELECT ';
+	SET @iColumnCount = 0;
+
+	/* Create a temporary table to hold the find columns that the user can see. */
+	DECLARE @columnPermissions TABLE(
+		tableID			integer,
+		tableViewName	sysname,
+		columnName		sysname,
+		selectGranted	bit);
+
+	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT c.tableID, t.tableType, t.tableName
+	FROM ASRSysOrderItems oi
+	INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	INNER JOIN ASRSysTables t ON c.tableID = t.tableID
+	WHERE oi.orderID = @iOrderID
+		AND oi.type = 'F';
+
+	OPEN tablesCursor;
+	FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		IF @iTempTableType <> 2 /* ie. top-level or lookup */
+		BEGIN
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				sysobjects.name,
+				syscolumns.name,
+				CASE protectType
+				        	WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
+					ASRSysTables.tableID = @iTempTableID 
+					UNION SELECT ASRSysViews.viewName 
+					FROM ASRSysViews 
+					WHERE ASRSysViews.viewTableID = @iTempTableID)
+					AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+					OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+		END
+		ELSE
+		BEGIN
+			SELECT @iChildViewID = childViewID
+			FROM ASRSysChildViews2
+			WHERE tableID = @iTempTableID
+				AND [role] = @sUserGroupName;
+				
+			IF @iChildViewID IS null SET @iChildViewID = 0;
+				
+			IF @iChildViewID > 0 
+			BEGIN
+				SET @sTempRealSource = 'ASRSysCV' + 
+					convert(varchar(1000), @iChildViewID) +
+					'#' + replace(@sTempTableName, ' ', '_') +
+					'#' + replace(@sUserGroupName, ' ', '_');
+				SET @sTempRealSource = left(@sTempRealSource, 255);
+
+				INSERT INTO @columnPermissions
+				SELECT 
+					@iTempTableID,
+					sysobjects.name,
+					syscolumns.name,
+					CASE protectType
+					        	WHEN 205 THEN 1
+						WHEN 204 THEN 1
+						ELSE 0
+					END 
+				FROM sysprotects
+				INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+				INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+				WHERE sysprotects.uid = @iUserGroupID
+					AND sysprotects.action = 193 
+					AND syscolumns.name <> 'timestamp'
+					AND sysobjects.name =@sTempRealSource
+						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+			END
+		END
+
+		FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
+	END
+	CLOSE tablesCursor;
+	DEALLOCATE tablesCursor;
+
+	/* Create the order select strings. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT c.columnName, c.dataType, c.tableID, t.tableType, t.tableName
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @iOrderID AND oi.type = 'F'
+			AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence;
+
+	OPEN orderCursor;
+	FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0;
+
+		/* Get the real source of the employee table. */
+		IF @iTempTableType <> 2 /* ie. top-level or lookup */
+		BEGIN
+			SET @sTempRealSource = @sTempTableName;
+		END
+		ELSE
+		BEGIN
+			SELECT @iChildViewID = childViewID
+			FROM ASRSysChildViews2
+			WHERE tableID = @iTableID
+				AND [role] = @sUserGroupName;
+				
+			IF @iChildViewID IS null SET @iChildViewID = 0;
+				
+			IF @iChildViewID > 0 
+			BEGIN
+				SET @sTempRealSource = 'ASRSysCV' + 
+					convert(varchar(1000), @iChildViewID) +
+					'#' + replace(@sTempTableName, ' ', '_') +
+					'#' + replace(@sUserGroupName, ' ', '_');
+				SET @sTempRealSource = left(@sTempRealSource, 255);
+			END
+		END	
+
+		SELECT @fSelectGranted = selectGranted
+		FROM @columnPermissions
+		WHERE tableID = @iTableID
+			AND tableViewName = @sTempRealSource
+			AND columnName = @sColumnName;
+
+		IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
+
+		IF @fSelectGranted = 1
+		BEGIN
+			/* Add the column code to the 'select' string. */
+			SET @sTempString = CASE 
+					WHEN @iColumnCount > 0 THEN ','
+					ELSE ''
+				END +
+				@sTempRealSource + '.' + @sColumnName;
+			SET @sExecString = @sExecString + @sTempString;
+			SET @iColumnCount = @iColumnCount + 1;
+				
+			IF @iTableID = @iEmployeeTableID
+			BEGIN
+				SET @fDelegateSelect = 1;
+			END 
+			ELSE
+			BEGIN
+				/* Add the table to the list of join tables if required. */
+				SELECT @iIndex = CHARINDEX(',' + @sTempRealSource + ',', @sJoinTables);
+				IF @iIndex = 0 SET @sJoinTables = @sJoinTables + @sTempRealSource + ',';
+			END
+		END
+		ELSE
+		BEGIN
+			/* The column CANNOT be read from the Delegate table, or directly from a parent table.
+			Try to read it from the views on the table. */
+			SET @sSubViews = ',';
+
+			DECLARE viewsCursor CURSOR LOCAL FAST_FORWARD FOR 
+			SELECT viewID,
+				viewName
+			FROM ASRSysViews
+			WHERE viewTableID = @iTableID;
+
+			OPEN viewsCursor;
+			FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
+			WHILE (@@fetch_status = 0)
+			BEGIN
+				SET @fSelectGranted = 0;
+
+				SELECT @fSelectGranted = selectGranted
+				FROM @columnPermissions
+				WHERE tableID = @iTableID
+					AND tableViewName = @sViewName
+					AND columnName = @sColumnName;
+
+				IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
+
+				IF @fSelectGranted = 1	
+				BEGIN
+					/* Add the view to the list of join views if required. */
+					SELECT @iIndex = CHARINDEX(',' + @sViewName + ',', @sJoinViews);
+					IF @iIndex = 0 SET @sJoinViews = @sJoinViews + @sViewName + ',';
+
+					SET @sSubViews = @sSubViews + @sViewName + ',';
+				END
+
+				FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
+			END
+			CLOSE viewsCursor;
+			DEALLOCATE viewsCursor;
+
+			IF len(@sSubViews) > 1
+			BEGIN
+				SET @sSubSQL = '';
+
+				WHILE len(@sSubViews) > 1
+				BEGIN
+					SELECT @iIndex = charindex(',', @sSubViews, 2);
+					SET @sViewName = substring(@sSubViews, 2, @iIndex - 2);
+					SET @sSubViews = substring(@sSubViews, @iIndex, len(@sSubViews) -@iIndex + 1);
+
+					IF len(@sSubSQL) > 0 SET @sSubSQL = @sSubSQL + ',';
+					SET @sSubSQL = @sSubSQL + @sViewName + '.' + @sColumnName;
+				END
+
+				SET @sSubSQL = 'COALESCE(' + @sSubSQL + ') AS [' + @sColumnName + ']';
+                
+				/* Add the column code to the 'select' string. */
+				SET @sTempString = CASE 
+						WHEN @iColumnCount > 0 THEN ','
+						ELSE ''
+					END +
+					@sSubSQL;
+
+				SET @sExecString = @sExecString + @sTempString;
+				SET @iColumnCount = @iColumnCount + 1;
+			END
+		END
+
+		FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName;
+	END
+	CLOSE orderCursor;
+	DEALLOCATE orderCursor;
+
+	/* Add the ID column. */
+	SET @iColumnCount = @iColumnCount + 1;
+	SET @sTempString = ',' +
+		@sEmpRealSource + '.id' +
+		' FROM ' + @sEmpRealSource;
+	SET @sExecString = @sExecString + @sTempString;
+        
+	/* Join any other tables and views that are used. */
+	WHILE len(@sJoinTables) > 1
+	BEGIN
+		SELECT @iIndex = charindex(',', @sJoinTables, 2);
+		SET @sTableName = substring(@sJoinTables, 2, @iIndex - 2);
+		SET @sJoinTables = substring(@sJoinTables, @iIndex, len(@sJoinTables) -@iIndex + 1);
+
+		SELECT @iTempID = tableID
+		FROM ASRSysTables
+		WHERE tableName = @sTableName;
+
+		SET @sTempString = ' LEFT OUTER JOIN ' + @sTableName +
+			' ON ' + @sEmpRealSource + '.ID_' + convert(varchar(8000), @iTempID) + ' = ' + @sTableName + '.ID';
+		SET @sExecString = @sExecString + @sTempString;
+
+	END
+
+	WHILE len(@sJoinViews) > 1
+	BEGIN
+		SELECT @iIndex = charindex(',', @sJoinViews, 2);
+		SET @sViewName = substring(@sJoinViews, 2, @iIndex - 2);
+		SET @sJoinViews = substring(@sJoinViews, @iIndex, len(@sJoinViews) -@iIndex + 1);
+
+		SELECT @iTempID = viewTableID
+		FROM ASRSysViews
+		WHERE viewName = @sViewName;
+
+		IF @iTempID = @iEmployeeTableID
+		BEGIN
+			SET @sTempString = ' LEFT OUTER JOIN ' + @sViewName +
+				' ON ' + @sEmpRealSource + '.ID = ' + @sViewName + '.ID';
+			SET @sExecString = @sExecString + @sTempString;
+
+			IF @fDelegateSelect = 0
+			BEGIN
+				SET @sWhereSQL = @sWhereSQL + 
+					CASE
+						WHEN len(@sWhereSQL) > 0 THEN ' OR ('
+						ELSE '('
+					END +
+					@sEmpRealSource + '.ID IN (SELECT ID FROM ' + @sViewName +  '))';
+			END
+		END
+		ELSE
+		BEGIN
+			SET @sTempString = ' LEFT OUTER JOIN ' + @sViewName +
+				' ON ' + @sEmpRealSource + '.ID_' + convert(varchar(8000), @iTempID) + ' = ' + @sViewName + '.ID';
+			SET @sExecString = @sExecString + @sTempString;
+		END
+	END
+
+	IF len(@sWhereSQL) > 0
+	BEGIN
+		SET @sTempString = ' WHERE (' + @sWhereSQL + ')';
+		SET @sExecString = @sExecString + @sTempString;
+	END
+	
+	/* Get the list of selected IDs. */
+	
+	IF len(@psSelectedIDs) = 0 SET @psSelectedIDs = '0';
+	
+	IF UPPER(@psSelectionType) = 'PICKLIST'
+	BEGIN
+		DECLARE picklistCursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT recordID
+		FROM ASRSysPicklistItems
+		WHERE picklistID = @piSelectionID;
+	
+		OPEN picklistCursor;
+		FETCH NEXT FROM picklistCursor INTO @iID;
+
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			SET @psSelectedIDs = @psSelectedIDs + ',' + convert(varchar(255), @iID);
+			FETCH NEXT FROM picklistCursor INTO @iID;
+		END
+		CLOSE picklistCursor;
+		DEALLOCATE picklistCursor;
+	END
+	
+	/* Get the required find records. */
+	SET @sTempString = CASE
+			WHEN (charindex(' WHERE ', @sExecString) > 0) THEN ' AND ('
+			ELSE ' WHERE ('
+		END +
+		'(' + @sEmpRealSource + '.id IN (' + @psSelectedIDs + '))';
+		
+	SET @sExecString = @sExecString + @sTempString;
+
+	IF (UPPER(@psSelectionType) = 'FILTER') AND (len(@psPromptSQL) > 0)
+	BEGIN
+		SET @sTempString = ' OR (' + 
+			convert(varchar(255), @sEmpRealSource) + '.id IN (' + @psPromptSQL + '))';
+		SET @sExecString = @sExecString + @sTempString;
+
+	END
+
+	SET @sTempString = ') ORDER BY 1';
+	SET @sExecString = @sExecString + @sTempString;
+		
+	/* Count the number of commas before the ' FROM ' to see how many columns are in the select statement. */
+	SET @iTemp = 2;
+	WHILE @iTemp <= @iColumnCount
+	BEGIN
+		SET @sTempString = ',' + convert(varchar(8000), @iTemp);
+		SET @sExecString = @sExecString + @sTempString;
+		SET @iTemp = @iTemp + 1;
+	END
+
+	-- Return generated SQL	
+	EXEC sp_executeSQL @sExecString;
+	
+END
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetTransferCourseRecords]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetTransferCourseRecords]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetTransferCourseRecords] (
+	@piTableID 			integer, 
+	@piViewID 			integer, 
+	@piOrderID 			integer,
+	@psCourseTitle 		varchar(MAX),
+	@piCourseRecordID	integer,
+	@pfError 			bit 		OUTPUT,
+	@piRecordsRequired	integer,
+	@pfFirstPage		bit			OUTPUT,
+	@pfLastPage			bit			OUTPUT,
+	@psLocateValue		varchar(MAX),
+	@piColumnType		integer		OUTPUT,
+	@psAction			varchar(255),
+	@piTotalRecCount	integer		OUTPUT,
+	@piFirstRecPos		integer		OUTPUT,
+	@piCurrentRecCount	integer,
+	@piColumnSize		integer		OUTPUT,
+	@piColumnDecimals	integer		OUTPUT
+)
+AS
+BEGIN
+	/* Return a recordset of the link find records for the current user, given the table/view and order IDs.
+		@piTableID = the ID of the table on which the find is based.
+		@piViewID = the ID of the view on which the find is based.
+		@piOrderID = the ID of the order we are using.
+		@pfError = 1 if errors occured in getting the find records. Else 0.
+	*/
+	SET NOCOUNT ON;
+	
+	DECLARE @iUserGroupID	integer,
+		@sUserGroupName		sysname,
+		@iTableType			integer,
+		@sTableName			sysname,
+		@sRealSource 		sysname,
+		@iChildViewID 		integer,
+		@iTempTableID 		integer,
+		@iColumnTableID 	integer,
+		@iColumnID 			integer,
+		@sColumnName 		sysname,
+		@sColumnTableName 	sysname,
+		@fAscending 		bit,
+		@sType	 			varchar(10),
+		@iDataType 			integer,
+		@fSelectGranted 	bit,
+		@sSelectSQL			varchar(MAX),
+		@sOrderSQL 			varchar(MAX),
+		@sExecString		nvarchar(MAX),
+		@sTempString		varchar(MAX),
+		@fSelectDenied		bit,
+		@iTempCount 		integer,
+		@sSubString			varchar(MAX),
+		@sViewName 			varchar(255),
+		@sTableViewName 	sysname,
+		@iJoinTableID 		integer,
+		@iTemp				integer,
+		@sRemainingSQL		varchar(MAX),
+		@iLastCharIndex		integer,
+		@iCharIndex 		integer,
+		@sDESCstring		varchar(4),
+		@sTempExecString	nvarchar(MAX),
+		@sTempParamDefinition	nvarchar(500),
+		@fFirstColumnAsc	bit,
+		@sFirstColCode		varchar(MAX),
+		@sLocateCode		varchar(MAX),
+		@sReverseOrderSQL 	varchar(MAX),
+		@iCount				integer,
+		@fWhereDone			bit,
+		@iCourseTitleColumnID	integer,
+		@sCourseTitleColumnName	sysname,
+		@iCourseStartDateColumnID	integer,
+		@sCourseStartDateColumnName	sysname,
+		@sCourseCancelDateColumnID	integer,
+		@sCourseCancelDateColumnName	sysname,
+		@iGetCount			integer,
+		@iColSize			integer,
+		@iColDecs			integer,
+		@sActualUserName	sysname;
+
+	/* Initialise variables. */
+	SET @pfError = 0
+	SET @sRealSource = ''
+	SET @sSelectSQL = ''
+	SET @sOrderSQL = ''
+	SET @fSelectDenied = 0
+	SET @sExecString = ''
+	SET @sDESCstring = ' DESC'
+	SET @fFirstColumnAsc = 1
+	SET @sFirstColCode = ''
+	SET @sReverseOrderSQL = ''
+	SET @fWhereDone = 0
+
+	/* Clean the input string parameters. */
+	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''')
+	IF len(@psCourseTitle) > 0 SET @psCourseTitle = replace(@psCourseTitle, '''', '''''')
+
+	/* Get the current user's group ID. */
+	EXEC spASRIntGetActualUserDetails
+		@sActualUserName OUTPUT,
+		@sUserGroupName OUTPUT,
+		@iUserGroupID OUTPUT
+
+	SELECT @iCourseTitleColumnID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_CourseTitle'
+	IF @iCourseTitleColumnID IS NULL SET @iCourseTitleColumnID = 0
+	
+	IF @iCourseTitleColumnID > 0 
+	BEGIN
+		SELECT @sCourseTitleColumnName = columnName
+		FROM ASRSysColumns
+		WHERE columnID = @iCourseTitleColumnID
+	END
+	IF @sCourseTitleColumnName IS NULL SET @sCourseTitleColumnName = ''
+
+	SELECT @iCourseStartDateColumnID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_CourseStartDate'
+	IF @iCourseStartDateColumnID IS NULL SET @iCourseStartDateColumnID = 0
+
+	IF @iCourseStartDateColumnID > 0 
+	BEGIN
+		SELECT @sCourseStartDateColumnName = columnName
+		FROM ASRSysColumns
+		WHERE columnID = @iCourseStartDateColumnID
+	END
+	IF @sCourseStartDateColumnName IS NULL SET @sCourseStartDateColumnName = ''
+
+	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
+	SET @psAction = UPPER(@psAction)
+	IF (@psAction <> 'MOVEPREVIOUS') AND 
+		(@psAction <> 'MOVENEXT') AND 
+		(@psAction <> 'MOVELAST') AND 
+		(@psAction <> 'LOCATE')
+	BEGIN
+		SET @psAction = 'MOVEFIRST'
+	END
+
+	/* Get Cancel date Column*/
+	SELECT @sCourseCancelDateColumnID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_CourseCancelDate'
+	IF @sCourseCancelDateColumnID IS NULL SET @sCourseCancelDateColumnID = 0
+	IF @sCourseCancelDateColumnID > 0 
+	BEGIN
+		SELECT @sCourseCancelDateColumnName = columnName
+		FROM ASRSysColumns
+		WHERE columnID = @sCourseCancelDateColumnID
+	END
+	IF @sCourseCancelDateColumnName IS NULL SET @sCourseCancelDateColumnName = ''
+
+	/* Get the table type and name. */
+	SELECT @iTableType = ASRSysTables.tableType,
+		@sTableName = ASRSysTables.tableName
+	FROM ASRSysTables
+	WHERE ASRSysTables.tableID = @piTableID
+
+	/* Get the real source of the given table/view. */
+	IF @iTableType <> 2 /* ie. top-level or lookup */
+	BEGIN
+		IF @piViewID > 0 
+		BEGIN	
+			/* RealSource is the view. */	
+			SELECT @sRealSource = viewName
+			FROM ASRSysViews
+			WHERE viewID = @piViewID
+		END
+		ELSE
+		BEGIN
+			SET @sRealSource = @sTableName
+		END 
+	END
+	ELSE
+	BEGIN
+		SELECT @iChildViewID = childViewID
+		FROM ASRSysChildViews2
+		WHERE tableID = @piTableID
+			AND role = @sUserGroupName
+			
+		IF @iChildViewID IS null SET @iChildViewID = 0
+			
+		IF @iChildViewID > 0 
+		BEGIN
+			SET @sRealSource = 'ASRSysCV' + 
+				convert(varchar(1000), @iChildViewID) +
+				'#' + replace(@sTableName, ' ', '_') +
+				'#' + replace(@sUserGroupName, ' ', '_')
+			SET @sRealSource = left(@sRealSource, 255)
+		END
+	END
+
+	IF len(@sRealSource) = 0
+	BEGIN
+		SET @pfError = 1
+		RETURN
+	END
+
+	/* Create a temporary table to hold the tables/views that need to be joined. */
+	DECLARE @joinParents TABLE(
+		tableViewName	sysname,
+		tableID			integer);
+
+	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
+	DECLARE @columnPermissions TABLE(
+		tableID			integer,
+		tableViewName	sysname,
+		columnName		sysname,
+		selectGranted	bit);
+
+	/* Loop through the tables used in the order, getting the column permissions for each one. */
+	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT c.tableID
+	FROM ASRSysOrderItems oi
+	INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	WHERE oi.orderID = @piOrderID
+
+	OPEN tablesCursor
+	FETCH NEXT FROM tablesCursor INTO @iTempTableID
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		IF @iTempTableID = @piTableID
+		BEGIN
+			/* Base table - use the real source. */
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				@sRealSource,
+				syscolumns.name,
+				CASE protectType
+					WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name = @sRealSource
+				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table - get permissions for the table, and any associated views. */
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				sysobjects.name,
+				syscolumns.name,
+				CASE protectType
+				        	WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
+					ASRSysTables.tableID = @iTempTableID 
+					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
+			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+		END
+
+		FETCH NEXT FROM tablesCursor INTO @iTempTableID
+	END
+	CLOSE tablesCursor
+	DEALLOCATE tablesCursor
+
+	SET @fSelectGranted = 0
+	SELECT @fSelectGranted = selectGranted
+	FROM @columnPermissions
+	WHERE tableViewName = @sRealSource
+		AND columnName = @sCourseTitleColumnName
+	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+	IF @fSelectGranted = 0
+	BEGIN
+		SET @pfError = 1
+		RETURN
+	END
+
+	SET @fSelectGranted = 0
+	SELECT @fSelectGranted = selectGranted
+	FROM @columnPermissions
+	WHERE tableViewName = @sRealSource
+		AND columnName = @sCourseStartDateColumnName
+	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+	IF @fSelectGranted = 0
+	BEGIN
+		SET @pfError = 1
+		RETURN
+	END
+
+	/* Create the order select strings. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT c.tableID, oi.columnID, c.columnName, t.tableName, oi.ascending, oi.type, c.dataType, c.size, c.decimals
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @piOrderID
+		AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence
+
+	OPEN orderCursor
+	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
+
+	/* Check if the order exists. */
+	IF  @@fetch_status <> 0
+	BEGIN
+		SET @pfError = 1
+		RETURN
+	END
+
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0
+	
+		IF @iColumnTableId = @piTableID
+		BEGIN
+			/* Base table. */
+			/* Get the select permission on the column. */
+			SELECT @fSelectGranted = selectGranted
+			FROM @columnPermissions
+			WHERE tableViewName = @sRealSource
+				AND columnName = @sColumnName
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+
+			IF @fSelectGranted = 1
+			BEGIN
+				/* The user DOES have SELECT permission on the column in the current table/view. */
+				IF @sType = 'F'
+				BEGIN
+					/* Find column. */
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						@sRealSource + '.' + @sColumnName
+					SET @sSelectSQL = @sSelectSQL + @sTempString
+				END
+				ELSE
+				BEGIN
+					/* Order column. */
+					IF len(@sOrderSQL) = 0 
+					BEGIN
+						SET @piColumnType = @iDataType
+						SET @fFirstColumnAsc = @fAscending
+						SET @sFirstColCode = @sRealSource + '.' + @sColumnName
+						SET @piColumnSize = @iColSize
+						SET @piColumnDecimals = @iColDecs
+					END
+
+					SET @sOrderSQL = @sOrderSQL + 
+						CASE 
+							WHEN len(@sOrderSQL) > 0 THEN ',' 
+							ELSE '' 
+						END + 
+						@sRealSource + '.' + @sColumnName +
+						CASE 
+							WHEN @fAscending = 0 THEN ' DESC' 
+							ELSE '' 
+						END				
+				END
+			END
+			ELSE
+			BEGIN
+				/* The user does NOT have SELECT permission on the column in the current table/view. */
+				SET @fSelectDenied = 1
+			END	
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table. */
+			/* Get the select permission on the column. */
+
+			/* Check if the column is selectable directly from the table. */
+			SELECT @fSelectGranted = selectGranted
+			FROM @columnPermissions
+			WHERE tableID = @iColumnTableId
+				AND tableViewName = @sColumnTableName
+				AND columnName = @sColumnName
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+	
+			IF @fSelectGranted = 1 
+			BEGIN
+				/* Column COULD be read directly from the parent table. */
+				/* The user DOES have SELECT permission on the column in the parent table. */
+				IF @sType = 'F'
+				BEGIN
+					/* Find column. */
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						@sColumnTableName + '.' + @sColumnName
+					SET @sSelectSQL = @sSelectSQL + @sTempString
+				END
+				ELSE
+				BEGIN
+					/* Order column. */
+					IF len(@sOrderSQL) = 0 
+					BEGIN
+						SET @piColumnType = @iDataType
+						SET @fFirstColumnAsc = @fAscending
+						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName
+						SET @piColumnSize = @iColSize
+						SET @piColumnDecimals = @iColDecs
+					END
+
+					SET @sOrderSQL = @sOrderSQL + 
+						CASE 
+							WHEN len(@sOrderSQL) > 0 THEN ',' 
+							ELSE '' 
+						END + 
+						@sColumnTableName + '.' + @sColumnName + 
+						CASE 
+							WHEN @fAscending = 0 THEN ' DESC' 
+							ELSE '' 
+						END				
+				END
+
+				/* Add the table to the array of tables/views to join if it has not already been added. */
+				SELECT @iTempCount = COUNT(tableViewName)
+				FROM @joinParents
+				WHERE tableViewName = @sColumnTableName
+
+				IF @iTempCount = 0
+				BEGIN
+					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
+				END
+			END
+			ELSE	
+			BEGIN
+				SET @sSubString = ''
+
+				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
+				SELECT tableViewName
+				FROM @columnPermissions
+				WHERE tableID = @iColumnTableId
+					AND tableViewName <> @sColumnTableName
+					AND columnName = @sColumnName
+					AND selectGranted = 1
+
+				OPEN viewCursor
+				FETCH NEXT FROM viewCursor INTO @sViewName
+				WHILE (@@fetch_status = 0)
+				BEGIN
+					/* Column CAN be read from the view. */
+					IF len(@sSubString) = 0 SET @sSubString = 'CASE'
+
+					SET @sSubString = @sSubString +
+						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName 
+		
+					/* Add the view to the array of tables/views to join if it has not already been added. */
+					SELECT @iTempCount = COUNT(tableViewName)
+					FROM @joinParents
+					WHERE tableViewname = @sViewName
+
+					IF @iTempCount = 0
+					BEGIN
+						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
+					END
+
+					FETCH NEXT FROM viewCursor INTO @sViewName
+				END
+				CLOSE viewCursor
+				DEALLOCATE viewCursor
+
+				IF len(@sSubString) > 0
+				BEGIN
+					SET @sSubString = @sSubString +
+						' ELSE NULL END'
+
+					IF @sType = 'F'
+					BEGIN
+						/* Find column. */
+						SET @sTempString = CASE 
+								WHEN (len(@sSelectSQL) > 0) THEN ',' 
+								ELSE '' 
+							END + 
+							CASE
+								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
+								ELSE @sSubString 
+							END
+						SET @sSelectSQL = @sSelectSQL + @sTempString
+					END
+					ELSE
+					BEGIN
+						/* Order column. */
+						IF len(@sOrderSQL) = 0 
+						BEGIN
+							SET @piColumnType = @iDataType
+							SET @fFirstColumnAsc = @fAscending
+							SET @sFirstColCode = @sSubString
+							SET @piColumnSize = @iColSize
+							SET @piColumnDecimals = @iColDecs
+						END
+
+						SET @sOrderSQL = @sOrderSQL + 
+							CASE 
+								WHEN len(@sOrderSQL) > 0 THEN ',' 
+								ELSE '' 
+							END + 
+							CASE
+
+								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
+								ELSE @sSubString 
+							END + 
+							CASE 
+								WHEN @fAscending = 0 THEN ' DESC' 
+								ELSE '' 
+							END				
+					END
+				END
+				ELSE
+				BEGIN
+					/* The user does NOT have SELECT permission on the column any of the parent views. */
+					SET @fSelectDenied = 1
+				END	
+			END
+		END
+
+		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
+	END
+	CLOSE orderCursor
+	DEALLOCATE orderCursor
+
+	/* Add the ID column to the order string. */
+	SET @sOrderSQL = @sOrderSQL + 
+		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
+		@sRealSource + '.ID'
+
+	/* Create the reverse order string if required. */
+	IF (@psAction <> 'MOVEFIRST') 
+	BEGIN
+		SET @sRemainingSQL = @sOrderSQL
+
+		SET @iLastCharIndex = 0
+		SET @iCharIndex = CHARINDEX(',', @sOrderSQL)
+		WHILE @iCharIndex > 0 
+		BEGIN
+ 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
+			BEGIN
+				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', '
+			END
+			ELSE
+			BEGIN
+				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', '
+			END
+
+			SET @iLastCharIndex = @iCharIndex
+			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1)
+	
+			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex)
+		END
+		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring
+	END
+
+	/* Get the total number of records. */
+	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource +
+		' WHERE (' +
+		@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + @psCourseTitle + ''' AND '	+
+		@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
+		@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL AND ' + 
+		@sRealSource + '.id <> ' + convert(nvarchar(100), @piCourseRecordID) + ')'
+
+	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
+	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
+	SET @piTotalRecCount = @iCount
+
+	IF (len(@sSelectSQL) > 0)
+	BEGIN
+		SET @sTempString = ',' + @sRealSource + '.ID'
+		SET @sSelectSQL = @sSelectSQL + @sTempString
+
+		SET @sExecString = 'SELECT ' 
+
+		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
+		BEGIN
+			SET @sTempString = 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource
+
+		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT tableViewName, 
+			tableID
+		FROM @joinParents
+
+		OPEN joinCursor
+		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
+			SET @sExecString = @sExecString + @sTempString
+
+			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+		END
+		CLOSE joinCursor
+		DEALLOCATE joinCursor
+
+		IF (@psAction = 'MOVELAST')
+		BEGIN
+			SET @fWhereDone = 1
+
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		IF @psAction = 'MOVENEXT' 
+		BEGIN
+			SET @fWhereDone = 1
+			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
+			BEGIN
+				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
+			END
+			ELSE
+			BEGIN
+				SET @iGetCount = @piRecordsRequired
+			END
+
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+				
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		IF @psAction = 'MOVEPREVIOUS'
+		BEGIN
+			SET @fWhereDone = 1
+
+			IF @piFirstRecPos <= @piRecordsRequired
+			BEGIN
+				SET @iGetCount = @piFirstRecPos - 1
+			END
+			ELSE
+			BEGIN
+				SET @iGetCount = @piRecordsRequired				
+			END
+				
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+				
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		/* Add the filter code. */
+		SET @sTempString = ' WHERE (' +
+			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + @psCourseTitle + ''' AND '	+
+			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
+			@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL AND ' + 
+			@sRealSource + '.id <> ' + convert(nvarchar(100), @piCourseRecordID) + ')'
+		SET @sExecString = @sExecString + @sTempString
+
+		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
+		BEGIN
+			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')'
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
+		BEGIN
+			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')'
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		IF (@psAction = 'LOCATE')
+		BEGIN
+			SET @fWhereDone = 1
+			SET @sLocateCode = ' AND (' + @sFirstColCode 
+
+			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
+
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
+					END
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
+						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL'
+				END
+
+			END
+
+			IF @piColumnType = 11 /* Date column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL'
+					END
+					ELSE
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
+					END
+				END
+				ELSE
+				BEGIN
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' IS NULL'
+					END
+					ELSE
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL'
+					END
+				END
+			END
+
+			IF @piColumnType = -7 /* Logic column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ' + 
+						CASE
+							WHEN @psLocateValue = 'True' THEN '1'
+							ELSE '0'
+						END
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ' + 
+						CASE
+							WHEN @psLocateValue = 'True' THEN '1'
+							ELSE '0'
+						END
+				END
+			END
+
+			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
+
+					IF convert(float, @psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
+					END
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL'
+				END
+			END
+
+			SET @sLocateCode = @sLocateCode + ')'
+
+			SET @sTempString = @sLocateCode
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		/* Add the ORDER BY code to the find record selection string if required. */
+		SET @sTempString = ' ORDER BY ' + @sOrderSQL
+		SET @sExecString = @sExecString + @sTempString
+	END
+
+	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
+	IF @psAction = 'MOVEFIRST'
+	BEGIN
+		SET @piFirstRecPos = 1
+		SET @pfFirstPage = 1
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
+				ELSE 0
+			END
+	END
+	IF @psAction = 'MOVENEXT'
+	BEGIN
+		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
+		SET @pfFirstPage = 0
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
+				ELSE 0
+			END
+	END
+	IF @psAction = 'MOVEPREVIOUS'
+	BEGIN
+		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
+		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
+				ELSE 0
+			END
+	END
+	IF @psAction = 'MOVELAST'
+	BEGIN
+		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
+		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END
+		SET @pfLastPage = 1
+	END
+	
+	IF @psAction = 'LOCATE'
+	BEGIN
+		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource 
+
+		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT tableViewName, 
+			tableID
+		FROM @joinParents
+
+		OPEN joinCursor
+		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			SET @sTempExecString = @sTempExecString + 
+				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
+
+			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+		END
+		CLOSE joinCursor
+		DEALLOCATE joinCursor
+
+		SET @sTempExecString = @sTempExecString + 
+			' WHERE (' +
+			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + @psCourseTitle + ''' AND '	+
+			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
+			@sRealSource + '.' + @sCourseCancelDateColumnName + ' IS NULL AND ' + 
+			@sRealSource + '.id <> ' + convert(nvarchar(100), @piCourseRecordID) + ')' + @sLocateCode
+		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
+		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
+
+		IF @iTemp <=0 
+		BEGIN
+			SET @piFirstRecPos = @piTotalRecCount + 1
+		END
+		ELSE
+		BEGIN
+			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
+		END
+
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount <= @piFirstRecPos + @piRecordsRequired THEN 1
+				ELSE 0
+			END
+	END
+
+	/* Return a recordset of the required columns in the required order from the given table/view. */
+	IF (len(@sExecString) > 0)
+	BEGIN
+		EXECUTE sp_executeSQL @sExecString;
+	END
+END
+GO
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetDefaultOrderColumns]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetDefaultOrderColumns]
+GO
+
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetDefaultOrderColumns] (
+	@piTableID				integer,
+	@psErrorMsg 			varchar(max)	OUTPUT,
+	@ps1000SeparatorCols 	varchar(8000)	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	/* Return a recordset of the 'employee' table find columns that the user has 'read' permission on. */
+	DECLARE 
+		@iUserGroupID		integer,
+		@sUserGroupName		sysname,
+		@iOrderID			integer,
+		@sColumnName 		sysname,
+		@iDataType 			integer,
+		@iTableID 			integer,
+		@iCount				integer,
+		@sTemp				sysname,
+		@iIndex				integer,
+		@sRealSource		sysname,
+		@iTableType			integer,
+		@sTableName			sysname,
+		@iTempTableType		integer,
+		@sTempTableName		sysname,
+		@iChildViewID		integer,
+		@sTempRealSource	sysname,
+		@iViewID			integer, 
+		@sViewName			sysname,
+		@iTempID			integer,
+		@sActualUserName	sysname,
+		@iTempTableID 		integer,
+		@fSelectGranted 	bit,
+		@bUse1000Separator	bit,
+		@fSomeReadable		bit,
+		@fViewReadable		bit;
+
+	SET @psErrorMsg = '';
+	SET @ps1000SeparatorCols = '';
+	SET @fSomeReadable = 0;
+
+	/* Get the current user's group ID. */
+	EXEC [dbo].[spASRIntGetActualUserDetails]
+		@sActualUserName OUTPUT,
+		@sUserGroupName OUTPUT,
+		@iUserGroupID OUTPUT;
+
+	SELECT @iOrderID = defaultOrderID, 
+		@iTableType = tableType,
+		@sTableName = tableName
+	FROM [dbo].[ASRSysTables]
+	WHERE tableID = @piTableID;
+
+	/* Get the real source of the employee table. */
+	IF @iTableType <> 2 /* ie. top-level or lookup */
+	BEGIN
+		SET @sRealSource = @sTableName;
+	END
+	ELSE
+	BEGIN
+		SELECT @iChildViewID = childViewID
+		FROM [dbo].[ASRSysChildViews2]
+		WHERE tableID = @piTableID
+			AND [role] = @sUserGroupName;
+			
+		IF @iChildViewID IS null SET @iChildViewID = 0;
+			
+		IF @iChildViewID > 0 
+		BEGIN
+			SET @sRealSource = 'ASRSysCV' + 
+				convert(varchar(1000), @iChildViewID) +
+				'#' + replace(CONVERT(varchar(255),@sTableName), ' ', '_') +
+				'#' + replace(CONVERT(varchar(255),@sUserGroupName), ' ', '_')
+			SET @sRealSource = left(CONVERT(varchar(255),@sRealSource), 255);
+		END
+	END	
+	
+	/* Create a temporary table to hold the find columns that the user can see. */
+	DECLARE @findColumns TABLE
+		(columnName	sysname,
+		dataType	integer)	
+
+	DECLARE @columnPermissions TABLE
+		(tableID		integer,
+		tableViewName	sysname,
+		columnName	sysname,
+		selectGranted	bit);
+
+	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT DISTINCT c.tableID, t.tableType, t.tableName
+		FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON c.tableID = t.tableID
+		WHERE oi.orderID = @iOrderID
+			AND oi.type = 'F';
+
+	OPEN tablesCursor;
+	FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		IF @iTempTableType <> 2 /* ie. top-level or lookup */
+		BEGIN
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				sysobjects.name,
+				syscolumns.name,
+				CASE protectType
+				        	WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
+					ASRSysTables.tableID = @iTempTableID 
+					UNION SELECT ASRSysViews.viewName 
+					FROM ASRSysViews 
+					WHERE ASRSysViews.viewTableID = @iTempTableID)
+					AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+					OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+		END
+		ELSE
+		BEGIN
+			SELECT @iChildViewID = childViewID
+			FROM [dbo].[ASRSysChildViews2]
+			WHERE tableID = @iTempTableID
+				AND [role] = @sUserGroupName;
+				
+			IF @iChildViewID IS null SET @iChildViewID = 0;
+				
+			IF @iChildViewID > 0 
+			BEGIN
+				SET @sTempRealSource = 'ASRSysCV' + 
+					convert(varchar(500), @iChildViewID) +
+					'#' + replace(@sTempTableName, ' ', '_') +
+					'#' + replace(@sUserGroupName, ' ', '_');
+				SET @sTempRealSource = left(@sTempRealSource, 255);
+
+				INSERT INTO @columnPermissions
+				SELECT 
+					@iTempTableID,
+					sysobjects.name,
+					syscolumns.name,
+					CASE protectType
+					        	WHEN 205 THEN 1
+						WHEN 204 THEN 1
+						ELSE 0
+					END 
+				FROM sysprotects
+				INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+				INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+				WHERE sysprotects.uid = @iUserGroupID
+					AND sysprotects.action = 193 
+					AND syscolumns.name <> 'timestamp'
+					AND sysobjects.name =@sTempRealSource
+						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+			END
+		END
+
+		FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
+	END
+	
+	CLOSE tablesCursor;
+	DEALLOCATE tablesCursor;
+
+	/* Create the order select strings. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT c.columnName, c.dataType, c.tableID, t.tableType, t.tableName, c.Use1000Separator
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @iOrderID AND oi.type = 'F'
+		AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence;
+
+	OPEN orderCursor;
+	FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName, @bUse1000Separator;
+
+	/* Check if the order exists. */
+	IF  @@fetch_status <> 0
+	BEGIN
+		SET @psErrorMsg = 'Unable to read the table''s default order.';
+		RETURN;
+	END
+
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0;
+
+		/* Get the real source of the table. */
+		IF @iTempTableType <> 2 /* ie. top-level or lookup */
+		BEGIN
+			SET @sTempRealSource = @sTempTableName;
+		END
+		ELSE
+		BEGIN
+			SELECT @iChildViewID = childViewID
+			FROM [dbo].[ASRSysChildViews2]
+			WHERE tableID = @iTableID
+				AND [role] = @sUserGroupName;
+				
+			IF @iChildViewID IS null SET @iChildViewID = 0;
+				
+			IF @iChildViewID > 0 
+			BEGIN
+				SET @sTempRealSource = 'ASRSysCV' + 
+					convert(varchar(1000), @iChildViewID) +
+					'#' + replace(CONVERT(varchar(255),@sTempTableName), ' ', '_') +
+					'#' + replace(CONVERT(varchar(255),@sUserGroupName), ' ', '_');
+				SET @sTempRealSource = left(CONVERT(varchar(8000),@sTempRealSource), 255);
+			END
+		END	
+
+		SELECT @fSelectGranted = selectGranted
+		FROM @columnPermissions
+		WHERE tableID = @iTableID
+			AND tableViewName = @sTempRealSource
+			AND columnName = @sColumnName;
+
+		IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
+		
+		IF @fSelectGranted = 1
+		BEGIN
+			SET @fSomeReadable = 1;
+
+			SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
+				CASE
+					WHEN @bUse1000Separator = 1 THEN '1'
+					ELSE '0'
+				END;
+
+			INSERT INTO @findColumns (columnName, dataType) VALUES (@sColumnName, @iDataType);
+		END
+		ELSE
+		BEGIN
+			/* The column CANNOT be read from the table, or directly from a parent table.
+			Try to read it from the views on the table. */
+			SET @fViewReadable = 0;
+
+			DECLARE viewsCursor CURSOR LOCAL FAST_FORWARD FOR 
+			SELECT viewID,
+				viewName
+			FROM [dbo].[ASRSysViews]
+			WHERE viewTableID = @iTableID;
+
+			OPEN viewsCursor;
+			FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
+			WHILE (@@fetch_status = 0)
+			BEGIN
+				SELECT @fSelectGranted = selectGranted
+				FROM @columnPermissions
+				WHERE tableID = @iTableID
+					AND tableViewName = @sViewName
+					AND columnName = @sColumnName;
+
+				IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
+
+				IF @fSelectGranted = 1	
+				BEGIN
+					SET @fViewReadable = 1;
+				END
+
+				FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
+			END
+			CLOSE viewsCursor;
+			DEALLOCATE viewsCursor;
+
+			IF @fViewReadable = 1
+			BEGIN
+				INSERT INTO @findColumns (columnName, dataType) VALUES (@sColumnName, @iDataType);
+
+				SET @fSomeReadable = 1;
+
+				SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
+					CASE
+						WHEN @bUse1000Separator = 1 THEN '1'
+						ELSE '0'
+					END;
+			END
+		END
+
+		FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName, @bUse1000Separator;
+
+	END
+	CLOSE orderCursor;
+	DEALLOCATE orderCursor;
+
+	IF @fSomeReadable = 0
+	BEGIN
+		/* Flag to the user that they cannot see any of the find columns. */
+		SET @psErrorMsg = 'You do not have permission to read the table''s find columns.';
+	END
+	ELSE
+	BEGIN
+		/* Add the ID column. */
+		INSERT INTO @findColumns (columnName, dataType) VALUES ('ID', 4);
+	END
+
+	SELECT * FROM @findColumns;
+END
+GO
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetLinkFindRecords]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].sp_ASRIntGetLinkFindRecords
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetLinkFindRecords]
+	(
+	@piTableID 			integer, 
+	@piViewID 			integer, 
+	@piOrderID 			integer,
+	@pfError 			bit 					OUTPUT,
+	@piRecordsRequired	integer,
+	@pfFirstPage		bit						OUTPUT,
+	@pfLastPage			bit						OUTPUT,
+	@psLocateValue		varchar(MAX),
+	@piColumnType		integer					OUTPUT,
+	@psAction			varchar(100),
+	@piTotalRecCount	integer					OUTPUT,
+	@piFirstRecPos		integer					OUTPUT,
+	@piCurrentRecCount	integer,
+	@psExcludedIDs		varchar(MAX),
+	@piColumnSize		integer					OUTPUT,
+	@piColumnDecimals	integer					OUTPUT
+	)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	/* Return a recordset of the link find records for the current user, given the table/view and order IDs.
+		@piTableID = the ID of the table on which the find is based.
+		@piViewID = the ID of the view on which the find is based.
+		@piOrderID = the ID of the order we are using.
+		@pfError = 1 if errors occured in getting the find records. Else 0.
+	*/
+	DECLARE 
+		@iUserGroupID			integer,
+		@sUserGroupName			sysname,
+		@iTableType				integer,
+		@sTableName				sysname,
+		@sRealSource 			sysname,
+		@iChildViewID 			integer,
+		@iTempTableID 			integer,
+		@iColumnTableID			integer,
+		@iColumnID 				integer,
+		@sColumnName 			sysname,
+		@sColumnTableName		sysname,
+		@fAscending 			bit,
+		@sType	 				varchar(10),
+		@iDataType 				integer,
+		@fSelectGranted 		bit,
+		@sSelectSQL				varchar(MAX),
+		@sOrderSQL 				varchar(MAX),
+		@sExecString			nvarchar(MAX),
+		@sTempString			varchar(MAX),
+		@fSelectDenied			bit,
+		@iTempCount 			integer,
+		@sSubString				varchar(MAX),
+		@sViewName 				varchar(255),
+		@sTableViewName 		sysname,
+		@iJoinTableID 			integer,
+		@iTemp					integer,
+		@sRemainingSQL			varchar(MAX),
+		@iLastCharIndex			integer,
+		@iCharIndex 			integer,
+		@sDESCstring			varchar(5),
+		@sTempExecString		nvarchar(MAX),
+		@sTempParamDefinition	nvarchar(500),
+		@fFirstColumnAsc		bit,
+		@sFirstColCode			varchar(MAX),
+		@sLocateCode			varchar(MAX),
+		@sReverseOrderSQL 		varchar(MAX),
+		@iCount					integer,
+		@iGetCount				integer,
+		@iColSize				integer,
+		@iColDecs				integer,
+		@sActualUserName		sysname,
+		@sTempName				sysname;
+
+	/* Clean the input string parameters. */
+	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''');
+	IF len(@psExcludedIDs) > 0 SET @psExcludedIDs = replace(@psExcludedIDs, '''', '''''');
+
+	/* Initialise variables. */
+	SET @pfError = 0;
+	SET @sRealSource = '';
+	SET @sSelectSQL = '';
+	SET @sOrderSQL = '';
+	SET @fSelectDenied = 0;
+	SET @sExecString = '';
+	SET @sDESCstring = ' DESC';
+	SET @fFirstColumnAsc = 1;
+	SET @sFirstColCode = '';
+	SET @sReverseOrderSQL = '';
+	IF len(@psExcludedIDs) = 0 SET @psExcludedIDs = '0';
+	
+	/* Get the current user's group ID. */
+	EXEC [DBO].[spASRIntGetActualUserDetails]
+		@sActualUserName OUTPUT,
+		@sUserGroupName OUTPUT,
+		@iUserGroupID OUTPUT;
+
+	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
+	SET @psAction = UPPER(@psAction)
+	IF (@psAction <> 'MOVEPREVIOUS') AND 
+		(@psAction <> 'MOVENEXT') AND 
+		(@psAction <> 'MOVELAST') AND 
+		(@psAction <> 'LOCATE')
+	BEGIN
+		SET @psAction = 'MOVEFIRST';
+	END
+
+	/* Get the table type and name. */
+	SELECT @iTableType = ASRSysTables.tableType,
+		@sTableName = ASRSysTables.tableName
+	FROM [dbo].[ASRSysTables]
+	WHERE ASRSysTables.tableID = @piTableID;
+
+	/* Get the real source of the given table/view. */
+	IF @iTableType <> 2 /* ie. top-level or lookup */
+	BEGIN
+		IF @piViewID > 0 
+		BEGIN	
+			/* RealSource is the view. */	
+			SELECT @sRealSource = viewName
+			FROM [dbo].[ASRSysViews]
+			WHERE viewID = @piViewID;
+		END
+		ELSE
+		BEGIN
+			SET @sRealSource = @sTableName;
+		END 
+	END
+	ELSE
+	BEGIN
+		SELECT @iChildViewID = childViewID
+		FROM [dbo].[ASRSysChildViews2]
+		WHERE tableID = @piTableID
+			AND role = @sUserGroupName;
+			
+		IF @iChildViewID IS null SET @iChildViewID = 0;
+			
+		IF @iChildViewID > 0 
+		BEGIN
+			SET @sRealSource = 'ASRSysCV' + 
+				convert(varchar(1000), @iChildViewID) +
+				'#' + replace(@sTableName, ' ', '_') +
+				'#' + replace(@sUserGroupName, ' ', '_');
+			SET @sRealSource = left(@sRealSource, 255);
+		END
+	END
+
+	IF len(@sRealSource) = 0
+	BEGIN
+		SET @pfError = 1;
+		RETURN;
+	END
+
+	EXECUTE [dbo].[sp_ASRUniqueObjectName] @sTempName OUTPUT, 'ASRSysTempInt', 3;
+	EXECUTE ('CREATE TABLE ' + @sTempName + ' (ID INT)');
+	IF @psExcludedIDs <> '0' EXECUTE('INSERT INTO ' + @sTempName + ' (ID) SELECT ID FROM ' + @sRealSource + ' WHERE ID IN (' + @psExcludedIDs + ')');
+
+	/* Create a temporary table to hold the tables/views that need to be joined. */
+	DECLARE @joinParents TABLE(
+		tableViewName	sysname,
+		tableID		integer);
+
+	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
+	DECLARE @columnPermissions TABLE(
+		tableID		integer,
+		tableViewName	sysname,
+		columnName	sysname,
+		selectGranted	bit);
+
+	/* Loop through the tables used in the order, getting the column permissions for each one. */
+	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT c.tableID
+	FROM ASRSysOrderItems oi
+	INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	WHERE oi.orderID = @piOrderID
+
+	OPEN tablesCursor
+	FETCH NEXT FROM tablesCursor INTO @iTempTableID
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		IF @iTempTableID = @piTableID
+		BEGIN
+			/* Base table - use the real source. */
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				@sRealSource,
+				syscolumns.name,
+				CASE protectType
+					WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name = @sRealSource
+				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table - get permissions for the table, and any associated views. */
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				sysobjects.name,
+				syscolumns.name,
+				CASE protectType
+				        	WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
+					ASRSysTables.tableID = @iTempTableID 
+					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
+			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+		END
+
+		FETCH NEXT FROM tablesCursor INTO @iTempTableID
+	END
+	CLOSE tablesCursor
+	DEALLOCATE tablesCursor
+
+	/* Create the order select strings. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+
+	SELECT c.tableID, oi.columnID, c.columnName, t.tableName, oi.ascending, oi.type, c.dataType, c.size, c.decimals
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @piOrderID
+		AND c.datatype <> -3 AND c.datatype <> -4
+	ORDER BY oi.sequence
+
+	OPEN orderCursor
+	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
+
+	/* Check if the order exists. */
+	IF  @@fetch_status <> 0
+	BEGIN
+
+		SET @pfError = 1
+		EXECUTE sp_ASRDropUniqueObject @sTempName, 3
+		RETURN
+	END
+
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0
+		IF @iColumnTableId = @piTableID
+		BEGIN
+			/* Base table. */
+			/* Get the select permission on the column. */
+			SELECT @fSelectGranted = selectGranted
+			FROM @columnPermissions
+			WHERE tableViewName = @sRealSource
+				AND columnName = @sColumnName
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+
+			IF @fSelectGranted = 1
+			BEGIN
+				/* The user DOES have SELECT permission on the column in the current table/view. */
+				IF @sType = 'F'
+				BEGIN
+					/* Find column. */
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						@sRealSource + '.' + @sColumnName;
+					SET @sSelectSQL = @sSelectSQL + @sTempString;
+				END
+				ELSE
+				BEGIN
+					/* Order column. */
+					IF len(@sOrderSQL) = 0 
+					BEGIN
+						SET @piColumnType = @iDataType
+						SET @piColumnSize = @iColSize
+						SET @piColumnDecimals = @iColDecs
+						SET @fFirstColumnAsc = @fAscending
+						SET @sFirstColCode = @sRealSource + '.' + @sColumnName
+					END
+
+					SET @sOrderSQL = @sOrderSQL + 
+						CASE 
+							WHEN len(@sOrderSQL) > 0 THEN ',' 
+							ELSE '' 
+						END + 
+						@sRealSource + '.' + @sColumnName +
+						CASE 
+							WHEN @fAscending = 0 THEN ' DESC' 
+							ELSE '' 
+						END				
+				END
+			END
+			ELSE
+			BEGIN
+				/* The user does NOT have SELECT permission on the column in the current table/view. */
+				SET @fSelectDenied = 1
+			END	
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table. */
+			/* Get the select permission on the column. */
+
+			/* Check if the column is selectable directly from the table. */
+			SELECT @fSelectGranted = selectGranted
+			FROM @columnPermissions
+			WHERE tableID = @iColumnTableId
+				AND tableViewName = @sColumnTableName
+				AND columnName = @sColumnName
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+	
+			IF @fSelectGranted = 1 
+			BEGIN
+				/* Column COULD be read directly from the parent table. */
+				/* The user DOES have SELECT permission on the column in the parent table. */
+				IF @sType = 'F'
+				BEGIN
+					/* Find column. */
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						@sColumnTableName + '.' + @sColumnName;
+					SET @sSelectSQL = @sSelectSQL + @sTempString;
+				END
+				ELSE
+				BEGIN
+					/* Order column. */
+					IF len(@sOrderSQL) = 0 
+					BEGIN
+						SET @piColumnType = @iDataType
+						SET @piColumnSize = @iColSize
+						SET @piColumnDecimals = @iColDecs
+						SET @fFirstColumnAsc = @fAscending
+						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName
+					END
+
+					SET @sOrderSQL = @sOrderSQL + 
+						CASE 
+							WHEN len(@sOrderSQL) > 0 THEN ',' 
+							ELSE '' 
+						END + 
+						@sColumnTableName + '.' + @sColumnName + 
+						CASE 
+							WHEN @fAscending = 0 THEN ' DESC' 
+							ELSE '' 
+						END				
+				END
+
+				/* Add the table to the array of tables/views to join if it has not already been added. */
+				SELECT @iTempCount = COUNT(tableViewName)
+
+				FROM @joinParents
+				WHERE tableViewName = @sColumnTableName
+
+				IF @iTempCount = 0
+				BEGIN
+					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
+				END
+			END
+			ELSE	
+			BEGIN
+				SET @sSubString = '';
+
+				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
+				SELECT tableViewName
+				FROM @columnPermissions
+				WHERE tableID = @iColumnTableId
+					AND tableViewName <> @sColumnTableName
+					AND columnName = @sColumnName
+					AND selectGranted = 1;
+
+				OPEN viewCursor
+				FETCH NEXT FROM viewCursor INTO @sViewName
+				WHILE (@@fetch_status = 0)
+				BEGIN
+					/* Column CAN be read from the view. */
+					IF len(@sSubString) = 0 SET @sSubString = 'CASE';
+
+					SET @sSubString = @sSubString +
+						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName;
+		
+					/* Add the view to the array of tables/views to join if it has not already been added. */
+					SELECT @iTempCount = COUNT(tableViewName)
+					FROM @joinParents
+					WHERE tableViewname = @sViewName;
+
+					IF @iTempCount = 0
+					BEGIN
+						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId);
+					END
+
+					FETCH NEXT FROM viewCursor INTO @sViewName;
+				END
+				CLOSE viewCursor;
+				DEALLOCATE viewCursor;
+
+				IF len(@sSubString) > 0
+				BEGIN
+					SET @sSubString = @sSubString +	' ELSE NULL END';
+
+					IF @sType = 'F'
+					BEGIN
+						/* Find column. */
+						SET @sTempString = CASE 
+								WHEN (len(@sSelectSQL) > 0) THEN ',' 
+								ELSE '' 
+							END + 
+							CASE
+								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
+								ELSE @sSubString 
+							END;
+						SET @sSelectSQL = @sSelectSQL + @sTempString;
+					END
+					ELSE
+					BEGIN
+						/* Order column. */
+						IF len(@sOrderSQL) = 0 
+						BEGIN
+							SET @piColumnType = @iDataType
+							SET @piColumnSize = @iColSize
+							SET @piColumnDecimals = @iColDecs
+							SET @fFirstColumnAsc = @fAscending
+							SET @sFirstColCode = @sSubString
+						END
+
+						SET @sOrderSQL = @sOrderSQL + 
+							CASE 
+								WHEN len(@sOrderSQL) > 0 THEN ',' 
+								ELSE '' 
+							END + 
+							CASE
+								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
+								ELSE @sSubString 
+							END + 
+							CASE 
+								WHEN @fAscending = 0 THEN ' DESC' 
+								ELSE '' 
+							END				
+					END
+				END
+				ELSE
+				BEGIN
+					/* The user does NOT have SELECT permission on the column any of the parent views. */
+					SET @fSelectDenied = 1
+				END	
+			END
+		END
+
+		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
+	END
+	CLOSE orderCursor
+	DEALLOCATE orderCursor
+
+	/* Add the ID column to the order string. */
+	SET @sOrderSQL = @sOrderSQL + 
+		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
+		@sRealSource + '.ID'
+
+	/* Create the reverse order string if required. */
+	IF (@psAction <> 'MOVEFIRST') 
+	BEGIN
+		SET @sRemainingSQL = @sOrderSQL
+
+		SET @iLastCharIndex = 0
+		SET @iCharIndex = CHARINDEX(',', @sOrderSQL)
+		WHILE @iCharIndex > 0 
+		BEGIN
+ 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
+			BEGIN
+				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', '
+			END
+			ELSE
+			BEGIN
+				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', '
+			END
+
+			SET @iLastCharIndex = @iCharIndex
+			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1)
+	
+			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex)
+		END
+		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring
+
+	END
+
+	/* Get the total number of records. */
+	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource
+	IF @psExcludedIDs <> '0' SET @sTempExecString = @sTempExecString + ' WHERE ' + @sRealSource + '.ID NOT IN (SELECT ID FROM ' + @sTempName + ')'
+
+	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
+	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
+	SET @piTotalRecCount = @iCount
+
+	IF (len(@sSelectSQL) > 0)
+	BEGIN
+	
+		SET @sTempString = ',' + @sRealSource + '.ID';
+		SET @sSelectSQL = @sSelectSQL + @sTempString;
+		SET @sExecString = 'SELECT ';
+
+		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE'
+		BEGIN
+			SET @sTempString = 'TOP ' + convert(varchar(MAX), @piRecordsRequired) + ' ';
+			SET @sExecString = @sExecString + @sTempString;
+		END
+
+		SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
+
+		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT tableViewName, 
+			tableID
+		FROM @joinParents
+
+		OPEN joinCursor
+		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID';
+			SET @sExecString = @sExecString + @sTempString;
+
+			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
+		END
+		CLOSE joinCursor
+		DEALLOCATE joinCursor
+
+		IF (@psAction = 'MOVELAST')
+		BEGIN
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID' +	' FROM ' + @sRealSource;
+			SET @sExecString = @sExecString + @sTempString;
+		END
+
+		IF @psAction = 'MOVENEXT' 
+		BEGIN
+			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
+			BEGIN
+				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
+			END
+			ELSE
+			BEGIN
+				SET @iGetCount = @piRecordsRequired
+			END
+				
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource;
+			SET @sExecString = @sExecString + @sTempString;
+
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired  - 1) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource;
+			SET @sExecString = @sExecString + @sTempString;
+		END
+		
+		IF @psAction = 'MOVEPREVIOUS'
+		BEGIN
+			IF @piFirstRecPos <= @piRecordsRequired
+			BEGIN
+				SET @iGetCount = @piFirstRecPos - 1;
+			END
+			ELSE
+			BEGIN
+				SET @iGetCount = @piRecordsRequired;
+			END
+
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource;
+			SET @sExecString = @sExecString + @sTempString;
+				
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource;
+			SET @sExecString = @sExecString + @sTempString;
+		END
+
+		IF @psExcludedIDs <> '0' 
+		BEGIN
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID NOT IN (SELECT ID FROM ' + @sTempName + ')';
+			SET @sExecString = @sExecString + @sTempString;
+		END
+		
+		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
+		BEGIN
+			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')';
+			SET @sExecString = @sExecString + @sTempString;
+		END
+
+		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
+		BEGIN
+			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')';
+			SET @sExecString = @sExecString + @sTempString;
+		END
+
+		IF (@psAction = 'LOCATE')
+		BEGIN
+			IF @psExcludedIDs <> '0'
+			BEGIN
+				SET @sLocateCode = ' AND (' + @sFirstColCode;
+			END
+			ELSE
+			BEGIN
+				SET @sLocateCode = ' WHERE (' + @sFirstColCode;
+			END
+
+			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + '''';
+
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL';
+					END
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
+						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL';
+				END
+
+			END
+
+			IF @piColumnType = 11 /* Date column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL';
+					END
+					ELSE
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + '''';
+					END
+				END
+				ELSE
+				BEGIN
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' IS NULL';
+					END
+					ELSE
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL';
+					END
+				END
+			END
+
+			IF @piColumnType = -7 /* Logic column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ' + 
+						CASE
+							WHEN @psLocateValue = 'True' THEN '1'
+							ELSE '0'
+						END;
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ' + 
+						CASE
+							WHEN @psLocateValue = 'True' THEN '1'
+							ELSE '0'
+						END;
+				END
+			END
+
+			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue;
+
+					IF convert(float, @psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL';
+					END
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL';
+				END
+
+			END
+
+			SET @sLocateCode = @sLocateCode + ')';
+			SET @sTempString = @sLocateCode;
+			SET @sExecString = @sExecString + @sTempString;
+			
+		END
+
+		/* Add the ORDER BY code to the find record selection string if required. */
+		SET @sTempString = ' ORDER BY ' + @sOrderSQL;
+		SET @sExecString = @sExecString + @sTempString;
+		
+	END
+
+	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
+	IF @psAction = 'MOVEFIRST'
+	BEGIN
+		SET @piFirstRecPos = 1;
+		SET @pfFirstPage = 1;
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
+				ELSE 0
+			END;
+	END
+	IF @psAction = 'MOVENEXT'
+	BEGIN
+		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount;
+		SET @pfFirstPage = 0;
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
+				ELSE 0
+			END;
+	END
+	IF @psAction = 'MOVEPREVIOUS'
+	BEGIN
+		SET @piFirstRecPos = @piFirstRecPos - @iGetCount;
+		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1;
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END;
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
+				ELSE 0
+			END;
+	END
+	IF @psAction = 'MOVELAST'
+	BEGIN
+		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1;
+		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1;
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END;
+		SET @pfLastPage = 1;
+	END
+
+	IF @psAction = 'LOCATE'
+	BEGIN
+		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource;
+
+		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT tableViewName, 
+			tableID
+		FROM @joinParents;
+
+		OPEN joinCursor;
+		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			SET @sTempExecString = @sTempExecString + 
+				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID';
+
+			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
+		END
+		CLOSE joinCursor;
+		DEALLOCATE joinCursor;
+
+		IF @psExcludedIDs <> '0' SET @sTempExecString = @sTempExecString + ' WHERE ' + @sRealSource + '.ID NOT IN (SELECT ID FROM ' + @sTempName + ')';
+		SET @sTempExecString = @sTempExecString + @sLocateCode;
+
+		SET @sTempParamDefinition = N'@recordCount integer OUTPUT';
+		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT;
+
+		IF @iTemp <=0 
+		BEGIN
+			SET @piFirstRecPos = @piTotalRecCount + 1;
+		END
+		ELSE
+		BEGIN
+			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1;
+		END
+
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END;
+			
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @piRecordsRequired THEN 1
+				ELSE 0
+			END;
+	END
+
+	/* Return a recordset of the required columns in the required order from the given table/view. */
+	IF (len(@sExecString) > 0)
+	BEGIN
+		EXEC (@sExecString) --+ @sExecString2)
+	END
+
+	EXECUTE sp_ASRDropUniqueObject @sTempName, 3
+END
+
+GO
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetOrderSQL]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetOrderSQL]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetOrderSQL] (
+	@piScreenID 	integer,
+	@piViewID 		integer,
+	@piOrderID		integer,
+	@psFromDef		varchar(MAX) OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	/* Return a recordset of strings describing of the controls in the given screen. */
+	DECLARE @iUserGroupID	integer,
+		@sUserGroupName		sysname,
+		@iScreenTableID		integer,
+		@iScreenTableType	integer,
+		@sScreenTableName	varchar(255),
+		@fSysSecMgr			bit,
+		@sRealSource 		varchar(255),
+		@sParentSource		varchar(255),
+		@iChildViewID 		integer,
+		@sJoinCode 			varchar(MAX),
+		@iTempTableID 		integer,
+		@iColumnTableID 	integer,
+		@iColumnID 			integer,
+		@sColumnName 		varchar(255),
+		@sColumnTableName 	varchar(255),
+		@iColumnDataType	integer,
+		@fSelectGranted 	bit,
+		@iTempCount 		integer,
+		@sViewName 			varchar(255),
+		@fAscending 		bit,
+		@sTableViewName 	varchar(255),
+		@iJoinTableID 		integer,
+		@sParentRealSource	varchar(255),
+		@iParentTableType	integer,
+		@sParentTableName	sysname,
+		@sActualUserName	sysname;
+
+	/* Get the current user's group ID. */
+	EXEC spASRIntGetActualUserDetails
+		@sActualUserName OUTPUT,
+		@sUserGroupName OUTPUT,
+		@iUserGroupID OUTPUT
+
+	/* Get the table type and name. */
+	SELECT @iScreenTableID = ASRSysScreens.tableID,
+		@iScreenTableType = ASRSysTables.tableType,
+		@sScreenTableName = ASRSysTables.tableName
+	FROM ASRSysScreens
+	INNER JOIN ASRSysTables ON ASRSysScreens.tableID = ASRSysTables.tableID
+	WHERE ASRSysScreens.ScreenID = @piScreenID
+
+	/* Check if the current user is a System or Security manager. */
+	IF UPPER(LTRIM(RTRIM(SYSTEM_USER))) = 'SA'
+	BEGIN
+		SET @fSysSecMgr = 1
+	END
+	ELSE
+	BEGIN	
+
+		SELECT @fSysSecMgr = CASE WHEN count(*) > 0 THEN 1 ELSE 0 END
+		FROM ASRSysGroupPermissions
+		INNER JOIN ASRSysPermissionItems ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
+		INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+		INNER JOIN sysusers ON ASRSysGroupPermissions.groupName = sysusers.name
+		WHERE sysusers.uid = @iUserGroupID
+			AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+			OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
+			AND ASRSysGroupPermissions.permitted = 1
+			AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS'
+	END
+
+	/* Get the real source of the given screen's table/view. */
+	IF @iScreenTableType <> 2 /* ie. top-level or lookup */
+	BEGIN
+		IF @piViewID > 0 
+		BEGIN
+			/* RealSource is the view. */	
+			SELECT @sRealSource = viewName
+			FROM ASRSysViews
+			WHERE viewID = @piViewID	
+		END
+		ELSE
+		BEGIN
+			/* RealSource is the table. */	
+			SET @sRealSource = @sScreenTableName
+		END 
+	END
+	ELSE
+	BEGIN
+		SELECT @iChildViewID = childViewID
+		FROM ASRSysChildViews2
+		WHERE tableID = @iScreenTableID
+			AND role = @sUserGroupName
+			
+		IF @iChildViewID IS null SET @iChildViewID = 0
+			
+		IF @iChildViewID > 0 
+		BEGIN
+			SET @sRealSource = 'ASRSysCV' + 
+				convert(varchar(1000), @iChildViewID) +
+				'#' + replace(@sScreenTableName, ' ', '_') +
+				'#' + replace(@sUserGroupName, ' ', '_')
+			SET @sRealSource = left(@sRealSource, 255)
+		END
+	END
+
+	/* Initialise the select and order parameters. */
+	SET @psFromDef = ''
+	SET @sJoinCode = ''
+
+	/* Create a temporary table to hold the tables/views that need to be joined. */
+	DECLARE @joinParents TABLE(
+		tableViewName	sysname,
+		tableID			integer);
+
+	/* Create a temporary table of the column permissions for all tables/views used in the screen. */
+	DECLARE @columnPermissions TABLE(
+		tableID			integer,
+		tableViewName	sysname,
+		columnName		sysname,
+		granted			bit);
+
+	/* Loop through the controls used in the screen, getting the column permissions for each one. */
+	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT ASRSysControls.tableID
+	FROM ASRSysControls
+	WHERE screenID = @piScreenID
+		AND ASRSysControls.columnID > 0
+	UNION
+	SELECT DISTINCT c.tableID 
+	FROM ASRSysOrderItems oi
+	INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	WHERE oi.type = 'O' AND oi.orderID = @piOrderID 
+
+	OPEN tablesCursor
+	FETCH NEXT FROM tablesCursor INTO @iTempTableID
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		IF @fSysSecMgr =1
+		BEGIN
+			IF @iTempTableID = @iScreenTableID
+			BEGIN
+				/* Base table - use the real source. */
+				INSERT INTO @columnPermissions
+				SELECT 
+					@iTempTableID,
+					@sRealSource,
+					ASRSysColumns.columnName,
+					1
+				FROM ASRSysColumns
+				WHERE ASRSysColumns.tableID = @iTempTableID
+			END
+			ELSE
+			BEGIN
+				/* Parent of the base table - get permissions for the table, and any associated views. */
+				SELECT @iParentTableType = tableType,
+					@sParentSource = tableName
+				FROM ASRSysTables
+				WHERE tableID = @iTempTableID
+
+				IF @iParentTableType <> 2 
+				BEGIN
+					/* ie. top-level or lookup */
+					INSERT INTO @columnPermissions
+					SELECT 
+						@iTempTableID,
+						@sParentSource,
+						ASRSysColumns.columnName,
+						1
+					FROM ASRSysColumns
+					WHERE ASRSysColumns.tableID = @iTempTableID
+				END	
+				ELSE
+				BEGIN
+					/* RealSource is the child view on the table which is derived from full access on the table's parents. */	
+					SELECT @iChildViewID = childViewID
+					FROM ASRSysChildViews2
+					WHERE tableID = @iTempTableID
+						AND role = @sUserGroupName
+						
+					IF @iChildViewID IS null SET @iChildViewID = 0
+						
+					IF @iChildViewID > 0 
+					BEGIN
+						SET @sParentSource = 'ASRSysCV' + 
+							convert(varchar(1000), @iChildViewID) +
+							'#' + replace(@sParentSource, ' ', '_') +
+							'#' + replace(@sUserGroupName, ' ', '_')
+						SET @sParentSource = left(@sParentSource, 255)
+					END
+
+					INSERT INTO @columnPermissions
+					SELECT 
+						@iTempTableID,
+						@sParentSource,
+						ASRSysColumns.columnName,
+						1
+					FROM ASRSysColumns
+					WHERE ASRSysColumns.tableID = @iTempTableID
+				END
+			END
+		END
+		ELSE
+		BEGIN
+			IF @iTempTableID = @iScreenTableID
+			BEGIN
+				/* Base table - use the real source. */
+				INSERT INTO @columnPermissions
+				SELECT 
+					@iTempTableID,
+					@sRealSource,
+					syscolumns.name,
+					CASE protectType
+						WHEN 205 THEN 1
+						WHEN 204 THEN 1
+						ELSE 0
+					END 
+				FROM sysprotects
+				INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+				INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+				WHERE sysprotects.uid = @iUserGroupID
+					AND sysprotects.action = 193 
+					AND syscolumns.name <> 'timestamp'
+					AND sysobjects.name = @sRealSource
+					AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+					OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+			END
+			ELSE
+			BEGIN
+				/* Parent of the base table - get permissions for the table, and any associated views. */
+				SELECT @iParentTableType = tableType,
+					@sParentTableName = tableName
+				FROM ASRSysTables
+				WHERE tableID = @iTempTableID
+
+				IF @iParentTableType <> 2 
+				BEGIN
+					/* ie. top-level or lookup */
+					INSERT INTO @columnPermissions
+					SELECT 
+						@iTempTableID,
+						sysobjects.name,
+						syscolumns.name,
+						CASE protectType
+						        	WHEN 205 THEN 1
+							WHEN 204 THEN 1
+							ELSE 0
+						END 
+					FROM sysprotects
+					INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+					INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+					WHERE sysprotects.uid = @iUserGroupID
+						AND sysprotects.action = 193
+						AND syscolumns.name <> 'timestamp'
+						AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE ASRSysTables.tableID = @iTempTableID 
+							UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
+						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+				END	
+				ELSE
+				BEGIN
+					/* Get permitted child view on the parent table. */
+					SELECT @iChildViewID = childViewID
+					FROM ASRSysChildViews2
+					WHERE tableID = @iTempTableID
+						AND role = @sUserGroupName
+						
+					IF @iChildViewID IS null SET @iChildViewID = 0
+						
+					IF @iChildViewID > 0 
+					BEGIN
+						SET @sParentRealSource = 'ASRSysCV' + 
+							convert(varchar(1000), @iChildViewID) +
+							'#' + replace(@sParentTableName, ' ', '_') +
+							'#' + replace(@sUserGroupName, ' ', '_')
+						SET @sParentRealSource = left(@sParentRealSource, 255)
+
+						INSERT INTO @columnPermissions
+						SELECT 
+							@iTempTableID,
+							@sParentRealSource,
+							syscolumns.name,
+							CASE protectType
+								WHEN 205 THEN 1
+								WHEN 204 THEN 1
+								ELSE 0
+							END 
+						FROM sysprotects
+						INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+						INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+						WHERE sysprotects.uid = @iUserGroupID
+							AND sysprotects.action = 193 
+							AND syscolumns.name <> 'timestamp'
+							AND sysobjects.name = @sParentRealSource
+							AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+							AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+							OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+							AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+					END
+				END
+			END
+		END
+		FETCH NEXT FROM tablesCursor INTO @iTempTableID
+	END
+	CLOSE tablesCursor
+	DEALLOCATE tablesCursor
+
+	/* Create a temporary table of the column info for all columns used in the screen controls. */
+	/* Populate the temporary table with info for all columns used in the screen controls. */
+	DECLARE columnsCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT ASRSysControls.tableID, 
+		ASRSysControls.columnID, 
+		ASRSysColumns.columnName, 
+		ASRSysTables.tableName,
+		ASRSysColumns.dataType
+	FROM ASRSysControls
+	LEFT OUTER JOIN ASRSysTables ON ASRSysControls.tableID = ASRSysTables.tableID 
+	LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID AND ASRSysColumns.columnId = ASRSysControls.columnID
+	WHERE screenID = @piScreenID
+		AND ASRSysControls.columnID > 0
+
+	OPEN columnsCursor
+	FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0
+
+		IF @iColumnTableID <> @iScreenTableID
+		BEGIN
+			/* Parent of the base table. */
+			/* Get the select permission on the column. */
+
+			/* Check if the column is selectable directly from the table. */
+			SELECT @fSelectGranted = granted
+			FROM @columnPermissions
+			WHERE tableViewName = @sColumnTableName
+				AND columnName = @sColumnName
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+	
+			IF @fSelectGranted = 1 
+			BEGIN
+				/* Add the table to the array of tables/views to join if it has not already been added. */
+				SELECT @iTempCount = COUNT(tableViewName)
+				FROM @joinParents
+				WHERE tableViewName = @sColumnTableName
+
+				IF @iTempCount = 0
+				BEGIN
+					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
+				END
+			END
+			ELSE	
+			BEGIN
+				/* Column could NOT be read directly from the parent table, so try the views. */
+				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
+				SELECT tableViewName
+				FROM @columnPermissions
+				WHERE tableID = @iColumnTableID
+					AND tableViewName <> @sColumnTableName
+					AND columnName = @sColumnName
+					AND granted = 1
+
+				OPEN viewCursor
+				FETCH NEXT FROM viewCursor INTO @sViewName
+				WHILE (@@fetch_status = 0)
+				BEGIN
+					/* Column CAN be read from the view. */
+					SET @fSelectGranted = 1 
+
+					/* Add the view to the array of tables/views to join if it has not already been added. */
+					SELECT @iTempCount = COUNT(tableViewName)
+					FROM @joinParents
+					WHERE tableViewName = @sViewName
+
+					IF @iTempCount = 0
+					BEGIN
+						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableID)
+					END
+
+					FETCH NEXT FROM viewCursor INTO @sViewName
+				END
+				CLOSE viewCursor
+				DEALLOCATE viewCursor
+			END
+		END
+
+		FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType
+	END
+	CLOSE columnsCursor
+	DEALLOCATE columnsCursor
+
+	/* Create the order string. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT c.tableID, oi.columnID, c.columnName, t.tableName, oi.ascending
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @piOrderID	AND oi.type = 'O'
+			AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence;
+
+	OPEN orderCursor
+	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0
+
+		IF @iColumnTableId = @iScreenTableID
+		BEGIN
+			/* Base table. */
+			/* Get the select permission on the column. */
+			SELECT @fSelectGranted = granted
+			FROM @columnPermissions
+			WHERE tableViewName = @sRealSource
+				AND columnName = @sColumnName
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table. */
+			/* Get the select permission on the column. */
+
+			/* Check if the column is selectable directly from the table. */
+			SELECT @fSelectGranted = granted
+			FROM @columnPermissions
+			WHERE tableID = @iColumnTableId
+				AND tableViewName = @sColumnTableName
+				AND columnName = @sColumnName
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+	
+			IF @fSelectGranted = 1 
+			BEGIN
+				/* Column COULD be read directly from the parent table. */
+				
+				/* Add the table to the array of tables/views to join if it has not already been added. */
+				SELECT @iTempCount = COUNT(tableViewName)
+				FROM @joinParents
+				WHERE tableViewName = @sColumnTableName
+
+				IF @iTempCount = 0
+				BEGIN
+					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
+				END
+			END
+			ELSE	
+			BEGIN
+				/* Column could NOT be read directly from the parent table, so try the views. */
+				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
+				SELECT tableViewName
+				FROM @columnPermissions
+				WHERE tableID = @iColumnTableId
+					AND tableViewName <> @sColumnTableName
+					AND columnName = @sColumnName
+					AND granted = 1
+
+				OPEN viewCursor
+				FETCH NEXT FROM viewCursor INTO @sViewName
+				WHILE (@@fetch_status = 0)
+				BEGIN
+					/* Column CAN be read from the view. */
+		
+					/* Add the view to the array of tables/views to join if it has not already been added. */
+					SELECT @iTempCount = COUNT(tableViewName)
+					FROM @joinParents
+					WHERE tableViewname = @sViewName
+
+					IF @iTempCount = 0
+					BEGIN
+						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
+					END
+
+					FETCH NEXT FROM viewCursor INTO @sViewName
+				END
+				CLOSE viewCursor
+				DEALLOCATE viewCursor
+			END
+		END
+
+		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending
+	END
+	CLOSE orderCursor
+	DEALLOCATE orderCursor
+
+	/* Create the FROM code. */
+	SET @psFromDef = @sRealSource + '	'
+	DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT tableViewName, 
+		tableID
+	FROM @joinParents
+
+	OPEN joinCursor
+	FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @psFromDef = @psFromDef + @sTableViewName + '	' + convert(varchar(100), @iJoinTableID) + '	'
+
+		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+	END
+	CLOSE joinCursor
+	DEALLOCATE joinCursor
+
+END
+GO
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetScreenControlsString2]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetScreenControlsString2]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetScreenControlsString2] (
+	@piScreenID 	integer,
+	@piViewID 		integer,
+	@psSelectSQL	varchar(MAX) OUTPUT,
+	@psFromDef		varchar(MAX) OUTPUT,
+	@piOrderID		integer	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	/* Return a recordset of strings describing of the controls in the given screen. */
+	DECLARE @iUserGroupID	integer,
+		@iScreenTableID		integer,
+		@iScreenTableType	integer,
+		@sScreenTableName	varchar(255),
+		@iScreenOrderID 	integer,
+		@sRealSource 		varchar(255),
+		@iChildViewID 		integer,
+		@sJoinCode 			varchar(MAX),
+		@iTempTableID 		integer,
+		@iColumnTableID 	integer,
+		@iColumnID 			integer,
+		@sColumnName 		varchar(255),
+		@sColumnTableName 	varchar(255),
+		@iColumnDataType	integer,
+		@fSelectGranted 	bit,
+		@fUpdateGranted 	bit,
+		@sSelectString 		varchar(MAX),
+		@iTempCount 		integer,
+		@sViewName 			varchar(255),
+		@fAscending 		bit,
+		@sTableViewName 	varchar(255),
+		@iJoinTableID 		integer,
+		@sParentRealSource	varchar(255),
+		@iParentChildViewID	integer,
+		@iParentTableType	integer,
+		@sParentTableName	sysname,
+		@iColumnType		integer,
+		@iLinkTableID		integer,
+		@lngPermissionCount	integer,
+		@iLinkChildViewID	integer,
+		@sLinkRealSource	varchar(255),
+		@sLinkTableName		varchar(255),
+		@iLinkTableType		integer,
+		@sNewBit			varchar(max),
+		@iID				integer,
+		@iCount				integer,
+		@iUserType			integer,
+		@sRoleName			sysname,
+		@iEmployeeTableID	integer,
+		@sActualUserName	sysname,
+		@AppName varchar(50),
+		@ItemKey varchar(20);
+
+	EXEC [dbo].[spASRIntGetActualUserDetails]
+		@sActualUserName OUTPUT,
+		@sRoleName OUTPUT,
+		@iUserGroupID OUTPUT;
+
+
+	DECLARE @SysProtects TABLE([ID] int, Columns varbinary(8000)
+								, [Action] tinyint
+								, ProtectType tinyint)
+	INSERT INTO @SysProtects
+	SELECT p.[ID], p.[Columns], p.[Action], p.ProtectType FROM ASRSysProtectsCache p
+		INNER JOIN SysColumns c ON (c.id = p.id
+			AND c.[Name] = 'timestamp'
+			AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
+			AND (convert(int,substring(p.columns,c.colid/8+1,1))&power(2,c.colid&7)) != 0)
+			OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
+			AND (convert(int,substring(p.columns,c.colid/8+1,1))&power(2,c.colid&7)) = 0)))
+		WHERE p.UID = @iUserGroupID
+			AND [ProtectType] IN (204, 205)
+			AND [Action] IN (193, 197);
+
+
+	/* Create a temporary table to hold the tables/views that need to be joined. */
+	DECLARE @JoinParents TABLE(tableViewName	sysname,
+								tableID		integer);
+
+	/* Create a temporary table of the column permissions for all tables/views used in the screen. */
+	DECLARE @ColumnPermissions TABLE(tableID		integer,
+										tableViewName	sysname,
+										columnName	sysname,
+										action		int,		
+										granted		bit);
+
+
+	/* Get the table type and name. */
+	SELECT @iScreenTableID = ASRSysScreens.tableID,
+		@iScreenTableType = ASRSysTables.tableType,
+		@sScreenTableName = ASRSysTables.tableName,
+		@iScreenOrderID = 
+				CASE 
+					WHEN ASRSysScreens.orderID > 0 THEN ASRSysScreens.orderID
+					ELSE ASRSysTables.defaultOrderID 
+				END
+	FROM ASRSysScreens
+	INNER JOIN ASRSysTables ON ASRSysScreens.tableID = ASRSysTables.tableID
+	WHERE ASRSysScreens.ScreenID = @piScreenID;
+
+	IF @iScreenOrderID IS NULL SET @iScreenOrderID = 0;
+
+	IF @piOrderID <= 0 SET @piOrderID = @iScreenOrderID;
+
+	/* Get the real source of the given screen's table/view. */
+	IF @iScreenTableType <> 2 /* ie. top-level or lookup */
+	BEGIN
+		IF @piViewID > 0 
+		BEGIN
+			/* RealSource is the view. */	
+			SELECT @sRealSource = viewName
+			FROM ASRSysViews
+			WHERE viewID = @piViewID;
+		END
+		ELSE
+		BEGIN
+			/* RealSource is the table. */	
+			SET @sRealSource = @sScreenTableName;
+		END 
+	END
+	ELSE
+	BEGIN
+		SELECT @iChildViewID = childViewID
+		FROM ASRSysChildViews2
+		WHERE tableID = @iScreenTableID
+			AND role = @sRoleName;
+			
+		IF @iChildViewID IS null SET @iChildViewID = 0;
+			
+		IF @iChildViewID > 0 
+		BEGIN
+			SET @sRealSource = 'ASRSysCV' + 
+				convert(varchar(1000), @iChildViewID) +
+				'#' + replace(@sScreenTableName, ' ', '_') +
+				'#' + replace(@sRoleName, ' ', '_');
+			SET @sRealSource = left(@sRealSource, 255);
+		END
+	END
+
+	/* Initialise the select and order parameters. */
+	SET @psSelectSQL = '';
+	SET @psFromDef = '';
+	SET @sJoinCode = '';
+
+	/* Loop through the tables used in the screen, getting the column permissions for each one. */
+	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT ASRSysControls.tableID
+	FROM ASRSysControls
+	WHERE screenID = @piScreenID
+		AND ASRSysControls.columnID > 0
+	UNION
+	SELECT DISTINCT c.tableID 
+	FROM ASRSysOrderItems oi
+	INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	WHERE oi.type = 'O' 
+		AND oi.orderID = @piOrderID;
+
+	OPEN tablesCursor;
+	FETCH NEXT FROM tablesCursor INTO @iTempTableID;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		IF @iTempTableID = @iScreenTableID
+		BEGIN
+			/* Base table - use the real source. */
+			INSERT INTO @ColumnPermissions
+			SELECT 
+				@iTempTableID,
+				@sRealSource,
+				syscolumns.name,
+				p.action,
+				CASE protectType
+					WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM @SysProtects p
+			INNER JOIN sysobjects ON p.id = sysobjects.id
+			INNER JOIN syscolumns ON p.id = syscolumns.id
+			WHERE syscolumns.name <> 'timestamp'
+				AND sysobjects.name = @sRealSource
+				AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
+				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+				OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
+				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table - get permissions for the table, and any associated views. */
+			SELECT @iParentTableType = tableType,
+				@sParentTableName = tableName
+			FROM ASRSysTables
+			WHERE tableID = @iTempTableID
+
+			IF @iParentTableType <> 2 /* ie. top-level or lookup */
+			BEGIN
+				INSERT INTO @ColumnPermissions
+				SELECT 
+					@iTempTableID,
+					sysobjects.name,
+					syscolumns.name,
+					p.[action],
+					CASE p.protectType
+					        	WHEN 205 THEN 1
+						WHEN 204 THEN 1
+						ELSE 0
+					END 
+				FROM @sysprotects p
+				INNER JOIN sysobjects ON p.id = sysobjects.id
+				INNER JOIN syscolumns ON p.id = syscolumns.id
+				WHERE syscolumns.name <> 'timestamp'
+					AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE ASRSysTables.tableID = @iTempTableID 
+						UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
+					AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
+					AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+					OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
+					AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+			END
+			ELSE
+			BEGIN
+				/* Get permitted child view on the parent table. */
+				SELECT @iParentChildViewID = childViewID
+				FROM ASRSysChildViews2
+				WHERE tableID = @iTempTableID
+					AND role = @sRoleName
+					
+				IF @iParentChildViewID IS null SET @iParentChildViewID = 0
+					
+				IF @iParentChildViewID > 0 
+				BEGIN
+					SET @sParentRealSource = 'ASRSysCV' + 
+						convert(varchar(1000), @iParentChildViewID) +
+						'#' + replace(@sParentTableName, ' ', '_') +
+						'#' + replace(@sRoleName, ' ', '_')
+					SET @sParentRealSource = left(@sParentRealSource, 255)
+
+					INSERT INTO @ColumnPermissions
+					SELECT 
+						@iTempTableID,
+						@sParentRealSource,
+						syscolumns.name,
+						p.[action],
+						CASE p.protectType
+							WHEN 205 THEN 1
+							WHEN 204 THEN 1
+							ELSE 0
+						END 
+					FROM @sysprotects p
+					INNER JOIN sysobjects ON p.id = sysobjects.id
+					INNER JOIN syscolumns ON p.id = syscolumns.id
+					WHERE syscolumns.name <> 'timestamp'
+						AND sysobjects.name = @sParentRealSource
+						AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
+						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+						OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
+						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+				END
+			END
+		END
+
+		FETCH NEXT FROM tablesCursor INTO @iTempTableID
+	END
+	CLOSE tablesCursor
+	DEALLOCATE tablesCursor
+
+	SET @iUserType = 1
+
+	/*Ascertain application name in order to select by correct item key  */
+	SELECT @AppName = APP_NAME()
+	IF @AppName = 'OPENHR SELF-SERVICE INTRANET'
+	BEGIN
+		SET @ItemKey = 'SSINTRANET'
+	END
+	ELSE
+	BEGIN
+		SET @ItemKey = 'INTRANET'
+	END
+
+	SELECT @iID = ASRSysPermissionItems.itemID
+	FROM ASRSysPermissionItems
+	INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+	WHERE ASRSysPermissionItems.itemKey = @ItemKey
+		AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS'
+
+	IF @iID IS NULL SET @iID = 0
+	IF @iID > 0
+	BEGIN
+		/* The permission does exist in the current version so check if the user is granted this permission. */
+		SELECT @iCount = count(ASRSysGroupPermissions.itemID)
+		FROM ASRSysGroupPermissions 
+		WHERE ASRSysGroupPermissions.itemID = @iID
+			AND ASRSysGroupPermissions.groupName = @sRoleName
+			AND ASRSysGroupPermissions.permitted = 1
+			
+		IF @iCount > 0
+		BEGIN
+			SET @iUserType = 0
+		END
+	END
+
+	/* Get the EMPLOYEE table information. */
+	SELECT @iEmployeeTableID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_PERSONNEL'
+		AND parameterKey = 'Param_TablePersonnel'
+	IF @iEmployeeTableID IS NULL SET @iEmployeeTableID = 0
+
+	/* Create a temporary table of the column info for all columns used in the screen controls. */
+	DECLARE @columnInfo TABLE
+	(
+		columnID	integer,
+		selectGranted	bit,
+		updateGranted	bit
+	)
+
+	/* Populate the temporary table with info for all columns used in the screen controls. */
+	/* Create the select string for getting the column values. */
+	DECLARE columnsCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT ASRSysControls.tableID, 
+		ASRSysControls.columnID, 
+		ASRSysColumns.columnName, 
+		ASRSysTables.tableName,
+		ASRSysColumns.dataType,
+		ASRSysColumns.columnType,
+		ASRSysColumns.linkTableID
+	FROM ASRSysControls
+	LEFT OUTER JOIN ASRSysTables ON ASRSysControls.tableID = ASRSysTables.tableID 
+	LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID AND ASRSysColumns.columnId = ASRSysControls.columnID
+	WHERE screenID = @piScreenID
+	AND ASRSysControls.columnID > 0
+
+	OPEN columnsCursor
+	FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType, @iColumnType, @iLinkTableID
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0
+		SET @fUpdateGranted = 0
+
+		IF @iColumnTableID = @iScreenTableID
+		BEGIN
+			/* Base table. */
+			/* Get the select permission on the column. */
+			SELECT @fSelectGranted = granted
+			FROM @ColumnPermissions
+			WHERE tableViewName = @sRealSource
+				AND columnName = @sColumnName
+				AND action = 193
+
+			/* Get the update permission on the column. */
+			SELECT @fUpdateGranted = granted
+			FROM @ColumnPermissions
+			WHERE tableViewName = @sRealSource
+				AND columnName = @sColumnName
+				AND action = 197
+
+			/* If the column is a link column, ensure that the link table can be seen. */
+			IF (@fUpdateGranted = 1) AND (@iColumnType = 4)
+			BEGIN
+				SELECT @sLinkTableName = tableName,
+					@iLinkTableType = tableType
+				FROM ASRSysTables
+				WHERE tableID = @iLinkTableID
+
+				IF @iLinkTableType = 1
+				BEGIN
+					/* Top-level table. */
+					SELECT @lngPermissionCount = COUNT(sysprotects.uid)
+					FROM sysprotects
+					INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+					INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+					WHERE sysprotects.uid = @iUserGroupID
+						AND sysprotects.action = 193
+						AND sysprotects.protectType <> 206
+						AND syscolumns.name <> 'timestamp'
+						AND syscolumns.name <> 'ID'
+						AND sysobjects.name = @sLinkTableName
+						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+
+					IF @lngPermissionCount = 0 
+					BEGIN
+						/* No permission on the table itself check the views. */
+						SELECT @lngPermissionCount = COUNT(ASRSysViews.viewTableID)
+						FROM ASRSysViews
+						INNER JOIN sysobjects ON ASRSysViews.viewName = sysobjects.name
+						INNER JOIN sysprotects ON sysobjects.id = sysprotects.id  
+						WHERE ASRSysViews.viewTableID = @iLinkTableID
+							AND sysprotects.uid = @iUserGroupID
+							AND sysprotects.action = 193
+							AND sysprotects.protecttype <> 206
+
+						IF @lngPermissionCount = 0 SET @fUpdateGranted = 0
+					END
+				END
+				ELSE
+				BEGIN
+					/* Child/history table. */
+					SELECT @iLinkChildViewID = childViewID
+					FROM ASRSysChildViews2
+					WHERE tableID = @iLinkTableID
+						AND role = @sRoleName
+						
+					IF @iLinkChildViewID IS null SET @iLinkChildViewID = 0
+						
+					IF @iLinkChildViewID > 0 
+					BEGIN
+						SET @sLinkRealSource = 'ASRSysCV' + 
+							convert(varchar(1000), @iLinkChildViewID) +
+							'#' + replace(@sLinkTableName, ' ', '_') +
+							'#' + replace(@sRoleName, ' ', '_')
+						SET @sLinkRealSource = left(@sLinkRealSource, 255)
+					END
+
+					SELECT @lngPermissionCount = COUNT(sysobjects.name)
+					FROM sysprotects 
+					INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+					WHERE sysprotects.uid = @iUserGroupID
+						AND sysprotects.protectType <> 206
+						AND sysprotects.action = 193
+						AND sysobjects.name = @sLinkRealSource
+		
+					IF @lngPermissionCount = 0 SET @fUpdateGranted = 0
+				END
+			END
+
+			IF @fSelectGranted = 1 
+			BEGIN
+				/* Get the select string for the column. */
+				IF len(@psSelectSQL) > 0 
+					SET @psSelectSQL = @psSelectSQL + ',';
+			
+				IF @iColumnDataType = 11 /* Date */
+				BEGIN
+					 /* Date */
+					SET @sNewBit = 'convert(varchar(10), ' + @sRealSource + '.' + @sColumnName + ', 101) AS [' + convert(varchar(255), @iColumnID) + ']';
+					SET @psSelectSQL = @psSelectSQL + @sNewBit;
+				END
+				ELSE
+				BEGIN
+					 /* Non-date */
+					SET @sNewBit = @sRealSource + '.' + @sColumnName + ' AS [' + convert(varchar(100), @iColumnID) + ']';
+					SET @psSelectSQL = @psSelectSQL + @sNewBit;
+				END
+			END
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table. */
+			/* Get the select permission on the column. */
+
+			/* Check if the column is selectable directly from the table. */
+			SELECT @fSelectGranted = granted
+			FROM @ColumnPermissions
+			WHERE tableViewName = @sColumnTableName
+				AND columnName = @sColumnName
+				AND action = 193;
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
+	
+			IF @fSelectGranted = 1 
+			BEGIN
+				/* Column COULD be read directly from the parent table. */
+				IF len(@psSelectSQL) > 0 
+					SET @psSelectSQL = @psSelectSQL + ',';
+	
+				IF @iColumnDataType = 11 /* Date */
+				BEGIN
+					 /* Date */
+					SET @sNewBit = 'convert(varchar(10), ' + @sColumnTableName + '.' + @sColumnName + ', 101) AS [' + convert(varchar(100), @iColumnID) + ']';
+					SET @psSelectSQL = @psSelectSQL + @sNewBit;
+				END
+				ELSE
+				BEGIN
+					 /* Non-date */
+					SET @sNewBit = @sColumnTableName + '.' + @sColumnName + ' AS [' + convert(varchar(100), @iColumnID) + ']';
+					SET @psSelectSQL = @psSelectSQL + @sNewBit;
+				END
+			
+				/* Add the table to the array of tables/views to join if it has not already been added. */
+				SELECT @iTempCount = COUNT(tableViewName)
+					FROM @JoinParents
+					WHERE tableViewName = @sColumnTableName;
+
+				IF @iTempCount = 0
+					INSERT INTO @JoinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID);
+					
+			END
+			ELSE	
+			BEGIN
+				/* Column could NOT be read directly from the parent table, so try the views. */
+				SET @sSelectString = '';
+
+				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
+				SELECT tableViewName
+				FROM @ColumnPermissions
+				WHERE tableID = @iColumnTableID
+					AND tableViewName <> @sColumnTableName
+					AND columnName = @sColumnName
+					AND action = 193
+					AND granted = 1;
+
+				OPEN viewCursor;
+				FETCH NEXT FROM viewCursor INTO @sViewName;
+				WHILE (@@fetch_status = 0)
+
+				BEGIN
+					/* Column CAN be read from the view. */
+					SET @fSelectGranted = 1;
+
+					IF len(@sSelectString) = 0 SET @sSelectString = 'CASE';
+	
+					IF @iColumnDataType = 11 /* Date */
+					BEGIN
+						 /* Date */
+						SET @sSelectString = @sSelectString +
+							' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN convert(varchar(10), ' + @sViewName + '.' + @sColumnName + ', 101)';
+					END
+					ELSE
+					BEGIN
+						 /* Non-date */
+						SET @sSelectString = @sSelectString +
+							' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName;
+					END
+
+					/* Add the view to the array of tables/views to join if it has not already been added. */
+					SELECT @iTempCount = COUNT(tableViewName)
+						FROM @JoinParents
+						WHERE tableViewName = @sViewName;
+
+					IF @iTempCount = 0
+						INSERT INTO @JoinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableID);
+
+					FETCH NEXT FROM viewCursor INTO @sViewName;
+				END
+				CLOSE viewCursor;
+				DEALLOCATE viewCursor;
+
+				IF len(@sSelectString) > 0
+				BEGIN
+					SET @sSelectString = @sSelectString +
+						' ELSE NULL END AS [' + convert(varchar(100), @iColumnID) + ']';
+
+					IF len(@psSelectSQL) > 0 
+						SET @psSelectSQL = @psSelectSQL + ',';
+
+					SET @psSelectSQL = @psSelectSQL + @sSelectString;
+				END
+			END
+
+			/* Reset the update permission on the column. */
+			SET @fUpdateGranted = 0
+		END
+
+		IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+		IF @fUpdateGranted IS NULL SET @fUpdateGranted = 0
+
+		IF (@iUserType = 1) 
+			AND (@iScreenTableType = 1)
+			AND (@iScreenTableID <> @iEmployeeTableID)
+		BEGIN
+			SET @fUpdateGranted = 0
+		END
+
+		INSERT INTO @columnInfo (columnID, selectGranted, updateGranted)
+			VALUES (@iColumnId, @fSelectGranted, @fUpdateGranted)
+
+		FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType, @iColumnType, @iLinkTableID
+	END
+	CLOSE columnsCursor
+	DEALLOCATE columnsCursor
+
+	/* Create the order string. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT c.tableID, oi.columnID, c.columnName, t.tableName, oi.ascending
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @piOrderID	AND oi.type = 'O'
+			AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence;
+
+	OPEN orderCursor
+	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0
+
+		IF @iColumnTableId = @iScreenTableID
+		BEGIN
+			/* Base table. */
+			/* Get the select permission on the column. */
+			SELECT @fSelectGranted = granted
+			FROM @ColumnPermissions
+			WHERE tableViewName = @sRealSource
+				AND columnName = @sColumnName
+				AND action = 193
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table. */
+			/* Get the select permission on the column. */
+
+			/* Check if the column is selectable directly from the table. */
+			SELECT @fSelectGranted = granted
+			FROM @ColumnPermissions
+			WHERE tableID = @iColumnTableId
+				AND tableViewName = @sColumnTableName
+				AND columnName = @sColumnName
+				AND action = 193
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+	
+			IF @fSelectGranted = 1 
+			BEGIN
+				/* Column COULD be read directly from the parent table. */
+				
+				/* Add the table to the array of tables/views to join if it has not already been added. */
+				SELECT @iTempCount = COUNT(tableViewName)
+				FROM @JoinParents
+				WHERE tableViewName = @sColumnTableName
+
+				IF @iTempCount = 0
+				BEGIN
+					INSERT INTO @JoinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
+				END
+			END
+			ELSE	
+			BEGIN
+				/* Column could NOT be read directly from the parent table, so try the views. */
+
+				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
+				SELECT tableViewName
+				FROM @ColumnPermissions
+				WHERE tableID = @iColumnTableId
+					AND tableViewName <> @sColumnTableName
+					AND columnName = @sColumnName
+					AND action = 193
+					AND granted = 1
+
+				OPEN viewCursor
+				FETCH NEXT FROM viewCursor INTO @sViewName
+				WHILE (@@fetch_status = 0)
+				BEGIN
+					/* Column CAN be read from the view. */
+		
+					/* Add the view to the array of tables/views to join if it has not already been added. */
+					SELECT @iTempCount = COUNT(tableViewName)
+					FROM @JoinParents
+					WHERE tableViewname = @sViewName
+
+					IF @iTempCount = 0
+					BEGIN
+						INSERT INTO @JoinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
+					END
+
+					FETCH NEXT FROM viewCursor INTO @sViewName
+				END
+				CLOSE viewCursor
+				DEALLOCATE viewCursor
+			END
+		END
+
+		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending
+	END
+	CLOSE orderCursor
+	DEALLOCATE orderCursor
+
+	/* Add the id and timestamp columns to the select string. */
+	DECLARE columnsCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT ASRSysColumns.columnId, 
+		ASRSysColumns.columnName
+	FROM ASRSysColumns
+	WHERE tableID = @iScreenTableID
+		AND columnType = 3
+
+	OPEN columnsCursor
+	FETCH NEXT FROM columnsCursor INTO @iColumnID, @sColumnName
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		IF len(@psSelectSQL) > 0 
+			SET @psSelectSQL = @psSelectSQL + ',';
+
+		SET @sNewBit = @sRealSource + '.' + @sColumnName + ' AS [' + convert(varchar(100), @iColumnID) + ']';
+		SET @psSelectSQL = @psSelectSQL + @sNewBit;
+
+		FETCH NEXT FROM columnsCursor INTO @iColumnID, @sColumnName;
+	END
+	CLOSE columnsCursor;
+	DEALLOCATE columnsCursor;
+
+	SET @sNewBit = ', CONVERT(integer, ' + @sRealSource + '.TimeStamp) AS timestamp ';
+	SET @psSelectSQL = @psSelectSQL + @sNewBit;
+
+	/* Create the FROM code. */
+	SET @psFromDef = @sRealSource + '	'
+	DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT tableViewName, tableID
+		FROM @JoinParents;
+
+	OPEN joinCursor;
+	FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @psFromDef = @psFromDef + @sTableViewName + '	' + convert(varchar(100), @iJoinTableID) + '	';
+		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID;
+	END
+	CLOSE joinCursor;
+	DEALLOCATE joinCursor;
+
+	SELECT
+		convert(varchar(MAX), case when ASRSysControls.pageNo IS null then '' else ASRSysControls.pageNo end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.tableID IS null then '' else ASRSysControls.tableID end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.columnID IS null then '' else ASRSysControls.columnID end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.controlType IS null then '' else ASRSysControls.controlType end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.topCoord IS null then '' else ASRSysControls.topCoord end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.leftCoord IS null then '' else ASRSysControls.leftCoord end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.height IS null then '' else ASRSysControls.height end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.width IS null then '' else ASRSysControls.width end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.caption IS null then '' else ASRSysControls.caption end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.backColor IS null then '' else ASRSysControls.backColor end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.foreColor IS null then '' else ASRSysControls.foreColor end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.fontName IS null then '' else ASRSysControls.fontName end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.fontSize IS null then '' else ASRSysControls.fontSize end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.fontBold IS null then '' else ASRSysControls.fontBold end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.fontItalic IS null then '' else ASRSysControls.fontItalic end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.fontStrikethru IS null then '' else ASRSysControls.fontStrikethru end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.fontUnderline IS null then '' else ASRSysControls.fontUnderline end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.displayType IS null then '' else ASRSysControls.displayType end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.tabIndex IS null then '' else ASRSysControls.tabIndex end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.borderStyle IS null then '' else ASRSysControls.borderStyle end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.alignment IS null then '' else ASRSysControls.alignment end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.columnName IS null then '' else ASRSysColumns.columnName end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.columnType IS null then '' else ASRSysColumns.columnType end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.datatype IS null then '' else ASRSysColumns.datatype end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.defaultValue IS null then '' else ASRSysColumns.defaultValue end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.size IS null then '' else convert(nvarchar(max),ASRSysColumns.size) end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.decimals IS null then '' else ASRSysColumns.decimals end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.lookupTableID IS null then '' else ASRSysColumns.lookupTableID end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.lookupColumnID IS null then '' else ASRSysColumns.lookupColumnID end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.spinnerMinimum IS null then '' else ASRSysColumns.spinnerMinimum end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.spinnerMaximum IS null then '' else ASRSysColumns.spinnerMaximum end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.spinnerIncrement IS null then '' else ASRSysColumns.spinnerIncrement end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.mandatory IS null then '' else ASRSysColumns.mandatory end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.uniquechecktype IS null then '' when ASRSysColumns.uniquechecktype <> 0 then 1 else 0 end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.convertcase IS null then '' else ASRSysColumns.convertcase end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.mask IS null then '' else rtrim(ASRSysColumns.mask) end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.blankIfZero IS null then '' else ASRSysColumns.blankIfZero end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.multiline IS null then '' else ASRSysColumns.multiline end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.alignment IS null then '' else ASRSysColumns.alignment end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.dfltValueExprID IS null then '' else ASRSysColumns.dfltValueExprID end) + char(9) +
+		convert(varchar(MAX), case when isnull(ASRSysColumns.readOnly,0) = 1 then 1 else CASE WHEN ASRSysColumns.tableid = @iScreenTableID THEN 0 ELSE 1 END end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.statusBarMessage IS null then '' else ASRSysColumns.statusBarMessage end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.linkTableID IS null then '' else ASRSysColumns.linkTableID end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.linkOrderID IS null then '' else ASRSysColumns.linkOrderID end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.linkViewID IS null then '' else ASRSysColumns.linkViewID end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.Afdenabled IS null then '' else ASRSysColumns.Afdenabled end) + char(9) +
+		convert(varchar(MAX), case when ASRSysTables.TableName IS null then '' else ASRSysTables.TableName end) + char(9) +
+		convert(varchar(MAX), case when ci.selectGranted IS null then '' else ci.selectGranted end) + char(9) +
+		convert(varchar(MAX), case when ci.updateGranted IS null then '' else ci.updateGranted end) + char(9) +
+		'' + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.pictureID IS null then '' else ASRSysControls.pictureID end)+ char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.trimming IS null then '' else ASRSysColumns.trimming end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.Use1000Separator IS null then '' else ASRSysColumns.Use1000Separator end) + char(9) +	
+		convert(varchar(MAX), case when ASRSysColumns.lookupFilterColumnID IS null then '' else ASRSysColumns.lookupFilterColumnID end) + char(9) +	
+		convert(varchar(MAX), case when ASRSysColumns.LookupFilterValueID IS null then '' else ASRSysColumns.LookupFilterValueID end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.OLEType IS null then '' else ASRSysColumns.OLEType end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.MaxOLESizeEnabled IS null then '' else ASRSysColumns.MaxOLESizeEnabled end) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.MaxOLESize IS null then '' else ASRSysColumns.MaxOLESize end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.NavigateTo IS null then '' else ASRSysControls.NavigateTo end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.NavigateIn IS null then '' else ASRSysControls.NavigateIn end) + char(9) +
+		convert(varchar(MAX), case when ASRSysControls.NavigateOnSave IS null then '' else ASRSysControls.NavigateOnSave end) + char(9) +
+		convert(varchar(MAX), case when isnull(ASRSysControls.readOnly,0) = 1 then 1 else 0 end)
+		AS [controlDefinition],
+		ASRSysControls.pageNo AS [pageNo],
+		ASRSysControls.controlLevel AS [controlLevel],
+		ASRSysControls.tabIndex AS [tabIndex]
+	FROM ASRSysControls
+	LEFT OUTER JOIN ASRSysTables ON ASRSysControls.tableID = ASRSysTables.tableID 
+	LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID AND ASRSysColumns.columnId = ASRSysControls.columnID
+	LEFT OUTER JOIN @columnInfo ci ON ASRSysColumns.columnId = ci.columnID
+	WHERE screenID = @piScreenID
+	UNION
+	SELECT 
+		convert(varchar(MAX), -1) + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.columnId IS null then '' else ASRSysColumns.columnId end)  + char(9) +
+		convert(varchar(MAX), case when ASRSysColumns.columnName IS null then '' else ASRSysColumns.columnName end) 
+		AS [controlDefinition],
+		0 AS [pageNo],
+		0 AS [controlLevel],
+		0 AS [tabIndex]
+	FROM ASRSysColumns
+	WHERE tableID = @iScreenTableID
+		AND columnType = 3
+	ORDER BY [pageNo],
+		[controlLevel] DESC, 
+		[tabIndex];
+
+END
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetSelectedPicklistRecords]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetSelectedPicklistRecords]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetSelectedPicklistRecords]
+	(
+	@psSelectionType		varchar(255),
+	@piSelectionID			integer,
+	@psSelectedIDs			varchar(MAX),
+	@psPromptSQL			varchar(MAX),
+	@piTableID				integer,
+	@psErrorMessage			varchar(MAX)	OUTPUT,
+	@piExpectedRecords		integer			OUTPUT
+	)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE
+		@iUserGroupID		integer,
+		@sUserGroupName		sysname,
+		@iID				integer,
+		@iTableType			integer,
+		@sTableName			sysname,
+		@sRealSource		sysname,
+		@sColumnName 		sysname,
+		@iDataType 			integer,
+		@iTableID 			integer,
+		@iChildViewID		integer,
+		@sTempRealSource	sysname,
+		@iTemp				integer,
+		@sTemp				varchar(MAX),
+		@sSubViews			varchar(MAX),
+		@sSQL 				nvarchar(MAX),
+		@sPositionParamDefinition 	nvarchar(500),
+		@sActualUserName	sysname,
+		@sSelectSQL2		varchar(MAX),
+		@sSelectSQL3		varchar(MAX),
+		@sSelectSQL5		varchar(MAX),
+		@sSelectSQL			varchar(MAX),
+		@sFromSQL			varchar(MAX),
+		@iOrderID			integer,
+		@sJoinTables		varchar(MAX),
+		@sJoinViews			varchar(MAX),
+		@sWhereSQL			varchar(MAX),
+		@fBaseSelect		bit,
+		@iTempTableType		integer,
+		@sTempTableName		sysname,
+		@iTempTableID 		integer,
+		@fSelectGranted 	bit,
+		@iIndex				integer,
+		@iViewID			integer, 
+		@sViewName			sysname,
+		@iTempID			integer,
+		@sSubSQL			varchar(MAX),
+		@sExecuteSQL		nvarchar(MAX);
+	
+	/* Clean the input string parameters. */
+	IF len(@psSelectedIDs) > 0 SET @psSelectedIDs = replace(@psSelectedIDs, '''', '''''');
+
+	SET @sSelectSQL = '';
+	SET @sSelectSQL2 = '';
+	SET @sSelectSQL3 = '';
+	SET @sSelectSQL5 = '';
+		
+	SET @sJoinTables = ',';
+	SET @sJoinViews = ',';
+	SET @sWhereSQL = '';
+	SET @fBaseSelect = 0;
+	SET @sFromSQL = '';
+	
+	/* Get the current user's group ID. */
+	EXEC [dbo].[spASRIntGetActualUserDetails]
+		@sActualUserName OUTPUT,
+		@sUserGroupName OUTPUT,
+		@iUserGroupID OUTPUT;
+
+	SELECT @iOrderID = defaultOrderID, 
+		@iTableType = tableType,
+		@sTableName = tableName
+	FROM ASRSysTables
+	WHERE tableID = @piTableID;
+
+	IF @iTableType <> 2 /* ie. top-level or lookup */
+	BEGIN
+		SET @sRealSource = @sTableName;
+	END
+	ELSE
+	BEGIN
+		SELECT @iChildViewID = childViewID
+		FROM ASRSysChildViews2
+		WHERE tableID = @piTableID
+			AND role = @sUserGroupName;
+			
+		IF @iChildViewID IS null SET @iChildViewID = 0;
+			
+		IF @iChildViewID > 0 
+		BEGIN
+			SET @sRealSource = 'ASRSysCV' + 
+				convert(varchar(1000), @iChildViewID) +
+				'#' + replace(CONVERT(varchar(255),@sTableName), ' ', '_') +
+				'#' + replace(CONVERT(varchar(255),@sUserGroupName), ' ', '_');
+			SET @sRealSource = left(CONVERT(varchar(255),@sRealSource), 255);
+		END
+	END	
+
+	SET @sSelectSQL = '';
+
+	/* Create a temporary table to hold the find columns that the user can see. */
+	DECLARE @columnPermissions TABLE
+		(tableID		integer,
+		tableViewName	sysname,
+		columnName	sysname,
+		selectGranted	bit);
+
+	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT c.tableID, t.tableType, t.tableName
+	FROM ASRSysOrderItems oi
+	INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	INNER JOIN ASRSysTables t ON c.tableID= t.tableID
+	WHERE oi.orderID = @iOrderID
+		AND oi.type = 'F';
+
+	OPEN tablesCursor;
+	FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		IF @iTempTableType <> 2 /* ie. top-level or lookup */
+		BEGIN
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				sysobjects.name,
+				syscolumns.name,
+				CASE protectType
+				        	WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
+					ASRSysTables.tableID = @iTempTableID 
+					UNION SELECT ASRSysViews.viewName 
+					FROM ASRSysViews 
+					WHERE ASRSysViews.viewTableID = @iTempTableID)
+					AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+					OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+		END
+		ELSE
+		BEGIN
+			SELECT @iChildViewID = childViewID
+			FROM ASRSysChildViews2
+			WHERE tableID = @iTempTableID
+				AND [role] = @sUserGroupName;
+				
+			IF @iChildViewID IS null SET @iChildViewID = 0;
+				
+			IF @iChildViewID > 0 
+			BEGIN
+				SET @sTempRealSource = 'ASRSysCV' + 
+					convert(varchar(1000), @iChildViewID) +
+					'#' + replace(@sTempTableName, ' ', '_') +
+					'#' + replace(@sUserGroupName, ' ', '_');
+				SET @sTempRealSource = left(@sTempRealSource, 255);
+
+				INSERT INTO @columnPermissions
+				SELECT 
+					@iTempTableID,
+					sysobjects.name,
+					syscolumns.name,
+					CASE protectType
+					        	WHEN 205 THEN 1
+						WHEN 204 THEN 1
+						ELSE 0
+					END 
+				FROM sysprotects
+				INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+				INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+				WHERE sysprotects.uid = @iUserGroupID
+					AND sysprotects.action = 193 
+					AND syscolumns.name <> 'timestamp'
+					AND sysobjects.name =@sTempRealSource
+						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+			END
+		END
+
+		FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName;
+	END
+	CLOSE tablesCursor;
+	DEALLOCATE tablesCursor;
+
+	/* Create the order select strings. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT c.columnName, c.dataType, c.tableID, t.tableType, t.tableName
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @iOrderID AND oi.type = 'F'
+		AND c.datatype <> -3 AND c.datatype <> -4
+	ORDER BY oi.sequence;
+
+	OPEN orderCursor;
+	FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0;
+
+		IF @iTempTableType <> 2 /* ie. top-level or lookup */
+		BEGIN
+			SET @sTempRealSource = @sTempTableName;
+		END
+		ELSE
+		BEGIN
+			SELECT @iChildViewID = childViewID
+			FROM ASRSysChildViews2
+			WHERE tableID = @iTableID
+				AND [role] = @sUserGroupName;
+				
+			IF @iChildViewID IS null SET @iChildViewID = 0;
+				
+			IF @iChildViewID > 0 
+			BEGIN
+				SET @sTempRealSource = 'ASRSysCV' + 
+					convert(varchar(1000), @iChildViewID) +
+					'#' + replace(@sTempTableName, ' ', '_') +
+					'#' + replace(@sUserGroupName, ' ', '_');
+				SET @sTempRealSource = left(@sTempRealSource, 255);
+			END
+		END	
+
+		SELECT @fSelectGranted = selectGranted
+		FROM @columnPermissions
+		WHERE tableID = @iTableID
+			AND tableViewName = @sTempRealSource
+			AND columnName = @sColumnName;
+
+		IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
+
+		IF @fSelectGranted = 1
+		BEGIN
+			/* Add the column code to the 'select' string. */
+			SET @sSelectSQL = @sSelectSQL +
+				CASE 
+					WHEN len(@sSelectSQL) > 0 THEN ','
+					ELSE ''
+				END +
+				@sTempRealSource + '.' + @sColumnName;
+
+			IF @iTableID = @piTableID
+			BEGIN
+				SET @fBaseSelect = 1;
+			END 
+			ELSE
+			BEGIN
+				/* Add the table to the list of join tables if required. */
+				SELECT @iIndex = CHARINDEX(',' + @sTempRealSource + ',', @sJoinTables);
+				IF @iIndex = 0 SET @sJoinTables = @sJoinTables + @sTempRealSource + ',';
+			END
+		END
+		ELSE
+		BEGIN
+			/* The column CANNOT be read from the Delegate table, or directly from a parent table.
+			Try to read it from the views on the table. */
+			SET @sSubViews = ',';
+
+			DECLARE viewsCursor CURSOR LOCAL FAST_FORWARD FOR 
+			SELECT viewID,
+				viewName
+			FROM ASRSysViews
+			WHERE viewTableID = @iTableID;
+
+			OPEN viewsCursor;
+			FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
+			WHILE (@@fetch_status = 0)
+			BEGIN
+				SET @fSelectGranted = 0
+
+				SELECT @fSelectGranted = selectGranted
+				FROM @columnPermissions
+				WHERE tableID = @iTableID
+					AND tableViewName = @sViewName
+					AND columnName = @sColumnName;
+
+				IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
+
+				IF @fSelectGranted = 1	
+				BEGIN
+					/* Add the view to the list of join views if required. */
+					SELECT @iIndex = CHARINDEX(',' + @sViewName + ',', @sJoinViews);
+					IF @iIndex = 0 SET @sJoinViews = @sJoinViews + @sViewName + ',';
+
+					SET @sSubViews = @sSubViews + @sViewName + ',';
+				END
+
+				FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName;
+			END
+			CLOSE viewsCursor;
+			DEALLOCATE viewsCursor;
+
+			IF len(@sSubViews) > 1
+			BEGIN
+				SET @sSubSQL = '';
+
+				WHILE len(@sSubViews) > 1
+				BEGIN
+					SELECT @iIndex = charindex(',', @sSubViews, 2);
+					SET @sViewName = substring(@sSubViews, 2, @iIndex - 2);
+					SET @sSubViews = substring(@sSubViews, @iIndex, len(@sSubViews) -@iIndex + 1);
+
+					IF len(@sSubSQL) > 0 SET @sSubSQL = @sSubSQL + ',';
+					SET @sSubSQL = @sSubSQL + @sViewName + '.' + @sColumnName;
+				END
+
+				SET @sSubSQL = 'COALESCE(' + @sSubSQL + ', NULL) AS [' + @sColumnName + ']';
+                
+				/* Add the column code to the 'select' string. */
+				SET @sSelectSQL = @sSelectSQL +
+					CASE 
+						WHEN len(@sSelectSQL) > 0 THEN ','
+						ELSE ''
+					END +
+					@sSubSQL;
+			END
+		END
+
+		FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName;
+	END
+	
+	CLOSE orderCursor;
+	DEALLOCATE orderCursor;
+
+	/* Add the ID column. */
+	SET @sFromSQL = ' FROM ' + @sRealSource;
+        
+	/* Join any other tables and views that are used. */
+	WHILE len(@sJoinTables) > 1
+	BEGIN
+		SELECT @iIndex = charindex(',', @sJoinTables, 2);
+		SET @sTableName = substring(@sJoinTables, 2, @iIndex - 2);
+		SET @sJoinTables = substring(@sJoinTables, @iIndex, len(@sJoinTables) -@iIndex + 1);
+
+		SELECT @iTempID = tableID
+		FROM ASRSysTables
+		WHERE tableName = @sTableName;
+
+		SET @sFromSQL = @sFromSQL + 		
+			' LEFT OUTER JOIN ' + @sTableName +
+			' ON ' + @sRealSource + '.ID_' + convert(varchar(255), @iTempID) + ' = ' + @sTableName + '.ID';
+	END
+
+	WHILE len(@sJoinViews) > 1
+	BEGIN
+		SELECT @iIndex = charindex(',', @sJoinViews, 2);
+		SET @sViewName = substring(@sJoinViews, 2, @iIndex - 2);
+		SET @sJoinViews = substring(@sJoinViews, @iIndex, len(@sJoinViews) -@iIndex + 1);
+
+		SELECT @iTempID = viewTableID
+		FROM ASRSysViews
+		WHERE viewName = @sViewName;
+
+		IF @iTempID = @piTableID
+		BEGIN
+			SET @sFromSQL = @sFromSQL + 		
+				' LEFT OUTER JOIN ' + @sViewName +
+				' ON ' + @sRealSource + '.ID = ' + @sViewName + '.ID';
+
+			IF @fBaseSelect = 0
+			BEGIN
+				SET @sWhereSQL = @sWhereSQL + 
+					CASE
+						WHEN len(@sWhereSQL) > 0 THEN ' OR ('
+						ELSE '('
+					END +
+					@sRealSource + '.ID IN (SELECT ID FROM ' + @sViewName +  '))';
+			END
+		END
+		ELSE
+		BEGIN
+			SET @sFromSQL = @sFromSQL + 		
+				' LEFT OUTER JOIN ' + @sViewName +
+				' ON ' + @sRealSource + '.ID_' + convert(varchar(255), @iTempID) + ' = ' + @sViewName + '.ID';
+		END
+	END
+
+	IF len(@sWhereSQL) > 0
+	BEGIN
+		SET @sFromSQL = @sFromSQL + 
+			' WHERE (' + @sWhereSQL + ')'	;
+	END
+	
+	/* Get the list of selected IDs. */
+	IF len(@psSelectedIDs) = 0 SET @psSelectedIDs = '0';
+
+	/* PICKLIST = gets the items from the original definition */
+	IF UPPER(@psSelectionType) = 'PICKLIST'
+	BEGIN
+		SET @psSelectedIDs = ' (SELECT recordID FROM ASRSysPicklistItems WHERE picklistID = ' + CONVERT(varchar(255), @piSelectionID) + ') ';
+	END
+		
+	/* ALLRECORDS = gets all the remaining records */
+	IF UPPER(@psSelectionType) <> 'ALLRECORDS'
+	BEGIN
+		/* Get the required find records. */
+		SET @sSelectSQL2 = @sSelectSQL2 +
+			CASE
+				WHEN charindex(' WHERE ', @sFromSQL) > 0 THEN ' AND ('
+				ELSE ' WHERE ('
+			END +
+			'(' + CONVERT(varchar(255), @sRealSource) + '.id IN (' ;
+						
+		SET @sSelectSQL3 = @psSelectedIDs;
+		SET @sSelectSQL5 = @sSelectSQL5 + ')))';
+	END
+
+	/* FILTER = gets all the filtered records that are not yet selected */
+	IF (UPPER(@psSelectionType) = 'FILTER') AND (len(@psPromptSQL) > 0)
+	BEGIN
+		SET @sSelectSQL5 = @sSelectSQL5 + ' OR (' + 
+			CONVERT(varchar(255), @sRealSource) + '.id IN (' + @psPromptSQL + '))';
+	END
+	
+
+	/* Add the 'order by part. */
+	SET @sSelectSQL5 = @sSelectSQL5 +
+		' ORDER BY 1';
+		
+	/* Count the number of commas before the ' FROM ' to see how many columns are in the select statement. */
+	SELECT @iTemp = CHARINDEX(' FROM ', @sFromSQL);
+	SET @sTemp = SUBSTRING(@sFromSQL, 1, @iTemp);
+	SET @iTemp = 2;
+	WHILE charindex(',', @sTemp) > 0
+	BEGIN
+		SET @sSelectSQL5 = @sSelectSQL5 +
+			',' + convert(varchar(MAX), @iTemp);
+		SET @sTemp = substring(@sTemp, charindex(',', @sTemp)+1, len(@sTemp) - charindex(',', @sTemp));
+		SET @iTemp = @iTemp + 1;
+	END
+	
+	SET @piExpectedRecords = 0;
+	IF UPPER(@psSelectionType) = 'ALL'
+	BEGIN
+		SET @sSQL = 'SELECT @recordPosition = COUNT(ID)' +
+			' FROM ' + CONVERT(varchar(255), @sRealSource) +
+			' WHERE ID IN(' + @psSelectedIDs + ')';
+		SET @sPositionParamDefinition = N'@recordPosition integer OUTPUT';
+		EXEC sp_executesql @sSQL, @sPositionParamDefinition, @piExpectedRecords OUTPUT;
+	END
+
+	SET @sExecuteSQL = 'SELECT ' + @sSelectSQL + ',' +
+		@sRealSource + '.id ' + @sFromSQL +
+		@sSelectSQL2 + @sSelectSQL3 + @sSelectSQL5;
+
+	-- Execute the generated string
+	EXECUTE sp_executeSQL @sExecuteSQL;
+
+END
+GO
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetTBEmployeeColumns]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetTBEmployeeColumns]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetTBEmployeeColumns] (
+	@psErrorMsg 			varchar(MAX)	OUTPUT,
+	@ps1000SeparatorCols 	varchar(MAX)	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	/* Return a recordset of the 'employee' table find columns that the user has 'read' permission on. */
+	DECLARE 
+		@iUserGroupID		integer,
+		@sUserGroupName		sysname,
+		@iEmployeeTableID	integer,
+		@iOrderID			integer,
+		@sColumnName 		sysname,
+		@iDataType 			integer,
+		@iTableID 			integer,
+		@iCount				integer,
+		@sTemp				sysname,
+		@iIndex				integer,
+		@sEmpRealSource		sysname,
+		@iTableType			integer,
+		@sTableName			sysname,
+		@iTempTableType		integer,
+		@sTempTableName		sysname,
+		@iChildViewID		integer,
+		@sTempRealSource	sysname,
+		@iViewID			integer, 
+		@sViewName			sysname,
+		@iTempID			integer,
+		@sActualUserName	sysname,
+		@iTempTableID 		integer,
+		@fSelectGranted 	bit,
+		@bUse1000Separator	bit,
+		@fSomeReadable		bit,
+		@fViewReadable		bit;
+
+	SET @psErrorMsg = ''
+	SET @ps1000SeparatorCols = ''
+	SET @fSomeReadable = 0
+	
+	/* Get the current user's group ID. */
+	EXEC spASRIntGetActualUserDetails
+		@sActualUserName OUTPUT,
+		@sUserGroupName OUTPUT,
+		@iUserGroupID OUTPUT
+
+	/* Get the EMPLOYEE table information. */
+	SELECT @iEmployeeTableID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_EmployeeTable'
+	IF @iEmployeeTableID IS NULL SET @iEmployeeTableID = 0
+
+	SELECT @iOrderID = defaultOrderID, 
+		@iTableType = tableType,
+		@sTableName = tableName
+	FROM ASRSysTables
+	WHERE tableID = @iEmployeeTableID
+
+	/* Get the real source of the employee table. */
+	IF @iTableType <> 2 /* ie. top-level or lookup */
+	BEGIN
+		SET @sEmpRealSource = @sTableName
+	END
+	ELSE
+	BEGIN
+		SELECT @iChildViewID = childViewID
+		FROM ASRSysChildViews2
+		WHERE tableID = @iEmployeeTableID
+			AND role = @sUserGroupName
+			
+		IF @iChildViewID IS null SET @iChildViewID = 0
+			
+		IF @iChildViewID > 0 
+		BEGIN
+			SET @sEmpRealSource = 'ASRSysCV' + 
+				convert(varchar(1000), @iChildViewID) +
+				'#' + replace(@sTableName, ' ', '_') +
+				'#' + replace(@sUserGroupName, ' ', '_')
+			SET @sEmpRealSource = left(@sEmpRealSource, 255)
+		END
+	END	
+	
+	/* Create a temporary table to hold the find columns that the user can see. */
+	DECLARE @findColumns TABLE(
+		columnName		sysname,
+		dataType		integer);
+
+	DECLARE @columnPermissions TABLE(
+		tableID			integer,
+		tableViewName	sysname,
+		columnName		sysname,
+		selectGranted	bit);
+
+	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT c.tableID, t.tableType, t.tableName
+	FROM ASRSysOrderItems oi 
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON c.tableID = t.tableID
+	WHERE oi.orderID = @iOrderID
+		AND oi.type = 'F';
+
+	OPEN tablesCursor
+	FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		IF @iTempTableType <> 2 /* ie. top-level or lookup */
+		BEGIN
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				sysobjects.name,
+				syscolumns.name,
+				CASE protectType
+				        	WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
+					ASRSysTables.tableID = @iTempTableID 
+					UNION SELECT ASRSysViews.viewName 
+					FROM ASRSysViews 
+					WHERE ASRSysViews.viewTableID = @iTempTableID)
+					AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+					OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+					AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+		END
+		ELSE
+		BEGIN
+			SELECT @iChildViewID = childViewID
+			FROM ASRSysChildViews2
+			WHERE tableID = @iTempTableID
+				AND role = @sUserGroupName
+				
+			IF @iChildViewID IS null SET @iChildViewID = 0
+				
+			IF @iChildViewID > 0 
+			BEGIN
+				SET @sTempRealSource = 'ASRSysCV' + 
+					convert(varchar(1000), @iChildViewID) +
+					'#' + replace(@sTempTableName, ' ', '_') +
+					'#' + replace(@sUserGroupName, ' ', '_')
+				SET @sTempRealSource = left(@sTempRealSource, 255)
+
+				INSERT INTO @columnPermissions
+				SELECT 
+					@iTempTableID,
+					sysobjects.name,
+					syscolumns.name,
+					CASE protectType
+					        	WHEN 205 THEN 1
+						WHEN 204 THEN 1
+						ELSE 0
+					END 
+				FROM sysprotects
+				INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+				INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+				WHERE sysprotects.uid = @iUserGroupID
+					AND sysprotects.action = 193 
+					AND syscolumns.name <> 'timestamp'
+					AND sysobjects.name =@sTempRealSource
+						AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+						OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+						AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+			END
+		END
+
+		FETCH NEXT FROM tablesCursor INTO @iTempTableID, @iTempTableType, @sTempTableName
+	END
+	CLOSE tablesCursor
+	DEALLOCATE tablesCursor
+
+	/* Create the order select strings. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT c.columnName, c.dataType, c.tableID, t.tableType, t.tableName, c.Use1000Separator
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @iOrderID AND oi.type = 'F'
+		AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence;
+
+	OPEN orderCursor
+	FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName, @bUse1000Separator
+
+	/* Check if the order exists. */
+	IF  @@fetch_status <> 0
+	BEGIN
+		SET @psErrorMsg = 'Unable to read the Employee table default order.'
+		RETURN
+	END
+
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0
+
+		/* Get the real source of the employee table. */
+		IF @iTempTableType <> 2 /* ie. top-level or lookup */
+		BEGIN
+			SET @sTempRealSource = @sTempTableName
+		END
+		ELSE
+		BEGIN
+			SELECT @iChildViewID = childViewID
+			FROM ASRSysChildViews2
+			WHERE tableID = @iTableID
+				AND role = @sUserGroupName
+				
+			IF @iChildViewID IS null SET @iChildViewID = 0
+				
+			IF @iChildViewID > 0 
+			BEGIN
+				SET @sTempRealSource = 'ASRSysCV' + 
+					convert(varchar(1000), @iChildViewID) +
+					'#' + replace(@sTempTableName, ' ', '_') +
+					'#' + replace(@sUserGroupName, ' ', '_')
+				SET @sTempRealSource = left(@sTempRealSource, 255)
+			END
+		END	
+
+		SELECT @fSelectGranted = selectGranted
+		FROM @columnPermissions
+		WHERE tableID = @iTableID
+			AND tableViewName = @sTempRealSource
+			AND columnName = @sColumnName
+
+		IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+
+		IF @fSelectGranted = 1
+		BEGIN
+			SET @fSomeReadable = 1
+
+			SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
+				CASE
+					WHEN @bUse1000Separator = 1 THEN '1'
+					ELSE '0'
+				END
+
+			INSERT INTO @findColumns (columnName, dataType) VALUES (@sColumnName, @iDataType)
+		END
+		ELSE
+		BEGIN
+			/* The column CANNOT be read from the Delegate table, or directly from a parent table.
+			Try to read it from the views on the table. */
+			SET @fViewReadable = 0
+
+			DECLARE viewsCursor CURSOR LOCAL FAST_FORWARD FOR 
+			SELECT viewID,
+				viewName
+			FROM ASRSysViews
+			WHERE viewTableID = @iTableID
+
+			OPEN viewsCursor
+			FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName
+			WHILE (@@fetch_status = 0)
+			BEGIN
+				SELECT @fSelectGranted = selectGranted
+				FROM @columnPermissions
+				WHERE tableID = @iTableID
+					AND tableViewName = @sViewName
+					AND columnName = @sColumnName
+
+				IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+
+				IF @fSelectGranted = 1	
+				BEGIN
+					SET @fViewReadable = 1
+				END
+
+				FETCH NEXT FROM viewsCursor INTO @iViewID, @sViewName
+			END
+			CLOSE viewsCursor
+			DEALLOCATE viewsCursor
+
+			IF @fViewReadable = 1
+			BEGIN
+				INSERT INTO @findColumns (columnName, dataType) VALUES (@sColumnName, @iDataType)
+
+				/* Add the column code to the 'select' string. */
+				SET @fSomeReadable = 1
+
+				SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
+					CASE
+						WHEN @bUse1000Separator = 1 THEN '1'
+						ELSE '0'
+					END
+			END
+		END
+
+		FETCH NEXT FROM orderCursor INTO @sColumnName, @iDataType, @iTableID, @iTempTableType, @sTempTableName, @bUse1000Separator
+	END
+	CLOSE orderCursor
+	DEALLOCATE orderCursor
+
+	IF @fSomeReadable = 0
+	BEGIN
+		/* Flag to the user that they cannot see any of the find columns. */
+		SET @psErrorMsg = 'You do not have permission to read the Employee table find columns.'
+	END
+	ELSE
+	BEGIN
+		/* Add the ID column. */
+		INSERT INTO @findColumns (columnName, dataType) VALUES ('ID', 4)
+	END
+
+	SELECT * FROM @findColumns;
+	
+END
+GO
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetTransferBookingRecords]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetTransferBookingRecords]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetTransferBookingRecords] (
+	@piTableID 			integer, 
+	@piViewID 			integer, 
+	@piOrderID 			integer,
+	@piTBRecordID		integer,
+	@pfError 			bit 			OUTPUT,
+	@piRecordsRequired	integer,
+	@pfFirstPage		bit				OUTPUT,
+	@pfLastPage			bit				OUTPUT,
+	@psLocateValue		varchar(MAX),
+	@piColumnType		integer			OUTPUT,
+	@psAction			varchar(255),
+	@piTotalRecCount	integer			OUTPUT,
+	@piFirstRecPos		integer			OUTPUT,
+	@piCurrentRecCount	integer,
+	@psErrorMessage		varchar(MAX)	OUTPUT,
+	@piColumnSize		integer			OUTPUT,
+	@piColumnDecimals	integer			OUTPUT,
+	@psStatus			varchar(MAX)	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE @iUserGroupID	integer,
+		@sUserGroupName		sysname,
+		@iTableType			integer,
+		@sTableName			sysname,
+		@sRealSource 		sysname,
+		@iChildViewID 		integer,
+		@iTempTableID 		integer,
+		@iColumnTableID 	integer,
+		@iColumnID 			integer,
+		@sColumnName 		sysname,
+		@sColumnTableName 	sysname,
+		@fAscending 		bit,
+		@sType	 			varchar(10),
+		@iDataType 			integer,
+		@fSelectGranted 	bit,
+		@sSelectSQL			varchar(MAX),
+		@sOrderSQL 			varchar(MAX),
+		@sExecString		nvarchar(MAX),
+		@sTempString		varchar(MAX),
+		@fSelectDenied		bit,
+		@iTempCount 		integer,
+		@sSubString			varchar(MAX),
+		@sViewName 			varchar(255),
+		@sTableViewName 	sysname,
+		@iJoinTableID 		integer,
+		@iTemp				integer,
+		@sRemainingSQL		varchar(MAX),
+		@iLastCharIndex		integer,
+		@iCharIndex 		integer,
+		@sDESCstring		varchar(4),
+		@sTempExecString	nvarchar(MAX),
+		@sTempParamDefinition	nvarchar(500),
+		@fFirstColumnAsc	bit,
+		@sFirstColCode		varchar(MAX),
+		@sLocateCode		varchar(MAX),
+		@sReverseOrderSQL 	varchar(MAX),
+		@iCount				integer,
+		@fWhereDone			bit,
+		@iTBStatusColumnID	integer,
+		@sTBStatusColumnName	sysname,
+		@iCourseTitleColumnID	integer,
+		@sCourseTitleColumnName	sysname,
+		@iCourseStartDateColumnID	integer,
+		@sCourseStartDateColumnName	sysname,
+		@iGetCount			integer,
+		@sCourseTitle		varchar(MAX),
+		@sStatus			varchar(MAX),
+		@iEmpTableID		integer,
+		@iCourseTableID		integer,
+		@iEmpRecordID		integer,
+		@iCourseRecordID	integer,
+		@iTBTableID			integer,
+		@sTBRealSource		varchar(255),
+		@sCourseSource		sysname,
+		@iColSize			integer,
+		@iColDecs			integer,
+		@sTBTableName		sysname,
+		@sActualUserName	sysname
+
+	/* Initialise variables. */
+	SET @pfError = 0
+	SET @psErrorMessage = ''
+	SET @sRealSource = ''
+	SET @sSelectSQL = ''
+	SET @sOrderSQL = ''
+	SET @fSelectDenied = 0
+	SET @sExecString = ''
+	SET @sDESCstring = ' DESC'
+	SET @fFirstColumnAsc = 1
+	SET @sFirstColCode = ''
+	SET @sReverseOrderSQL = ''
+	SET @fWhereDone = 0
+
+	/* Clean the input string parameters. */
+	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''')
+
+	/* Get the current user's group ID. */
+	EXEC spASRIntGetActualUserDetails
+		@sActualUserName OUTPUT,
+		@sUserGroupName OUTPUT,
+		@iUserGroupID OUTPUT
+
+	/* Get the employee table id. */
+	SELECT @iEmpTableID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_EmployeeTable'
+	IF @iEmpTableID IS NULL SET @iEmpTableID = 0
+
+	/* Get the Course table id. */
+	SELECT @iCourseTableID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_CourseTable'
+	IF @iCourseTableID IS NULL SET @iCourseTableID = 0
+
+	/* Get the status, employee id and course id from the given TB record. */
+	/* NB. To reach this point we have already checked that the user has 'read' permission on the Training Booking - Status column. */
+	SELECT @iTBTableID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_TrainBookTable'
+	IF @iTBTableID IS NULL SET @iTBTableID = 0
+
+	SELECT @sTBTableName = tableName
+	FROM ASRSysTables
+	WHERE tableID = @iTBTableID
+	
+	SELECT @iTBStatusColumnID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_TrainBookStatus'
+	IF @iTBStatusColumnID IS NULL SET @iTBStatusColumnID = 0
+	
+	IF @iTBStatusColumnID > 0 
+	BEGIN
+		SELECT @sTBStatusColumnName = columnName
+		FROM ASRSysColumns
+		WHERE columnID = @iTBStatusColumnID
+	END
+	IF @sTBStatusColumnName IS NULL SET @sTBStatusColumnName = ''
+
+	SELECT @iChildViewID = childViewID
+	FROM ASRSysChildViews2
+	WHERE tableID = @iTBTableID
+		AND role = @sUserGroupName
+		
+	IF @iChildViewID IS null SET @iChildViewID = 0
+		
+	IF @iChildViewID > 0 
+	BEGIN
+		SET @sTBRealSource = 'ASRSysCV' + 
+			convert(varchar(1000), @iChildViewID) +
+			'#' + replace(@sTBTableName, ' ', '_') +
+			'#' + replace(@sUserGroupName, ' ', '_')
+		SET @sTBRealSource = left(@sTBRealSource, 255)
+	END
+
+	SET @sTempExecString = 'SELECT @sStatus = ' + @sTBStatusColumnName + 
+		', @iEmpRecordID = id_' + convert(nvarchar(100), @iEmpTableID) +
+		', @iCourseRecordID = id_' + convert(nvarchar(100), @iCourseTableID) +
+		' FROM ' + @sTBRealSource +
+		' WHERE id = ' + convert(nvarchar(100), @piTBRecordID)
+	SET @sTempParamDefinition = N'@sStatus varchar(255) OUTPUT, @iEmpRecordID integer OUTPUT, @iCourseRecordID integer OUTPUT'
+	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @sStatus OUTPUT, @iEmpRecordID OUTPUT,	@iCourseRecordID OUTPUT
+
+	SET @psStatus = @sStatus
+	
+	/* We can only transfer 'Booked' and 'Provisionally Booked' records that have valid course and employee records. */
+	IF (ltrim(rtrim(upper(@sStatus))) <> 'B') AND (ltrim(rtrim(upper(@sStatus))) <> 'P')
+	BEGIN
+		SET @pfError = 1
+		SET @psErrorMessage = 'Training booking records can only be transferred if they have ''Booked'''
+
+		SELECT @iCount = COUNT(*)
+		FROM ASRSysColumnControlValues
+		WHERE columnID = @iTBStatusColumnID
+			AND upper(value) = 'P'
+		
+		IF @iCount > 0
+		BEGIN
+			SET @psErrorMessage = @psErrorMessage + ' or ''Provisional'''
+		END
+
+		SET @psErrorMessage = @psErrorMessage + ' status.'
+		RETURN
+	END
+	ELSE
+	BEGIN
+		IF (@iEmpRecordID <= 0) OR (@iEmpRecordID IS null)
+		BEGIN
+			SET @pfError = 1
+			SET @psErrorMessage = 'The selected Training Booking record has no associated Employee record.'
+			RETURN
+		END
+		ELSE
+		BEGIN
+			IF (@iCourseRecordID <= 0) OR (@iCourseRecordID IS null)
+			BEGIN
+				SET @pfError = 1
+				SET @psErrorMessage = 'The selected Training Booking record has no associated Course record.'
+				RETURN
+			END	
+		END
+	END
+	
+	SELECT @iCourseTitleColumnID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_CourseTitle'
+	IF @iCourseTitleColumnID IS NULL SET @iCourseTitleColumnID = 0
+	
+	IF @iCourseTitleColumnID > 0 
+	BEGIN
+		SELECT @sCourseTitleColumnName = columnName
+		FROM ASRSysColumns
+		WHERE columnID = @iCourseTitleColumnID
+	END
+	IF @sCourseTitleColumnName IS NULL SET @sCourseTitleColumnName = ''
+
+	SELECT @iCourseStartDateColumnID = convert(integer, parameterValue)
+	FROM ASRSysModuleSetup
+	WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+		AND parameterKey = 'Param_CourseStartDate'
+	IF @iCourseStartDateColumnID IS NULL SET @iCourseStartDateColumnID = 0
+
+	IF @iCourseStartDateColumnID > 0 
+	BEGIN
+		SELECT @sCourseStartDateColumnName = columnName
+		FROM ASRSysColumns
+		WHERE columnID = @iCourseStartDateColumnID
+	END
+	IF @sCourseStartDateColumnName IS NULL SET @sCourseStartDateColumnName = ''
+
+	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
+	SET @psAction = UPPER(@psAction)
+	IF (@psAction <> 'MOVEPREVIOUS') AND 
+		(@psAction <> 'MOVENEXT') AND 
+		(@psAction <> 'MOVELAST') AND 
+		(@psAction <> 'LOCATE')
+	BEGIN
+		SET @psAction = 'MOVEFIRST'
+	END
+
+	/* Get the table type and name. */
+	SELECT @iTableType = ASRSysTables.tableType,
+		@sTableName = ASRSysTables.tableName
+	FROM ASRSysTables
+	WHERE ASRSysTables.tableID = @piTableID
+
+	/* Get the real source of the given table/view. */
+	IF @iTableType <> 2 /* ie. top-level or lookup */
+	BEGIN
+		IF @piViewID > 0 
+		BEGIN	
+			/* RealSource is the view. */	
+			SELECT @sRealSource = viewName
+			FROM ASRSysViews
+			WHERE viewID = @piViewID
+		END
+		ELSE
+		BEGIN
+			SET @sRealSource = @sTableName
+		END 
+	END
+	ELSE
+	BEGIN
+		SELECT @iChildViewID = childViewID
+		FROM ASRSysChildViews2
+		WHERE tableID = @piTableID
+			AND role = @sUserGroupName
+			
+		IF @iChildViewID IS null SET @iChildViewID = 0
+			
+		IF @iChildViewID > 0 
+		BEGIN
+			SET @sRealSource = 'ASRSysCV' + 
+				convert(varchar(1000), @iChildViewID) +
+				'#' + replace(@sTableName, ' ', '_') +
+				'#' + replace(@sUserGroupName, ' ', '_')
+			SET @sRealSource = left(@sRealSource, 255)
+		END
+	END
+
+	IF len(@sRealSource) = 0
+	BEGIN
+		SET @pfError = 1
+		RETURN
+	END
+
+	/* Create a temporary table to hold the tables/views that need to be joined. */
+	DECLARE @joinParents TABLE(
+		tableViewName	sysname,
+		tableID			integer);
+
+	/* Create a temporary table of the 'select' column permissions for all tables/views used in the order. */
+	DECLARE @columnPermissions TABLE(
+		tableID			integer,
+		tableViewName	sysname,
+		columnName		sysname,
+		selectGranted	bit);
+
+	/* Loop through the tables used in the order, getting the column permissions for each one. */
+	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT c.tableID
+	FROM ASRSysOrderItems oi
+	INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	WHERE oi.orderID = @piOrderID
+
+	OPEN tablesCursor
+	FETCH NEXT FROM tablesCursor INTO @iTempTableID
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		IF @iTempTableID = @piTableID
+		BEGIN
+			/* Base table - use the real source. */
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				@sRealSource,
+				syscolumns.name,
+				CASE protectType
+					WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name = @sRealSource
+				AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+				OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+				AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table - get permissions for the table, and any associated views. */
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				sysobjects.name,
+				syscolumns.name,
+				CASE protectType
+				        	WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM sysprotects
+			INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+			INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+			WHERE sysprotects.uid = @iUserGroupID
+				AND sysprotects.action = 193 
+				AND syscolumns.name <> 'timestamp'
+				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
+					ASRSysTables.tableID = @iTempTableID 
+					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
+			AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+			OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+			AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+		END
+
+		FETCH NEXT FROM tablesCursor INTO @iTempTableID
+	END
+	CLOSE tablesCursor
+	DEALLOCATE tablesCursor
+
+	/* Get the @sCourseTitle value for the given TB record. */
+	DECLARE courseSourceCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT sysobjects.name
+	FROM sysprotects
+	INNER JOIN sysobjects ON sysprotects.id = sysobjects.id
+	INNER JOIN syscolumns ON sysprotects.id = syscolumns.id
+	WHERE sysprotects.uid = @iUserGroupID
+		AND sysprotects.action = 193 
+		AND (sysprotects.protectType = 205 OR sysprotects.protectType = 204)
+		AND syscolumns.name = @sCourseTitleColumnName
+		AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
+			ASRSysTables.tableID = @iCourseTableID 
+			UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iCourseTableID)
+		AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0
+		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+		OR ((convert(tinyint,substring(sysprotects.columns,1,1))&1) != 0
+		AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+	OPEN courseSourceCursor
+	FETCH NEXT FROM courseSourceCursor INTO @sCourseSource
+	WHILE (@@fetch_status = 0) AND (@sCourseTitle IS null)
+	BEGIN
+		SET @sTempExecString = 'SELECT @sCourseTitle = ' + @sCourseTitleColumnName + 
+			' FROM ' + @sCourseSource +
+			' WHERE id = ' + convert(nvarchar(100), @iCourseRecordID)
+		SET @sTempParamDefinition = N'@sCourseTitle varchar(MAX) OUTPUT'
+		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @sCourseTitle OUTPUT
+
+		FETCH NEXT FROM courseSourceCursor INTO @sCourseSource
+	END
+	CLOSE courseSourceCursor
+	DEALLOCATE courseSourceCursor
+
+	IF @sCourseTitle IS null
+	BEGIN
+		SET @pfError = 1
+		SET @psErrorMessage = 'Unable to read the course title from the associated Course record.'
+		RETURN		
+	END
+
+	SET @fSelectGranted = 0
+	SELECT @fSelectGranted = selectGranted
+	FROM @columnPermissions
+	WHERE tableViewName = @sRealSource
+		AND columnName = @sCourseTitleColumnName
+	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+	IF @fSelectGranted = 0
+	BEGIN
+		SET @pfError = 1
+		RETURN
+	END
+
+	SET @fSelectGranted = 0
+	SELECT @fSelectGranted = selectGranted
+	FROM @columnPermissions
+	WHERE tableViewName = @sRealSource
+		AND columnName = @sCourseStartDateColumnName
+	IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+	IF @fSelectGranted = 0
+	BEGIN
+		SET @pfError = 1
+		RETURN
+	END
+
+	/* Create the order select strings. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT c.tableID, oi.columnID, c.columnName, t.tableName, oi.ascending, oi.type, c.dataType, c.size, c.decimals
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @piOrderID
+		AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence;
+
+	OPEN orderCursor
+	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
+
+	/* Check if the order exists. */
+	IF  @@fetch_status <> 0
+	BEGIN
+		SET @pfError = 1
+		RETURN
+	END
+
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0
+		
+		IF @iColumnTableId = @piTableID
+		BEGIN
+			/* Base table. */
+			/* Get the select permission on the column. */
+			SELECT @fSelectGranted = selectGranted
+			FROM @columnPermissions
+			WHERE tableViewName = @sRealSource
+				AND columnName = @sColumnName
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+
+			IF @fSelectGranted = 1
+			BEGIN
+				/* The user DOES have SELECT permission on the column in the current table/view. */
+				IF @sType = 'F'
+				BEGIN
+					/* Find column. */
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						@sRealSource + '.' + @sColumnName
+					SET @sSelectSQL = @sSelectSQL + @sTempString
+				END
+				ELSE
+				BEGIN
+					/* Order column. */
+
+					IF len(@sOrderSQL) = 0 
+					BEGIN
+						SET @piColumnType = @iDataType
+						SET @fFirstColumnAsc = @fAscending
+						SET @sFirstColCode = @sRealSource + '.' + @sColumnName
+						SET @piColumnSize = @iColSize
+						SET @piColumnDecimals = @iColDecs
+					END
+
+					SET @sOrderSQL = @sOrderSQL + 
+						CASE 
+							WHEN len(@sOrderSQL) > 0 THEN ',' 
+							ELSE '' 
+						END + 
+						@sRealSource + '.' + @sColumnName +
+						CASE 
+							WHEN @fAscending = 0 THEN ' DESC' 
+							ELSE '' 
+						END				
+				END
+			END
+			ELSE
+			BEGIN
+				/* The user does NOT have SELECT permission on the column in the current table/view. */
+				SET @fSelectDenied = 1
+			END	
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table. */
+			/* Get the select permission on the column. */
+
+			/* Check if the column is selectable directly from the table. */
+			SELECT @fSelectGranted = selectGranted
+			FROM @columnPermissions
+			WHERE tableID = @iColumnTableId
+				AND tableViewName = @sColumnTableName
+				AND columnName = @sColumnName
+
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0
+	
+			IF @fSelectGranted = 1 
+			BEGIN
+				/* Column COULD be read directly from the parent table. */
+				/* The user DOES have SELECT permission on the column in the parent table. */
+				IF @sType = 'F'
+				BEGIN
+					/* Find column. */
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						@sColumnTableName + '.' + @sColumnName
+					SET @sSelectSQL = @sSelectSQL + @sTempString
+				END
+				ELSE
+				BEGIN
+					/* Order column. */
+					IF len(@sOrderSQL) = 0 
+					BEGIN
+						SET @piColumnType = @iDataType
+						SET @fFirstColumnAsc = @fAscending
+						SET @sFirstColCode = @sColumnTableName + '.' + @sColumnName
+						SET @piColumnSize = @iColSize
+						SET @piColumnDecimals = @iColDecs
+					END
+
+					SET @sOrderSQL = @sOrderSQL + 
+						CASE 
+							WHEN len(@sOrderSQL) > 0 THEN ',' 
+							ELSE '' 
+						END + 
+						@sColumnTableName + '.' + @sColumnName + 
+						CASE 
+							WHEN @fAscending = 0 THEN ' DESC' 
+							ELSE '' 
+						END				
+				END
+
+				/* Add the table to the array of tables/views to join if it has not already been added. */
+				SELECT @iTempCount = COUNT(tableViewName)
+				FROM @joinParents
+				WHERE tableViewName = @sColumnTableName
+
+				IF @iTempCount = 0
+				BEGIN
+					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID)
+				END
+			END
+			ELSE	
+			BEGIN
+				SET @sSubString = ''
+
+				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
+				SELECT tableViewName
+				FROM @columnPermissions
+				WHERE tableID = @iColumnTableId
+					AND tableViewName <> @sColumnTableName
+					AND columnName = @sColumnName
+					AND selectGranted = 1
+
+				OPEN viewCursor
+				FETCH NEXT FROM viewCursor INTO @sViewName
+				WHILE (@@fetch_status = 0)
+				BEGIN
+					/* Column CAN be read from the view. */
+					IF len(@sSubString) = 0 SET @sSubString = 'CASE'
+
+					SET @sSubString = @sSubString +
+						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName 
+		
+					/* Add the view to the array of tables/views to join if it has not already been added. */
+					SELECT @iTempCount = COUNT(tableViewName)
+					FROM @joinParents
+					WHERE tableViewname = @sViewName
+
+					IF @iTempCount = 0
+					BEGIN
+						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId)
+					END
+
+					FETCH NEXT FROM viewCursor INTO @sViewName
+				END
+				CLOSE viewCursor
+				DEALLOCATE viewCursor
+
+				IF len(@sSubString) > 0
+				BEGIN
+					SET @sSubString = @sSubString +
+						' ELSE NULL END'
+
+					IF @sType = 'F'
+					BEGIN
+						/* Find column. */
+						SET @sTempString = CASE 
+								WHEN (len(@sSelectSQL) > 0) THEN ',' 
+								ELSE '' 
+							END + 
+							CASE
+								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
+								ELSE @sSubString 
+							END
+						SET @sSelectSQL = @sSelectSQL + @sTempString
+					END
+					ELSE
+					BEGIN
+						/* Order column. */
+						IF len(@sOrderSQL) = 0 
+						BEGIN
+							SET @piColumnType = @iDataType
+							SET @fFirstColumnAsc = @fAscending
+							SET @sFirstColCode = @sSubString
+							SET @piColumnSize = @iColSize
+							SET @piColumnDecimals = @iColDecs
+						END
+
+						SET @sOrderSQL = @sOrderSQL + 
+							CASE 
+								WHEN len(@sOrderSQL) > 0 THEN ',' 
+								ELSE '' 
+							END + 
+							CASE
+								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
+								ELSE @sSubString 
+							END + 
+							CASE 
+								WHEN @fAscending = 0 THEN ' DESC' 
+								ELSE '' 
+							END				
+					END
+				END
+				ELSE
+				BEGIN
+					/* The user does NOT have SELECT permission on the column any of the parent views. */
+					SET @fSelectDenied = 1
+				END	
+			END
+		END
+
+		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iColSize, @iColDecs
+	END
+	CLOSE orderCursor
+	DEALLOCATE orderCursor
+
+	/* Add the ID column to the order string. */
+	SET @sOrderSQL = @sOrderSQL + 
+		CASE WHEN len(@sOrderSQL) > 0 THEN ',' ELSE '' END + 
+		@sRealSource + '.ID'
+
+	/* Create the reverse order string if required. */
+	IF (@psAction <> 'MOVEFIRST') 
+	BEGIN
+		SET @sRemainingSQL = @sOrderSQL
+
+		SET @iLastCharIndex = 0
+		SET @iCharIndex = CHARINDEX(',', @sOrderSQL)
+		WHILE @iCharIndex > 0 
+		BEGIN
+ 			IF UPPER(SUBSTRING(@sOrderSQL, @iCharIndex - LEN(@sDESCstring), LEN(@sDESCstring))) = @sDESCstring
+			BEGIN
+				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - LEN(@sDESCstring) - @iLastCharIndex) + ', '
+			END
+			ELSE
+			BEGIN
+				SET @sReverseOrderSQL = @sReverseOrderSQL + SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, @iCharIndex - 1 - @iLastCharIndex) + @sDESCstring + ', '
+			END
+
+			SET @iLastCharIndex = @iCharIndex
+			SET @iCharIndex = CHARINDEX(',', @sOrderSQL, @iLastCharIndex + 1)
+	
+			SET @sRemainingSQL = SUBSTRING(@sOrderSQL, @iLastCharIndex + 1, LEN(@sOrderSQL) - @iLastCharIndex)
+		END
+		SET @sReverseOrderSQL = @sReverseOrderSQL + @sRemainingSQL + @sDESCstring
+	END
+
+	/* Get the total number of records. */
+	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource +
+		' WHERE (' +
+		@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND ' +
+		@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
+		@sRealSource + '.id <> ' + convert(nvarchar(100), @iCourseRecordID) + ')'
+
+	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
+	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
+	SET @piTotalRecCount = @iCount
+
+	IF (len(@sSelectSQL) > 0) 
+	BEGIN
+		SET @sTempString = ',' + @sRealSource + '.ID'
+		SET @sSelectSQL = @sSelectSQL + @sTempString
+
+		SET @sExecString = 'SELECT ' 
+
+		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
+		BEGIN
+			SET @sTempString = 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
+			SET @sExecString = @sExecString + @sTempString
+		END
+		
+		SET @sTempString = @sSelectSQL + ' FROM ' + @sRealSource
+		SET @sExecString = @sExecString + @sTempString
+
+		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT tableViewName, 
+			tableID
+		FROM @joinParents
+
+		OPEN joinCursor
+		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			SET @sTempString = ' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
+			SET @sExecString = @sExecString + @sTempString
+
+			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+		END
+		CLOSE joinCursor
+		DEALLOCATE joinCursor
+
+		IF (@psAction = 'MOVELAST')
+		BEGIN
+			SET @fWhereDone = 1
+
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		IF @psAction = 'MOVENEXT' 
+		BEGIN
+			SET @fWhereDone = 1
+			IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
+			BEGIN
+				SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
+			END
+			ELSE
+			BEGIN
+				SET @iGetCount = @piRecordsRequired
+			END
+
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		IF @psAction = 'MOVEPREVIOUS'
+		BEGIN
+			SET @fWhereDone = 1
+			IF @piFirstRecPos <= @piRecordsRequired
+			BEGIN
+				SET @iGetCount = @piFirstRecPos - 1
+			END
+			ELSE
+			BEGIN
+				SET @iGetCount = @piRecordsRequired				
+			END
+
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID' +
+				' FROM ' + @sRealSource
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		/* Add the filter code. */
+		SET @sTempString = ' WHERE (' +
+			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND ' +
+			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
+			@sRealSource + '.id <> ' + convert(nvarchar(100), @iCourseRecordID) + ')'
+		SET @sExecString = @sExecString + @sTempString
+
+		IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
+		BEGIN
+			SET @sTempString = ' ORDER BY ' + @sOrderSQL + ')'
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
+		BEGIN
+			SET @sTempString = ' ORDER BY ' + @sReverseOrderSQL + ')'
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		IF (@psAction = 'LOCATE')
+		BEGIN
+			SET @fWhereDone = 1
+			SET @sLocateCode = ' AND (' + @sFirstColCode 
+
+			IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
+
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
+					END
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + 
+						@sFirstColCode + ' LIKE ''' + @psLocateValue + '%'' OR ' + @sFirstColCode + ' IS NULL'
+				END
+
+			END
+
+			IF @piColumnType = 11 /* Date column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sFirstColCode + ' IS NULL'
+					END
+					ELSE
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
+					END
+				END
+				ELSE
+				BEGIN
+					IF len(@psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' IS NULL'
+					END
+					ELSE
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' <= ''' + @psLocateValue + ''' OR ' + @sFirstColCode + ' IS NULL'
+					END
+				END
+			END
+
+			IF @piColumnType = -7 /* Logic column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ' + 
+						CASE
+							WHEN @psLocateValue = 'True' THEN '1'
+							ELSE '0'
+						END
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ' + 
+
+						CASE
+							WHEN @psLocateValue = 'True' THEN '1'
+							ELSE '0'
+						END
+				END
+			END
+
+			IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
+			BEGIN
+				IF @fFirstColumnAsc = 1
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
+
+					IF convert(float, @psLocateValue) = 0
+					BEGIN
+						SET @sLocateCode = @sLocateCode + ' OR ' + @sFirstColCode + ' IS NULL'
+					END
+				END
+				ELSE
+				BEGIN
+					SET @sLocateCode = @sLocateCode + ' <= ' + @psLocateValue + ' OR ' + @sFirstColCode + ' IS NULL'
+				END
+			END
+
+			SET @sLocateCode = @sLocateCode + ')'
+
+			SET @sTempString = @sLocateCode
+			SET @sExecString = @sExecString + @sTempString
+		END
+
+		/* Add the ORDER BY code to the find record selection string if required. */
+		SET @sTempString = ' ORDER BY ' + @sOrderSQL
+		SET @sExecString = @sExecString + @sTempString
+	END
+
+	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
+	IF @psAction = 'MOVEFIRST'
+	BEGIN
+		SET @piFirstRecPos = 1
+		SET @pfFirstPage = 1
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
+				ELSE 0
+			END
+	END
+	IF @psAction = 'MOVENEXT'
+	BEGIN
+		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
+		SET @pfFirstPage = 0
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
+				ELSE 0
+			END
+	END
+	IF @psAction = 'MOVEPREVIOUS'
+	BEGIN
+		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
+		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
+				ELSE 0
+			END
+	END
+	IF @psAction = 'MOVELAST'
+	BEGIN
+		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
+		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END
+		SET @pfLastPage = 1
+	END
+	IF @psAction = 'LOCATE'
+	BEGIN
+		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource
+
+		DECLARE joinCursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT tableViewName, 
+			tableID
+		FROM @joinParents
+
+		OPEN joinCursor
+		FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			SET @sTempExecString = @sTempExecString + 
+				' LEFT OUTER JOIN ' + @sTableViewName + ' ON ' + @sRealSource + '.ID_' + convert(varchar(100), @iJoinTableID) + ' = ' + @sTableViewName + '.ID'
+
+			FETCH NEXT FROM joinCursor INTO @sTableViewName, @iJoinTableID
+		END
+		CLOSE joinCursor
+		DEALLOCATE joinCursor
+		
+		SET @sTempExecString = @sTempExecString + 
+			' WHERE (' +
+			@sRealSource + '.' + @sCourseTitleColumnName + ' = ''' + replace(@sCourseTitle, '''', '''''') + ''' AND ' +
+			@sRealSource + '.' + @sCourseStartDateColumnName + ' >= convert(datetime,convert(varchar(10),getdate(),101)) AND ' +
+			@sRealSource + '.id <> ' + convert(nvarchar(100), @iCourseRecordID) + ')' + @sLocateCode
+
+		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
+		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
+
+		IF @iTemp <=0 
+		BEGIN
+			SET @piFirstRecPos = @piTotalRecCount + 1
+		END
+		ELSE
+		BEGIN
+			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
+		END
+
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount <= @piFirstRecPos + @piRecordsRequired THEN 1
+				ELSE 0
+			END
+	END
+
+	/* Return a recordset of the required columns in the required order from the given table/view. */
+	IF (len(@sExecString) > 0)
+	BEGIN
+		EXECUTE sp_executeSQL @sExecString;
+	END
+END
+GO
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetTableOrders]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetTableOrders]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetTableOrders] (
+	@piTableID 		integer, 
+	@piViewID 		integer)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+	
+	/* Return a recordset of the orders for the current table/view and order IDs.
+		@piTableID = the ID of the table on which the order is based.
+		@piViewID = the ID of the view on which the order is based.
+	*/
+
+	IF @piViewID > 0 
+	BEGIN
+		SELECT DISTINCT o.name AS Name, o.OrderID
+		FROM ASRSysOrders o
+			INNER JOIN ASRSysOrderItems oi ON o.OrderID = oi.orderID
+			INNER JOIN ASRSysViewColumns vc ON oi.columnID = vc.columnID
+		WHERE o.tableID = @piTableID
+			AND o.[type] = 1 AND vc.inView = 1 AND oi.[type] = 'O' AND vc.viewID = @piViewID
+		ORDER BY o.name;
+	END
+	ELSE
+	BEGIN
+		SELECT name AS Name, orderID
+		FROM ASRSysOrders
+		WHERE tableID= @piTableID
+			AND ASRSysOrders.[type] = 1
+		ORDER BY name;
+	END
+END
+GO
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRIntGetScreenStrings]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[spASRIntGetScreenStrings]
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetScreenStrings] (
+	@piScreenID 	integer,
+	@piViewID 		integer,
+	@psSelectSQL	nvarchar(MAX)	OUTPUT,
+	@psFromDef		varchar(MAX)	OUTPUT,
+	@psOrderSQL		varchar(MAX)	OUTPUT,
+	@piOrderID		integer			OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	/* Return a recordset of strings describing of the controls in the given screen. */
+	DECLARE @iUserGroupID	integer,
+		@iScreenTableID		integer,
+		@iScreenTableType	integer,
+		@sScreenTableName	varchar(255),
+		@iScreenOrderID 	integer,
+		@sRealSource 		varchar(255),
+		@iChildViewID 		integer,
+		@sJoinCode 			varchar(MAX),
+		@iTempTableID 		integer,
+		@iColumnTableID 	integer,
+		@iColumnID 			integer,
+		@sColumnName 		varchar(255),
+		@sColumnTableName 	varchar(255),
+		@iColumnDataType	integer,
+		@fSelectGranted 	bit,
+		@fUpdateGranted 	bit,
+		@sSelectString 		varchar(MAX),
+		@iTempCount 		integer,
+		@sViewName 			varchar(255),
+		@fAscending 		bit,
+		@sOrderString 		varchar(MAX),
+		@sTableViewName 	varchar(255),
+		@iJoinTableID 		integer,
+		@sParentRealSource	varchar(255),
+		@iParentChildViewID	integer,
+		@iParentTableType	integer,
+		@sParentTableName	sysname,
+		@iColumnType		integer,
+		@iLinkTableID		integer,
+		@lngPermissionCount	integer,
+		@iLinkChildViewID	integer,
+		@sLinkRealSource	varchar(255),
+		@sLinkTableName		varchar(255),
+		@iLinkTableType		integer,
+		@sNewBit			varchar(MAX),
+		@iID				integer,
+		@iCount				integer,
+		@iUserType			integer,
+		@sRoleName			sysname,
+		@sActualUserName	sysname;
+		
+	EXEC [dbo].[spASRIntGetActualUserDetails]
+		@sActualUserName OUTPUT,
+		@sRoleName OUTPUT,
+		@iUserGroupID OUTPUT;
+		
+	/* Get the table type and name. */
+	SELECT @iScreenTableID = ASRSysScreens.tableID,
+		@iScreenTableType = ASRSysTables.tableType,
+		@sScreenTableName = ASRSysTables.tableName,
+		@iScreenOrderID = 
+				CASE 
+					WHEN ASRSysScreens.orderID > 0 THEN ASRSysScreens.orderID
+					ELSE ASRSysTables.defaultOrderID 
+				END
+	FROM ASRSysScreens
+	INNER JOIN ASRSysTables ON ASRSysScreens.tableID = ASRSysTables.tableID
+	WHERE ASRSysScreens.ScreenID = @piScreenID;
+	
+	IF @iScreenOrderID IS NULL SET @iScreenOrderID = 0;
+	
+	IF @piOrderID <= 0 SET @piOrderID = @iScreenOrderID;
+	
+	/* Get the real source of the given screen's table/view. */
+	IF @iScreenTableType <> 2 /* ie. top-level or lookup */
+	BEGIN
+		IF @piViewID > 0 
+		BEGIN
+			/* RealSource is the view. */	
+			SELECT @sRealSource = viewName
+			FROM ASRSysViews
+			WHERE viewID = @piViewID;
+		END
+		ELSE
+		BEGIN
+			/* RealSource is the table. */	
+			SET @sRealSource = @sScreenTableName;
+		END 
+	END
+	ELSE
+	BEGIN
+		SELECT @iChildViewID = childViewID
+		FROM ASRSysChildViews2
+		WHERE tableID = @iScreenTableID
+			AND role = @sRoleName;
+			
+		IF @iChildViewID IS null SET @iChildViewID = 0;
+			
+		IF @iChildViewID > 0 
+		BEGIN
+			SET @sRealSource = 'ASRSysCV' + 
+				convert(varchar(1000), @iChildViewID) +
+				'#' + replace(@sScreenTableName, ' ', '_') +
+				'#' + replace(@sRoleName, ' ', '_');
+			SET @sRealSource = left(@sRealSource, 255);
+		END
+	END
+
+	/* Initialise the select and order parameters. */
+	SET @psSelectSQL = '';
+	SET @psFromDef = '';
+	SET @psOrderSQL = '';
+	SET @sJoinCode = '';
+	
+	-- Create a temporary table to hold the tables/views that need to be joined.
+	DECLARE @JoinParents TABLE(tableViewName sysname, tableID int);
+	
+	-- Create a temporary table of the column permissions for all tables/views used in the screen.
+	DECLARE @columnPermissions TABLE(tableID integer,
+					tableViewName	sysname,
+					columnName		sysname,
+					action			int,		
+					granted			bit);
+
+	-- Temporary view of the sysprotects
+	DECLARE @SysProtects TABLE ([ID] int,
+					action tinyint,
+					protecttype tinyint,
+					columns varbinary(8000));
+	INSERT INTO @SysProtects
+	SELECT DISTINCT p.[ID], p.[Action], p.[ProtectType], p.[Columns]
+		FROM sys.sysprotects p
+		WHERE (p.[Action] = 193 OR p.[Action] = 197)
+			AND [uid] = @iUserGroupID;
+
+	-- Loop through the tables used in the screen, getting the column permissions for each one.
+	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT ASRSysControls.tableID
+	FROM ASRSysControls
+	WHERE screenID = @piScreenID
+		AND ASRSysControls.columnID > 0
+	UNION
+	SELECT DISTINCT c.tableID 
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	WHERE oi.type = 'O' AND oi.orderID = @piOrderID;
+	
+	OPEN tablesCursor;
+	FETCH NEXT FROM tablesCursor INTO @iTempTableID;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+
+		IF @iTempTableID = @iScreenTableID
+		BEGIN
+			/* Base table - use the real source. */
+			INSERT INTO @columnPermissions
+			SELECT 
+				@iTempTableID,
+				@sRealSource,
+				syscolumns.name,
+				p.action,
+				CASE protectType
+					WHEN 205 THEN 1
+					WHEN 204 THEN 1
+					ELSE 0
+				END 
+			FROM @SysProtects p
+			INNER JOIN syscolumns ON p.id = syscolumns.id
+			WHERE syscolumns.name <> 'timestamp'
+				AND OBJECT_NAME(p.ID) = @sRealSource
+				AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
+				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+				OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
+				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table - get permissions for the table, and any associated views. */
+			SELECT @iParentTableType = tableType,
+				@sParentTableName = tableName
+			FROM ASRSysTables
+			WHERE tableID = @iTempTableID;
+			
+			IF @iParentTableType <> 2 /* ie. top-level or lookup */
+			BEGIN
+
+				INSERT INTO @columnPermissions
+				SELECT 
+					@iTempTableID,
+					OBJECT_NAME(p.ID),
+					syscolumns.name,
+					p.action,
+					CASE protectType
+					   	WHEN 205 THEN 1
+						WHEN 204 THEN 1
+						ELSE 0
+					END 
+				FROM @SysProtects p
+				INNER JOIN syscolumns ON p.id = syscolumns.id
+				WHERE syscolumns.name <> 'timestamp'
+					AND OBJECT_NAME(p.id) IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE ASRSysTables.tableID = @iTempTableID 
+						UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
+					AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
+					AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+					OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
+					AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+			END
+			ELSE
+			BEGIN
+
+				/* Get permitted child view on the parent table. */
+				SELECT @iParentChildViewID = childViewID
+				FROM ASRSysChildViews2
+				WHERE tableID = @iTempTableID
+					AND role = @sRoleName;
+					
+				IF @iParentChildViewID IS null SET @iParentChildViewID = 0;
+					
+				IF @iParentChildViewID > 0 
+				BEGIN
+					SET @sParentRealSource = 'ASRSysCV' + 
+						convert(varchar(1000), @iParentChildViewID) +
+						'#' + replace(@sParentTableName, ' ', '_') +
+						'#' + replace(@sRoleName, ' ', '_');
+					SET @sParentRealSource = left(@sParentRealSource, 255);
+					INSERT INTO @columnPermissions
+					SELECT 
+						@iTempTableID,
+						@sParentRealSource,
+						syscolumns.name,
+						p.action,
+						CASE protectType
+							WHEN 205 THEN 1
+							WHEN 204 THEN 1
+							ELSE 0
+						END 
+					FROM @sysprotects p
+					INNER JOIN syscolumns ON p.id = syscolumns.id
+					WHERE syscolumns.name <> 'timestamp'
+						AND OBJECT_NAME(p.ID) = @sParentRealSource
+						AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
+						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+						OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
+						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+
+				END
+			END
+		END
+		FETCH NEXT FROM tablesCursor INTO @iTempTableID;
+	END
+	
+	CLOSE tablesCursor;
+	DEALLOCATE tablesCursor;
+
+	SET @iUserType = 1;
+	
+	SELECT @iID = ASRSysPermissionItems.itemID
+		FROM ASRSysPermissionItems
+		INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+		WHERE ASRSysPermissionItems.itemKey = 'INTRANET'
+			AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS';
+			
+	IF @iID IS NULL SET @iID = 0;
+	IF @iID > 0
+	BEGIN
+		/* The permission does exist in the current version so check if the user is granted this permission. */
+		SELECT @iCount = count(*)
+		FROM ASRSysGroupPermissions 
+		WHERE ASRSysGroupPermissions.itemID = @iID
+			AND ASRSysGroupPermissions.groupName = @sRoleName
+			AND ASRSysGroupPermissions.permitted = 1;
+			
+		IF @iCount > 0 SET @iUserType = 0;
+
+	END
+	/* Create a temporary table of the column info for all columns used in the screen controls. */
+	/* Populate the temporary table with info for all columns used in the screen controls. */
+	/* Create the select string for getting the column values. */
+	DECLARE columnsCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT DISTINCT ASRSysControls.tableID, 
+		ASRSysControls.columnID, 
+		ASRSysColumns.columnName, 
+		ASRSysTables.tableName,
+		ASRSysColumns.dataType,
+		ASRSysColumns.columnType,
+		ASRSysColumns.linkTableID
+	FROM ASRSysControls
+		LEFT OUTER JOIN ASRSysTables ON ASRSysControls.tableID = ASRSysTables.tableID 
+		LEFT OUTER JOIN ASRSysColumns ON ASRSysColumns.tableID = ASRSysControls.tableID AND ASRSysColumns.columnId = ASRSysControls.columnID
+	WHERE screenID = @piScreenID
+		AND ASRSysControls.columnID > 0;
+	
+	OPEN columnsCursor;
+	FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType, @iColumnType, @iLinkTableID;	
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0;
+		SET @fUpdateGranted = 0;
+		IF @iColumnTableID = @iScreenTableID
+		BEGIN
+			/* Base table. */
+			/* Get the select permission on the column. */
+			SELECT @fSelectGranted = granted
+			FROM @columnPermissions
+			WHERE tableViewName = @sRealSource
+				AND columnName = @sColumnName
+				AND action = 193;
+				
+			/* Get the update permission on the column. */
+			SELECT @fUpdateGranted = granted
+			FROM @columnPermissions
+			WHERE tableViewName = @sRealSource
+				AND columnName = @sColumnName
+				AND action = 197;
+
+			/* If the column is a link column, ensure that the link table can be seen. */
+			IF (@fUpdateGranted = 1) AND (@iColumnType = 4)
+			BEGIN
+				SELECT @sLinkTableName = tableName,
+					@iLinkTableType = tableType
+				FROM ASRSysTables
+				WHERE tableID = @iLinkTableID;
+				
+				IF @iLinkTableType = 1
+				BEGIN
+					/* Top-level table. */
+					SELECT @lngPermissionCount = COUNT(*)
+					FROM @sysprotects p
+					INNER JOIN syscolumns ON p.id = syscolumns.id
+					WHERE p.action = 193
+						AND p.protectType <> 206
+						AND syscolumns.name <> 'timestamp'
+						AND syscolumns.name <> 'ID'
+						AND OBJECT_NAME(p.ID) = @sLinkTableName
+						AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
+						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+						OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
+						AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+						
+					IF @lngPermissionCount = 0 
+					BEGIN
+						/* No permission on the table itself check the views. */
+						SELECT @lngPermissionCount = COUNT(*)
+						FROM ASRSysViews
+						INNER JOIN sysobjects ON ASRSysViews.viewName = sysobjects.name
+						INNER JOIN @sysprotects p ON sysobjects.id = p.id  
+						WHERE ASRSysViews.viewTableID = @iLinkTableID
+							AND p.action = 193
+							AND p.protecttype <> 206;
+						IF @lngPermissionCount = 0 SET @fUpdateGranted = 0;
+					END
+				END
+				ELSE
+				BEGIN
+					/* Child/history table. */
+					SELECT @iLinkChildViewID = childViewID
+					FROM ASRSysChildViews2
+					WHERE tableID = @iLinkTableID
+						AND role = @sRoleName;
+						
+					IF @iLinkChildViewID IS null SET @iLinkChildViewID = 0;
+						
+					IF @iLinkChildViewID > 0 
+					BEGIN
+						SET @sLinkRealSource = 'ASRSysCV' + 
+							convert(varchar(1000), @iLinkChildViewID) +
+							'#' + replace(@sLinkTableName, ' ', '_') +
+							'#' + replace(@sRoleName, ' ', '_');
+						SET @sLinkRealSource = left(@sLinkRealSource, 255);
+					END
+					SELECT @lngPermissionCount = COUNT(p.ID)
+					FROM @sysprotects p 
+					WHERE p.protectType <> 206
+						AND p.action = 193
+						AND OBJECT_NAME(p.ID) = @sLinkRealSource;
+		
+					IF @lngPermissionCount = 0 SET @fUpdateGranted = 0;
+				END
+			END
+
+			IF @fSelectGranted = 1 
+			BEGIN
+				/* Get the select string for the column. */
+				IF LEN(@psSelectSQL) > 0 
+					SET @psSelectSQL = @psSelectSQL + ',';
+			
+				IF @iColumnDataType = 11 /* Date */
+				BEGIN
+					 /* Date */
+					SET @sNewBit = 'convert(varchar(10), ' + @sRealSource + '.' + @sColumnName + ', 101) AS [' + convert(varchar(100), @iColumnID) + ']';
+					SET @psSelectSQL = @psSelectSQL + @sNewBit;
+				END
+				ELSE
+				BEGIN
+					 /* Non-date */
+					SET @sNewBit = @sRealSource + '.' + @sColumnName + ' AS [' + convert(varchar(100), @iColumnID) + ']';
+					SET @psSelectSQL = @psSelectSQL + @sNewBit;
+				END
+			END
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table. */
+			/* Get the select permission on the column. */
+			/* Check if the column is selectable directly from the table. */
+			SELECT @fSelectGranted = granted
+			FROM @columnPermissions
+			WHERE tableViewName = @sColumnTableName
+				AND columnName = @sColumnName
+				AND action = 193;
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
+	
+			IF @fSelectGranted = 1 
+			BEGIN
+
+				/* Column COULD be read directly from the parent table. */
+				IF len(@psSelectSQL) > 0 
+					SET @psSelectSQL = @psSelectSQL + ',';
+
+				IF @iColumnDataType = 11 /* Date */
+				BEGIN
+					 /* Date */
+					SET @sNewBit = 'convert(varchar(10), ' + @sColumnTableName + '.' + @sColumnName + ', 101) AS [' + convert(varchar(100), @iColumnID) + ']';
+					SET @psSelectSQL = @psSelectSQL + @sNewBit;
+				END
+				ELSE
+				BEGIN
+					 /* Non-date */
+					SET @sNewBit = @sColumnTableName + '.' + @sColumnName + ' AS [' + convert(varchar(100), @iColumnID) + ']';
+					SET @psSelectSQL = @psSelectSQL + @sNewBit;
+				END
+				
+				/* Add the table to the array of tables/views to join if it has not already been added. */
+				SELECT @iTempCount = COUNT(tableViewName)
+				FROM @JoinParents
+					WHERE tableViewName = @sColumnTableName;
+					
+				IF @iTempCount = 0
+					INSERT INTO @JoinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID);
+					
+			END
+			ELSE	
+			BEGIN
+				/* Column could NOT be read directly from the parent table, so try the views. */
+				SET @sSelectString = '';
+				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
+					SELECT tableViewName
+					FROM @columnPermissions
+					WHERE tableID = @iColumnTableID
+						AND tableViewName <> @sColumnTableName
+						AND columnName = @sColumnName
+						AND action = 193
+						AND granted = 1;
+						
+				OPEN viewCursor;
+				FETCH NEXT FROM viewCursor INTO @sViewName;
+				WHILE (@@fetch_status = 0)
+				BEGIN
+					/* Column CAN be read from the view. */
+					SET @fSelectGranted = 1;
+					IF len(@sSelectString) = 0 SET @sSelectString = 'CASE';
+	
+					IF @iColumnDataType = 11 /* Date */
+					BEGIN
+						 /* Date */
+						SET @sSelectString = @sSelectString +
+							' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN convert(varchar(10), ' + @sViewName + '.' + @sColumnName + ', 101)';
+					END
+					ELSE
+					BEGIN
+						 /* Non-date */
+						SET @sSelectString = @sSelectString +
+							' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName;
+					END
+
+					/* Add the view to the array of tables/views to join if it has not already been added. */
+					SELECT @iTempCount = COUNT(tableViewName)
+					FROM @joinParents
+						WHERE tableViewName = @sViewName;
+						
+					IF @iTempCount = 0
+						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableID);
+
+					FETCH NEXT FROM viewCursor INTO @sViewName;
+				END
+
+				CLOSE viewCursor;
+				DEALLOCATE viewCursor;
+				
+				IF len(@sSelectString) > 0
+				BEGIN
+					SET @sSelectString = @sSelectString +
+						' ELSE NULL END AS [' + convert(varchar(100), @iColumnID) + ']';
+					IF len(@psSelectSQL) > 0 SET @psSelectSQL = @psSelectSQL + ',';
+					SET @psSelectSQL = @psSelectSQL + @sSelectString;
+				END
+			END
+		END
+		FETCH NEXT FROM columnsCursor INTO @iColumnTableID, @iColumnID, @sColumnName, @sColumnTableName, @iColumnDataType, @iColumnType, @iLinkTableID;
+	END
+
+	CLOSE columnsCursor;
+	DEALLOCATE columnsCursor;
+	
+	/* Create the order string. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT c.tableID, oi.columnID, c.columnName, t.tableName, oi.ascending
+		FROM ASRSysOrderItems oi
+			INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+			INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+		WHERE oi.orderID = @piOrderID AND oi.type = 'O'
+			AND c.dataType <> -4 AND c.datatype <> -3
+		ORDER BY oi.sequence;
+		
+	OPEN orderCursor;
+	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @fSelectGranted = 0;
+		IF @iColumnTableId = @iScreenTableID
+		BEGIN
+			/* Base table. */
+			/* Get the select permission on the column. */
+			SELECT @fSelectGranted = granted
+			FROM @columnPermissions
+			WHERE tableViewName = @sRealSource
+				AND columnName = @sColumnName
+				AND action = 193;
+			IF @fSelectGranted = 1
+			BEGIN
+				/* Get the order string for the column. */
+				IF len(@psOrderSQL) > 0 SET @psOrderSQL = @psOrderSQL + ', ';
+				SET @psOrderSQL = @psOrderSQL + @sRealSource + '.' + @sColumnName + CASE WHEN @fAscending = 0 THEN ' DESC' ELSE '' END;
+			END
+		END
+		ELSE
+		BEGIN
+			/* Parent of the base table. */
+			/* Get the select permission on the column. */
+			/* Check if the column is selectable directly from the table. */
+			SELECT @fSelectGranted = granted
+			FROM @columnPermissions
+			WHERE tableID = @iColumnTableId
+				AND tableViewName = @sColumnTableName
+				AND columnName = @sColumnName
+				AND action = 193;
+			IF @fSelectGranted IS NULL SET @fSelectGranted = 0;
+	
+			IF @fSelectGranted = 1 
+			BEGIN
+				/* Column COULD be read directly from the parent table. */
+				/* Get the order string for the column. */
+				IF len(@psOrderSQL) > 0 
+					SET @psOrderSQL = @psOrderSQL + ', ';
+				SET @psOrderSQL = @psOrderSQL + @sColumnTableName + '.' + @sColumnName + CASE WHEN @fAscending = 0 THEN ' DESC' ELSE '' END;
+				
+				/* Add the table to the array of tables/views to join if it has not already been added. */
+				SELECT @iTempCount = COUNT(tableViewName)
+				FROM @joinParents
+					WHERE tableViewName = @sColumnTableName;
+					
+				IF @iTempCount = 0
+					INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sColumnTableName, @iColumnTableID);
+					
+			END
+			ELSE	
+			BEGIN
+				/* Column could NOT be read directly from the parent table, so try the views. */
+				SET @sOrderString = ''
+				DECLARE viewCursor CURSOR LOCAL FAST_FORWARD FOR 
+				SELECT tableViewName
+				FROM @columnPermissions
+				WHERE tableID = @iColumnTableId
+					AND tableViewName <> @sColumnTableName
+					AND columnName = @sColumnName
+					AND action = 193
+					AND granted = 1;
+					
+				OPEN viewCursor;
+				FETCH NEXT FROM viewCursor INTO @sViewName;
+				WHILE (@@fetch_status = 0)
+				BEGIN
+					/* Column CAN be read from the view. */
+					IF len(@sOrderString) = 0 SET @sOrderString = 'CASE';
+					SET @sOrderString = @sOrderString +
+						' WHEN NOT ' + @sViewName + '.' + @sColumnName + ' IS NULL THEN ' + @sViewName + '.' + @sColumnName;
+		
+					/* Add the view to the array of tables/views to join if it has not already been added. */
+					SELECT @iTempCount = COUNT(tableViewName)
+					FROM @joinParents
+						WHERE tableViewname = @sViewName;
+						
+					IF @iTempCount = 0
+						INSERT INTO @joinParents (tableViewName, tableID) VALUES(@sViewName, @iColumnTableId);
+						
+					FETCH NEXT FROM viewCursor INTO @sViewName;
+				END
+
+				CLOSE viewCursor;
+				DEALLOCATE viewCursor;
+				
+				IF len(@sOrderString) > 0
+				BEGIN
+					SET @sOrderString = @sOrderString +	' ELSE NULL END';
+					IF len(@psOrderSQL) > 0 
+						SET @psOrderSQL = @psOrderSQL + ', ';
+
+					SET @psOrderSQL = @psOrderSQL + @sOrderString + CASE WHEN @fAscending = 0 THEN ' DESC' ELSE '' END;
+				END
+			END
+		END
+		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending;
+	END
+	
+	CLOSE orderCursor;
+	DEALLOCATE orderCursor;
+
+	
+	-- Add the ID column to the order string.
+	IF LEN(@psOrderSQL) > 0 SET @psOrderSQL = @psOrderSQL + ', ';
+	SET @psOrderSQL = @psOrderSQL + @sRealSource + '.ID';
+
+	-- Add columns from the screen.
+	SELECT @psSelectSQL = @psSelectSQL 
+		+ CASE LEN(@psSelectSQL) WHEN 0 THEN '' ELSE ', ' END
+		+ @sRealSource + '.' + [columnName]	+ ' AS [' + convert(varchar(10), [ColumnID]) + ']'
+	FROM ASRSysColumns
+	WHERE tableID = @iScreenTableID
+		AND columnType = 3;
+
+	-- Add timestamp to the select statement.
+	SET @psSelectSQL = @psSelectSQL + ', CONVERT(integer, ' + @sRealSource + '.TimeStamp) AS timestamp ';
+
+	-- Create the FROM code.
+	SET @psFromDef = @sRealSource + '	';
+	SELECT @psFromDef = @psFromDef + tableViewName + '	'
+		+ convert(varchar(10), tableID) + '	'
+	FROM @joinParents;
+
+END
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRIntGetLookupFindRecords]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[spASRIntGetLookupFindRecords]
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetLookupFindRecords] (
+	@piLookupColumnID 	integer,
+	@piRecordsRequired	integer,
+	@pfFirstPage		bit			OUTPUT,
+	@pfLastPage			bit			OUTPUT,
+	@psLocateValue		varchar(MAX),
+	@piColumnType		integer		OUTPUT,
+	@piColumnSize		integer		OUTPUT,
+	@piColumnDecimals	integer		OUTPUT,
+	@psAction			varchar(255),
+	@piTotalRecCount	integer		OUTPUT,
+	@piFirstRecPos		integer		OUTPUT,
+	@piCurrentRecCount	integer,
+	@psFilterValue		varchar(MAX),
+	@piCallingColumnID	integer,
+	@pfOverrideFilter	bit
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	/* Return a recordset of the lookup find records, given the table and column IDs.
+		@piTableID = the ID of the table on which the find is based.
+		@piLookupColumnID = the ID of the column on which the find is based.
+	NB. No permissions need to be read, as all users have read permission on lookup tables.
+	*/
+	DECLARE @sTableName		sysname,
+		@iTableID 			integer, 
+		@sColumnName 		sysname,
+		@sColumnName2 		sysname,
+		@iOrderID			integer,
+		@sSelectSQL			varchar(MAX),
+		@sOrderSQL 			varchar(MAX),
+		@sFilterValuesSQL	varchar(MAX),
+		@sExecString		nvarchar(MAX),
+		@iTemp				integer,
+		@sRemainingSQL		varchar(MAX),
+		@iLastCharIndex		integer,
+		@iCharIndex 		integer,
+		@sTempExecString	nvarchar(MAX),
+		@sTempParamDefinition	nvarchar(500),
+		@sLocateCode		varchar(MAX),
+		@sReverseOrderSQL 	varchar(MAX),
+		@iCount				integer,
+		@iGetCount			integer,
+		@sColumnTemp		sysname,
+		@iLookupFilterColumnID	integer,
+		@iLookupFilterOperator	integer,
+		@iLookupFilterColumnDataType	integer;
+
+	/* Initialise variables. */
+	SET @sSelectSQL = ''
+	SET @sOrderSQL = ''
+	SET @sFilterValuesSQL = ''
+	SET @sExecString = ''
+	SET @sReverseOrderSQL = ''
+
+	/* Clean the input string parameters. */
+	IF len(@psFilterValue) > 0 SET @psFilterValue = replace(@psFilterValue, '''', '''''')
+	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''')
+	
+	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000
+	SET @psAction = UPPER(@psAction)
+	IF (@psAction <> 'MOVEPREVIOUS') AND 
+		(@psAction <> 'MOVENEXT') AND 
+		(@psAction <> 'MOVELAST') AND 
+		(@psAction <> 'LOCATE')
+	BEGIN
+		SET @psAction = 'MOVEFIRST'
+	END
+
+	/* Get the column name. */
+	SELECT @sColumnName = ASRSysColumns.columnName,
+		@iTableID = ASRSysColumns.tableID,
+		@piColumnType = ASRSysColumns.dataType,
+		@piColumnSize = ASRSysColumns.size,
+		@piColumnDecimals = ASRSysColumns.decimals
+	FROM ASRSysColumns
+	WHERE ASRSysColumns.columnId = @piLookupColumnID
+
+	/* Get the table name and default order. */
+	SELECT @sTableName = ASRSysTables.tableName,
+		@iOrderID = ASRSysTables.defaultOrderID
+	FROM ASRSysTables
+	WHERE ASRSysTables.tableID = @iTableID
+
+	SET @sSelectSQL = @sTableName + '.' + @sColumnName
+	SET @sOrderSQL = @sTableName + '.' + @sColumnName
+
+	/* Filter the values if required */
+	SELECT @iLookupFilterColumnID  = ASRSysColumns.LookupFilterColumnID,
+		@iLookupFilterOperator = ASRSysColumns.LookupFilterOperator
+	FROM ASRSysColumns
+	WHERE ASRSysColumns.columnId = @piCallingColumnID
+
+	IF (@iLookupFilterColumnID > 0) and (@pfOverrideFilter = 0)
+	BEGIN
+		SELECT @sColumnTemp = ASRSysColumns.columnName,
+			@iLookupFilterColumnDataType = ASRSysColumns.dataType
+		FROM ASRSysColumns
+		WHERE ASRSysColumns.columnId = @iLookupFilterColumnID
+
+		IF @iLookupFilterColumnDataType = -7 /* Boolean */
+		BEGIN
+			SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = ' 
+				+ CASE
+					WHEN UPPER(@psFilterValue) = 'TRUE' THEN '1'
+					WHEN UPPER(@psFilterValue) = 'FALSE' THEN '0'
+					ELSE @psFilterValue
+				END
+				+ ') '
+		END
+		ELSE
+		BEGIN
+			IF (@iLookupFilterColumnDataType = 2) OR (@iLookupFilterColumnDataType = 4) /* Numeric, Integer */
+			BEGIN
+				IF @iLookupFilterOperator = 1 /* Equals */
+				BEGIN
+					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = ' + @psFilterValue + ') '
+					IF convert(float, @psFilterValue) = 0
+					BEGIN
+						SET @sFilterValuesSQL = @sFilterValuesSQL +
+							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
+					END
+				END
+
+				IF @iLookupFilterOperator = 2 /* NOT Equal To */
+				BEGIN
+					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <> ' + @psFilterValue + ') '
+					IF convert(float, @psFilterValue) = 0
+					BEGIN
+						SET @sFilterValuesSQL = @sFilterValuesSQL +
+							' AND (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
+					END
+				END
+
+				IF @iLookupFilterOperator = 3 /* Is At Most */
+				BEGIN
+					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <= ' + @psFilterValue + ') '
+					IF convert(float, @psFilterValue) >= 0
+					BEGIN
+						SET @sFilterValuesSQL = @sFilterValuesSQL +
+							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
+					END
+				END
+
+				IF @iLookupFilterOperator = 4 /* Is At Least */
+				BEGIN
+					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' >= ' + @psFilterValue + ') '
+					IF convert(float, @psFilterValue) <= 0
+					BEGIN
+						SET @sFilterValuesSQL = @sFilterValuesSQL +
+							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
+					END
+				END
+
+				IF @iLookupFilterOperator = 5 /* Is More Than */
+				BEGIN
+					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' > ' + @psFilterValue + ') '
+					IF convert(float, @psFilterValue) < 0
+					BEGIN
+						SET @sFilterValuesSQL = @sFilterValuesSQL +
+							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
+					END
+				END
+
+				IF @iLookupFilterOperator = 6 /* Is Less Than */
+				BEGIN
+					SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' < ' + @psFilterValue + ') '
+					IF convert(float, @psFilterValue) > 0
+					BEGIN
+						SET @sFilterValuesSQL = @sFilterValuesSQL +
+							' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
+					END
+				END
+			END
+			ELSE
+			BEGIN
+				IF (@iLookupFilterColumnDataType = 11) /* Date */
+				BEGIN
+					IF @iLookupFilterOperator = 7 /* On */
+					BEGIN
+						IF len(@psFilterValue) = 10
+						BEGIN
+							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = ''' + @psFilterValue + ''') '
+						END
+						ELSE
+						BEGIN
+							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
+						END
+					END
+
+					IF @iLookupFilterOperator = 8 /* NOT On */
+					BEGIN
+						IF len(@psFilterValue) = 10
+						BEGIN
+							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <> ''' + @psFilterValue + ''') ' +
+								' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
+						END
+						ELSE
+						BEGIN
+							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
+						END
+					END
+
+					IF @iLookupFilterOperator = 12 /* On OR Before*/
+					BEGIN
+						IF len(@psFilterValue) = 10
+						BEGIN
+							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <= ''' + @psFilterValue + ''') ' +
+								' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
+						END
+						ELSE
+						BEGIN
+							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
+						END
+					END
+
+					IF @iLookupFilterOperator = 11 /* On OR After*/
+					BEGIN
+						IF len(@psFilterValue) = 10
+						BEGIN
+							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' >= ''' + @psFilterValue + ''') ' 
+						END
+						ELSE
+						BEGIN
+							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null)' +
+								' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null)'
+						END
+					END
+
+					IF @iLookupFilterOperator = 9 /* After*/
+					BEGIN
+						IF len(@psFilterValue) = 10
+						BEGIN
+							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' > ''' + @psFilterValue + ''') ' 
+						END
+						ELSE
+						BEGIN
+							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null)'
+						END
+					END
+
+					IF @iLookupFilterOperator = 10 /* Before*/
+					BEGIN
+						IF len(@psFilterValue) = 10
+						BEGIN
+							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' < ''' + @psFilterValue + ''') ' +
+								' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
+						END
+						ELSE
+						BEGIN
+							SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null)' +
+								' AND (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null)'
+						END
+					END
+				END
+				ELSE
+				BEGIN
+					IF (@iLookupFilterColumnDataType = 12) OR (@iLookupFilterColumnDataType = -3) OR (@iLookupFilterColumnDataType = -1) /* varchar, working patter, photo*/
+					BEGIN
+						IF @iLookupFilterOperator = 14 /* Is */
+						BEGIN
+							IF len(@psFilterValue) = 0
+							BEGIN
+								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = '''') ' +
+									' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS null) '
+							END
+							ELSE
+							BEGIN
+								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' = ''' + @psFilterValue + ''') '
+							END
+						END
+
+						IF @iLookupFilterOperator = 16 /* Is NOT*/
+						BEGIN
+							IF len(@psFilterValue) = 0
+							BEGIN
+								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <> '''') ' +
+									' AND (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
+							END
+							ELSE
+							BEGIN
+								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' <> ''' + @psFilterValue + ''') '
+							END
+						END
+
+						IF @iLookupFilterOperator = 13 /* Contains*/
+						BEGIN
+							IF len(@psFilterValue) = 0
+							BEGIN
+								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null) ' +
+									' OR (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
+							END
+							ELSE
+							BEGIN
+								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' LIKE ''%' + @psFilterValue + '%'') '
+							END
+						END
+
+						IF @iLookupFilterOperator = 15 /* Does NOT Contain*/
+						BEGIN
+							IF len(@psFilterValue) = 0
+							BEGIN
+								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' IS null) ' +
+									' AND (' + @sTableName + '.' + @sColumnTemp  + ' IS NOT null) '
+							END
+							ELSE
+							BEGIN
+								SET @sFilterValuesSQL = '(' + @sTableName + '.' + @sColumnTemp  + ' NOT LIKE ''%' + @psFilterValue + '%'') '
+							END
+						END
+					END
+				END
+			END
+		END
+	END
+
+	/* Create the order select strings. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT c.columnName
+	FROM ASRSysOrderItems oi
+	INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+	INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @iOrderID AND oi.type = 'F'
+		AND oi.columnID <> @piLookupColumnID
+		AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence;
+
+	OPEN orderCursor
+	FETCH NEXT FROM orderCursor INTO @sColumnName2
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @sSelectSQL = @sSelectSQL +  ','  + @sTableName + '.' + @sColumnName2
+
+		FETCH NEXT FROM orderCursor INTO @sColumnName2
+	END
+	CLOSE orderCursor
+	DEALLOCATE orderCursor
+
+	/* Create the reverse order string if required. */
+	IF (@psAction <> 'MOVEFIRST') 
+	BEGIN
+		SET @sReverseOrderSQL = @sTableName + '.' + @sColumnName + ' DESC, ' + @sTableName + '.ID DESC'
+	END
+
+	/* Get the total number of records. */
+	SET @sTempExecString = 'SELECT @recordCount = COUNT(*) ' +
+												 'FROM (SELECT DISTINCT ' + @sSelectSQL +
+															' FROM ' + @sTableName 
+	IF len(@sFilterValuesSQL) > 0 SET @sTempExecString = @sTempExecString + ' WHERE ' + @sFilterValuesSQL
+	SET @sTempExecString = @sTempExecString	+ ') ' + 'distinctTable'
+	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
+	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
+	SET @piTotalRecCount = @iCount
+
+	SET @sExecString = 'SELECT DISTINCT ' 
+
+	IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
+	BEGIN
+		SET @sExecString = @sExecString + 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' '
+	END
+	SET @sExecString = @sExecString + @sSelectSQL +
+		' FROM ' + @sTableName
+
+	IF (@psAction = 'MOVEFIRST') AND LEN(@sFilterValuesSQL) > 0
+	BEGIN
+		SET @sExecString = @sExecString + ' WHERE ' + @sFilterValuesSQL
+	END
+
+	IF (@psAction = 'MOVELAST') 
+	BEGIN
+		IF LEN(@sFilterValuesSQL) > 0 SET @sFilterValuesSQL = @sFilterValuesSQL + ' AND '
+
+		SET @sExecString = @sExecString + 
+			' WHERE '  + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sTableName + '.ID' +
+			' FROM ' + @sTableName
+	END
+	IF @psAction = 'MOVENEXT' 
+	BEGIN
+		IF LEN(@sFilterValuesSQL) > 0 SET @sFilterValuesSQL = @sFilterValuesSQL + ' AND '
+
+		IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
+		BEGIN
+			SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1)
+		END
+		ELSE
+		BEGIN
+			SET @iGetCount = @piRecordsRequired
+		END
+		SET @sExecString = @sExecString + 
+			' WHERE ' + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sTableName + '.ID' +
+			' FROM ' + @sTableName
+
+		SET @sExecString = @sExecString + 
+			' WHERE ' + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired  - 1) + ' ' + @sTableName + '.ID' +
+			' FROM ' + @sTableName
+	END
+	IF @psAction = 'MOVEPREVIOUS'
+	BEGIN
+		IF LEN(@sFilterValuesSQL) > 0 SET @sFilterValuesSQL = @sFilterValuesSQL + ' AND '
+
+		IF @piFirstRecPos <= @piRecordsRequired
+		BEGIN
+			SET @iGetCount = @piFirstRecPos - 1
+		END
+		ELSE
+		BEGIN
+			SET @iGetCount = @piRecordsRequired
+		END
+		SET @sExecString = @sExecString + 
+			' WHERE ' + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sTableName + '.ID' +
+			' FROM ' + @sTableName
+
+		SET @sExecString = @sExecString + 
+			' WHERE ' + @sFilterValuesSQL + @sTableName + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sTableName + '.ID' +
+			' FROM ' + @sTableName
+	END
+
+	IF @psAction = 'MOVENEXT' OR (@psAction = 'MOVEPREVIOUS')
+	BEGIN
+		SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL + ')'
+	END
+
+	IF (@psAction = 'MOVELAST') OR (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
+	BEGIN
+		SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL + ')'
+	END
+
+	IF (@psAction = 'LOCATE')
+	BEGIN
+		IF LEN(@sFilterValuesSQL) > 0
+			SET @sLocateCode = ' WHERE ((' +@sFilterValuesSQL + ') AND ' +@sTableName + '.' + @sColumnName 
+		ELSE 
+			SET @sLocateCode = ' WHERE (' + @sTableName + '.' + @sColumnName
+
+		IF (@piColumnType = 12) OR (@piColumnType = -1) /* Character or Working Pattern column */
+		BEGIN
+			SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
+
+			IF len(@psLocateValue) = 0
+			BEGIN
+				SET @sLocateCode = @sLocateCode + ' OR ' + @sTableName + '.' + @sColumnName + ' IS NULL'
+			END
+		END
+
+		IF @piColumnType = 11 /* Date column */
+		BEGIN
+			IF len(@psLocateValue) = 0
+			BEGIN
+				SET @sLocateCode = @sLocateCode + ' IS NOT NULL  OR ' + @sTableName + '.' + @sColumnName + ' IS NULL'
+			END
+			ELSE
+			BEGIN
+				SET @sLocateCode = @sLocateCode + ' >= ''' + @psLocateValue + ''''
+			END
+		END
+
+		IF @piColumnType = -7 /* Logic column */
+		BEGIN
+			SET @sLocateCode = @sLocateCode + ' >= ' + 
+				CASE
+					WHEN @psLocateValue = 'True' THEN '1'
+					ELSE '0'
+				END
+		END
+
+		IF (@piColumnType = 2) OR (@piColumnType = 4) /* Numeric or Integer column */
+		BEGIN
+			SET @sLocateCode = @sLocateCode + ' >= ' + @psLocateValue
+
+			IF convert(float, @psLocateValue) = 0
+			BEGIN
+				SET @sLocateCode = @sLocateCode + ' OR ' + @sTableName + '.' + @sColumnName + ' IS NULL'
+			END
+		END
+
+		SET @sLocateCode = @sLocateCode + ')'
+		SET @sExecString = @sExecString + @sLocateCode
+	END
+
+	/* Add the ORDER BY code to the find record selection string if required. */
+	SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL
+
+	/* Set the IsFirstPage, IsLastPage flags, and the page number. */
+	IF @psAction = 'MOVEFIRST'
+	BEGIN
+		SET @piFirstRecPos = 1
+		SET @pfFirstPage = 1
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
+				ELSE 0
+			END
+	END
+	IF @psAction = 'MOVENEXT'
+	BEGIN
+		SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount
+		SET @pfFirstPage = 0
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
+				ELSE 0
+			END
+	END
+	IF @psAction = 'MOVEPREVIOUS'
+	BEGIN
+		SET @piFirstRecPos = @piFirstRecPos - @iGetCount
+		IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
+				ELSE 0
+			END
+	END
+	IF @psAction = 'MOVELAST'
+	BEGIN
+		SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1
+		IF @piFirstRecPos < 1 SET @piFirstRecPos = 1
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END
+		SET @pfLastPage = 1
+	END
+	IF @psAction = 'LOCATE'
+	BEGIN
+		SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sTableName + '.id) FROM ' + @sTableName + @sLocateCode
+		SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
+		EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iTemp OUTPUT
+
+		IF @iTemp <=0 
+		BEGIN
+			SET @piFirstRecPos = @piTotalRecCount + 1
+		END
+		ELSE
+		BEGIN
+			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1
+		END
+
+		SET @pfFirstPage = 
+			CASE 
+				WHEN @piFirstRecPos = 1 THEN 1
+				ELSE 0
+			END
+		SET @pfLastPage = 
+			CASE 
+				WHEN @piTotalRecCount < @piFirstRecPos + @piRecordsRequired THEN 1
+				ELSE 0
+			END
+	END
+
+	/* Return a recordset of the required columns in the required order from the given table/view. */
+	EXECUTE sp_executeSQL @sExecString;
+END
+GO
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRIntGetLookupFindColumnInfo]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[spASRIntGetLookupFindColumnInfo]
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetLookupFindColumnInfo] (
+	@piLookupColumnID 		integer,
+	@ps1000SeparatorCols	varchar(MAX)	OUTPUT,
+	@psBlanIfZeroCols		varchar(MAX)	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE 
+		@iTableID			integer,
+		@bUse1000Separator	bit,
+		@bBlankIfZero		bit,
+		@iOrderID			integer;
+		
+	/* Get the column name. */
+	SELECT @iTableID = tableID,
+		@bUse1000Separator = Use1000Separator,
+		@bBlankIfZero = BlankIfZero
+	FROM [dbo].[ASRSysColumns]
+	WHERE columnID = @piLookupColumnID;
+
+	SET @ps1000SeparatorCols = 
+		CASE
+			WHEN @bUse1000Separator = 1 THEN '1'
+			ELSE '0'
+		END;
+
+	SET @psBlanIfZeroCols =
+		CASE
+			WHEN @bBlankIfZero = 1 THEN '1'
+			ELSE '0'
+		END;
+
+	/* Get the table name and default order. */
+	SELECT @iOrderID = defaultOrderID
+	FROM [dbo].[ASRSysTables]
+	WHERE tableID = @iTableID;
+
+	/* Create the order select strings. */
+	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT c.Use1000Separator, c.BlankIfZero
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @iOrderID AND oi.type = 'F'
+		AND oi.columnID <> @piLookupColumnID
+		AND c.dataType <> -4 AND c.datatype <> -3
+	ORDER BY oi.sequence;
+
+	OPEN orderCursor;
+	FETCH NEXT FROM orderCursor INTO @bUse1000Separator, @bBlankIfZero;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @ps1000SeparatorCols = @ps1000SeparatorCols + 
+			CASE
+				WHEN @bUse1000Separator = 1 THEN '1'
+				ELSE '0'
+			END;
+
+		SET @psBlanIfZeroCols = @psBlanIfZeroCols +
+			CASE
+				WHEN @bBlankIfZero = 1 THEN '1'
+				ELSE '0'
+			END;
+
+		FETCH NEXT FROM orderCursor INTO @bUse1000Separator, @bBlankIfZero;
+	END
+	CLOSE orderCursor;
+	DEALLOCATE orderCursor;
+
+END
+GO
+
+
+
+/*---------------------------------------------*/
+/* Ensure the required permissions are granted */
+/*---------------------------------------------*/
 
 GO
 DECLARE @sSQL nvarchar(MAX),
@@ -73157,9 +63813,6 @@ DECLARE @sSQL nvarchar(MAX),
 		@sObject sysname,
 		@sObjectType char(2);
 
-/*---------------------------------------------*/
-/* Ensure the required permissions are granted */
-/*---------------------------------------------*/
 DECLARE curObjects CURSOR LOCAL FAST_FORWARD FOR
 SELECT sysobjects.name, sysobjects.xtype
 FROM sysobjects

@@ -147,7 +147,6 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetSubExpressionsAndComponents.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetSummaryFields.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetTableOrders.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetTablesInfo.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetTBEmployeeColumns.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetTrainingBookingParameters.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetTransferBookingRecords.sql" />
@@ -744,11 +743,9 @@
     <Build Include="Stored Procedures\Other\sp_ASRFn_WholeYearsUntilCurrentDate.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRFn_YearOfDate.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRGetControlDetails.sql" />
-    <Build Include="Stored Procedures\Other\sp_ASRGetFindOrderItems.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRGetHistoryScreens.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRGetMessages.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRGetOrderDefinition.sql" />
-    <Build Include="Stored Procedures\Other\sp_ASRGetOrderItems.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRGetOrders.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRGetParentTables.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRGetPickListRecords.sql" />

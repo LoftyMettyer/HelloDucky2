@@ -677,7 +677,16 @@ Namespace Expressions
 						sOrderCode = ""
 						ReDim avOrderJoinTables(2, 0)
 						If mlngSelOrderID > 0 Then
-							sSQL = "SELECT ASRSysColumns.columnName, ASRSysColumns.columnID, ASRSysColumns.tableID, ASRSysTables.tableName, ASRSysOrderItems.ascending FROM ASRSysOrderItems JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID" & " JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID" & " WHERE orderID = " & Trim(Str(mlngSelOrderID)) & " AND type = 'O'" & " AND ASRSysColumns.columnID = ASRSysOrderItems.columnID" & " AND ASRSysColumns.tableID = ASRSysTables.tableID" & " ORDER BY sequence"
+
+							sSQL = String.Format("SELECT c.columnName, c.columnID, c.tableID, t.tableName, oi.ascending " & _
+								"FROM ASRSysOrderItems oi " & _
+								"JOIN ASRSysColumns c ON oi.columnID = c.columnID " & _
+								"JOIN ASRSysTables t ON t.tableID = c.tableID " & _
+								"WHERE orderID = {0} AND type = 'O' AND c.columnID = oi.columnID " & _
+								"AND c.tableID = t.tableID " & _
+								"AND c.dataType <> -4 AND c.datatype <> -3 " & _
+								"ORDER BY oi.sequence", mlngSelOrderID)
+
 							rsInfo = DB.GetDataTable(sSQL)
 							With rsInfo
 								For Each objRow As DataRow In .Rows

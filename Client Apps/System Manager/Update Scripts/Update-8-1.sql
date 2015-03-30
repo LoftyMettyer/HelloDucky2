@@ -4522,32 +4522,22 @@ PRINT 'Step - Table Triggers'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRGetOrderDefinition]') AND xtype = 'P')
 			DROP PROCEDURE [dbo].[sp_ASRGetOrderDefinition];
-	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRGetOrderDefinition] 
-	(
-		@piOrderID int
-	)
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE dbo.sp_ASRGetOrderDefinition (
+			@piOrderID int) 
 	AS
 	BEGIN
-			/* Return the recordset of order items for the given order. */
-			SELECT ASRSysOrderItems.*,
-				ASRSysColumns.columnName,
-				ASRSysColumns.tableID,
-				ASRSysColumns.dataType,
-			    	ASRSysTables.tableName,
-					ASRSysColumns.Size,
-					ASRSysColumns.Decimals,
-					ASRSysColumns.Use1000Separator, 
-					ASRSysColumns.blankIfZero
-			FROM ASRSysOrderItems
-			INNER JOIN ASRSysColumns 
-				ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-			INNER JOIN ASRSysTables 
-				ON ASRSysTables.tableID = ASRSysColumns.tableID
-			WHERE ASRSysOrderItems.orderID = @piOrderID
-			AND ASRSysColumns.dataType <> -4
-			AND ASRSysColumns.datatype <> -3
-			ORDER BY ASRSysOrderItems.type, 
-				ASRSysOrderItems.sequence
+
+		SET NOCOUNT ON;
+
+		-- Return the recordset of order items for the given order.
+		SELECT oi.*, c.columnName, c.tableID,	c.dataType, t.tableName,
+				c.Size,	c.Decimals,	c.Use1000Separator, c.blankIfZero
+		FROM ASRSysOrderItems oi
+			INNER JOIN ASRSysColumns c ON oi.columnID = c.columnID
+			INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+		WHERE oi.orderID = @piOrderID
+			AND c.dataType <> -4 AND c.datatype <> -3
+		ORDER BY oi.type, oi.sequence;
 	END';
 
 
@@ -4556,6 +4546,18 @@ PRINT 'Optimise indexes'
 	IF EXISTS(SELECT Name FROM sysindexes WHERE id = object_id(N'ASRSysSummaryFields') AND name = N'IDX_HistoryTableSequenceID')
 		DROP INDEX ASRSysSummaryFields.[IDX_HistoryTableSequenceID];
 	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_HistoryTableSequenceID] ON ASRSysSummaryFields ([HistoryTableID],[Sequence])';
+
+
+PRINT 'Remove redundant stored procedure'
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRGetFindOrderItems]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [dbo].[sp_ASRGetFindOrderItems]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRGetOrderItems]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [dbo].[sp_ASRGetOrderItems]
+
+
+		
 
 
 /* ------------------------------------------------------------- */

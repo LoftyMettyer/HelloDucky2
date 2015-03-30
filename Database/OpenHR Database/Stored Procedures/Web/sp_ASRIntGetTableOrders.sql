@@ -13,17 +13,13 @@ BEGIN
 
 	IF @piViewID > 0 
 	BEGIN
-		SELECT DISTINCT ASRSysOrders.name AS Name, 
-			ASRSysOrders.OrderID
-		FROM ASRSysOrders
-		INNER JOIN ASRSysOrderItems ON ASRSysOrders.OrderID = ASRSysOrderItems.orderID
-		INNER JOIN ASRSysViewColumns ON ASRSysOrderItems.columnID = ASRSysViewColumns.columnID
-		WHERE ASRSysOrders.tableID = @piTableID
-			AND ASRSysOrders.[type] = 1
-			AND ASRSysViewColumns.inView = 1
-			AND ASRSysOrderItems.[type] = 'O'
-			AND ASRSysViewColumns.viewID = @piViewID
-		ORDER BY ASRSysOrders.name;
+		SELECT DISTINCT o.name AS Name, o.OrderID
+		FROM ASRSysOrders o
+			INNER JOIN ASRSysOrderItems oi ON o.OrderID = oi.orderID
+			INNER JOIN ASRSysViewColumns vc ON oi.columnID = vc.columnID
+		WHERE o.tableID = @piTableID
+			AND o.[type] = 1 AND vc.inView = 1 AND oi.[type] = 'O' AND vc.viewID = @piViewID
+		ORDER BY o.name;
 	END
 	ELSE
 	BEGIN
