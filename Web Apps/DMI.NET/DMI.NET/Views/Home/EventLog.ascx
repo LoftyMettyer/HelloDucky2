@@ -353,7 +353,7 @@
 		}
 
 		var postData = {
-			SelectedEventIDs: parseInt(sEventList.substr(0, sEventList.length - 1)),
+			SelectedEventIDs: sEventList.substr(0, sEventList.length - 1),
 			IsFromMain: 1,
 			EmailOrderColumn: frmLog.txtELOrderColumn.value,
 			EmailOrderOrder: frmLog.txtELOrderOrder.value,

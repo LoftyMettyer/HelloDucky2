@@ -325,7 +325,7 @@
 				$("#txtBatchInfo").val(sBatchInfo);
 
 				var postData = {
-					SelectedEventIDs: parseInt($('#txtSelectedEventIDs').val()),
+					SelectedEventIDs: $('#txtSelectedEventIDs').val(),
 					EmailOrderColumn: "",
 					EmailOrderOrder: "",
 					IsFromMain: $("#txtFromMain").val(),
