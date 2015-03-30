@@ -9,14 +9,10 @@ Imports DMI.NET.Classes
 Imports System.Linq.Expressions
 Imports HR.Intranet.Server
 Imports HR.Intranet.Server.Metadata
-Imports System.Collections.ObjectModel
-Imports System.Threading
 
 Namespace Helpers
 	<HideModuleName> _
 	Public Module DropdownHelper
-
-		Private ReadOnly _objSessionInfo As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 
 		<Extension()> _
 		Public Function ColumnDropdown(helper As HtmlHelper, name As String, id As String, bindValue As Integer, items As IEnumerable(Of ReportColumnItem), onChangeEvent As String) As MvcHtmlString
@@ -30,12 +26,12 @@ Namespace Helpers
 			builder.MergeAttribute("id", id)
 			builder.MergeAttribute("onchange", onChangeEvent)
 
-			For Each item In items
-				Dim objType As Type = item.[GetType]()
-				Dim iID As Integer = CInt(objType.GetProperty("ID").GetValue(item, Nothing))
+			For Each columnItem In items
+				Dim objType As Type = columnItem.[GetType]()
+				Dim iID As Integer = CInt(objType.GetProperty("ID").GetValue(columnItem, Nothing))
 
 				content.AppendFormat("<option value={0} data-ishidden={6} data-datatype={4} data-size={2} data-decimals={3} {5}>{1}</option>" _
-						, iID.ToString(), item.Name, item.Size.ToString, item.Decimals.ToString, CInt(item.DataType), IIf(bindValue = iID, "selected", ""), item.IsHidden)
+						, iID.ToString(), columnItem.Name, columnItem.Size.ToString, columnItem.Decimals.ToString, CInt(columnItem.DataType), IIf(bindValue = iID, "selected", ""), columnItem.IsHidden)
 
 			Next
 
@@ -56,11 +52,11 @@ Namespace Helpers
 			builder.MergeAttribute("id", id)
 			builder.MergeAttribute("onchange", onChangeEvent)
 
-			For Each item In items
-				Dim objType As Type = item.[GetType]()
-				Dim iID As Integer = CInt(objType.GetProperty("id").GetValue(item, Nothing))
+			For Each tableItem In items
+				Dim objType As Type = tableItem.[GetType]()
+				Dim iID As Integer = CInt(objType.GetProperty("id").GetValue(tableItem, Nothing))
 
-				content.AppendFormat("<option value={0} {2}>{1}</option>", iID.ToString(), item.Name, IIf(bindValue = iID, "selected", ""))
+				content.AppendFormat("<option value={0} {2}>{1}</option>", iID.ToString(), tableItem.Name, IIf(bindValue = iID, "selected", ""))
 
 			Next
 
@@ -72,6 +68,7 @@ Namespace Helpers
 		<Extension()> _
 		Public Function LookupTableDropdown(helper As HtmlHelper, name As String, id As String, bindValue As Integer, onChangeEvent As String, htmlAttributes As Object) As MvcHtmlString
 
+			Dim objSessionInfo As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 			Dim objAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)
 
 			Dim content As New StringBuilder
@@ -81,8 +78,8 @@ Namespace Helpers
 			builder.MergeAttribute("onchange", onChangeEvent)
 			builder.MergeAttributes(objAttributes)
 
-			For Each item In _objSessionInfo.Tables.Where(Function(m) m.TableType = TableTypes.tabLookup).OrderBy(Function(m) m.Name)
-				content.AppendFormat("<option value={0} {2}>{1}</option>", item.ID, item.Name, IIf(bindValue = item.ID, "selected", ""))
+			For Each table In objSessionInfo.Tables.Where(Function(m) m.TableType = TableTypes.tabLookup).OrderBy(Function(m) m.Name)
+				content.AppendFormat("<option value={0} {2}>{1}</option>", table.ID, table.Name, IIf(bindValue = table.ID, "selected", ""))
 			Next
 
 			builder.InnerHtml = content.ToString
@@ -92,6 +89,8 @@ Namespace Helpers
 
 		<Extension> _
 		Public Function ColumnDropdownFor(Of TModel, TValue)(html As HtmlHelper(Of TModel), expression As Expression(Of Func(Of TModel, TValue)), filter As ColumnFilter, htmlAttributes As Object) As MvcHtmlString
+
+			Dim objSessionInfo As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 
 			Dim htmlFieldName = ExpressionHelper.GetExpressionText(expression)
 			Dim fullHtmlFieldName = TagBuilder.CreateSanitizedId(html.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName))
@@ -114,15 +113,14 @@ Namespace Helpers
 
 			Dim iParent1 As Integer
 			Dim iParent2 As Integer
-			Dim bAdd As Boolean
 
 			If filter.IncludeParents Then
-				Dim objParent1 = _objSessionInfo.Relations.FirstOrDefault(Function(m) m.ChildID = filter.TableID)
+				Dim objParent1 = objSessionInfo.Relations.FirstOrDefault(Function(m) m.ChildID = filter.TableID)
 				If objParent1 IsNot Nothing Then
 					iParent1 = objParent1.ParentID
 				End If
 
-				Dim objParent2 = _objSessionInfo.Relations.LastOrDefault(Function(m) m.ChildID = filter.TableID)
+				Dim objParent2 = objSessionInfo.Relations.LastOrDefault(Function(m) m.ChildID = filter.TableID)
 				If objParent2 IsNot Nothing Then
 					iParent2 = objParent2.ParentID
 				End If
@@ -130,11 +128,11 @@ Namespace Helpers
 			End If
 
 			If filter.IsNumeric Then
-				objColumns = _objSessionInfo.Columns.Where(Function(m) (m.TableID = filter.TableID OrElse m.TableID = iParent1 OrElse m.TableID = iParent2) AndAlso
+				objColumns = objSessionInfo.Columns.Where(Function(m) (m.TableID = filter.TableID OrElse m.TableID = iParent1 OrElse m.TableID = iParent2) AndAlso
 																		m.IsVisible AndAlso m.IsNumeric
 																		).OrderBy(Function(m) m.TableID).ThenBy(Function(m) m.Name)
 			Else
-				objColumns = _objSessionInfo.Columns.Where(Function(m) (m.TableID = filter.TableID OrElse m.TableID = iParent1 OrElse m.TableID = iParent2) AndAlso
+				objColumns = objSessionInfo.Columns.Where(Function(m) (m.TableID = filter.TableID OrElse m.TableID = iParent1 OrElse m.TableID = iParent2) AndAlso
 																		m.IsVisible AndAlso
 																		(m.Size = filter.Size OrElse filter.Size = 0) AndAlso
 																		(m.DataType = filter.DataType OrElse filter.DataType = ColumnDataType.sqlUnknown) AndAlso
@@ -143,25 +141,25 @@ Namespace Helpers
 			End If
 
 			If filter.ExcludeOle Then
-				For Each item In objColumns
-					If item.DataType <> ColumnDataType.sqlOle Then
+				For Each column In objColumns
+					If column.DataType <> ColumnDataType.sqlOle Then
 						content.AppendFormat("<option value={0} data-datatype={4} data-size={2} data-decimals={3} data-lookuptableID={6} {5}>{1}</option>" _
-																				 , item.ID _
-																				 , IIf(filter.ShowFullName, item.TableName & "." & item.Name, item.Name) _
-																				 , item.Size.ToString, item.Decimals.ToString _
-																				 , CInt(item.DataType), IIf(bindValue = item.ID, "selected", "") _
-																				 , item.LookupTableID)
+																				 , column.ID _
+																				 , IIf(filter.ShowFullName, column.TableName & "." & column.Name, column.Name) _
+																				 , column.Size.ToString, column.Decimals.ToString _
+																				 , CInt(column.DataType), IIf(bindValue = column.ID, "selected", "") _
+																				 , column.LookupTableID)
 					End If
 				Next
 			Else
-				For Each item In objColumns
+				For Each column In objColumns
 
 					content.AppendFormat("<option value={0} data-datatype={4} data-size={2} data-decimals={3} data-lookuptableID={6} {5}>{1}</option>" _
-																			 , item.ID _
-																			 , IIf(filter.ShowFullName, item.TableName & "." & item.Name, item.Name) _
-																			 , item.Size.ToString, item.Decimals.ToString _
-																			 , CInt(item.DataType), IIf(bindValue = item.ID, "selected", "") _
-																			 , item.LookupTableID)
+																			 , column.ID _
+																			 , IIf(filter.ShowFullName, column.TableName & "." & column.Name, column.Name) _
+																			 , column.Size.ToString, column.Decimals.ToString _
+																			 , CInt(column.DataType), IIf(bindValue = column.ID, "selected", "") _
+																			 , column.LookupTableID)
 				Next
 			End If
 
@@ -180,11 +178,11 @@ Namespace Helpers
 			Dim builder As New TagBuilder("select")
 			builder.MergeAttribute("name", name)
 
-			For Each item In items
-				Dim iID As Integer = item.id
+			For Each tableItem In items
+				Dim iID As Integer = tableItem.id
 
 				content.AppendFormat("<option value={0} {2}>{1}</option>" _
-																, iID.ToString(), item.Name, IIf(bindValue = iID, "selected", ""))
+																, iID.ToString(), tableItem.Name, IIf(bindValue = iID, "selected", ""))
 
 			Next
 
