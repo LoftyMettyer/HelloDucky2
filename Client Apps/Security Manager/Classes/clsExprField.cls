@@ -185,15 +185,16 @@ Public Function GenerateCode(psRuntimeCode As String, _
         sOrderCode = ""
         ReDim avOrderJoinTables(2, 0)
         If mlngSelOrderID > 0 Then
-          sSQL = "SELECT ASRSysColumns.columnName, ASRSysColumns.columnID, ASRSysColumns.tableID, ASRSysTables.tableName, ASRSysOrderItems.ascending" & _
-            " FROM ASRSysOrderItems" & _
-            " JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID" & _
-            " JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID" & _
-            " WHERE orderID = " & Trim(Str(mlngSelOrderID)) & _
-            " AND type = 'O'" & _
-            " AND ASRSysColumns.columnID = ASRSysOrderItems.columnID" & _
-            " AND ASRSysColumns.tableID = ASRSysTables.tableID" & _
-            " ORDER BY sequence"
+          sSQL = "SELECT c.columnName, c.columnID, c.tableID, t.tableName, oi.ascending" & _
+            " FROM ASRSysOrderItems oi" & _
+            " JOIN ASRSysColumns c ON oi.columnID = c.columnID" & _
+            " JOIN ASRSysTables t ON t.tableID = c.tableID" & _
+            " WHERE oi.orderID = " & Trim(Str(mlngSelOrderID)) & _
+            " AND oi.type = 'O'" & _
+            " AND c.columnID = oi.columnID" & _
+            " AND c.tableID = t.tableID" & _
+            " AND c.dataType <> -4 AND c.datatype <> -3 " & _
+            " ORDER BY oi.sequence"
 
           Set rsInfo = modExpression.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
           With rsInfo
