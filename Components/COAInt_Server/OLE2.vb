@@ -262,7 +262,12 @@ Public Class Ole
 
 	Public Property FileName() As String
 		Get
-			Return Path.GetFileName(_mstrFileName)
+			' If linked file return proper link
+			If _miOLEType = OLEType.Embedded Then
+				FileName = Path.GetFileName(_mstrFileName)
+			Else
+				FileName = _mstrFileName
+			End If
 		End Get
 		Set(ByVal Value As String)
 			_mstrFileName = Value
