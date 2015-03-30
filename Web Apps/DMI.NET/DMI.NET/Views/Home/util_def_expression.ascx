@@ -64,6 +64,7 @@
 			</div>
 		</div>
 	</div>
+	<%=Html.AntiForgeryToken()%>
 	</form>
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">

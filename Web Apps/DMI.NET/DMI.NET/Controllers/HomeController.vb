@@ -1108,9 +1108,9 @@ Namespace Controllers
 						Case 10	' PICKLISTS
 							Return RedirectToAction("util_def_picklist")
 						Case 11	' FILTERS
-							Return RedirectToAction("util_def_expression")
+							Return PartialView("util_def_expression")
 						Case 12	' CALCULATIONS
-							Return RedirectToAction("util_def_expression")
+							Return PartialView("util_def_expression")
 						Case 17	' CALENDAR REPORTS
 							Return RedirectToAction("util_def_calendarreport", "reports")
 						Case 35	' NINE BOX
@@ -3541,6 +3541,7 @@ Namespace Controllers
 
 #Region "Expression Builder"
 
+		<ValidateAntiForgeryToken>
 		Function util_def_expression() As ActionResult
 			Return PartialView()
 		End Function

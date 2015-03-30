@@ -403,6 +403,7 @@
 
 			End Try
 		End If
+		Response.Write(Html.AntiForgeryToken())
 	%>
 </form>
 
@@ -428,6 +429,7 @@
 			End Try
 			
 		End If
+		Response.Write(Html.AntiForgeryToken())
 	%>
 </form>
 
@@ -451,6 +453,7 @@
 			End Try
 			
 		End If
+		Response.Write(Html.AntiForgeryToken())
 	%>
 </form>
 
@@ -474,6 +477,7 @@
 			End Try
 			
 		End If
+		Response.Write(Html.AntiForgeryToken())
 	%>
 </form>
 
