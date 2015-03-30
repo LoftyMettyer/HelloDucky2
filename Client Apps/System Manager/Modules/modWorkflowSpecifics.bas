@@ -2470,10 +2470,6 @@ ErrorTrap:
 
 End Function
 
-
-
-
-
 Private Function CreateSP_IntranetCheckPendingSteps() As Boolean
   ' Create the Intranet Check Pending Steps stored procedure.
   On Error GoTo ErrorTrap
@@ -2506,25 +2502,30 @@ Private Function CreateSP_IntranetCheckPendingSteps() As Boolean
     "        @sParam1  varchar(MAX)," & vbNewLine & _
     "        @sServerName sysname," & vbNewLine & _
     "        @sDBName  sysname," & vbNewLine & _
-    "        @sWorkflowName varchar(MAX)," & vbNewLine & _
-    "        @sSQLVersion  int;"
-    
+    "        @sWorkflowName varchar(MAX);" & vbNewLine
+
   sProcSQL = sProcSQL & vbNewLine & _
-    "    DECLARE @steps TABLE" & vbNewLine & _
-    "    (" & vbNewLine & _
-    "        [name] varchar(MAX)," & vbNewLine & _
+    "    DECLARE @pass1 TABLE(" & vbNewLine & _
+    "        [instanceID]  integer," & vbNewLine & _
+    "        [elementID]   integer," & vbNewLine & _
+    "        [stepID]      integer," & vbNewLine & _
+    "        [name]        varchar(MAX)," & vbNewLine & _
     "        [description] varchar(MAX)," & vbNewLine & _
-    "        [URL] varChar(MAX)," & vbNewLine & _
-    "        [instanceID] integer," & vbNewLine & _
-    "        [elementID] integer," & vbNewLine & _
-    "        [instanceStepID] integer" & vbNewLine & _
-    "    )"
-    
-  sProcSQL = sProcSQL & vbNewLine & vbNewLine & _
+    "        [url]         nvarchar(MAX));" & vbNewLine & vbNewLine
+
+  sProcSQL = sProcSQL & _
+    "    DECLARE @steps TABLE (" & vbNewLine & _
+    "        [name]           varchar(MAX)," & vbNewLine & _
+    "        [description]    varchar(MAX)," & vbNewLine & _
+    "        [URL]            varchar(MAX)," & vbNewLine & _
+    "        [instanceID]     integer," & vbNewLine & _
+    "        [elementID]      integer," & vbNewLine & _
+    "        [instanceStepID] integer);" & vbNewLine & vbNewLine
+      
+  sProcSQL = sProcSQL & _
     "    SELECT @sURL = parameterValue" & vbNewLine & _
     "    FROM ASRSysModuleSetup" & vbNewLine & _
-    "    WHERE moduleKey = 'MODULE_WORKFLOW'" & vbNewLine & _
-    "        AND parameterKey = 'Param_URL'" & vbNewLine & _
+    "    WHERE moduleKey = 'MODULE_WORKFLOW' AND parameterKey = 'Param_URL';" & vbNewLine & vbNewLine & _
     "        IF upper(right(@sURL, 5)) <> '.ASPX'" & vbNewLine & _
     "            AND right(@sURL, 1) <> '/'" & vbNewLine & _
     "            AND len(@sURL) > 0" & vbNewLine & _
@@ -2535,18 +2536,13 @@ Private Function CreateSP_IntranetCheckPendingSteps() As Boolean
   sProcSQL = sProcSQL & vbNewLine & vbNewLine & _
     "    SELECT @sParam1 = parameterValue" & vbNewLine & _
     "    FROM ASRSysModuleSetup" & vbNewLine & _
-    "    WHERE moduleKey = 'MODULE_WORKFLOW'" & vbNewLine & _
-    "        AND parameterKey = 'Param_Web1'" & vbNewLine & vbNewLine & _
-    "    SET @sServerName = CONVERT(sysname,SERVERPROPERTY('servername'))" & vbNewLine & _
-    "    SET @sDBName = db_name()" & vbNewLine & _
-    "    SET @sSQLVersion = dbo.udfASRSQLVersion()"
+    "    WHERE moduleKey = 'MODULE_WORKFLOW' AND parameterKey = 'Param_Web1';" & vbNewLine & vbNewLine & _
+    "    SET @sServerName = CONVERT(sysname,SERVERPROPERTY('servername'));" & vbNewLine & _
+    "    SET @sDBName = DB_NAME();"
     
   sProcSQL = sProcSQL & vbNewLine & vbNewLine & _
-    "    IF @sSQLVersion <= 8" & vbNewLine & _
-    "        EXEC @hResult = sp_OACreate 'vbpHRProServer.clsWorkflow', @objectToken OUTPUT" & vbNewLine & vbNewLine & _
-    "    IF (@hResult = 0 OR @sSQLVersion > 8) AND (len(@sURL) > 0)" & vbNewLine & _
+    "    IF (len(@sURL) > 0)" & vbNewLine & _
     "    BEGIN"
-
     
   If UBound(malngEmailColumns) > 0 Then
     For iCount = 1 To UBound(malngEmailColumns)
@@ -2556,17 +2552,18 @@ Private Function CreateSP_IntranetCheckPendingSteps() As Boolean
         "        FROM " & mvar_sLoginTable & vbNewLine & _
         "        WHERE (ISNULL(" & mvar_sLoginTable & "." & mvar_sLoginColumn & ", '') = SUSER_SNAME()" & _
         IIf(Len(mvar_sSecondLoginColumn) > 0, vbNewLine & "            OR ISNULL(" & mvar_sLoginTable & "." & mvar_sSecondLoginColumn & ", '') = SUSER_SNAME()", "") & ")" & vbNewLine & _
-        "            AND len(" & mvar_sLoginTable & "." & GetColumnName(malngEmailColumns(iCount), True) & ") > 0"
+        "            AND LEN(" & mvar_sLoginTable & "." & GetColumnName(malngEmailColumns(iCount), True) & ") > 0"
     Next iCount
   End If
     
   sProcSQL = sProcSQL & vbNewLine & vbNewLine & _
-    "        DECLARE steps_cursor CURSOR LOCAL FAST_FORWARD FOR" & vbNewLine & _
+    "        INSERT @pass1" & vbNewLine & _
     "            SELECT ASRSysWorkflowInstanceSteps.instanceID," & vbNewLine & _
     "                ASRSysWorkflowInstanceSteps.elementID," & vbNewLine & _
     "                ASRSysWorkflowInstanceSteps.ID," & vbNewLine & _
     "                ASRSysWorkflows.name + ' - ' + ASRSysWorkflowElements.caption AS [description], " & vbNewLine & _
-    "                ASRSysWorkflows.name" & vbNewLine & _
+    "                ASRSysWorkflows.name, " & vbNewLine & _
+    "                dbo.[udfASRNetGetWorkflowQueryString]( ASRSysWorkflowInstanceSteps.instanceID,  ASRSysWorkflowInstanceSteps.elementID, @sParam1, @sServerName, @sDBName)" & vbNewLine & _
     "            FROM ASRSysWorkflowInstanceSteps" & vbNewLine & _
     "            INNER JOIN ASRSysWorkflowElements ON ASRSysWorkflowInstanceSteps.elementID = ASRSysWorkflowElements.ID" & vbNewLine & _
     "            INNER JOIN ASRSysWorkflows ON ASRSysWorkflowElements.workflowID = ASRSysWorkflows.ID" & vbNewLine & _
@@ -2591,45 +2588,31 @@ Private Function CreateSP_IntranetCheckPendingSteps() As Boolean
     ")"
     
   sProcSQL = sProcSQL & vbNewLine & vbNewLine & _
-    "        OPEN steps_cursor" & vbNewLine & _
-    "        FETCH NEXT FROM steps_cursor INTO @iInstanceID, @iElementID, @iInstanceStepID, @sDescription, @sWorkflowName" & vbNewLine & _
+    "        DECLARE steps_cursor CURSOR LOCAL FAST_FORWARD FOR SELECT * FROM @pass1;" & vbNewLine & _
+    "        OPEN steps_cursor;" & vbNewLine & _
+    "        FETCH NEXT FROM steps_cursor INTO @iInstanceID, @iElementID, @iInstanceStepID, @sDescription, @sWorkflowName, @sQueryString;" & vbNewLine & _
     "        WHILE (@@fetch_status = 0)" & vbNewLine & _
-    "        BEGIN" & vbNewLine & _
-    "            SET @sQueryString = ''" & vbNewLine & vbNewLine & _
-    "            IF @sSQLVersion <=8" & vbNewLine & _
-    "            BEGIN" & vbNewLine & _
-    "                EXEC @hResult = sp_OAMethod @objectToken, 'GetQueryString', @sQueryString OUTPUT, @iInstanceID, @iElementID, @sParam1, @sServerName, @sDBName" & vbNewLine & _
-    "                IF @hResult <> 0" & vbNewLine & _
-    "                BEGIN" & vbNewLine & _
-    "                    SET @sQueryString = ''" & vbNewLine & _
-    "                END" & _
-    "            END" & vbNewLine & _
-    "            ELSE" & vbNewLine & _
-    "                SELECT @sQueryString = dbo.[udfASRNetGetWorkflowQueryString]( @iInstanceID, @iElementID, @sParam1, @sServerName, @sDBName)"
-        
-  sProcSQL = sProcSQL & vbNewLine & vbNewLine & _
-    "            IF len(@sQueryString) > 0" & vbNewLine & _
+    "        BEGIN" & vbNewLine & vbNewLine
+
+  sProcSQL = sProcSQL & _
+    "            IF LEN(@sQueryString) > 0" & vbNewLine & _
     "            BEGIN" & vbNewLine & _
     "                EXEC [dbo].[spASRWorkflowStepDescription]" & vbNewLine & _
     "                    @iInstanceStepID," & vbNewLine & _
-    "                    @sCalcDescription OUTPUT" & vbNewLine & _
-    "                IF len(@sCalcDescription) > 0 " & vbNewLine & _
-    "                BEGIN" & vbNewLine & _
-    "                    SET @sDescription = @sCalcDescription" & vbNewLine & _
-    "                END" & vbNewLine & vbNewLine & _
+    "                    @sCalcDescription OUTPUT;" & vbNewLine & _
+    "                IF LEN(@sCalcDescription) > 0 " & vbNewLine & _
+    "                    SET @sDescription = @sCalcDescription;" & vbNewLine & vbNewLine & _
     "                INSERT INTO @steps ([description], [url], [instanceID], [elementID], [instanceStepID], [name])" & vbNewLine & _
-    "                VALUES (@sDescription, @sURL + '/?' + @sQueryString, @iInstanceID, @iElementID, @iInstanceStepID, @sWorkflowName)" & vbNewLine & _
+    "                    VALUES (@sDescription, @sURL + '/?' + @sQueryString, @iInstanceID, @iElementID, @iInstanceStepID, @sWorkflowName);" & vbNewLine & _
     "            END" & vbNewLine & _
-    "            FETCH NEXT FROM steps_cursor INTO @iInstanceID, @iElementID, @iInstanceStepID, @sDescription, @sWorkflowName" & vbNewLine & _
+    "            FETCH NEXT FROM steps_cursor INTO @iInstanceID, @iElementID, @iInstanceStepID, @sDescription, @sWorkflowName, @sQueryString;" & vbNewLine & _
     "        END" & vbNewLine & _
-    "        CLOSE steps_cursor" & vbNewLine & _
-    "        DEALLOCATE steps_cursor" & vbNewLine & vbNewLine & _
-    "        IF @sSQLVersion <= 8" & vbNewLine & _
-    "            EXEC sp_OADestroy @objectToken" & vbNewLine & _
+    "        CLOSE steps_cursor;" & vbNewLine & _
+    "        DEALLOCATE steps_cursor;" & vbNewLine & vbNewLine & _
     "    END" & vbNewLine & vbNewLine & _
     "    SELECT *" & vbNewLine & _
     "    FROM @steps" & vbNewLine & _
-    "    ORDER BY [description]"
+    "    ORDER BY [description];"
   
   sProcSQL = sProcSQL & vbNewLine & _
     "END"
