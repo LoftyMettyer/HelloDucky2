@@ -16,7 +16,7 @@ Namespace Models.ObjectRequests
 
 		Public Property PromptValues As IList(Of PromptedValue)
 
-		Public Property IsBulkBooking As Boolean
+		Public Property FilteredAdd As Boolean
 
 	End Class
 End Namespace

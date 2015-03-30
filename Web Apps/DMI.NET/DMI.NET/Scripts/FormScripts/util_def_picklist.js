@@ -132,18 +132,16 @@ function addAllClick() {
 }
 
 function filteredAddClick() {	
-	/* Get the current selected delegate IDs. */
-	picklistdef_moveFirst();
 
-	var postData = {
-		TableID: $("#txtTableID").val(),
-		Action: "add",
-		Type: "FILTER",
-		IDs1: $('#ssOleDBGrid').getDataIDs().join(","),
-		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
-	}
-	OpenHR.submitForm(null, "reportframe", null, postData, "picklistSelectionMain");
-
+	var tableID = $("#txtTableID").val();
+	var currentID = "";
+	var newHeight = (screen.height) / 2;
+	var newWidth = (screen.width) / 2;
+	
+	OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id) {
+		picklistdef_makeSelection("FILTER", id, '');
+	}, newWidth - 40, newHeight - 160, true);
+	
 }
 
 function removeClick() {

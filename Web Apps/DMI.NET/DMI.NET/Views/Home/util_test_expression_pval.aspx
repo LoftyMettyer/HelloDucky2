@@ -131,6 +131,7 @@
 	function ute_cancelClick() {
 		if ($('#divValidateExpression').dialog('isOpen') == true) {
 			$('#divValidateExpression').dialog('close');
+			$('#divValidateExpression').html();
 		}
 	}
 

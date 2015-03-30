@@ -223,13 +223,13 @@
 <%If Model.UtilType = UtilityType.utlMailMerge Then%>
 	closeclick();
 
-<%ElseIf Model.UtilType = UtilityType.utlFilter And Model.IsBulkBooking Then%>
-	bulkbooking_makeSelection('FILTER', <%:Model.ID%>, '<%=Session("promptsvalue")%>');
-
-<%ElseIf Model.UtilType = UtilityType.utlFilter Then%>
-	picklistdef_makeSelection('FILTER', <%:Model.ID%>, '<%=Session("promptsvalue")%>');
-
-<%Else%>
+	<%ElseIf Model.UtilType = UtilityType.utlFilter And Model.FilteredAdd Then%>		
+		if (OpenHR.currentWorkPage() === "UTIL_DEF_PICKLIST") {
+			picklistdef_makeSelection('FILTER', <%:Model.ID%>, '<%=Session("promptsvalue")%>');
+		} else {
+			bulkbooking_makeSelection('FILTER', <%:Model.ID%>, '<%=Session("promptsvalue")%>');	
+		}
+	<%Else%>
 
 	var isMobileDevice = ('<%=Session("isMobileDevice")%>' == 'True');
 	// first get the size from the window

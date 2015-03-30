@@ -114,6 +114,7 @@
 			var postData = {
 				UtilType: utilityType.Filter,
 				ID: selectedRecordID(),
+				FilteredAdd: true,
 			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 			}
 			OpenHR.submitForm(null, "picklistworkframe", null, postData, "util_run_promptedValues");

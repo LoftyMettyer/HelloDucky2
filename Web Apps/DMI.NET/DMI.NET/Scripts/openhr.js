@@ -228,7 +228,7 @@
 				var postData = {
 					ID: gridData.ID,
 					UtilType: utilityType.Filter,
-					IsBulkBooking: true,
+					FilteredAdd: true,
 					__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 					};
 				OpenHR.submitForm(null, "reportframe", null, postData, "util_run_promptedValues");

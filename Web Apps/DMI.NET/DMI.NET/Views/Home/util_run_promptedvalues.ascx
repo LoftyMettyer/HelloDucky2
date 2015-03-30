@@ -10,7 +10,7 @@
 
 	function promptedvalues_window_onload() {
 
-		$('#frmPromptedValues').submit(function(e) {
+		$('#frmPromptedValues').submit(function(e) {	
 			e.preventDefault();
 			SubmitPrompts();
 		});
@@ -60,7 +60,7 @@
 				utiltype: <%:CInt(Model.UtilType)%>,
 				ID: <%:Model.ID%>, 
 				Name: '<%:Model.Name%>',
-				IsBulkBooking:  <%:Json.Encode(Model.IsBulkBooking)%>,
+				FilteredAdd:  <%:Json.Encode(Model.FilteredAdd)%>,
 				PromptValues: {},
 				<%:Html.AntiForgeryTokenForAjaxPost()%> }		
 			OpenHR.submitForm(null, outputDiv, true, postData, "util_run_promptedvalues_submit");
@@ -71,13 +71,14 @@
 				$(".popup").dialog('option', 'title', "Prompted Value"); 
 				$(".popup").dialog("open");
 
-			//	if ($('.popup').dialog('isOpen')) {
-					var dialogWidth = screen.width / 3;
+				var dialogWidth = screen.width / 3;
+				var dialogHeight = $("#reportframe").find("div.pageTitleDiv").outerHeight();
+				dialogHeight += $("#reportframe").find("#dataRow").outerHeight();
+				dialogHeight += $("#reportframe").find("#btnPromptedValues").outerHeight();
+				dialogHeight += 125;
 
-					$('.popup').dialog('option', 'height', 'auto');
-					$('.popup').dialog('option', 'width', dialogWidth);
-			//	}
-
+				$('.popup').dialog('option', 'height', dialogHeight);
+				$('.popup').dialog('option', 'width', dialogWidth);
 			}
 
 			// Set focus on the first prompt control.
@@ -169,9 +170,9 @@
 				Dim iPromptCount = CInt(IIf(bAddUploadTemplate, 1, 0))
 				
 				rstPromptedValue = objDatabaseAccess.GetDataTable("spASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
-										New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = Model.UtilType}, _
-										New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = Model.ID}, _
-										New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = CInt(Session("singleRecordID"))})
+					New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = Model.UtilType}, _
+					New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = Model.ID}, _
+					New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = CInt(Session("singleRecordID"))})
 				
 				If rstPromptedValue.Rows.Count > 0 Then
 
@@ -353,7 +354,7 @@
 		
 		<% If iPromptCount > 0 Then%>
 			<br/>						
-			<div class="centered">			
+			<div id="btnPromptedValues" class="floatright">			
 				<input type="button" id="butPromptedSubmit" class="btn" name="butPromptedSubmit" value="OK" style="WIDTH: 80px" onclick="SubmitPrompts()" />
 				<input type="button" class="btn" name="Cancel" value="Cancel" style="WIDTH: 80px" onclick="closepromptedclick()" />
 			</div>	
@@ -376,7 +377,7 @@
 			OpenHR.modalMessage("No template file selected");
 			return;
 		}
-
+		
 		// Validate the prompt values before submitting the form.
 		var controlCollection = frmPromptedValues.elements;
 		var submitElements = [];
@@ -416,7 +417,7 @@
 			ID: <%:Model.ID%>, 
 			Name: '<%:Model.Name%>',
 			PromptValues: submitElements,
-			IsBulkBooking:  <%:Json.Encode(Model.IsBulkBooking)%>,
+			FilteredAdd:  <%:Json.Encode(Model.FilteredAdd)%>,
 			<%:Html.AntiForgeryTokenForAjaxPost() %> }
 
 		OpenHR.submitForm(null, outputDiv, true, postData, "util_run_promptedvalues_submit");
