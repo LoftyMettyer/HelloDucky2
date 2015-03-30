@@ -300,7 +300,7 @@ function menu_MenuClick(sTool) {
 		} else {
 			$("#mnutoolHistory").hide();
 			$("[aria-labelledby='mnutoolHistory']").hide();
-			$("#mnutoolAdministration").click()
+			$("#mnutoolAdministration").click();
 			sToolName = 'mnutoolWorkflowPendingSteps';
 		}
 	}
