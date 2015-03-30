@@ -83,10 +83,11 @@
 				height: 'auto',
 				resizable: false
 			});
-			//var width = document.getElementById('tbllinkFind').offsetWidth;
+
 			// Set focus onto one of the form controls. 
 			// NB. This needs to be done before making any reference to the grid
-			frmLinkFindForm.cmdCancel.focus();
+			frmLinkFindForm.cmdCancel.focus();		
+
 		}
 	}
 
@@ -94,7 +95,9 @@
 	
 		var selRowId = $("#ssOleDBGridLinkRecords").jqGrid('getGridParam', 'selrow');
 		if (selRowId > 0) {
-			$("#optionframe").dialog("destroy");
+			$("#optionframe").dialog("close");
+			$("#optionframe").html();
+
 			var frmLinkFindForm = document.getElementById('frmLinkFindForm');
 			var recordID = $("#ssOleDBGridLinkRecords").jqGrid('getCell', selRowId, 'ID');
 
@@ -109,9 +112,9 @@
 		}
 	}
 
-	function CancelLink() {
-
-		$("#optionframe").dialog("destroy");
+	function CancelLink() {		
+		$("#optionframe").dialog("close");
+		$("#optionframe").html();
 
 		var postData = {
 			Action: optionActionType.CANCEL,

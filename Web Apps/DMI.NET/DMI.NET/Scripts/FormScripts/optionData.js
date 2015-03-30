@@ -141,6 +141,9 @@ function optiondata_onload() {
 					},
 					ondblClickRow: function () {
 						SelectLink();
+					},
+					loadComplete: function () {						
+						$('#optionframe').dialog({ position: { my: "center", at: "center", of: window } });
 					}
 				});
 				
