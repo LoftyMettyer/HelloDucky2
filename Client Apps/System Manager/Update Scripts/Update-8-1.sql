@@ -4497,6 +4497,8 @@ PRINT 'Step - Table Triggers'
 	AS
 	BEGIN
 
+		SET NOCOUNT ON;
+
 		DECLARE @sqlCopyData nvarchar(MAX) = '''';
 		DECLARE @childDataColumns TABLE (TableID integer, TableName nvarchar(255), ColumnNames nvarchar(MAX));
 
@@ -4507,7 +4509,7 @@ PRINT 'Step - Table Triggers'
 				INNER JOIN ASRSysColumns c ON c.tableid = t.tableid
 				CROSS APPLY ( SELECT '', '' + columnname
 								FROM ASRSysColumns v2
-								WHERE v2.tableid = c.tableid AND v2.datatype <> 4
+								WHERE v2.tableid = c.tableid AND v2.columntype <> 3
 									FOR XML PATH('''') )  d ( StringValues )
 				WHERE r.ParentID = @iParentTableID AND t.CopyWhenParentRecordIsCopied = 1;
 
