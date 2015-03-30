@@ -63,7 +63,8 @@
 
 		if (fOK == true) {
 			// Expand the work frame and hide the option frame.
-			//window.parent.document.all.item("workframeset").cols = "*, 0";
+			$('#optionframe').hide();
+			$('#workframe').show();
 			$("#toolbarRecord").show();
 			$("#toolbarRecord").click();
 
