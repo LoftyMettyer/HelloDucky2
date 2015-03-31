@@ -10,8 +10,10 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-
-<script type="text/javascript">
+	
+	<script> document.querySelector("body").classList.add("loading");</script>
+	
+	<script type="text/javascript">
 	
 	function handleAjaxError(html) {
 
