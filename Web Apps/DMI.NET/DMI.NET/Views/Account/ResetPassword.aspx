@@ -41,7 +41,7 @@
 		});
 </script>
 
-<div id="MessageBox" title="OpenHR" style="display: none;">
+<div id="MessageBox" style="display: none;">
 	<p id="Message"></p>
 	<input type="button" class="btn" value="OK" style="float: right; margin-left: auto; margin-right: auto;" onclick="$('#MessageBox').dialog('close'); return false;" />
 </div>
@@ -106,10 +106,13 @@
 	}
 </script>
 
-<img width="32" height="32" src="/openhr/Content/images/help32.png" onclick="HelpAbout();" style="float: right; margin-top: 52px; margin-right: -13px;" alt="">
-
-<div <%=Session("BodyTag")%> style="width: 98%; position: absolute; top: 170px;">
-	<%Html.BeginForm("ResetPassword_Submit", "Account", FormMethod.Post, New With {.id = "frmResetPasswordForm"})%>
+	<div class="divLogin">
+		<%Html.BeginForm("ResetPassword_Submit", "Account", FormMethod.Post, New With {.id = "frmResetPasswordForm"})%>
+		<div class="ui-dialog-titlebar ui-widget-header loginTitleBar">
+		</div>
+		<div class="verticalpadding200"></div>
+						
+	<div class="ui-widget-content ui-corner-tl ui-corner-br loginframe">
 		<table style="margin: 0 auto; width: 1px;">
 			<tr> 
 					<td> 
@@ -118,7 +121,7 @@
 			</tr>
 			<tr>
 				<td style="text-align: center" > 
-						<h2 style="text-align: center;">Reset your password</h2>
+						<p style="text-align: center;">Reset your password</p>
 				</td>
 			</tr>
 				
@@ -159,7 +162,8 @@
 				</td>
 			</tr>
 		</table>
-	
+		<br/>
+	</div>
 		<input type="hidden" id="txtQueryString" name="txtQueryString" value="<%=sQueryString%>"/>
 		<input type="hidden" id="txtUser" name="txtUser" value="<%=sUserName%>"/>      
 
