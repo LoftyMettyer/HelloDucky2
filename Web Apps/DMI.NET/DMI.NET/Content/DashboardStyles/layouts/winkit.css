@@ -958,7 +958,7 @@ div.officetab li div.textboxlist input {
 	right: 62px;
 	top: 8px;
 	width: auto;
-	z-index: 999
+	z-index: 99;
 }
 
 #userDropdownmenu ul .has-sub ul a {

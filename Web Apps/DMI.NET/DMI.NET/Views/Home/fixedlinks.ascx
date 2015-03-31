@@ -133,9 +133,11 @@
 				}
 			} catch (e) { //continue with navigation 
 			}
-		} else {
-			OpenHR.showAboutPopup();
 		}
+
+		//always try to show about popup.
+		OpenHR.showAboutPopup();
+
 	}
 
 	function showThemeEditor() {

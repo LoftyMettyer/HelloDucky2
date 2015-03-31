@@ -814,7 +814,7 @@ div#pwfs {
 	right: -57px;
 	top: 0px;
 	width: auto;
-	z-index: 999
+	z-index: 99;
 }
 
 #userDropdownmenu ul .has-sub ul a {
