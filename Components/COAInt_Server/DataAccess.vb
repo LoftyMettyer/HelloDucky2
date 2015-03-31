@@ -25,7 +25,10 @@ Public Class clsDataAccess
 		objPassword = value.Password.ToSecureString()
 		objPassword.MakeReadOnly()
 
-		_sqlCredential = New SqlCredential(value.Username, objPassword)
+		If Not value.TrustedConnection Then
+			_sqlCredential = New SqlCredential(value.Username, objPassword)
+		End If
+
 	End Sub
 
 	Public Sub New(connectionString As String)
