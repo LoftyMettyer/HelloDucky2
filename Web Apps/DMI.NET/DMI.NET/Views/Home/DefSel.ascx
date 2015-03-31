@@ -59,6 +59,12 @@
 
 <script type="text/javascript">
 
+	var defSelType = "<%:iDefSelType%>";
+	var menuSection = "Report";
+	if ((defSelType === "utlMailMerge") || (defSelType === "utlWorkflow")) menuSection = "Utilities";
+	if ((defSelType === "utlPicklist") || (defSelType === "utlFilter") || (defSelType === "utlCalculation")) menuSection = "Tools";
+
+
 		function ssOleDBGridDefSelRecords_dblClick() {
 
 				var frmDefSel = document.getElementById("frmDefSel");
@@ -103,60 +109,41 @@
 				return false;
 		}
 
-		function ssOleDBGridDefSelRecords_rowcolchange() {
-			var frmDefSel = document.getElementById("frmDefSel");
-
-			var rowId = $("#DefSelRecords").getGridParam('selrow');
+		function ssOleDBGridDefSelRecords_rowcolchange() {			
+			var rowId = $("#DefSelRecords").getGridParam("selrow");
 			var gridData = $("#DefSelRecords").getRowData(rowId);
+			var username = $("#frmDefSel #txtusername").val();
 
-			frmDefSel.txtDescription.value = gridData.description;
+			$("#txtDescription").val(gridData.description);
 
 			// Populate the hidden fields with the selected utils information       
-			frmDefSel.utilid.value = $("#DefSelRecords").getGridParam('selrow');
-			$("#utilname").text(gridData.Name);
+			$("#UtilID").val($("#DefSelRecords").getGridParam("selrow"));
+			$("#UtilName").val(gridData.Name);
 
-			var IsNewPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "NEW").ToString.ToLower%>");
-			var IsEditPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "EDIT").ToString.ToLower%>");
-			var IsRunPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "RUN").ToString.ToLower%>");
-			var IsDeletePermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "DELETE").ToString.ToLower%>");
-
-			button_disable(frmDefSel.cmdRun, !IsRunPermitted);
-			button_disable(frmDefSel.cmdNew, !IsNewPermitted);
-			button_disable(frmDefSel.cmdCopy, !IsNewPermitted);
-			button_disable(frmDefSel.cmdEdit, !IsEditPermitted);
-
-			if (gridData.Username != frmDefSel.txtusername.value) {
-				if (gridData.Access == 'ro') {
-					frmDefSel.cmdEdit.value = 'View';
-					menu_SetmnutoolButtonCaption("mnutoolEditToolsFind", "View");
-					button_disable(frmDefSel.cmdDelete, true);
-					menu_toolbarEnableItem("mnutoolDeleteToolsFind", false);
+			if (gridData.Username !== username) {
+				if (!allowEdit()) {
+					menu_SetmnutoolButtonCaption("mnutoolEdit" + menuSection + "Find", "View");
+					menu_toolbarEnableItem("mnutoolDelete" + menuSection + "Find", false);
 				} else {
-					frmDefSel.cmdEdit.value = 'Edit';
-					menu_SetmnutoolButtonCaption("mnutoolEditToolsFind", "Edit");
+					menu_SetmnutoolButtonCaption("mnutoolEdit" + menuSection + "Find", "Edit");
 
-					if (IsDeletePermitted) {
-						button_disable(frmDefSel.cmdDelete, false);
-						menu_toolbarEnableItem("mnutoolDeleteToolsFind", true);
+					if ($("#DeleteGranted").val() === "True") {
+						menu_toolbarEnableItem("mnutoolDelete" + menuSection + "Find", true);
 					} else {
-						button_disable(frmDefSel.cmdDelete, true);
-						menu_toolbarEnableItem("mnutoolDeleteToolsFind", false);
+						menu_toolbarEnableItem("mnutoolDelete" + menuSection + "Find", false);
 					}
 				}
 			} else {
-				frmDefSel.cmdEdit.value = 'Edit';
-				menu_SetmnutoolButtonCaption("mnutoolEditToolsFind", "Edit");
+				menu_SetmnutoolButtonCaption("mnutoolEdit" + menuSection + "Find", "Edit");
 
-				if (IsDeletePermitted) {
-					button_disable(frmDefSel.cmdDelete, false);
-					menu_toolbarEnableItem("mnutoolDeleteToolsFind", true);
+				if ($("#DeleteGranted").val() === "True") {
+					menu_toolbarEnableItem("mnutoolDelete" + menuSection + "Find", true);
 				} else {
-					button_disable(frmDefSel.cmdDelete, true);
-					menu_toolbarEnableItem("mnutoolDeleteToolsFind", false);
+					menu_toolbarEnableItem("mnutoolDelete" + menuSection + "Find", false);
 				}
 			}
-
 			refreshControls();
+
 		}
 	
 		function defsel_window_onload() {
@@ -248,323 +235,76 @@
 		}
 
 		function disableNonDefselTabs() {
-				$("#toolbarRecordFind").parent().hide();
-				$("#toolbarRecord").parent().hide();
-				$("#toolbarRecordAbsence").parent().hide();
-				$("#toolbarRecordQuickFind").parent().hide();
-				$("#toolbarRecordSortOrder").parent().hide();
-				$("#toolbarRecordFilter").parent().hide();
-				$("#toolbarRecordMailMerge").parent().hide();
-				//$("#toolbarReportFind").hide();
-				$("#toolbarReportNewEditCopy").parent().hide();
-				$("#toolbarReportRun").parent().hide();
-				//$("#toolbarUtilitiesFind").hide();
-				$("#toolbarUtilitiesNewEditCopy").parent().hide();
-				//$("#toolbarToolsFind").hide();
-				//$("#toolbarEventLogFind").hide();
-				$("#toolbarEventLogView").parent().hide();
-				//$("#toolbarWFPendingStepsFind").hide();
-				$("#toolbarAdminConfig").parent().hide();
+			$("#toolbarRecordFind").parent().hide();
+			$("#toolbarRecord").parent().hide();
+			$("#toolbarRecordAbsence").parent().hide();
+			$("#toolbarRecordQuickFind").parent().hide();
+			$("#toolbarRecordSortOrder").parent().hide();
+			$("#toolbarRecordFilter").parent().hide();
+			$("#toolbarRecordMailMerge").parent().hide();
+			$("#toolbarReportNewEditCopy").parent().hide();
+			$("#toolbarReportRun").parent().hide();
+			$("#toolbarUtilitiesNewEditCopy").parent().hide();
+			$("#toolbarEventLogView").parent().hide();
+			$("#toolbarAdminConfig").parent().hide();
 		}
 
 		function refreshControls() {
+			
+			//show the Defsel-Find menu block.
 
-				//show the Defsel-Find menu block.
-				//$("#mnuSectionUtilities").show();
-				frmDefSel = document.getElementById('frmDefSel');			
+			disableNonDefselTabs();
 
-				disableNonDefselTabs();
+			var fFromMenu = (parseInt($("#txtSingleRecordID").val()) <= 0);
+			var fHasRows = (rowCount() > 0);
+			var isNewPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "NEW").ToString.ToLower%>");
+			var isEditPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "EDIT").ToString.ToLower%>");
+			var isViewPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "VIEW").ToString.ToLower%>");
+			var isDeletePermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "DELETE").ToString.ToLower%>");
+			var isRunPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "RUN").ToString.ToLower%>");
 
-				//reset utilities tab
-				menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", true);
-				menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", true);
-				menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", true);
-				menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", true);
-				menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
-				menu_setVisibleMenuItem("mnutoolRunUtilitiesFind", true);
-				var isSingleRecord = (parseInt($("#txtSingleRecordID").val()) <= 0);
-				var fHasRows = (rowCount() > 0);
+			var isWorkflow = (defSelType === "utlWorkflow");
 
-			var IsNewPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "NEW").ToString.ToLower%>");
-			var IsEditPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "EDIT").ToString.ToLower%>");
-			var IsViewPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "VIEW").ToString.ToLower%>");
-			var IsDeletePermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "DELETE").ToString.ToLower%>");
-			var IsRunPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "RUN").ToString.ToLower%>");
+			$("#toolbarUtilitiesFind").parent().hide();
+			$("#toolbarToolsFind").parent().hide();
+			$("#toolbarEventLogFind").parent().hide();
+			$("#toolbarWFPendingStepsFind").parent().hide();
+			$("#toolbarReportFind").parent().hide();
 
-			switch ('<%:CInt(Session("defseltype"))%>') {
-				case '0':  // "BatchJobs"
-						break;
-				case '1':  // "CrossTabs"
-						// Hide the remaining tabs
-						$("#toolbarUtilitiesFind").parent().hide();
-						$("#toolbarToolsFind").parent().hide();
-						$("#toolbarEventLogFind").parent().hide();
-						$("#toolbarWFPendingStepsFind").parent().hide();
-						// Enable the buttons
-						menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolNewReportFind", true);
-						menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
-						menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && isSingleRecord);
-						menu_SetmnutoolButtonCaption("mnutoolEditReportFind", (IsEditPermitted == false ? 'View' : 'Edit'));
-						menu_setVisibleMenuItem("mnutoolEditReportFind", true);
-						menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
-						menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
-						menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted && isSingleRecord);
-						// Only display the 'close' button for defsel when called from rec edit...
-						menu_setVisibleMenuItem('mnutoolCloseReportFind', !isSingleRecord);
-						menu_toolbarEnableItem('mnutoolCloseReportFind', !isSingleRecord);
-						// Show and select the tab
-						$("#toolbarReportFind").parent().show();
-						$("#toolbarReportFind").click();
-						break;
-				case '2':  // "CustomReports"
+			menu_setVisibleMenuItem("mnutoolNew" + menuSection + "Find", !isWorkflow);
+			menu_setVisibleMenuItem("mnutoolCopy" + menuSection + "Find", !isWorkflow);
+			menu_setVisibleMenuItem("mnutoolEdit" + menuSection + "Find", !isWorkflow);
+			menu_setVisibleMenuItem("mnutoolDelete" + menuSection + "Find", !isWorkflow);
+			menu_setVisibleMenuItem("mnutoolProperties" + menuSection + "Find", !isWorkflow);
+			menu_setVisibleMenuItem("mnutoolRun" + menuSection + "Find", (menuSection !== "Tools"));
+			menu_setVisibleMenuItem("mnutoolClose" + menuSection + "Find", !fFromMenu);
 
-						// Hide the remaining tabs
-						$("#toolbarUtilitiesFind").parent().hide();
-						$("#toolbarToolsFind").parent().hide();
-						$("#toolbarEventLogFind").parent().hide();
-						$("#toolbarWFPendingStepsFind").parent().hide();
-						// Enable the buttons
-						menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolNewReportFind", true);
-						menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
-						menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && isSingleRecord);
-						menu_SetmnutoolButtonCaption("mnutoolEditReportFind", (IsEditPermitted == false ? 'View' : 'Edit'));
-						menu_setVisibleMenuItem("mnutoolEditReportFind", true);
-						menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
-						menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
-						menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted && isSingleRecord);
-						// Only display the 'close' button for defsel when called from rec edit...
-						menu_setVisibleMenuItem('mnutoolCloseReportFind', !isSingleRecord);
-						menu_toolbarEnableItem('mnutoolCloseReportFind', !isSingleRecord);
-						// Show and select the tab
-						$("#toolbarReportFind").parent().show();
-						$("#toolbarReportFind").click();
-						break;
-				case '3':  //sTemp = sTemp & "DataTransfer"
-						break;
-				case '4':  //sTemp = sTemp & "Export"
-						break;
-				case '5':  //sTemp = sTemp & "GlobalAdd"
-						break;
-				case '6':  //sTemp = sTemp & "GlobalDelete"
-						break;
-				case '7':  //sTemp = sTemp & "GlobalUpdate"
-						break;
-				case '8':  //sTemp = sTemp & "Import"
-						break;
-				case '9':  // "MailMerge"
-						// Hide the remaining tabs
-						$("#toolbarToolsFind").parent().hide();
-						$("#toolbarReportFind").parent().hide();
-						$("#toolbarEventLogFind").parent().hide();
-						$("#toolbarWFPendingStepsFind").parent().hide();
+			if (!isWorkflow) {
+				menu_toolbarEnableItem("mnutoolNew" + menuSection + "Find", isNewPermitted && fFromMenu);
+				menu_toolbarEnableItem("mnutoolCopy" + menuSection + "Find", fHasRows && isNewPermitted && fFromMenu);
+				menu_toolbarEnableItem("mnutoolEdit" + menuSection + "Find", fHasRows && (isEditPermitted || isViewPermitted) && fFromMenu);
+				menu_toolbarEnableItem("mnutoolProperties" + menuSection + "Find", fHasRows && fFromMenu);
+				if (menuSection !== "Tools") menu_toolbarEnableItem("mnutoolRun" + menuSection + "Find", fHasRows && isRunPermitted && fFromMenu);
+				if (menuSection !== "Tools") menu_toolbarEnableItem("mnutoolClose" + menuSection + "Find", !fFromMenu);
+				if (defSelType === "17") menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && isRunPermitted); //Calendar Reports
+			} else {
+				menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fFromMenu);
+			}
 
-						// Enable the buttons
-						
-						menu_toolbarEnableItem("mnutoolNewUtilitiesFind", IsNewPermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", true);
-						menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", fHasRows && IsNewPermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", true);
-						menu_toolbarEnableItem("mnutoolEditUtilitiesFind", fHasRows && (IsEditPermitted || IsViewPermitted) && isSingleRecord);
-						menu_SetmnutoolButtonCaption("mnutoolEditUtilitiesFind", (IsEditPermitted == false ? 'View' : 'Edit'));
-						menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", true);
-						menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", fHasRows && IsDeletePermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", true);
-						menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", fHasRows && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
-
-						menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fHasRows && IsRunPermitted);
-						//only display the 'close' button for defsel when called from rec edit...
-						menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', !isSingleRecord);
-						menu_toolbarEnableItem('mnutoolCloseUtilitiesFind', !isSingleRecord);
-
-						// Show and select the tab
-						$("#toolbarUtilitiesFind").parent().show();
-						$("#toolbarUtilitiesFind").click();
-						break;
-
-				case '10': // "Picklists"
-						// Hide the remaining tabs
-						$("#toolbarUtilitiesFind").parent().hide();
-						$("#toolbarReportFind").parent().hide();
-						$("#toolbarEventLogFind").parent().hide();
-						$("#toolbarWFPendingStepsFind").parent().hide();
-						// Enable the buttons
-						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted && isSingleRecord);
-						menu_toolbarEnableItem("mnutoolCopyToolsFind", fHasRows && IsNewPermitted && isSingleRecord);
-						menu_toolbarEnableItem("mnutoolEditToolsFind", fHasRows && (IsEditPermitted || IsViewPermitted) && isSingleRecord);
-						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fHasRows && isSingleRecord);
-						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
-						menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
-						// Show and select the tab
-						$("#toolbarToolsFind").parent().show();
-						$("#toolbarToolsFind").click();
-						break;
-				case '11': // "Filters"
-						// Hide the remaining tabs
-						$("#toolbarUtilitiesFind").parent().hide();
-						$("#toolbarReportFind").parent().hide();
-						$("#toolbarEventLogFind").parent().hide();
-						$("#toolbarWFPendingStepsFind").parent().hide();
-						// Enable the buttons
-						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted && isSingleRecord);
-						menu_toolbarEnableItem("mnutoolCopyToolsFind", fHasRows && IsNewPermitted && isSingleRecord);
-						menu_toolbarEnableItem("mnutoolEditToolsFind", fHasRows && (IsEditPermitted || IsViewPermitted) && isSingleRecord);
-						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fHasRows && isSingleRecord);
-						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
-						menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
-						// Show and select the tab
-						$("#toolbarToolsFind").parent().show();
-						$("#toolbarToolsFind").click();
-						break;
-				case '12': // "Calculations"
-						// Hide the remaining tabs
-						$("#toolbarUtilitiesFind").parent().hide();
-						$("#toolbarReportFind").parent().hide();
-						$("#toolbarEventLogFind").parent().hide();
-						$("#toolbarWFPendingStepsFind").parent().hide();
-						// Enable the buttons
-						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted && isSingleRecord);
-						menu_toolbarEnableItem("mnutoolCopyToolsFind", fHasRows && IsNewPermitted && isSingleRecord);
-						menu_toolbarEnableItem("mnutoolEditToolsFind", fHasRows && (IsEditPermitted || IsViewPermitted) && isSingleRecord);
-						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fHasRows && isSingleRecord);
-						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
-						menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
-						// Show and select the tab
-						$("#toolbarToolsFind").parent().show();
-						$("#toolbarToolsFind").click();
-						break;
-				case '17': // "CalendarReports"
-						// Hide the remaining tabs
-						$("#toolbarUtilitiesFind").parent().hide();
-						$("#toolbarToolsFind").parent().hide();
-						$("#toolbarEventLogFind").parent().hide();
-						$("#toolbarWFPendingStepsFind").parent().hide();
-						// Enable the buttons
-						menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolNewReportFind", true);
-						menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
-						menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && isSingleRecord);
-						menu_SetmnutoolButtonCaption("mnutoolEditReportFind", (IsEditPermitted == false ? 'View' : 'Edit'));
-						menu_setVisibleMenuItem("mnutoolEditReportFind", true);
-						menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
-						menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
-
-						menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted);
-						//only display the 'close' button for defsel when called from rec edit...
-						menu_setVisibleMenuItem('mnutoolCloseReportFind', !isSingleRecord);
-						menu_toolbarEnableItem('mnutoolCloseReportFind', !isSingleRecord);
-
-						// Show and select the tab
-						$("#toolbarReportFind").parent().show();
-						$("#toolbarReportFind").click();
-						break;
-				case '25': // "Workflow"
-						// Hide the remaining tabs
-						$("#toolbarToolsFind").parent().hide();
-						$("#toolbarReportFind").parent().hide();
-						$("#toolbarEventLogFind").parent().hide();
-						$("#toolbarWFPendingStepsFind").parent().hide();
-						// Enable the buttons
-						menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", IsNewPermitted);
-						menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", false);
-						menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", false);
-						menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", false);
-						menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", false);
-						menu_toolbarEnableItem("mnutoolRunUtilitiesFind", isSingleRecord);
-						//only display the 'close' button for defsel when called from rec edit...
-						if (isSingleRecord === true) {
-								menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', true);
-								menu_toolbarEnableItem('mnutoolCloseUtilitiesFind', true);
-						}
-						else {
-								menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', false);
-						}
-						// Show and select the tab
-						$("#toolbarUtilitiesFind").parent().show();
-						$("#toolbarUtilitiesFind").click();
-						break;
-					case '35':  // "NineBoxGrid"
-						// Hide the remaining tabs
-						$("#toolbarUtilitiesFind").parent().hide();
-						$("#toolbarToolsFind").parent().hide();
-						$("#toolbarEventLogFind").parent().hide();
-						$("#toolbarWFPendingStepsFind").parent().hide();
-						// Enable the buttons
-						menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolNewReportFind", true);
-						menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
-						menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && isSingleRecord);
-						menu_SetmnutoolButtonCaption("mnutoolEditReportFind", (IsEditPermitted == false ? 'View' : 'Edit'));
-						menu_setVisibleMenuItem("mnutoolEditReportFind", true);
-						menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
-						menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows && isSingleRecord);
-						menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
-						menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted && isSingleRecord);
-						// Only display the 'close' button for defsel when called from rec edit...
-						menu_setVisibleMenuItem('mnutoolCloseReportFind', !isSingleRecord);
-						menu_toolbarEnableItem('mnutoolCloseReportFind', !isSingleRecord);
-						// Show and select the tab
-						$("#toolbarReportFind").parent().show();
-						$("#toolbarReportFind").click();
-						break;
-		}
-
-		var fNoneSelected;
-		var frmDefSel = document.getElementById('frmDefSel');
-
-			//TODO - Check if anything selected
-			//fNoneSelected = (frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Count == 0);
-
-		button_disable(frmDefSel.cmdEdit, (fNoneSelected ||
-				(!IsEditPermitted && !IsNewPermitted)));
-		button_disable(frmDefSel.cmdNew, !IsNewPermitted);
-		button_disable(frmDefSel.cmdCopy, (fNoneSelected || !IsNewPermitted));
-		button_disable(frmDefSel.cmdDelete, (fNoneSelected ||
-				!IsDeletePermitted ||
-				(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")));
-
-		if ((IsEditPermitted &&
-				!IsViewPermitted) ||
-				(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")) {
-				frmDefSel.cmdEdit.value = "View";
-				$('#mnutoolEditReportFind h6').text('View');
-				$('#mnutoolEditReportFind a').attr('title', 'View');
-		}
-		else {
-				frmDefSel.cmdEdit.value = "Edit";
-				$('#mnutoolEditReportFind h6').text('Edit');
-				$('#mnutoolEditReportFind a').attr('title', 'Edit');
-		}
-
-		button_disable(frmDefSel.cmdProperties, (fNoneSelected ||
-				(!IsNewPermitted &&
-				!IsEditPermitted &&
-				!IsViewPermitted &&
-				!IsDeletePermitted &&
-				!IsDeletePermitted)));
-		button_disable(frmDefSel.cmdRun, (fNoneSelected || !IsRunPermitted));
+			// Finally show and select the tab
+			$("#toolbar" + menuSection + "Find").parent().show();
+			$("#toolbar" + menuSection + "Find").click();
 
 			// If delete permission is given for the report but the 'Read Only' permission has been given in Group Access then disable the delete button
-		if (fHasRows && IsDeletePermitted && isSingleRecord) {
-			DisableDeleteButtonIfDefinationHasReadOnlyAccess('mnutoolDeleteReportFind');
+			if (fHasRows && isDeletePermitted && fFromMenu) {
+				DisableDeleteButtonIfDefinitionHasReadOnlyAccess("mnutoolDeleteReportFind");
+			}
+
 		}
-	}
+
 
 	// If the selected record has Read Only permission given in the Group Access then disable the delete button
-	function DisableDeleteButtonIfDefinationHasReadOnlyAccess(menuItem) {
+	function DisableDeleteButtonIfDefinitionHasReadOnlyAccess(menuItem) {
 		var rowId = $("#DefSelRecords").getGridParam('selrow');
 		if (rowId != null) {
 			var gridData = $("#DefSelRecords").getRowData(rowId);
@@ -1141,6 +881,14 @@
 			ToggleCheck();
 		});
 	});
-		
+
+	function allowEdit() {
+		var rowId = $("#DefSelRecords").getGridParam("selrow");
+		var gridData = $("#DefSelRecords").getRowData(rowId);
+		if (gridData.Access === "ro") {
+			return false;
+		}
+		return true;
+	}
 </script>
 
