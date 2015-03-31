@@ -151,16 +151,12 @@
 			} catch (e) { //continue with navigation 
 			}
 		}
-		else {
-			$("#divthemeRoller").dialog("open");
 
-			//load the themeeditor form now
-			loadPartialView("themeEditor", "home", "divthemeRoller", null);
-		}
+		//always try to show the theme layout dialog.
+		$("#divthemeRoller").dialog("open");
+		//load the themeeditor form now
+		loadPartialView("themeEditor", "home", "divthemeRoller", null);
 	}
-
-	//why was this here?...
-	//$("#officebar").tabs();
 
 </script>
 <div id="fixedlinks">
