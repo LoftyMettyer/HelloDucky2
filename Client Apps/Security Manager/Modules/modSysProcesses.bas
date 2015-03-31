@@ -34,11 +34,12 @@ Public Function CurrentUsersPopulate(grdTemp As SSDBGrid, strUsersToLogOut As St
          LCase(sLoginName) <> LCase(Trim(gsUserName)) Then
         grdTemp.AddItem sLoginName & vbTab & sHostName & vbTab & sProgName & vbTab & sSPID
       End If
-    End If
 
-    ' Count the web users
-    If rsUsers!program_name = "OpenHR Web" Or rsUsers!program_name = "Self-service" Then
-      WebUserCount = WebUserCount + 1
+      ' Count the web users
+      If rsUsers!program_name = "OpenHR Web" Or rsUsers!program_name = "Self-service" Then
+        WebUserCount = WebUserCount + 1
+      End If
+    
     End If
       
     rsUsers.MoveNext
