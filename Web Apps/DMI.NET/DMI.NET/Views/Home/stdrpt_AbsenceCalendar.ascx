@@ -142,7 +142,7 @@
 			}
 
 		function PrintGrid() {
-			var divToPrint = $("#optionframe").html();
+			var divToPrint = $("#optionframe #Background").html();
 			var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
 						
 			newWin.document.write("<link href=\"" + window.ROOT + "Content/OpenHR.css" + "\" rel=\"stylesheet\" />");
