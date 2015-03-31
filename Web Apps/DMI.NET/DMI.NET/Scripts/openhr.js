@@ -550,15 +550,12 @@
 							$frame.html('');
 							$(".popup").dialog("open");
 							$(".popup").dialog({ dialogClass: 'no-close' });
-						}
+						}						
 
-						$frame.html(html);
-						$frame.show();
+					} 
 
-					} else {
-						$frame.html('');
-						$frame.html(html);
-					}
+					$frame.html('');
+					$frame.html(html);					
 
 					//jQuery styling
 					$(function () {
