@@ -2661,38 +2661,37 @@ function menu_loadPage(psPage) {
 }
 
 	function menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, psFilterLookupValue) {
-	var frmRecEditArea;
-	var frmOptionArea;
-	
-	menu_ShowWait("Loading lookup find records...");
-	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
-	
-	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
-	frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
+		var frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+		var frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 
-	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
-	frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
-	frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
-	frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-	frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-	frmOptionArea.txtGotoOptionValue.value = "";
-	frmOptionArea.txtGotoOptionLinkTableID.value = 0;
-	frmOptionArea.txtGotoOptionLinkOrderID.value = 0;
-	frmOptionArea.txtGotoOptionLinkViewID.value = 0;
-	frmOptionArea.txtGotoOptionLinkRecordID.value = 0;
-	frmOptionArea.txtGotoOptionColumnID.value = plngColumnID;
-	frmOptionArea.txtGotoOptionLookupColumnID.value = plngLookupColumnID;
-	frmOptionArea.txtGotoOptionLookupValue.value = psLookupValue;
-	frmOptionArea.txtGotoOptionLookupMandatory.value = pfMandatory;
-	frmOptionArea.txtGotoOptionLookupFilterValue.value = psFilterLookupValue;
-	frmOptionArea.txtGotoOptionAction.value = "";
-	frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
-	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
-	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
+		menu_ShowWait("Loading lookup find records...");
+		menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 
-	OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "menu_loadLookupPage");
+		var postData = {
+			txtGotoOptionScreenID: frmRecEditArea.txtCurrentScreenID.value,
+			txtGotoOptionTableID: frmRecEditArea.txtCurrentTableID.value,
+			txtGotoOptionViewID: frmRecEditArea.txtCurrentViewID.value,
+			txtGotoOptionOrderID: frmRecEditArea.txtCurrentOrderID.value,
+			txtGotoOptionFilterDef: frmRecEditArea.txtRecEditFilterDef.value,
+			txtGotoOptionFilterSQL: frmRecEditArea.txtRecEditFilterSQL.value,
+			txtGotoOptionValue: "",
+			txtGotoOptionLinkTableID: 0,
+			txtGotoOptionLinkOrderID: 0,
+			txtGotoOptionLinkViewID: 0,
+			txtGotoOptionLinkRecordID: 0,
+			txtGotoOptionColumnID: plngColumnID,
+			txtGotoOptionLookupColumnID: plngLookupColumnID,
+			txtGotoOptionLookupValue: psLookupValue,
+			txtGotoOptionLookupMandatory: pfMandatory,
+			txtGotoOptionLookupFilterValue: psFiltlerLookupValue,
+			txtGotoOptionAction: "",
+			txtGotoOptionPageAction: "LOAD",
+			txtGotoOptionFirstRecPos: 1,
+			txtGotoOptionCurrentRecCount: 0,
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		};
 
+		OpenHR.submitForm(frmOptionArea, "optionframe", null, postData, "menu_loadLookupPage");
 }
 
 	function menu_loadLinkPage(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID) {
