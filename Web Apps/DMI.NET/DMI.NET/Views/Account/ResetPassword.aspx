@@ -121,7 +121,7 @@
 			</tr>
 			<tr>
 				<td style="text-align: center" > 
-						<p style="text-align: center;">Reset your password</p>
+						<h3 style="text-align: center;">Reset your password</h3>
 				</td>
 			</tr>
 				
