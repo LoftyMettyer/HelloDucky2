@@ -244,25 +244,23 @@ Public Class Menu
 		Dim TableInfo As New List(Of TableScreen)
 		Dim objTableScreen As TableScreen
 
-		sSQL = String.Format("SELECT ASRSysTables.tableID, ASRSysTables.tableName, ASRSysScreens.screenID, v.HideFromMenu AS [result]" & _
+		sSQL = String.Format("SELECT ASRSysTables.tableID, ASRSysTables.tableName, ASRSysScreens.screenID" & _
 			" FROM ASRSysTables" & _
 			" INNER JOIN ASRSysScreens ON ASRSysTables.tableID = ASRSysScreens.tableID" & _
-			" INNER JOIN ASRSysViewMenuPermissions v ON v.TableName = ASRSysTables.tablename AND v.groupName = '{0}'" & _
+			" LEFT JOIN ASRSysViewMenuPermissions v ON v.TableName = ASRSysTables.tablename AND v.groupName = '{0}'" & _
 			" WHERE ASRSysTables.tableType = {1}" & _
+			" AND ISNULL(v.HideFromMenu, 0) = 0" & _
 			" AND ((ASRSysScreens.ssIntranet IS null) OR (ASRSysScreens.ssIntranet = 0)) AND ((ASRSysScreens.quickEntry IS null)" & _
 			" OR (ASRSysScreens.quickEntry = 0))" & _
 			" ORDER BY ASRSysTables.tableName DESC", _login.UserGroup, Trim(Str(TableTypes.tabLookup)))
 
 		rsTableScreens = DB.GetDataTable(sSQL, CommandType.Text)
 		For Each objRow As DataRow In rsTableScreens.Rows
-			If CInt(objRow("Result")) = 0 Then
-				objTableScreen = New TableScreen
-				objTableScreen.TableID = CInt(objRow("TableID"))
-				objTableScreen.TableName = objRow("TableName").ToString()
-				objTableScreen.ScreenID = CInt(objRow("ScreenID"))
-				TableInfo.Add(objTableScreen)
-			End If
-
+			objTableScreen = New TableScreen With {
+				.TableID = CInt(objRow("TableID")),
+				.TableName = objRow("TableName").ToString(),
+				.ScreenID = CInt(objRow("ScreenID"))}
+			TableInfo.Add(objTableScreen)
 		Next
 
 		Return TableInfo
