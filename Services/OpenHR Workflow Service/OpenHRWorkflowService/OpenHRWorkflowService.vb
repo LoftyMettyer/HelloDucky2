@@ -575,7 +575,8 @@ Public Class OpenHRWorkflowService
                   cmdDetails.Parameters.Add("@psTableName", SqlDbType.VarChar, 255).Direction = ParameterDirection.Output
                   cmdDetails.Parameters.Add("@piDataAction", SqlDbType.Int).Direction = ParameterDirection.Output
                   cmdDetails.Parameters.Add("@piRecordID", SqlDbType.Int).Direction = ParameterDirection.Output
-                  cmdDetails.Parameters.Add("@pfResult", SqlDbType.Bit).Direction = ParameterDirection.Output
+									cmdDetails.Parameters.Add("@bUseAsTargetIdentifier", SqlDbType.Bit).Direction = ParameterDirection.Output
+									cmdDetails.Parameters.Add("@pfResult", SqlDbType.Bit).Direction = ParameterDirection.Output
 
                   Try
                     cmdDetails.ExecuteNonQuery()
