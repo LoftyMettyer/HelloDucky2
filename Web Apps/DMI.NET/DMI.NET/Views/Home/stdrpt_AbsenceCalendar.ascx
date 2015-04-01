@@ -162,10 +162,14 @@
 			elementToHide.style.display = "none";
 			elementToHide = newWin.document.getElementById("cmdNextYear");
 			elementToHide.style.display = "none";
-			newWin.document.close();
-			newWin.focus();
-			newWin.print();
-			newWin.close();
+
+			setTimeout(function () {
+				newWin.document.close();
+				newWin.focus();
+				newWin.print();
+				newWin.close();
+			}, 200);	//delay for chrome
+
 		}
 
 </script>
