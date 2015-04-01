@@ -117,8 +117,8 @@
 			$("#txtDescription").val(gridData.description);
 
 			// Populate the hidden fields with the selected utils information       
-			$("#UtilID").val($("#DefSelRecords").getGridParam("selrow"));
-			$("#UtilName").val(gridData.Name);
+			$("#utilid").val($("#DefSelRecords").getGridParam("selrow"));
+			$("#utilname").val(gridData.Name);
 
 			if (gridData.Username !== username) {
 				if (!allowEdit()) {
@@ -401,10 +401,7 @@
 								__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 							}
 
-									OpenHR.submitForm(null, "divPopupReportDefinition", null, postData, "defsel_submit");
-							//debugger;
-							//OpenHR.OpenDialog("defsel_submit", "divPopupReportDefinition", postData, '900px');
-
+							OpenHR.submitForm(null, "divPopupReportDefinition", null, postData, "defsel_submit");
 
 						}
 					});
