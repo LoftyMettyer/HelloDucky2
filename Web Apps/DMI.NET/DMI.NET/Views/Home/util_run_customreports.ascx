@@ -346,21 +346,29 @@ End If
 		Next%>
 			],
 			colModel: [
-				<%
+		<%
 	iColCount = 0
-		For Each objItem In objReport.DisplayColumns
-			Dim sColumnName = objReport.ReportDataTable.Columns(iColCount).ColumnName.Replace(" ", "_").Replace("""", "_")
-			Dim iColumnWidth As Integer = 100
-			If objItem.IsNumeric Then
-				Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "',align:'right', width: '" & iColumnWidth.ToString() & "'}")
-			ElseIf objItem.IsDateColumn Then
-				Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', edittype: 'date', align: 'center',  formatter: 'date', formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true, width: '" & iColumnWidth.ToString() & "' }}")
+	
+	For Each objItem In objReport.DisplayColumns
+		Dim sColumnName = objReport.ReportDataTable.Columns(iColCount).ColumnName.Replace(" ", "_").Replace("""", "_")
+		Dim iColumnWidth As Integer = 100
+		
+		If objItem.IsNumeric Then
+			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "',align:'right', width: '" & iColumnWidth.ToString() & "'}")
+		ElseIf objItem.IsDateColumn Then
+			If objItem.GroupWithNextColumn Then
+				' two concatenated dates so remove date formatter
+				Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', edittype: 'date', align: 'center', formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true, width: '" & iColumnWidth.ToString() & "' }}")
 			Else
-				Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', width: '" & iColumnWidth.ToString() & "'}")
+				Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', edittype: 'date', align: 'center',  formatter: 'date', formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true, width: '" & iColumnWidth.ToString() & "' }}")
 			End If
-			iColCount += 1
-		Next
-	%>
+		Else
+			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', width: '" & iColumnWidth.ToString() & "'}")
+		End If
+		
+		iColCount += 1
+	Next
+			%>
 			],
 			cmTemplate: { sortable: false },
 			rowNum: 200000,
