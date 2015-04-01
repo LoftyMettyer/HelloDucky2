@@ -2683,7 +2683,7 @@ function menu_loadPage(psPage) {
 			txtGotoOptionLookupColumnID: plngLookupColumnID,
 			txtGotoOptionLookupValue: psLookupValue,
 			txtGotoOptionLookupMandatory: pfMandatory,
-			txtGotoOptionLookupFilterValue: psFiltlerLookupValue,
+			txtGotoOptionLookupFilterValue: psFilterLookupValue,
 			txtGotoOptionAction: "",
 			txtGotoOptionPageAction: "LOAD",
 			txtGotoOptionFirstRecPos: 1,
