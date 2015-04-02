@@ -323,7 +323,7 @@
 	Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
 %>
 
-<div id="contextmenu" class="accordion" style="display: none;">
+<div id="contextmenu" class="accordion" style="display: none;">	
 		<h3 id="mnutoolDatabase">Database</h3>
 		<div>
 			<ul id="mnubandDatabase">
@@ -414,7 +414,7 @@
 			</ul>
 		</div>
 </div>
-
+<div class="ui-dialog-titlebar ui-widget-header ui-corner-all" style="font-size: 14pt; font-weight: normal; padding: 2px;">Search: <input id="menuSearch" style="font-size: small;" type="text"/></div>
 <div class="accessibility ui-accordion-header ui-helper-reset ui-state-default ui-corner-all">
 	<ul>
 		<li><a class="size-big" href="#" id="FontSizeBig" title="Large font"><span>A</span></a></li>

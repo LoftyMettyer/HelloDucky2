@@ -150,6 +150,33 @@ function menu_abMainMenu_DataReady() {
 		OpenHR.postData("WorkflowOutOfOffice_Check", null, menu_OutOfOfficeTurnOff);
 	}
 
+	//Set up search box with all available/accessible options in the menu.
+	var availableTags = [];
+
+	$('.accordion').find('a').each(function() {
+		var menuItem = $(this).text();
+		var menuTarget = $(this).parent().attr('id');
+		var includeThisItem = true;
+
+		if ($(this).hasClass("disabled") === true) includeThisItem = false; //no disabled items
+		if ($(this).siblings(".ui-icon-triangle-1-e").length > 0) includeThisItem = false;	//no expandable menu items
+
+		if (includeThisItem)
+			availableTags.push({ label: menuItem, value: menuTarget });
+	});
+
+	$("#menuSearch").autocomplete({
+		source: function(request, response) {
+			var results = $.ui.autocomplete.filter(availableTags, request.term);
+			response(results.slice(0, 20));	//show first 20 items maximum
+		},
+		select: function(event, ui) {
+			menu_abMainMenu_Click(ui.item.value); 
+			this.value = "";	//reset search value
+			return false;
+		},
+		position: { my: "left bottom", at: "left top", collision: "flip" }	//open upwards
+	});
 }
 
 function menu_abMainMenu_Click(pTool) {
