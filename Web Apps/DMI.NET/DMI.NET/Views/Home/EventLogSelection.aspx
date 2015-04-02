@@ -50,36 +50,34 @@
 		}
 	</script>
 
-	<form id="frmEventSelection" name="frmEventSelection">
-		<div>
-			<div class="pageTitleDiv padbot15">
-				<span class="pageTitle" id="PopupEventDeleteTitle">Delete Events</span>
-			</div>
+<div>
+	<div class="pageTitleDiv padbot15">
+		<span class="pageTitle" id="PopupEventDeleteTitle">Delete Events</span>
+	</div>
 
-			<div class="padleft20 padbot10">
-				<div class="padbot10">
-					Please select the entries you wish to delete from the options below : 
-				</div>
-
-				<div class="padbot5">
-					<input id="optSelection1" name="optSelection" type="radio" checked>
-					<label for="optSelection1" tabindex="-1">Only the currently highlighted row(s)</label>
-				</div>
-
-				<div class="padbot5">
-					<input id="optSelection2" name="optSelection" type="radio">
-					<label for="optSelection2" tabindex="-1">All entries currently displayed</label>				
-				</div>
-
-				<div class="padbot5">
-					<input id="optSelection3" name="optSelection" type="radio">
-					<label for="optSelection3" tabindex="-1">All entries (that the current user has permission to see)</label>
-				</div>
-			</div>
-
-			<div id="divEventLogDeleteButtons" class="clearboth">
-				<input id="cmdDelete" type="button" value="Delete" name="cmdDelete" onclick="deleteClick();">
-				<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel" onclick="cancelClick();">
-			</div>
+	<div class="padleft20 padbot10">
+		<div class="padbot10">
+			Please select the entries you wish to delete from the options below : 
 		</div>
-	</form>
+
+		<div class="padbot5">
+			<input id="optSelection1" name="optSelection" type="radio" checked>
+			<label for="optSelection1" tabindex="-1">Only the currently highlighted row(s)</label>
+		</div>
+
+		<div class="padbot5">
+			<input id="optSelection2" name="optSelection" type="radio">
+			<label for="optSelection2" tabindex="-1">All entries currently displayed</label>
+		</div>
+
+		<div class="padbot5">
+			<input id="optSelection3" name="optSelection" type="radio">
+			<label for="optSelection3" tabindex="-1">All entries (that the current user has permission to see)</label>
+		</div>
+	</div>
+
+	<div id="divEventLogDeleteButtons" class="clearboth">
+		<input id="cmdDelete" type="button" value="Delete" name="cmdDelete" onclick="deleteClick();">
+		<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel" onclick="cancelClick();">
+	</div>
+</div>
