@@ -104,19 +104,6 @@
 	Session("CT_PercentageOfPage") = False
 	Session("CT_SupressZeros") = False
 
-	If Session("utiltype") Is Nothing Or _
-		 Session("utilname") Is Nothing Or _
-		 Session("utilid") Is Nothing Or _
-		 Session("action") Is Nothing Then
-				
-		Response.Write("Error : Not all session variables found...<HR>")
-		Response.Write("Type = " & Session("utiltype") & "<BR>")
-		Response.Write("UtilName = " & Session("utilname") & "<BR>")
-		Response.Write("UtilID = " & Session("utilid") & "<BR>")
-		Response.Write("Action = " & Session("action") & "<BR>")
-		Response.End()
-	End If
-
 	' Pass required info to the DLL
 	objCrossTab.CrossTabID = Session("utilid")
 

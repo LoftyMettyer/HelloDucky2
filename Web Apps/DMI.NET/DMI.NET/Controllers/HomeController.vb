@@ -2394,9 +2394,43 @@ Namespace Controllers
 		Function util_run_standardreport_promptedvalues(value As StandardReportRunModel) As ActionResult
 			Try
 
+				Session("stdReport_StartDate") = value.txtFromDate
+				Session("stdReport_EndDate") = value.txtToDate
+				Session("stdReport_AbsenceTypes") = value.txtAbsenceTypes
+				Session("stdReport_FilterID") = value.txtBaseFilterID
+				Session("stdReport_FilterName") = value.txtFilterName
+				Session("stdReport_PicklistID") = value.txtBasePicklistID
+				Session("stdReport_PicklistName") = value.txtPicklistName
+				Session("stdReport_Bradford_SRV") = value.txtSRV
+				Session("stdReport_Bradford_ShowDurations") = value.txtShowDurations
+				Session("stdReport_Bradford_ShowFormula") = value.txtShowFormula
+				Session("stdReport_Bradford_ShowInstances") = value.txtShowInstances
+				Session("stdReport_Bradford_OmitBeforeStart") = value.txtOmitBeforeStart
+				Session("stdReport_Bradford_OmitAfterEnd") = value.txtOmitAfterEnd
+				Session("stdReport_Bradford_txtOrderBy1") = value.txtOrderBy1
+				Session("stdReport_Bradford_txtOrderBy1ID") = value.txtOrderBy1ID
+				Session("stdReport_Bradford_txtOrderBy1Asc") = value.txtOrderBy1Asc
+				Session("stdReport_Bradford_txtOrderBy2") = value.txtOrderBy2
+				Session("stdReport_Bradford_txtOrderBy2ID") = value.txtOrderBy2ID
+				Session("stdReport_Bradford_txtOrderBy2Asc") = value.txtOrderBy2Asc
+				Session("stdReport_PrintFilterPicklistHeader") = value.txtPrintFPinReportHeader
+				Session("stdReport_MinimumBradfordFactor") = value.txtMinimumBradfordFactor
+				Session("stdReport_MinimumBradfordFactorAmount") = value.txtMinimumBradfordFactorAmount
+				Session("stdReport_DisplayBradfordDetail") = value.txtDisplayBradfordDetail
+
+				Session("stdReport_OutputPreview") = value.txtSend_OutputPreview
+				Session("stdReport_OutputFormat") = value.txtSend_OutputFormat
+				Session("stdReport_OutputSave") = value.txtSend_OutputSave
+				Session("stdReport_OutputSaveExisting") = 0
+				Session("stdReport_OutputEmail") = value.txtSend_OutputEmail
+				Session("stdReport_OutputEmailAddr") = value.txtSend_OutputEmailAddr
+				Session("stdReport_OutputEmailSubject") = value.txtSend_OutputEmailSubject
+				Session("stdReport_OutputEmailAttachAs") = value.txtSend_OutputEmailAttachAs
+				Session("stdReport_OutputFilename") = value.txtSend_OutputFilename
+
 				Session("utiltype") = CInt(value.utiltype)
-				Session("utilid") = value.utilid
-				Session("utilname") = value.utilname
+				Session("utilid") = value.ID
+				Session("utilname") = value.Name
 				Session("action") = "run"
 				Session("MailMerge_Template") = Nothing
 
@@ -2405,7 +2439,7 @@ Namespace Controllers
 
 			End Try
 
-			Return View("util_run_promptedvalues")
+			Return View("util_run_promptedvalues", value)
 		End Function
 
 		<ValidateAntiForgeryToken>

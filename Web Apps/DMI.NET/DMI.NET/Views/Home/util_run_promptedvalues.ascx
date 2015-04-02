@@ -121,40 +121,6 @@
 		<form id="frmPromptedValues" method="POST">
 
 			<%
-				' Get variables for Absence Breakdown / Bradford Factor
-				Session("stdReport_StartDate") = Request.Form("txtFromDate")
-				Session("stdReport_EndDate") = Request.Form("txtToDate")
-				Session("stdReport_AbsenceTypes") = Request.Form("txtAbsenceTypes")
-				Session("stdReport_FilterID") = Request.Form("txtBaseFilterID")
-				Session("stdReport_FilterName") = Request.Form("txtFilterName")
-				Session("stdReport_PicklistID") = Request.Form("txtBasePicklistID")
-				Session("stdReport_PicklistName") = Request.Form("txtPicklistName")
-				Session("stdReport_Bradford_SRV") = Request.Form("txtSRV")
-				Session("stdReport_Bradford_ShowDurations") = Request.Form("txtShowDurations")
-				Session("stdReport_Bradford_ShowFormula") = Request.Form("txtShowFormula")
-				Session("stdReport_Bradford_ShowInstances") = Request.Form("txtShowInstances")
-				Session("stdReport_Bradford_OmitBeforeStart") = Request.Form("txtOmitBeforeStart")
-				Session("stdReport_Bradford_OmitAfterEnd") = Request.Form("txtOmitAfterEnd")
-				Session("stdReport_Bradford_txtOrderBy1") = Request.Form("txtOrderBy1")
-				Session("stdReport_Bradford_txtOrderBy1ID") = Request.Form("txtOrderBy1ID")
-				Session("stdReport_Bradford_txtOrderBy1Asc") = Request.Form("txtOrderBy1Asc")
-				Session("stdReport_Bradford_txtOrderBy2") = Request.Form("txtOrderBy2")
-				Session("stdReport_Bradford_txtOrderBy2ID") = Request.Form("txtOrderBy2ID")
-				Session("stdReport_Bradford_txtOrderBy2Asc") = Request.Form("txtOrderBy2Asc")
-				Session("stdReport_PrintFilterPicklistHeader") = Request.Form("txtPrintFPinReportHeader")
-				Session("stdReport_MinimumBradfordFactor") = Request.Form("txtMinimumBradfordFactor")
-				Session("stdReport_MinimumBradfordFactorAmount") = Request.Form("txtMinimumBradfordFactorAmount")
-				Session("stdReport_DisplayBradfordDetail") = Request.Form("txtDisplayBradfordDetail")
-
-				Session("stdReport_OutputPreview") = Request.Form("txtSend_OutputPreview")
-				Session("stdReport_OutputFormat") = Request.Form("txtSend_OutputFormat")
-				Session("stdReport_OutputSave") = Request.Form("txtSend_OutputSave")
-				Session("stdReport_OutputSaveExisting") = 0
-				Session("stdReport_OutputEmail") = Request.Form("txtSend_OutputEmail")
-				Session("stdReport_OutputEmailAddr") = Request.Form("txtSend_OutputEmailAddr")
-				Session("stdReport_OutputEmailSubject") = Request.Form("txtSend_OutputEmailSubject")
-				Session("stdReport_OutputEmailAttachAs") = Request.Form("txtSend_OutputEmailAttachAs")
-				Session("stdReport_OutputFilename") = Request.Form("txtSend_OutputFilename")
 
 				Dim objDatabaseAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 				Dim rstPromptedValue As DataTable

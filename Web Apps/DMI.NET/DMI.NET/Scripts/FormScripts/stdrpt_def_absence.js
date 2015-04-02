@@ -211,17 +211,17 @@ function absence_okClick() {
 		}
 
 
-	frmPostDefinition.utilid.value = "0";
+	frmPostDefinition.ID.value = "0";
 	frmPostDefinition.txtPicklistName.value = "";
 	frmPostDefinition.txtFilterName.value = "";
 	if (frmAbsenceDefinition.optPickList.checked == true) {
-		frmPostDefinition.utilid.value = frmPostDefinition.txtBasePicklistID.value;
+		frmPostDefinition.ID.value = frmPostDefinition.txtBasePicklistID.value;
 		if ($("#RecordSelection").css("visibility") != "hidden") {
 			frmPostDefinition.txtPicklistName.value = frmAbsenceDefinition.txtBasePicklist.value;
 		}
 	}
 	if (frmAbsenceDefinition.optFilter.checked == true) {
-		frmPostDefinition.utilid.value = frmPostDefinition.txtBaseFilterID.value;
+		frmPostDefinition.ID.value = frmPostDefinition.txtBaseFilterID.value;
 		if ($("#RecordSelection").css("visibility") != "hidden") {
 			frmPostDefinition.txtFilterName.value = frmAbsenceDefinition.txtBaseFilter.value;
 		}

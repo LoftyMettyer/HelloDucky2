@@ -850,8 +850,8 @@
 	<input type="hidden" id="txtPrintFPinReportHeader" name="txtPrintFPinReportHeader">
 	<input type="hidden" id="txtRecSelCurrentID" name="txtRecSelCurrentID" value='<%:Session("optionRecordID")%>'>
 	<input type="hidden" id="utiltype" name="utiltype" value='<%:iUtilType%>'>
-	<input type="hidden" id="utilid" name="utilid" value='<%:session("utilid")%>'>
-	<input type="hidden" id="utilname" name="utilname" value="Standard Report">
+	<input type="hidden" id="ID" name="utilid" value='<%:session("utilid")%>'>
+	<input type="hidden" id="Name" name="utilname" value="Standard Report">
 	<input type="hidden" id="action" name="action" value="run">
 	<input type="hidden" id="txtSend_OutputPreview" name="txtSend_OutputPreview">
 	<input type="hidden" id="txtSend_OutputFormat" name="txtSend_OutputFormat">

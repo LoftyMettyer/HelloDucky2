@@ -4,6 +4,8 @@ Option Explicit On
 Namespace Models.ObjectRequests
 
 	Public Class StandardReportRunModel
+		Inherits PromptedValuesModel
+
 		Public Property txtRecordSelectionType As String
 		Public Property txtFromDate As String
 		Public Property txtToDate As String
@@ -29,9 +31,6 @@ Namespace Models.ObjectRequests
 		Public Property txtDisplayBradfordDetail As Boolean
 		Public Property txtPrintFPinReportHeader As Boolean
 		Public Property txtRecSelCurrentID As Integer
-		Public Property utiltype As UtilityType
-		Public Property utilid As Integer
-		Public Property utilname As String
 		Public Property action As String
 		Public Property txtSend_OutputPreview As String
 		Public Property txtSend_OutputFormat As String
