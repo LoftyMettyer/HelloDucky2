@@ -69,8 +69,7 @@ BEGIN
 		@iGetCount				integer,
 		@iColSize				integer,
 		@iColDecs				integer,
-		@sActualUserName		sysname,
-		@sTempName				sysname;
+		@sActualUserName		sysname;
 
 	/* Clean the input string parameters. */
 	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''');
@@ -150,10 +149,6 @@ BEGIN
 		SET @pfError = 1;
 		RETURN;
 	END
-
-	EXECUTE [dbo].[sp_ASRUniqueObjectName] @sTempName OUTPUT, 'ASRSysTempInt', 3;
-	EXECUTE ('CREATE TABLE ' + @sTempName + ' (ID INT)');
-	IF @psExcludedIDs <> '0' EXECUTE('INSERT INTO ' + @sTempName + ' (ID) SELECT ID FROM ' + @sRealSource + ' WHERE ID IN (' + @psExcludedIDs + ')');
 
 	/* Create a temporary table to hold the tables/views that need to be joined. */
 	DECLARE @joinParents TABLE(
@@ -255,7 +250,6 @@ BEGIN
 	BEGIN
 
 		SET @pfError = 1
-		EXECUTE sp_ASRDropUniqueObject @sTempName, 3
 		RETURN
 	END
 
@@ -506,8 +500,8 @@ BEGIN
 	END
 
 	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource
-	IF @psExcludedIDs <> '0' SET @sTempExecString = @sTempExecString + ' WHERE ' + @sRealSource + '.ID NOT IN (SELECT ID FROM ' + @sTempName + ')'
+	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.id) FROM ' + @sRealSource;
+	IF @psExcludedIDs <> '0' SET @sTempExecString = @sTempExecString + ' WHERE ' + @sRealSource + '.ID NOT IN (' + @psExcludedIDs + ')';
 
 	SET @sTempParamDefinition = N'@recordCount integer OUTPUT'
 	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT
@@ -593,7 +587,7 @@ BEGIN
 
 		IF @psExcludedIDs <> '0' 
 		BEGIN
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID NOT IN (SELECT ID FROM ' + @sTempName + ')';
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID NOT IN (' + @psExcludedIDs + ')';
 			SET @sExecString = @sExecString + @sTempString;
 		END
 		
@@ -784,7 +778,7 @@ BEGIN
 		CLOSE joinCursor;
 		DEALLOCATE joinCursor;
 
-		IF @psExcludedIDs <> '0' SET @sTempExecString = @sTempExecString + ' WHERE ' + @sRealSource + '.ID NOT IN (SELECT ID FROM ' + @sTempName + ')';
+		IF @psExcludedIDs <> '0' SET @sTempExecString = @sTempExecString + ' WHERE ' + @sRealSource + '.ID NOT IN (' + @psExcludedIDs + ')';
 		SET @sTempExecString = @sTempExecString + @sLocateCode;
 
 		SET @sTempParamDefinition = N'@recordCount integer OUTPUT';
@@ -813,12 +807,9 @@ BEGIN
 	END
 
 	/* Return a recordset of the required columns in the required order from the given table/view. */
-	IF (len(@sExecString) > 0)
-	BEGIN
-		EXEC (@sExecString) --+ @sExecString2)
-	END
+	IF (LEN(@sExecString) > 0)
+		EXECUTE sp_executeSQL @sExecString;
 
-	EXECUTE sp_ASRDropUniqueObject @sTempName, 3
 END
 
 GO

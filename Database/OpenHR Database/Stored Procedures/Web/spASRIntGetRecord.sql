@@ -27,7 +27,6 @@ BEGIN
 		@sSubParamDefinition		nvarchar(500),
 		@sPositionCommand			nvarchar(MAX),
 		@sTemp						nvarchar(MAX),
-		@sPositionParamDefinition	nvarchar(500),
 		@sMoveCommand				nvarchar(MAX),
 		@sReverseOrderSQL			varchar(MAX),
 		@sRelevantOrderSQL			varchar(MAX),
@@ -47,14 +46,11 @@ BEGIN
 		@iIntValue					integer,
 		@dblNumValue				float,
 		@dtDateValue				datetime,
-		@sTempTableName				sysname,
-		@sTempTablePrefix			sysname,
 		@iSpaceIndex 				integer,
 		@fDescending				integer,
 		@fAddedToPositionString		bit,
 		@fAddedToMoveString			bit,
 		@sSubString 				varchar(MAX),
-		@sTempName 					sysname,
 		@sPositionSQL				nvarchar(MAX),
 		@sFromSQL					varchar(MAX),
 		@sRealSource				varchar(MAX),
@@ -851,12 +847,9 @@ BEGIN
 
 	IF @fPositionKnown = 0
 	BEGIN
-		/* Calculate the current record's position. */
-		EXECUTE sp_ASRUniqueObjectName @sTempName OUTPUT, 'ASRSysTempInt', 3;
-		EXECUTE ('CREATE TABLE ' + @sTempName + ' (result INT)');
 
-		/* Calculate the current record's position. */
-		SET @sPositionCommand = 'INSERT INTO ' + convert(varchar(255), @sTempName) + ' SELECT COUNT(' + @sRealSource + '.id)' +
+		/* Calculate the current record's position. */																		 
+		SET @sPositionCommand = 'SELECT @recordPosition = COUNT(' + @sRealSource + '.id)' +
 			' FROM ' + @sFromSQL + 
 			' WHERE ';
 
@@ -1315,12 +1308,9 @@ BEGIN
 		SET @sPositionCommand = @sPositionCommand + @sTemp;
 		SET @fAddedToPositionString = 1;
 
-		EXECUTE sp_executeSQL @sPositionCommand;
+		SET @sParamDefinition = N'@recordPosition integer OUTPUT';
+		EXEC sp_executesql @sPositionCommand, @sParamDefinition, @iRecordPosition OUTPUT;
 
-		set @sPositionSQL = 'SELECT @recordPosition = result FROM ' + @sTempName;
-		SET @sPositionParamDefinition = N'@recordPosition integer OUTPUT';
-		EXEC sp_executesql @sPositionSQL, @sPositionParamDefinition, @iRecordPosition OUTPUT;
-		EXECUTE [dbo].[sp_ASRDropUniqueObject] @sTempName, 3;
 		SET @iRecordPosition = @iRecordPosition + 1;
 	END
 
