@@ -443,7 +443,6 @@ Namespace Repository
 
 						objModel.RegionID = CInt(row("RegionID"))
 						objModel.GroupByDescription = CBool(row("GroupByDescription"))
-						objModel.Separator = row("Separator").ToString
 
 						Select Case row("Separator").ToString
 							Case ""
@@ -451,7 +450,7 @@ Namespace Repository
 							Case " "
 								objModel.Separator = "Space"
 							Case Else
-								objModel.Separator = row("Separator").ToString
+								objModel.Separator = row("Separator").ToString.Trim
 						End Select
 
 						objModel.StartType = CType(row("StartType"), CalendarDataType)
@@ -842,11 +841,20 @@ Namespace Repository
 				Dim sSeparator As String
 				Select Case objModel.Separator
 					Case "None"
+						' No space when seperator is None
 						sSeparator = ""
 					Case "Space"
+						'Add single space when seperator is Space.
 						sSeparator = " "
+					Case ","
+						' Add single space when seperator is comma (,)
+						sSeparator = objModel.Separator + " "
+					Case "."
+						' Add two space when seperator is dot (.)
+						sSeparator = objModel.Separator + "  "
 					Case Else
-						sSeparator = objModel.Separator
+						' Add right and left both side single space when seperator is not above case
+						sSeparator = " " + objModel.Separator + " "
 				End Select
 
 				Dim sReportOrder As String = SortOrderAsString(objModel.SortOrders)
