@@ -1192,7 +1192,7 @@ function ABSFileInput(value, options) {
 		var fileLabel = document.createElement("label");
 		$(fileLabel).attr("for", fileInputID);
 		$(fileLabel).addClass("btn btn-large");
-		$(fileLabel).on('click', function() { return preChecks(); });
+		$(fileLabel).on('click', function() { return preChecks(options.dataIsPhoto); });
 		if (value == "") value = "Add...";
 		$(fileLabel).text(value);
 		$(fileLabel).button();
@@ -1764,9 +1764,9 @@ function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto, uniqueID)
 
 }
 
-function preChecks() {
-	if (selectedRecordID() == "0") {
-		OpenHR.modalMessage("Unable to edit photo fields until the record has been saved.");
+function preChecks(isPhoto) {
+	if (selectedRecordID() == "0") {		
+		OpenHR.modalMessage("Unable to edit " + (isPhoto?"photo":"OLE") + " fields until the record has been saved.");			
 		return false;
 	}
 	return true;
