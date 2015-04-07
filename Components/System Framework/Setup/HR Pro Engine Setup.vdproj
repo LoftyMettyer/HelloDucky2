@@ -293,6 +293,11 @@
             "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_00E7412CEF6CD096E30B4794B4F5C4D7"
+                    {
+                    "Name" = "8:log4net.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:log4net.dll"
             "TargetName" = "8:"
@@ -319,6 +324,11 @@
             "AssemblyAsmDisplayName" = "8:NHibernate.JetDriver, Version=2.0.0.1001, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_49B1BA38015C58F49BDB46AD0A5404FF"
+                    {
+                    "Name" = "8:NHibernate.JetDriver.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:NHibernate.JetDriver.dll"
             "TargetName" = "8:"
@@ -365,6 +375,11 @@
             "AssemblyAsmDisplayName" = "8:NSQLFormatter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_790E3EA40D3704C9AEDF92F776CF5232"
+                    {
+                    "Name" = "8:NSQLFormatter.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:NSQLFormatter.dll"
             "TargetName" = "8:"
@@ -411,6 +426,11 @@
             "AssemblyAsmDisplayName" = "8:ConfOrm.Shop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=90b38bd64c76a74a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_801012A9BF3221FE9DC817D12B89009A"
+                    {
+                    "Name" = "8:ConfOrm.Shop.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ConfOrm.Shop.dll"
             "TargetName" = "8:"
@@ -437,6 +457,11 @@
             "AssemblyAsmDisplayName" = "8:Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_A0F45F34B8E0D3DF3CBFE46C6978C921"
+                    {
+                    "Name" = "8:Iesi.Collections.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Iesi.Collections.dll"
             "TargetName" = "8:"
@@ -483,6 +508,11 @@
             "AssemblyAsmDisplayName" = "8:NHibernate, Version=3.2.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_BE98E242D2684AD8FF05CFA6608967ED"
+                    {
+                    "Name" = "8:NHibernate.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:NHibernate.dll"
             "TargetName" = "8:"
@@ -509,6 +539,11 @@
             "AssemblyAsmDisplayName" = "8:ConfOrm, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed8affdf01cbe4cf, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_FE169EE628C835E4DDAAE68F2F4A713A"
+                    {
+                    "Name" = "8:ConfOrm.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ConfOrm.dll"
             "TargetName" = "8:"
@@ -595,15 +630,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Framework 8.1"
-        "ProductCode" = "8:{25E484E4-69AA-4970-9E6F-00CAA3A052F4}"
-        "PackageCode" = "8:{F274B5AB-7275-41F4-9AA1-A5B689BA91BA}"
+        "ProductCode" = "8:{EB9C2171-6FE0-4DB8-B3C5-E22B28387226}"
+        "PackageCode" = "8:{400F17E6-D5F2-4C01-BD77-B5C0535BFD5F}"
         "UpgradeCode" = "8:{8137B836-C29D-4277-A581-3214A9DA8603}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:8.1.12"
+        "ProductVersion" = "8:8.1.13"
         "Manufacturer" = "8:Advanced Business Software and Solutions Limited"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
