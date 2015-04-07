@@ -163,7 +163,7 @@ function menu_abMainMenu_DataReady() {
 		if ($(this).siblings(".ui-icon-triangle-1-e").length > 0) includeThisItem = false;	//no expandable menu items
 
 		if (includeThisItem)
-			availableTags.push({ label: menuItem, value: menuTarget });
+			availableTags.push({ label: menuItem, targetvalue: menuTarget });
 	});
 
 	$("#menuSearch").autocomplete({
@@ -172,7 +172,7 @@ function menu_abMainMenu_DataReady() {
 			response(results.slice(0, 20));	//show first 20 items maximum
 		},
 		select: function(event, ui) {
-			menu_abMainMenu_Click(ui.item.value); 
+			menu_abMainMenu_Click(ui.item.targetvalue); 
 			this.value = "";	//reset search value
 			return false;
 		},
