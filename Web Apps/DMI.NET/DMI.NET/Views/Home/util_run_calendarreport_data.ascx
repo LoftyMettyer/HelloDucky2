@@ -182,7 +182,11 @@
 					Response.Write(showWeekEndUnChecked)
 				End If
 			Else
-				Response.Write(showWeekEndUnChecked)
+				If (TempData("IsShowWeekendsChecked") IsNot Nothing) AndAlso (CBool(TempData("IsShowWeekendsChecked"))) Then
+					Response.Write(showWeekEndChecked)
+				Else
+					Response.Write(showWeekEndUnChecked)
+				End If
 			End If
 						
 		%>
