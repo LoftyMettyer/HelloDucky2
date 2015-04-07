@@ -48,6 +48,7 @@
 		var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmCalendarGetData");
 		frmGetDataForm.txtMonth.value = sMonthYear.substring(0, 2);
 		frmGetDataForm.txtYear.value = sMonthYear.substring(3, 7);
+		frmGetDataForm.txtShowWeekends.value = $("#chkShowWeekends")[0].checked;
 		OpenHR.submitForm(frmGetDataForm);
 	});
 
@@ -68,6 +69,7 @@
 		var d = new Date();
 		frmGetDataForm.txtMonth.value = d.getMonth() + 1;
 		frmGetDataForm.txtYear.value = d.getFullYear();
+		frmGetDataForm.txtShowWeekends.value = $("#chkShowWeekends")[0].checked;
 		OpenHR.submitForm(frmGetDataForm);
 		return true;
 	}
@@ -168,10 +170,19 @@
 		<%--<div class="scheduler_white_event_inner" style="position: relative;">--%>
 			<div  style="position: relative;">
 		<% 
+			Const showWeekEndChecked As String = "<input type='checkbox' id='chkShowWeekends' name='chkShowWeekends' onclick=""toggleWeekends();"" checked=""checked""/>Show Weekends" & vbNewLine
+			Const showWeekEndUnChecked As String = "<input type='checkbox' id='chkShowWeekends' name='chkShowWeekends' onclick=""toggleWeekends();""/>Show Weekends" & vbNewLine
+
 			If objCalendar.ShowWeekends Then
-				Response.Write("<input type='checkbox' id='chkShowWeekends' name='chkShowWeekends' onclick=""toggleWeekends();"" checked=""checked""/>Show Weekends" & vbNewLine)
+				' When load for the first time then TempData("IsShowWeekendsChecked") will be nothing.
+				' When user change any month then onwards it gives true or false based on the chkShowWeekends checked value
+				If (TempData("IsShowWeekendsChecked") Is Nothing) Or (CBool(TempData("IsShowWeekendsChecked"))) Then
+					Response.Write(showWeekEndChecked)
+				Else
+					Response.Write(showWeekEndUnChecked)
+				End If
 			Else
-				Response.Write("<input type='checkbox' id='chkShowWeekends' name='chkShowWeekends' onclick=""toggleWeekends();""/>Show Weekends" & vbNewLine)
+				Response.Write(showWeekEndUnChecked)
 			End If
 						
 		%>

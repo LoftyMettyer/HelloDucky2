@@ -3552,6 +3552,9 @@ Namespace Controllers
 			Session("CALREP_ShowWeekends") = Request.Form("txtShowWeekends")
 			Session("CALREP_ChangeOptions") = Request.Form("txtChangeOptions")
 
+			' Set the temp data to store the state of check/uncheck value of ShowWeekends checkbox 
+			TempData("IsShowWeekendsChecked") = Request.Form("txtShowWeekends")
+
 			' Go to the requested page.
 			Return RedirectToAction("util_run_calendarreport_data")
 
