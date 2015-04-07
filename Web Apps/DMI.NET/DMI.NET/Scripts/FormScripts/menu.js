@@ -159,6 +159,7 @@ function menu_abMainMenu_DataReady() {
 		var includeThisItem = true;
 
 		if ($(this).hasClass("disabled") === true) includeThisItem = false; //no disabled items
+		if ($(this).parent().hasClass("hidden") === true) includeThisItem = false; //no hidden items
 		if ($(this).siblings(".ui-icon-triangle-1-e").length > 0) includeThisItem = false;	//no expandable menu items
 
 		if (includeThisItem)
