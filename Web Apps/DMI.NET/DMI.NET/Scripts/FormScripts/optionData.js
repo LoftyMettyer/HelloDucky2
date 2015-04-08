@@ -469,12 +469,21 @@ function optiondata_onload() {
 					}
 				});
 
-				$("#ssOleDBGridRecords").jqGrid('navGrid', '#pager-coldata-optiondata', { del: false, add: false, edit: false, search: false });
+				// Navbar options = i.e. search, edit, save etc 
+				$("#ssOleDBGridRecords").jqGrid('navGrid', '#pager-coldata-optiondata', { del: false, add: false, edit: false, search: false, refresh: false }); // setup the buttons we want
+				$("#ssOleDBGridRecords").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });  //instantiate toolbar so we can use toggle.
+				$("#ssOleDBGridRecords")[0].toggleToolbar();  // Toggle it off at start up.
+
 				$("#ssOleDBGridRecords").jqGrid('navButtonAdd', "#pager-coldata-optiondata", {
 					caption: '',
 					buttonicon: 'ui-icon-search',
 					onClickButton: function () {
 						$("#ssOleDBGridRecords").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
+						$("#ssOleDBGridRecords")[0].toggleToolbar(); // Toggle toolbar on & off when Search button is pressed.
+						$("#ssOleDBGridRecords")[0].clearToolbar();  // clear menu
+						var isSearching = $('#frmLookupFindForm .ui-search-toolbar').is(':visible');
+						$("#ssOleDBGridRecords_iledit").toggleClass('ui-state-disabled', isSearching);
+						$("#ssOleDBGridRecords_iladd").toggleClass('ui-state-disabled', isSearching);
 					},
 					position: 'first',
 					title: '',
