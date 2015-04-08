@@ -12338,7 +12338,7 @@ ErrorTrap:
 
 End Sub
 
-Private Function CopyWhenParentRecordIsCopied(ByVal iParentTableID As Integer, ByVal iNewRecordID As Integer, ByVal iOriginalRecordID As Integer) As Boolean
+Private Function CopyWhenParentRecordIsCopied(ByVal iParentTableID As Integer, ByVal iNewRecordID As Long, ByVal iOriginalRecordID As Long) As Boolean
 
   On Error GoTo ErrorTrap
   
