@@ -80,7 +80,7 @@
 			
 			$('#dialog-confirm').dialog('option', 'buttons', dialogButtons);
 			//$('#dialog-confirm').dialog('option', 'title', title);
-			$('#dialog-confirm p').text(prompt);
+			$('#dialog-confirm p').html($.parseHTML(prompt));
 			$('#dialog-confirm').dialog('open');
 			// If Any ActiveX controls are in the workframeset, move the dailog to the very top of the screen to avoid it being hidden behind the ActiveX
 			if ($('#workframeset object').length > 0) {
