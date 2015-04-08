@@ -569,6 +569,19 @@ Private Sub cmdOK_Click()
             
       With lstSelectedFindColumns
         For iSequence = 0 To .ListCount - 1
+          
+          If .Selected(iSequence) = True Then
+            ' Check that all editable find columns are from this table only
+            Dim OrderItemTableID As Integer
+            OrderItemTableID = GetTableIDFromColumnID(CLng(.ItemData(iSequence)))
+            
+            If OrderItemTableID <> Order.TableID Then
+              MsgBox "Unable to save the order definition. Only columns from the base table can be made editable.", vbOKOnly + vbExclamation, Application.Name
+              fOK = False
+              Exit For
+            End If
+          End If
+               
           mobjOrder.AddOrderItem .ItemData(iSequence), "F", iSequence, True, .List(iSequence), .Selected(iSequence)
         Next
       End With
