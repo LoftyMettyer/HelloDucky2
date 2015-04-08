@@ -1817,11 +1817,11 @@ function refreshSummaryColumns() {
 		
 		var indexNumber = this.id.substr(15);
 
-		var ctlSummary = $("input[id^='ctlSummary_" + indexNumber + "']");
+		var ctlSummary = $("input[id^='ctlSummary_" + indexNumber + "_']");
 		var ctlDataType = $(ctlSummary).attr("id").substr(indexNumber.length + 12); //ctlSummary_xxxxx
 
 		if ($(ctlSummary).is(":checkbox")) {
-			$(ctlSummary).prop("checked", ($(this).val() == "TRUE"));
+			$(ctlSummary).prop("checked", ($(this).val().toUpperCase() === "TRUE"));
 		} else {
 			if (ctlDataType == "11") {
 				// Format dates for the locale setting.							
