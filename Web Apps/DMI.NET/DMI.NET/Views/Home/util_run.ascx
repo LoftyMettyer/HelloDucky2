@@ -28,7 +28,7 @@
 		frmError.txtUtilTypeDesc.value = window.frames("top").frmPopup.txtUtilTypeDesc.value;
 		frmError.txtErrorDesc.value = sErrorDesc;
 		frmError.txtOK.value = fok;
-		frmError.txtUserCancelled.value = fcancelled;
+		frmError.txtUserCancelled.value = fcancelled;		
 		var sTarget = new String("errorMessage");
 		frmError.target = sTarget;
 		NewWindow('', sTarget, '500', '200', 'no');
@@ -149,6 +149,7 @@
 	<input type="hidden" id="txtOK" name="txtOK">
 	<input type="hidden" id="txtUserCancelled" name="txtUserCancelled">
 	<input type="hidden" id="txtErrorDesc" name="txtErrorDesc">
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <div id="divUtilRunForm">
@@ -211,7 +212,7 @@
 				<input class="btn minwidth100" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
 				<input class="btn minwidth100" type="button" id="cmdOutput" name="cmdOutput" value="Output" onclick="ExportDataPrompt();" />
 				<input class="btn minwidth100" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
-				<input class="btn minwidth100" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
+				<input class="btn minwidth100" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />					
 			<%End If%>
 			</div>
 		</div>

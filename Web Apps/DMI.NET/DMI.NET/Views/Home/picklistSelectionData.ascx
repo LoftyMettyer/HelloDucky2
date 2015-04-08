@@ -21,8 +21,8 @@
 		if (frmSelectDataUseful.txtLoading.value == "True") {
 			loadAddRecords();
 			return;
-		}
-
+		}		
+		var frmPicklistData = window.frmPicklistData.children;
 		var sFatalErrorMsg = frmPicklistData.txtErrorDescription.value;
 		if (sFatalErrorMsg.length > 0) {
 			OpenHR.messageBox(sFatalErrorMsg);
@@ -37,9 +37,8 @@
 				OpenHR.messageBox(sErrorMsg);
 			}
 
-			$("#ssOleDBGridSelRecords").jqGrid('GridUnload');
-	
-			var dataCollection = frmPicklistData.elements;
+			$("#ssOleDBGridSelRecords").jqGrid('GridUnload');			
+			var dataCollection = frmPicklistData;
 			var sControlName;
 			var sColumnName;
 			var iColumnType;
@@ -182,7 +181,7 @@
 	<input type='hidden' id="txtLoading" name="txtLoading" value='<%=session("picklistSelectionDataLoading")%>'>
 </form>
 
-<form id="frmPicklistData" name="frmPicklistData">
+<div id="frmPicklistData">
 	<%
 		Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
@@ -292,7 +291,7 @@
 
 		Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
 	%>
-</form>
+</div>
 
 <script type="text/javascript">
 	picklistSelectionData_window_onload();
