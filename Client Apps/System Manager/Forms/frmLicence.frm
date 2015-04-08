@@ -629,6 +629,8 @@ Private Sub Form_Load()
         For lngCount = .ListCount - 1 To 0 Step -1
           .Selected(lngCount) = (objLicence.Modules And .ItemData(lngCount))
         Next
+        ' Deselect all rows in Module box for TFS 14733
+        .ListIndex = -1
       End With
       mfLoading = False
 
@@ -664,8 +666,8 @@ Private Sub PopulateModules()
     .AddItem "OpenLMS Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "9-Box Grid Reports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Editable Grids": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
-		.AddItem "Power Customisation Pack" : .ItemData(.NewIndex) = lngBit : lngBit = lngBit * 2
-		lngBit = lngBit * 2
+                .AddItem "Power Customisation Pack": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+                lngBit = lngBit * 2
   End With
 
 End Sub
