@@ -34,15 +34,17 @@ Namespace Controllers
 			Dim sThousandColumns As String = ""
 			Dim sBlankIfZeroColumns As String = ""
 			Dim sErrorDescription As String = ""
+			Dim iOrderID = objSession.Tables.GetById(piTableID).DefaultOrderID
+
 			Try
-				Get1000SeparatorBlankIfZeroFindColumns(piTableID, 0, piOrderID, sThousandColumns, sBlankIfZeroColumns)
+				Get1000SeparatorBlankIfZeroFindColumns(piTableID, 0, iOrderID, sThousandColumns, sBlankIfZeroColumns)
 			Catch ex As Exception
 			End Try
 
 			rstLookup = objDataAccess.GetFromSP("spASRIntGetLookupFindRecords2" _
 											, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = piTableID} _
 											, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = 0} _
-											, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = piOrderID} _
+											, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = iOrderID} _
 											, New SqlParameter("piLookupColumnID", SqlDbType.Int) With {.Value = piLookupColumnID} _
 											, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 10000} _
 											, _prmIsFirstPage _

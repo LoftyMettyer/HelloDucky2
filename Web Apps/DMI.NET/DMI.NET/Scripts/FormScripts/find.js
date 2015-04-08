@@ -936,7 +936,7 @@ function showLookupForColumn(element) {
 		for (var i = 0; i <= colModel.length - 1; i++) {
 			if (colModel[i].id == columnLookupFilterValueID) {
 				if ((isNaN(rowId)) || (rowId == 0)) { //If this is a new row get the filterCellValue from the last row added (i.e. the new one)
-					filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data")[$("#findGridTable").jqGrid("getGridParam", "data").length - 1][colModel[i].name];
+					filterCellValue = $('#' + rowId + ' *[datacolumnid="' + columnLookupFilterValueID + '"]').val();
 					if (typeof filterCellValue == "undefined") {
 						filterCellValue = '';
 					}
@@ -962,9 +962,9 @@ function showLookupForColumn(element) {
 		lookupUrl += 'generic/GetLookupFindRecords';
 		lookupParameters = { piLookupColumnID: columnLookupColumnID, psFilterValue: filterCellValue, piCallingColumnID: clickedColumnId, piFirstRecPos: 0 };
 	} else {
-		lookupUrl += 'generic/GetLookupFindRecords2';
-		//tableId and orderId below are defined in Find.ascx so they are be available here
-		lookupParameters = { piTableID: tableId, piOrderID: orderId, piLookupColumnID: columnLookupColumnID, psFilterValue: filterCellValue, piCallingColumnID: clickedColumnId, piFirstRecPos: 0 };
+		//for Parent table lookups
+		lookupUrl += 'generic/GetLookupFindRecords2';		
+		lookupParameters = { piTableID: columnLookupTableID, piOrderID: '0', piLookupColumnID: columnLookupColumnID, psFilterValue: filterCellValue, piCallingColumnID: clickedColumnId, piFirstRecPos: 0 };
 	}
 
 	$.ajax({
