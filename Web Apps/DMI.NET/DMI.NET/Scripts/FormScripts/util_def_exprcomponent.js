@@ -914,7 +914,7 @@ function functionAndOperator_refresh() {
 		$(trvTreeView).html('');
 
 		if (colCollection != null) {
-			for (i = 0; i < colCollection.length; i++) {
+			for (i = 0; i < colCollection.length - 1; i++) {
 				sName = functionAndOperatorParameter(colCollection.item(i).value, "NAME");
 				sID = functionAndOperatorParameter(colCollection.item(i).value, "ID");
 				sCategory = functionAndOperatorParameter(colCollection.item(i).value, "CATEGORY");
