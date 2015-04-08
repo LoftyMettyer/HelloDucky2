@@ -377,7 +377,7 @@ function find_window_onload() {
 										name: sColumnName,
 										edittype: "select",
 										id: iColumnId,
-										editable: true,
+										editable: !sReadOnly,
 										type: "select",
 										editoptions: {
 											readonly: sReadOnly,
