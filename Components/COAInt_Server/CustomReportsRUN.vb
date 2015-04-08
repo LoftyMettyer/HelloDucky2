@@ -1413,7 +1413,6 @@ Public Class Report
 	End Function
 
 	Public Function CreateMutipleChildTempTable() As Boolean
-
 		Dim sMCTempTable As String
 		Dim sSQL As String
 		Dim sParentSelectSQL As String
@@ -1435,6 +1434,9 @@ Public Class Report
 		Dim sVALUES As String
 
 		Dim aryInsertStatements As New List(Of String)
+
+		Dim USCulture = Globalization.CultureInfo.CreateSpecificCulture("en-US") 'Used only for replacing the UI culture's numeric separators with the US ones, so SQL doesn't get confused
+		Dim valueAsDecimal As Decimal	'For use with the above
 
 		Try
 
@@ -1558,7 +1560,9 @@ Public Class Report
 
 									Case "boolean"
 										sVALUES = sVALUES & IIf(CBool(objRow(iFields)), 1, 0) & ","
-
+									Case "decimal"
+										valueAsDecimal = objRow(iFields)
+										sVALUES = sVALUES & "'" & valueAsDecimal.ToString(USCulture.NumberFormat) & "',"
 									Case Else
 										'MH20021119 Fault 4315
 										'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -1594,6 +1598,9 @@ Public Class Report
 												End If
 											Case "boolean"
 												sVALUES = sVALUES & IIf(rowFirstRow(iFields), 1, 0) & ","
+											Case "decimal"
+												valueAsDecimal = rowFirstRow(iFields)
+												sVALUES = sVALUES & "'" & valueAsDecimal.ToString(USCulture.NumberFormat) & "',"
 											Case Else
 												'MH20021119 Fault 4315
 												'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -1641,6 +1648,9 @@ Public Class Report
 									End If
 								Case "boolean"
 									sVALUES = sVALUES & IIf(objRow(iFields), 1, 0) & ","
+								Case "decimal"
+									valueAsDecimal = objRow(iFields)
+									sVALUES = sVALUES & "'" & valueAsDecimal.ToString.Replace(mstrLocalDecimalSeparator, ".") & "',"
 								Case Else
 									'MH20021119 Fault 4315
 									'sVALUES = sVALUES & "'" & Replace(rsParent.Fields(iFields).Value, "'", "''") & "',"
