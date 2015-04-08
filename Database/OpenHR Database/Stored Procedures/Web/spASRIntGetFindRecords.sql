@@ -1494,13 +1494,8 @@ BEGIN
 
 		EXECUTE sp_executeSQL @sExecString;
 
-		DECLARE @IsSingleTable bit = 1;
-
-    	SELECT @IsSingleTable = CASE WHEN COUNT(DISTINCT tableID) = 1 THEN 1 ELSE 0 END
-        FROM @FindDefinition;
-
 		SELECT f.tableID, f.columnID, f.columnName, f.ascending, f.type, f.datatype, f.controltype, f.size, f.decimals, f.Use1000Separator, f.BlankIfZero
-			 , CASE WHEN f.Editable = 1 AND p.updateGranted = 1 THEN @IsSingleTable ELSE 0 END AS updateGranted
+			 , CASE WHEN f.Editable = 1 AND p.updateGranted = 1 THEN 1 ELSE 0 END AS updateGranted
 			 , LookupTableID, LookupColumnID, LookupFilterColumnID, LookupFilterValueID
 			 ,SpinnerMinimum, SpinnerMaximum, SpinnerIncrement, DefaultValue, Mask, DefaultValueExprID
 			FROM @FindDefinition f
