@@ -1311,8 +1311,10 @@ function saveInlineRowToDatabase(rowId) {
 		frmDataArea.txtReaction.value = "REFRESHFINDAFTERINSERT";
 	}
 
-	frmDataArea.txtCurrentViewID.value = $("#txtCurrentViewID").val();;
+	frmDataArea.txtCurrentViewID.value = $("#txtCurrentViewID").val();
 	frmDataArea.txtCurrentTableID.value = $("#txtCurrentTableID").val();
+	frmDataArea.txtParentTableID.value = $("#txtCurrentParentTableID").val();
+	frmDataArea.txtParentRecordID.value = $("#txtCurrentParentRecordID").val();	
 	frmDataArea.txtRealSource.value = $("#txtRealSource").val();
 	if (gridData.ID == "0") { //New record
 		frmDataArea.txtRecordID.value = "0";
