@@ -240,7 +240,7 @@
 												
 								headerStyle.Append("width: 373px; ")
 												
-								If rstOrderRecords.Columns(iLoop).ColumnName = "orderID" Then
+								If rstOrderRecords.Columns(iLoop).ColumnName = "OrderID" Then
 									headerStyle.Append("display: none; ")
 								End If
 	
@@ -248,7 +248,7 @@
 												
 								headerStyle.Append("text-align: left; ")
 										
-								If rstOrderRecords.Columns(iLoop).ColumnName <> "orderID" Then%>
+								If rstOrderRecords.Columns(iLoop).ColumnName <> "OrderID" Then%>
 						<th style="<%=headerStyle.ToString()%>"><%=headerCaption%></th>
 						<%End If
 						Next
@@ -259,7 +259,7 @@
 							Dim iIDNumber As Integer = 0
 												
 							For iLoop = 0 To (rstOrderRecords.Columns.Count - 1)
-								If rstOrderRecords.Columns(iLoop).ColumnName = "orderID" Then
+								If rstOrderRecords.Columns(iLoop).ColumnName = "OrderID" Then
 									iIDNumber = CInt(objRow(iLoop))
 									Exit For
 								End If
@@ -269,7 +269,7 @@
 					<tr disabled="disabled" id="row_<%=iIDNumber.ToString()%>">
 						<%
 							For iLoop = 0 To (rstOrderRecords.Columns.Count - 1)
-								If rstOrderRecords.Columns(iLoop).ColumnName <> "orderID" Then
+								If rstOrderRecords.Columns(iLoop).ColumnName <> "OrderID" Then
 						%>
 						<td class="" id="col_<%=NullSafeString(iIDNumber)%>"><%=Replace(NullSafeString(objRow(iLoop).ToString), "_", " ")%><input type='hidden' value='<%=NullSafeString(iIDNumber)%>'></td>
 						<%
