@@ -49235,7 +49235,7 @@ BEGIN
 		CASE WHEN ASRSysExprComponents.operatorID IS null THEN '''' ELSE convert(varchar(100), ASRSysExprComponents.operatorID) END + char(9) +
 		CASE WHEN ASRSysExprComponents.valueType IS null THEN '''' ELSE convert(varchar(100), ASRSysExprComponents.valueType) END + char(9) +
 		CASE WHEN ASRSysExprComponents.valueCharacter IS null THEN '''' ELSE ASRSysExprComponents.valueCharacter END + char(9) +
-		CASE WHEN ASRSysExprComponents.valueNumeric IS null THEN '''' ELSE convert(varchar(100), convert(numeric(38, 8), ASRSysExprComponents.valueNumeric)) END + char(9) +
+		CASE WHEN ASRSysExprComponents.valueNumeric IS null THEN '''' ELSE convert(varchar(100), convert(numeric(38, 2), ASRSysExprComponents.valueNumeric)) END + char(9) +
 		CASE WHEN ASRSysExprComponents.valueLogic IS null THEN '''' ELSE convert(varchar(100), ASRSysExprComponents.valueLogic) END + char(9) +
 		CASE WHEN ASRSysExprComponents.valueDate IS null THEN '''' ELSE convert(varchar(100), ASRSysExprComponents.valueDate, 101) END + char(9) +
 		CASE WHEN ASRSysExprComponents.promptDescription IS null THEN '''' ELSE ASRSysExprComponents.promptDescription END + char(9) +
