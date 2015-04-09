@@ -1650,7 +1650,7 @@ Public Class Report
 									sVALUES = sVALUES & IIf(objRow(iFields), 1, 0) & ","
 								Case "decimal"
 									valueAsDecimal = objRow(iFields)
-									sVALUES = sVALUES & "'" & valueAsDecimal.ToString.Replace(mstrLocalDecimalSeparator, ".") & "',"
+									sVALUES = sVALUES & "'" & valueAsDecimal.ToString(USCulture.NumberFormat) & "',"
 								Case Else
 									'MH20021119 Fault 4315
 									'sVALUES = sVALUES & "'" & Replace(rsParent.Fields(iFields).Value, "'", "''") & "',"
