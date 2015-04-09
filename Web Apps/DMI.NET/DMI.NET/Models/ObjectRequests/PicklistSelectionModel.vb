@@ -7,7 +7,7 @@ Namespace Models.ObjectRequests
 	Public Class PicklistSelectionModel
 		Public Property TableID As Integer
 		Public Property Action As String
-		Public Property Type As String
+		Public Property Type As String = "ALL"
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Public Property IDs1 As String

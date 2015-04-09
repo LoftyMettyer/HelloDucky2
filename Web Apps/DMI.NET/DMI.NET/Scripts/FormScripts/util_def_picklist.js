@@ -114,8 +114,7 @@ function addClick() {
 
 	var postData = {
 		TableID: $("#txtTableID").val(),
-		Action: "add",
-		Type: "ALL",
+		Action: "add",		
 		IDs1: $('#ssOleDBGrid').getDataIDs().join(","),
 		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 	}
