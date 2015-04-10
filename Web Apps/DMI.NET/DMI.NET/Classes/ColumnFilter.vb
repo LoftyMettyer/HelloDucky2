@@ -12,6 +12,6 @@ Namespace Classes
 		Public ShowFullName As Boolean = False
 		Public IncludeParents As Boolean = False
 		Public IsNumeric As Boolean
-		Public ExcludeOle As Boolean = False
+		Public ExcludeOleAndPhoto As Boolean = False
 	End Class
 End Namespace

@@ -48,7 +48,11 @@
 			
 				ReDim Preserve aColumnNames(1, UBound(aColumnNames, 2) + 1)
 				iCount += 1
+			Else
+				'MsgBox(objRow("ColumnName").ToString())
 			End If
+			
+			
 			
 		Next
 
@@ -491,6 +495,9 @@
 													<option value="0">None</option>
 													<%
 														For iCount = 0 To UBound(aColumnNames, 2) - 1
+															
+															
+															
 															Response.Write("<OPTION VALUE = " & """" & aColumnNames(0, iCount) & """" & ">" & aColumnNames(1, iCount) & "</OPTION>")
 														Next
 													%>

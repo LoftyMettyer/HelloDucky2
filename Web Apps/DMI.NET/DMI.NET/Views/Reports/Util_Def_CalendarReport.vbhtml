@@ -32,14 +32,14 @@ End Code
 					<fieldset>
 						@Html.LabelFor(Function(m) m.Description1ID)
 						<div class="width70 floatright">
-							@Html.ColumnDropdownFor(Function(m) m.Description1ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .ExcludeOle = True}, New With {.class = "enableSaveButtonOnComboChange", .onchange = "validateDescriptions()"})
+							@Html.ColumnDropdownFor(Function(m) m.Description1ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .ExcludeOleAndPhoto = True}, New With {.class = "enableSaveButtonOnComboChange", .onchange = "validateDescriptions()"})
 						</div>
 					</fieldset>
 
 					<fieldset>
 						@Html.LabelFor(Function(m) m.Description2ID)
 						<div class="width70 floatright">
-							@Html.ColumnDropdownFor(Function(m) m.Description2ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .ExcludeOle = True}, New With {.class = "enableSaveButtonOnComboChange", .onchange = "validateDescriptions()"})
+							@Html.ColumnDropdownFor(Function(m) m.Description2ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .ExcludeOleAndPhoto = True}, New With {.class = "enableSaveButtonOnComboChange", .onchange = "validateDescriptions()"})
 						</div>
 					</fieldset>
 

@@ -140,9 +140,10 @@ Namespace Helpers
 																		).OrderBy(Function(m) m.TableID).ThenBy(Function(m) m.Name)
 			End If
 
-			If filter.ExcludeOle Then
+			If filter.ExcludeOleAndPhoto Then
 				For Each column In objColumns
-					If column.DataType <> ColumnDataType.sqlOle Then
+					Dim skipMe As Boolean = (column.DataType = ColumnDataType.sqlOle OrElse column.DataType = ColumnDataType.sqlVarBinary)
+					If skipMe = False Then
 						content.AppendFormat("<option value={0} data-datatype={4} data-size={2} data-decimals={3} data-lookuptableID={6} {5}>{1}</option>" _
 																				 , column.ID _
 																				 , IIf(filter.ShowFullName, column.TableName & "." & column.Name, column.Name) _

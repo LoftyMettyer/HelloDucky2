@@ -355,7 +355,7 @@ Namespace Controllers
 		Function GetAvailableColumnsForTable(TableID As Integer) As JsonResult
 			Dim objResults = objReportRepository.GetColumnsForTable(TableID)
 			
-			objResults.RemoveAll(Function(m) m.IsExpression OrElse m.DataType = ColumnDataType.sqlOle)
+			objResults.RemoveAll(Function(m) m.IsExpression OrElse (m.DataType = ColumnDataType.sqlOle Or m.DataType = ColumnDataType.sqlVarBinary))
 			Return Json(objResults, JsonRequestBehavior.AllowGet)
 
 		End Function
@@ -376,7 +376,7 @@ Namespace Controllers
 
 			If selectionType = "C" Then
 				objAvailable = objReportRepository.GetColumnsForTable(TableID)
-				objAvailable.RemoveAll(Function(m) m.IsExpression OrElse m.DataType = ColumnDataType.sqlOle)
+				objAvailable.RemoveAll(Function(m) m.IsExpression OrElse (m.DataType = ColumnDataType.sqlOle Or m.DataType = ColumnDataType.sqlVarBinary))
 			Else
 				objAvailable = objReportRepository.GetCalculationsForTable(TableID)
 				objAvailable.RemoveAll(Function(m) Not m.IsExpression)
