@@ -455,6 +455,18 @@
 				}
 			}
 		}
+		
+		// If embedded file, make sure it's not any larger than the defined size
+		if ((plngOleType == 2) && (sFile.length > 0)) {
+			var maxRequestLength = Number("<%:Session("maxRequestLength")%>");
+
+			lngFileSize = filSelectFile.files[0].size;
+
+			if (lngFileSize > maxRequestLength * 1000) {
+				OpenHR.modalMessage("File is too large to embed. \nMaximum for this column is " + maxRequestLength + "KB", 48);
+				bOK = false;
+			}
+		}
 
 		if ((sFile.length > 0) && (bOK == true)) {
 			// Load the submit form

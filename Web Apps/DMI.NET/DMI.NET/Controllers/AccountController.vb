@@ -6,6 +6,7 @@ Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
 Imports System.Reflection
+Imports System.Web.Configuration
 Imports HR.Intranet.Server.Structures
 Imports HR.Intranet.Server.Extensions
 Imports DMI.NET.Models
@@ -397,6 +398,14 @@ Namespace Controllers
 				Dim lngSSIPhotographColumnID = CLng(objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSSIPhotograph"))
 				If lngSSIPhotographColumnID <= 0 Then lngSSIPhotographColumnID = 0
 
+
+				Dim maxRequestLength As Integer = 0
+				Dim section As HttpRuntimeSection = TryCast(ConfigurationManager.GetSection("system.web/httpRuntime"), HttpRuntimeSection)
+				If section IsNot Nothing Then
+					maxRequestLength = section.MaxRequestLength
+				End If
+
+				Session("maxRequestLength") = maxRequestLength
 
 				Try
 
