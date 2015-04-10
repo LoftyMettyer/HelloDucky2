@@ -1485,7 +1485,6 @@ function menu_refreshMenu() {
 			}
 		}
 
-		menu_setVisibleMenuItem("mnutoolRecordPosition", !menu_isSSIMode());
 		menu_SetmnutoolRecordPositionCaption(sCaption);
 		
 		menu_setVisibleMenuItem("mnutoolHistory", true);
@@ -1520,7 +1519,9 @@ function menu_refreshMenu() {
 				menu_setVisibleMenuItem("mnutoolMailMergeRecord", false);
 				menu_setVisibletoolbarGroup("mnutoolMailMergeRecord", false);
 				//I think its safe to include not showing Record Position items here
-				menu_setVisibletoolbarGroup("mnutoolRecordPosition", false);
+				// menu_setVisibletoolbarGroup("mnutoolRecordPosition", false);
+				menu_setVisibletoolbarGroup("mnutoolRecordPosition", true);
+
 		}
 			
 		//Toggle Mandatory Fields button

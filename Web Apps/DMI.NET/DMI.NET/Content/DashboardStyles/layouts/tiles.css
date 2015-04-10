@@ -651,7 +651,7 @@ div.officetab li div.textboxlist li {
 }
 
 div.officetab li div.textboxlist {
-	margin-top: -20px;
+	/*margin-top: -20px;*/
 }
 
 /* Start by setting display:none to make this hidden.
