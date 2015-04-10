@@ -1724,6 +1724,18 @@ function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto, uniqueID)
 		}
 	}
 
+	//Ensure file is not any larger than the defined limit set in IIS
+	if (!deleteflag) {
+		var maxRequestLength = Number($("#txtMaxRequestLength").val());
+
+		var lngFileSize = file.size;
+
+		if (lngFileSize > maxRequestLength * 1000) {
+			OpenHR.modalMessage("File is too large to embed. \nMaximum for this column is " + maxRequestLength + "KB", 48);
+			return false;
+		}
+	}
+
 	$.ajax({
 		type: "POST",
 		url: "AjaxFileUpload",

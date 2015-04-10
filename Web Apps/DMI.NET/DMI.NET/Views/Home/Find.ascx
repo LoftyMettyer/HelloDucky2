@@ -693,7 +693,7 @@ If fCanSelect Then
 		sErrorDescription = "The summary field values could not be retrieved." & vbCrLf & FormatError(ex.Message)
 	End Try
 	
-End If 
+End If
 End If
 End If
 	
@@ -710,6 +710,7 @@ Response.Write("				<input type='hidden' id=txtLineage name=txtLineage value=" &
 Response.Write("				<input type='hidden' id=txtFilterDef name=txtFilterDef value=""" & Replace(Session("filterDef"), """", "&quot;") & """>" & vbCrLf)
 Response.Write("				<input type='hidden' id=txtFilterSQL name=txtFilterSQL value=""" & Replace(Session("filterSQL"), """", "&quot;") & """>" & vbCrLf)
 Response.Write("				<input type='hidden' id='txtThousSepSummary' name='txtThousSepSummary' value='" & sThousSepSummaryFields & "'>" & vbCrLf)
+Response.Write("				<input type='hidden' id='txtMaxRequestLength' name='txtMaxRequestLength' value='" & Session("maxRequestLength") & "'>" & vbCrLf)
 End If
 
 Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
