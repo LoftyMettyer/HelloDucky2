@@ -229,7 +229,8 @@
 			</form>
 
 			<div id="SSILinksFrame" style="display: none"></div>
-			<div id="workframe" data-framesource="DEFAULT"></div>		
+			<div id="workframe" data-framesource="DEFAULT"></div>
+			<div id="divWorkflow"></div>
 			<div id="optionframe" data-framesource="emptyoption.asp" style="display: none"><%Html.RenderAction("emptyoption", "home")%></div>
 		</div>
 

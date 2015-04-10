@@ -44,40 +44,21 @@
 
 <script type="text/JavaScript">
 
-	//Show optionframe and hide workframe
-	$("#optionframe").attr("data-framesource", "WORKFLOWRUN");
-	$("#workframe").hide();
-	$("#optionframe").show();
-	
-	//disable run button
-	menu_toolbarEnableItem('mnutoolRunUtilitiesFind', false);
-
+	var sMessage = $("#statusmessage").val();
+	OpenHR.modalPrompt(sMessage, 0, "Workflow");
 
 	var dataCollection = frmPopup.elements;
 	if (dataCollection != null) {
 		for (i = 0; i < dataCollection.length; i++) {
 			sControlName = dataCollection.item(i).name;
 			sControlName = sControlName.substr(0, 9);
-			if (sControlName == "utilform_") {
+
+			if (sControlName === "utilform_") {
 				sForm = dataCollection.item(i).value;
 				spawnWindow(sForm, '_blank', screen.availWidth, screen.availHeight, 'yes');
 			}
 		}
 	}
-
-		<%
-	
-	If (Len(sMessage) = 0) _
-		And (Len(sFormElements) > 0) _
-		And (Len(sURL) > 0) Then
-%>
-	try {		
-		//self.close();
-	}
-	catch (e) { }
-		<%
-End If
-%>
 
 	function pausecomp(millis) {
 		var date = new Date();
@@ -105,23 +86,6 @@ End If
 		}
 		catch (e) { }
 	}
-	
-	function util_run_workflow_okClick() {
-		if (menu_isSSIMode()) {
-			
-			loadPartialView("linksMain", "Home", "workframe", null);
-
-			//$("#optionframe").hide();
-			//$("#SSILinksFrame").show();
-		} else {
-			$("#optionframe").hide();
-			$("#workframe").show();
-			//re-enable run button.
-			menu_toolbarEnableItem('mnutoolRunUtilitiesFind', true);
-		}
-			
-		
-	}	
 
 </script>
 
@@ -168,54 +132,22 @@ End If
 		<input type="hidden" id="utilname" name="utilname" value="<%:Model.Name%>">
 		<input type="hidden" id="action" name="action" value="RUN">
 
-		<table align="center" class="outline" cellpadding="5" cellspacing="0">
-			<tr>
-				<td>
-					<table class="invisible" cellspacing="0" cellpadding="0">
-						<tr>
-							<td colspan="3" height="10"></td>
-						</tr>
-						<tr>
-							<td width="20" height="10"></td>
-							<td align="center">Workflow '<%:Model.Name%>'
-								<%
-									If Len(sURL) = 0 Then
-								%>
-							failed to initiate successfully.<br>
-								No Workflow URL has been configured.<br>
-								Contact your system administrator.
-								<%
-								Else
-									If Len(sMessage) = 0 Then
-								%>
-							initiated successfully.
-								<%
-								Else
-								%>
-							failed to initiate successfully.<br>
-								<%=sMessage%>
-								<%
-								End If
-							End If
-								%>							</td>
-							<td width="20"></td>
-						</tr>
-						<tr>
-							<td colspan="3" height="20"></td>
-						</tr>
-						<tr>
-							<td colspan="3" height="10" align="center">
-								<input type="button" value="OK" name="cmdClose" class="btn" style="WIDTH: 80px" width="80" id="cmdClose"
-									onclick="util_run_workflow_okClick();"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="3" height="10"></td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
+		<%
+			Dim sStatus = Model.Name
+			If Len(sURL) = 0 Then
+				sStatus &= " failed to initiate successfully.<br>No Workflow URL has been configured.<br>Contact your system administrator."
+			Else
+				If Len(sMessage) = 0 Then
+					sStatus &= " initiated successfully."
+				Else
+					sStatus &= " failed to initiate successfully.<br>"
+				End If
+			End If
+		%>						
+								
+		<input type="hidden" id="statusmessage" name="statusmessage" value="<%:sStatus%>">
+
+
 	</form>
 
 </div>

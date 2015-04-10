@@ -247,11 +247,7 @@ function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 				__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 			}
 
-			OpenHR.submitForm(null, "workframe", null, postData, "util_run_workflow"
-				, function () {
-					$('#SSILinksFrame').hide();
-					$('#optionframe').show();
-				});
+			OpenHR.submitForm(null, "divWorkflow", null, postData, "util_run_workflow");
 					
 		} else {
 			
