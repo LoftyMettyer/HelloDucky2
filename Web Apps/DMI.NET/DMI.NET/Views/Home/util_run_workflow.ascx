@@ -140,7 +140,7 @@
 				If Len(sMessage) = 0 Then
 					sStatus &= " initiated successfully."
 				Else
-					sStatus &= " failed to initiate successfully.<br>"
+					sStatus &= " failed to initiate successfully.<br><br>" & sMessage
 				End If
 			End If
 		%>						
