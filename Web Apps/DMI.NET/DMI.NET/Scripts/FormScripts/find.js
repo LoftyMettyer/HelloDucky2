@@ -111,7 +111,7 @@ function find_window_onload() {
 							if (sReadOnly == false) {
 								thereIsAtLeastOneEditableColumn = true;
 							}
-
+							
 							colNames.push(sColumnName);
 							colNamesOriginal.push(sColumnDisplayName);
 
@@ -337,7 +337,7 @@ function find_window_onload() {
 								} else if ((ColumnDataType == 12 || ColumnDataType == 2 || ColumnDataType == 4) && ColumnControlType == 2 && ColumnLookupColumnID != 0) { //Lookup
 									var sAlignment = 'left';
 									if (ColumnDataType == 2) sAlignment = 'right';
-
+									
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,
@@ -353,6 +353,7 @@ function find_window_onload() {
 											align: sAlignment,
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
+											dataType: ColumnDataType,
 											dataInit: function (element) {
 												$(element).on('keydown', function (event) {
 													if (event.which == 32) showLookupForColumn(element);
@@ -371,7 +372,7 @@ function find_window_onload() {
 									});
 								} else if (((ColumnDataType == 12 && ColumnControlType == 2) || (ColumnDataType == 12 && ColumnControlType == 16))
 														&& (ColumnLookupColumnID == 0)
-													) { //Option Groups or Dropdown Lists
+													) { //Option Groups or Dropdown Lists									
 
 									colModel.push({
 										name: sColumnName,
@@ -381,7 +382,7 @@ function find_window_onload() {
 										type: "select",
 										editoptions: {
 											readonly: sReadOnly,
-											dataColumnId: iColumnId,
+											dataColumnId: iColumnId,											
 											dataDefaultCalcExprID: iDefaultValueExprID,
 											dataInit: function (element) {
 												$(element).on('change', function () { indicateThatRowWasModified(); });
@@ -1282,22 +1283,47 @@ function saveInlineRowToDatabase(rowId) {
 			if ((gridModel[i].editoptions.dataType == -3) || (gridModel[i].editoptions.dataType == -4)) continue;	//OLEs already saved.
 
 			columnValue = gridData[gridModel[i].name];
-
-			//If the formatter is undefined then we treat the value as text
-			switch (gridModel[i].formatter) {
-				case "checkbox":
-					if (columnValue == "0" || columnValue == null)
-						columnValue = "0";
-					else
-						columnValue = "1";
+			
+			//The cell values may not be SQL compatible, so transform them if required.
+			//Transform lookup values
+			if (gridModel[i].type == "lookup") {
+				switch (Number(gridModel[i].editoptions.dataType)) {
+				case -1:
+					columnValue = columnValue.split("\t").join(" ");
 					break;
-				case "date":
-					columnValue = OpenHR.convertLocaleDateToSQL(columnValue);
+				case 2:
+					if (columnValue.length > 0) {
+						var sTemp = ConvertData(columnValue, gridModel[i].editoptions.dataType);
+						sTemp = ConvertNumberForSQL(sTemp);
+						columnValue = sTemp;
+					} else {
+						columnValue = "null";
+					}
 					break;
+				case 11:
+					if (columnValue.length > 0) {
+						columnValue = OpenHR.convertLocaleDateToSQL(columnValue);
+					} else {
+						columnValue = "null";
+					}
+					break;
+				default:
+					columnValue = "";
+				}
+			} else {
+				//Transform the values if the format is known
+				switch (gridModel[i].formatter) {
+					case "checkbox":
+						if (columnValue == "0" || columnValue == null)
+							columnValue = "0";
+						else
+							columnValue = "1";
+						break;
+					case "date":
+						columnValue = OpenHR.convertLocaleDateToSQL(columnValue);
+						break;
+				}
 			}
-
-			//default empty lookup values to null. Bug 13879
-			if ((gridModel[i].type == "lookup") && (columnValue.length == 0)) columnValue = "null";
 
 			sUpdateOrInsert += gridModel[i].id + "\t" + columnValue + "\t";
 		}
