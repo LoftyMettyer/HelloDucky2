@@ -986,7 +986,7 @@
 					<ul>
 						<li><span>Output</span>
 							<div class="button" id="divBtnPrintOrgChart">
-								<a class="mnuBtnPrintOrgChart" href="#" rel="paste">
+								<a class="mnuBtnPrintOrgChart" href="#" rel="paste"  title="Print Org Chart">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png")%>" alt="" /><span>
 									<i class="icon-print"></i>
 									<h6>Print</h6></span>
