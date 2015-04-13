@@ -23,7 +23,7 @@ function util_def_exprcomponent_onload() {
 	};
 
 
-		$("#SSOperatorTree").bind("loaded.jstree", function () {
+	$("#SSOperatorTree").bind("loaded.jstree", function () {
 		_OperatorTreeLoaded = true;
 		checkTreesLoaded();
 	})
@@ -81,7 +81,7 @@ function onload2() {
 
 	var sUdfFunctionVisibility;
 	var sUdfFunctionDisplay;
-
+	
 	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	
 	$("#optionframe").attr("data-framesource", "UTIL_DEF_EXPRCOMPONENT");
@@ -294,7 +294,9 @@ function loadComponentDefinition() {
 			// Numeric value
 			frmMainForm.cboValueType.selectedIndex = 1;
 			value_changeType();
-			frmMainForm.txtValue.value = util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value; // parseFloat(util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value).toString();
+			var sDesc = parseFloat(util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value).toString();
+			sDesc = sDesc.replace(".", OpenHR.LocaleDecimalSeparator());
+			frmMainForm.txtValue.value = sDesc;
 			$('#frmMainForm #txtValue').autoNumeric('update');
 		}
 		if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 3) {
@@ -361,7 +363,10 @@ function loadComponentDefinition() {
 		}
 		if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 2) {
 			// Numeric
-			frmMainForm.txtPValDefault.value = util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value; //parseFloat(util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value);
+			var sDesc = parseFloat(util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value).toString();
+			sDesc = sDesc.replace(".", OpenHR.LocaleDecimalSeparator());
+			frmMainForm.txtPValDefault.value = sDesc;
+
 			$('#frmMainForm #txtPValDefault').autoNumeric('update');
 		}
 		if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 3) {
@@ -1135,7 +1140,7 @@ function value_changeType() {
 	}
 
 	if ($('#frmMainForm #cboValueType').val() == "2") {
-		$('#frmMainForm #txtValue').autoNumeric('init', {vMin: -99999999.9999999,vMax: 99999999.9999999, mDec: 7, aPad: false});
+		$('#frmMainForm #txtValue').autoNumeric('init', {vMax: 99999999.9999999, aSep: "", aDec: OpenHR.LocaleDecimalSeparator(), mDec: 7, aPad: false});
 		$('#frmMainForm #txtValue').val(0);
 	} else {
 		frmMainForm.txtValue.value = "";
@@ -1275,8 +1280,8 @@ function lookupValue_refreshValues() {
 				sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueCharacter.value;
 			}
 			if ((iDataType == 2) || (iDataType == 4)) {
-				// Numeric/integer type lookup column.
-				sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value;
+				// Numeric/integer type lookup column.				
+				sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value
 			}
 
 			if ((fInitialise == 0) &&
@@ -1368,7 +1373,7 @@ function pVal_changeType() {
 		text_disable(frmMainForm.txtPValDefault, false);
 		$('#frmMainForm #txtPValDefault').addClass('number');
 		$('#frmMainForm #txtPValDefault').autoNumeric('init', {
-			vMin: -99999999.9999999, vMax: 99999999.9999, mDec: 4, aPad: false
+			vMax: 99999999.9999, aSep: "", aDec: OpenHR.LocaleDecimalSeparator(), mDec: 4, aPad: false
 		});
 
 		//Change prompted value sizes to match default value
@@ -1451,7 +1456,7 @@ function pVal_changeType() {
 	$('#trPValDateOptions').toggle(sDateOptionsVisibility == 'visible');
 	$('#trPValDateOptions2').toggle(sDateOptionsVisibility == 'visible');
 
-	if (iPValType == 4) {		
+	if (iPValType == 4) {
 		$('#txtPValDefault').datepicker();
 		$('#txtPValDefault').on('change', function (sender) {
 			if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
@@ -1601,7 +1606,7 @@ function pVal_refreshValues() {
 				sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueCharacter.value;
 			}
 			if ((iDataType == 2) || (iDataType == 4)) {
-				// Numeric/integer type lookup column.
+				// Numeric/integer type lookup column.			
 				sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueCharacter.value;
 			}
 
@@ -1982,7 +1987,7 @@ function component_OKClick() {
 	if ($('#optionframe #cmdCancel').hasClass('ui-state-disabled')) {
 		return;
 	}
-	
+
 	if ((frmMainForm.optType_Function.checked == true) || (frmMainForm.optType_Operator.checked == true)) {
 		//Has user selected a valid item
 		if ($.jstree._focused().get_selected().hasClass('toplevelnode')) {
@@ -2139,7 +2144,9 @@ function component_OKClick() {
 
 			if (frmMainForm.cboValueType.selectedIndex == 1) {
 				// Numeric value.
-				sDefn = sDefn + frmMainForm.txtValue.value + "	";
+				//Keep to US format
+				var sValue = frmMainForm.txtValue.value.replace(OpenHR.LocaleDecimalSeparator(), ".");
+				sDefn = sDefn + sValue + "	";
 			}
 			else {
 				sDefn = sDefn + "	";
@@ -2167,7 +2174,7 @@ function component_OKClick() {
 			}
 		}
 		else {
-			if (frmMainForm.optType_PromptedValue.checked == true) {
+			if (frmMainForm.optType_PromptedValue.checked == true) {				
 				// Value type.		
 				sDefn = sDefn + frmMainForm.cboPValType.options[frmMainForm.cboPValType.selectedIndex].value + "	";
 
@@ -2182,6 +2189,12 @@ function component_OKClick() {
 						if (iDataType == 11) {
 							// Date type lookup column.
 							sDefn = sDefn + OpenHR.convertLocaleDateToSQL(frmMainForm.cboPValDefault.options[frmMainForm.cboPValDefault.selectedIndex].Value) + "	";
+						}
+						else if (iDataType == 2) {
+							// Numeric type lookup column.
+							var sDesc = frmMainForm.cboPValDefault.options[frmMainForm.cboPValDefault.selectedIndex].Value;
+							sDesc = sDesc.replace(OpenHR.LocaleDecimalSeparator(), ".");
+							sDefn = sDefn + sDesc + "	";
 						}
 						else {
 							// Character /Numeric/integer type lookup column.
@@ -2200,7 +2213,8 @@ function component_OKClick() {
 
 				if (frmMainForm.cboPValType.selectedIndex == 1) {
 					// Numeric value.
-					sDefn = sDefn + frmMainForm.txtPValDefault.value + "	";
+					var sValue = frmMainForm.txtPValDefault.value.replace(OpenHR.LocaleDecimalSeparator(), ".");
+					sDefn = sDefn + sValue + "	";
 				}
 				else {
 					sDefn = sDefn + "	";
@@ -2253,7 +2267,9 @@ function component_OKClick() {
 
 					if ((iDataType == 2) || (iDataType == 4)) {
 						// Numeric/integer value.
-						sDefn = sDefn + frmMainForm.cboLookupValueValue.options[frmMainForm.cboLookupValueValue.selectedIndex].Value + "	";
+						var sDesc = frmMainForm.cboLookupValueValue.options[frmMainForm.cboLookupValueValue.selectedIndex].Value.toString();
+						sDesc = sDesc.replace(OpenHR.LocaleDecimalSeparator(), ".");
+						sDefn = sDefn + sDesc + "	";
 					}
 					else {
 						sDefn = sDefn + "	";
@@ -2528,7 +2544,7 @@ function component_CancelClick() {
 	cancelComponent();
 }
 
-function validateComponent() {
+function validateComponent() {	
 
 	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var sErrorMsg = "";
@@ -2640,7 +2656,7 @@ function validateComponent() {
 		if (frmMainForm.cboValueType.value == 4) {
 			// Date
 			// Convert the date to SQL format (use this as a validation check).
-			// An empty string is returned if the date is invalid.	
+			// An empty string is returned if the date is invalid.			
 			sValue = OpenHR.convertLocaleDateToSQL(sValue);
 			if ((sValue.length == 0) || (sValue == 'null')) {
 				sErrorMsg = "Invalid date value entered.";

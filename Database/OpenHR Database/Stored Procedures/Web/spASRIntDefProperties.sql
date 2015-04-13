@@ -10,9 +10,7 @@ BEGIN
 	DECLARE @Name	nvarchar(255);
 
 	-- Access details of object
-	SELECT convert(varchar, CreatedDate,103) + ' ' + convert(varchar, CreatedDate,108) as [CreatedDate], 
-		convert(varchar, SavedDate,103) + ' ' + convert(varchar, SavedDate,108) as [SavedDate], 
-		convert(varchar, RunDate,103) + ' ' + convert(varchar, RunDate,108) as [RunDate], 
+	SELECT CreatedDate, SavedDate, RunDate,
 		Createdby, 
 		Savedby, 
 		Runby 

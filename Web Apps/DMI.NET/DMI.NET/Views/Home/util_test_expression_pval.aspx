@@ -433,7 +433,12 @@
 							Case ExpressionParameter.ValueCharacter
 								sValueCharacter = Left(sPrompts, iCharIndex - 1)
 							Case ExpressionParameter.ValueNumeric
-								dblValueNumeric = CType(IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1)), Double)
+								sTemp = Left(sPrompts, iCharIndex - 1)
+								If sTemp = "" Then
+									dblValueNumeric = Nothing
+								Else
+									dblValueNumeric = Double.Parse(Left(sPrompts, iCharIndex - 1), CultureInfo.InvariantCulture)
+								End If
 							Case ExpressionParameter.ValueLogic
 								fValueLogic = CType(IIf(Left(sPrompts, iCharIndex - 1) = "", False, Left(sPrompts, iCharIndex - 1)), Boolean)
 							Case ExpressionParameter.ValueDate

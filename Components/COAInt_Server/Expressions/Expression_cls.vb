@@ -1,6 +1,7 @@
 Option Strict Off
 Option Explicit On
 
+Imports System.Globalization
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 
@@ -397,7 +398,8 @@ Namespace Expressions
 									sValueCharacter = sParameter
 								Case 17
 									If Len(sParameter) > 0 Then
-										dblValueNumeric = CDbl(sParameter)
+										' Regional settings kicking in here.
+										dblValueNumeric = Double.Parse(sParameter, CultureInfo.InvariantCulture)
 									Else
 										dblValueNumeric = 0
 									End If
