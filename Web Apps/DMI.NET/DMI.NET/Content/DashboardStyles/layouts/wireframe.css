@@ -513,7 +513,7 @@ div.officetab div.panel > span { display: none;}
 	top: 141px;
 	bottom: 35px;
 	width: 0; 
-	z-index: 99;
+	z-index: 1;
 	overflow: hidden;
 }
 

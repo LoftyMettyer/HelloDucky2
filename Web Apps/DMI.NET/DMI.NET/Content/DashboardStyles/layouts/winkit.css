@@ -915,7 +915,7 @@ div.officetab li div.textboxlist input {
 	top: 170px;
 	bottom: 35px;
 	width: 0; 
-	z-index: 99;
+	z-index: 1;
 	overflow: hidden;
 }
 
