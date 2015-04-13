@@ -157,11 +157,16 @@ function menu_abMainMenu_DataReady() {
 		var menuItem = $(this).text();
 		var menuTarget = $(this).parent().attr('id');
 		var includeThisItem = true;
+		var fCanSeeLookupTableMenu = true;
+
+		if ($("#txtSysPerm_MENU_VIEWLOOKUPTABLES").val() == 0) {
+			fCanSeeLookupTableMenu = false;
+		}
 
 		if ($(this).hasClass("disabled") === true) includeThisItem = false; //no disabled items
 		if ($(this).parent().hasClass("hidden") === true) includeThisItem = false; //no hidden items
 		if ($(this).siblings(".ui-icon-triangle-1-e").length > 0) includeThisItem = false;	//no expandable menu items
-		if (($(this).closest("ul").attr("id") === "mnubandTableScreens") && $(this).closest("ul").css("display") === "none") includeThisItem = false;	//no hidden lookup table screens
+		if (($(this).closest("ul").attr("id") === "mnubandTableScreens") && !fCanSeeLookupTableMenu) includeThisItem = false;	//no hidden lookup table screens
 
 		if (includeThisItem)
 			availableTags.push({ label: menuItem, targetvalue: menuTarget });
