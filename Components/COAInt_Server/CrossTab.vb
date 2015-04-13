@@ -6,6 +6,7 @@ Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports System.Web
 Imports System.Data.SqlClient
+Imports System.Globalization
 Imports System.Linq
 
 Public Class CrossTab
@@ -793,7 +794,7 @@ Public Class CrossTab
 		End If
 
 	End Function
-	
+
 	Private Function GetFormat(lngColumnID As Integer) As String
 
 		Dim objColumn = Columns.GetById(lngColumnID)
@@ -1258,8 +1259,8 @@ Public Class CrossTab
 
 					dblTo = Math.Min(Math.Round(lastValue + stepValue, 2), mdblMax(lngLoop))
 
-					strHeading(lngCount) = String.Format("{0} - {1}", dblFrom, dblTo)
-					strSearch(lngCount) = String.Format("{0} >= {1} AND {0} <= {2}", strColumnName, dblFrom, dblTo)
+					strHeading(lngCount) = String.Format("{0} - {1}", dblFrom.ToString(CultureInfo.InvariantCulture), dblTo.ToString(CultureInfo.InvariantCulture))
+					strSearch(lngCount) = String.Format("{0} >= {1} AND {0} <= {2}", strColumnName, dblFrom.ToString(CultureInfo.InvariantCulture), dblTo.ToString(CultureInfo.InvariantCulture))
 
 					lastValue = dblTo + 0.01
 					lngCount += 1
@@ -1303,7 +1304,7 @@ Public Class CrossTab
 			strHeading(lngCount) = "> " & ConvertNumberForDisplay(VB6.Format(dblGroup - dblUnit, mstrFormat(lngLoop)))
 			strSearch(lngCount) = strColumnName & " > " & ConvertNumberForSQL(CStr(dblGroup - dblUnit))
 
-			End If
+		End If
 
 	End Sub
 
@@ -1945,7 +1946,7 @@ Public Class CrossTab
 
 		Catch ex As Exception
 			mstrStatusMessage = "Error reading breakdown : " & ex.Message
-
+			Throw
 		End Try
 
 	End Sub

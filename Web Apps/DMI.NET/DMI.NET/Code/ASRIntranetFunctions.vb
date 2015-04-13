@@ -438,7 +438,7 @@ Public Module ASRIntranetFunctions
 
 			'If value is convertable to decimal then only convert it to two decimal (such as 12.50, 23,456.50) otherwise return as it is (such as I.T.,  > 20.10 , < 12.54)
 			If Decimal.TryParse(Value, 2) Then
-				Return Decimal.Round(CDec(Value), 2).ToString()
+				Return Decimal.Round(Decimal.Parse(Value, CultureInfo.InvariantCulture), 2).ToString()
 			Else
 				Return Value
 			End If
@@ -447,13 +447,13 @@ Public Module ASRIntranetFunctions
 		End If
 
 		If val1.Contains(".") Then
-			RetValue = String.Concat(RetValue, Decimal.Round(CDec(val1), 2))
+			RetValue = String.Concat(RetValue, Decimal.Round(Decimal.Parse(val1, CultureInfo.InvariantCulture), 2))
 		Else
 			RetValue = String.Concat(RetValue, val1)
 		End If
 		RetValue = String.Concat(RetValue, " - ")
 		If val2.Contains(".") Then
-			RetValue = String.Concat(RetValue, Decimal.Round(CDec(val2), 2))
+			RetValue = String.Concat(RetValue, Decimal.Round(Decimal.Parse(val2, CultureInfo.InvariantCulture), 2))
 		Else
 			RetValue = String.Concat(RetValue, val2)
 		End If
