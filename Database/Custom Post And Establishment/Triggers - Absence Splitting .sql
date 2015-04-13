@@ -9,7 +9,7 @@
 244 - Appointment Deductions
 249 - Appointment_Working_Patterns
 250	- Absence_Entry
-251	- Appointment_Absence_Entry
+251	- Appointment_Absence
 252	- Absence_Breakdown
 254 - Appointment_Absence_Staging
 
@@ -153,80 +153,84 @@ GO
 
 INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (3, 251, 'Breakdown absences into individual days', 1, 1, '   
    	DECLARE @today datetime =  DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE()));
-
-	DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_251] IN (SELECT DISTINCT [id] FROM deleted);
-
 	DECLARE @changeDates TABLE(Effective_Date datetime, AppointmentID integer, PersID integer);
 
-	INSERT @changeDates 
-		SELECT awp.Effective_Date, a.ID, a.ID_1 FROM Appointments a
-			INNER JOIN inserted e ON e.ID_3 = a.ID
-			INNER JOIN Appointment_Working_Patterns awp ON awp.ID_3 = a.ID
-		WHERE awp.Effective_Date > a.Appointment_Start_Date
-		UNION
-		SELECT awp.End_Date + 1, a.ID, a.ID_1 FROM Appointments a
-			INNER JOIN inserted e ON e.ID_3 = a.ID
-			INNER JOIN Appointment_Working_Patterns awp ON awp.ID_3 = a.ID
-		WHERE awp.End_Date IS NOT NULL
-		UNION
-		SELECT a.Appointment_Start_Date, a.ID, a.ID_1 FROM Appointments a
-			INNER JOIN inserted e ON e.ID_3 = a.ID
-		UNION
-		SELECT a.Appointment_End_Date + 1, a.ID, a.ID_1 FROM Appointments a
-			INNER JOIN inserted e ON e.ID_3 = a.ID
-		UNION 
-		SELECT ''1899-12-31'', a.ID, a.ID_1 FROM Appointments a
-			INNER JOIN inserted e ON e.ID_3 = a.ID;
+	IF NOT EXISTS(SELECT [tablefromid] FROM #intransactiontrigger WHERE [tablefromid] = 252)
+	BEGIN
+		
+		DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_251] IN (SELECT DISTINCT [id] FROM deleted);
 
-	DECLARE @working_patterns TABLE (PersID integer, Effective_Date datetime, End_Date datetime, AppointmentID integer
-							, Sunday_Hours_AM numeric(4,2), Sunday_Hours_PM numeric(4,2)
-							, Monday_Hours_AM numeric(4,2), Monday_Hours_PM numeric(4,2)
-							, Tuesday_Hours_AM numeric(4,2), Tuesday_Hours_PM numeric(4,2)
-							, Wednesday_Hours_AM numeric(4,2), Wednesday_Hours_PM numeric(4,2)
-							, Thursday_Hours_AM numeric(4,2), Thursday_Hours_PM numeric(4,2)
-							, Friday_Hours_AM numeric(4,2), Friday_Hours_PM numeric(4,2)
-							, Saturday_Hours_AM numeric(4,2), Saturday_Hours_PM numeric(4,2)
-							, Day_Pattern_AM varchar(28), Day_Pattern_PM varchar(28)
-							, Hour_Pattern_AM varchar(28), Hour_Pattern_PM varchar(28));
+		INSERT @changeDates 
+			SELECT awp.Effective_Date, a.ID, a.ID_1 FROM Appointments a
+				INNER JOIN inserted e ON e.ID_3 = a.ID
+				INNER JOIN Appointment_Working_Patterns awp ON awp.ID_3 = a.ID
+			WHERE awp.Effective_Date > a.Appointment_Start_Date
+			UNION
+			SELECT awp.End_Date + 1, a.ID, a.ID_1 FROM Appointments a
+				INNER JOIN inserted e ON e.ID_3 = a.ID
+				INNER JOIN Appointment_Working_Patterns awp ON awp.ID_3 = a.ID
+			WHERE awp.End_Date IS NOT NULL
+			UNION
+			SELECT a.Appointment_Start_Date, a.ID, a.ID_1 FROM Appointments a
+				INNER JOIN inserted e ON e.ID_3 = a.ID
+			UNION
+			SELECT a.Appointment_End_Date + 1, a.ID, a.ID_1 FROM Appointments a
+				INNER JOIN inserted e ON e.ID_3 = a.ID
+			UNION 
+			SELECT ''1899-12-31'', a.ID, a.ID_1 FROM Appointments a
+				INNER JOIN inserted e ON e.ID_3 = a.ID;
 
-	INSERT @working_patterns
-		SELECT DISTINCT cd.PersID, cd.Effective_Date, NULL, cd.AppointmentID
-			, ISNULL(wp.Sunday_Hours_AM,0), ISNULL(wp.Sunday_Hours_PM,0)
-			, ISNULL(wp.Monday_Hours_AM,0), ISNULL(wp.Monday_Hours_PM,0)
-			, ISNULL(wp.Tuesday_Hours_AM,0), ISNULL(wp.Tuesday_Hours_PM,0)
-			, ISNULL(wp.Wednesday_Hours_AM,0), ISNULL(wp.Wednesday_Hours_PM,0)
-			, ISNULL(wp.Thursday_Hours_AM,0), ISNULL(wp.Thursday_Hours_PM,0)
-			, ISNULL(wp.Friday_Hours_AM,0), ISNULL(wp.Friday_Hours_PM,0)
-			, ISNULL(wp.Saturday_Hours_AM,0), ISNULL(wp.Saturday_Hours_PM,0)
-			, NULL, NULL, NULL, NULL
-		FROM @changeDates cd
-		LEFT JOIN Appointment_Working_Patterns wp ON cd.AppointmentID = wp.id_3 AND cd.Effective_Date = wp.Effective_Date
+		DECLARE @working_patterns TABLE (PersID integer, Effective_Date datetime, End_Date datetime, AppointmentID integer
+								, Sunday_Hours_AM numeric(4,2), Sunday_Hours_PM numeric(4,2)
+								, Monday_Hours_AM numeric(4,2), Monday_Hours_PM numeric(4,2)
+								, Tuesday_Hours_AM numeric(4,2), Tuesday_Hours_PM numeric(4,2)
+								, Wednesday_Hours_AM numeric(4,2), Wednesday_Hours_PM numeric(4,2)
+								, Thursday_Hours_AM numeric(4,2), Thursday_Hours_PM numeric(4,2)
+								, Friday_Hours_AM numeric(4,2), Friday_Hours_PM numeric(4,2)
+								, Saturday_Hours_AM numeric(4,2), Saturday_Hours_PM numeric(4,2)
+								, Day_Pattern_AM varchar(28), Day_Pattern_PM varchar(28)
+								, Hour_Pattern_AM varchar(28), Hour_Pattern_PM varchar(28));
 
-	UPDATE t 
-		SET End_Date = (SELECT top 1 m.Effective_Date - 1 FROM @working_patterns m WHERE m.Effective_Date > t.Effective_Date AND m.AppointmentID = t.AppointmentID ORDER BY m.Effective_Date),
-			Day_Pattern_AM = dbo.udfsysPatternFromHours (''Days'', Sunday_Hours_AM, Monday_Hours_AM, Tuesday_Hours_AM, Wednesday_Hours_AM, Thursday_Hours_AM, Friday_Hours_AM, Saturday_Hours_AM),
-			Day_Pattern_PM = dbo.udfsysPatternFromHours (''Days'', Sunday_Hours_PM, Monday_Hours_PM, Tuesday_Hours_PM, Wednesday_Hours_PM, Thursday_Hours_PM, Friday_Hours_PM, Saturday_Hours_PM),
-			Hour_Pattern_AM = dbo.udfsysPatternFromHours (''Hours'', Sunday_Hours_AM, Monday_Hours_AM, Tuesday_Hours_AM, Wednesday_Hours_AM, Thursday_Hours_AM, Friday_Hours_AM, Saturday_Hours_AM),
-			Hour_Pattern_PM = dbo.udfsysPatternFromHours (''Hours'', Sunday_Hours_PM, Monday_Hours_PM, Tuesday_Hours_PM, Wednesday_Hours_PM, Thursday_Hours_PM, Friday_Hours_PM, Saturday_Hours_PM)
-	FROM @working_patterns t
+		INSERT @working_patterns
+			SELECT DISTINCT cd.PersID, cd.Effective_Date, NULL, cd.AppointmentID
+				, ISNULL(wp.Sunday_Hours_AM,0), ISNULL(wp.Sunday_Hours_PM,0)
+				, ISNULL(wp.Monday_Hours_AM,0), ISNULL(wp.Monday_Hours_PM,0)
+				, ISNULL(wp.Tuesday_Hours_AM,0), ISNULL(wp.Tuesday_Hours_PM,0)
+				, ISNULL(wp.Wednesday_Hours_AM,0), ISNULL(wp.Wednesday_Hours_PM,0)
+				, ISNULL(wp.Thursday_Hours_AM,0), ISNULL(wp.Thursday_Hours_PM,0)
+				, ISNULL(wp.Friday_Hours_AM,0), ISNULL(wp.Friday_Hours_PM,0)
+				, ISNULL(wp.Saturday_Hours_AM,0), ISNULL(wp.Saturday_Hours_PM,0)
+				, NULL, NULL, NULL, NULL
+			FROM @changeDates cd
+			LEFT JOIN Appointment_Working_Patterns wp ON cd.AppointmentID = wp.id_3 AND cd.Effective_Date = wp.Effective_Date
 
-	DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_251] IN (SELECT DISTINCT [id] FROM deleted);
+		UPDATE t 
+			SET End_Date = (SELECT top 1 m.Effective_Date - 1 FROM @working_patterns m WHERE m.Effective_Date > t.Effective_Date AND m.AppointmentID = t.AppointmentID ORDER BY m.Effective_Date),
+				Day_Pattern_AM = dbo.udfsysPatternFromHours (''Days'', Sunday_Hours_AM, Monday_Hours_AM, Tuesday_Hours_AM, Wednesday_Hours_AM, Thursday_Hours_AM, Friday_Hours_AM, Saturday_Hours_AM),
+				Day_Pattern_PM = dbo.udfsysPatternFromHours (''Days'', Sunday_Hours_PM, Monday_Hours_PM, Tuesday_Hours_PM, Wednesday_Hours_PM, Thursday_Hours_PM, Friday_Hours_PM, Saturday_Hours_PM),
+				Hour_Pattern_AM = dbo.udfsysPatternFromHours (''Hours'', Sunday_Hours_AM, Monday_Hours_AM, Tuesday_Hours_AM, Wednesday_Hours_AM, Thursday_Hours_AM, Friday_Hours_AM, Saturday_Hours_AM),
+				Hour_Pattern_PM = dbo.udfsysPatternFromHours (''Hours'', Sunday_Hours_PM, Monday_Hours_PM, Tuesday_Hours_PM, Wednesday_Hours_PM, Thursday_Hours_PM, Friday_Hours_PM, Saturday_Hours_PM)
+		FROM @working_patterns t
 
-	INSERT Absence_Breakdown(ID_251, Duration, Absence_Date, [Session]
-		, Day_Pattern_AM, Day_Pattern_PM, Hour_Pattern_AM, Hour_Pattern_PM)	
-		SELECT i.ID
-			, dbo.udfsysDurationFromPattern(ap.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM)
-			, dr.IndividualDate, dr.SessionType
-			, wp.Day_Pattern_AM, wp.Day_Pattern_PM, wp.Hour_Pattern_AM, wp.Hour_Pattern_PM
-		FROM inserted i
-			CROSS APPLY [dbo].[udfsysDateRangeToTable] (''d'', i.Start_Date, i.Start_Session, i.End_Date, i.End_Session) dr
-			INNER JOIN Appointments ap ON ap.ID = i.ID_3
-			INNER JOIN @working_patterns wp ON wp.AppointmentID = ap.ID
-			INNER JOIN Personnel_Records pr ON pr.ID = ap.ID_1
-			LEFT JOIN Absence_Type_Table at ON at.Absence_Type = i.Absence_Type
-			LEFT JOIN Absence_Reason_Table ar ON ar.Reason = i.Reason
-		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL)
-			AND dbo.udfsysDurationFromPattern(ap.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM) > 0;
+		DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_251] IN (SELECT DISTINCT [id] FROM deleted);
+
+		INSERT Absence_Breakdown(ID_251, Duration, Absence_Date, [Session]
+			, Day_Pattern_AM, Day_Pattern_PM, Hour_Pattern_AM, Hour_Pattern_PM)	
+			SELECT i.ID
+				, dbo.udfsysDurationFromPattern(ap.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM)
+				, dr.IndividualDate, dr.SessionType
+				, wp.Day_Pattern_AM, wp.Day_Pattern_PM, wp.Hour_Pattern_AM, wp.Hour_Pattern_PM
+			FROM inserted i
+				CROSS APPLY [dbo].[udfsysDateRangeToTable] (''d'', i.Start_Date, i.Start_Session, i.End_Date, i.End_Session) dr
+				INNER JOIN Appointments ap ON ap.ID = i.ID_3
+				INNER JOIN @working_patterns wp ON wp.AppointmentID = ap.ID
+				INNER JOIN Personnel_Records pr ON pr.ID = ap.ID_1
+				LEFT JOIN Absence_Type_Table at ON at.Absence_Type = i.Absence_Type
+				LEFT JOIN Absence_Reason_Table ar ON ar.Reason = i.Reason
+			WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL)
+				AND dbo.udfsysDurationFromPattern(ap.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM) > 0;
+
+	END
 			
 	-- Update the duration
 	MERGE Appointment_Absence TARGET
@@ -465,4 +469,11 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 			INNER JOIN inserted i ON i.Contract = ct.Contract
 			INNER JOIN deleted d ON i.id = d.id
 			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND cws.Effective_Date <= GETDATE() AND (cws.End_Date IS NULL OR cws.End_Date >= GETDATE());');
+GO
+
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (16, 252, 'Update appointment duration', 1, 1, ' 	-- Update duration of appointment absence
+	IF @startingtriggertable = 252
+        UPDATE [dbo].[tbuser_Appointment_Absence] SET [updflag] = 1 WHERE [dbo].[tbuser_Appointment_Absence].[id] IN (SELECT DISTINCT [id_251] FROM inserted)
+');
+GO
 
