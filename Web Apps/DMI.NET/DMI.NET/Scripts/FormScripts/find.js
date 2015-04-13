@@ -1308,7 +1308,7 @@ function saveInlineRowToDatabase(rowId) {
 					}
 					break;
 				default:
-					columnValue = "";
+					//leave as is.
 				}
 			} else {
 				//Transform the values if the format is known
