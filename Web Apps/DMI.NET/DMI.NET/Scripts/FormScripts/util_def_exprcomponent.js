@@ -13,7 +13,8 @@ function util_def_exprcomponent_onload() {
 		, "theme": "adv_themeroller",
 		"url": window.ROOT + "Scripts/jquery/jstree/themes/adv_themeroller/style.css"
 	};
-	options["plugins"] = ["html_data", "ui", "contextmenu", "crrm", "hotkeys", "themes", "themeroller", "sort"];
+
+	options["plugins"] = ["html_data", "ui", "crrm", "hotkeys", "themes", "themeroller", "sort"];
 
 	options["themeroller"] = {
 		"item_leaf": false,
@@ -2937,6 +2938,7 @@ function SSFunctionTree_nodeClick(node) {
 function SSFunctionTree_dblClick() {
 	component_OKClick();
 }
+
 
 function addNode(treeID, parentID, position, text, newID, isParent) {
 	$('#' + treeID).jstree('create', parentID, position, text, function (data) {
