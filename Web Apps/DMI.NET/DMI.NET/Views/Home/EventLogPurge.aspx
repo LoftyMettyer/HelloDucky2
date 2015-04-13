@@ -96,11 +96,11 @@
 			var sPoint;
 
 			sDecimalSeparator = "\\";
-			sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
+			sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator());
 			var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
 			sThousandSeparator = "\\";
-			sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
+			sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator());
 			var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
 
 			sPoint = "\\.";
@@ -119,7 +119,7 @@
 			$('#txtFrequency').val(sConvertedValue);
 
 			// Convert any decimal separators to '.'.
-			if (OpenHR.LocaleDecimalSeparator != ".") {
+			if (OpenHR.LocaleDecimalSeparator() != ".") {
 				// Remove decimal points.
 				sConvertedValue = sConvertedValue.replace(rePoint, "A");
 				// replace the locale decimal marker with the decimal point.

@@ -178,7 +178,7 @@
 			pctlPrompt.value = sConvertedValue;
 
 			// Convert any decimal separators to '.'.
-			if (OpenHR.LocaleDecimalSeparator != ".") {
+			if (OpenHR.LocaleDecimalSeparator() != ".") {
 				// Remove decimal points.
 				sConvertedValue = sConvertedValue.replace(rePoint, "A");
 				// replace the locale decimal marker with the decimal point.

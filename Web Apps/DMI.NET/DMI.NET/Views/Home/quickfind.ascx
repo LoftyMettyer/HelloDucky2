@@ -73,11 +73,11 @@
 		// Create some regular expressions to be used when replacing characters 
 		// in the filter string later on.
 		sDecimalSeparator = "\\";
-		sDecimalSeparator = OpenHR.LocaleDecimalSeparator;
+		sDecimalSeparator = OpenHR.LocaleDecimalSeparator();
 		var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
 		var sThousandSeparator = "\\";
-		sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
+		sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator());
 		var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
 
 		sPoint = "\\.";
@@ -156,7 +156,7 @@
 			sConvertedValue = sConvertedValue.replace(reThousandSeparator, "");
 
 			// Convert any decimal separators to '.'.
-			if (OpenHR.LocaleDecimalSeparator != ".") {
+			if (OpenHR.LocaleDecimalSeparator() != ".") {
 				// Remove decimal points.
 				sConvertedValue = sConvertedValue.replace(rePoint, "A");
 				// replace the locale decimal marker with the decimal point.
@@ -220,7 +220,7 @@
 			sValue = sConvertedValue;
 
 			// Convert any decimal separators to '.'.
-			if (OpenHR.LocaleDecimalSeparator != ".") {
+			if (OpenHR.LocaleDecimalSeparator() != ".") {
 				// Remove decimal points.
 				sConvertedValue = sConvertedValue.replace(rePoint, "A");
 				// replace the locale decimal marker with the decimal point.
