@@ -1,6 +1,8 @@
 
 /* Required Tables
 
+1   - Personnel_Records
+3   - Appointments
 228 - Establishment_Posts
 242 - Appointment Allowances
 243 - Appointment Benefits
@@ -129,6 +131,14 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 GO
 
 INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (8, 254, 'Manual & Automatic Approval of absence based on type', 1, 1, '    
+
+	-- Recalculate the duration for this absence request
+	;WITH base AS (SELECT *
+            FROM [dbo].[tbuser_Appointment_Absence_Staging]
+            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))
+    UPDATE base SET 
+		Duration = dbo.udfcustom_AbsenceDurationForAppointment(Start_Date, Start_Session, ISNULL(End_Date, @dChangeDate), End_Session, ID_3);
+
 	-- Automatically approve certain absences
 	INSERT Appointment_Absence (ID_3, Start_Date, End_Date, Start_Session, End_Session, Absence_In, Absence_Type, Reason, Post_ID, Staff_Number, Payroll_Company_Code)
 		SELECT i.ID_3, i.Start_Date, i.End_Date, i.Start_Session, i.End_Session, a.Absence_In, i.Absence_Type, i.Reason, a.Post_ID, a.Staff_Number, a.Payroll_Company_Code
