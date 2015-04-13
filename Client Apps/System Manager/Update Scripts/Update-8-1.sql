@@ -4652,6 +4652,9 @@ PRINT 'Step - P&E Core functions'
 		SET @StartDate = DATEADD(dd, 0, DATEDIFF(dd, 0, @StartDate));
 		SET @EndDate = DATEADD(dd, 0, DATEDIFF(dd, 0, @EndDate));
 
+	    IF @EndDate IS NULL OR @StartDate > @EndDate
+	      RETURN;
+
 		WITH cteRange (DateRange) AS (
 			SELECT @StartDate
 			UNION ALL

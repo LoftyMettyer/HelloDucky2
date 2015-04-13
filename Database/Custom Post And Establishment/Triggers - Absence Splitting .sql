@@ -137,22 +137,17 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
             FROM [dbo].[tbuser_Appointment_Absence_Staging]
             WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))
     UPDATE base SET 
-		Duration = dbo.udfcustom_AbsenceDurationForAppointment(Start_Date, Start_Session, ISNULL(End_Date, @dChangeDate), End_Session, ID_3);
+		Duration = dbo.udfcustom_AbsenceDurationForAppointment(Start_Date, Start_Session, End_Date, End_Session, ID_3);
 
-	-- Automatically approve certain absences
-	INSERT Appointment_Absence (ID_3, Start_Date, End_Date, Start_Session, End_Session, Absence_In, Absence_Type, Reason, Post_ID, Staff_Number, Payroll_Company_Code)
-		SELECT i.ID_3, i.Start_Date, i.End_Date, i.Start_Session, i.End_Session, a.Absence_In, i.Absence_Type, i.Reason, a.Post_ID, a.Staff_Number, a.Payroll_Company_Code
+	-- Approve authorised absences and absences that require no authorisation
+	INSERT Appointment_Absence (ID_3, StagingID, Start_Date, End_Date, Start_Session, End_Session, Absence_In, Absence_Type, Reason, Post_ID, Staff_Number, Payroll_Company_Code)
+		SELECT i.ID_3, i.ID, i.Start_Date, i.End_Date, i.Start_Session, i.End_Session, a.Absence_In, i.Absence_Type, i.Reason, a.Post_ID, a.Staff_Number, a.Payroll_Company_Code
 		FROM inserted i
 			INNER JOIN Appointments a ON a.ID = i.ID_3
 			INNER JOIN Absence_Type_Table at ON at.Absence_Type = i.Absence_Type
-		WHERE at.Requires_Authorisation = 0;
+		WHERE (at.Requires_Authorisation = 0 OR i.Status = ''Authorised'')
+			AND i.ID NOT IN (SELECT StagingID FROM Appointment_Absence);
 
-	-- Move authorised absences
-	INSERT Appointment_Absence (ID_3, Start_Date, End_Date, Start_Session, End_Session, Absence_In, Absence_Type, Reason, Post_ID, Staff_Number, Payroll_Company_Code)
-		SELECT i.ID_3, i.Start_Date, i.End_Date, i.Start_Session, i.End_Session, a.Absence_In, i.Absence_Type, i.Reason, a.Post_ID, a.Staff_Number, a.Payroll_Company_Code
-		FROM inserted i
-			INNER JOIN Appointments a ON a.ID = i.ID_3
-		WHERE i.Status = ''Authorised'';
 ')
 GO
 
@@ -224,7 +219,7 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 			, dr.IndividualDate, dr.SessionType
 			, wp.Day_Pattern_AM, wp.Day_Pattern_PM, wp.Hour_Pattern_AM, wp.Hour_Pattern_PM
 		FROM inserted i
-			CROSS APPLY [dbo].[udfsysDateRangeToTable] (''d'', i.Start_Date, i.Start_Session, ISNULL(i.End_Date, @today), i.End_Session) dr
+			CROSS APPLY [dbo].[udfsysDateRangeToTable] (''d'', i.Start_Date, i.Start_Session, i.End_Date, i.End_Session) dr
 			INNER JOIN Appointments ap ON ap.ID = i.ID_3
 			INNER JOIN @working_patterns wp ON wp.AppointmentID = ap.ID
 			INNER JOIN Personnel_Records pr ON pr.ID = ap.ID_1
