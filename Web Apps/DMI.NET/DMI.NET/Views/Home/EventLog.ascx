@@ -199,13 +199,22 @@
 		}).jqGrid('hideCol', 'cb');
 
 		//search options.
-		$("#LogEvents").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false });
+		//$("#LogEvents").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false });
+		// Navbar options = i.e. search, edit, save etc 
+		$("#LogEvents").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false, refresh: false }); // setup the buttons we want
+		$("#LogEvents").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });  //instantiate toolbar so we can use toggle.
+		$("#LogEvents")[0].toggleToolbar();  // Toggle it off at start up.
 
 		$("#LogEvents").jqGrid('navButtonAdd', "#pager-coldata", {
 			caption: '',
 			buttonicon: 'ui-icon-search',
 			onClickButton: function () {
 				$("#LogEvents").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
+				$("#LogEvents")[0].toggleToolbar(); // Toggle toolbar on & off when Search button is pressed.
+				$("#LogEvents")[0].clearToolbar();  // clear menu
+				var isSearching = $('#frmLookupFindForm .ui-search-toolbar').is(':visible');
+				$("#LogEvents_iledit").toggleClass('ui-state-disabled', isSearching);
+				$("#LogEvents_iladd").toggleClass('ui-state-disabled', isSearching);
 			},
 			position: 'first',
 			title: '',
