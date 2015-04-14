@@ -70,7 +70,7 @@ function find_window_onload() {
 				OpenHR.messageBox(sErrorMsg);
 			}
 			sAction = frmFindForm.txtGotoAction.value; // Refresh the link find grid with the data if required.
-
+			
 			var newFormat = OpenHR.getLocaleDateString();
 			var srcFormat = newFormat;
 			if (newFormat.toLowerCase().indexOf('y.m.d') >= 0) srcFormat = 'd/m/Y';
@@ -271,18 +271,12 @@ function find_window_onload() {
 										name: sColumnName,
 										edittype: "text",
 										id: iColumnId,
-										sorttype: function (cellValue) { //Sort function that deals correctly with empty dates
-											if (Date.parse(cellValue)) {
-												var d = cellValue.split("/");
-												return new Date(d[2].toString() + "-" + d[1].toString() + "-" + d[0].toString());
-											} else {
-												return new Date("1901-01-01");
-											}
-										},
+										sorttype: 'date',
 										formatter: 'date',
 										formatoptions: {
 											srcformat: srcFormat,
 											newformat: newFormat,
+											datefmt: srcFormat,
 											disabled: true
 										},
 										align: 'left',
@@ -565,12 +559,15 @@ function find_window_onload() {
 					pager: $('#pager-coldata'),
 					editurl: 'clientArray',
 					ignoreCase: true,
-					shrinkToFit: shrinkToFit,
+					shrinkToFit: shrinkToFit,					
 					loadComplete: function () {
 						moveFirst();
 					},
 					afterSearch: function () {
 						moveFirst();
+					},
+					onSortCol: function (index, columnIndex, sortOrder) {
+						$('#gview_findGridTable .s-ico span').css('visibility', 'visible');
 					},
 					localReader: {
 						page: function (obj) {
@@ -611,6 +608,7 @@ function find_window_onload() {
 					id: 'findGridTable_searchButton'
 				});
 
+				$('#gview_findGridTable .s-ico span').css('visibility', 'hidden');
 
 				addparameters = {
 					rowID: "0", //Default ID for New Record
