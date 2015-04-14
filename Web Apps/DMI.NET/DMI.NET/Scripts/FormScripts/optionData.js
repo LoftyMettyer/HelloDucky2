@@ -128,13 +128,22 @@ function optiondata_onload() {
 				var shrinkToFit = false;
 				if (colMode.length < 8) shrinkToFit = true;
 
+				var formHeight = $('#optionframe').outerHeight();
+				var navButtonsHeight = $('#navButtons').outerHeight();
+				var buttonHeight = $('#divLinkFindButtons').outerHeight();
+				var pageTitleHeight = $('.pageTitleDiv').outerHeight();
+				var gridHeight = formHeight - navButtonsHeight - buttonHeight - pageTitleHeight - 120;
+				var gridWidth = $('#optionframe').outerWidth() - 50;
+
 				$("#ssOleDBGridLinkRecords").jqGrid({
 					data: colData,
 					datatype: "local",
 					colNames: colNames,
 					colModel: colMode,
 					rowNum: 1000,
-					autowidth: true,
+					pager: $('#pager-coldata-optiondata'),
+					width: gridWidth,
+					height: gridHeight,
 					shrinkToFit: shrinkToFit,
 					onSelectRow: function () {
 						linkFind_refreshControls();
@@ -152,6 +161,8 @@ function optiondata_onload() {
 						SelectLink();
 					}
 				});
+
+				$("#ssOleDBGridLinkRecords").jqGrid('navGrid', '#pager-coldata-optiondata', { del: false, add: false, edit: false, search: false, refresh: false }); // setup the buttons we want
 
 				//resize the grid to the height of its container.
 				$("#ssOleDBGridLinkRecords").jqGrid('setGridHeight', $("#linkFindGridRow").height());

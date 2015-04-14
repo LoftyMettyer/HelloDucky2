@@ -76,11 +76,14 @@
 			refreshOptionData();	//should be in scope now...
 			
 			//get width
+			var newWidth = screen.width / 2;
+			var newHeight = screen.height / 2;
+
 			$("#optionframe").dialog({
 				autoOpen: true,
 				modal: true,
-				width: 'auto',
-				height: 'auto',
+				width: newWidth,
+				height: newHeight,
 				resizable: false
 			});
 
@@ -290,7 +293,7 @@
 			</div>
 
 			<table  class="invisible" style="border-spacing: 0;">
-				<tr>
+				<tr id="navButtons">
 					<td style="height:10px">
 						<table class="width100 invisible" style="border-spacing: 0;">
 							<tr>
@@ -376,6 +379,7 @@
 					<td>
 						<%--<div id="linkFindGridRow" style="height: 75%; margin-bottom: 50px;">--%>
 						<table id="ssOleDBGridLinkRecords" name="ssOleDBGridLinkRecords" class="width100 height100"></table>
+						<div id="pager-coldata-optiondata"></div>
 						<%--</div>--%>
 					</td>
 				</tr>

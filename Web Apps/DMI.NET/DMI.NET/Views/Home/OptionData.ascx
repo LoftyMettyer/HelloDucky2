@@ -84,7 +84,7 @@
 						, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionViewID"))} _
 						, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionOrderID"))} _
 						, prmError _
-						, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = CleanNumeric(Session("FindRecords"))} _
+						, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 10000} _
 						, prmIsFirstPage _
 						, prmIsLastPage _
 						, New SqlParameter("psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("optionLocateValue")} _
