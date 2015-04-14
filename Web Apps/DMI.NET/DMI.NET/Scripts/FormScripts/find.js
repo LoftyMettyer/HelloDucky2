@@ -25,6 +25,7 @@ function find_window_onload() {
 	$("#workframe").attr("data-framesource", "FIND");
 	$("#optionframe").hide();
 	$("#workframe").show();
+	$('div#workframeset').animate({ scrollTop: 0 }, 0);
 
 	var frmFindForm = document.getElementById("frmFindForm");
 	var sErrMsg = frmFindForm.txtErrorDescription.value;

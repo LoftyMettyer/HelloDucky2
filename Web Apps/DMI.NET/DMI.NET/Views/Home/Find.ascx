@@ -572,9 +572,9 @@
 
 							For iLoop = 1 To iRowCount
 								Response.Write("   						<TR>" & vbCrLf)
-								Response.Write("   							<TD nowrap=true>" & Replace(aSummaryFields(2, iLoop), "_", " ") & " :</TD>" & vbCrLf)
+								Response.Write("								<TD style='width:30%;white-space: nowrap'>" & Replace(aSummaryFields(2, iLoop), "_", " ") & " :</TD>" & vbCrLf)
 								Response.Write("								<TD width=20>&nbsp;&nbsp;</TD>" & vbCrLf)
-								Response.Write("								<TD width=""100%"">" & vbCrLf)
+								Response.Write("								<TD style='width:70%'>" & vbCrLf)
 
 								If aSummaryFields(7, iLoop) = 1 Then
 									' The summary control is a checkbox.
@@ -587,11 +587,11 @@
 			<%--' The summary control is not a checkbox. Use a textbox for everything else.--%>
 			<input type="text" id="ctlSummary_<%=aSummaryFields(3, iLoop)%>_<%=aSummaryFields(4, iLoop)%>"
 				name="ctlSummary_<%=aSummaryFields(3, iLoop)%>_<%=aSummaryFields(4, iLoop)%>"
-				class="text textdisabled" disabled="disabled"
+				disabled="disabled" class="text textdisabled width100"
 				<%If aSummaryFields(8, iLoop) = 1 Then%>
-				style="width: 100%; text-align: right" />
+				style="text-align: right" />
 			<%ElseIf aSummaryFields(8, iLoop) = 2 Then%>
-					style="width: 100%;text-align: center" />
+					style="text-align: center" />
 				<% End If%>
 			<%
 			End If
@@ -615,9 +615,9 @@
 						
 			If iColumn2Index <= iTotalCount Then
 				Response.Write("   						<TR>" & vbCrLf)
-				Response.Write("								<TD nowrap=true>" & Replace(aSummaryFields(2, iColumn2Index), "_", " ") & " :</TD>" & vbCrLf)
+				Response.Write("								<TD style='width:30%;white-space: nowrap'>" & Replace(aSummaryFields(2, iColumn2Index), "_", " ") & " :</TD>" & vbCrLf)
 				Response.Write("								<TD width=20>&nbsp;&nbsp;</TD>" & vbCrLf)
-				Response.Write("								<TD width=""100%"">" & vbCrLf)
+				Response.Write("								<TD style='width:70%'>" & vbCrLf)
 
 				If aSummaryFields(7, iColumn2Index) = 1 Then%>
 			<%--The summary control is a checkbox.--%>
@@ -628,11 +628,11 @@
 			<%--The summary control is not a checkbox. Use a textbox for everything else.--%>
 			<input type="text" id="ctlSummary_<%=aSummaryFields(3, iColumn2Index)%>_<%=aSummaryFields(4, iColumn2Index)%>"
 				name="ctlSummary_<%=aSummaryFields(3, iColumn2Index)%>_<%=aSummaryFields(4, iColumn2Index)%>"
-				disabled="disabled" class="text textdisabled"
+				disabled="disabled" class="text textdisabled width100"
 				<%If aSummaryFields(8, iColumn2Index) = 1 Then%>
-				style="width: 100%; text-align: right" />
+				style="text-align: right" />
 			<%ElseIf aSummaryFields(8, iColumn2Index) = 2 Then%>
-					style="width: 100%;text-align: center" />
+					style="text-align: center" />
 				<%End If%>
 			<%	
 			End If
@@ -732,6 +732,7 @@ Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDes
 		if (menu_isSSIMode()) {
 			$('.ViewDescription p').text('My Dashboard');		
 		} else {
+			$('div#workframeset').animate({ scrollTop: 0 }, 0);
 			$('.ViewDescription p').text('');			
 		}
 
