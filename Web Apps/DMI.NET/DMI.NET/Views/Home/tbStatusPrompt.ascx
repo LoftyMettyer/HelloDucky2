@@ -44,8 +44,8 @@
 
 		var postData = {
 			Action: iActionType,
-			CourseID: frmForm.txtOptionRecordID.value,
-			EmployeeIDs: frmForm.txtOptionLinkRecordID.value,
+			Key1: frmForm.txtOptionRecordID.value,
+			Key2: frmForm.txtOptionLinkRecordID.value,
 			BookingStatus: bookingStatus,
 			<%:Html.AntiForgeryTokenForAjaxPost() %> };
 		OpenHR.submitForm(null, "optionframe", null, postData, sSubmitAction);

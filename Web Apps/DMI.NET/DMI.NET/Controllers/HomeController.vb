@@ -4046,10 +4046,10 @@ Namespace Controllers
 			Dim sCourseOverbooked As String = ""
 			Dim sPreReqFails As String = ""
 
-			Session("optionLinkRecordID") = postData.EmployeeIDs
+			Session("optionLinkRecordID") = postData.Key2
 
 			If postData.Action = OptionActionType.SELECTADDFROMWAITINGLIST_1 Then
-				If postData.CourseID > 0 Then
+				If postData.Key1 > 0 Then
 					' First pass after selecting the employee to book.
 					' Get the user to choose whether to make the booking 'provisional'
 					' or confirmed.
@@ -4063,7 +4063,7 @@ Namespace Controllers
 			End If
 
 			If postData.Action = OptionActionType.SELECTADDFROMWAITINGLIST_2 Then
-				If postData.CourseID > 0 Then
+				If postData.Key1 > 0 Then
 					If Len(sErrorMsg) = 0 Then
 						' Validate the booking.					
 						Try
@@ -4073,8 +4073,8 @@ Namespace Controllers
 
 							objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
 								, prmResult _
-								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = postData.EmployeeIDs} _
-								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = postData.CourseID} _
+								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = postData.Key2} _
+								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = postData.Key1} _
 								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = postData.BookingStatus} _
 								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0} _
 								, prmCourseOverbooked)
@@ -4114,9 +4114,11 @@ Namespace Controllers
 			Dim sCourseOverbooked As String = ""
 
 			Session("optionAction") = postData.Action
+			Session("optionLinkRecordID") = postData.Key1
+			Session("optionRecordID") = postData.Key2
 
 			If postData.Action = OptionActionType.SELECTBOOKCOURSE_1 Then
-				If postData.CourseID > 0 Then
+				If postData.Key2 > 0 Then
 					' First pass after selecting the course to book.
 					' Get the user to choose whether to make the booking 'provisional'
 					' or confirmed.
@@ -4130,7 +4132,7 @@ Namespace Controllers
 			End If
 
 			If postData.Action = OptionActionType.SELECTBOOKCOURSE_2 Then
-				If postData.CourseID > 0 Then
+				If postData.Key2 > 0 Then
 					' Get the employee record ID from the given Waiting List record.
 					Dim iEmpRecID = 0
 
@@ -4139,7 +4141,7 @@ Namespace Controllers
 						Dim prmTBEmployeeRecordID = New SqlParameter("piEmpRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 						objDataAccess.ExecuteSP("sp_ASRIntGetEmpIDFromWLID", _
 								prmTBEmployeeRecordID, _
-								New SqlParameter("@piWLRecordID", SqlDbType.Int) With {.Value = postData.CourseID})
+								New SqlParameter("@piWLRecordID", SqlDbType.Int) With {.Value = postData.Key2})
 
 						iEmpRecID = CInt(prmTBEmployeeRecordID.Value)
 
@@ -4161,7 +4163,7 @@ Namespace Controllers
 							objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
 								, prmResult _
 								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = iEmpRecID} _
-								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = postData.CourseID} _
+								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = postData.Key1} _
 								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = postData.BookingStatus} _
 								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0} _
 								, prmCourseOverbooked)
@@ -4170,6 +4172,7 @@ Namespace Controllers
 							sCourseOverbooked = prmCourseOverbooked.Value
 							Session("optionLinkRecordID") = iEmpRecID
 							Session("optionLookupValue") = postData.BookingStatus
+							Session("TBCourseID") = postData.Key1
 
 						Catch ex As Exception
 							sErrorMsg = "Error validating training booking." & vbCrLf & ex.Message.RemoveSensitive
@@ -4202,12 +4205,12 @@ Namespace Controllers
 
 			' Read the information from the calling form.
 			Session("optionAction") = postData.Action
-			Session("optionRecordID") = postData.CourseID
-			Session("optionLinkRecordID") = postData.EmployeeIDs
+			Session("optionRecordID") = postData.Key1
+			Session("optionLinkRecordID") = postData.Key2
 			Session("optionLookupValue") = postData.BookingStatus
 
 			If postData.Action = OptionActionType.SELECTBULKBOOKINGS Then
-				If Len(postData.EmployeeIDs) > 0 Then
+				If Len(postData.Key2) > 0 Then
 
 					Try
 						Dim prmErrorMsg = New SqlParameter("psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
@@ -4217,8 +4220,8 @@ Namespace Controllers
 						Dim prmCourseOverbooked = New SqlParameter("psCourseOverbooked", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
 						Dim dt As DataTable = objDataAccess.GetDataTable("sp_ASRIntValidateBulkBookings", CommandType.StoredProcedure _
-							, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = postData.CourseID} _
-							, New SqlParameter("psEmployeeRecordIDs", SqlDbType.VarChar, -1) With {.Value = postData.EmployeeIDs} _
+							, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = postData.Key1} _
+							, New SqlParameter("psEmployeeRecordIDs", SqlDbType.VarChar, -1) With {.Value = postData.Key2} _
 							, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = postData.BookingStatus} _
 							, prmErrorMsg _
 							, prmPreRequisitesFailsCount _
@@ -4392,9 +4395,7 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function tbTransferBookingFind_Submit(form As GotoOptionDataModel)
-
-			emptyoption_Submit_BASE(form)
+		Function tbTransferBookingFind_Submit(form As DelegateBookingModel)
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
@@ -4402,8 +4403,11 @@ Namespace Controllers
 			Dim sTBResultCode As String = "000"	'Validation OK
 			Dim sCourseOverbooked As String = ""
 
-			If form.txtGotoOptionAction = OptionActionType.SELECTTRANSFERBOOKING_1 Then
-				If NullSafeInteger(Session("optionRecordID")) > 0 Then
+			Session("optionAction") = form.Action
+			Session("optionLinkRecordID") = form.Key2
+
+			If form.Action = OptionActionType.SELECTTRANSFERBOOKING_1 Then
+				If form.Key1 > 0 Then
 					' Get the employee record ID from the given Training Booking record.
 					Dim iEmpRecID As Integer = 0
 					Try
@@ -4411,7 +4415,7 @@ Namespace Controllers
 
 						objDataAccess.ExecuteSP("sp_ASRIntGetEmpIDFromTBID" _
 							, prmEmployeeRecordID _
-							, New SqlParameter("piTBRecordID", SqlDbType.Int) With {.Value = CleanNumeric(NullSafeInteger(Session("optionRecordID")))})
+							, New SqlParameter("piTBRecordID", SqlDbType.Int) With {.Value = form.Key1})
 
 						iEmpRecID = prmEmployeeRecordID.Value
 
@@ -4420,7 +4424,7 @@ Namespace Controllers
 						End If
 
 					Catch ex As Exception
-						sErrorMsg = "Error getting employee ID." & vbCrLf & FormatError(ex.Message)
+						sErrorMsg = "Error getting employee ID." & vbCrLf & ex.Message.RemoveSensitive()
 
 					End Try
 
@@ -4433,15 +4437,15 @@ Namespace Controllers
 							objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
 								, prmResult _
 								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = iEmpRecID} _
-								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
-								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionLookupValue")} _
+								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = form.Key2} _
+								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = form.BookingStatus} _
 								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0} _
 								, prmCourseOverbooked)
 
 							sTBResultCode = prmResult.Value
 							sCourseOverbooked = prmCourseOverbooked.Value
 						Catch ex As Exception
-							sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(ex.Message)
+							sErrorMsg = "Error validating training booking." & vbCrLf & ex.Message.RemoveSensitive()
 						End Try
 					End If
 				End If

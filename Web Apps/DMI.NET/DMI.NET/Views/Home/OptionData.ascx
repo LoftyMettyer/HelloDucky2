@@ -524,8 +524,8 @@
 				
 				Try
 					objDataAccess.ExecuteSP("sp_ASRIntBookCourse" _
-						, New SqlParameter("piWLRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
-						, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
+						, New SqlParameter("piWLRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
+						, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TBCourseID"))} _
 						, New SqlParameter("psStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionValue")})
 					
 					Session("optionAction") = OptionActionType.BOOKCOURSESUCCESS

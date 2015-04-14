@@ -54,6 +54,8 @@ $('#cmdCancel').click(function () {
 
 $('#cmdSelect').click(function () {
 
+	debugger;
+
 	var sPostAction = $("#SubmitAction").val();
 	var iAction = parseInt($('#GotoOptionActionSelect').val());
 	var selRowId = $("#ssOleDBGridRecords").jqGrid('getGridParam', 'selrow');
@@ -61,8 +63,8 @@ $('#cmdSelect').click(function () {
 
 	var postData = {
 		Action: iAction,
-		CourseID: $('#RecordID').val(),
-		EmployeeIDs: recordID,
+		Key1: $('#RecordID').val(),
+		Key2: recordID,
 		BookingStatus: $('#selStatus').val(),
 		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 	};

@@ -95,8 +95,8 @@ function ok() {
 	var postData = {
 		Action: optionActionType.SELECTBULKBOOKINGS,
 		BookingStatus: bookingStatus,
-		CourseID: $("#txtOptionRecordID").val(),
-		EmployeeIDs: sSelectedIDs,
+		Key1: $("#txtOptionRecordID").val(),
+		Key2: sSelectedIDs,
 		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 	};
 	OpenHR.submitForm(null, "optionframe", null, postData, "BulkBooking_Submit");

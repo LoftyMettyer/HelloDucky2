@@ -7,10 +7,10 @@ Namespace Models.ObjectRequests
 	Public Class DelegateBookingModel
 		Inherits GotoOptionBaseModel
 
-		Public Property CourseID As Integer
+		Public Property Key1 As Integer
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
-		Public Property EmployeeIDs As String
+		Public Property Key2 As String
 		Public Property BookingStatus As Char
 
 	End Class
