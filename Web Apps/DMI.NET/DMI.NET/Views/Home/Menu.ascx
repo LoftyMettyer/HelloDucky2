@@ -111,6 +111,8 @@
 		avQuickEntryMenuInfo = Session("avQuickEntryMenuInfo")
 	End If
 
+	avQuickEntryMenuInfo.Sort(Function(x, y) System.String.Compare(y.TableName, x.TableName, System.StringComparison.Ordinal))	' Sort list in reverse alphabetical order
+	
 	For Each objMenuItem In avQuickEntryMenuInfo
 		Response.Write("  menu_insertMenuItem('mnubandQuickEntry', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & "..." & "', 'QE_" & CleanStringForJavaScript(objMenuItem.TableID) & "_0_" & CleanStringForJavaScript(objMenuItem.TableScreenID) & "');" & vbCrLf)
 	Next

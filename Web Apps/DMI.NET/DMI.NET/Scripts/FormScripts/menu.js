@@ -4477,17 +4477,17 @@ function menu_loadSelectOrderFilter(psType) {
 //NEW FUNCTIONS.
 
 	function menu_insertMenuItem(parentULID, NewLICaption, NewLIID) {
-	var insertRef = "#" + parentULID;
-	if ($(insertRef).length > 0) {
-	$(insertRef).prepend("<li id='" + NewLIID + "'><a href='#'>" + NewLICaption + "</a></li>");
-} else {
-				
-	var insertRefULParent = insertRef.replace("#mnuband", "mnutool");
-				
-	$("#contextmenu div[aria-labelledby='" + insertRefULParent + "']>ul").attr("id", insertRef.replace("#", ""));
-	$(insertRef).prepend("<li id='" + NewLIID + "'><a href='#'>" + NewLICaption + "</a></li>");
-}
-}
+		var insertRef = "#" + parentULID;
+		if ($(insertRef).length > 0) {
+			$(insertRef).prepend("<li id='" + NewLIID + "'><a href='#'>" + NewLICaption + "</a></li>");
+		} else {
+
+			var insertRefULParent = insertRef.replace("#mnuband", "mnutool");
+
+			$("#contextmenu div[aria-labelledby='" + insertRefULParent + "']>ul").attr("id", insertRef.replace("#", ""));
+			$(insertRef).prepend("<li id='" + NewLIID + "'><a href='#'>" + NewLICaption + "</a></li>");
+		}
+	}
 
 	function menu_insertSubMenuItem(parentULID, NewLICaption, NewLIID, NewULID) {
 	var insertRef = "#" + parentULID;
