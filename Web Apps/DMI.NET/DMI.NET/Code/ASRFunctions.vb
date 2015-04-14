@@ -155,7 +155,8 @@ Public Module ASRFunctions
 					If (CStr(objRow("valuedate")) <> "00:00:00") And _
 							(CStr(objRow("valuedate")) <> "12:00:00 AM") Then
 						Return CDate(objRow("valuedate"))
-
+					ElseIf ((CStr(objRow("valuedate")) = "00:00:00") Or (CStr(objRow("valuedate")) = "12:00:00 AM")) Then
+						Return Nothing
 					End If
 				End If
 
