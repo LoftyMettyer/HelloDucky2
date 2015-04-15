@@ -9,7 +9,7 @@ Imports HR.Intranet.Server.Structures
 Imports System.Data.SqlClient
 
 Namespace Expressions
-	Friend Class clsExprExpression
+	Public Class clsExprExpression
 		Inherits BaseExpressionComponent
 
 		' Expression definition variables.
@@ -331,7 +331,7 @@ Namespace Expressions
 		Public Function AddComponent() As clsExprComponent
 			' Add a new component to the expression.
 			' Returns the new component object.
-			
+
 			Dim fOK As Boolean
 			Dim objComponent As clsExprComponent
 

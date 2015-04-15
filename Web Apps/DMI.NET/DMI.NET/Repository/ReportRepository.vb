@@ -773,6 +773,11 @@ Namespace Repository
 			Try
 
 				Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
+				For Each columnItem As ReportColumnItem In objModel.Columns
+					If columnItem.IsExpression AndAlso columnItem.DataType = ColumnDataType.sqlUnknown Then
+						columnItem.ValidateExpressionDataType = True
+					End If
+				Next
 
 				Dim sAccess As String = UtilityAccessAsString(objModel.GroupAccess)
 				Dim sColumns = CustomReportColumnsAsString(objModel.BaseTableID, objModel.Columns, objModel.SortOrders)

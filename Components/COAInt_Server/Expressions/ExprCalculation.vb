@@ -6,7 +6,7 @@ Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 
 Namespace Expressions
-	Friend Class clsExprCalculation
+	Public Class clsExprCalculation
 		Inherits BaseExpressionComponent
 
 		' Component definition variables.

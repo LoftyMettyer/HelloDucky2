@@ -2,7 +2,8 @@
 Option Explicit On
 
 Imports DMI.NET.Code.Attributes
-
+Imports HR.Intranet.Server.Expressions
+Imports HR.Intranet.Server
 Namespace Classes
 	Public Class ReportColumnItem
 		Implements IJsonSerialize
@@ -37,9 +38,40 @@ Namespace Classes
 		Public Property Access As String
 
 
+		''' <summary>
+		''' True if expression column needs to be validated to get its datatype, false otherwise.
+		''' </summary>
+		''' <value></value>
+		''' <returns></returns>
+		''' <remarks></remarks>
+		Public Property ValidateExpressionDataType As Boolean
+
+		''' <summary>
+		''' Return true if the datatype of column/expression is numeric, else false.
+		''' </summary>
+		''' <value></value>
+		''' <returns></returns>
+		''' <remarks></remarks>
 		Public ReadOnly Property IsNumeric As Boolean
 			Get
-				Return DataType = ColumnDataType.sqlInteger OrElse DataType = ColumnDataType.sqlNumeric
+				' Check if the data type of the caculation/Expression is numeric or not whilst saving the report.
+				If ValidateExpressionDataType Then
+
+					Dim objCalc As clsExprCalculation = New clsExprCalculation(_objSessionInfo)
+					objCalc.CalculationID = ID
+
+					'Return true if any of the column datatype used in the calculation/expression as numeric, else false.
+					Return (objCalc.ReturnType() = ColumnDataType.sqlNumeric)
+
+				Else
+					Return DataType = ColumnDataType.sqlInteger OrElse DataType = ColumnDataType.sqlNumeric
+				End If
+			End Get
+		End Property
+
+		Private ReadOnly Property _objSessionInfo As SessionInfo
+			Get
+				Return CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 			End Get
 		End Property
 
