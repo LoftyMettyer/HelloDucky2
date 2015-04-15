@@ -186,14 +186,14 @@
 										sNewWindow = "0"
 									End If
 			
-									sOnClick = "goURL('" & sURL & "', " & sNewWindow & ", true, '" & server.HtmlEncode(navlink.Text.Replace("'", "\'")) & "')"
+									sOnClick = "goURL('" & sURL & "', " & sNewWindow & ", true, '" & HttpUtility.JavaScriptStringEncode(navlink.Text.Replace("'", "\'")) & "')"
 
 								Else
 									Dim sUtilityType = Convert.ToString(navlink.UtilityType)
 									Dim sUtilityID = Convert.ToString(navlink.UtilityID)
 									Dim sUtilityDef = sUtilityType & "_" & sUtilityID
 									Dim sUtilityBaseTable = CStr(navlink.BaseTableID)
-									sOnClick = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & navlink.Text.Replace("'", "") & "', " & sUtilityBaseTable & ")"
+									sOnClick = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & HttpUtility.JavaScriptStringEncode(navlink.Text) & "', " & sUtilityBaseTable & ")"
 										
 								End If
 									
@@ -346,7 +346,7 @@
 							sNewWindow = "0"
 						End If
 			
-						sOnClick = "goURL('" & sURL & "', " & sNewWindow & ", true, '" & server.HtmlEncode(navlink.Text.Replace("'", "\'")) & "')"
+						sOnClick = "goURL('" & sURL & "', " & sNewWindow & ", true, '" & HttpUtility.JavaScriptStringEncode(navlink.Text.Replace("'", "\'")) & "')"
 
 					Else
 						If navlink.UtilityID > 0 Then
@@ -354,7 +354,7 @@
 							Dim sUtilityID = CStr(navlink.UtilityID)
 							Dim sUtilityBaseTable = CStr(navlink.BaseTableID)
 												
-							sOnClick = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & navlink.Text & "', " & sUtilityBaseTable & ")"
+							sOnClick = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & HttpUtility.JavaScriptStringEncode(navlink.Text) & "', " & sUtilityBaseTable & ")"
 						Else
 							sLinkKey = "recedit" & "_" & Session("TopLevelRecID").ToString() & "_" & navlink.ID
 												
@@ -506,7 +506,7 @@
 							' Drilldown?
 							If navlink.UtilityID > 0 Then
 								' sOnclick = "goUtilityDash('" & navlink.UtilityType & "_" & navlink.UtilityID.ToString() & "_" & navlink.BaseTable
-								sOnClick = "goUtility(" & navlink.UtilityType & ", " & navlink.UtilityID & ", '" & HttpUtility.HtmlEncode(navlink.Text) & "', " & navlink.BaseTableID & ")"
+								sOnClick = "goUtility(" & navlink.UtilityType & ", " & navlink.UtilityID & ", '" & HttpUtility.JavaScriptStringEncode(navlink.Text) & "', " & navlink.BaseTableID & ")"
 							Else
 								sOnClick = ""
 							End If
@@ -1188,7 +1188,7 @@
 									sNewWindow = "0"
 								End If
 		 
-								sValue = "0_" & sNewWindow & "_" & sURL & "_" & Server.HtmlEncode(navlink.Text)
+								sValue = "0_" & sNewWindow & "_" & sURL & "_" & HttpUtility.JavaScriptStringEncode(navlink.Text)
 								sOnClick = "goDropLink('" + sValue + "')"
 							
 							Else
