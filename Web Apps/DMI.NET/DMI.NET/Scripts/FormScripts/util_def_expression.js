@@ -1707,7 +1707,7 @@ function populateSendForm() {
 	if (frmDefinition.optAccessHD.checked == true) {
 		frmSend.txtSend_access.value = "HD";
 	}
-	
+
 	// Now go through the components	
 	if ($('#SSTree1').children().length > 0) {
 		var objNode = $('#SSTree1 li.root>ul>li').first();
@@ -1715,16 +1715,16 @@ function populateSendForm() {
 		sComponents = "ROOT	" + objNode.attr('id') + "	" + objNode.attr('data-tag');
 		sComponents = sComponents + populateSendForm_subNodes(objNode.attr('id'));
 
-		sNames = tree_Nodetext(objNode) +
-				populateSendForm_names(objNode.attr('id'));
+		sNames = tree_Nodetext(objNode) + populateSendForm_names(objNode.attr('id'));
 		
 		$('#SSTree1 li.root>ul>li:not(:first)').each(function () {
-			sNames += "\t" + tree_Nodetext($(this));
+			sNames += "\t" + tree_Nodetext($(this)) + populateSendForm_names($(this).attr('id'));
 			sComponents = sComponents + "	ROOT	" + $(this).attr('id') + "	" + $(this).attr('data-tag');
 			sComponents = sComponents + populateSendForm_subNodes($(this).attr('id'));
 		});
 
 		sComponents = sComponents + "	";
+
 	}
 	
 	frmSend.txtSend_components1.value = sComponents;
@@ -1757,17 +1757,15 @@ function populateSendForm_subNodes(psKey) {
 
 function populateSendForm_names(psKey) {
 	var sNames = "";
-	var objNode;	
+	var objNode;
 
 	if ($('#' + psKey + '>ul>li').length > 0) {
-		objNode = $('#' + psKey + '>ul>li').first();
-		sNames = "	" + tree_Nodetext(objNode) +
-				populateSendForm_names(objNode.attr('id'));
+		objNode = $('#' + psKey + '>ul>li:first');
+		sNames = "	" + tree_Nodetext(objNode) + populateSendForm_names(objNode.attr('id'));
 
 		$('#SSTree1 #' + psKey + '>ul>li:not(:first)').each(function () {
 			objNode = $(this);
-			sNames += "	" + tree_Nodetext(objNode) +
-								populateSendForm_names(objNode.attr('id'));
+			sNames += "	" + tree_Nodetext(objNode) + populateSendForm_names(objNode.attr('id'));
 		});
 
 	}
