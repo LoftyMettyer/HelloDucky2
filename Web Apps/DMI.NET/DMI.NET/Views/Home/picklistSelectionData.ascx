@@ -60,8 +60,10 @@
 
 						iIndex = sColDef.indexOf("	");
 						if (iIndex >= 0) {
-							sColumnName = sColDef.substr(0, iIndex);
-							sColumnType = sColDef.substr(iIndex + 1).replace('System.', "").toLowerCase();
+							var aColumnType = sColDef.split('\t');
+							sColumnName = aColumnType[0];
+							var sColumnType = aColumnType[1].replace('System.', "").toLowerCase();
+
 							colNames.push(sColumnName);
 
 							if (sColumnName == "ID") {
@@ -72,7 +74,9 @@
 										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center', width: 100 });
 										break;
 									case "decimal":
-										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
+										var numDecimals = Number(aColumnType[2]);
+										var sThousandSeparator = (aColumnType[3] === 'true') ? OpenHR.LocaleThousandSeparator() : "";
+										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'number', formatoptions: { thousandsSeparator: sThousandSeparator, decimalSeparator: OpenHR.LocaleDecimalSeparator(), decimalPlaces: numDecimals, disabled: true }, align: 'right', width: 100 });
 										break;
 									case "datetime": //Date - 135
 										colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: dateFormat, newformat: dateFormat, disabled: true }, align: 'left', width: 100 });
@@ -243,6 +247,18 @@
 							
 							If iCount = 0 Then
 								sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString()
+								If rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.decimal" Then
+									Dim numberAsString As String = objRow(iloop).ToString()
+									Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), StringComparison.Ordinal)
+									Dim numberOfDecimals As Integer = 0
+									If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
+
+									If Mid(sThousandColumns, iloop + 1, 1) = "1" Then
+										sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "true"
+									Else
+										sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "false"
+									End If
+								End If
 								Response.Write("<input type='hidden' id=txtColDef_" & iloop & " name=txtColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
 							End If
 							
@@ -256,7 +272,7 @@
 										sTemp = FormatNumber(objRow(iloop), , True, False, True)
 									Else
 										sTemp = FormatNumber(objRow(iloop), , True, False, False)
-									End If									
+									End If
 									sAddString = sAddString & sTemp
 								End If
 							Else
