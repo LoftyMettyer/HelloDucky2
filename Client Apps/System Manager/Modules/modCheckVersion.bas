@@ -235,6 +235,9 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
                               CStr(mavValidationMessages(2, i))
         Next i
         
+        ' Platform has changed therefore there can't/shouldn't be any logged in users.
+        ClearDownCurrentSessions
+        
         ' AE20080219 Fault #12902
         iPointer = Screen.MousePointer
         Screen.MousePointer = vbDefault
@@ -800,9 +803,7 @@ Private Function UpdateDatabase( _
       bRegenerateProc = True
     End If
   End If
-    
-  ClearDownCurrentSessions
-        
+           
   UnlockDatabase lckSaving
 
   gobjProgress.CloseProgress
@@ -1435,7 +1436,8 @@ Private Function ClearDownCurrentSessions() As Boolean
   Dim bOK As Boolean
     
   bOK = True
-  sSQL = "DELETE FROM ASRSysCurrentSessions"
+  sSQL = "IF EXISTS(SELECT * FROM sys.sysobjects WHERE name = 'ASRSysCurrentSessions' AND xtype = 'U')" & vbNewLine & _
+      "DELETE FROM ASRSysCurrentSessions"
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
 TidyUpAndExit:
