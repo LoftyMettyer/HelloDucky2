@@ -223,11 +223,6 @@
             "AssemblyAsmDisplayName" = "8:Interop.Redemption, Version=4.7.0.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
-                    "_5AF4735A88CF318B5E8F63B49BE0B5F3"
-                    {
-                    "Name" = "8:Interop.Redemption.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Interop.Redemption.dll"
             "TargetName" = "8:"
@@ -321,15 +316,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Outlook Calendar Service 8.1"
-        "ProductCode" = "8:{731B2D96-3F51-4CF7-9571-3596D92B89C8}"
-        "PackageCode" = "8:{E85E6125-0262-4D66-B66C-D93644F0096B}"
+        "ProductCode" = "8:{FEBB18DE-E506-4671-B15E-C86B11B5CAAE}"
+        "PackageCode" = "8:{8878FE17-78E7-45A8-A40D-39B9C4D12C73}"
         "UpgradeCode" = "8:{758BD42D-ABB6-4B7C-8960-4699AADBB9E5}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:8.1.1"
+        "ProductVersion" = "8:8.1.2"
         "Manufacturer" = "8:Advanced Business Software and Solutions Limited"
         "ARPHELPTELEPHONE" = "8:08451 609 999"
         "ARPHELPLINK" = "8:http://webfirst.advancedcomputersoftware.com"
