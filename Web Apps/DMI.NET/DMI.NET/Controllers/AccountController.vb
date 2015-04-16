@@ -399,7 +399,7 @@ Namespace Controllers
 				If lngSSIPhotographColumnID <= 0 Then lngSSIPhotographColumnID = 0
 
 
-				Dim maxRequestLength As Integer = 0
+				Dim maxRequestLength As Integer = 4096
 				Dim section As HttpRuntimeSection = TryCast(ConfigurationManager.GetSection("system.web/httpRuntime"), HttpRuntimeSection)
 				If section IsNot Nothing Then
 					maxRequestLength = section.MaxRequestLength
