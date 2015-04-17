@@ -688,6 +688,7 @@ function find_window_onload() {
 									indicateThatRowWasModified();
 									lastRowEdited = "0";
 								} else {
+									//just editing existing row, so don't indicate that the row was modified.
 									rowWasModified = false;
 									lastRowEdited = rowid;
 								}
@@ -1633,6 +1634,7 @@ function editNextRow() {
 			$("#findGridTable").jqGrid('editRow', newRowId);
 			lastRowEdited = newRowId;
 			rowWasModified = false;
+			window.onbeforeunload = "null";
 		} catch (e) {
 			alert("Unable to edit the next row. Please reload the page.");
 		}
