@@ -137,10 +137,8 @@
 <script type="text/javascript">
 	function display_Configuration_Page(piPageNumber) {
 		if (piPageNumber == 1) {
-			div1.style.visibility = "visible";
-			div1.style.display = "block";
-			div2.style.visibility = "hidden";
-			div2.style.display = "none";
+			$("#div1").css("visibility", "visible").css("display", "block");
+			$("#div2").css("visibility", "hidden").css("display", "none");
 			$('#btnDiv1OK').hide();
 			$('#btnDiv1Cancel').hide();
 
@@ -148,10 +146,8 @@
 		}
 
 		if (piPageNumber == 2) {
-			div1.style.visibility = "hidden";
-			div1.style.display = "none";
-			div2.style.visibility = "visible";
-			div2.style.display = "block";
+			$("#div1").css("visibility", "hidden").css("display", "none");
+			$("#div2").css("visibility", "visible").css("display", "block");
 			$('#btnDiv2OK').hide();
 			$('#btnDiv2Cancel').hide();
 		}
@@ -364,13 +360,13 @@
 		}
 
 		if ((frmConfiguration.chkOwner_Calculations.checked != (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1)) ||
-						(frmConfiguration.chkOwner_CrossTabs.checked != (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1)) ||
-						(frmConfiguration.chkOwner_NineBoxGrid.checked != (frmOriginalConfiguration.txtOnlyMineNineBoxGrid.value == 1)) ||
-						(frmConfiguration.chkOwner_CustomReports.checked != (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1)) ||
-						(frmConfiguration.chkOwner_Filters.checked != (frmOriginalConfiguration.txtOnlyMineFilters.value == 1)) ||
-						(frmConfiguration.chkOwner_MailMerge.checked != (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1)) ||
-						(frmConfiguration.chkOwner_Picklists.checked != (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1)) ||
-						(frmConfiguration.chkOwner_CalendarReports.checked != (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1))) {
+		(frmConfiguration.chkOwner_CrossTabs.checked != (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1)) ||
+		(frmConfiguration.chkOwner_NineBoxGrid.checked != (frmOriginalConfiguration.txtOnlyMineNineBoxGrid.value == 1)) ||
+		(frmConfiguration.chkOwner_CustomReports.checked != (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1)) ||
+		(frmConfiguration.chkOwner_Filters.checked != (frmOriginalConfiguration.txtOnlyMineFilters.value == 1)) ||
+		(frmConfiguration.chkOwner_MailMerge.checked != (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1)) ||
+		(frmConfiguration.chkOwner_Picklists.checked != (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1)) ||
+		(frmConfiguration.chkOwner_CalendarReports.checked != (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1))) {
 			return true;
 		}
 
