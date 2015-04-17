@@ -41,7 +41,6 @@
 			var dataCollection = frmPicklistData;
 			var sControlName;
 			var sColumnName;
-			var iColumnType;
 			var iCount;
 			var colData;
 			var dateFormat = OpenHR.getLocaleDateString();
@@ -188,16 +187,10 @@
 <div id="frmPicklistData">
 	<%
 		Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-
-		
 		Dim sErrorDescription As String = ""
 		Dim sThousandColumns As String = ""
 		Dim sBlankIfZeroColumns As String = ""
-		Dim iCount As Integer
-		Dim sAddString As String
-		Dim sColDef As String
-		Dim sTemp As String
-			
+
 		Response.Write("<input type='hidden' id=txtErrorMessage name=txtErrorMessage value=""" & Replace(Session("errorMessage"), """", "&quot;") & """>" & vbCrLf)
 
 		' Get the required record count if we have a query.
@@ -234,57 +227,62 @@
 					, prmColumnDecimals)
 
 				If dsData.Tables.Count > 0 Then
-
-					Dim rstFindRecords = dsData.Tables(0)
-					For Each objRow As DataRow In rstFindRecords.Rows
-
-						sAddString = ""
+					Dim jqGridColDef = New Dictionary(Of String, String)
+					Dim rows As New List(Of Dictionary(Of String, Object))()
+					Dim row As Dictionary(Of String, Object)
+					Dim iLoop As Integer = 0
 					
-						For iloop = 0 To (rstFindRecords.Columns.Count - 1)
-							If iloop > 0 Then
-								sAddString = sAddString & "	"
-							End If
-							
-							If iCount = 0 Then
-								sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString()
-								If rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.decimal" Then
-									Dim numberAsString As String = objRow(iloop).ToString()
-									Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), StringComparison.Ordinal)
+					Dim rstFindRecords = dsData.Tables(0)
+					For Each dr As DataRow In rstFindRecords.Rows
+						iLoop += 1
+						row = New Dictionary(Of String, Object)()
+						For Each col As DataColumn In rstFindRecords.Columns
+							If Not jqGridColDef.ContainsKey(col.ColumnName) Then
+								Dim sColDef As String = col.DataType.Name
+
+								If sColDef = "Decimal" Then
+									Dim numberAsString As String = dr(col).ToString()
+									Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), System.StringComparison.Ordinal)
 									Dim numberOfDecimals As Integer = 0
 									If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
 
-									If Mid(sThousandColumns, iloop + 1, 1) = "1" Then
+									If Mid(sThousandColumns, iLoop + 1, 1) = "1" Then
 										sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "true"
 									Else
 										sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "false"
 									End If
 								End If
-								Response.Write("<input type='hidden' id=txtColDef_" & iloop & " name=txtColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
-							End If
-							
-							If rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.datetime" Then
-								' Field is a date so format as such.
-								sAddString = sAddString & ConvertSQLDateToLocale(objRow(iloop))
-							ElseIf rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.decimal" Then
-								' Field is a numeric so format as such.
-								If Not IsDBNull(objRow(iloop)) Then
-									If Mid(sThousandColumns, iloop + 1, 1) = "1" Then
-										sTemp = FormatNumber(objRow(iloop), , True, False, True)
-									Else
-										sTemp = FormatNumber(objRow(iloop), , True, False, False)
-									End If
-									sAddString = sAddString & sTemp
-								End If
-							Else
-								If Not IsDBNull(objRow(iloop)) Then
-									sAddString = sAddString & Replace(objRow(iloop).ToString(), """", "&quot;")
-								End If
-							End If
-						Next
 
-						Response.Write("<input type='hidden' id=txtData_" & iCount & " name=txtData_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
-					
-						iCount += 1
+								jqGridColDef.Add(col.ColumnName, sColDef)
+							End If
+
+							If col.DataType.Name = "DateTime" And dr(col).ToString().Length > 0 Then
+								row.Add(col.ColumnName, dr(col).ToShortDateString())
+							Else
+								row.Add(col.ColumnName, dr(col))
+							End If
+
+						Next
+						rows.Add(row)
+					Next
+
+					'Now that we have the data, output it to input tags!
+					Dim counter As Integer = 0
+					Dim addString As String = ""
+					'Column definitions for jqGrid's colModel
+					For Each key As String In jqGridColDef.Keys
+						counter += 1
+						Response.Write("<input type='hidden' id='txtColDef_" & counter & "' name='txtColDef_" & counter & "' value=""" & key & vbTab & jqGridColDef(key) & """>" & vbCrLf)
+					Next
+					'Data for jqGrid's colData
+					counter = 0
+					For i As Integer = 0 To rows.Count - 1
+						addString = ""
+						For Each key As String In rows(i).Keys
+							addString &= rows(i)(key).ToString & vbTab
+						Next
+						counter += 1
+						Response.Write("<input type='hidden' id='txtData_" & counter & "' name='txtData_" & counter & "' value=""" & addString & """>" & vbCrLf)
 					Next
 				End If
 
