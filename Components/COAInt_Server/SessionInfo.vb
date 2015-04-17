@@ -248,6 +248,7 @@ Public Class SessionInfo
 				column.ColumnType = CType(objRow("columnType"), ColumnType)
 				column.Use1000Separator = CBool(objRow("use1000separator"))
 				column.Size = CLng(objRow("size"))
+				column.ColumnSize = CLng(objRow("columnSize"))
 				column.Decimals = CShort(objRow("decimals"))
 				column.LookupTableID = CInt(objRow("LookupTableID"))
 				column.LookupColumnID = CInt(objRow("LookupColumnID"))

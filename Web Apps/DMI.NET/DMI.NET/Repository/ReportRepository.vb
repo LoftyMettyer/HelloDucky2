@@ -1205,6 +1205,7 @@ Namespace Repository
 						.Heading = objColumn.Name,
 						.DataType = objColumn.DataType,
 						.Size = objColumn.Size,
+						.ColumnSize = objColumn.ColumnSize,
 						.Decimals = objColumn.Decimals}
 
 					objReturnData.Add(objToAdd)

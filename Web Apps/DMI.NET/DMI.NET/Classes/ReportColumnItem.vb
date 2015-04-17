@@ -23,6 +23,7 @@ Namespace Classes
 
 		Public Property DataType As ColumnDataType
 		Public Property Size As Long
+		Public Property ColumnSize As Long
 		Public Property Decimals As Integer
 		Public Property IsAverage As Boolean
 		Public Property IsCount As Boolean

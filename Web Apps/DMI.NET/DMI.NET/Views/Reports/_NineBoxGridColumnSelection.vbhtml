@@ -179,17 +179,17 @@
 				for (var i = 0; i < json.length; i++) {
 
 					// Add all available columns to PageBreak dropdown
-					optionPageBreak += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+					optionPageBreak += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].ColumnSize + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
 
 					if (!json[i].IsNumeric) { //Only add numeric columns to Horizontal & Vertical dropdown
 						continue;
 					}
 
-					optionHorizontal += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
-					optionVertical += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+					optionHorizontal += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].ColumnSize + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+					optionVertical += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].ColumnSize + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
 
 					if (json[i].IsNumeric) {
-						optionIntersection += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+						optionIntersection += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].ColumnSize + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
 					}
 				}
 
@@ -198,9 +198,10 @@
 				$("select#PageBreakID").html(OptionNone + optionPageBreak);
 				$("select#IntersectionID").html(OptionNone + optionIntersection);
 
-				crossTabHorizontalClick();
-				crossTabVerticalClick();
-				crossTabPageBreakClick();
+				// Reset data on base table change
+				crossTabHorizontalChange();
+				crossTabVerticalChange();
+				crossTabPageBreakChange();
 			}
 		});
 	}
@@ -239,8 +240,51 @@
 		$("#" + type + "Start").autoNumeric('destroy');
 		$("#" + type + "Stop").autoNumeric('destroy');
 
-		$("#" + type + "Start").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10, vMin: -999999999.99 });
-		$("#" + type + "Stop").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10, vMin: -999999999.99 });
+		// Use autoNumeric formatting only for Interger (datatype 4) and Numeric (datatype 2) value
+		if (iDataType == 2 || iDataType == 4) {
+
+			// For the integer datatype, 10 digits are allowed and max value is 9999999999
+			var maximumValue = 9999999999;
+
+			// If the numeric type, set the maximum value which can be entered before decimal
+			if (iDataType == 2) {
+
+				var columnSize = target.options[target.selectedIndex].attributes["data-size"].value;
+
+				var maxValueAllowedBeforeDecimal = '9';
+				for (var i = 1; i < (columnSize - iDecimals) ; i++) {
+					maxValueAllowedBeforeDecimal = maxValueAllowedBeforeDecimal + '9';
+				}
+
+				var maxValueAllowedAfterDecimal = '9'
+				for (var i = 1; i < iDecimals ; i++) {
+					maxValueAllowedAfterDecimal = maxValueAllowedAfterDecimal + '9';
+				}
+
+				// Set the maximum value
+				maximumValue = parseFloat(maxValueAllowedBeforeDecimal + "." + maxValueAllowedAfterDecimal);
+
+				// Reset data to 0 when exceeds to maximum value. This check is required for the existing data.
+				// Otherwise this will throw an exeption and application goes to unrecoverable state when binding autoNumeric (as below code).
+				ResetWhenExceedsMaximumAllowedValue(type, maximumValue);
+			}
+
+			$("#" + type + "Start").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', vMin: -999999999.99, vMax: maximumValue });
+			$("#" + type + "Stop").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', vMin: -999999999.99, vMax: maximumValue });
+		}
+	}
+
+	// Reset the Horizontal,Vertical and Incremental values to 0 when they exceeds maximum allowed limit
+	function ResetWhenExceedsMaximumAllowedValue(control, maxValueAllowed) {
+		// Check Start value
+		if ($("#" + control + "Start").val() > maxValueAllowed) {
+			$("#" + control + "Start").val(0);
+		}
+
+		// Check Stop value
+		if ($("#" + control + "Stop").val() > maxValueAllowed) {
+			$("#" + control + "Stop").val(0);
+		}
 	}
 
 	function crossTabHorizontalChange() {

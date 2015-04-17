@@ -7,7 +7,7 @@ BEGIN
 
 	SELECT TableID, TableName, TableType, DefaultOrderID, RecordDescExprID FROM dbo.ASRSysTables;
 
-	SELECT ColumnID, TableID, ColumnName, DataType, ColumnType, Use1000Separator, ISNULL(DefaultDisplayWidth, 0) AS Size, Decimals, LookupTableID, LookupColumnID FROM dbo.ASRSysColumns;
+	SELECT ColumnID, TableID, ColumnName, DataType, ColumnType, Use1000Separator, ISNULL(DefaultDisplayWidth, 0) AS Size, ISNULL(Size, 0) AS ColumnSize, Decimals, LookupTableID, LookupColumnID FROM dbo.ASRSysColumns;
 
 	SELECT ParentID, ChildID FROM dbo.ASRSysRelations;
 

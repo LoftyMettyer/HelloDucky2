@@ -11,6 +11,7 @@ Namespace Metadata
 		Public TableName As String
 		Public DataType As ColumnDataType = ColumnDataType.sqlUnknown
 		Public Size As Long									' Needs to be long to handle ole embedded ole types.
+		Public ColumnSize As Long
 		Public Decimals As Integer
 		Public Use1000Separator As Boolean
 		Public ColumnType As ColumnType
