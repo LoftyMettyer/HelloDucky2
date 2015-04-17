@@ -1004,6 +1004,9 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			checkbox.setAttribute("data-control-tag", key);
 			checkbox.setAttribute("data-Mandatory", controlItemArray[32]);
 
+			$(checkbox).attr("title", controlItemArray[41]);
+			$(label).attr("title", controlItemArray[41]);
+
 			if (!fControlEnabled) {
 				$(span).prop('disabled', true);
 				$(checkbox).prop('disabled', true);
@@ -1045,6 +1048,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			if (!fControlEnabled) $(selector).prop('disabled', true);
 
 			if (tabIndex > 0) selector.tabindex = tabIndex;
+
+			$(selector).attr("title", controlItemArray[41]);
 
 			addControl(iPageNo, selector);
 
@@ -1103,6 +1108,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				button.setAttribute("disabled", "disabled");
 				$(button).addClass("ui-state-disabled");
 			}
+
+			$(button).attr("title", controlItemArray[41]);
 
 			addControl(iPageNo, button);
 
@@ -1171,6 +1178,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				legend.appendChild(document.createTextNode(controlItemArray[8].split('&&').join('&')));
 			}
 
+			$(fieldset).attr("title", controlItemArray[41]);
+			
 			if (!fControlEnabled) $(fieldset).prop('disabled', true);
 			//No Option Group buttons - these are added as values next.
 
@@ -1234,6 +1243,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				//if (!fControlEnabled) spinnerContainer.disabled = true;
 				if (!fControlEnabled) spinner.setAttribute('data-disabled', 'true');
 
+				$(spinner).attr("title", controlItemArray[41]);
+
 				//Add control to relevant tab, create if required.                
 				addControl(iPageNo, spinner);
 				
@@ -1261,6 +1272,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				if (tabIndex > 0) spinner.tabindex = tabIndex;
 				//if (!fControlEnabled) spinnerContainer.disabled = true;
 				if (!fControlEnabled) spinner.setAttribute('data-disabled', 'true');
+
+				$(spinner).attr("title", controlItemArray[41]);
 
 				//Add control to relevant tab, create if required.                
 				addControl(iPageNo, spinnerContainer);
@@ -1344,7 +1357,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					if (controlItemArray[35].length > 0) {
 						$(textbox).mask(controlItemArray[35]); //One less TODO to do!
 					}
-					
+								
 					//Alignment; this is not used by the plugin so we'll add it as a CSS style
 					if (controlItemArray[38] == "0") {
 						$(textbox).css('text-align', 'left');
@@ -1360,6 +1373,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				
 
 			}
+
+			$(textbox).attr("title", controlItemArray[41]);
 
 			textbox.id = controlID;
 			applyLocation(textbox, controlItemArray, true);
@@ -1485,6 +1500,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			//var path = window.ROOT + 'Home/ShowImageFromDb?imageID=' + controlItemArray[50];
 
 			//image.setAttribute('src', path);
+			$(image).attr("title", controlItemArray[41]);
 
 			//Add control to relevant tab, create if required.                
 			addControl(iPageNo, image);
@@ -1511,6 +1527,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			if (tabIndex > 0) button.tabindex = tabIndex;
 			//button.disabled = false;    //always enabled
+			$(button).attr("title", controlItemArray[41]);
+
 			addControl(iPageNo, button);
 
 			break;
@@ -1546,6 +1564,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			fieldset.style.height = height + "px";
 			fieldset.style.padding = "0px";
 			fieldset.style.border = borderCss;
+
+			$(fieldset).attr("title", controlItemArray[41]);
 
 			var offsetLeft;
 
