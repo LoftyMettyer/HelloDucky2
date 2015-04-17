@@ -36688,11 +36688,13 @@ BEGIN
 
 	SELECT TOP 1 @dtLastLogon = DateTimeStamp
 				FROM ASRSysAuditAccess WHERE [UserName] = @psUserName
-				AND [HRProModule] = 'OpenHR Web' AND [Action] = 'log in'
+				AND [HRProModule] in ('OpenHR Web', 'Intranet', 'Self-service')
+				AND [Action] = 'log in'
 							AND ID NOT IN (                  
 															SELECT top 1 ID
 															FROM ASRSysAuditAccess WHERE [UserName] = @psUserName
-															AND [HRProModule] = 'OpenHR Web' AND [Action] = 'log in'
+															AND [HRProModule] in ('OpenHR Web', 'Intranet', 'Self-service')
+															AND [Action] = 'log in'
 															ORDER BY DateTimeStamp DESC)                  
 	ORDER BY DateTimeStamp DESC
 			
