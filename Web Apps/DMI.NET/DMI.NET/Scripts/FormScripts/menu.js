@@ -856,6 +856,7 @@ function menu_MenuClick(sTool) {
 	
 	  // Loads the Absence Breakdown report configuration
 		if (sToolName == "mnutoolStdRpt_AbsenceBreakdownConfiguration") {
+			return false; //not available yet!!
 			saveChangesPrompt("ABSENCEBREAKDOWNCONFIGURATION", 'menu_loadPage("AbsenceBreakdownConfiguration")');
 			return false;
 		}

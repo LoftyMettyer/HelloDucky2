@@ -401,11 +401,11 @@
 
 				<%--	Currently 'ReportConfiguration' menus should not be visible to the user. This feature is under development and will be part of OpenHR8.2
 					Please remove this class to test or review--%>
-				<li id="mnutoolReportConfiguration" class="hidden"><a href="#">Report Configuration</a>
+				<%--<li id="mnutoolReportConfiguration" class="hidden"><a href="#">Report Configuration</a>
 					<ul id="mnubandReportConfigurationPopup">
 						<li id="mnutoolStdRpt_AbsenceBreakdownConfiguration"><a href="#">Absence Breakdown...</a></li>
 					</ul>
-				</li>
+				</li>--%>
 			</ul>
 		</div>
 		<h3 id="mnutoolHelp">Help</h3>
