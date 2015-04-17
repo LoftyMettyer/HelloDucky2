@@ -2525,7 +2525,7 @@ function linkButtonClick(lngLinkTableID, lngLinkOrderID, lngLinkViewID) {
 function formatAddress(addressUrl) {
 	if (addressUrl == undefined) return false;
 
-	if ((addressUrl.substr(0, 7).toLowerCase() == 'http://') || (addressUrl.substr(1, 7).toLowerCase() == 'https://')) return addressUrl;
+	if ((addressUrl.substr(0, 7).toLowerCase() == 'http://') || (addressUrl.substr(0, 8).toLowerCase() == 'https://')) return addressUrl;
 
 	return 'http://' + addressUrl;
 
