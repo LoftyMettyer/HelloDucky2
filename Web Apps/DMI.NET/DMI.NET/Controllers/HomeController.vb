@@ -5036,9 +5036,10 @@ Namespace Controllers
 
 			Dim objOLE As Ole = Session("OLEObject")
 			Dim fileResponse As Byte() = objOLE.CreateOLEDocument(plngRecordID, plngColumnID, pstrRealSource)
+			Dim filename = Server.UrlDecode(objOLE.DisplayFilename)
 
 			Response.ContentType = "application/octet-stream"
-			Response.AppendHeader("Content-Disposition", "attachment; filename=" & objOLE.DisplayFilename)
+			Response.AppendHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", filename))
 
 			Response.BinaryWrite(fileResponse)
 			Response.Flush()
