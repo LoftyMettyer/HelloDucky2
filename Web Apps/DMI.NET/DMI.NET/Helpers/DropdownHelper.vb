@@ -158,7 +158,7 @@ Namespace Helpers
 					content.AppendFormat("<option value={0} data-datatype={4} data-size={2} data-decimals={3} data-lookuptableID={6} {5}>{1}</option>" _
 																			 , column.ID _
 																			 , IIf(filter.ShowFullName, column.TableName & "." & column.Name, column.Name) _
-																			 , column.Size.ToString, column.Decimals.ToString _
+																			 , column.ColumnSize.ToString, column.Decimals.ToString _
 																			 , CInt(column.DataType), IIf(bindValue = column.ID, "selected", "") _
 																			 , column.LookupTableID)
 				Next
