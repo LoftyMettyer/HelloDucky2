@@ -31,11 +31,11 @@ End Code
 	</div>
 
 	<div class="customReportsOnly padbot10">
-		@Html.CheckBoxFor(Function(m) m.BreakOnChange, New With {.onchange = "updatePageAndBreakOnChangeCheckBox(this)"})
+		@Html.CheckBoxFor(Function(m) m.BreakOnChange, New With {.onchange = "updateSortOrderCheckBoxes(this)"})
 		@Html.LabelFor(Function(m) m.BreakOnChange)
 		<br />
 
-		@Html.CheckBoxFor(Function(m) m.PageOnChange, New With {.onchange = "updatePageAndBreakOnChangeCheckBox(this)"})
+		@Html.CheckBoxFor(Function(m) m.PageOnChange, New With {.onchange = "updateSortOrderCheckBoxes(this)"})
 		@Html.LabelFor(Function(m) m.PageOnChange)
 		<br />
 
@@ -67,9 +67,9 @@ End Code
 		}
 		updateCheckBoxes();
 
-		updatePageAndBreakOnChangeCheckBox($("#BreakOnChange")[0]);
-		updatePageAndBreakOnChangeCheckBox($("#PageOnChange")[0]);
-
+		updateSortOrderCheckBoxes($("#BreakOnChange")[0]);
+		updateSortOrderCheckBoxes($("#PageOnChange")[0]);
+		
 		// Add width to column dropdown
 		$("#SortOrderColumnID").addClass('stretchyfixed600');
 
@@ -83,40 +83,75 @@ End Code
 	});
 
 	function updateCheckBoxes() {
-
+		
 		if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
 			var selectedSortColumnValue = $('#SortOrderColumnID').find('option:selected')[0].value;
 			var dataRow = $('#SelectedColumns').jqGrid('getRowData', selectedSortColumnValue);
+
 			if (dataRow != null && dataRow.IsHidden.toUpperCase() == "TRUE") {
-				$("#frmPostSortOrder  #SuppressRepeated, #frmPostSortOrder #ValueOnChange").prop({ checked: false, disabled: true });
+				$("#frmPostSortOrder #SuppressRepeated, #frmPostSortOrder #ValueOnChange").prop({ checked: false, disabled: true });
 				$("#frmPostSortOrder #ValueOnChange, #frmPostSortOrder label[for='ValueOnChange'], #frmPostSortOrder #SuppressRepeated, #frmPostSortOrder label[for='SuppressRepeated']").css('opacity', '0.5');
 			}
 			else {
 				$("#frmPostSortOrder #SuppressRepeated, #frmPostSortOrder #ValueOnChange").prop({ disabled: false });
 				$("#frmPostSortOrder #ValueOnChange, #frmPostSortOrder label[for='ValueOnChange'], #frmPostSortOrder #SuppressRepeated, #frmPostSortOrder label[for='SuppressRepeated']").css('opacity', '1');
 			}
+
+			if (dataRow != null && dataRow.IsRepeated.toUpperCase() == "TRUE") {
+				$("#frmPostSortOrder #SuppressRepeated").prop({ checked: false, disabled: true });
+				$("#frmPostSortOrder #SuppressRepeated, #frmPostSortOrder label[for='SuppressRepeated']").css('opacity', '0.5');
+			}
+			else {
+				$("#frmPostSortOrder #SuppressRepeated").prop({ disabled: false });
+				$("#frmPostSortOrder #SuppressRepeated, #frmPostSortOrder label[for='SuppressRepeated']").css('opacity', '1');
+			}
 		}
 	}
 
-	function updatePageAndBreakOnChangeCheckBox(control) {
+	function updateSortOrderCheckBoxes(control) {		
 		if (control.checked) {
-			if (control.id == "BreakOnChange") {
-				$("#frmPostSortOrder  #PageOnChange").prop({ checked: false, disabled: true });
-				$("#frmPostSortOrder  #PageOnChange, #frmPostSortOrder label[for='PageOnChange']").css('opacity', '0.5');
-			}
-			if (control.id == "PageOnChange") {
-				$("#frmPostSortOrder  #BreakOnChange").prop({ checked: false, disabled: true });
-				$("#frmPostSortOrder  #BreakOnChange, #frmPostSortOrder label[for='BreakOnChange']").css('opacity', '0.5');
+	
+			switch (control.id) {
+				case "BreakOnChange":
+					$("#frmPostSortOrder #PageOnChange").prop({ checked: false, disabled: true });
+					$("#frmPostSortOrder #PageOnChange, #frmPostSortOrder label[for='PageOnChange']").css('opacity', '0.5');
+					break;
+
+				case "PageOnChange":
+					$("#frmPostSortOrder #BreakOnChange").prop({ checked: false, disabled: true });
+					$("#frmPostSortOrder #BreakOnChange, #frmPostSortOrder label[for='BreakOnChange']").css('opacity', '0.5');
+					break;
+
+				case "SuppressRepeated":
+					break;
+
+				case "ValueOnChange":
+					break;
+
+				default:
+					break;
 			}
 		}
 		else {
-			if (control.id == "BreakOnChange") {
-				$("#frmPostSortOrder  #PageOnChange").prop({ disabled: false });
-				$("#frmPostSortOrder  #PageOnChange, #frmPostSortOrder label[for='PageOnChange']").css('opacity', '1');
-			}
-			if (control.id == "PageOnChange") {
-				$("#frmPostSortOrder  #BreakOnChange").prop({ disabled: false });
-				$("#frmPostSortOrder  #BreakOnChange, #frmPostSortOrder label[for='BreakOnChange']").css('opacity', '1');
+			switch (control.id) {
+				case "BreakOnChange":
+					$("#frmPostSortOrder #PageOnChange").prop({ disabled: false });
+					$("#frmPostSortOrder #PageOnChange, #frmPostSortOrder label[for='PageOnChange']").css('opacity', '1');
+					break;
+
+				case "PageOnChange":
+					$("#frmPostSortOrder #BreakOnChange").prop({ disabled: false });
+					$("#frmPostSortOrder #BreakOnChange, #frmPostSortOrder label[for='BreakOnChange']").css('opacity', '1');
+					break;
+
+				case "SuppressRepeated":
+					break;
+
+				case "ValueOnChange":
+					break;
+
+				default:
+					break;
 			}
 		}
 	}
