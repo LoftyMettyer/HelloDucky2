@@ -194,6 +194,7 @@ function goURL(psUrl, pfNewWindow, pfExternal, psTitle) {
 			$('.linkspagebutton').hide();
 			$('.dropdownlinks').hide();
 			$('.pendingworkflowlinks').hide();
+			$('.docdisplaylinks').hide();
 			$('#workflowDisplay').css("position", "fixed");
 			$('#externalContentFrame').css("height", "77%");
 		}

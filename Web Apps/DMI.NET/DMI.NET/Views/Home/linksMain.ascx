@@ -186,7 +186,7 @@
 										sNewWindow = "0"
 									End If
 			
-									sOnClick = "goURL('" & sURL & "', " & sNewWindow & ", true, '" & HttpUtility.JavaScriptStringEncode(navlink.Text.Replace("'", "\'")) & "')"
+									sOnClick = "goURL('" & sURL & "', " & sNewWindow & ", true, '" & HttpUtility.JavaScriptStringEncode(navlink.Text) & "')"
 
 								Else
 									Dim sUtilityType = Convert.ToString(navlink.UtilityType)
@@ -346,7 +346,7 @@
 							sNewWindow = "0"
 						End If
 			
-						sOnClick = "goURL('" & sURL & "', " & sNewWindow & ", true, '" & HttpUtility.JavaScriptStringEncode(navlink.Text.Replace("'", "\'")) & "')"
+						sOnClick = "goURL('" & sURL & "', " & sNewWindow & ", true, '" & HttpUtility.JavaScriptStringEncode(navlink.Text) & "')"
 
 					Else
 						If navlink.UtilityID > 0 Then
