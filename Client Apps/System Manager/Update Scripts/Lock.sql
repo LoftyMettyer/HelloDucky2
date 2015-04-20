@@ -23,6 +23,9 @@ BEGIN
 	) ON [PRIMARY]
 END
 
+IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysLock', 'U') AND name = 'Module')
+	EXEC sp_executesql N'ALTER TABLE ASRSysLock ADD [Module] integer NULL;';
+
 IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysLock', 'U') AND name = 'NotifyGroups')
 	EXEC sp_executesql N'ALTER TABLE ASRSysLock ADD [NotifyGroups] nvarchar(MAX) NULL;';
 
