@@ -757,7 +757,7 @@ Public Function ConstructOrder() As Boolean
       Set rsOrderItems = modExpression.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
       With rsOrderItems
         Do While Not .EOF
-          AddOrderItem !ColumnID, !Type, !Sequence, !Ascending, !ColumnName, !TableName, !Editable
+          AddOrderItem !ColumnID, !Type, !Sequence, !Ascending, !ColumnName, !TableName, IIf(IsNull(!Editable), False, !Editable)
           .MoveNext
         Loop
       
