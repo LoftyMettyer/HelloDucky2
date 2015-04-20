@@ -235,7 +235,7 @@ Private Sub IObjectSafety_GetInterfaceSafetyOptions(ByVal riid As Long, _
                                                     pdwSupportedOptions As Long, _
                                                     pdwEnabledOptions As Long)
 
-    Dim Rc      As Long
+    Dim rc      As Long
     Dim rClsId  As udtGUID
     Dim IID     As String
     Dim bIID()  As Byte
@@ -247,9 +247,9 @@ Private Sub IObjectSafety_GetInterfaceSafetyOptions(ByVal riid As Long, _
         CopyMemory rClsId, ByVal riid, Len(rClsId)
 
         bIID = String$(MAX_GUIDLEN, 0)
-        Rc = StringFromGUID2(rClsId, VarPtr(bIID(0)), MAX_GUIDLEN)
-        Rc = InStr(1, bIID, vbNullChar) - 1
-        IID = Left$(UCase(bIID), Rc)
+        rc = StringFromGUID2(rClsId, VarPtr(bIID(0)), MAX_GUIDLEN)
+        rc = InStr(1, bIID, vbNullChar) - 1
+        IID = Left$(UCase(bIID), rc)
 
         Select Case IID
             Case IID_IDispatch
@@ -272,7 +272,7 @@ End Sub
 Private Sub IObjectSafety_SetInterfaceSafetyOptions(ByVal riid As Long, _
                                                     ByVal dwOptionsSetMask As Long, _
                                                     ByVal dwEnabledOptions As Long)
-    Dim Rc          As Long
+    Dim rc          As Long
     Dim rClsId      As udtGUID
     Dim IID         As String
     Dim bIID()      As Byte
@@ -281,9 +281,9 @@ Private Sub IObjectSafety_SetInterfaceSafetyOptions(ByVal riid As Long, _
         CopyMemory rClsId, ByVal riid, Len(rClsId)
 
         bIID = String$(MAX_GUIDLEN, 0)
-        Rc = StringFromGUID2(rClsId, VarPtr(bIID(0)), MAX_GUIDLEN)
-        Rc = InStr(1, bIID, vbNullChar) - 1
-        IID = Left$(UCase(bIID), Rc)
+        rc = StringFromGUID2(rClsId, VarPtr(bIID(0)), MAX_GUIDLEN)
+        rc = InStr(1, bIID, vbNullChar) - 1
+        IID = Left$(UCase(bIID), rc)
 
         Select Case IID
             Case IID_IDispatch
@@ -1501,7 +1501,7 @@ Private Sub CheckApplicationAccess()
     
   If Application.AccessMode = accFull Then
     'Now have write access .. lock database so nobody else can...
-    gADOCon.Execute "sp_ASRLockWrite 3"
+    gADOCon.Execute "sp_ASRLockWrite 3, 1, ''"
   End If
 'END TRANS
 

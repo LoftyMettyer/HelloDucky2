@@ -128,7 +128,8 @@ Namespace Code.Hubs
 
 				Dim dt As New DataTable()
 
-				Dim cmd As New SqlCommand(String.Format("SELECT Priority, Username FROM dbo.ASRSysLock WHERE Priority <> {0} ", CInt(LockPriority.ReadWrite)), Connection)
+				Dim cmd As New SqlCommand(String.Format("SELECT Priority, Username, Module, NotifyGroups FROM dbo.ASRSysLock WHERE Priority <> {0} " _
+																								, CInt(LockPriority.ReadWrite)), Connection)
 				cmd.CommandType = CommandType.Text
 				cmd.Notification = Nothing
 
@@ -136,8 +137,7 @@ Namespace Code.Hubs
 				AddHandler dependency.OnChange, AddressOf OnLockStatusChange
 
 				Dim iPriority As LockPriority
-				Dim sMessage As String = ""
-				Dim sMessageFrom As String = ""
+				Dim iModule As ApplicationModule
 				Dim bForceLogout As Boolean = False
 
 				If Connection.State = ConnectionState.Closed Then
@@ -150,37 +150,53 @@ Namespace Code.Hubs
 				dt.Load(cmd.ExecuteReader())
 				For Each objRow As DataRow In dt.Rows
 					iPriority = CType(objRow("Priority"), LockPriority)
+					iModule = CType(objRow("Module"), ApplicationModule)
 
-					SystemLockStatus = iPriority
+					If iModule = ApplicationModule.SecurityManager Then
 
-					Select Case SystemLockStatus
+						If iPriority = LockPriority.Saving Then
 
-						Case LockPriority.Manual
-							objDataAccess.ExecuteSP("spASRIntGetSetting" _
-									, New SqlParameter("psSection", SqlDbType.VarChar, -1) With {.Value = "messaging"} _
-									, New SqlParameter("psKey", SqlDbType.VarChar, -1) With {.Value = "lockmessage"} _
-									, New SqlParameter("psDefault", SqlDbType.VarChar, -1) With {.Value = "A system administrator has locked the database."} _
-									, New SqlParameter("pfUserSetting", SqlDbType.Bit) With {.Value = False} _
-									, prmResult)
-							LockMessage = prmResult.Value.ToString
+							' Notify the affected groups
+							Dim notifyGroups As String() = Split(objRow("NotifyGroups").ToString(), ",")
+							For Each group In notifyGroups
+								SendMessageToGroup(group.Trim(), objRow("username").ToString(), "A security update is in progress.", True)
+							Next
 
-						Case LockPriority.SaveRequest
-							LockMessage = "A database system save is in progress."
-							bForceLogout = True
+						End If
 
-						Case LockPriority.Saving
-							LockMessage = "A database system save is in progress."
-							SendMessage("System Administrator", LockMessage, True, True)
-							bForceLogout = True
+					ElseIf iModule = ApplicationModule.SystemManager Then
 
-						Case LockPriority.Manual
-							LockMessage = "A system administrator has locked the database."
-							bForceLogout = True
+						SystemLockStatus = iPriority
 
-						Case Else
-							bForceLogout = False
+						Select Case SystemLockStatus
 
-					End Select
+							Case LockPriority.Manual
+								objDataAccess.ExecuteSP("spASRIntGetSetting" _
+										, New SqlParameter("psSection", SqlDbType.VarChar, -1) With {.Value = "messaging"} _
+										, New SqlParameter("psKey", SqlDbType.VarChar, -1) With {.Value = "lockmessage"} _
+										, New SqlParameter("psDefault", SqlDbType.VarChar, -1) With {.Value = "A system administrator has locked the database."} _
+										, New SqlParameter("pfUserSetting", SqlDbType.Bit) With {.Value = False} _
+										, prmResult)
+								LockMessage = prmResult.Value.ToString
+
+							Case LockPriority.SaveRequest
+								LockMessage = "A database system save is in progress."
+								bForceLogout = True
+
+							Case LockPriority.Saving
+								LockMessage = "A database system save is in progress."
+								SendMessage("System Administrator", LockMessage, True, True)
+								bForceLogout = True
+
+							Case LockPriority.Manual
+								LockMessage = "A system administrator has locked the database."
+								bForceLogout = True
+
+							Case Else
+								bForceLogout = False
+
+						End Select
+					End If
 
 				Next
 
@@ -246,6 +262,18 @@ Namespace Code.Hubs
 				Throw
 
 			End Try
+
+		End Sub
+
+		<HubMethodName("joinGroup")>
+		Public Sub JoinGroup(group As String)
+			Groups.Add(Context.ConnectionId, group)
+		End Sub
+
+		Public Shared Sub SendMessageToGroup(group As String, messageFrom As String, message As String, forceLogout As Boolean)
+
+			Dim allContext = GlobalHost.ConnectionManager.GetHubContext(Of DatabaseHub, IDatabaseHub)()
+			allContext.Clients.Group(group).NotifyGroup(messageFrom, message, forceLogout)
 
 		End Sub
 

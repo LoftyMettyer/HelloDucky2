@@ -252,7 +252,6 @@
     <Compile Include="Classes\ColumnFilter.vb" />
     <Compile Include="Classes\ExpressionSelection.vb" />
     <Compile Include="Classes\ReportDependencies.vb" />
-    <Compile Include="Code\ChatHub.vb" />
     <Compile Include="Code\Conversions.vb" />
     <Compile Include="Code\Extensions\ModelStateDictionaryExtensions.vb" />
     <Compile Include="Code\Interfaces\IDataAccess.vb" />

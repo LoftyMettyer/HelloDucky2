@@ -543,7 +543,7 @@ Public Function LockDatabase(intLockType As LockTypes) As Boolean
   rsTemp.Close
   
   If LockDatabase Then
-    gADOCon.Execute "sp_ASRLockWrite " & CStr(intLockType)
+    gADOCon.Execute "sp_ASRLockWrite " & CStr(intLockType) & ", 1, ''"
     gADOCon.CommitTrans
   Else
     gADOCon.RollbackTrans
@@ -584,7 +584,7 @@ Public Function UnlockDatabase(intLockType As LockTypes, Optional blnForceUnlock
 
 TidyUpAndExit:
   If bOK Then
-    gADOCon.Execute "sp_ASRLockDelete " & CStr(intLockType)
+    gADOCon.Execute "sp_ASRLockDelete " & CStr(intLockType) & ", 1"
     gADOCon.CommitTrans
   Else
     gADOCon.RollbackTrans

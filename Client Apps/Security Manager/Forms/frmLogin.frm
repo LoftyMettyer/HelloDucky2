@@ -1246,13 +1246,7 @@ Private Sub CheckApplicationAccess()
   
   If Application.AccessMode = accFull Then
     'Now have write access .. lock database so nobody else can...
-    'SaveSystemSetting "Lock Read Write", "User", gsUserName
-    'SaveSystemSetting "Lock Read Write", "DateTime", Format(Now, DateFormat & " hh:nn")
-    'SaveSystemSetting "Lock Read Write", "Machine", UI.GetHostName
-    gADOCon.Execute "sp_ASRLockWrite 3", , adExecuteNoRecords
-    'gADOCon.CommitTrans
-  Else
-    'gADOCon.RollbackTrans
+    gADOCon.Execute "sp_ASRLockWrite 3, 2, ''", , adExecuteNoRecords
   End If
   ' End Transaction
 

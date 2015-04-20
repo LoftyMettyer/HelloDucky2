@@ -1383,6 +1383,32 @@
 		return openhrBlackListValidator.IsValidNumericValue(input);
 	},
 
+	displayServerMessage = function (messageFrom, message, forceLogout, loggedInUsersOnly) {
+
+		var isLoggedIn = ($("#frmLoginForm").length === 0);
+		if (loggedInUsersOnly && isLoggedIn) {
+
+			$("#SignalRDialogClick").val("Close");
+			$("#SignalRDialogTitle").html(messageFrom);
+			$("#SignalRDialogContentText").html(message);
+			$("#divSignalRMessage").dialog("open");
+
+			if (forceLogout === true) {
+				$("#SignalRDialogClick").val("Log Out");
+			}
+
+			$("#SignalRDialogClick").off("click").on("click", function () {
+				$("#divSignalRMessage").dialog("close");
+
+				if (forceLogout === true) {
+					menu_logoffIntranet();
+				}
+
+			});
+
+		}
+	},
+
 	showAboutPopup = function () {
 		var aboutUrl = window.ROOT + "/account/about";
 		if (window.ROOT.slice(-1) == "/") aboutUrl = window.ROOT + "account/about";
@@ -1413,7 +1439,7 @@
 			}
 		});
 	}
-
+	
 	window.OpenHR = {
 		version: version,
 		messageBox: messageBox,
@@ -1468,8 +1494,8 @@
 		showAboutPopup: showAboutPopup,
 		checkInvalidCharacters: checkInvalidCharacters,
 		validateInteger: validateInteger,
-		validateNumeric: validateNumeric
-	};
-	
+		validateNumeric: validateNumeric,
+		displayServerMessage: displayServerMessage
+	};	
 
 })(window, jQuery);

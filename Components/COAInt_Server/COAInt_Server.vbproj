@@ -117,6 +117,7 @@
     <Compile Include="BaseClasses\BaseExpressionComponent.vb" />
     <Compile Include="BaseClasses\BaseForDMI.vb" />
     <Compile Include="BaseClasses\BaseModuleSpecific.vb" />
+    <Compile Include="Enums\ApplicationModule.vb" />
     <Compile Include="Enums\OLEType.vb" />
     <Compile Include="Enums\OptionActionType.vb" />
     <Compile Include="Enums\SaveResponse.vb" />

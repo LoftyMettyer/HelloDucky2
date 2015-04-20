@@ -17,9 +17,15 @@ BEGIN
 		[Hostname] [varchar] (50) NULL ,
 		[Lock_Time] [datetime] NULL ,
 		[Login_Time] [datetime] NULL ,
-		[SPID] [int] NULL 
+		[SPID] [int] NULL, 
+		[Module] int NULL,
+		[NotifyGroups] nvarchar(MAX) NULL
 	) ON [PRIMARY]
 END
+
+IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysLock', 'U') AND name = 'NotifyGroups')
+	EXEC sp_executesql N'ALTER TABLE ASRSysLock ADD [NotifyGroups] nvarchar(MAX) NULL;';
+
 
 SELECT @iRecCount = count(sysobjects.id)
 	FROM sysobjects
@@ -121,22 +127,22 @@ exec('CREATE PROCEDURE sp_ASRLockCheck AS
 PRINT 'Procedure sp_ASRLockDelete'
 
 if exists (select * from sysobjects where id = object_id(N'[dbo].[sp_ASRLockDelete]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[sp_ASRLockDelete]
+	drop procedure [dbo].[sp_ASRLockDelete]
 
-exec('CREATE Procedure sp_ASRLockDelete (@LockType int)
-AS
-BEGIN
-	DELETE FROM ASRSysLock WHERE Priority = @LockType
-END')
+EXECUTE sp_executeSQL N'CREATE PROCEDURE sp_ASRLockDelete (@LockType int, @Module int)
+	AS
+	BEGIN
+		DELETE FROM ASRSysLock WHERE Priority = @LockType AND Module = @Module
+	END'
 
 
 ---------------------------------------------------
 PRINT 'Procedure sp_ASRLockWrite'
 
 if exists (select * from sysobjects where id = object_id(N'[dbo].[sp_ASRLockWrite]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[sp_ASRLockWrite]
+	drop procedure [dbo].[sp_ASRLockWrite]
 
-exec('CREATE Procedure sp_ASRLockWrite (@LockType int)
+EXECUTE sp_executeSQL N'CREATE PROCEDURE sp_ASRLockWrite (@LockType int, @Module int, @NotifyGroups nvarchar(MAX))
 AS
 BEGIN
 
@@ -144,10 +150,10 @@ BEGIN
 	DECLARE @OrigTranCount int
 
 	SELECT @LockDesc = case @LockType
-	WHEN 1 THEN ''Saving''
-	WHEN 2 THEN ''Manual''
-	WHEN 3 THEN ''Read Write''
-	ELSE ''''
+		WHEN 1 THEN ''Saving''
+		WHEN 2 THEN ''Manual''
+		WHEN 3 THEN ''Read Write''
+		ELSE ''''
 	END
 
 	IF @LockDesc <> ''''
@@ -158,14 +164,15 @@ BEGIN
 
 		DELETE FROM ASRSysLock WHERE Priority = @LockType
 
-		INSERT ASRSysLock (Priority, Description, Username, Hostname, Lock_Time, Login_Time, SPID)
-		SELECT @LockType, @LockDesc, system_user, host_name(), getdate(), Login_Time, @@spid FROM master..sysprocesses WHERE spid = @@spid
+		INSERT ASRSysLock (Priority, Description, Username, Hostname, Lock_Time, Login_Time, SPID, Module, NotifyGroups)
+		SELECT @LockType, @LockDesc, system_user, host_name(), getdate(), Login_Time, @@spid, @Module, ISNULL(@NotifyGroups, '''')
+			FROM master..sysprocesses WHERE spid = @@spid
 
 		IF @OrigTranCount = 0 COMMIT TRANSACTION
 
 	END
 
-END')
+END'
 
 
 

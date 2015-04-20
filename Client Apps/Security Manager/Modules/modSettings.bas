@@ -737,6 +737,8 @@ End Function
 Public Function LockDatabase(intLockType As LockTypes) As Boolean
 
   Dim rsTemp As New ADODB.Recordset
+  Dim objGroup As SecurityGroup
+  Dim sGroupsToLogout As String
 
   gADOCon.BeginTrans
 
@@ -752,8 +754,15 @@ Public Function LockDatabase(intLockType As LockTypes) As Boolean
   End If
   rsTemp.Close
   
+  ' What groups to lock out
+  For Each objGroup In gObjGroups
+    If objGroup.RequireLogout Then
+      sGroupsToLogout = sGroupsToLogout & IIf(Len(sGroupsToLogout) > 0, ", ", "") & objGroup.Name
+    End If
+  Next objGroup
+  
   If LockDatabase Then
-    gADOCon.Execute "sp_ASRLockWrite " & CStr(intLockType), , adExecuteNoRecords
+    gADOCon.Execute "sp_ASRLockWrite " & CStr(intLockType) & ", 2, '" & sGroupsToLogout & "'", , adExecuteNoRecords
     gADOCon.CommitTrans
   Else
     gADOCon.RollbackTrans
@@ -789,7 +798,7 @@ Public Function UnlockDatabase(intLockType As LockTypes, Optional blnForceUnlock
   End If
 
   If UnlockDatabase Then
-    gADOCon.Execute "sp_ASRLockDelete " & CStr(intLockType), , adExecuteNoRecords
+    gADOCon.Execute "sp_ASRLockDelete " & CStr(intLockType) & ", 2", , adExecuteNoRecords
     gADOCon.CommitTrans
   Else
     gADOCon.RollbackTrans

@@ -112,14 +112,6 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntCo
 	DROP PROCEDURE [dbo].[spASRIntCopyRecordPostSave]
 GO
 
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRTrackSession]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[spASRTrackSession]
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetMessages]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[spASRIntGetMessages]
-GO
-
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetLoginDetails]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRIntGetLoginDetails]
 GO
@@ -39784,80 +39776,6 @@ BEGIN
 		, IS_SRVROLEMEMBER('sysadmin') AS IsSysAdmin;
 
 END
-
-GO
-
-CREATE PROCEDURE dbo.[spASRTrackSession](
-	@LoggingIn		bit,
-	@Application	varchar(255),
-	@ClientMachine	varchar(255),
-	@LoginTime		datetime OUTPUT)
-AS
-BEGIN
-
-	DECLARE @sUserName		nvarchar(MAX), 
-			@sUserGroup		nvarchar(MAX),
-			@iUserGroupID	integer;
-
-	EXEC [dbo].[spASRIntGetActualUserDetails] @sUserName OUTPUT, @sUserGroup OUTPUT, @iUserGroupID OUTPUT
-
-	IF @sUserGroup IS NULL
-		SET @sUserGroup = '<Unknown>';
-
-	DELETE FROM dbo.ASRSysCurrentLogins WHERE Username = @sUserName AND [clientmachine] = @ClientMachine;
-
-	SET @LoginTime = GETDATE();
-
-	IF @LoggingIn = 1
-	BEGIN
-			
-		INSERT dbo.ASRSysCurrentLogins ([username], [usergroup], [usergroupid], [usersid], [loginTime], [application], clientmachine)
-			VALUES (@sUserName, @sUserGroup, @iUserGroupID, USER_SID(), @LoginTime, @Application, @ClientMachine);
-
-		INSERT INTO [dbo].[ASRSysAuditAccess]
-			(DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action) 
-			VALUES (@LoginTime, @sUserGroup, @sUserName, LOWER(HOST_NAME()), 'Intranet', 'Log In');
-	END
-	ELSE
-	BEGIN
-
-		INSERT INTO [dbo].[ASRSysAuditAccess]
-			(DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action) 
-			VALUES (@LoginTime, @sUserGroup, @sUserName, LOWER(HOST_NAME()), 'Intranet', 'Log Out');
-
-	END
-
-END
-
-
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntGetMessages]
-	(@Logintime as datetime)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iUID		integer,
-		@sLoginName		varchar(255),
-		@sUserGroup		varchar(255);
-
-	-- Get security info for this user
-	EXEC [dbo].[spASRIntGetActualUserDetails] @sLoginName OUTPUT, @sUserGroup OUTPUT, @iUID OUTPUT
-
-	-- Return a recordset of the messages for the current user.
-	SELECT messagetime, messageFrom, [message] , messageSource
-		FROM [dbo].[ASRSysMessages]
-		WHERE loginName = @sLoginName	AND loginTime = @Logintime;
-
-	-- Remove any orphaned messages.
-	DELETE
-	FROM [dbo].[ASRSysMessages]
-	WHERE loginName = @sLoginName	AND loginTime = @Logintime;
-
-END
-
 GO
 
 CREATE PROCEDURE dbo.[spASRIntCopyRecordPostSave] (
@@ -40137,6 +40055,10 @@ GO
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntValidateMailMerge]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRIntValidateMailMerge];
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRTrackSession]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRTrackSession]
 GO
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetMessages]') AND xtype in (N'P'))

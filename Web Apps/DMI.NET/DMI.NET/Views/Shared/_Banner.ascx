@@ -30,46 +30,17 @@
 <%End If%>
 
   <div id="signalRMessaging" class="container">
-    <input type="hidden" id="signalRMessage" />
+     <input id="signalRMessage" type="hidden" />
   </div>
 
 	<script type="text/javascript">
 
-		function displaySignalRMessage(messageFrom, message, forceLogout, loggedInUsersOnly) {
-
-			var isLoggedIn = ($('#frmLoginForm').length == 0) ;
-			if (loggedInUsersOnly && isLoggedIn) {
-
-				$("#SignalRDialogClick").val("Close");
-				$("#SignalRDialogTitle").html(messageFrom);
-				$("#SignalRDialogContentText").html(message);
-				$("#divSignalRMessage").dialog('open');
-
-				if (forceLogout == true) {
-					$("#SignalRDialogClick").val("Log Out");
-				}
-
-				$("#SignalRDialogClick").off('click').on('click', function () {
-					$("#divSignalRMessage").dialog("close");
-
-					if (forceLogout == true) {
-						menu_logoffIntranet();
-					}
-
-				});
-
-			}
-
-		}
-
-
 		$(function () {
 
-			// System Admin Message
-			var notificationHub = $.connection.NotificationHub;
-			notificationHub.client.SystemAdminMessage = function (messageFrom, message, forceLogout, loggedInUsersOnly) {
-				displaySignalRMessage(messageFrom, message, forceLogout, loggedInUsersOnly);
-			};
+			$.connection.hub.start()
+					.done(function() {console.log('Now connected, connection ID=' + $.connection.hub.id);})
+					.fail(function () { console.log('Could not Connect!'); });
+
 
 			// Activity Hub
 			var licenceHub = $.connection.LicenceHub;
@@ -77,9 +48,21 @@
 				OpenHR.SessionTimeout();
 			};
 
-			$.connection.hub.start()
-					.done(function () { console.log('Now connected, connection ID=' + $.connection.hub.id); })
-					.fail(function () { console.log('Could not Connect!'); });
+			// System/Security Messages
+			var notificationHub = $.connection.NotificationHub;
+
+			$.connection.hub.start().done(function () {
+				notificationHub.server.joinGroup("<%:Session("Usergroup")%>");
+			});
+
+			notificationHub.client.notifyGroup = function (messageFrom, message, forceLogout) {
+				OpenHR.displayServerMessage(messageFrom, message, forceLogout, true);
+			};
+
+			notificationHub.client.SystemAdminMessage = function (messageFrom, message, forceLogout, loggedInUsersOnly) {
+				OpenHR.displayServerMessage(messageFrom, message, forceLogout, loggedInUsersOnly);
+			};
+
 
 		});
 	</script>
