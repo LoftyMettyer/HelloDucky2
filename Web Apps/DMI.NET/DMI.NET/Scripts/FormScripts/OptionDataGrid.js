@@ -54,8 +54,6 @@ $('#cmdCancel').click(function () {
 
 $('#cmdSelect').click(function () {
 
-	debugger;
-
 	var sPostAction = $("#SubmitAction").val();
 	var iAction = parseInt($('#GotoOptionActionSelect').val());
 	var selRowId = $("#ssOleDBGridRecords").jqGrid('getGridParam', 'selrow');
