@@ -20,6 +20,7 @@ Private msTableName As String
 Private msType As String
 Private miSequence As Integer
 Private mfAscending As Boolean
+Private mbIsEditable As Boolean
 
 Public Function PrintOrderItem() As Boolean
   ' Print the Order Item definition.
@@ -119,3 +120,10 @@ Public Property Let TableName(ByVal psNewValue As String)
 
 End Property
 
+Public Property Let IsEditable(ByVal NewValue As Boolean)
+  mbIsEditable = NewValue
+End Property
+
+Public Property Get IsEditable() As Boolean
+  IsEditable = mbIsEditable
+End Property

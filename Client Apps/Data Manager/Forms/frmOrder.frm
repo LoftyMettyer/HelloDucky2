@@ -456,20 +456,26 @@ Public Property Set Order(pobjOrder As clsOrder)
   ' Select the first item in each treeview.
   With trvSelectedFindColumns
     If .Nodes.Count > 0 Then
-      .Nodes.Item(1).Selected = True
+      .Nodes.item(1).Selected = True
       .SelectedItem.EnsureVisible
     End If
   End With
   
   With trvSelectedSortColumns
     If .Nodes.Count > 0 Then
-      .Nodes.Item(1).Selected = True
+      .Nodes.item(1).Selected = True
       .SelectedItem.EnsureVisible
     End If
   End With
 
   ' Disable controls if the user does not have permission to edit orders.
   mfReadOnly = Not datGeneral.SystemPermission("ORDERS", "EDIT")
+  
+  If pobjOrder.ContainsEditableColumns And mobjOrder.OrderID <> 0 Then
+    mfReadOnly = True
+    COAMsgBox "This order has been defined as a system order and cannot be edited.", vbInformation
+  End If
+  
   If mfReadOnly Then
     DisableAll
   End If
@@ -710,7 +716,7 @@ Private Sub SortColumns_RefreshControls()
     (Not mfReadOnly)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And _
     (Not mfReadOnly)
@@ -727,7 +733,7 @@ Private Sub cmdCancel_Click()
   If mfChanged Then
     intAnswer = COAMsgBox("The order definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, app.ProductName)
     If intAnswer = vbYes Then
-      If Me.cmdOk.Enabled Then
+      If Me.cmdOK.Enabled Then
         Call cmdOK_Click
         Exit Sub
       Else
@@ -791,7 +797,7 @@ Private Sub FindColumns_RefreshControls()
     (Not mfReadOnly)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And _
     (Not mfReadOnly)
@@ -912,7 +918,7 @@ Private Sub cmdOK_Click()
       
       If fOK Then
         If trvSelectedSortColumns.Nodes.Count > 0 Then
-          Set objNode = trvSelectedSortColumns.Nodes.Item(1).FirstSibling
+          Set objNode = trvSelectedSortColumns.Nodes.item(1).FirstSibling
           iSequence = 0
           Do While Not objNode Is Nothing
             iSequence = iSequence + 1
@@ -924,13 +930,13 @@ Private Sub cmdOK_Click()
               End If
             Next iLoop
 
-            mobjOrder.AddOrderItem objNode.Tag, "O", iSequence, (objNode.Image = "IMG_UP"), objNode.Text, sTableName
+            mobjOrder.AddOrderItem objNode.Tag, "O", iSequence, (objNode.Image = "IMG_UP"), objNode.Text, sTableName, False
             Set objNode = objNode.Next
           Loop
         End If
         
         If trvSelectedFindColumns.Nodes.Count > 0 Then
-          Set objNode = trvSelectedFindColumns.Nodes.Item(1).FirstSibling
+          Set objNode = trvSelectedFindColumns.Nodes.item(1).FirstSibling
           iSequence = 0
           Do While Not objNode Is Nothing
             iSequence = iSequence + 1
@@ -942,7 +948,7 @@ Private Sub cmdOK_Click()
               End If
             Next iLoop
             
-            mobjOrder.AddOrderItem objNode.Tag, "F", iSequence, True, objNode.Text, sTableName
+            mobjOrder.AddOrderItem objNode.Tag, "F", iSequence, True, objNode.Text, sTableName, False
             Set objNode = objNode.Next
           Loop
         End If
@@ -1014,7 +1020,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     If mfChanged Then
         intAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, app.ProductName)
         If intAnswer = vbYes Then
-          If Me.cmdOk.Enabled Then
+          If Me.cmdOK.Enabled Then
             Call cmdOK_Click
             If mfCancelled = True Then Cancel = 1
           Else
@@ -1874,7 +1880,7 @@ Private Sub txtOrderName_Change(Index As Integer)
   mfChanged = True
   
   ' Disable the OK command control if there are no order items specified.
-  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And _
     (Not mfReadOnly)

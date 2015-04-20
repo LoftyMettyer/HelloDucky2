@@ -25,9 +25,6 @@ Private mlngTimeStamp As Long
 ' Object handing variables.
 Private mfConstructed As Boolean
 
-
-
-
 Public Property Get TableName() As String
   ' Return the order column's table name.
   TableName = msTableName
@@ -760,7 +757,7 @@ Public Function ConstructOrder() As Boolean
       Set rsOrderItems = modExpression.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
       With rsOrderItems
         Do While Not .EOF
-          AddOrderItem !ColumnID, !Type, !Sequence, !Ascending, !ColumnName, !TableName
+          AddOrderItem !ColumnID, !Type, !Sequence, !Ascending, !ColumnName, !TableName, !Editable
           .MoveNext
         Loop
       
@@ -797,7 +794,7 @@ End Property
 
 Public Function AddOrderItem(plngColumnID As Long, psItemType As String, _
   piSequence As Integer, pfAscending As Boolean, psColumnName As String, _
-  psTableName As String) As clsOrderItem
+  psTableName As String, pbIsEditable As Boolean) As clsOrderItem
   ' Add the given column to the order definition.
   On Error GoTo ErrorTrap
   
@@ -817,6 +814,7 @@ Public Function AddOrderItem(plngColumnID As Long, psItemType As String, _
     .Sequence = piSequence
     .Ascending = pfAscending
     .TableName = psTableName
+    .IsEditable = pbIsEditable
   End With
   
   mcolOrderItems.Add objNewItem, psItemType & "_" & Trim(Str(plngColumnID))
@@ -874,10 +872,6 @@ Private Sub Class_Terminate()
 
 End Sub
 
-
-
-
-
 Public Property Get OrderType() As Integer
   ' Return the order type.
   OrderType = miOrderType
@@ -890,4 +884,16 @@ Public Property Let OrderType(ByVal piNewValue As Integer)
 
 End Property
 
+Public Property Get ContainsEditableColumns() As Boolean
 
+  Dim item As clsOrderItem
+  Dim bFound As Boolean
+  
+  bFound = False
+ 
+  For Each item In mcolOrderItems
+    bFound = bFound Or item.IsEditable
+  Next item
+
+  ContainsEditableColumns = bFound
+End Property

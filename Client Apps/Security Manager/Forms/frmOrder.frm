@@ -457,27 +457,30 @@ Public Property Set Order(pobjOrder As clsOrder)
   ' Select the first item in each treeview.
   With trvSelectedFindColumns
     If .Nodes.Count > 0 Then
-      .Nodes.Item(1).Selected = True
+      .Nodes.item(1).Selected = True
       .SelectedItem.EnsureVisible
     End If
   End With
   
   With trvSelectedSortColumns
     If .Nodes.Count > 0 Then
-      .Nodes.Item(1).Selected = True
+      .Nodes.item(1).Selected = True
       .SelectedItem.EnsureVisible
     End If
   End With
 
+  If pobjOrder.ContainsEditableColumns And mobjOrder.OrderID <> 0 Then
+    mfReadOnly = True
+    MsgBox "This order has been defined as a system order and cannot be edited.", vbInformation
+  End If
+
   ' Disable controls if the user does not have permission to edit orders.
   If Not gfCurrentUserIsSysSecMgr Then
-    mfReadOnly = Not SystemPermission("ORDERS", "EDIT")
+    mfReadOnly = mfReadOnly Or Not SystemPermission("ORDERS", "EDIT")
   
     If mfReadOnly Then
       DisableAll
     End If
-  Else
-    mfReadOnly = False
   End If
   
   ' Ensure the first page is selected.
@@ -719,7 +722,7 @@ Private Sub SortColumns_RefreshControls()
     (Not mfReadOnly)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And _
     (Not mfReadOnly)
@@ -736,7 +739,7 @@ Private Sub cmdCancel_Click()
   If mfChanged Then
     intAnswer = MsgBox("The order definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
     If intAnswer = vbYes Then
-      If Me.cmdOK.Enabled Then
+      If Me.cmdOk.Enabled Then
         Call cmdOK_Click
         Exit Sub
       Else
@@ -796,7 +799,7 @@ Private Sub FindColumns_RefreshControls()
     (Not mfReadOnly)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And _
     (Not mfReadOnly)
@@ -917,7 +920,7 @@ Private Sub cmdOK_Click()
       
       If fOK Then
         If trvSelectedSortColumns.Nodes.Count > 0 Then
-          Set objNode = trvSelectedSortColumns.Nodes.Item(1).FirstSibling
+          Set objNode = trvSelectedSortColumns.Nodes.item(1).FirstSibling
           iSequence = 0
           Do While Not objNode Is Nothing
             iSequence = iSequence + 1
@@ -929,13 +932,13 @@ Private Sub cmdOK_Click()
               End If
             Next iLoop
 
-            mobjOrder.AddOrderItem objNode.Tag, "O", iSequence, (objNode.Image = "IMG_UP"), objNode.Text, sTableName
+            mobjOrder.AddOrderItem objNode.Tag, "O", iSequence, (objNode.Image = "IMG_UP"), objNode.Text, sTableName, False
             Set objNode = objNode.Next
           Loop
         End If
         
         If trvSelectedFindColumns.Nodes.Count > 0 Then
-          Set objNode = trvSelectedFindColumns.Nodes.Item(1).FirstSibling
+          Set objNode = trvSelectedFindColumns.Nodes.item(1).FirstSibling
           iSequence = 0
           Do While Not objNode Is Nothing
             iSequence = iSequence + 1
@@ -947,7 +950,7 @@ Private Sub cmdOK_Click()
               End If
             Next iLoop
             
-            mobjOrder.AddOrderItem objNode.Tag, "F", iSequence, True, objNode.Text, sTableName
+            mobjOrder.AddOrderItem objNode.Tag, "F", iSequence, True, objNode.Text, sTableName, False
             Set objNode = objNode.Next
           Loop
         End If
@@ -1924,7 +1927,7 @@ Private Sub txtOrderName_Change(Index As Integer)
   mfChanged = True
   
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And _
     (Not mfReadOnly)

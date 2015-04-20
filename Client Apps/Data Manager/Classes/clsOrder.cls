@@ -25,9 +25,6 @@ Private mlngTimeStamp As Long
 ' Object handing variables.
 Private mfConstructed As Boolean
 
-
-
-
 Public Property Get TableName() As String
   ' Return the order column's table name.
   TableName = msTableName
@@ -292,7 +289,7 @@ TidyUpAndExit:
   Set objOrderItem = Nothing
   If Not fOK Then
     COAMsgBox "Unable to print the order '" & msOrderName & "'." & vbCr & vbCr & _
-      Err.Description, vbExclamation + vbOKOnly, App.ProductName
+      Err.Description, vbExclamation + vbOKOnly, app.ProductName
   End If
   Exit Sub
   
@@ -470,7 +467,7 @@ Private Function OrderIsUsed() As Boolean
       ' Tell the user why the order cannot be deleted.
       COAMsgBox "This order cannot be deleted." & vbCr & vbCrLf & _
         "It is used as the default order for the '" & !TableName & "' table.", _
-        vbExclamation + vbOKOnly, App.ProductName
+        vbExclamation + vbOKOnly, app.ProductName
     End If
   
     .Close
@@ -491,7 +488,7 @@ Private Function OrderIsUsed() As Boolean
         ' Tell the user why the order cannot be deleted.
         COAMsgBox "This order cannot be deleted." & vbCrLf & vbCr & _
           "It is used as the order for the '" & !Name & "' screen.", _
-          vbExclamation + vbOKOnly, App.ProductName
+          vbExclamation + vbOKOnly, app.ProductName
       End If
     
       .Close
@@ -519,7 +516,7 @@ Private Function OrderIsUsed() As Boolean
         COAMsgBox "This order cannot be deleted." & vbCr & vbCr & _
           "It is used as the order for a field component in the " & sExprType & " '" & !Name & "'," & vbCrLf & _
           "which is owned by the '" & !TableName & "' table.", _
-          vbExclamation + vbOKOnly, App.ProductName
+          vbExclamation + vbOKOnly, app.ProductName
       End If
       
       .Close
@@ -544,7 +541,7 @@ Private Function OrderIsUsed() As Boolean
         COAMsgBox "This order cannot be deleted." & vbCr & vbCr & _
           "It is used in the '" & !Name & "' Mail Merge definition," & vbCrLf & _
           "which is owned by the '" & !TableName & "' table.", _
-          vbExclamation + vbOKOnly, App.ProductName
+          vbExclamation + vbOKOnly, app.ProductName
       End If
       
       .Close
@@ -578,7 +575,7 @@ Private Function OrderIsUsed() As Boolean
         ' Tell the user why the column cannot be deleted.
         COAMsgBox "This order cannot be deleted." & vbCr & _
           "It is used in the '" & sModuleName & "' module definition.", _
-          vbExclamation + vbOKOnly, App.ProductName
+          vbExclamation + vbOKOnly, app.ProductName
       End If
       
       ' Close the recordset.
@@ -606,7 +603,7 @@ Private Function OrderIsUsed() As Boolean
         COAMsgBox "This order cannot be deleted." & vbCr & vbCr & _
           "It is used in the '" & !Name & "' Record Profile definition," & vbCrLf & _
           "which is owned by the '" & !TableName & "' table.", _
-          vbExclamation + vbOKOnly, App.ProductName
+          vbExclamation + vbOKOnly, app.ProductName
       End If
       
       .Close
@@ -719,7 +716,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  COAMsgBox Err.Description, vbExclamation + vbOKOnly, App.ProductName
+  COAMsgBox Err.Description, vbExclamation + vbOKOnly, app.ProductName
   fOK = False
   Resume TidyUpAndExit
 
@@ -805,7 +802,7 @@ Public Function ConstructOrder() As Boolean
       Set rsOrderItems = datGeneral.GetRecords(sSQL)
       With rsOrderItems
         Do While Not .EOF
-          AddOrderItem !ColumnID, !Type, !Sequence, !Ascending, !ColumnName, !TableName
+          AddOrderItem !ColumnID, !Type, !Sequence, !Ascending, !ColumnName, !TableName, IIf(IsNull(!Editable), False, !Editable)
           .MoveNext
         Loop
       
@@ -822,7 +819,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   COAMsgBox "Error constructing order.", _
-    vbExclamation + vbOKOnly, App.ProductName
+    vbExclamation + vbOKOnly, app.ProductName
   fOK = False
   Resume TidyUpAndExit
   
@@ -842,7 +839,7 @@ End Property
 
 Public Function AddOrderItem(plngColumnID As Long, psItemType As String, _
   piSequence As Integer, pfAscending As Boolean, psColumnName As String, _
-  psTableName As String) As clsOrderItem
+  psTableName As String, pbIsEditable As Boolean) As clsOrderItem
   ' Add the given column to the order definition.
   On Error GoTo ErrorTrap
   
@@ -862,6 +859,7 @@ Public Function AddOrderItem(plngColumnID As Long, psItemType As String, _
     .Sequence = piSequence
     .Ascending = pfAscending
     .TableName = psTableName
+    .IsEditable = pbIsEditable
   End With
   
   mcolOrderItems.Add objNewItem, psItemType & "_" & Trim(Str(plngColumnID))
@@ -919,10 +917,6 @@ Private Sub Class_Terminate()
 
 End Sub
 
-
-
-
-
 Public Property Get OrderType() As Integer
   ' Return the order type.
   OrderType = miOrderType
@@ -935,4 +929,16 @@ Public Property Let OrderType(ByVal piNewValue As Integer)
 
 End Property
 
+Public Property Get ContainsEditableColumns() As Boolean
 
+  Dim item As clsOrderItem
+  Dim bFound As Boolean
+  
+  bFound = False
+ 
+  For Each item In mcolOrderItems
+    bFound = bFound Or item.IsEditable
+  Next item
+
+  ContainsEditableColumns = bFound
+End Property
