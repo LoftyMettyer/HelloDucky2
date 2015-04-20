@@ -30,7 +30,7 @@ Namespace ViewModels
 		Public ReadOnly Property LastRunHidden As String
 			Get
 
-				If Type = UtilityType.utlCalculation Or Type = UtilityType.utlFilter Then
+				If Type = UtilityType.utlCalculation Or Type = UtilityType.utlFilter Or Type = UtilityType.utlPicklist Then
 					Return "visibility: hidden"
 				End If
 
