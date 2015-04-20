@@ -1187,7 +1187,10 @@ function ABSFileInput(value, options) {
 		if (value == "") $(fileImg).attr("src", window.ROOT + "Content/images/OLEIcons/delete-iconDIS.png").prop("disabled", true);
 		else $(fileImg).attr("src", window.ROOT + "Content/images/OLEIcons/delete-icon.png").prop("disabled", false);
 		$(fileImg).attr("title", "Delete this file");
-		$(fileImg).on("click", function() { clearOLE(options.dataColumnId); });
+		$(fileImg).on("click", function () {
+			if ($(this).prop('disabled') === true) return false;	// check for non-IE browsers
+			clearOLE(options.dataColumnId);
+		});
 		$(fileImg).css({ "margin-right": "2px", "vertical-align": "middle", "cursor": "pointer", "height": "16px" });
 
 		var fileLabel = document.createElement("label");
@@ -1710,7 +1713,7 @@ function escapeHTML(str) {
 	return out;
 }
 
-function clearOLE(columnID) {
+function clearOLE(columnID) {	
 	OpenHR.modalPrompt("Do you want to delete this embedded file?<br/><br/>This cannot be undone.", 4, "Confirm").then(function (answer) {
 		if (answer == 6) { // Yes
 
@@ -1723,7 +1726,7 @@ function clearOLE(columnID) {
 	});
 }
 
-function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto, uniqueID) {
+function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto, uniqueID) {	
 	var data = new FormData();
 	var recordID = selectedRecordID();
 	var file = "";
