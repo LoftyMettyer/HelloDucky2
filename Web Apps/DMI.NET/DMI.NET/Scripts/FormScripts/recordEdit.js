@@ -2233,14 +2233,19 @@ function updateControl(lngColumnID, value) {
 			}
 		}
 
-		if($(this).is("img")) {			
+		if ($(this).is("img")) {
 
 			filename = value.replace('::LINKED_OLE_DOCUMENT::', '').replace('::EMBEDDED_OLE_DOCUMENT::', '');
 			var msPhotoPath = $('#frmRecordEditForm #txtPicturePath').val();
 			
 			if (value.indexOf('::LINKED_OLE_DOCUMENT::') >= 0) {
 				if (filename == "") filename = '../Content/Images/anonymous.png';
-				$(this).attr('src', filename);
+				if ("ActiveXObject" in window) {
+					$(this).attr('src', $('#txtData_' + lngColumnID).attr('data-Img'));
+				} else {
+					//non-IE - show placeholder always!
+					$(this).attr('src', '../Content/Images/anonymous.png');
+				}
 				oleType = 3;
 			}
 			else if (value.indexOf('::EMBEDDED_OLE_DOCUMENT::') >= 0) {

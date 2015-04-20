@@ -69,9 +69,11 @@ Namespace Structures
 					End Try
 				Else
 					If _mstrPath.Length > 0 AndAlso _mstrPath.Substring(0, 2) = "\\" Then
-						Return _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::" & vbTab & DocumentSize & vbTab & FileCreateDate & vbTab & FileModifyDate
+						' Return _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::" & vbTab & DocumentSize & vbTab & FileCreateDate & vbTab & FileModifyDate
+						Return _mstrPath & "\" & _mstrFileName
 					Else
-						Return _mstrUnc & _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::" & vbTab & DocumentSize & vbTab & FileCreateDate & vbTab & FileModifyDate
+						' Return _mstrUnc & _mstrPath & "\" & _mstrFileName & "::LINKED_OLE_DOCUMENT::" & vbTab & DocumentSize & vbTab & FileCreateDate & vbTab & FileModifyDate
+						Return _mstrUnc & _mstrPath & "\" & _mstrFileName
 					End If
 
 				End If

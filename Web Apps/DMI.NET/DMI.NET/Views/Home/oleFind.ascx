@@ -149,6 +149,7 @@
 					} else {
 						//Non-IE browsers
 						$('#oleCaption h3').html('Linked file: ' + newFilename);
+						$('#oleCaption h3').parent().append("<p>Linked files are only accessible using the Internet Explorer browser.</p>");
 					}
 				}
 				break;
