@@ -10,11 +10,16 @@ Namespace Metadata
 
 		Public ReadOnly Property MergeName() As String
 			Get
+
+				Dim returnName As String
+
 				If IsExpression Then
-					Return String.Format("{0}{1}", TableName, Name.Replace(" ", "_"))
+					returnName = String.Format("{0}{1}", TableName, Name.Replace(" ", "_"))
 				Else
-					Return String.Format("{0}_{1}", TableName, Name.Replace(" ", "_"))
+					returnName = String.Format("{0}_{1}", TableName, Name.Replace(" ", "_"))
 				End If
+
+				Return If(returnName.Length <= 40, returnName, returnName.Substring(0, 40))
 
 			End Get
 
