@@ -9,7 +9,6 @@
 @Html.HiddenFor(Function(m) m.DefinitionAccessBasedOnSelectedCalculationColumns, New With {.class = "ViewAccess"})
 
 <div class="nowrap">
-
 	<div class="tablerow">
 		<fieldset id="selectedTable">
 			<legend class="fontsmalltitle width100">Table(s) :</legend>
@@ -127,6 +126,20 @@
 
 <script type="text/javascript">
 
+	function removeSelectedColumnsFromAvailable() {
+		//Find row in Sort Order columns to see if Value On Change or Suppress Repeated Values is ticked.
+		var SelectedRows = $("#SelectedColumns").getRowData();
+		var AvailableRows = $("#AvailableColumns").getRowData();
+		
+		for (i = 0; i < AvailableRows.length; i++) {
+			for (x = 0; x < SelectedRows.length; x++) {
+				if (AvailableRows[i].ID == SelectedRows[x].ID) {
+					$("#AvailableColumns").delRowData(AvailableRows[i].ID);
+				}
+			}
+		}		
+	}
+
 	function moveSelectedColumn(direction) {
 		OpenHR.MoveItemInGrid($("#SelectedColumns"), direction);
 	}
@@ -138,7 +151,7 @@
 	function addColumnToSelected() {
 
 		var rowID;
-
+		
 		$('#SelectedColumns').jqGrid('resetSelection');
 
 		var selectedRows = $('#AvailableColumns').jqGrid('getGridParam', 'selarrrow');
@@ -156,7 +169,6 @@
 				$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) + 1);
 				button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
 			}
-
 		}
 
 		if ('@Model.ReportType' == '@UtilityType.utlMailMerge') {
@@ -172,14 +184,14 @@
 
 		// Remove selected columns from available
 		for (var i = selectedRows.length - 1; i >= 0; i--) {
-			$("#AvailableColumns").delRowData(selectedRows[i]);
+			$("#AvailableColumns").delRowData(selectedRows[i]);			
 		}
 
 		$("#AvailableColumns").jqGrid("setSelection", ids[nextIndex], true);
 		refreshcolumnPropertiesPanel();
-
+		
 		// Check the view access for the selected calcluation column. If hidden hide the defination.
-		setDefinitionAccessBasedOnSelectedCalculationColumns();
+		setDefinitionAccessBasedOnSelectedCalculationColumns();		
 	}
 
 	function getDatarowFromAvailable(index) {
@@ -244,7 +256,7 @@
 		$('#SelectedColumns').jqGrid("setSelection", rowID);
 		$('#AvailableColumns').jqGrid('clearGridData');
 
-		refreshcolumnPropertiesPanel();
+		refreshcolumnPropertiesPanel(); 
 
 		// Check the view access for the selected calcluation column. If hidden hide the defination.
 		setDefinitionAccessBasedOnSelectedCalculationColumns();
@@ -371,7 +383,7 @@
 			selectGridTopRow($('#SelectedColumns'));
 		}
 
-		refreshcolumnPropertiesPanel();
+		refreshcolumnPropertiesPanel(); 
 
 	}
 
@@ -397,14 +409,14 @@
 			resetRepeatOnChildRows();
 		}
 
-		refreshcolumnPropertiesPanel();
+		refreshcolumnPropertiesPanel(); 
 	}
 
 
 	function getAvailableTableColumnsCalcs() {
 		var sType;
 		var bIsBaseTable;
-
+		
 		$("#AvailableColumns").jqGrid('GridUnload');
 
 		bIsBaseTable = ($("#SelectedTableID").val() == $("#BaseTableID").val());
@@ -496,9 +508,10 @@
 				doubleClickAvailableColumn();
 			},
 			loadComplete: function (data) {
+				refreshcolumnPropertiesPanel();
+				removeSelectedColumnsFromAvailable();
 				var topID = $("#AvailableColumns").getDataIDs()[0]
 				$("#AvailableColumns").jqGrid("setSelection", topID);
-				refreshcolumnPropertiesPanel();
 			}
 		});
 
@@ -518,9 +531,8 @@
 			}
 		});
 
-		resizeColumnGrids(); //should be in scope; this function resides in Util_Def_CustomReport.vbhtml
+		resizeColumnGrids(); //should be in scope; this function resides in Util_Def_CustomReport.vbhtml		
 	}
-
 
 	function doubleClickAvailableColumn() {
 		if (!isDefinitionReadOnly()) {
@@ -550,7 +562,7 @@
 			$('#SelectedColumnIsRepeated').prop('checked', false);
 		}
 
-		refreshcolumnPropertiesPanel();
+		refreshcolumnPropertiesPanel(); 
 		updateColumnsSelectedGrid();
 	}
 
@@ -565,7 +577,7 @@
 			$('#SelectedColumnIsHidden').prop('checked', false);
 		}
 
-		refreshcolumnPropertiesPanel();
+		refreshcolumnPropertiesPanel(); 
 		updateColumnsSelectedGrid();
 
 		disableColumnOptionsWhenGroupWithNextChecked();
@@ -634,7 +646,7 @@
 		if ($("#SelectedColumnIsRepeated").is(':checked')) {
 			$('#SelectedColumnIsHidden').prop('checked', false);
 		}
-		refreshcolumnPropertiesPanel();
+		refreshcolumnPropertiesPanel(); 
 		updateColumnsSelectedGrid();
 	}
 
@@ -677,7 +689,7 @@
 		var isBottomRow = true;
 		var isReadOnly = isDefinitionReadOnly();
 		var bRowSelected = false;
-
+	
 		if (allRows.length > 0) {
 			bRowSelected = true;
 			isTopRow = (rowId == allRows[0]);
@@ -812,7 +824,7 @@
 
 		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 		var dataRow = $('#SelectedColumns').jqGrid('getRowData', rowId);
-
+		
 		dataRow.Heading = $("#SelectedColumnHeading").val();
 		dataRow.Size = $("#SelectedColumnSize").val();
 		if (dataRow.Size == "") { dataRow.Size = 0 }; //If size is empty then set to 0
@@ -933,7 +945,7 @@
 				$('#SelectedColumnIsGroupWithNext').prop('checked', JSON.parse(dataRow.IsGroupWithNext));
 				$('#SelectedColumnIsRepeated').prop('checked', JSON.parse(dataRow.IsRepeated));
 
-				refreshcolumnPropertiesPanel();
+				refreshcolumnPropertiesPanel(); 
 
 				disableColumnOptionsWhenGroupWithNextChecked();
 
@@ -945,7 +957,7 @@
 				$("#SelectedColumns").jqGrid("setSelection", topID);
 
 				// Check the view access for the selected calcluation columns. If found any hidden then set the defination access to HD.
-				setDefinitionAccessBasedOnSelectedCalculationColumns();
+				setDefinitionAccessBasedOnSelectedCalculationColumns();				
 			}
 		});
 
