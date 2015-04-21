@@ -8,6 +8,7 @@ Imports HR.Intranet.Server.Enums
 Imports Aspose.Cells
 Imports Aspose.Cells.Pivot
 Imports System.Linq
+Imports System.Text.RegularExpressions
 
 Namespace ReportOutput
 
@@ -1202,8 +1203,7 @@ Namespace ReportOutput
 		Private Sub SetSheetName(ByRef objObject As Worksheet, strSheetName As String)
 
 			Try
-
-				strSheetName = FormatSheetName(strSheetName)
+				strSheetName = FormatSheetName(Regex.Replace(strSheetName, "[:\\\/?\*\[\]]", " ")) 'Replace invalid characters with space so Aspose doesn't throw a wobbly when creating the Excel tabs
 
 				If _mxlWorkBook.Worksheets.Count < 255 Then
 					objObject.Name = GetSheetName(strSheetName)
