@@ -473,7 +473,7 @@ Public Property Set Order(pobjOrder As clsOrder)
   
   If pobjOrder.ContainsEditableColumns And mobjOrder.OrderID <> 0 Then
     mfReadOnly = True
-    COAMsgBox "This order has been defined as a system order and cannot be edited.", vbInformation
+    COAMsgBox "This order is used for in-line column editing and cannot be modified.", vbInformation
   End If
   
   If mfReadOnly Then
