@@ -2239,13 +2239,8 @@ function updateControl(lngColumnID, value) {
 			var msPhotoPath = $('#frmRecordEditForm #txtPicturePath').val();
 			
 			if (value.indexOf('::LINKED_OLE_DOCUMENT::') >= 0) {
-				if (filename == "") filename = '../Content/Images/anonymous.png';
-				if ("ActiveXObject" in window) {
-					$(this).attr('src', $('#txtData_' + lngColumnID).attr('data-Img'));
-				} else {
-					//non-IE - show placeholder always!
-					$(this).attr('src', '../Content/Images/anonymous.png');
-				}
+				//no linked photos in the web. Only IE11 currently supports local images. 
+				$(this).attr('src', '../Content/Images/anonymous.png');
 				oleType = 3;
 			}
 			else if (value.indexOf('::EMBEDDED_OLE_DOCUMENT::') >= 0) {
