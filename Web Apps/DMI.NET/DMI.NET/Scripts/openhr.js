@@ -1391,6 +1391,11 @@
 			$("#SignalRDialogClick").val("Close");
 			$("#SignalRDialogTitle").html(messageFrom);
 			$("#SignalRDialogContentText").html(message);
+
+			$("#divSignalRMessage").dialog({
+				closeOnEscape: !forceLogout
+			});
+
 			$("#divSignalRMessage").dialog("open");
 
 			if (forceLogout === true) {
