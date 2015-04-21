@@ -515,7 +515,8 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 		Function ForcedPasswordChange_Submit(value As FormCollection) As ActionResult
 
-			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+			Dim objLogin = CType(Session("sessionChangePassword"), LoginInfo)
+			Dim objDataAccess = New clsDataAccess(objLogin)
 
 			Dim fSubmitPasswordChange = (Len(Request.Form("txtGotoPage")) = 0)
 
@@ -525,7 +526,6 @@ Namespace Controllers
 				Dim sNewPassword As String = Request.Form("txtPassword1")
 
 				Try
-					Dim objLogin = CType(Session("sessionChangePassword"), LoginInfo)
 
 					objLogin.Password = Request.Form("txtCurrentPassword")
 					objDataAccess.ChangePassword(objLogin, sNewPassword)
