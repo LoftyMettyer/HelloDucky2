@@ -5,6 +5,7 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="DMI.NET.Helpers" %>
+<%@ Import Namespace="DMI.NET.Models.ObjectRequests" %>
 
 <script type="text/javascript">
 
@@ -134,10 +135,17 @@
 	
 				Dim bAddUploadTemplate As Boolean = (CType(Session("utiltype"), UtilityType) = UtilityType.utlMailMerge)
 				Dim iPromptCount = CInt(IIf(bAddUploadTemplate, 1, 0))
+				Dim iPromptUtilID As Integer
+				
+				If Model.UtilType = UtilityType.utlAbsenceBreakdown Or Model.UtilType = UtilityType.utlBradfordFactor Then
+					iPromptUtilID = CType(Model, StandardReportRunModel).txtBaseFilterID
+				Else
+					iPromptUtilID = Model.ID
+				End If
 				
 				rstPromptedValue = objDatabaseAccess.GetDataTable("spASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
 					New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = Model.UtilType}, _
-					New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = Model.ID}, _
+					New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = iPromptUtilID}, _
 					New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = CInt(Session("singleRecordID"))})
 				
 				If rstPromptedValue.Rows.Count > 0 Then
@@ -205,94 +213,94 @@
 							Response.Write(""" style=""WIDTH: 100%"">" & vbCrLf)
 
 							' Lookup Prompted Value
-							ElseIf objRow("ValueType") = 5 Then
-								Response.Write("        <SELECT STYLE=""width:100%;"" id=promptLookup_" & objRow("componentID") & " name=promptLookup_" & objRow("componentID") & " class=""combo"" style=""WIDTH: 100%"" onchange=""comboChange(" & objRow("componentID") & ")"">" & vbCrLf)
+						ElseIf objRow("ValueType") = 5 Then
+							Response.Write("        <SELECT STYLE=""width:100%;"" id=promptLookup_" & objRow("componentID") & " name=promptLookup_" & objRow("componentID") & " class=""combo"" style=""WIDTH: 100%"" onchange=""comboChange(" & objRow("componentID") & ")"">" & vbCrLf)
 
-								fDefaultFound = False
-								fFirstValueDone = False
-								sFirstValue = ""
+							fDefaultFound = False
+							fFirstValueDone = False
+							sFirstValue = ""
 
-								rstLookupValues = GetLookupValues(CInt(objRow("fieldColumnID")))
+							rstLookupValues = GetLookupValues(CInt(objRow("fieldColumnID")))
 							
-								For Each objLookupRow As DataRow In rstLookupValues.Rows
+							For Each objLookupRow As DataRow In rstLookupValues.Rows
 								
-									Response.Write("          <OPTION")
+								Response.Write("          <OPTION")
 						
-									If Not fFirstValueDone Then
-										sFirstValue = objLookupRow(0).ToString()
-										fFirstValueDone = True
-									End If
-
-									Dim sOptionValue As String
-										
-									If rstLookupValues.Columns(0).DataType.Name.ToLower() = "datetime" Then
-										' Field is a date so format as such.
-										sOptionValue = ConvertSQLDateToLocale(objLookupRow(0))
-										If sOptionValue = ConvertSQLDateToLocale(objRow("valuecharacter").ToString()) Then
-											Response.Write(" SELECTED")
-											fDefaultFound = True
-										End If
-										Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
-									ElseIf rstLookupValues.Columns(0).DataType.Name.ToLower() = "decimal" Then
-										' Field is a numeric so format as such.
-										sOptionValue = Replace(CType(objLookupRow(0), String), ".", CType(Session("LocaleDecimalSeparator"), String))
-										If (Not IsDBNull(objLookupRow(0))) And (Not IsDBNull(objRow("valuecharacter"))) Then
-											If FormatNumber(objLookupRow(0)) = FormatNumber(objRow("valuecharacter")) Then
-												Response.Write(" SELECTED")
-												fDefaultFound = True
-											End If
-										End If
-										Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
-									ElseIf rstLookupValues.Columns(0).DataType.Name.ToLower() = "boolean" Then
-										' Field is a logic so format as such.
-										sOptionValue = objLookupRow(0).ToString()
-										If sOptionValue = objRow("valuecharacter") Then
-											Response.Write(" SELECTED")
-											fDefaultFound = True
-										End If
-										Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
-									Else
-										sOptionValue = RTrim(objLookupRow(0).ToString())
-										If sOptionValue = objRow("valuecharacter") Then
-											Response.Write(" SELECTED")
-											fDefaultFound = True
-										End If
-										Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
-									End If
-
-								Next
-							
-								Response.Write("        </SELECT>" & vbCrLf)
-
-								Dim sDefaultValue As String
-								
-								If fDefaultFound Then
-									sDefaultValue = objRow("valuecharacter").ToString()
-								Else
-									sDefaultValue = sFirstValue
+								If Not fFirstValueDone Then
+									sFirstValue = objLookupRow(0).ToString()
+									fFirstValueDone = True
 								End If
 
-								Select Case rstLookupValues.Columns(0).DataType.Name.ToLower()
-									Case "datetime"
-										Response.Write("        <input type=hidden id=prompt_4_" & objRow("componentID") & " name=prompt_4_" & objRow("componentID") & " value=" & ConvertSQLDateToLocale(sDefaultValue) & ">" & vbCrLf)
+								Dim sOptionValue As String
+										
+								If rstLookupValues.Columns(0).DataType.Name.ToLower() = "datetime" Then
+									' Field is a date so format as such.
+									sOptionValue = ConvertSQLDateToLocale(objLookupRow(0))
+									If sOptionValue = ConvertSQLDateToLocale(objRow("valuecharacter").ToString()) Then
+										Response.Write(" SELECTED")
+										fDefaultFound = True
+									End If
+									Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
+								ElseIf rstLookupValues.Columns(0).DataType.Name.ToLower() = "decimal" Then
+									' Field is a numeric so format as such.
+									sOptionValue = Replace(CType(objLookupRow(0), String), ".", CType(Session("LocaleDecimalSeparator"), String))
+									If (Not IsDBNull(objLookupRow(0))) And (Not IsDBNull(objRow("valuecharacter"))) Then
+										If FormatNumber(objLookupRow(0)) = FormatNumber(objRow("valuecharacter")) Then
+											Response.Write(" SELECTED")
+											fDefaultFound = True
+										End If
+									End If
+									Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
+								ElseIf rstLookupValues.Columns(0).DataType.Name.ToLower() = "boolean" Then
+									' Field is a logic so format as such.
+									sOptionValue = objLookupRow(0).ToString()
+									If sOptionValue = objRow("valuecharacter") Then
+										Response.Write(" SELECTED")
+										fDefaultFound = True
+									End If
+									Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
+								Else
+									sOptionValue = RTrim(objLookupRow(0).ToString())
+									If sOptionValue = objRow("valuecharacter") Then
+										Response.Write(" SELECTED")
+										fDefaultFound = True
+									End If
+									Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
+								End If
 
-									Case "decimal"
-										Response.Write("        <input type=hidden id=prompt_2_" & objRow("componentID") & " name=prompt_2_" & objRow("componentID") & " value=" & Replace(sDefaultValue, ".", CType(Session("LocaleDecimalSeparator"), String)) & ">" & vbCrLf)
-									
-									Case "boolean"
-										Response.Write("        <input type=hidden id=prompt_3_" & objRow("componentID") & " name=prompt_3_" & objRow("componentID") & " value=" & sDefaultValue & ">" & vbCrLf)
-									
-									Case Else
-										Response.Write("        <input type=hidden id=prompt_1_" & objRow("componentID") & " name=prompt_1_" & objRow("componentID") & " value=""" & HttpUtility.HtmlEncode(sDefaultValue) & """>" & vbCrLf)
-									
-								End Select
+							Next
 							
-								rstLookupValues = Nothing
+							Response.Write("        </SELECT>" & vbCrLf)
+
+							Dim sDefaultValue As String
+								
+							If fDefaultFound Then
+								sDefaultValue = objRow("valuecharacter").ToString()
+							Else
+								sDefaultValue = sFirstValue
 							End If
+
+							Select Case rstLookupValues.Columns(0).DataType.Name.ToLower()
+								Case "datetime"
+									Response.Write("        <input type=hidden id=prompt_4_" & objRow("componentID") & " name=prompt_4_" & objRow("componentID") & " value=" & ConvertSQLDateToLocale(sDefaultValue) & ">" & vbCrLf)
+
+								Case "decimal"
+									Response.Write("        <input type=hidden id=prompt_2_" & objRow("componentID") & " name=prompt_2_" & objRow("componentID") & " value=" & Replace(sDefaultValue, ".", CType(Session("LocaleDecimalSeparator"), String)) & ">" & vbCrLf)
+									
+								Case "boolean"
+									Response.Write("        <input type=hidden id=prompt_3_" & objRow("componentID") & " name=prompt_3_" & objRow("componentID") & " value=" & sDefaultValue & ">" & vbCrLf)
+									
+								Case Else
+									Response.Write("        <input type=hidden id=prompt_1_" & objRow("componentID") & " name=prompt_1_" & objRow("componentID") & " value=""" & HttpUtility.HtmlEncode(sDefaultValue) & """>" & vbCrLf)
+									
+							End Select
+							
+							rstLookupValues = Nothing
+						End If
 				
-							Response.Write("					</td>" & vbCrLf)
-							Response.Write("					<td width=20 height=10>&nbsp;</td>" & vbCrLf)
-							Response.Write("				</tr>" & vbCrLf)
+						Response.Write("					</td>" & vbCrLf)
+						Response.Write("					<td width=20 height=10>&nbsp;</td>" & vbCrLf)
+						Response.Write("				</tr>" & vbCrLf)
 
 					Next
 					
