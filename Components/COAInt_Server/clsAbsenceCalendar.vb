@@ -614,7 +614,7 @@ Public Class AbsenceCalendar
 				mastrAbsenceTypes(intCounter, 0) = "Other"
 				mastrAbsenceTypes(intCounter, 1) = "black"
 				mastrAbsenceTypes(intCounter, 2) = LTrim(Str(intCounter))
-				mastrAbsenceTypes(intCounter, 3) = "&nbsp"
+				mastrAbsenceTypes(intCounter, 3) = ""
 				intCounter = intCounter + 1
 
 				ReDim Preserve mastrAbsenceTypes(20, 5)
