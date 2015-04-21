@@ -825,7 +825,7 @@
 		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 		var dataRow = $('#SelectedColumns').jqGrid('getRowData', rowId);
 		
-		dataRow.Heading = $("#SelectedColumnHeading").val();
+		dataRow.Heading = encodeURI($("#SelectedColumnHeading").val());
 		dataRow.Size = $("#SelectedColumnSize").val();
 		if (dataRow.Size == "") { dataRow.Size = 0 }; //If size is empty then set to 0
 		dataRow.Decimals = $("#SelectedColumnDecimals").val();
@@ -934,7 +934,7 @@
 				var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 				var dataRow = $("#SelectedColumns").getRowData(rowId)
 
-				$("#SelectedColumnHeading").val(dataRow.Heading);
+				$("#SelectedColumnHeading").val(decodeURI(dataRow.Heading));
 
 				$("#SelectedColumnSize").val(dataRow.Size);
 				$("#SelectedColumnDecimals").val(dataRow.Decimals);

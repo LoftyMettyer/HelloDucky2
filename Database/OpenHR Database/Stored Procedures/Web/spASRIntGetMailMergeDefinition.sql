@@ -145,7 +145,7 @@ BEGIN
 		CASE WHEN ASRSysExpressions.access = 'HD' THEN 1 ELSE 0 END AS [accesshidden],		
 		ASRSysExpressions.tableID,
 		ASRSysExpressions.name AS [name],
-		convert(varchar(MAX), '<Calc> ' + replace(ASRSysExpressions.name, '_', ' ')) AS [heading],
+		convert(varchar(MAX), replace(ASRSysExpressions.name, '_', ' ')) AS [heading],
 		0 AS DataType,
 		ASRSysMailMergeColumns.size,
 		ASRSysMailMergeColumns.decimals,

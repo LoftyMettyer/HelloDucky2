@@ -9,6 +9,7 @@ Imports System.Collections.ObjectModel
 Imports DMI.NET.Classes
 Imports DMI.NET.ViewModels.Reports
 Imports DMI.NET.Code.Extensions
+Imports Microsoft.Ajax.Utilities
 
 Namespace Repository
 	Public Class ReportRepository
@@ -1047,7 +1048,7 @@ Namespace Repository
 				End If
 
 				sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}||{8}||{9}||{10}||{11}||{12}||{13}**" _
-													, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Heading, objItem.Size, objItem.Decimals _
+													, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.ID, HttpUtility.UrlDecode(objItem.Heading), objItem.Size, objItem.Decimals _
 													, If(objItem.IsNumeric, 1, 0), If(objItem.IsAverage, 1, 0), If(objItem.IsCount, 1, 0) _
 													, If(objItem.IsTotal, 1, 0), If(objItem.IsHidden, 1, 0), If(objItem.IsGroupWithNext, 1, 0) _
 													, sOrderString, iRepeated)
@@ -1123,7 +1124,7 @@ Namespace Repository
 					If objSessionInfo.Columns.LongCount(Function(m) m.TableID = objTable.ID AndAlso m.IsVisible = True) > 1 Then
 						objItems.Add(objItem)
 					End If
-				ElseIf reportType = UtilityType.utlNineBoxGrid Then ' for 9-box grid, get only numeric columns
+				ElseIf reportType = UtilityType.utlNineBoxGrid Then	' for 9-box grid, get only numeric columns
 					If objSessionInfo.Columns.LongCount(Function(m) m.TableID = objTable.ID AndAlso m.IsNumeric = True AndAlso m.IsVisible = True) > 1 Then
 						objItems.Add(objItem)
 					End If
@@ -1431,7 +1432,7 @@ Namespace Repository
 					Dim objItem As New ReportColumnItem() With {
 						.ReportType = outputModel.ReportType,
 						.ReportID = outputModel.ID,
-						.Heading = objRow("Heading").ToString,
+						.Heading = HttpUtility.HtmlEncode(objRow("Heading").ToString),
 						.IsExpression = CBool(objRow("IsExpression")),
 						.ID = CInt(objRow("id")),
 						.Name = objRow("Name").ToString,

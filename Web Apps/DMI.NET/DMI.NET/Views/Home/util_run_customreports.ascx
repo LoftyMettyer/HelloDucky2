@@ -340,7 +340,7 @@ End If
 			colNames: [
 				<%Dim iColCount As Integer = 0
 		For Each objItem In objReport.DisplayColumns
-			Dim sColumnName = objReport.ReportDataTable.Columns(iColCount).ColumnName
+		Dim sColumnName = HttpUtility.HtmlEncode(objReport.ReportDataTable.Columns(iColCount).ColumnName)
 			Response.Write(String.Format("{0}'{1}'", IIf(iColCount > 0, ", ", ""), sColumnName))
 			iColCount += 1
 		Next%>
@@ -350,7 +350,9 @@ End If
 	iColCount = 0
 	
 	For Each objItem In objReport.DisplayColumns
-		Dim sColumnName = objReport.ReportDataTable.Columns(iColCount).ColumnName.Replace(" ", "_").Replace("""", "_")
+		Dim sColumnName = HttpUtility.HtmlEncode(objReport.ReportDataTable.Columns(iColCount).ColumnName.Replace(" ", "_").Replace("""", "_"))
+	
+		
 		Dim iColumnWidth As Integer = 100
 		
 		If objItem.IsNumeric Then
