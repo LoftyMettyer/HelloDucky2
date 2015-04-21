@@ -514,8 +514,11 @@ Private Sub cmdApply_Click()
   Dim objLicence As clsLicence
   Dim lngCount As Long
   Dim lngModules As Long
-
+  Dim bForceSystemSave As Boolean
+  Dim bWorkflowEnabled As Boolean
   Dim blnCorrectKey As Boolean
+    
+  bWorkflowEnabled = IsModuleEnabled(modWorkflow)
     
   With frmLicenceKey
     
@@ -537,11 +540,8 @@ Private Sub cmdApply_Click()
         
         LoadShowWhichColumns
         CreateSP_CalculateHeadcount
-        
-        If Application.WorkflowModule Then
-          ConfigureWorkflowSpecifics
-        End If
-        
+               
+        bForceSystemSave = (bWorkflowEnabled <> IsModuleEnabled(modWorkflow))
         blnCorrectKey = True
         frmSysMgr.RefreshMenu
         
@@ -556,6 +556,10 @@ Private Sub cmdApply_Click()
     Loop
   
   End With
+
+  If bForceSystemSave Then
+    Application.Changed = True
+  End If
 
   UnLoad frmLicenceKey
   Set frmLicenceKey = Nothing
