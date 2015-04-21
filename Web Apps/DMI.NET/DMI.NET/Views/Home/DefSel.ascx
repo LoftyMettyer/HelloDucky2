@@ -258,9 +258,14 @@
 
 		disableNonDefselTabs();
 		
-		var fFromMenu = (parseInt($("#txtSingleRecordID").val()) <= 0);
+		var fFromMenu = (parseInt($("#txtSingleRecordID").val()) <= 0);		
 		var fHasRows = (rowCount() > 0);
 		var isWorkflow = (defSelType === "utlWorkflow");
+
+		try {
+			if (!fFromMenu) resetSession();	//reset session timeout for record edit. Well, try to.
+		}
+		catch(e) {}
 
 		$("#toolbarUtilitiesFind").parent().hide();
 		$("#toolbarToolsFind").parent().hide();

@@ -1043,6 +1043,13 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		Function RefreshSession() As Boolean
+			' This function simply resets the session timeout
+			Return True
+		End Function
+
+
+		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function DefSel(value As DefSelModel) As ActionResult
 
@@ -2428,7 +2435,7 @@ Namespace Controllers
 				Session("stdReport_OutputEmailAttachAs") = value.txtSend_OutputEmailAttachAs
 				Session("stdReport_OutputFilename") = value.txtSend_OutputFilename
 
-				Session("utiltype") = CInt(value.utiltype)
+				Session("utiltype") = CInt(value.UtilType)
 				Session("utilid") = value.ID
 				Session("utilname") = value.Name
 				Session("action") = "run"

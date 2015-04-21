@@ -39,8 +39,12 @@
 		// Do nothing if the menu controls are not yet instantiated.
 		if (frmMenuInfo != null) {
 			var sCurrentWorkPage = OpenHR.currentWorkPage();
-
+			
 			if (sCurrentWorkPage == "RECORDEDIT") {
+				try {
+					resetSession(); //try to reset session timeout counter in record edit
+				}
+				catch(e) {}
 				// Refresh the recEdit controls with the data if required.
 				var recEditControl = recEditForm.ctlRecordEdit;
 				sErrorMsg = frmData.txtErrorMessage.value;

@@ -28,7 +28,7 @@
 
 		switch (event.keyCode) {
 			case 113:    // F2 insert todays date
-			    $(this).datepicker("setDate", new Date())
+				$(this).datepicker("setDate", new Date())
 				$(this).datepicker('widget').hide('true');
 				break;
 			case 37:    // LEFT --> -1 day
@@ -756,7 +756,7 @@
 				'		sReferringPage = mid(sReferringPage, 6)
 				'	end if
 				'end if
-				'Response.Write "<INPUT type='hidden' id=txtImagePath name=txtImagePath value=""" & sReferringPage & """>" & vbcrlf
+				'Response.Write "<INPUT type='hidden' id=txtImagePath name=txtImagePath value=""" & sReferringPage & """>" & vbcrlf				
 			%>
 
 			<input type='hidden' id="txtPicturePath" name="txtPicturePath">
@@ -765,6 +765,12 @@
 			<input type='hidden' id="txtOLELocalPath" name="txtOLELocalPath">
 		</div>
 	</form>
+	
+	<div class="ui-state-error ui-corner-bottom" id="sessionWarning">		
+		<p style="font-size: small;">Your session will time-out in </p>
+		<p id="timerText"></p>
+		<p style="font-size: small;">click <a onclick="resetSession();" href="#">here</a> to renew it</p>
+	</div>
 
 </div>
 
@@ -773,6 +779,40 @@
 	recordEdit_window_onload();
 	//must run after onload (which populates the screen)
 	addActiveXHandlers();
+
+	//Set up the session timeout counter. 
+	var mins = <%:Session.Timeout%>;  //Set the number of minutes you need
+	var secs = mins * 60;
+	var currentSeconds = 0;
+	var currentMinutes = 0;
+	var sessionTimer = setTimeout('Decrement()', 1000);
+
+	function Decrement(newVal) {
+		if (Number(newVal) > 0) {
+			secs = newVal * 60;
+			$("#sessionWarning").hide();
+			return false;
+		}
+
+		currentMinutes = Math.floor(secs / 60);
+		currentSeconds = secs % 60;
+		if (currentSeconds <= 9) currentSeconds = "0" + currentSeconds;
+		secs--;
+		try {
+			if (secs < 300) $("#sessionWarning").show();		//show countdown for the last 5 minutes.
+			document.getElementById("timerText").innerHTML = currentMinutes + ":" + currentSeconds; //Set the element id you need the time put into.
+			if (secs !== -1) setTimeout('Decrement()', 1000);
+		} catch (e) {
+			//do nothing if this fails - we've probably navigated away and the elements no longer exist. That's the trouble with using 1 second delays.
+		}
+
+	}
+
+	function resetSession() {
+		var mins = <%:Session.Timeout%>; 
+		$.post('RefreshSession', function () {});
+		Decrement(mins);
+	}
 
 	$(document).ready(function () {
 
