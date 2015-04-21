@@ -14,6 +14,8 @@ Namespace Models
 		Implements IDataAccess
 		Implements IReport
 
+		Private _name As String = ""
+
 		Public Property IsReadOnly As Boolean
 		Public MustOverride ReadOnly Property ReportType As UtilityType Implements IReport.ReportType
 
@@ -33,6 +35,13 @@ Namespace Models
 		<DisplayName("Name :")>
 		<AllowHtml>
 		Public Property Name As String
+			Get
+				Return _name.Trim()
+			End Get
+			Set(value As String)
+				_name = value
+			End Set
+		End Property
 
 		<MaxLength(255, ErrorMessage:="Description cannot be longer than 255 characters.")>
 		<DisplayName("Description :")>
