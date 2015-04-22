@@ -233,10 +233,22 @@ Public Module ASRIntranetFunctions
 		End If
 
 		' Add the resources (i.e. people)
+		Dim sLastDescription As String = "_undefined"
 		For Each objRow As DataRow In objCalendar.BaseRecordset.Rows
 			sDescription = objCalendar.ConvertDescription(objRow(0).ToString(), objRow(1).ToString(), objRow(2).ToString())
-			objCalendarControl.Resources.Add(sDescription, objRow(4).ToString())
+
+			If objCalendar.GroupByDescription Then
+				If sLastDescription <> sDescription Then
+					objCalendarControl.Resources.Add(sDescription, sDescription)
+				End If
+
+				sLastDescription = sDescription
+			Else
+				objCalendarControl.Resources.Add(sDescription, objRow(4).ToString())
+			End If
+
 		Next
+
 
 		If Not objCalendar.rsPersonnelBHols Is Nothing Then
 			For Each objRow In objCalendar.rsPersonnelBHols.Rows
@@ -268,6 +280,7 @@ Public Module ASRIntranetFunctions
 
 			Next
 		End If
+
 
 		For Each objRow As DataRow In objCalendar.Events.Rows
 
@@ -313,7 +326,12 @@ Public Module ASRIntranetFunctions
 				dr("color") = objLegend.HexColor
 			End If
 
-			dr("resource") = objRow("baseid")
+			If objCalendar.GroupByDescription Then
+				dr("resource") = objCalendar.ConvertDescription(objRow(2).ToString(), objRow(3).ToString(), objRow(4).ToString())
+			Else
+				dr("resource") = objRow("baseid")
+			End If
+
 			dt.Rows.Add(dr)
 
 		Next
