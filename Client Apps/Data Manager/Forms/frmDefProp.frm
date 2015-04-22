@@ -499,7 +499,8 @@ Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boo
         " ASRSysCrossTab.UserName," & _
         " '" & ACCESS_READWRITE & "' AS access" & _
         " FROM ASRSysCrossTab" & _
-        " WHERE ASRSysCrossTab.pickListID = " & strID)
+        " WHERE ASRSysCrossTab.pickListID = " & strID & _
+        "   AND ASRSysCrossTab.CrossTabType <> 4")
     Else
       Call GetNameWhereUsed( _
         "SELECT DISTINCT 'Cross Tab'," & _
@@ -510,8 +511,34 @@ Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boo
         " INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID" & _
         " INNER JOIN sysusers b ON ASRSysCrossTabAccess.groupname = b.name" & _
         "   AND b.name = '" & gsUserGroup & "'" & _
-        " WHERE ASRSysCrossTab.pickListID = " & strID)
+        " WHERE ASRSysCrossTab.pickListID = " & strID & _
+        "   AND ASRSysCrossTab.CrossTabType <> 4")
     End If
+
+    '9 Box Grid
+    If gfCurrentUserIsSysSecMgr Then
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT '9-Box Grid Report'," & _
+        " ASRSysCrossTab.Name," & _
+        " ASRSysCrossTab.UserName," & _
+        " '" & ACCESS_READWRITE & "' AS access" & _
+        " FROM ASRSysCrossTab" & _
+        " WHERE ASRSysCrossTab.pickListID = " & strID & _
+        "   AND ASRSysCrossTab.CrossTabType = 4")
+    Else
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT '9-Box Grid Report'," & _
+        " ASRSysCrossTab.Name," & _
+        " ASRSysCrossTab.UserName," & _
+        " ASRSysCrossTabAccess.Access" & _
+        " FROM ASRSysCrossTab" & _
+        " INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID" & _
+        " INNER JOIN sysusers b ON ASRSysCrossTabAccess.groupname = b.name" & _
+        "   AND b.name = '" & gsUserGroup & "'" & _
+        " WHERE ASRSysCrossTab.pickListID = " & strID & _
+        "   AND ASRSysCrossTab.CrossTabType = 4")
+    End If
+    
 
     'Data Transfer
     If gfCurrentUserIsSysSecMgr Then
@@ -732,7 +759,8 @@ Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boo
         " ASRSysCrossTab.UserName," & _
         " '" & ACCESS_READWRITE & "' AS access" & _
         " FROM ASRSysCrossTab" & _
-        " WHERE ASRSysCrossTab.FilterID = " & strID)
+        " WHERE ASRSysCrossTab.FilterID = " & strID & _
+        "   AND ASRSysCrossTab.CrossTabType <> 4")
     Else
       Call GetNameWhereUsed( _
         "SELECT DISTINCT 'Cross Tab'," & _
@@ -743,7 +771,32 @@ Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boo
         " INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID" & _
         " INNER JOIN sysusers b ON ASRSysCrossTabAccess.groupname = b.name" & _
         "   AND b.name = '" & gsUserGroup & "'" & _
-        " WHERE ASRSysCrossTab.FilterID = " & strID)
+        " WHERE ASRSysCrossTab.FilterID = " & strID & _
+        "   AND ASRSysCrossTab.CrossTabType <> 4")
+    End If
+
+    '9 Box Grid
+    If gfCurrentUserIsSysSecMgr Then
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT '9-Box Grid Report'," & _
+        " ASRSysCrossTab.Name," & _
+        " ASRSysCrossTab.UserName," & _
+        " '" & ACCESS_READWRITE & "' AS access" & _
+        " FROM ASRSysCrossTab" & _
+        " WHERE ASRSysCrossTab.FilterID = " & strID & _
+        "   AND ASRSysCrossTab.CrossTabType = 4")
+    Else
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT '9-Box Grid Report'," & _
+        " ASRSysCrossTab.Name," & _
+        " ASRSysCrossTab.UserName," & _
+        " ASRSysCrossTabAccess.Access" & _
+        " FROM ASRSysCrossTab" & _
+        " INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID" & _
+        " INNER JOIN sysusers b ON ASRSysCrossTabAccess.groupname = b.name" & _
+        "   AND b.name = '" & gsUserGroup & "'" & _
+        " WHERE ASRSysCrossTab.FilterID = " & strID & _
+        "   AND ASRSysCrossTab.CrossTabType = 4")
     End If
     
     'Custom Report Filter
@@ -1328,7 +1381,8 @@ Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boo
         " ASRSysCrossTab.UserName," & _
         " '" & ACCESS_READWRITE & "' AS access" & _
         " FROM ASRSysCrossTab" & _
-        " WHERE ASRSysCrossTab.OutputEmailAddr = " & strID)
+        " WHERE ASRSysCrossTab.OutputEmailAddr = " & strID & _
+        "   AND ASRSysCrossTab.CrossTabType <> 4")
     Else
       Call GetNameWhereUsed( _
         "SELECT DISTINCT 'Cross Tab'," & _
@@ -1339,7 +1393,32 @@ Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boo
         " INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID" & _
         " INNER JOIN sysusers b ON ASRSysCrossTabAccess.groupname = b.name" & _
         "   AND b.name = '" & gsUserGroup & "'" & _
-        " WHERE ASRSysCrossTab.OutputEmailAddr = " & strID)
+        " WHERE ASRSysCrossTab.OutputEmailAddr = " & strID & _
+        "   AND ASRSysCrossTab.CrossTabType <> 4")
+    End If
+
+    '9 Box Grid
+    If gfCurrentUserIsSysSecMgr Then
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT '9-Box Grid Report'," & _
+        " ASRSysCrossTab.Name," & _
+        " ASRSysCrossTab.UserName," & _
+        " '" & ACCESS_READWRITE & "' AS access" & _
+        " FROM ASRSysCrossTab" & _
+        " WHERE ASRSysCrossTab.OutputEmailAddr = " & strID & _
+        "   AND ASRSysCrossTab.CrossTabType = 4")
+    Else
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT '9-Box Grid Report'," & _
+        " ASRSysCrossTab.Name," & _
+        " ASRSysCrossTab.UserName," & _
+        " ASRSysCrossTabAccess.Access" & _
+        " FROM ASRSysCrossTab" & _
+        " INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID" & _
+        " INNER JOIN sysusers b ON ASRSysCrossTabAccess.groupname = b.name" & _
+        "   AND b.name = '" & gsUserGroup & "'" & _
+        " WHERE ASRSysCrossTab.OutputEmailAddr = " & strID & _
+        "   AND ASRSysCrossTab.CrossTabType = 4")
     End If
 
     'Export
@@ -1647,11 +1726,11 @@ Private Sub GetNameWhereUsed(strSQL As String, Optional blnBatchJob As Boolean) 
   
   Do While Not rsTemp.EOF
     
-    blnHidden = (LCase(Trim(rsTemp!UserName)) <> LCase(Trim(datGeneral.UserNameForSQL)) _
-                And rsTemp!Access = ACCESS_HIDDEN)
+		blnHidden = (LCase(Trim(rsTemp!UserName)) <> LCase(Trim(datGeneral.UserNameForSQL)) _
+								And rsTemp!Access = ACCESS_HIDDEN)
     
     If blnHidden Then
-      strName = rsTemp(0) & ": <Hidden by " & StrConv(Trim(rsTemp!UserName), vbProperCase) & ">"
+			strName = rsTemp(0) & ": <Hidden by " & StrConv(Trim(rsTemp!UserName), vbProperCase) & ">"
     Else
       If blnBatchJob Then
         strName = Right("  " & CStr(rsTemp.Fields("JobOrder").Value + 1), 3) & _
@@ -1718,7 +1797,7 @@ Private Sub CheckUserSettings(strSection As String, strValue As String, strName 
   
   With rsAllUserSetting
     Do While Not .EOF
-      List1.AddItem strName & " for user '" & !UserName & "'"
+      List1.AddItem strName & " for user '" & !userName & "'"
       .MoveNext
     Loop
     .Close
