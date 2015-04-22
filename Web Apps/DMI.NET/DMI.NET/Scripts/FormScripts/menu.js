@@ -1474,25 +1474,29 @@ function menu_refreshMenu() {
 					frmData.txtRecordPosition.value +
 					" of " +
 					frmData.txtRecordCount.value;
+			menu_SetmnutoolRecordPositionCaption(sCaption);
 
 			if (frmRecEdit.txtRecEditFilterDef.value.length > 0) {
 				sCaption = sCaption + " (filtered)";
 			}
+
+			if (frmData.txtRecordDescription.value.length > 0) {
+				sCaption = frmData.txtRecordDescription.value;
+				if ($('#RecordEdit_PageTitle')) {
+					var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
+					$('#RecordEdit_PageTitle').html(frmRecordEditForm.txtOriginalPageTitle.value + ' - ' + sCaption);
+				}
+			}
 		}
 		else {
 			sCaption = "New Record";
+			menu_SetmnutoolRecordPositionCaption(sCaption);
+			if ($('#RecordEdit_PageTitle')) {
+				frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
+				$('#RecordEdit_PageTitle').html(frmRecordEditForm.txtOriginalPageTitle.value + ' - ' + sCaption);
+			}
 			menu_toolbarEnableItem('mnutoolChangeOrderRecord', true);
 		}
-
-		if (frmData.txtRecordDescription.value.length > 0) {
-			sCaption = sCaption + " : " + frmData.txtRecordDescription.value;
-			if ($('#RecordEdit_PageTitle')) {
-				var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm"); 
-				$('#RecordEdit_PageTitle').html(frmRecordEditForm.txtOriginalPageTitle.value + ' - ' + frmData.txtRecordDescription.value);
-			}
-		}
-
-		menu_SetmnutoolRecordPositionCaption(sCaption);
 		
 		menu_setVisibleMenuItem("mnutoolHistory", true);
 
