@@ -2960,7 +2960,7 @@ Public Class Report
 					End If
 				End If
 			Else
-				vData = "######"
+				If vData = "" Then vData = 0 Else vData = "######"
 			End If
 
 		End If
