@@ -3991,31 +3991,37 @@ function menu_loadSelectOrderFilter(psType) {
 	}	
 }
 
-	function menu_clearFilter() {
+function menu_clearFilter() {
 	var sCurrentWorkPage;
 	var frmRecEditArea;
 	var frmFindArea;
-	
+
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
 	if (sCurrentWorkPage == "RECORDEDIT") {
-	if (menu_saveChanges("CLEARFILTER", true, false) != 2) { // 2 = vbCancel
-	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+		if (menu_saveChanges("CLEARFILTER", true, false) != 2) { // 2 = vbCancel
+			frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 
-	frmRecEditArea.txtRecEditFilterDef.value = "";
-	frmRecEditArea.txtRecEditFilterSQL.value = "";
-	refreshData(); //workframe
-}
-}
+			frmRecEditArea.txtRecEditFilterDef.value = "";
+			frmRecEditArea.txtRecEditFilterSQL.value = "";
+			refreshData(); //workframe
+		}
+	}
 	else {
-	if (sCurrentWorkPage == "FIND") {
-	frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
-
-	frmFindArea.txtFilterDef.value = "";
-	frmFindArea.txtFilterSQL.value = "";
-	menu_reloadFindPage("RELOAD", "");
-}
-}
+		if (sCurrentWorkPage == "FIND") {
+			var postData = {
+				Action: optionActionType.SELECTFILTER,
+				ScreenID: $("#frmWorkAreaRefresh #txtGotoScreenID").val(),
+				TableID: $("#frmWorkAreaRefresh #txtGotoTableID").val(),
+				ViewID: $("#frmWorkAreaRefresh #txtGotoViewID").val(),
+				FilterSQL: "",
+				FilterDef: "",
+				__RequestVerificationToken: $("[name=__RequestVerificationToken]")[0].value
+			}
+			OpenHR.submitForm(null, "optionframe", null, postData, "filterselect_Submit");
+			menu_reloadFindPage("RELOAD", "");
+		}
+	}
 }
 
 	function menu_currentWorkPage() {

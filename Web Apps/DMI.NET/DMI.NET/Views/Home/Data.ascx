@@ -597,13 +597,14 @@
 		If Session("action") = "NEW" Then
 
 			Dim prmRecordCount As New SqlParameter("piRecordCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-		
+			Dim filterDefForCurrentTable As String = IIf(IsNothing(Session("filterDef_" & Session("tableID"))), "", Session("filterDef_" & Session("tableID")))
+			
 			Try
 							
 				Dim rstRecord = objDataAccess.GetDataTable("sp_ASRIntCalcDefaults", CommandType.StoredProcedure _
 						, prmRecordCount _
 						, New SqlParameter("psFromDef", SqlDbType.VarChar, -1) With {.Value = Session("fromDef")} _
-						, New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")} _
+						, New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = filterDefForCurrentTable} _
 						, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))} _
 						, New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))} _
 						, New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))} _
@@ -673,12 +674,13 @@
 			Response.Write("<input type='hidden' id='txtOriginalRecordID' name='txtOriginalRecordID' value='0'>" & vbCrLf)
 			Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='0'>" & vbCrLf)
 		Else
-			
+
+			Dim filterDefForCurrentTable As String = IIf(IsNothing(Session("filterDef_" & Session("tableID"))), "", Session("filterDef_" & Session("tableID")))
 			
 			Dim prmRecordId = New SqlParameter("piRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("recordID"))}
 			Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 			Dim prmRecordPosition = New SqlParameter("piRecordPosition", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmFilterDef = New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")}
+			Dim prmFilterDef = New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = filterDefForCurrentTable}
 			Dim prmAction = New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = Session("action")}
 			Dim prmParentTableId = New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}
 			Dim prmParentRecordId = New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}

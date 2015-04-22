@@ -396,6 +396,15 @@ Namespace BaseClasses
 			Return Tables.GetById(TableID).Name
 		End Function
 
+		Public Function GetTableByID(TableID As Integer) As Table
+			Return Tables.GetById(TableID)
+		End Function
+
+
+		Public Function GetRelationsByParentTableID(TableID As Integer) As List(Of Relation)
+			Return Relations.FindAll(Function(r) r.ParentID = TableID)
+		End Function
+
 		Public Function GetTableFromColumnID(ColumnID As Integer) As Table
 			Dim objColumn = Columns.GetById(ColumnID)
 			Return Tables.GetById(objColumn.TableID)

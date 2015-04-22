@@ -156,8 +156,6 @@ Namespace Controllers
 				Session("ErrorText") = Nothing
 				Session("action") = ""
 				Session("selectSQL") = ""
-				Session("filterSQL") = ""
-				Session("filterDef") = ""
 				Session("optionAction") = OptionActionType.Empty
 
 			Catch ex As Exception

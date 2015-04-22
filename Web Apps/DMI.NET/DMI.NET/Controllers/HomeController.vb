@@ -290,8 +290,6 @@ Namespace Controllers
 					Session("parentTableID") = Request.Form("txtGotoParentTableID")
 					Session("parentRecordID") = Request.Form("txtGotoParentRecordID")
 					Session("realSource") = Request.Form("txtGotoRealSource")
-					Session("filterDef") = Request.Form("txtGotoFilterDef")
-					Session("filterSQL") = Request.Form("txtGotoFilterSQL")
 					Session("lineage") = Request.Form("txtGotoLineage")
 					Session("utilID") = Request.Form("txtGotoUtilID")
 					Session("locateValue") = Request.Form("txtGotoLocateValue")
@@ -417,6 +415,8 @@ Namespace Controllers
 			Dim prmTotalRecCount As New SqlParameter("@piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 			Dim prmFirstRecPos As New SqlParameter("@piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("firstRecPos"))}
 
+			Dim filterDefForCurrentTable As String = IIf(IsNothing(Session("filterDef_" & Session("tableID"))), "", Session("filterDef_" & Session("tableID")))
+
 			SPParameters = New SqlParameter() { _
 					prmError, _
 					prmSomeSelectable, _
@@ -429,7 +429,7 @@ Namespace Controllers
 					New SqlParameter("@piOrderID ", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))}, _
 					New SqlParameter("@piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}, _
 					New SqlParameter("@piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}, _
-					New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = If(Session("filterDefPrevious") Is Nothing, "", Session("filterDefPrevious")).ToString}, _
+					New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = filterDefForCurrentTable}, _
 					New SqlParameter("@piRecordsRequired", SqlDbType.Int) With {.Value = 10000000}, _
 					prmIsFirstPage, _
 					prmIsLastPage, _
@@ -797,7 +797,7 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function WorkAreaRefresh()
-
+			Dim previousTableID As String = Session("tableID")
 			If ValidateLineageValue(Request.Form("txtGotoLineage")) = "-1" Then
 				' We're flipping between histories, reuse session variables where possible.
 				Session("tableID") = Request.Form("txtGotoTableID")
@@ -820,8 +820,7 @@ Namespace Controllers
 				Session("parentTableID") = ValidateIntegerValue(Request.Form("txtGotoParentTableID"))
 				Session("parentRecordID") = ValidateIntegerValue(Request.Form("txtGotoParentRecordID"))
 				Session("realSource") = Request.Form("txtGotoRealSource")
-				Session("filterDef") = Request.Form("txtGotoFilterDef")
-				Session("filterSQL") = Request.Form("txtGotoFilterSQL")
+
 				Session("lineage") = ValidateLineageValue(Request.Form("txtGotoLineage"))
 				Session("utilID") = ValidateIntegerValue(Request.Form("txtGotoUtilID"))
 				Session("locateValue") = ValidateIntegerValue(Request.Form("txtGotoLocateValue"))
@@ -831,6 +830,18 @@ Namespace Controllers
 
 			Session("optionRecordID") = 0
 			Session("optionAction") = OptionActionType.Empty
+
+			Dim currentTableID As String = Session("tableID")
+
+			If Not String.IsNullOrEmpty(previousTableID) AndAlso Not String.IsNullOrEmpty(currentTableID) Then 'If we have a tableID in session
+				Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+				Dim currentTable As Metadata.Table = objDatabase.GetTableByID(Integer.Parse(Session("tableID")))
+				If currentTable.TableType = TableTypes.tabTopLevel And Request.Form("txtGotoPage") <> "recordEdit" Then
+					For Each relation As Metadata.Relation In objDatabase.GetRelationsByParentTableID(Integer.Parse(Session("tableID")))
+						Session("filterDef_" & relation.ChildID) = ""	'Clear the child table filter
+					Next
+				End If
+			End If
 
 			' Go to the requested page.
 			Return RedirectToAction(Request.Form("txtGotoPage"))
@@ -1376,16 +1387,11 @@ Namespace Controllers
 				' randomly called for no obvious reason! (but it happens... a lot...)
 
 
-
-
-
 			End If
 
 			Session("selectSQL") = dataViewModel.txtSelectSQL
 			Session("fromDef") = dataViewModel.txtFromDef
-			Session("filterSQL") = dataViewModel.txtFilterSQL
-			Session("filterDefPrevious") = Session("filterDef")
-			Session("filterDef") = dataViewModel.txtFilterDef
+
 			Session("realSource") = sRealSource
 			Session("tableID") = lngTableID
 			Session("screenID") = lngScreenID
@@ -4028,16 +4034,16 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function filterselect_Submit(postData As FilterSelectModel) As RedirectToRouteResult
-
 			Session("optionScreenID") = postData.ScreenID
 			Session("optionTableID") = postData.TableID
 			Session("optionViewID") = postData.ViewID
 			Session("optionFilterDef") = postData.FilterDef
 			Session("optionFilterSQL") = postData.FilterSQL
 			Session("optionAction") = postData.Action
+			Session("filterDef_" & postData.TableID) = postData.FilterDef
+			Session("filterSQL_" & postData.TableID) = postData.FilterSQL
 
 			Return RedirectToAction("emptyoption")
-
 		End Function
 
 		<HttpPost()>
@@ -5320,10 +5326,12 @@ Namespace Controllers
 			Try
 				Dim sFromDef = Session("RealSource") & Chr(9)	' NPG: Really not sure if this is right. It's supposed to replicate the session('FromDef') in recedit.
 
+				Dim filterDefForCurrentTable As String = IIf(IsNothing(Session("filterDef_" & Session("tableID"))), "", Session("filterDef_" & Session("tableID")))
+
 				Dim rstRecord = objDataAccess.GetDataTable("sp_ASRIntCalcDefaults", CommandType.StoredProcedure _
 						, prmRecordCount _
 						, New SqlParameter("psFromDef", SqlDbType.VarChar, -1) With {.Value = sFromDef} _
-						, New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")} _
+						, New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = filterDefForCurrentTable} _
 						, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))} _
 						, New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))} _
 						, New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))} _
