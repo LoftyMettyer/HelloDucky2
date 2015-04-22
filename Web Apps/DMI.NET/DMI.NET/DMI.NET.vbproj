@@ -209,6 +209,7 @@
     <Compile Include="Classes\jqGridHelper.vb" />
     <Compile Include="Classes\Licence.vb" />
     <Compile Include="Classes\PromptedValue.vb" />
+    <Compile Include="Code\Attributes\PermissionAuthorizeAttribute.vb" />
     <Compile Include="Helpers\AntiForgeryTokenHelper.vb" />
     <Compile Include="Models\EmailSelectionModel.vb" />
     <Compile Include="Models\EventDetailModel.vb" />
@@ -1725,12 +1726,12 @@
     <Content Include="Views\Home\linkFind.ascx" />
     <Content Include="Views\Home\Data.ascx" />
     <Content Include="Views\Home\DefSel.ascx" />
-    <Content Include="Views\Home\emailSelection.aspx" />
+    <Content Include="Views\Home\EventLogEmail.aspx" />
     <Content Include="Views\Home\emptyoption.ascx" />
     <Content Include="Views\Home\EventLog.ascx" />
     <Content Include="Views\Home\EventLogDetails.aspx" />
     <Content Include="Views\Home\EventLogPurge.aspx" />
-    <Content Include="Views\Home\EventLogSelection.aspx" />
+    <Content Include="Views\Home\EventLogDelete.aspx" />
     <Content Include="Views\Home\filterselect.ascx" />
     <Content Include="Views\Home\Find.ascx" />
     <Content Include="Views\Home\fixedlinks.ascx" />

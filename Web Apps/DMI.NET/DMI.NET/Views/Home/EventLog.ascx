@@ -334,18 +334,18 @@
 	}
 
 	function EventLog_deleteEvent() {
-		var sURL = "eventLogSelection";
-		
-		$('#EventLogDelete').data('sURLData', sURL);
+
 		$('#EventLogDelete').dialog("open");
+		OpenHR.submitForm(null, "EventLogDelete", null, {}, "EventLogDelete");
 
 		EventLog_refreshButtons();
 	}
 
 	function EventLog_purgeEvent() {
-		var sURL = "EventLogPurge";
-		$('#EventLogPurge').data('sURLData', sURL);
+
 		$('#EventLogPurge').dialog("open");
+		OpenHR.submitForm(null, "EventLogPurge", null, {}, "EventLogPurge");
+
 	}
 
 	function EventLog_emailEvent() {
@@ -370,7 +370,7 @@
 		};
 
 		$('#EventLogEmailSelect').dialog("open");
-		OpenHR.submitForm(null, "EventLogEmailSelect", null, postData, "EmailSelection");
+		OpenHR.submitForm(null, "EventLogEmailSelect", null, postData, "EventLogEmail");
 	}
 	
 	function EventLog_refreshButtons() {

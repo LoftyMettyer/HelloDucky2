@@ -4,19 +4,11 @@
 
 @Styles.Render("~/bundles/stylesheets")
 
-<div class="verticalpadding200"></div>
-
-<div class="ui-widget-content ui-corner-tl ui-corner-br loginframe">
-	<img class="loginframeImage" alt="loginimage" src="@Url.Content("~/Content/images/systemerror.jpg")">
-	<div class="aligncenter">
-		<h3></h3>
-	</div>
+<div class="errorDialogTitleContent">
+	<h1 id="errorDialogTitle">Unauthorised</h1>
 </div>
 
-<br />
+You do not have permissions to view this directory or page.
 
-<p class="aligncenter">
-	Permissions Error.
-</p>
-
-
+<p></p>
+<p></p>

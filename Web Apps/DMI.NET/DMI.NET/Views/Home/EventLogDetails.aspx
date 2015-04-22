@@ -242,13 +242,6 @@
 				Response.Write("<input type='hidden' id='txtAction' name='txtAction' value=" & Session("action") & ">" & vbCrLf)
 			%>
 		</form>
-
-	<form action="emailSelection" id="frmEmail" method="post" name="frmEmail" style="visibility: hidden; display: none">
-			<input type="hidden" id="txtSelectedEventIDs" name="txtSelectedEventIDs">
-			<input type="hidden" id="txtBatchInfo" name="txtBatchInfo">
-			<input type="hidden" id="txtBatchy" name="txtBatchy" value="0">
-			<input type="hidden" id="txtFromMain" name="txtFromMain" value="0">
-		</form>
 	
 		<script type="text/javascript">
 			var frmDetails = OpenHR.getForm("workframe", "frmDetails");
@@ -335,7 +328,7 @@
 				};
 			
 				$('#EventLogEmailSelect').dialog("open");
-				OpenHR.submitForm(null, "EventLogEmailSelect", null, postData, "EmailSelection");
+				OpenHR.submitForm(null, "EventLogEmailSelect", null, postData, "EventLogEmail");
 
 			}			
 

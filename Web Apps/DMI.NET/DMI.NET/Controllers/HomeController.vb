@@ -28,6 +28,7 @@ Imports HR.Intranet.Server.ReportOutput
 Imports DMI.NET.Models.ObjectRequests
 Imports DMI.NET.Models.Responses
 Imports HR.Intranet.Server.Structures
+Imports DMI.NET.Code.Attributes
 
 Namespace Controllers
 	Public Class HomeController
@@ -2232,23 +2233,16 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		<PermissionAuthorizeAttribute(Category:="INTRANET", Item:="NEW USER")>
 		Function NewUser() As ActionResult
-
-			' Validate permission (should only be hit if user "hacked" the button properties)
-			Dim objSession = CType(Session("SessionContext"), SessionInfo)
-
-			If objSession.IsPermissionGranted("INTRANET", "NEW USER") Then
-				Return View()
-			Else
-				Return RedirectToAction("PermissionsError", "Error")
-			End If
-
+			Return View()
 		End Function
 
 #Region "Event Log Forms"
 
 		<ValidateAntiForgeryToken>
-		Function EmailSelection(value As EmailSelectionModel) As ActionResult
+		<PermissionAuthorizeAttribute(Category:="EVENTLOG", Item:="EMAIL")>
+		Function EventLogEmail(value As EmailSelectionModel) As ActionResult
 			Return View(value)
 		End Function
 
@@ -2261,11 +2255,13 @@ Namespace Controllers
 			Return View(value)
 		End Function
 
+		<PermissionAuthorizeAttribute(Category:="EVENTLOG", Item:="PURGE")>
 		Function EventLogPurge() As ActionResult
 			Return View()
 		End Function
 
-		Function EventLogSelection() As ActionResult
+		<PermissionAuthorizeAttribute(Category:="EVENTLOG", Item:="DELETE")>
+		Function EventLogDelete() As ActionResult
 			Return View()
 		End Function
 
@@ -2282,7 +2278,7 @@ Namespace Controllers
 			Try
 				Dim message As New MailMessage()
 				message.Subject = emailSubject
-				message.Body = emailBody.Replace("\n", vbCrLf)
+				message.Body = emailBody.ToString.Replace("\n", vbCrLf)
 
 				If Not emailTo = "" Then
 					If emailTo.Contains(";") = True Then
