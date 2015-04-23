@@ -169,7 +169,7 @@
 				}
 
 				if (sAction == "EVENTLOG") {
-					menu_loadPage("eventLog");
+					menu_LoadEventLog();
 				}
 
 				if (sAction == "QUICKFIND") {
@@ -848,58 +848,62 @@
 			Dim prmIsLastPage As New SqlParameter("pfLastPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 			Dim prmTotalRecCount As New SqlParameter("piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 			Dim prmFirstRecPos As New SqlParameter("piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("ELFirstRecPos"))}
-				
-			Dim rsEventLogRecords = objDataAccess.GetDataTable("spASRIntGetEventLogRecords", CommandType.StoredProcedure _
-				, prmError _
-				, New SqlParameter("psFilterUser", SqlDbType.VarChar, -1) With {.Value = Session("ELFilterUser")} _
-				, New SqlParameter("piFilterType", SqlDbType.Int) With {.Value = Session("ELFilterType")} _
-				, New SqlParameter("piFilterStatus", SqlDbType.Int) With {.Value = Session("ELFilterStatus")} _
-				, New SqlParameter("piFilterMode", SqlDbType.Int) With {.Value = Session("ELFilterMode")} _
-				, New SqlParameter("psOrderColumn", SqlDbType.VarChar, -1) With {.Value = Session("ELOrderColumn")} _
-				, New SqlParameter("psOrderOrder", SqlDbType.VarChar, -1) With {.Value = Session("ELOrderOrder")} _
-				, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 100000} _
-				, prmIsFirstPage _
-				, prmIsLastPage _
-				, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = Session("ELAction")} _
-				, prmTotalRecCount _
-				, prmFirstRecPos _
-				, New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("ELCurrentRecCount"))})
+			
+			If Not objSessionInfo.IsPermissionGranted("EVENTLOG", "VIEWALL") Then
+				Session("ELFilterUser") = Session("Username")
+			End If		
+			
+				Dim rsEventLogRecords = objDataAccess.GetDataTable("spASRIntGetEventLogRecords", CommandType.StoredProcedure _
+					, prmError _
+					, New SqlParameter("psFilterUser", SqlDbType.VarChar, -1) With {.Value = Session("ELFilterUser")} _
+					, New SqlParameter("piFilterType", SqlDbType.Int) With {.Value = Session("ELFilterType")} _
+					, New SqlParameter("piFilterStatus", SqlDbType.Int) With {.Value = Session("ELFilterStatus")} _
+					, New SqlParameter("piFilterMode", SqlDbType.Int) With {.Value = Session("ELFilterMode")} _
+					, New SqlParameter("psOrderColumn", SqlDbType.VarChar, -1) With {.Value = Session("ELOrderColumn")} _
+					, New SqlParameter("psOrderOrder", SqlDbType.VarChar, -1) With {.Value = Session("ELOrderOrder")} _
+					, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 100000} _
+					, prmIsFirstPage _
+					, prmIsLastPage _
+					, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = Session("ELAction")} _
+					, prmTotalRecCount _
+					, prmFirstRecPos _
+					, New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("ELCurrentRecCount"))})
 		
-			Dim lngRowCount = 0
-			If Len(sErrorDescription) = 0 Then
+				Dim lngRowCount = 0
+				If Len(sErrorDescription) = 0 Then
 			
-				Dim sAddString As String = vbNullString
+					Dim sAddString As String = vbNullString
 			
-				For Each objRow As DataRow In rsEventLogRecords.Rows
+					For Each objRow As DataRow In rsEventLogRecords.Rows
 
-					sAddString = vbNullString
-					sAddString = sAddString & objRow("ID").ToString() & vbTab
-					sAddString = sAddString & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & vbTab
+						sAddString = vbNullString
+						sAddString = sAddString & objRow("ID").ToString() & vbTab
+						sAddString = sAddString & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & vbTab
 					
-					If IsDBNull(objRow("EndTime")) Then
-						sAddString = sAddString & "" & vbTab
-					Else
-						sAddString = sAddString & ConvertSQLDateToLocale(objRow("EndTime")) & " " & ConvertSqlDateToTime(objRow("EndTime")) & vbTab
-					End If
+						If IsDBNull(objRow("EndTime")) Then
+							sAddString = sAddString & "" & vbTab
+						Else
+							sAddString = sAddString & ConvertSQLDateToLocale(objRow("EndTime")) & " " & ConvertSqlDateToTime(objRow("EndTime")) & vbTab
+						End If
 						
-					sAddString = sAddString & FormatEventDuration(CInt(objRow("Duration"))) & vbTab
+						sAddString = sAddString & FormatEventDuration(CInt(objRow("Duration"))) & vbTab
 					
-					sAddString = sAddString & Replace(objRow("EventInfo").ToString(), """", "&quot;")
+						sAddString = sAddString & Replace(objRow("EventInfo").ToString(), """", "&quot;")
 					
-					Response.Write("<input type='hidden' id='txtAddString_" & lngRowCount & "' name='txtAddString_" & lngRowCount & "' value='" & sAddString.Replace("'", "&#39") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' id='txtAddString_" & lngRowCount & "' name='txtAddString_" & lngRowCount & "' value='" & sAddString.Replace("'", "&#39") & "'>" & vbCrLf)
 
-					lngRowCount += 1
+						lngRowCount += 1
 
-				Next
-			End If
+					Next
+				End If
 						
-			Response.Write("<input type='hidden' id='txtELIsFirstPage' name='txtELIsFirstPage' value='" & prmIsFirstPage.Value & "'>" & vbCrLf)
-			Response.Write("<input type='hidden' id='txtELIsLastPage' name='txtELIsLastPage' value='" & prmIsLastPage.Value & "'>" & vbCrLf)
-			Response.Write("<input type='hidden' id='txtELRecordCount' name='txtELRecordCount' value='" & lngRowCount & "'>" & vbCrLf)
-			Response.Write("<input type='hidden' id='txtELTotalRecordCount' name='txtELTotalRecordCount' value='" & prmTotalRecCount.Value & "'>" & vbCrLf)
-			Response.Write("<input type='hidden' id='txtELFindRecords' name='txtELFindRecords' value='" & Session("findRecords") & "'>" & vbCrLf)
-			Response.Write("<input type='hidden' id='txtELFirstRecPos' name='txtELFirstRecPos' value='" & prmFirstRecPos.Value & "'>" & vbCrLf)
-			Response.Write("<input type='hidden' id='txtELCurrentRecCount' name='txtELCurrentRecCount' value='" & lngRowCount & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtELIsFirstPage' name='txtELIsFirstPage' value='" & prmIsFirstPage.Value & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtELIsLastPage' name='txtELIsLastPage' value='" & prmIsLastPage.Value & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtELRecordCount' name='txtELRecordCount' value='" & lngRowCount & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtELTotalRecordCount' name='txtELTotalRecordCount' value='" & prmTotalRecCount.Value & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtELFindRecords' name='txtELFindRecords' value='" & Session("findRecords") & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtELFirstRecPos' name='txtELFirstRecPos' value='" & prmFirstRecPos.Value & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtELCurrentRecCount' name='txtELCurrentRecCount' value='" & lngRowCount & "'>" & vbCrLf)
 
 		
 		Catch ex As Exception

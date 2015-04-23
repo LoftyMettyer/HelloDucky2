@@ -865,7 +865,7 @@ function menu_MenuClick(sTool) {
 	
 		if (sToolName == "mnutoolEventLog") {
 			menu_setVisibletoolbarGroupById("mnuSectionNavigateRecords", false); //Hide the navigate section of the ribbon
-			saveChangesPrompt("EVENTLOG", 'menu_loadPage("eventLog")');
+			saveChangesPrompt("EVENTLOG", 'menu_LoadEventLog()');
 			return false;
 		}
 
@@ -4108,6 +4108,15 @@ function menu_clearFilter() {
 //	frmOptionArea.submit();
 }
 
+function menu_LoadEventLog() {
+	showDefaultRibbon();
+
+	var postData = {
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+	};
+
+	OpenHR.submitForm(null, "workframe", false, postData, "EventLog");
+}
 
 	function menu_cancelCourse() {
 	var frmDataArea;
