@@ -125,29 +125,13 @@
 		$("#utilid").val($("#DefSelRecords").getGridParam("selrow"));
 		$("#utilname").val(gridData.Name);
 
-		if (gridData.Username !== username) {
-			if (!allowEdit()) {
-				menu_SetmnutoolButtonCaption("mnutoolEdit" + menuSection + "Find", "View");
-				menu_toolbarEnableItem("mnutoolDelete" + menuSection + "Find", false);
-			} else {
-				menu_SetmnutoolButtonCaption("mnutoolEdit" + menuSection + "Find", "Edit");
-
-				if (isDeletePermitted) {
-					menu_toolbarEnableItem("mnutoolDelete" + menuSection + "Find", true);
-				} else {
-					menu_toolbarEnableItem("mnutoolDelete" + menuSection + "Find", false);
-				}
-			}
-		} else {
+		if (isEditPermitted && (gridData.Username === username || allowEdit())) {
 			menu_SetmnutoolButtonCaption("mnutoolEdit" + menuSection + "Find", "Edit");
-
-			if (isDeletePermitted) {
-				menu_toolbarEnableItem("mnutoolDelete" + menuSection + "Find", true);
-			} else {
-				menu_toolbarEnableItem("mnutoolDelete" + menuSection + "Find", false);
-			}
+		} else {
+			menu_SetmnutoolButtonCaption("mnutoolEdit" + menuSection + "Find", "View");
 		}
-		refreshControls();
+
+		menu_toolbarEnableItem("mnutoolDelete" + menuSection + "Find", isDeletePermitted && allowEdit());
 
 	}
 
@@ -463,10 +447,11 @@
 	}
 
 	function setedit() {
+
 		if (!$("#mnutoolEditUtil").hasClass("disabled")) {
 			var frmDefSel = document.getElementById('frmDefSel');
 
-			if (allowEdit()) {
+			if (allowEdit() && isEditPermitted) {
 				frmDefSel.action.value = "edit";
 				OpenHR.submitForm(frmDefSel);
 			} else {
