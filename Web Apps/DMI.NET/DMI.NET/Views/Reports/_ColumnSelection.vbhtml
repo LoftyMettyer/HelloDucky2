@@ -553,12 +553,12 @@
 	}
 
 	function changeColumnIsHidden() {
-
+		
 		if ($("#SelectedColumnIsHidden").is(':checked')) {
 			$('#SelectedColumnIsAverage').prop('checked', false);
 			$('#SelectedColumnIsCount').prop('checked', false);
 			$('#SelectedColumnIsTotal').prop('checked', false);
-			$('#SelectedColumnIsGroupWithNext').prop('checked', false);
+			$('#SelectedColumnIsGroupWithNext').prop('checked', false);			
 			$('#SelectedColumnIsRepeated').prop('checked', false);
 		}
 
@@ -642,7 +642,7 @@
 		}
 	}
 
-	function changeColumnIsRepeated() {
+	function changeColumnIsRepeated() {	
 		if ($("#SelectedColumnIsRepeated").is(':checked')) {
 			$('#SelectedColumnIsHidden').prop('checked', false);
 		}
@@ -705,7 +705,7 @@
 			$('#SelectedColumnIsCount').prop('checked', false);
 			$('#SelectedColumnIsTotal').prop('checked', false);
 			$('#SelectedColumnIsHidden').prop('checked', false);
-			$('#SelectedColumnIsGroupWithNext').prop('checked', false);
+			$('#SelectedColumnIsGroupWithNext').prop('checked', false);			
 			$('#SelectedColumnIsRepeated').prop('checked', false);
 
 			$(".numericOnly").css("color", "#A59393");
@@ -718,15 +718,23 @@
 
 			if (!isReadOnly) {
 				$("#definitionColumnProperties :input").removeAttr("disabled");
+			}			
+			var isThereChildColumns = (childColumnsCount() > 0);
+
+			if (isThereChildColumns) {
+				var isRepeated = $("#SelectedColumnIsRepeated").is(':checked');
+			} else {
+				$('#SelectedColumnIsRepeated').prop('checked', false);
+				$("#SelectedColumnIsRepeated").prop("disabled", true);
+				var isRepeated = false;
+				
 			}
 
-			var isThereChildColumns = (childColumnsCount() > 0);
 			var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
 			var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");
 			var isBaseOrParentTableColumn = (dataRow.TableID == $("#BaseTableID").val()) || (dataRow.TableID == $("#txtParent1ID").val()) || (dataRow.TableID == $("#txtParent2ID").val());
 			var isHidden = $("#SelectedColumnIsHidden").is(':checked');
-			var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
-			var isRepeated = $("#SelectedColumnIsRepeated").is(':checked');
+			var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');						
 			var isSize = (dataRow.DataType == '4');
 
 
@@ -942,7 +950,7 @@
 				$('#SelectedColumnIsCount').prop('checked', JSON.parse(dataRow.IsCount));
 				$('#SelectedColumnIsTotal').prop('checked', JSON.parse(dataRow.IsTotal));
 				$('#SelectedColumnIsHidden').prop('checked', JSON.parse(dataRow.IsHidden));
-				$('#SelectedColumnIsGroupWithNext').prop('checked', JSON.parse(dataRow.IsGroupWithNext));
+				$('#SelectedColumnIsGroupWithNext').prop('checked', JSON.parse(dataRow.IsGroupWithNext));				
 				$('#SelectedColumnIsRepeated').prop('checked', JSON.parse(dataRow.IsRepeated));
 
 				refreshcolumnPropertiesPanel(); 

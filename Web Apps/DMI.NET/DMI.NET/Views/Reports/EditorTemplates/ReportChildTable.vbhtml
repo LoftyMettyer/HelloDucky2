@@ -221,24 +221,47 @@ End Code
 		rowID = $('#ChildTables').jqGrid('getGridParam', 'selrow');
 		var gridData = $("#ChildTables").getRowData(rowID);
 		var columnList = $("#SelectedColumns").getDataIDs();
+		var sortColumnList = $("#SortOrders").getDataIDs();
 
 		$('#ChildTables').jqGrid('delRowData', rowID);
 		loadAvailableTablesForReport(false);
 
+		// Reset row selection for SelectedColumns and SortOrder grid
+		$("#SelectedColumns").jqGrid('resetSelection');
+		$("#SortOrders").jqGrid('resetSelection');
+
 		for (i = 0; i < columnList.length; i++) {
 			rowData = $("#SelectedColumns").getRowData(columnList[i]);
 			if (rowData.TableID == gridData.TableID) {
+
+				// Remove the matched sort columns from sort order
+				for (j = 0; j < sortColumnList.length; j++) {
+					var sortColumnRowId = sortColumnList[j];
+					var dataRowOfSortColumn = $("#SortOrders").getRowData(sortColumnRowId);
+					if (dataRowOfSortColumn.ColumnID == rowData.ID) {
+						$("#SortOrders").delRowData(sortColumnRowId);
+						break;
+					}
+				}
+
 				$('#SelectedColumns').jqGrid('delRowData', rowData.ID);
 			}
 		}
 
 		addChildTableCompleted();
 
+		// Highlight top row of childTable grid, selectedColumns grid and sortedOrders grid
+		selectGridTopRow($('#ChildTables'));
+		selectGridTopRow($('#SelectedColumns'));
+		selectGridTopRow($('#SortOrders'));
+
+		checkIfDefinitionNeedsToBeHidden(0);
+		enableSaveButton();
 	}
 
 	function postThisChildTable() {
 
-	    // Validation
+		  // Validation
 	    if (isNaN($("#txtChildRecords").val()) == true) {
 	        OpenHR.modalMessage("The value '" + $("#txtChildRecords").val() + "' is not valid for Records.");
 	        return false;
@@ -257,7 +280,7 @@ End Code
 		}
 
 		if ('@Model.TableID' != $("#ChildTableID").val() && '@Model.IsAdd' == 'False') {
-			if (iColumnCount > 0) {
+			if (iColumnCount > 0) {				
 				OpenHR.modalPrompt("One or more columns from '" + "@Model.TableName" + "' table have been included in the report definition." +
 						"<br/><br/>Changing the child table will remove these columns from the report definition." +
 						"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
