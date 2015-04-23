@@ -271,7 +271,7 @@ function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 }
 
 function goDropLink(sLinkInfo) {
-	
+
 	if (sLinkInfo == undefined) {
 		sLinkInfo = $('.DropdownlistSelect').val();				
 	}
@@ -298,8 +298,8 @@ function goDropLink(sLinkInfo) {
 			// Utility link
 			arrLinkInfo = sLinkInfo.split('_');
 
-			var sUtilityType = arrLinkInfo[0];
-			var sUtilityID = arrLinkInfo[1];
+			var sUtilityType = parseInt(arrLinkInfo[0]);
+			var sUtilityID = parseInt(arrLinkInfo[1]);
 			var sUtilityName = arrLinkInfo[2];
 
 			goUtility(sUtilityType, sUtilityID, sUtilityName);
