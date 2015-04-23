@@ -1624,6 +1624,11 @@ function afterSaveFindGridRow(rowid) {
 	rowWasModified = false;
 	$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
 
+	$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
+	$("#pager-coldata_center").show();
+	//Enable navigation buttons on the jqgrid toolbar
+	$('#pager-coldata_center input').prop('disabled', false); //Remove read only attribute from Page textbox
+	
 	return true;
 }
 
