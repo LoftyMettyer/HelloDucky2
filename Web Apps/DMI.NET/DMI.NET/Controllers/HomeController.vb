@@ -2246,6 +2246,8 @@ Namespace Controllers
 			Return View(value)
 		End Function
 
+		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function EventLog() As ActionResult
 			Return View()
 		End Function
