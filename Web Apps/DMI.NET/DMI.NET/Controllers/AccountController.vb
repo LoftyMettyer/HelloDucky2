@@ -488,6 +488,8 @@ Namespace Controllers
 
 				LicenceHub.LogOff(Session.SessionID, TrackType.ManualLogOff)
 
+				Response.Cookies("ASP.NET_SessionId").Value = ""
+
 				Session("avPrimaryMenuInfo") = Nothing
 				Session("avSubMenuInfo") = Nothing
 				Session("avQuickEntryMenuInfo") = Nothing
