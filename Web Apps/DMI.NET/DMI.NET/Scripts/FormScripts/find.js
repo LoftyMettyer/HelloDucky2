@@ -1758,6 +1758,13 @@ function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto, uniqueID)
 			return false;
 		}
 	}
+	else if (!deleteflag) {
+		if (OpenHR.isExecutableFiletype(file.name)) {
+			//invalid extension
+			OpenHR.modalMessage("Executable file types cannot be uploaded.");
+			return false;
+		}
+	}
 
 	//Ensure file is not any larger than the defined limit set in IIS
 	if (!deleteflag) {

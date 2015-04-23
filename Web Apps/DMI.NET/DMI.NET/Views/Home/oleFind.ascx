@@ -444,6 +444,13 @@
 				alert("Invalid image type.\n\nOnly .JPG, .BMP and .GIF images are accepted.");
 				return false;
 			}
+		} else {
+			//validate against executable uploads
+			if (OpenHR.isExecutableFiletype(filSelectFile.value)) {
+				//invalid extension
+				OpenHR.modalMessage("Executable file types cannot be uploaded.");
+				return false;
+			}
 		}
 
 		// Check that the filename/unc isn't too long
