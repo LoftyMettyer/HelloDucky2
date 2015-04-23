@@ -551,7 +551,7 @@
 							<td height="20" colspan="5"></td>
 						</tr>
 						<tr class="fontsmalltitle">
-							<td colspan="5">Find Window / Event Log</td>
+							<td colspan="5">Training Booking</td>
 						</tr>
 						<tr>
 							<td height="10" colspan="5"></td>
