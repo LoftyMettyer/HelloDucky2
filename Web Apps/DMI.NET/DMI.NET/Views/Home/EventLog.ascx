@@ -533,7 +533,13 @@
 								Else
 									Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
 								End If
-	
+
+								If Session("CurrentType") = EventLog_Type.elt9GridBox.ToString Then
+									Response.Write("											<option value=35 selected>9-Box Grid Report" & vbCrLf)
+								Else
+									Response.Write("											<option value=35>9-Box Grid Report" & vbCrLf)
+								End If
+
 								If Session("CurrentType") = EventLog_Type.eltCalandarReport.ToString Then
 									Response.Write("											<option value=17 selected>Calendar Report" & vbCrLf)
 								Else
@@ -550,12 +556,6 @@
 									Response.Write("											<option value=1 selected>Cross Tab" & vbCrLf)
 								Else
 									Response.Write("											<option value=1>Cross Tab" & vbCrLf)
-								End If
-
-								If Session("CurrentType") = EventLog_Type.elt9GridBox.ToString Then
-									Response.Write("											<option value=35 selected>9-Box Grid Report" & vbCrLf)
-								Else
-									Response.Write("											<option value=35>9-Box Grid Report" & vbCrLf)
 								End If
 								
 								If Session("CurrentType") = EventLog_Type.eltCustomReport.ToString Then
