@@ -34,7 +34,7 @@
         </tr>
         <tr>
             <td><asp:Label runat="server" ID="lblPassword" Text="Password"/></td>
-            <td><asp:TextBox runat="server" ID="txtPassword" TextMode="Password" /></td>            
+            <td><asp:TextBox runat="server" ID="txtPassword" autocomplete="off" TextMode="Password" /></td>            
         </tr>
         <tr>
             <td><asp:Label runat="server" ID="lblRememberPwd" Text="Remember me" AssociatedControlID="chkRememberPwd" /></td>

@@ -41,15 +41,15 @@
     <table class="controlgrid">
         <tr>
             <td><asp:Label runat="server" ID="lblCurrPassword" Text="Current Password"/></td>
-            <td><asp:TextBox runat="server" ID="txtCurrPassword" TextMode="Password" /></td>
+            <td><asp:TextBox runat="server" ID="txtCurrPassword" autocomplete="off" TextMode="Password" /></td>
         </tr>
         <tr>
             <td><asp:Label runat="server" ID="lblNewPassword" Text="New Password"/></td>
-            <td><asp:TextBox runat="server" ID="txtNewPassword" TextMode="Password" /></td>
+            <td><asp:TextBox runat="server" ID="txtNewPassword" autocomplete="off" TextMode="Password" /></td>
         </tr>
         <tr>
             <td><asp:Label runat="server" ID="lblConfPassword" Text="Confirm Password"/></td>
-            <td><asp:TextBox runat="server" ID="txtConfPassword" TextMode="Password" /></td>
+            <td><asp:TextBox runat="server" ID="txtConfPassword" autocomplete="off" TextMode="Password" /></td>
         </tr>
     </table>
 
