@@ -4876,7 +4876,13 @@ PRINT 'Remove redundant stored procedure'
 		DROP PROCEDURE [dbo].[sp_ASRGetOrderItems]
 
 
-		
+PRINT 'Surface area configuration'
+	
+	EXEC sp_executeSQL N'GRANT INSERT, SELECT, UPDATE, DELETE ON [ASRSysGroups] TO [ASRSysAdmins];';
+	EXEC sp_executeSQL N'GRANT INSERT, SELECT, UPDATE, DELETE ON [tbsys_MobileFormElements] TO [ASRSysAdmins];';
+	EXEC sp_executeSQL N'GRANT INSERT, SELECT, UPDATE, DELETE ON [tbsys_MobileFormLayout] TO [ASRSysAdmins];';
+	EXEC sp_executeSQL N'GRANT INSERT, SELECT, UPDATE, DELETE ON [tbsys_MobileGroupWorkflows] TO [ASRSysAdmins];';
+	
 
 
 /* ------------------------------------------------------------- */
