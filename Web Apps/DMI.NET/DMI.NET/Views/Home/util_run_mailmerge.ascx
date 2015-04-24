@@ -135,12 +135,12 @@
 
 	' Errors during the merge
 	If Len(objMailMerge.ErrorString) > 0 Then
-		sErrorMessage = HttpUtility.HtmlEncode(objMailMerge.ErrorString)
+		sErrorMessage = objMailMerge.ErrorString
 		Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, HttpUtility.HtmlEncode(objMailMerge.DefName)))
 	
 	ElseIf objMailMergeOutput.Errors.Count > 0 Then
 		objMailMerge.EventLogChangeHeaderStatus(EventLog_Status.elsFailed)
-		sErrorMessage = HttpUtility.HtmlEncode(Join(objMailMergeOutput.Errors.ToArray()))
+		sErrorMessage = Join(objMailMergeOutput.Errors.ToArray())
 		objMailMerge.FailedMessage = sErrorMessage
 		Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, HttpUtility.HtmlEncode(objMailMerge.DefName)))
 		
