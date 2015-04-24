@@ -22,10 +22,6 @@
 		toggleWeekends();
 	}
 
-	<%If objCalendar.ReportStartDate > Now Or objCalendar.ReportEndDate < Now Then%>
-		$('#cmdToday')[0].disabled = true;	
-	<%End If%>
-
 	$('#StartYearDemo').monthpicker({
 		selectedYear: $("#txtYear").val(),
 		startYear: <% =objCalendar.ReportStartDate.Year%> - 0,
@@ -120,7 +116,8 @@
 		<input id="StartYearDemo" class="monthpicker" 
 					
 			<% 
-			If objCalendar.StartOnCurrentMonth And Now < objCalendar.ReportEndDate Then
+			' If the report end date is any date of the current month or any future date then the report should be opened for the report end date month (E.g. 04/2015)
+			If objCalendar.StartOnCurrentMonth And (Now.Date < objCalendar.ReportEndDate Or ((Now.Month = objCalendar.ReportEndDate.Month) AndAlso (Now.Year = objCalendar.ReportEndDate.Year))) Then
 				Session("CALREP_Year") = Date.Now.Year.ToString.PadLeft(4, "0"c)
 				Session("CALREP_Month") = Date.Now.Month.ToString.PadLeft(2, "0"c)
 				objCalendar.StartOnCurrentMonth = False
@@ -137,7 +134,15 @@
 			Response.Write(String.Format("value={0}/{1}", Session("CALREP_Month"), Session("CALREP_Year")))
 			%>
 			/>
-		
+
+		<% 'If the clicked Month OR the report end date month for the year is same as the current Month and year then disabled the "Current Month" button. OR
+			'If the report end date year is same but the month is less than the current Month then disabled the "Current Month" button. OR
+			'If the report end date year is less than the current year then disabled the "Current Month" button.
+			If ((Session("CALREP_Year") = Now.Year AndAlso Session("CALREP_Month") = Now.Month) Or
+					(objCalendar.ReportEndDate.Year = Now.Year AndAlso objCalendar.ReportEndDate.Month < Now.Month) Or
+					(objCalendar.ReportEndDate.Year < Now.Year)) Then
+				Response.Write("<script>$('#cmdToday')[0].disabled = true;</script>")
+			End If%>
 
 		<input class="btn" type="button" id="cmdToday" name="cmdToday" value="Current Month" onclick="todayClick()" />
 
