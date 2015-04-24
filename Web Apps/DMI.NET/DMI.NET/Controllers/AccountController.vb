@@ -598,15 +598,11 @@ Namespace Controllers
 				ViewData("RedirectToURL") = Url.Action("ForgotPassword", "Account")
 
 				' handle response from server...
-				If Trim(sMessage) = "" Then
-					' if OK...
-					ViewData("Message") = "An e-mail has been sent to you. When you receive it, follow the directions in the email to reset your password."
-					ViewData("RedirectToURLMessage") = "Login page"
-					ViewData("RedirectToURL") = Url.Action("Login", "Account")
-				Else
-					' failure message from dll...
-					ViewData("Message") = "You can not reset your password at this time.<br/><br/>" & sMessage
-				End If
+				' Always show 'email sent' success message: OWASP.
+				ViewData("Message") = "An e-mail has been sent to you. When you receive it, follow the directions in the email to reset your password."
+				ViewData("RedirectToURLMessage") = "Login page"
+				ViewData("RedirectToURL") = Url.Action("Login", "Account")
+
 
 			Catch ex As Exception
 				ViewData("RedirectToURLMessage") = "OK"
