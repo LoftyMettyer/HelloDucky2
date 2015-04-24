@@ -3,8 +3,7 @@ Imports DMI.NET.Code
 Imports DMI.NET.App_Start
 Imports System.Drawing
 Imports System.IO
-Imports System.Data.SqlClient
-Imports DMI.NET.Models
+Imports System.Web.Helpers
 Imports DMI.NET.Code.Hubs
 
 Public Class MvcApplication
@@ -16,6 +15,8 @@ Public Class MvcApplication
 
 	Protected Sub Application_Start()
 		AreaRegistration.RegisterAllAreas()
+
+		MvcHandler.DisableMvcResponseHeader = True 'Don't disclose MVC version in server header (X-AspNetMvc-Version)
 
 		RegisterGlobalFilters(GlobalFilters.Filters)
 		RouteConfig.RegisterRoutes(RouteTable.Routes)

@@ -94,6 +94,11 @@
 			<add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" preCondition="managedHandler" />
 			<add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" preCondition="managedHandler" />
 		</modules>
+		<httpProtocol>
+			<customHeaders>
+				<remove name="X-Powered-By" />
+			</customHeaders>
+		</httpProtocol>
 	</system.webServer>
 	<system.net>
 		<mailSettings>
