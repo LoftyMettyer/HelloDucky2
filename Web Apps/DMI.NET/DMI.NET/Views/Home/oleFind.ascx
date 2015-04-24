@@ -473,7 +473,7 @@
 			maxRequestLength = Math.min(maxRequestLength, 4000);			
 
 			if (lngFileSize > maxRequestLength * 1000) {
-				OpenHR.modalMessage("File is too large to embed. \nMaximum for this column is " + maxRequestLength + "KB", 48);
+				OpenHR.modalMessage("File is too large to embed. \nMaximum file upload size for this column is " + maxRequestLength + "KB", 48);
 				bOK = false;
 			}
 		}
