@@ -70,7 +70,7 @@ Namespace Metadata
 		Public Chart_ColumnName As String
 		Public Chart_ColumnName_2 As String
 
-		Public UtilityType As Short
+		Public UtilityType As UtilityType
 		Public UtilityID As Integer
 		Public NewWindow As Boolean
 		Public BaseTableID As Long

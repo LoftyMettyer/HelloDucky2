@@ -1553,6 +1553,14 @@ Namespace Controllers
 			objNavigation.LoadLinks()
 			objNavigation.LoadNavigationLinks()
 
+			If Not Licence.IsModuleLicenced(SoftwareModule.Workflow) Then
+				objNavigation.ColLinks.RemoveAll(Function(m) m.UtilityType = UtilityType.utlWorkflow)
+			End If
+
+			If Not Licence.IsModuleLicenced(SoftwareModule.NineBoxGrid) Then
+				objNavigation.ColLinks.RemoveAll(Function(m) m.UtilityType = UtilityType.utlNineBoxGrid)
+			End If
+
 			Dim viewModel = New NavLinksViewModel With {.NavigationLinks = objNavigation.GetAllLinks, .NumberOfLinks = objNavigation.GetAllLinks.Count, .DocumentDisplayLinkCount = objNavigation.GetLinks(LinkType.DocumentDisplay).Count}
 			Session("NavigationLinks") = objNavigation
 

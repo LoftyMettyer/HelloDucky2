@@ -45,6 +45,12 @@ Public Class clsNavigationLinks
 
 	End Sub
 
+	Public ReadOnly Property ColLinks() As List(Of Link)
+		Get
+			Return _colLinks
+		End Get
+	End Property
+
 	' Loads all of the links and documents for this user session
 	Public Sub LoadLinks()
 
