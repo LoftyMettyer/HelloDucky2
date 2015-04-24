@@ -120,9 +120,8 @@ function changeLayout(newLayoutName) {
 	});
 }
 
-function changeTheme(newThemeName) {
-			
-	$("link[id=SSIthemeLink]").attr({ href: "../Content/themes/" + newThemeName + "/jquery-ui.min.css" });
+function changeTheme(newThemeName) {	
+	$("link[id=SSIthemeLink]").attr({ href: window.ROOT + "Content/themes/" + newThemeName + "/jquery-ui.min.css" });
 	setCookie('Intranet_Wireframe_Theme', newThemeName, 365);
 }
 
@@ -130,7 +129,7 @@ function applyImportedTheme(newValue) {
 	if (newValue == false) {
 		$("link[id=WireframethemeLink]").attr({ href: "" });
 	} else {
-		$("link[id=WireframethemeLink]").attr({ href: "../Content/DashboardStyles/themes/upgraded.css" });
+		$("link[id=WireframethemeLink]").attr({ href: window.ROOT + "Content/DashboardStyles/themes/upgraded.css" });
 	}
 
 	setCookie('Apply_Wireframe_Theme', newValue, 365);

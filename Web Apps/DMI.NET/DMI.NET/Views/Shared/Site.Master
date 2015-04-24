@@ -27,7 +27,7 @@
 
 
 	<%--Here is the stylesheet for the font-icons displayed on the dashboard for wireframe and tile layouts--%>
-	<link href="<%= Url.LatestContent("~/Content/font-awesome.min.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/font-awesome.min.css")%>" rel="stylesheet" type="text/css" />
 	
 	<%--Base stylesheets--%>
 	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
@@ -424,11 +424,11 @@
 					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/" & Session("ui-winkit-theme").ToString() & "/jquery-ui.min.css")%>" });
 					break;
 				case "wireframe":
-					if (cookieapplyWireframeTheme == "true") $("link[id=WireframethemeLink]").attr({ href: "../Content/DashboardStyles/themes/upgraded.css" });
+					if (cookieapplyWireframeTheme == "true") $("link[id=WireframethemeLink]").attr({ href: window.ROOT + "Content/DashboardStyles/themes/upgraded.css" });
 
 					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
-					$("link[id=SSIthemeLink]").attr({ href: "../Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
-					$("link[id=DMIthemeLink]").attr({ href: "../Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
+					$("link[id=SSIthemeLink]").attr({ href: window.ROOT + "Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
+					$("link[id=DMIthemeLink]").attr({ href: window.ROOT + "Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
 					break;
 				case "tiles":
 					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });

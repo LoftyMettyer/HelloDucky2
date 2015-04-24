@@ -1,9 +1,9 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of IEnumerable (Of DMI.NET.Models.OrgChart))" %>
 <%@Import namespace="DMI.NET" %>
 
-<link href="<%= Url.LatestContent("~/Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css")%>" rel="stylesheet" />
-<link href="<%= Url.LatestContent("~/Scripts/jquery/jOrgChart/css/custom.css")%>" rel="stylesheet" />
-<link href="<%= Url.LatestContent("~/Scripts/jquery/jOrgChart/css/prettify.css")%>" rel="stylesheet" />
+<link href="<%: Url.LatestContent("~/Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css")%>" rel="stylesheet" />
+<link href="<%: Url.LatestContent("~/Scripts/jquery/jOrgChart/css/custom.css")%>" rel="stylesheet" />
+<link href="<%: Url.LatestContent("~/Scripts/jquery/jOrgChart/css/prettify.css")%>" rel="stylesheet" />
 
 <style>
 	.MAT, .SICK, .HOLS, .COMP {
@@ -183,10 +183,10 @@
 
 			//Creates a new window, copies the required html content to it and send it to printer.
 			var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=' + winWidth + ', height=' + winHeight + ', visible=none', "");
-			newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css" rel="stylesheet" />');
-			newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/custom.css" rel="stylesheet" />');
-			newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/prettify.css" rel="stylesheet" />');
-			newWin.document.write('<link href="../Content/themes/redmond-segoe/jquery-ui.min.css" rel="stylesheet" />');
+			newWin.document.write('<link href=\"' + window.ROOT + 'Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css" rel="stylesheet" />');
+			newWin.document.write('<link href=\"' + window.ROOT + 'Scripts/jquery/jOrgChart/css/custom.css" rel="stylesheet" />');
+			newWin.document.write('<link href=\"' + window.ROOT + 'Scripts/jquery/jOrgChart/css/prettify.css" rel="stylesheet" />');
+			newWin.document.write('<link href=\"' + window.ROOT + 'Content/themes/redmond-segoe/jquery-ui.min.css" rel="stylesheet" />');
 			newWin.document.write('<sty');
 			newWin.document.write('le>');
 			newWin.document.write('body {font-family: "Segoe UI", Verdana; }');

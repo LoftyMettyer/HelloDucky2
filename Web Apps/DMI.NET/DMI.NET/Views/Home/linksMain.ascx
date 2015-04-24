@@ -17,7 +17,7 @@
 
 <link id="SSIthemeLink" href="" rel="stylesheet" type="text/css" />
 <link href="<%:Url.LatestContent("~/Content/jquery.mCustomScrollbar.min.css")%>" rel="stylesheet" />
-<link href="<%= Url.LatestContent("~/Content/jquery.gridster.css")%>" rel="stylesheet" type="text/css" />
+<link href="<%: Url.LatestContent("~/Content/jquery.gridster.css")%>" rel="stylesheet" type="text/css" />
 <script src="<%:Url.LatestContent("~/Scripts/jquery/jquery.mCustomScrollbar.min.js")%>"></script>
 <script src="<%:Url.LatestContent("~/Scripts/FormScripts/linksMain.js")%>"></script>
 <script src="<%:Url.LatestContent("~/Scripts/jquery/jquery.tablesorter.min.js")%>"></script>

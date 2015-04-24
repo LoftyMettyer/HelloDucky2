@@ -5,7 +5,7 @@
 	var css_link = $("<link>", {
 		rel: "stylesheet",
 		type: "text/css",
-		href: "../Content/widgetCSS/wdg_oHRHoliday.css"
+		href: window.ROOT + "Content/widgetCSS/wdg_oHRHoliday.css"
 	});
 	css_link.appendTo('head');
 
