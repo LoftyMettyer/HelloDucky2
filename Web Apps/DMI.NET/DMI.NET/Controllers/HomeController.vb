@@ -2277,6 +2277,7 @@ Namespace Controllers
 
 		<HttpPost>
 		<ValidateAntiForgeryToken>
+		<PermissionAuthorizeAttribute(Category:="EVENTLOG", Item:="EMAIL")>
 		Function SendEmail(postData As SendEmailModel) As ActionResult
 
 			Dim emailTo As String = postData.To
