@@ -470,6 +470,8 @@
 
 			lngFileSize = filSelectFile.files[0].size;
 
+			maxRequestLength = Math.min(maxRequestLength, 4000);			
+
 			if (lngFileSize > maxRequestLength * 1000) {
 				OpenHR.modalMessage("File is too large to embed. \nMaximum for this column is " + maxRequestLength + "KB", 48);
 				bOK = false;

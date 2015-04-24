@@ -1770,6 +1770,8 @@ function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto, uniqueID)
 	if (!deleteflag) {
 		var maxRequestLength = Number($("#txtMaxRequestLength").val());
 
+		maxRequestLength = Math.min(maxRequestLength, 4000);
+
 		var lngFileSize = file.size;
 
 		if (lngFileSize > maxRequestLength * 1000) {
