@@ -452,10 +452,12 @@ Namespace Controllers
 
 				End Try
 
+				Dim objCrypt As New clsCrypt
 				Dim cookie = New HttpCookie("Login")
 				cookie.Expires = DateTime.Now.AddYears(1)
 				cookie.HttpOnly = True
-				cookie("User") = loginviewmodel.UserName
+				'Encrypt the User value before adding it to a cookie
+				cookie("User") = objCrypt.EncryptString(loginviewmodel.UserName, "UserCookieEncryptionKey", True)
 				cookie("WindowsAuthentication") = loginviewmodel.WindowsAuthentication
 				Response.Cookies.Add(cookie)
 

@@ -3,6 +3,7 @@ Option Strict On
 
 Imports System.ComponentModel.DataAnnotations
 Imports System.Web.HttpContext
+Imports HR.Intranet.Server
 
 Namespace Models
 
@@ -87,7 +88,9 @@ Namespace Models
 					UserName = CleanStringForJavaScript(Current.Request.QueryString("username").ToString())
 				Else
 					If Current.Request.Cookies("Login") IsNot Nothing Then
-						UserName = Current.Server.HtmlEncode(Current.Request.Cookies("Login")("User"))
+						Dim objCrypt As New clsCrypt
+						'Decrypt the User value from cookie
+						UserName = Current.Server.HtmlEncode(objCrypt.DecryptString(Current.Request.Cookies("Login")("User"), "UserCookieEncryptionKey", True))
 						WindowsAuthentication = (Current.Request.Cookies("Login")("WindowsAuthentication").ToUpper() = "TRUE")
 					End If
 				End If
