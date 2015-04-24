@@ -115,7 +115,7 @@
 							<td width="20"></td>
 							<td align="left">
 								<input id="txtRedirectToSSI" name="txtRedirectToSSI" type="hidden">
-								<input id="txtCurrentPassword" name="txtCurrentPassword" type="password" class="text" style="WIDTH: 200px; margin-top: 1px; margin-bottom: 1px">
+								<input id="txtCurrentPassword" name="txtCurrentPassword" type="password" autocomplete="off" class="text" style="WIDTH: 200px; margin-top: 1px; margin-bottom: 1px">
 							</td>
 							<td width="20"></td>
 						</tr>
@@ -124,7 +124,7 @@
 							<td align="left" nowrap>New Password :</td>
 							<td width="20"></td>
 							<td align="left">
-								<input id="txtPassword1" name="txtPassword1" type="password" class="text" style="WIDTH: 200px; margin-top: 1px; margin-bottom: 1px">
+								<input id="txtPassword1" name="txtPassword1" type="password" autocomplete="off" class="text" style="WIDTH: 200px; margin-top: 1px; margin-bottom: 1px">
 							</td>
 							<td width="20"></td>
 						</tr>
@@ -133,7 +133,7 @@
 							<td align="left" nowrap>Confirm New Password :</td>
 							<td width="20"></td>
 							<td align="left">
-								<input id="txtPassword2" name="txtPassword2" type="password" class="text" style="WIDTH: 200px; margin-top: 1px; margin-bottom: 1px">
+								<input id="txtPassword2" name="txtPassword2" type="password" class="text" autocomplete="off" style="WIDTH: 200px; margin-top: 1px; margin-bottom: 1px">
 							</td>
 							<td width="20"></td>
 						</tr>
