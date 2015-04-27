@@ -4368,23 +4368,23 @@
                     <Component Id="cmp84A37F7778CF700BC15C26C451615D6F" Guid="*">
                         <File Id="fil60A546CCBCE84A9055ACFEA427ECFA3E" KeyPath="yes" Source="SourceDir\Views\Home\documentDisplay.ascx" />
                     </Component>
-                    <Component Id="cmp1394CC3BEACFF44C182FB32ADB0DA541" Guid="*">
-                        <File Id="filE845A1CE3A73C233F2E0FFEB46DE3D54" KeyPath="yes" Source="SourceDir\Views\Home\emailSelection.aspx" />
-                    </Component>
                     <Component Id="cmpD390CB1628514FDECD95CA5717229B7B" Guid="*">
                         <File Id="fil09F2BF00D44BE21624FB208C5C9474AD" KeyPath="yes" Source="SourceDir\Views\Home\emptyoption.ascx" />
                     </Component>
                     <Component Id="cmp909FB4324F8CB7DA6C8FE84FC2057AC0" Guid="*">
                         <File Id="filBDE58C0928EC249117061DE1240F746A" KeyPath="yes" Source="SourceDir\Views\Home\EventLog.ascx" />
                     </Component>
+                    <Component Id="cmpFC0464B640BBD96E129E23EC8347DDC3" Guid="*">
+                        <File Id="fil13897F0E417ECD49DB28E3F2E3771B9D" KeyPath="yes" Source="SourceDir\Views\Home\EventLogDelete.aspx" />
+                    </Component>
                     <Component Id="cmp1546DF3E244E2E0CB4007CBF53B3AE20" Guid="*">
                         <File Id="fil412986B870B745C7F4F8A300B5A0D38B" KeyPath="yes" Source="SourceDir\Views\Home\EventLogDetails.aspx" />
                     </Component>
+                    <Component Id="cmp4DE4C436541BEDB098452A792F142B9C" Guid="*">
+                        <File Id="fil7F73B4BB2A771CBEBEBC2234E2BD29AA" KeyPath="yes" Source="SourceDir\Views\Home\EventLogEmail.aspx" />
+                    </Component>
                     <Component Id="cmp1C2683A40E88CDFD072246E5F6EC960A" Guid="*">
                         <File Id="fil12D246D71856628E36582EA6A5F9D6A2" KeyPath="yes" Source="SourceDir\Views\Home\EventLogPurge.aspx" />
-                    </Component>
-                    <Component Id="cmp2C55099185D46EEFE424235206F02C32" Guid="*">
-                        <File Id="fil8239F01C28D587D91CE8B8362953CAAE" KeyPath="yes" Source="SourceDir\Views\Home\EventLogSelection.aspx" />
                     </Component>
                     <Component Id="cmp09F75A7F48E04429E89F07A5C5E1E6EC" Guid="*">
                         <File Id="fil313DF09493A0E0F8A73B2DEE824DB24E" KeyPath="yes" Source="SourceDir\Views\Home\filterselect.ascx" />
@@ -6007,12 +6007,12 @@
             <ComponentRef Id="cmp414F4CB5B0C93797F7661C14B23FABEF" />
             <ComponentRef Id="cmpABA040CB6F59BC838568AF453473CF51" />
             <ComponentRef Id="cmp84A37F7778CF700BC15C26C451615D6F" />
-            <ComponentRef Id="cmp1394CC3BEACFF44C182FB32ADB0DA541" />
             <ComponentRef Id="cmpD390CB1628514FDECD95CA5717229B7B" />
             <ComponentRef Id="cmp909FB4324F8CB7DA6C8FE84FC2057AC0" />
+            <ComponentRef Id="cmpFC0464B640BBD96E129E23EC8347DDC3" />
             <ComponentRef Id="cmp1546DF3E244E2E0CB4007CBF53B3AE20" />
+            <ComponentRef Id="cmp4DE4C436541BEDB098452A792F142B9C" />
             <ComponentRef Id="cmp1C2683A40E88CDFD072246E5F6EC960A" />
-            <ComponentRef Id="cmp2C55099185D46EEFE424235206F02C32" />
             <ComponentRef Id="cmp09F75A7F48E04429E89F07A5C5E1E6EC" />
             <ComponentRef Id="cmp4FAC186088BB8234537D315451395644" />
             <ComponentRef Id="cmp7F91F39360C863F6C20C8970558618D1" />
