@@ -1808,7 +1808,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					button.style.color = controlItemArray[10];
 					button.style.backgroundColor = controlItemArray[9];
 
-					//button.setAttribute("onclick", "window.open('" + formatAddress(controlItemArray[58]) + "')");
+					button.setAttribute("onclick", "window.open('" + formatAddress(controlItemArray[58]) + "')");
 
 					button.id = controlID;
 					button.style.padding = "0px";
