@@ -44212,7 +44212,7 @@ BEGIN
 		1 AS [IsExpression],
 		ASRSysExpressions.tableID,
 		cd.colExprID,
-		ASRSysTables.TableName  + ' Calc> ' + replace(ASRSysExpressions.name, '_', ' ') AS [Heading],
+		ASRSysTables.TableName  + ' Calc: ' + replace(ASRSysExpressions.name, '_', ' ') AS [Heading],
 		cd.size,
 		cd.dp,
 		cd.heading,

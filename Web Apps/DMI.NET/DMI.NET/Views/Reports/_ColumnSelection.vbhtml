@@ -201,9 +201,11 @@
 		datarow.ReportType = '@Model.ReportType';
 		datarow.ReportID = '@Model.ID';
 		datarow.Heading = datarow.Name.substr(0, 50);
-
+		
 		if (datarow.IsExpression == "false") {
 			datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
+		} else {
+			datarow.Name = $("#SelectedTableID option:selected").text() + ' Calc: ' + datarow.Name;
 		}
 
 		datarow.Sequence = $("#SelectedColumns").jqGrid('getGridParam', 'records') + 1;
@@ -832,7 +834,7 @@
 
 		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 		var dataRow = $('#SelectedColumns').jqGrid('getRowData', rowId);
-		
+
 		dataRow.Heading = encodeURI($("#SelectedColumnHeading").val());
 		dataRow.Size = $("#SelectedColumnSize").val();
 		if (dataRow.Size == "") { dataRow.Size = 0 }; //If size is empty then set to 0
