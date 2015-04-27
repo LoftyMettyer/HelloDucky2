@@ -151,20 +151,6 @@
     {
         "CustomAction"
         {
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_7AFAFE4EE84D46C788A3295E7CD50C26"
-            {
-            "Name" = "8:Primary output from InstallerClassLibrary (Active)"
-            "Condition" = "8:"
-            "Object" = "8:_F095207D25C9491B948AC4FF9CC578AA"
-            "FileType" = "3:1"
-            "InstallAction" = "3:1"
-            "Arguments" = "8:"
-            "EntryPoint" = "8:"
-            "Sequence" = "3:1"
-            "Identifier" = "8:_302ECC02_16F4_4E8D_9F15_35D1BAEBA88E"
-            "InstallerClass" = "11:TRUE"
-            "CustomActionData" = "8:/SITE=[TARGETSITE] /VDIR=[TARGETVDIR]"
-            }
         }
         "DefaultFeature"
         {
