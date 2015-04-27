@@ -274,6 +274,9 @@ Namespace Code.Hubs
 					ElseIf (current_Headcount >= Licence.Headcount * HeadcountWarningThreshold) Then
 						Return LicenceValidation.HeadcountWarning
 
+					ElseIf Now.Date > Licence.ExpiryDate.AddDays(-7) Then
+						Return LicenceValidation.ExpiryWarning
+
 					End If
 
 				End If
