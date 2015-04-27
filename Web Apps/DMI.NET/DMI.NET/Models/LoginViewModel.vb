@@ -87,11 +87,11 @@ Namespace Models
 				ElseIf Current.Request.QueryString("username") <> "" Then
 					UserName = CleanStringForJavaScript(Current.Request.QueryString("username").ToString())
 				Else
-					If Current.Request.Cookies("Login") IsNot Nothing Then
+					If Current.Request.Cookies("LoginScreenInitialValues") IsNot Nothing Then
 						Dim objCrypt As New clsCrypt
 						'Decrypt the User value from cookie
-						UserName = Current.Server.HtmlEncode(objCrypt.DecryptString(Current.Request.Cookies("Login")("User"), "UserCookieEncryptionKey", True))
-						WindowsAuthentication = (Current.Request.Cookies("Login")("WindowsAuthentication").ToUpper() = "TRUE")
+						UserName = Current.Server.HtmlEncode(objCrypt.DecryptString(Current.Request.Cookies("LoginScreenInitialValues")("User"), "UserCookieEncryptionKey", True))
+						WindowsAuthentication = (Current.Request.Cookies("LoginScreenInitialValues")("WindowsAuthentication").ToUpper() = "TRUE")
 					End If
 				End If
 

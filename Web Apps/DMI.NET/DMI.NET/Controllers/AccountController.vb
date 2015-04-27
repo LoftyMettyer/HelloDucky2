@@ -453,7 +453,7 @@ Namespace Controllers
 				End Try
 
 				Dim objCrypt As New clsCrypt
-				Dim cookie = New HttpCookie("Login")
+				Dim cookie = New HttpCookie("LoginScreenInitialValues")
 				cookie.Expires = DateTime.Now.AddYears(1)
 				cookie.HttpOnly = True
 				'Encrypt the User value before adding it to a cookie
