@@ -9,7 +9,7 @@ Imports System.Collections.ObjectModel
 Imports DMI.NET.Classes
 Imports DMI.NET.ViewModels.Reports
 Imports DMI.NET.Code.Extensions
-Imports Microsoft.Ajax.Utilities
+Imports HR.Intranet.Server.Expressions
 
 Namespace Repository
 	Public Class ReportRepository
@@ -1271,12 +1271,14 @@ Namespace Repository
 					If (objRow("Access").ToString().ToUpper() <> "HD" AndAlso _username.ToUpper() <> objRow("Username").ToString().ToUpper()) Or
 						_username.ToUpper() = objRow("Username").ToString().ToUpper() Then
 
+						Dim returnType = CalculationAsColumnType(tableId, CInt(objRow("ID")))
+
 						Dim objToAdd = New ReportColumnItem With {
 						.ID = CInt(objRow("ID")),
 						.Name = objRow("Name").ToString,
 						.IsExpression = True,
 						.Heading = "",
-						.DataType = CType(objRow("DataType"), ColumnDataType),
+						.DataType = returnType,
 						.Size = CInt(objRow("Size")),
 						.Decimals = CInt(objRow("Decimals")),
 						.Access = objRow("Access").ToString}
@@ -1429,6 +1431,7 @@ Namespace Repository
 				outputModel.Columns = New List(Of ReportColumnItem)
 
 				For Each objRow As DataRow In data.Rows
+
 					Dim objItem As New ReportColumnItem() With {
 						.ReportType = outputModel.ReportType,
 						.ReportID = outputModel.ID,
@@ -1437,7 +1440,6 @@ Namespace Repository
 						.ID = CInt(objRow("id")),
 						.Name = objRow("Name").ToString,
 						.TableID = CInt(objRow("Tableid")),
-						.DataType = CType(objRow("DataType"), ColumnDataType),
 						.Sequence = CInt(objRow("Sequence")),
 						.Size = CInt(objRow("Size")),
 						.Decimals = CInt(objRow("Decimals")),
@@ -1447,6 +1449,12 @@ Namespace Repository
 						.IsHidden = CBool(objRow("IsHidden")),
 						.IsGroupWithNext = CBool(objRow("IsGroupWithNext")),
 						.IsRepeated = CBool(objRow("IsRepeated"))}
+
+					If objItem.IsExpression Then
+						objItem.DataType = CalculationAsColumnType(objItem.TableID, objItem.ID)
+					Else
+						objItem.DataType = CType(objRow("DataType"), ColumnDataType)
+					End If
 
 					bContainsHiddenObject = bContainsHiddenObject OrElse CBool(objRow("AccessHidden"))
 
@@ -1836,8 +1844,40 @@ Namespace Repository
 
 			Return objSaveMessage
 
-
 		End Function
 
+		' Approximation of the calculation as a column type (not a direct match because we cannot handle table lookups, and expressions don't return integers
+		Private Function CalculationAsColumnType(tableID As Integer, objectID As Integer) As ColumnDataType
+
+			Dim returnType = ColumnDataType.sqlUnknown
+			Dim objCalcExpr = New clsExprExpression(_objSessionInfo)
+			objCalcExpr.Initialise(tableID, objectID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+			objCalcExpr.ConstructExpression()
+			objCalcExpr.ValidateExpression(True)
+
+			Select Case objCalcExpr.ReturnType
+				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER, ExpressionValueTypes.giEXPRVALUE_BYREF_CHARACTER
+					returnType = ColumnDataType.sqlVarChar
+
+				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC, ExpressionValueTypes.giEXPRVALUE_BYREF_NUMERIC
+					returnType = ColumnDataType.sqlNumeric
+
+				Case ExpressionValueTypes.giEXPRVALUE_DATE, ExpressionValueTypes.giEXPRVALUE_BYREF_DATE
+					returnType = ColumnDataType.sqlDate
+
+				Case ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
+					returnType = ColumnDataType.sqlUnknown
+
+				Case ExpressionValueTypes.giEXPRVALUE_LOGIC, ExpressionValueTypes.giEXPRVALUE_BYREF_LOGIC
+					returnType = ColumnDataType.sqlBoolean
+
+				Case ExpressionValueTypes.giEXPRVALUE_PHOTO, ExpressionValueTypes.giEXPRVALUE_BYREF_PHOTO, ExpressionValueTypes.giEXPRVALUE_OLE, ExpressionValueTypes.giEXPRVALUE_BYREF_OLE
+					returnType = ColumnDataType.sqlVarBinary
+
+			End Select
+
+			Return returnType
+
+		End Function
 	End Class
 End Namespace
