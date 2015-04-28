@@ -834,7 +834,7 @@ Namespace Controllers
 
 			Dim currentTableID As String = Session("tableID")
 
-			If Not String.IsNullOrEmpty(previousTableID) AndAlso Not String.IsNullOrEmpty(currentTableID) Then 'If we have a tableID in session
+			If Not String.IsNullOrEmpty(previousTableID) AndAlso Not String.IsNullOrEmpty(currentTableID) AndAlso currentTableID <> "0" Then 'If we have a tableID in session
 				Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 				Dim currentTable As Metadata.Table = objDatabase.GetTableByID(Integer.Parse(Session("tableID")))
 				If currentTable.TableType = TableTypes.tabTopLevel And Request.Form("txtGotoPage") <> "recordEdit" Then
