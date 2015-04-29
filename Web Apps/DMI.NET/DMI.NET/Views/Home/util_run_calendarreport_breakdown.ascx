@@ -55,6 +55,7 @@
 	});
 
 	function closeCalendarEvent() {
+		$("#CalendarEvent").html("");
 		$("#CalendarEvent").dialog("close");
 	}
 </script>
