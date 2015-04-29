@@ -1210,11 +1210,11 @@ Private mblnEmailSortByActivation As Boolean
 Private mblnEmailSortDesc As Boolean
 
 Private Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Private Property Let Changed(ByVal blnNewValue As Boolean)
-  cmdOk.Enabled = blnNewValue
+  cmdOK.Enabled = blnNewValue
 End Property
 
 
@@ -4090,8 +4090,11 @@ Private Sub GetTableStats()
   
   lstOLEColumns.ListItems.Clear
 
-  If Not mobjTable.IsNew = True Then
-
+  If mobjTable.IsNew = True Then
+    lblStatsRows.Caption = "Rows : 0"
+    lblDataSize.Caption = "Table Size : 0"
+    
+  Else
     ' Get basic table stats
     'JPD 20040924 Fault 9224
     sSQL = "SELECT tableName" & _
@@ -4126,35 +4129,34 @@ Private Sub GetTableStats()
     End If
     
     ' Get OLE stats
-    sSQL = "SELECT ColumnName FROM ASRSysColumns WHERE TableID = " & mobjTable.TableID & " AND DataType = -4 AND MaxOLESizeEnabled = 1"
-    rsDetails.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
-    
-    Do While Not (rsDetails.EOF)
-  
-      sSQL = "SELECT SUM(DATALENGTH(" & rsDetails.Fields(0).value & "))" _
-          & " FROM " & strOriginalName _
-          & " WHERE DATALENGTH(" & rsDetails.Fields(0).value & ") > 300"
-      rsDetails2.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
-      
-      Do While Not (rsDetails2.EOF)
-        strSize = IIf(IsNull(rsDetails2.Fields(0).value), 0, rsDetails2.Fields(0).value)
-    
-        Set objListItem = lstOLEColumns.ListItems.Add(, , rsDetails.Fields(0).value)
-        objListItem.SubItems(1) = NiceSize(strSize)
-      
-        rsDetails2.MoveNext
-      Loop
-      rsDetails2.Close
-  
-      rsDetails.MoveNext
-    Loop
-    rsDetails.Close
+    ' Only full fat admins will have the permissions to view the base tables
+    If Application.AccessMode = accFull Then
 
-  Else
-  
-    lblStatsRows.Caption = "Rows : 0"
-    lblDataSize.Caption = "Table Size : 0"
+      sSQL = "SELECT ColumnName FROM ASRSysColumns WHERE TableID = " & mobjTable.TableID & " AND DataType = -4 AND MaxOLESizeEnabled = 1"
+      rsDetails.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
+      
+      Do While Not (rsDetails.EOF)
     
+        sSQL = "SELECT SUM(DATALENGTH(" & rsDetails.Fields(0).value & "))" _
+            & " FROM " & strOriginalName _
+            & " WHERE DATALENGTH(" & rsDetails.Fields(0).value & ") > 300"
+        rsDetails2.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
+        
+        Do While Not (rsDetails2.EOF)
+          strSize = IIf(IsNull(rsDetails2.Fields(0).value), 0, rsDetails2.Fields(0).value)
+      
+          Set objListItem = lstOLEColumns.ListItems.Add(, , rsDetails.Fields(0).value)
+          objListItem.SubItems(1) = NiceSize(strSize)
+        
+          rsDetails2.MoveNext
+        Loop
+        rsDetails2.Close
+    
+        rsDetails.MoveNext
+      Loop
+      rsDetails.Close
+  
+    End If
   End If
 
   Set rsDetails = Nothing
