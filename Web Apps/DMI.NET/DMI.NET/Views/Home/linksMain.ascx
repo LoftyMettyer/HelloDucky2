@@ -1188,7 +1188,7 @@
 									sNewWindow = "0"
 								End If
 		 
-								sValue = "0_" & sNewWindow & "_" & sURL & "_" & HttpUtility.JavaScriptStringEncode(navlink.Text)
+								sValue = "0_" & sNewWindow & "_" & sURL & "_" & navlink.Text
 								sOnClick = "goDropLink('" + sValue + "')"
 							
 							Else
