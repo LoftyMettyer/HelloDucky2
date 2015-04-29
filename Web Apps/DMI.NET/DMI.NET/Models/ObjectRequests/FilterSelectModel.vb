@@ -10,9 +10,11 @@ Namespace Models.ObjectRequests
 		Public Property ScreenID As Integer
 		Public Property ViewID As Integer
 
+		<AllowHtml>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Public Property FilterSQL As String
 
+		<AllowHtml>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Public Property FilterDef As String
 

@@ -82,7 +82,7 @@
 			}
 		}
 	}
-
+	
 	function SubmitPrompts() {
 
 		var frmPromptedValues = document.getElementById('frmPromptedValues');
@@ -592,7 +592,7 @@
 												Response.Write(" selected")
 												fDefaultFound = True
 											End If
-											Response.Write(">" & sOptionValue & "</option>" & vbCrLf)
+											Response.Write(">" & HttpUtility.HtmlEncode(sOptionValue) & "</option>" & vbCrLf)
 										End If
 									Next
 

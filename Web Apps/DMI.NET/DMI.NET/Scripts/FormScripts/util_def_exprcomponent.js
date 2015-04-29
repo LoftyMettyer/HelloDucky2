@@ -1780,7 +1780,7 @@ function component_addValue(psValue) {
 
 		var oOption = document.createElement("OPTION");
 		cboValueCombo.options.add(oOption);
-		oOption.innerHTML = psValue;
+		oOption.innerText = psValue;
 		oOption.Value = psValue;
 	}
 }

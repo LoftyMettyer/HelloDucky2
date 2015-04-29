@@ -136,6 +136,7 @@ function optiondata_onload() {
 				var gridWidth = $('#optionframe').outerWidth() - 50;
 
 				$("#ssOleDBGridLinkRecords").jqGrid({
+					autoencode: true,
 					data: colData,
 					datatype: "local",
 					colNames: colNames,
@@ -263,6 +264,7 @@ function optiondata_onload() {
 						//grdFind.addItem(dataCollection.item(i).value);
 						colDataArray = dataCollection.item(i).value.split("\t");
 						obj = {};
+
 						for (iCount2 = 0; iCount2 < colNames.length; iCount2++) {
 							//loop through columns and add each one to the 'obj' object
 							obj[colNames[iCount2]] = colDataArray[iCount2];
@@ -280,6 +282,7 @@ function optiondata_onload() {
 				if (colMode.length < 8) shrinkToFit = true;
 
 				$("#ssOleDBGrid").jqGrid({
+					autoencode: true,
 					data: colData,
 					datatype: "local",
 					colNames: colNames,
@@ -448,6 +451,7 @@ function optiondata_onload() {
 				if (colMode.length < 8) shrinkToFit = true;
 
 				$("#ssOleDBGridRecords").jqGrid({
+					autoencode: true,
 					data: colData,
 					datatype: "local",
 					colNames: colNames,
@@ -602,6 +606,7 @@ function optiondata_onload() {
 					var gridWidth = $('#FindGridRow').width();
 
 					$("#ssOleDBGridFindRecords").jqGrid({
+						autoencode: true,
 						multiselect: true,
 						data: colData,
 						datatype: 'local',
@@ -720,6 +725,7 @@ function optiondata_onload() {
 				if (colMode.length < 8) shrinkToFit = true;
 				var gridWidth = $('#PickListGrid').width();
 				$("#ssOleDBGrid").jqGrid({
+					autoencode: true,
 					multiselect: true,
 					data: colData,
 					datatype: 'local',

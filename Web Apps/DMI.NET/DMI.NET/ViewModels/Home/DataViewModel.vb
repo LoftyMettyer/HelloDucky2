@@ -21,8 +21,12 @@ Namespace ViewModels.Home
 		Property txtSelectSQL As String
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Property txtFromDef As String
+
+		<AllowHtml>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Property txtFilterSQL As String
+
+		<AllowHtml>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Property txtFilterDef As String
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
@@ -37,8 +41,11 @@ Namespace ViewModels.Home
 		Property txtParentRecordID As String
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Property txtDefaultCalcCols As String
+
+		<AllowHtml>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Property txtInsertUpdateDef As String
+
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Property txtTimestamp As String
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _

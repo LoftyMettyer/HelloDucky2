@@ -308,7 +308,7 @@
 								End If
 							Else
 								If Not IsDBNull(objRow(iloop)) Then
-									sAddString = sAddString & Replace(objRow(iloop).ToString(), """", "&quot;")
+									sAddString = sAddString & HttpUtility.HtmlEncode(objRow(iloop).ToString())
 								End If
 							End If
 						Next
@@ -1039,7 +1039,7 @@
 					iCount = 0
 					For Each objRow As DataRow In rstExprValues.Rows
 						iCount += 1
-						Response.Write("<input type='hidden' id=txtValue_" & iCount & " name=txtValue_" & iCount & " value=""" & objRow("lookupValue").ToString & """>" & vbCrLf)
+						Response.Write("<input type='hidden' id=txtValue_" & iCount & " name=txtValue_" & iCount & " value=""" & HttpUtility.HtmlEncode(objRow("lookupValue").ToString) & """>" & vbCrLf)
 					Next
 					
 					Response.Write("<input type='hidden' id=txtLookupDataType name=txtLookupDataType value=" & prmDataType.Value.ToString() & ">" & vbCrLf)

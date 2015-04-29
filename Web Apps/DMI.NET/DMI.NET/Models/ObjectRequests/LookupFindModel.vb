@@ -10,7 +10,8 @@ Namespace Models.ObjectRequests
 		Public Property ColumnID As Integer
 		Public Property LookupColumnID As Integer
 
-		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
+		<AllowHtml>
+		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property LookupValue As String
 
 	End Class

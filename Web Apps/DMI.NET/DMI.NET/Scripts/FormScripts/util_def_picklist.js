@@ -574,6 +574,7 @@ function BindDefaultGridOnNewDefinition() {
 			if (colMode.length < 8) shrinkToFit = true;
 			var gridWidth = $('#PickListGrid').width();
 			$("#ssOleDBGrid").jqGrid({
+				autoencode: true,
 				multiselect: true,
 				datatype: 'local',
 				colNames: colNames,

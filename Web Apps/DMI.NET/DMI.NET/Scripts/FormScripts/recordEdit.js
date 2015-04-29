@@ -2313,8 +2313,11 @@ function updateControl(lngColumnID, value) {
 
 
 		if ($(this).is("select")) {
+
+			var encodedValue = encodeURI(value);
+
 			//does value exist in the dropdown?
-			if ($(this).find('option[value="' + value + '"]').length) {
+			if ($(this).find('option[value="' + encodedValue + '"]').length) {
 				$(this).val(value);
 			} else {
 

@@ -49,12 +49,13 @@ Namespace Models
 
 		Public Property txtStandardReportType As Integer
 
-
 		Public Property txtGotoOptionScreenID As Integer
 
+		<AllowHtml>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Public Property txtGotoOptionFilterDef As String
 
+		<AllowHtml>
 		Public Property txtGotoOptionFilterSQL As String
 
 		Public Property txtGotoOptionLinkTableID As Integer
@@ -62,6 +63,8 @@ Namespace Models
 		Public Property txtGotoOptionLinkViewID As Integer
 
 		Public Property txtGotoOptionLookupMandatory As String
+
+		<AllowHtml>
 		Public Property txtGotoOptionLookupValue As String
 
 		Public Property txtGotoOptionFile As String

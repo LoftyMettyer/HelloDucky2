@@ -117,6 +117,7 @@ function refreshGrid(jsonData) {
 		if (((colMode.length - 1) * 100) < dialogWidth) shrinkToFit = true;
 
 		$("#ssOleDBGridSelRecords").jqGrid({
+			autoencode: true,
 			data: colData,
 			datatype: "local",
 			colNames: colNames,

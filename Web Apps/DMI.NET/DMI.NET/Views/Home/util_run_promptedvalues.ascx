@@ -265,7 +265,7 @@
 										Response.Write(" SELECTED")
 										fDefaultFound = True
 									End If
-									Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
+									Response.Write(">" & HttpUtility.HtmlEncode(sOptionValue) & "</OPTION>" & vbCrLf)
 								End If
 
 							Next
@@ -413,7 +413,9 @@
 		var sValue;
 		var sMessage;
 		var fFound;
+		var bIsLookup;
 		var sMaskCtlName;
+		var sLookupName;
 		var iIndex;
 		var frmPromptedValues = document.getElementById('frmPromptedValues');
 		
@@ -480,6 +482,17 @@
 				}
 			}
 
+			sLookupName = "PROMPTLOOKUP_" + pctlPrompt.name.substring(9, pctlPrompt.name.length);
+			bIsLookup = false;
+			if (controlCollection != null) {
+				for (var i = 0; i < controlCollection.length; i++) {
+					if (controlCollection.item(i).name.toUpperCase() == sLookupName) {
+						bIsLookup = true;
+						break;
+					}
+				}
+			}
+
 			if (fFound == true) {
 				var sMask = frmPromptedValues.elements(sMaskCtlName).value;
 				sValue = pctlPrompt.value;
@@ -491,8 +504,7 @@
 				if (sMask.length > 0) {
 					if (sTemp.length != sValue.length) {
 						fOK = false;
-					}
-					else {
+					} else {
 						// Prompt values length matches mask length, so now check each character.
 						var fFollowingBackslash = false;
 						iIndex = 0;
@@ -505,8 +517,7 @@
 									// Character must be uppercase.
 									if (sValueChar.toUpperCase() != sValueChar) {
 										fOK = false;
-									}
-									else {
+									} else {
 										var iNumber = new Number(sValueChar);
 										if (isNaN(iNumber) == false) {
 											fOK = true;
@@ -519,8 +530,7 @@
 									// Character must be lowercase.
 									if (sValueChar.toLowerCase() != sValueChar) {
 										fOK = false;
-									}
-									else {
+									} else {
 										iNumber = new Number(sValueChar);
 										if (isNaN(iNumber) == false) {
 											fOK = false;
@@ -542,10 +552,10 @@
 									// Character must be numeric (0-9) or symbolic (+-%\).
 									iNumber = new Number(sValueChar);
 									if ((isNaN(iNumber) == true) &&
-										(sValueChar != "+") &&
-										(sValueChar != "-") &&
-										(sValueChar != "%") &&
-										(sValueChar != "\\")) {
+									(sValueChar != "+") &&
+									(sValueChar != "-") &&
+									(sValueChar != "%") &&
+									(sValueChar != "\\")) {
 										fOK = false;
 									}
 									iIndex = iIndex + 1;
@@ -554,7 +564,7 @@
 								case "B":
 									// Character must be logic (0 or 1).
 									if ((sValueChar != "0") &&
-										(sValueChar != "1")) {
+									(sValueChar != "1")) {
 										fOK = false;
 									}
 									iIndex = iIndex + 1;
@@ -572,8 +582,7 @@
 									}
 									iIndex = iIndex + 1;
 								}
-							}
-							else {
+							} else {
 								fFollowingBackslash = false;
 								if (sMask.substring(i, i + 1) != sValueChar) {
 									fOK = false;
@@ -588,18 +597,19 @@
 					}
 				}
 
-				if (fOK == false) {				
+				if (fOK == false) {
 					sMessage = "The entered value does not match the required format (" + sMask + ").";
 				}
-			}
-			else {
-						sValue = pctlPrompt.value;
-						if (!OpenHR.checkInvalidCharacters(sValue)) {
-							OpenHR.modalMessage($ESAPI.properties.openHRValidationMessages.AllInvalidCharacters);
-							fOK = false;
-							return fOK;
-						}
+			} else {
+				sValue = pctlPrompt.value;
+				if (!bIsLookup) {
+					if (!OpenHR.checkInvalidCharacters(sValue)) {
+						OpenHR.modalMessage($ESAPI.properties.openHRValidationMessages.AllInvalidCharacters);
+						fOK = false;
+						return fOK;
+					}
 				}
+			}
 		}
 
 		if (fOK == false) {

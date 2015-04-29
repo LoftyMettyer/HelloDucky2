@@ -215,6 +215,7 @@
 					//Determine if the grid already exists...
 					if ($("#DBGridFilterRecords").getGridParam("reccount") == undefined) { //It doesn't exist, create it
 						$("#DBGridFilterRecords").jqGrid({
+							autoencode: true,
 							multiselect: false,
 							data: colData,
 							datatype: 'local',
@@ -913,7 +914,7 @@
 					{ //Data
 						'Field': items[0],
 						'Operator': items[1],
-						'Value': items[2],
+						'Value': $.jgrid.htmlEncode(items[2]),
 						'ColumnID': items[3],
 						'ConditionID': items[4]
 					},

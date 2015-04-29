@@ -551,6 +551,7 @@ function find_window_onload() {
 
 				//create the column layout:
 				$("#findGridTable").jqGrid({
+					autoencode: true,
 					data: colData,
 					datatype: "local",
 					colNames: colNames,
@@ -981,6 +982,7 @@ function showLookupForColumn(element) {
 
 			//jqGrid it
 			$("#LookupForEditableGrid_Table").jqGrid({
+				autoencode: true,
 				data: jsondata.rows,
 				datatype: "local",
 				colModel: jsondata.colmodel,

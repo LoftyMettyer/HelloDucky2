@@ -15,6 +15,7 @@ Namespace Models
 		Public Property txtOptionFirstRecPos As Integer
 		Public Property txtOptionCurrentRecCount As Integer
 
+		<AllowHtml>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Public Property txtGotoLocateValue As String ' htmlencode?
 

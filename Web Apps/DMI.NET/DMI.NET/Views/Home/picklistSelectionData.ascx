@@ -119,6 +119,7 @@
 			if (colMode.length < 8) shrinkToFit = true;
 
 			$("#ssOleDBGridSelRecords").jqGrid({
+				autoencode: true,
 				multiselect: true,
 				data: colData,
 				datatype: 'local',
@@ -279,7 +280,7 @@
 					For i As Integer = 0 To rows.Count - 1
 						addString = ""
 						For Each key As String In rows(i).Keys
-							addString &= rows(i)(key).ToString & vbTab
+							addString &= HttpUtility.HtmlEncode(rows(i)(key).ToString) & vbTab
 						Next
 						counter += 1
 						Response.Write("<input type='hidden' id='txtData_" & counter & "' name='txtData_" & counter & "' value=""" & addString & """>" & vbCrLf)
