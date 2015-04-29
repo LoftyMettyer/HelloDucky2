@@ -130,8 +130,8 @@ End Code
 	}
 
 	//'Seperator' should only enable if at least 2 descriptions have been entered.
-	function validateDescriptions() {
-		if (($("#Description1ID").val() == 0) || ($("#Description2ID").val() == 0)) {
+	function validateDescriptions() {		
+		if (atLeastTwo(($("#Description1ID").val() === "0"), ($("#Description2ID").val() === "0"), ($("#Description3ID").val() === "0"))) {			
 			$("#Separator").prop('disabled', true);
 			$("#Separator").val("None");
 			$('#ddlSeparator').val("None");
@@ -141,6 +141,10 @@ End Code
 		}
 	}
 
+	function atLeastTwo(description1, description2, description3) {
+		return description1 ? (description2 || description3) : (description2 && description3);
+	}
+	
 	function selectDescription3() {
 
 		var tableID = $("#BaseTableID option:selected").val();
@@ -158,6 +162,8 @@ End Code
 				setViewAccess('CALC', $("#Description3ViewAccess"), access, "report description");
 				enableSaveButton();
 			}
+
+			validateDescriptions();
 		}, getPopupWidth(), getPopupHeight());
 
 	}
