@@ -46,6 +46,7 @@ Namespace Models
 		<MaxLength(255, ErrorMessage:="Description cannot be longer than 255 characters.")>
 		<DisplayName("Description :")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
+		<AllowHtml>
 		Public Property Description As String
 
 		<DisplayName("Ignore zeros when calculating aggregates")>

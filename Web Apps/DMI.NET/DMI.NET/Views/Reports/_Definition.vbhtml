@@ -729,6 +729,9 @@
 			type: $form.attr("method"),
 			data: $form.serialize(),
 			async: true,
+			error: function (json) {
+				OpenHR.modalPrompt("Invalid characters in report definition.", 0, "OpenHR");
+			},
 			success: function (json) {
 
 				switch (json.ErrorCode) {
