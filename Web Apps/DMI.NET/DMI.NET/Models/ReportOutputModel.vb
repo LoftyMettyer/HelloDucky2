@@ -25,6 +25,7 @@ Namespace Models
 		<DisplayName("Send to printer")>
 		Public Property ToPrinter As Boolean
 
+		<AllowHtml>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		<DisplayName("Printer name :")>
 		Public Property PrinterName As String
