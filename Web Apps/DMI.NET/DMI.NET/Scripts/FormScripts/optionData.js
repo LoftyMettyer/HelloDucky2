@@ -647,7 +647,7 @@ function optiondata_onload() {
 		}
 
 		if (sCurrentWorkPage == "UTIL_DEF_PICKLIST") {
-
+			
 			dataCollection = frmOptionData.elements; // Add the grid records.
 			fRecordAdded = false;
 			iCount = 0;
@@ -779,6 +779,8 @@ function optiondata_onload() {
 					}
 				}
 			}
+
+			if (fRecordAdded) frmUseful.txtChanged.value = 1;
 
 			refreshControls();
 
