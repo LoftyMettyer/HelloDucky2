@@ -799,7 +799,7 @@
 		try {
 			if (secs < 300) $("#sessionWarning").show();		//show countdown for the last 5 minutes.
 			document.getElementById("timerText").innerHTML = currentMinutes + ":" + currentSeconds; //Set the element id you need the time put into.
-			if (secs !== -1) setTimeout('Decrement()', 1000);
+			if (secs >= 0) setTimeout('Decrement()', 1000);
 		} catch (e) {
 			//do nothing if this fails - we've probably navigated away and the elements no longer exist. That's the trouble with using 1 second delays.
 		}
