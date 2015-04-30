@@ -208,7 +208,7 @@
 		Dim dStartDate As DateTime = New DateTime(objCalendar.ReportStartDate.Year, objCalendar.ReportStartDate.Month, 1)
 		
 		If Session("CALREP_Year") Is Nothing Then
-			If objCalendar.StartOnCurrentMonth And Now < objCalendar.ReportEndDate Then
+			If objCalendar.StartOnCurrentMonth And Now.Date <= objCalendar.ReportEndDate.ToEndOfMonth And Now.Date >= objCalendar.ReportStartDate.ToStartOfMonth Then
 				dStartDate = New DateTime(Now.Year, Now.Month, 1)
 			End If
 		Else
