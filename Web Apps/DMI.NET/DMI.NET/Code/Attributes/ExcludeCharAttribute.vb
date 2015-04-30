@@ -10,7 +10,7 @@ Namespace Code.Attributes
 		Private ReadOnly _chars As String
 
 		Public Sub New(chars As String)
-			MyBase.New("{0} contains invalid character.")
+			MyBase.New("{0} can not contain any of the following characters: " & String.Join("  ", chars.ToArray()))
 			_chars = chars
 		End Sub
 

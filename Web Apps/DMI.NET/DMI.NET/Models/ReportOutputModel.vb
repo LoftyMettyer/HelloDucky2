@@ -38,6 +38,7 @@ Namespace Models
 		<DisplayName("File Name :")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		<ExcludeChar("/*?""<>|")>
+		<AllowHtml>
 		Public Property Filename As String
 
 		<DisplayName("If file exists :")>
@@ -59,11 +60,14 @@ Namespace Models
 		<DisplayName("Subject :")>
 		<RequiredIf("SendToEmail", True, ErrorMessage:="No email subject name entered.")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
+		<AllowHtml>
 		Public Property EmailSubject As String
 
 		<DisplayName("Attach As :")>
 		<RequiredIf("SendToEmail", True, ErrorMessage:="No email attachment name entered.")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
+		<ExcludeChar("/*?""<>|")>
+		<AllowHtml>
 		Public Property EmailAttachmentName As String
 
 		<RegularExpression("True", ErrorMessage:="No output destination selected.")>

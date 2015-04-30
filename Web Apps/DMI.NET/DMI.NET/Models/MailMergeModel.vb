@@ -54,6 +54,7 @@ Namespace Models
 		<DisplayName("File Name :")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		<ExcludeChar("/*?""<>|")>
+		<AllowHtml>
 		Public Property Filename As String
 
 		<DisplayName("Email Address :")>
@@ -62,6 +63,7 @@ Namespace Models
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		<DisplayName("Email Subject :")>
+		<AllowHtml>
 		Public Property EmailSubject As String
 
 		<DisplayName("Send as attachment")>
@@ -71,6 +73,8 @@ Namespace Models
 		<MaxLength(255, ErrorMessage:="Email attachment cannot be longer than 255 characters.")> _
 		<DisplayName("Attach As :")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
+		<ExcludeChar("/*?""<>|")>
+		<AllowHtml>
 		Public Property EmailAttachmentName As String
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
