@@ -306,7 +306,7 @@
 			function emailDetailEvent() {
 				var sBatchInfo = "";
 				var sURL;
-				debugger;
+				
 				if ($('#txtEventBatch').val() == 1) {
 					$("#txtBatchy").val(1);
 					$('#txtSelectedEventIDs').val(frmEventDetails.cboOtherJobs.options[frmEventDetails.cboOtherJobs.selectedIndex].value);
