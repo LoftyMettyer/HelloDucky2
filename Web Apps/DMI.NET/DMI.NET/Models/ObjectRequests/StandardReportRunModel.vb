@@ -1,6 +1,8 @@
 ﻿Option Strict On
 Option Explicit On
 
+Imports DMI.NET.Code.Attributes
+
 Namespace Models.ObjectRequests
 
 	Public Class StandardReportRunModel
@@ -41,9 +43,18 @@ Namespace Models.ObjectRequests
 		Public Property txtSend_OutputSaveExisting As String
 		Public Property txtSend_OutputEmail As String
 		Public Property txtSend_OutputEmailAddr As String
+
+		<AllowHtml>
 		Public Property txtSend_OutputEmailSubject As String
+
+		<ExcludeChar("/*?""<>|")>
+		<AllowHtml>
 		Public Property txtSend_OutputEmailAttachAs As String
+
+		<ExcludeChar("/*?""<>|")>
+		<AllowHtml>
 		Public Property txtSend_OutputFilename As String
+
 		Public Property txtFilterName As String
 		Public Property txtPicklistName As String
 		Public Property txtPersonnelTableID As Integer
