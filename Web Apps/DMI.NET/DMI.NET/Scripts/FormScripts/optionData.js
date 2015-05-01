@@ -778,9 +778,7 @@ function optiondata_onload() {
 						OpenHR.getFrame("workframe").disableAll();
 					}
 				}
-			}
-
-			if (fRecordAdded) frmUseful.txtChanged.value = 1;
+			}	
 
 			refreshControls();
 
