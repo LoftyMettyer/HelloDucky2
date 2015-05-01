@@ -4056,6 +4056,12 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
+		Sub filter_clear(tableID As Integer)
+			Session("filterDef_" & tableID) = ""
+		End Sub
+
+		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function tbAddFromWaitingListFind_Submit(postData As DelegateBookingModel)
 
 			Session("optionAction") = postData.Action

@@ -315,6 +315,12 @@
 					if (recEditForm.txtRecEditFilterSQL.value.length  > 0) {
 						OpenHR.messageBox("No records match the current filter. No filter is applied.");
 
+						var postData = {
+							tableID: recEditForm.txtCurrentTableID.value,
+							__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+						};
+						OpenHR.postData("filter_clear", postData);					
+
 						frmGetData.txtAction.value = "LOAD";
 						frmGetData.txtCurrentTableID.value = recEditForm.txtCurrentTableID.value;
 						frmGetData.txtCurrentScreenID.value = recEditForm.txtCurrentScreenID.value;

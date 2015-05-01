@@ -281,8 +281,8 @@
 				dataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
 				dataForm.txtSelectSQL.value = frmRecordEditForm.txtRecEditSelectSQL.value;
 				dataForm.txtFromDef.value = frmRecordEditForm.txtRecEditFromDef.value;
-				dataForm.txtFilterSQL.value = "";
-				dataForm.txtFilterDef.value = "";
+				dataForm.txtFilterSQL.value = $("#txtFilterSQL").val();
+				dataForm.txtFilterDef.value = $("#txtFilterDef").val();
 				dataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
 				dataForm.txtRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
 				dataForm.txtOriginalRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
