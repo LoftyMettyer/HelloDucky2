@@ -840,6 +840,7 @@ Namespace Controllers
 				If currentTable.TableType = TableTypes.tabTopLevel And Request.Form("txtGotoPage") <> "recordEdit" Then
 					For Each relation As Metadata.Relation In objDatabase.GetRelationsByParentTableID(Integer.Parse(Session("tableID")))
 						Session("filterDef_" & relation.ChildID) = ""	'Clear the child table filter
+						Session("filterSQL_" & relation.ChildID) = ""	'Clear the child table SQL filter
 					Next
 				End If
 			End If
