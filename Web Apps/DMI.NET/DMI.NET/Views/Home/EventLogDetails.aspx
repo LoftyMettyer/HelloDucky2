@@ -241,9 +241,17 @@
 				Response.Write("<input type='hidden' id='txtErrorDescription' name='txtErrorDescription' value="""">" & vbCrLf)
 				Response.Write("<input type='hidden' id='txtAction' name='txtAction' value=" & Session("action") & ">" & vbCrLf)
 			%>
-		</form>
-	
-		<script type="text/javascript">
+	</form>
+
+<div>
+	<input type="hidden" id="txtSelectedEventIDs" name="txtSelectedEventIDs">
+	<input type="hidden" id="txtBatchInfo" name="txtBatchInfo">
+	<input type="hidden" id="txtBatchy" name="txtBatchy" value="0">
+	<input type="hidden" id="txtFromMain" name="txtFromMain" value="0">
+</div>
+
+
+<script type="text/javascript">
 			var frmDetails = OpenHR.getForm("workframe", "frmDetails");
 
 			function eventlogdetails_window_onload() {
@@ -298,7 +306,7 @@
 			function emailDetailEvent() {
 				var sBatchInfo = "";
 				var sURL;
-				
+				debugger;
 				if ($('#txtEventBatch').val() == 1) {
 					$("#txtBatchy").val(1);
 					$('#txtSelectedEventIDs').val(frmEventDetails.cboOtherJobs.options[frmEventDetails.cboOtherJobs.selectedIndex].value);
