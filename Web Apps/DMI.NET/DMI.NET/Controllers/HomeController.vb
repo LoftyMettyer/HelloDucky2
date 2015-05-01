@@ -4058,6 +4058,7 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 		Sub filter_clear(tableID As Integer)
 			Session("filterDef_" & tableID) = ""
+			Session("filterSQL_" & tableID) = ""
 		End Sub
 
 		<HttpPost()>

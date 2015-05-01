@@ -313,7 +313,7 @@
 				if ((sAction != "NEW") && (sAction != "COPY") && (frmData.txtRecordCount.value == 0)) {
 					// No records. Clear the filter.
 					if (recEditForm.txtRecEditFilterSQL.value.length  > 0) {
-						OpenHR.messageBox("No records match the current filter. No filter is applied.");
+						OpenHR.messageBox("No records match the current filter.\nNo filter is applied.");
 
 						var postData = {
 							tableID: recEditForm.txtCurrentTableID.value,
