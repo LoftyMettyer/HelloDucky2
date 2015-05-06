@@ -1171,7 +1171,7 @@
 								sAppParameters = Replace(navlink.AppParameters, "\", "\\")
 			
 								sValue = "5_" & sAppFilePath & "_" & sAppParameters
-								sOnClick = "goDropLink('" + sValue + "')"
+								sOnClick = "goDropLink('" + HttpUtility.JavaScriptStringEncode(sValue) + "')"
 
 							ElseIf navlink.Element_Type = ElementType.OrgChart Then
 								sValue = "6_OrgChart"
@@ -1189,7 +1189,7 @@
 								End If
 		 
 								sValue = "0_" & sNewWindow & "_" & sURL & "_" & navlink.Text
-								sOnClick = "goDropLink('" + sValue + "')"
+								sOnClick = "goDropLink('" + HttpUtility.JavaScriptStringEncode(sValue) + "')"
 							
 							Else
 								If navlink.UtilityID > 0 Then
@@ -1209,7 +1209,7 @@
 				
 								End If
 							
-								sOnClick = "goDropLink('" + sValue + "')"
+								sOnClick = "goDropLink('" + HttpUtility.JavaScriptStringEncode(sValue) + "')"
 							
 							End If
 
@@ -1227,7 +1227,7 @@
 							<i class="icon-external-link"></i>
 						</p>
 						<p>
-							<a href="#" data-ddlvalue="<%=sValue%>">
+							<a href="#" data-ddlvalue="<%:sValue%>">
 								<%If navlink.Text.Length > 30 Then
 										navlink.Text = navlink.Text.Substring(0, 30) + "..."
 									End If
@@ -1271,7 +1271,7 @@
 							sValue = "4_" & CStr(objNavLink.TableID) & "!" & CStr(objNavLink.ViewID)
 						End If
 						
-						sOnClick = "goDropLink('" + sValue + "')"
+						sOnClick = "goDropLink('" + HttpUtility.JavaScriptStringEncode(sValue) + "')"
 
 						If iRowNum > iMaxRows Then
 							iColNum += 1
@@ -1288,7 +1288,7 @@
 							<i class="icon-external-link"></i>
 						</p>
 						<p>
-							<a href="#" data-ddlvalue="<%=sValue%>">
+							<a href="#" data-ddlvalue="<%:sValue%>">
 								<%=sText %></a>
 						</p>
 					</li>					
@@ -1334,7 +1334,7 @@
 							sNewWindow = "1"
 		 
 							sValue = "0_" & sNewWindow & "_" & sURL
-							sOnClick = "goDropLink('" + sValue + "')"
+							sOnClick = "goDropLink('" + HttpUtility.JavaScriptStringEncode(sValue) + "')"
 							
 
 							If iRowNum > iMaxRows Then	 ' start a new column if required (affects tiles only)
@@ -1351,7 +1351,7 @@
 							<i class="icon-external-link"></i>
 						</p>
 						<p>
-							<a href="#" data-ddlvalue="<%=sValue%>">
+							<a href="#" data-ddlvalue="<%:sValue%>">
 								<%If navlink.Text.Length > 30 Then
 										navlink.Text = navlink.Text.Substring(0, 30) + "..."
 									End If
@@ -1525,12 +1525,12 @@
 		} else {
 			// for wireframe layout, convert the dropdownlinks to a <select> element
 			$(function () {
-				$('ul.DropDownListMenu').each(function () {
+				$('ul.DropDownListMenu').each(function () {					
 					var $select = $('<select class="DropdownlistSelect"/>');
 
 					$(this).find('a').each(function () {
 						var $option = $('<option />');
-						$option.attr('value', $(this).attr('data-DDLValue')).html($(this).html());
+						$option.attr('value', $(this).attr('data-DDLValue')).text($(this).text());
 						$select.append($option);
 					});
 
