@@ -274,7 +274,6 @@ End Code
 		selectOutputType('@Model.Format');
 		refreshOutputOptions();
 		saveToFileChecked();
-		sendAsEmailChecked();
 
 	});
 </script>
