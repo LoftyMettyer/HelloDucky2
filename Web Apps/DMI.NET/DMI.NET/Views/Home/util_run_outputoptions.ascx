@@ -65,6 +65,11 @@
 		frmOutputDef.txtFilename.value = outputFilename;
 		outputOptionsRefreshControls();
 
+		// outputOptionsRefreshControls doesn't differentiate between change of value and loading and hence we need to re-run the email group code. Ideally this function should be re-written completely!
+		if (frmExport.txtEmail.value.toLowerCase() === "true") {
+			frmOutputDef.txtEmailGroup.value = frmExport.txtEmailAddrName.value;
+		}
+
 	}
 
 	function outputOptionsFormatClick(index) {
@@ -88,7 +93,6 @@
 			frmOutputDef.chkDestination0.checked = true;
 		}
 
-		outputOptionsRefreshControls();
 	}
 
 	function outputOptionsRefreshControls() {
@@ -345,7 +349,7 @@
 					text_disable(txtEmailAttachAs, false);
 					$('#frmOutputDef #txtEmailAttachAs').removeClass('ui-state-disabled');
 					$('#frmOutputDef #lblEmailAttachAs').removeClass('ui-state-disabled');
-					txtEmailGroup.value = 'None';
+					txtEmailGroup.value = 'None';					
 				}
 				else {
 					//text_disable(txtEmailGroup, true);
