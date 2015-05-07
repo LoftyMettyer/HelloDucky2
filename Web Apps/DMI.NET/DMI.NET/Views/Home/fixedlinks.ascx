@@ -986,10 +986,17 @@
 					<ul>
 						<li><span>Output</span>
 							<div class="button" id="divBtnPrintOrgChart">
-								<a class="mnuBtnPrintOrgChart" href="#" rel="paste"  title="Print Org Chart">
+								<a class="mnuBtnPrintOrgChart" href="#" rel="paste"  title="Print Organisation Chart">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png")%>" alt="" /><span>
 									<i class="icon-print"></i>
 									<h6>Print</h6></span>
+								</a>								
+							</div>
+							<div class="button" id="divBtnPrintPreviewOrgChart">
+								<a class="mnuBtnPrintPreviewOrgChart" href="#" rel="paste"  title="Print Preview">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/preview64HOVER.png")%>" alt="" /><span>
+									<i class="icon-file-alt"></i>
+									<h6>Print Preview</h6></span>
 								</a>								
 							</div>
 							<div class="button">

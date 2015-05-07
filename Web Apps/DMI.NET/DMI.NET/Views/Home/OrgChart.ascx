@@ -25,10 +25,13 @@
 		if ('<%=Model.any()%>' == 'False') {
 			$('#noData').show();
 			menu_toolbarEnableItem('divBtnPrintOrgChart', false);
+			menu_toolbarEnableItem('divBtnPrintPreviewOrgChart', false);
 			menu_toolbarEnableItem('mnutoolOrgChartExpand', false);
 			$('.mnuBtnPrintOrgChart>span').prop('disabled', true);
 			$('.mnuBtnPrintOrgChart').prop('disabled', true);
-			//$('.mnuBtnPrintOrgChart>span').hide();
+			$('.mnuBtnPrintPreviewOrgChart>span').prop('disabled', true);
+			$('.mnuBtnPrintPreviewOrgChart').prop('disabled', true);
+
 		} else {
 			//process the results into unordered list.		
 			$("#hiddenItems").find(":hidden").not("script").each(function () {
@@ -92,6 +95,7 @@
 
 			//Set up print options on ribbon
 			$(document).off('click', '.mnuBtnPrintOrgChart').on('click', '.mnuBtnPrintOrgChart', function () { printOrgChart(); });	// print all nodes
+			$(document).off('click', '.mnuBtnPrintPreviewOrgChart').on('click', '.mnuBtnPrintPreviewOrgChart', function () { printOrgChart(true); });	// print preview all nodes
 
 			//Enable org chart nodes to be selected for printing.				
 			$(document).off('click', '.mnuBtnSelectOrgChart').on('click', '.mnuBtnSelectOrgChart', function () {
@@ -162,7 +166,7 @@
 
 	}
 
-	function printOrgChart() {
+	function printOrgChart(pfPreview) {
 		
 		//calculate fPrintAll flag based on selection
 		var fPrintAll = ($('.printSelect').css('display') == "none");
@@ -176,13 +180,13 @@
 			var winHeight = 1;
 			var winWidth = 1;
 			
-			if (OpenHR.isChrome()) {
+			if (OpenHR.isChrome() || pfPreview) {
 				winHeight = screen.height / 2;
 				winWidth = screen.width / 2;
 			}
 
 			//Creates a new window, copies the required html content to it and send it to printer.
-			var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=' + winWidth + ', height=' + winHeight + ', visible=none', "");
+			var newWin = window.open("", "_blank", 'toolbar=' + (pfPreview ? 'yes' : 'no') + ',status=no,menubar=no,scrollbars=yes,resizable=yes, width=' + winWidth + ', height=' + winHeight + ', visible=none', "");
 			newWin.document.write('<link href=\"' + window.ROOT + 'Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css" rel="stylesheet" />');
 			newWin.document.write('<link href=\"' + window.ROOT + 'Scripts/jquery/jOrgChart/css/custom.css" rel="stylesheet" />');
 			newWin.document.write('<link href=\"' + window.ROOT + 'Scripts/jquery/jOrgChart/css/prettify.css" rel="stylesheet" />');
@@ -193,7 +197,7 @@
 			newWin.document.write('h2 {page-break-before: always;}'); //adds page breaks as required.
 			newWin.document.write('</sty');
 			newWin.document.write('le>');
-			newWin.document.write('<h1 style="width: 400px;">Organisation Chart</h1>');
+			newWin.document.write('<h1 style="width: 400px;">Organisation Chart</h1>');			
 
 			$('.printSelect').hide(); //hide the selection tickboxes.
 			$('.expandNode').hide(); //hide the selection tickboxes.
@@ -234,7 +238,8 @@
 
 			newWin.document.write('<scri');
 			newWin.document.write('pt type="text/javascript">');
-			newWin.document.write('setTimeout("this.print(); this.close();", 500);');
+			if (!pfPreview) newWin.document.write('setTimeout("this.print(); this.close();", 500);');
+			if (pfPreview) newWin.document.write("alert('Press control+P to print this page...');");
 			newWin.document.write('</scri');
 			newWin.document.write('pt>');
 			newWin.document.close();			
