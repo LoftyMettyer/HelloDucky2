@@ -782,9 +782,7 @@
 
 	function comboChange(piPromptID) {
 		var frmPromptedValues = document.getElementById('frmPromptedValues');
-		
-		var sSource = "promptLookup_" + piPromptID;
-		var ctlSource = frmPromptedValues.elements.item(sSource);
+		var ctlSource = $("#promptLookup_" + piPromptID)[0];
 
 		var controlCollection = frmPromptedValues.elements;
 		if (controlCollection != null) {
