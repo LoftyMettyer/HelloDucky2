@@ -85,6 +85,7 @@
   <ItemGroup>
     <Compile Include="AppCode\OutlookCalendar.vb" />
     <Compile Include="AppCode\General.vb" />
+    <Compile Include="AppCode\RedemptionLoader.vb" />
     <Compile Include="AppCode\Utilities.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -147,6 +148,12 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Redemption.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="bin\Redemption64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="COA.ico" />
     <Content Include="Misc\OutlookCalendar - Early Binding.txt" />
   </ItemGroup>
@@ -180,12 +187,12 @@
   <ItemGroup>
     <COMReference Include="Redemption">
       <Guid>{2D5E2D34-BED5-4B9F-9793-A31E26E6806E}</Guid>
-      <VersionMajor>4</VersionMajor>
-      <VersionMinor>7</VersionMinor>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>8</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
     <COMReference Include="stdole">
       <Guid>{00020430-0000-0000-C000-000000000046}</Guid>

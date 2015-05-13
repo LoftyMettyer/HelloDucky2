@@ -7,6 +7,7 @@ Public Class OpenHROutlookCalendarService
     Private _svcVersion As VersionNumber
     Private _openHRSystems As List(Of OpenHRSystem) = New List(Of OpenHRSystem)
     Private _exchangeServer As String = String.Empty
+    Private _serviceAccountPassword As String = String.Empty
     Private _outlookApp As OutlookCalendar
     Private _outlookWait As Int32 = 0
     Private _enableTrace As Boolean = False
@@ -64,6 +65,11 @@ Public Class OpenHROutlookCalendarService
             Next
 
             For Each configValue As KeyValueConfigurationElement In section.Settings
+                If configValue.Key = "serviceAccountPassword" Then
+                    _serviceAccountPassword = configValue.Value
+                    Continue For
+                End If
+
                 Tag = configValue.Key.ToLower().Trim()
                 Value = configValue.Value.ToLower().Trim()
 
@@ -315,7 +321,7 @@ Public Class OpenHROutlookCalendarService
                 TraceLog("-------------", sw, _enableTrace)
             End If
 
-            Using _outlookApp As New OutlookCalendar(sw, _enableTrace)
+            Using _outlookApp As New OutlookCalendar(sw, _enableTrace, _serviceAccountPassword)
 
                 For iOpenHRSystem As Int32 = 0 To _openHRSystems.Count - 1
                     Dim serverDBName As String = String.Format("{0}.{1}", _

@@ -9,7 +9,7 @@ Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 3
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
+		SccTeamFoundationServer = http://10.14.1.33:8080/tfs/defaultcollection
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = Service\\HR\u0020Pro\u0020Outlook\u0020Calendar\u0020Service.vbproj
 		SccProjectName1 = Service
@@ -23,12 +23,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C4AD6D51-6646-4E70-AE80-DD433906D5F2}.Debug|Any CPU.ActiveCfg = Release|Any CPU
-		{C4AD6D51-6646-4E70-AE80-DD433906D5F2}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{C4AD6D51-6646-4E70-AE80-DD433906D5F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4AD6D51-6646-4E70-AE80-DD433906D5F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4AD6D51-6646-4E70-AE80-DD433906D5F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4AD6D51-6646-4E70-AE80-DD433906D5F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7B9684A6-C47D-48CF-AA88-18CE56CDA075}.Debug|Any CPU.ActiveCfg = Release
-		{7B9684A6-C47D-48CF-AA88-18CE56CDA075}.Debug|Any CPU.Build.0 = Release
+		{7B9684A6-C47D-48CF-AA88-18CE56CDA075}.Debug|Any CPU.ActiveCfg = Debug
+		{7B9684A6-C47D-48CF-AA88-18CE56CDA075}.Debug|Any CPU.Build.0 = Debug
 		{7B9684A6-C47D-48CF-AA88-18CE56CDA075}.Release|Any CPU.ActiveCfg = Release
 		{7B9684A6-C47D-48CF-AA88-18CE56CDA075}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
