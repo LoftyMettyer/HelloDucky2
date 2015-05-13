@@ -341,7 +341,7 @@
 				$('#main').css('marginTop', '30px'); //.css('borderTop', '1px solid rgb(206, 206, 206)');
 			}
 
-			$("#PageDivTitle").val($("#txtDefn_Name").val());
+			$("#PageDivTitle").text($("#txtDefn_Name").val());
 			$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
 			$("#outputoptions").hide();
 
