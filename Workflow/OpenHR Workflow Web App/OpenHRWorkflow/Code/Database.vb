@@ -234,7 +234,9 @@ Public Class Database
 
 			cmd.ExecuteNonQuery()
 
-			Return CStr(cmd.Parameters("@psMessage").Value())
+			' oWasp - Be as unhelpful as possible.
+			'Return CStr(cmd.Parameters("@psMessage").Value())
+			Return "An email has been sent to the entered address with your login details"
 
 		End Using
 	End Function
