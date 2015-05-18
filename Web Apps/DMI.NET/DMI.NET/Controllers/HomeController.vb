@@ -4857,17 +4857,19 @@ Namespace Controllers
 
 				Dim safeFileName As String = Request.Form("txtOLEFile")	' contains file path in IE
 
-				' Remove file path info.
-				safeFileName = Path.GetFileName(safeFileName)
+				If safeFileName.Length > 0 Then
+					' Remove file path info.
+					safeFileName = Path.GetFileName(safeFileName)
 
-				' Strip out all unicode characters/special characters to meet OWASP requirement
-				safeFileName = String.Join("_", safeFileName.Split(Path.GetInvalidFileNameChars()))
+					' Strip out all unicode characters/special characters to meet OWASP requirement
+					safeFileName = String.Join("_", safeFileName.Split(Path.GetInvalidFileNameChars()))
 
-				' Ensure only one dot and alpha-numeric characters.
-				' Force filename and extension to both be present.
-				Dim regex As New Regex("[\w]{1,200}\.[\w]{1,10}", DirectCast(0, RegexOptions))	' taken from OWASP website.
-				If Not regex.IsMatch(safeFileName) Then
-					Return New HttpStatusCodeResult(400, "Your selected filename contains invalid characters and cannot be uploaded.")
+					' Ensure only one dot and alpha-numeric characters.
+					' Force filename and extension to both be present.
+					Dim regex As New Regex("[\w]{1,200}\.[\w]{1,10}", DirectCast(0, RegexOptions))	' taken from OWASP website.
+					If Not regex.IsMatch(safeFileName) Then
+						Return New HttpStatusCodeResult(400, "Your selected filename contains invalid characters and cannot be uploaded.")
+					End If
 				End If
 
 
