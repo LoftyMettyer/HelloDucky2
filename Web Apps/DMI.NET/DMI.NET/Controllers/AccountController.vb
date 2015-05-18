@@ -173,24 +173,40 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
-		<ValidateAntiForgeryToken>
-		Function Login(loginviewmodel As LoginViewModel, Optional isWidgetLogin As Boolean = False,
-					Optional widgetUser As String = "",
-					Optional widgetPassword As String = "",
-					Optional widgetDatabase As String = "",
-					Optional widgetServer As String = "") As ActionResult
+<ValidateAntiForgeryToken>
+		Function Login(loginviewmodel As LoginViewModel) As ActionResult
+
+			Try
+				LicenceHub.RemoveUnauthenticatedSession(Session.SessionID)
+
+				Session.Abandon()
+				Response.Cookies.Add(New HttpCookie("ASP.NET_SessionId", ""))
+
+			Catch ex As Exception
+
+			End Try
+
+			Return RedirectToAction("ActualLogin", "Account", loginviewmodel)
+
+		End Function
+
+		Public Function ActualLogin(loginviewmodel As LoginViewModel, Optional isWidgetLogin As Boolean = False,
+				Optional widgetUser As String = "",
+				Optional widgetPassword As String = "",
+				Optional widgetDatabase As String = "",
+				Optional widgetServer As String = "") As ActionResult
 
 			Try
 
 				If Not ModelState.IsValid Then
 					loginviewmodel.ReadFromCookie()
-					Return View(loginviewmodel)
+					Return View("login", loginviewmodel)
 				End If
 
 				If loginviewmodel.UserName.ToLower() = "sa" Then
 					ModelState.AddModelError(Function(i As LoginViewModel) i.UserName, "The System Administrator cannot use the OpenHR Web module.")
 					loginviewmodel.ReadFromCookie()
-					Return View(loginviewmodel)
+					Return View("login", loginviewmodel)
 				End If
 
 				'Dim sReferringPage
@@ -212,10 +228,9 @@ Namespace Controllers
 						bWindowsAuthentication = True
 					End If
 
-					sLocaleCultureName = Request.Form("txtLocaleCulture")
-
-					sLocaleDecimalSeparator = Request.Form("txtLocaleDecimalSeparator")
-					sLocaleThousandSeparator = Request.Form("txtLocaleThousandSeparator")
+					sLocaleCultureName = loginviewmodel.txtLocaleCulture
+					sLocaleDecimalSeparator = loginviewmodel.txtLocaleDecimalSeparator
+					sLocaleThousandSeparator = loginviewmodel.txtLocaleThousandSeparator
 
 				Else
 					' Read the User Name and Password from the Login form.
@@ -252,7 +267,7 @@ Namespace Controllers
 						sErrorMessage = String.Format("The database licence is invalid. Please ask the System Administrator to update the database for use with version {0}.{1}.{2}." _
 								, objAppVersion.Major, objAppVersion.Minor, objAppVersion.Build)
 						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, sErrorMessage)
-						Return View(loginviewmodel)
+						Return View("login", loginviewmodel)
 					End If
 
 					' Validate the login
@@ -267,19 +282,19 @@ Namespace Controllers
 					' Generic login fail.
 					If objLogin.LoginFailReason.Length <> 0 Then
 						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, objServerSession.LoginInfo.LoginFailReason)
-						Return View(loginviewmodel)
+						Return View("login", loginviewmodel)
 					End If
 
 					' Database update in progress
 					If objServerSession.DatabaseStatus.IsUpdateInProgress Then
 						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, "A database update is in progress.")
-						Return View(loginviewmodel)
+						Return View("login", loginviewmodel)
 					End If
 
 					' Users that are assigned certain server roles cannot log in (I think its dodgy because we rely too heavily on dbo)
 					If objLogin.IsServerRole Then
 						ModelState.AddModelError(Function(i As LoginViewModel) i.UserName, "Users assigned to fixed SQL Server roles cannot use OpenHR web.")
-						Return View(loginviewmodel)
+						Return View("login", loginviewmodel)
 					End If
 
 					If Not CompareVersion(objServerSession.DatabaseStatus.IntranetVersion, objAppVersion, False) _
@@ -287,13 +302,13 @@ Namespace Controllers
 						sErrorMessage = String.Format("The database is out of date. Please ask the System Administrator to update the database for use with version {0}.{1}.{2}." _
 								, objAppVersion.Major, objAppVersion.Minor, objAppVersion.Build)
 						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, sErrorMessage)
-						Return View(loginviewmodel)
+						Return View("login", loginviewmodel)
 					End If
 
 					' Valid login, but do we have any kind of access?
 					If Not (objLogin.IsSSIUser OrElse objLogin.IsDMIUser) Then
 						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, "You are not permitted to use OpenHR Web with this user name.")
-						Return View(loginviewmodel)
+						Return View("login", loginviewmodel)
 					End If
 
 					' User is allowed into OpenHR, now populate some metadata
@@ -342,7 +357,7 @@ Namespace Controllers
 
 				Catch ex As Exception
 					ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, ex.Message.RemoveSensitive())
-					Return View(loginviewmodel)
+					Return View("login", loginviewmodel)
 
 				End Try
 
@@ -472,6 +487,8 @@ Namespace Controllers
 				loginviewmodel.SessionId = Session.SessionID
 
 				Session("sessionCurrentUser") = loginviewmodel
+
+				LicenceHub.AddAuthenticatedLogin(loginviewmodel)
 
 			Catch ex As Exception
 				Throw

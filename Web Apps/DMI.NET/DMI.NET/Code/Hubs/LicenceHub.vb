@@ -293,8 +293,10 @@ Namespace Code.Hubs
 		Public Shared Function NavigateWebArea(objCurrentLogin As LoginViewModel, targetWebArea As WebArea) As LicenceValidation
 
 			Try
+				Dim sessionId = HttpContext.Current.Session.SessionID
 
-				Dim objLogin = Logins.First(Function(m) m.SessionId = objCurrentLogin.SessionId())
+
+				Dim objLogin = Logins.First(Function(m) m.SessionId = sessionId)
 				Dim allow As LicenceValidation = LicenceValidation.Ok
 
 				objLogin.UserName = objCurrentLogin.UserName
@@ -303,7 +305,7 @@ Namespace Code.Hubs
 				If Not objLogin.WebArea = targetWebArea Then
 					allow = AllowAccess(targetWebArea)
 					If allow = LicenceValidation.Insufficient Or allow = LicenceValidation.Expired Then
-						LogOff(objCurrentLogin.SessionId, TrackType.InsufficientLicence)
+						LogOff(sessionId, TrackType.InsufficientLicence)
 
 					Else
 						objLogin.IsLoggedIn = True
@@ -465,6 +467,31 @@ Namespace Code.Hubs
 			End Try
 
 		End Sub
+
+		Public Shared Sub RemoveUnauthenticatedSession(sessionId As String)
+
+			Try
+				Logins.RemoveAll(Function(m) m.SessionId = sessionId)
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+		End Sub
+
+		Public Shared Sub AddAuthenticatedLogin(login As LoginViewModel)
+
+			Try
+				Logins.Add(login)
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+		End Sub
+
 
 	End Class
 End Namespace

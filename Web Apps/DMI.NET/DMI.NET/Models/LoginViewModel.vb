@@ -33,6 +33,10 @@ Namespace Models
 
 		Public Property LoginStatus As String
 
+		Public Property txtLocaleCulture As String
+		Public Property txtLocaleDecimalSeparator As String
+		Public Property txtLocaleThousandSeparator As String
+
 		Public ReadOnly Property DeviceBrowser As String
 			Get
 				Return String.Format("{0} ({1})", Device, Browser)
