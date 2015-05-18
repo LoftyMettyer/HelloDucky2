@@ -57,5 +57,12 @@ Namespace Code
 				Return ConfigurationManager.AppSettings("AdminRequiresIE")
 			End Get
 		End Property
+
+		Public Shared ReadOnly Property ValidFileExtensions As String
+			Get
+				Return ConfigurationManager.AppSettings("ValidFileExtensions")
+			End Get
+		End Property
+
 	End Class
 End Namespace

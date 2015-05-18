@@ -250,6 +250,10 @@
 		</div>
 
 	</div>
+	
+	<div id="globals">
+		<input type="hidden" id="ValidFileExtensions" value="<%:Session("ValidFileExtensions")%>"/>
+	</div>
 
 	<%Session("LoggingIn") = False%>	
 

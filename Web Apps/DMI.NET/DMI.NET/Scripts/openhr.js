@@ -1445,9 +1445,8 @@
 		});
 	},
 
-	isExecutableFiletype = function(filename) {
-
-		var validFileExtensions = "html,htm,php,php2,php3,php4,php5,phtml,pwml,inc,asp,aspx,ascx,jsp,cfm,cfc,pl,bat,exe,com,dll,vbs,js,reg,cgi,htaccess,asis,sh,shtml,shtm,phtm".split(",");
+	isValidFileExtension = function (filename) {
+		var validFileExtensions = $("#globals>#ValidFileExtensions").val().toLowerCase().split(",");
 
 		var fileExtension = OpenHR.GetFileExtension(filename).toLocaleLowerCase();
 		if (validFileExtensions.indexOf(fileExtension) == -1) return false;
@@ -1511,7 +1510,7 @@
 		validateInteger: validateInteger,
 		validateNumeric: validateNumeric,
 		displayServerMessage: displayServerMessage,
-		isExecutableFiletype: isExecutableFiletype
+		isValidFileExtension: isValidFileExtension
 	};	
 
 })(window, jQuery);

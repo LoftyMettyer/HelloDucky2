@@ -9,4 +9,6 @@
 	<add key="UI_Banner_Colour" value="" />
 	<add key="UI_Banner_Justification" value="" />
 	<add key="AdminRequiresIE" value="false" />
+
+	<add key="ValidFileExtensions" value="doc,dot,docx,dotx,xls,xlt,xlsx,xltx,ppt,pot,pps,pptx,potx,ppsx,sldx,pub,jpeg,jpg,gif,bmp,png,pdf"/>
 </appSettings>

@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports System.Linq
 Imports System.Runtime.CompilerServices
 Imports System.Security
 
@@ -38,6 +39,14 @@ Namespace Extensions
 
 			Dim sPath = Path.GetDirectoryName(filename)
 			Return Mid(sPath, Len(Path.GetPathRoot(filename)))
+
+		End Function
+
+		<Extension> _
+	 Public Function IsPictureExtension(source As String) As Boolean
+
+			Dim extensions = Split(".jpg, .gif, .bmp", ",")
+			Return extensions.Contains(source)
 
 		End Function
 

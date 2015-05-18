@@ -99,6 +99,11 @@ Public Class MvcApplication
 		If Session("AdminRequiresIE") Is Nothing Or Len(Session("AdminRequiresIE")) <= 0 Then Session("AdminRequiresIE") = "true"
 		Session("AdminRequiresIE") = Session("AdminRequiresIE").ToString().ToUpper()
 
+		' Set valid file extensions for OLE Uploads.
+		Session("ValidFileExtensions") = ApplicationSettings.ValidFileExtensions
+		If Session("ValidFileExtensions") Is Nothing Or Len(Session("ValidFileExtensions")) <= 0 Then Session("ValidFileExtensions") = "" ' nothing by default!
+		Session("ValidFileExtensions") = Session("ValidFileExtensions").ToString().ToUpper()
+
 		' Banner layout
 		' leftmost banner graphic
 		Dim customImageFileName As String = FindImageFileByName("customtopbar")

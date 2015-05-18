@@ -240,7 +240,7 @@
 		}
 	}
 
-	function Select() {		
+	function Select() {
 		var frmFindForm = document.getElementById('frmFindForm');
 		var frmGotoOption = document.getElementById('frmFindForm');
 		if (bookmarksCount() > 0) {
@@ -308,7 +308,7 @@
 	}
 
 	//This function is called when frmFindForm is submitted...
-	$('#frmFindForm').submit(function (e) {
+	function submitOLE() {		
 		var fOK;
 		fOK = true;
 		var frmFindForm = document.getElementById('frmFindForm');
@@ -349,7 +349,6 @@
 
 			// Pass the new filename in with the text to flag it as a linked file
 			if (fOK == true) {
-				$("#optionframe").dialog("destroy");
 
 				//frmGotoOption.txtGotoOptionFile.value = frmGotoOption.txtOLEJustFileName.value;
 				if (frmGotoOption.txtOLEType.value == 3) {
@@ -371,13 +370,31 @@
 				recEdit_setData($('#txtOptionColumnID').val(), $('#txtFile').val());
 				//TODO: 
 				recEdit_setTimeStamp('<%=session("timestamp")%>');
+				
+				var form = document.getElementById("frmFindForm");
+				var data = new FormData(form);
+				var file = "";
+				var filSelectFile = document.getElementById('filSelectFile');
+				file = filSelectFile.files[0];
+				data.append("file", file);
 
-				e.preventDefault();
-				this.submit();
-
-				setTimeout(function () { // Delay for Chrome
-					loadEmptyOption();
-				}, 100);
+				$.ajax({
+					type: "POST",
+					url: "oleFind_Submit",
+					contentType: false,
+					processData: false,
+					data: data,
+					success: function (result) {						
+						$("#optionframe").dialog("destroy");
+						loadEmptyOption();
+					},
+					error: function (xhr, status, p3, p4) {
+						var err = p3;
+						if (xhr.responseText && xhr.responseText[0] == "{")
+							err = JSON.parse(xhr.responseText).Message;
+						OpenHR.modalMessage(err);
+					}
+				});			
 
 			} else {
 				button_disable(frmFindForm.cmdSelect, true);
@@ -386,7 +403,7 @@
 			}
 		}
 		return false;
-	});
+	}
 
 
 	//This function replaces the 'Response.Redirect('emptyoption') in the controller,
@@ -446,9 +463,9 @@
 			}
 		} else {
 			//validate against executable uploads
-			if (OpenHR.isExecutableFiletype(filSelectFile.value)) {
-				//invalid extension
-				OpenHR.modalMessage("Executable file types cannot be uploaded.");
+			if (!OpenHR.isValidFileExtension(filSelectFile.value)) {
+				//invalid extension - includes missing file extensions.
+				OpenHR.modalMessage("OpenHR Web cannot upload this type of file.");
 				return false;
 			}
 		}
@@ -934,7 +951,7 @@
 										<td width="40">&nbsp;&nbsp;
 										</td>		
 										<td width="10">
-											<input id="cmdSelect" name="cmdSelect" type="submit" value="OK" disabled="disabled" class="btn" />
+											<input id="cmdSelect" name="cmdSelect" type="button" onclick="submitOLE()" value="OK" disabled="disabled" class="btn" />
 										</td>								
 										<%
 										End If
@@ -964,7 +981,7 @@
 			Response.Write("<INPUT type='hidden' id='txtFFOLEType' name='txtFFOLEType' value='" & Session("optionOLEType") & "'>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id='txtOLEMaxEmbedSize' name='txtOLEMaxEmbedSize' value='" & Session("optionOLEMaxEmbedSize") & "'>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id='txtOLEReadOnly' name='txtOLEReadOnly' value='" & Session("optionOLEReadOnly") & "'>" & vbCrLf)
-			Response.Write("<INPUT type='hidden' id='txtIsPhoto' name='txtIsPhoto' value='" & Session("optionIsPhoto") & "'>" & vbCrLf)
+			Response.Write("<INPUT type='hidden' id='txtIsPhoto' name='txtIsPhoto' value='" & Session("optionIsPhoto") & "'>" & vbCrLf)			
 			
 			' Create the document from the database into the temporary UNC path
 			Dim strFullFileName As String

@@ -1761,9 +1761,9 @@ function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto, uniqueID)
 		}
 	}
 	else if (!deleteflag) {
-		if (OpenHR.isExecutableFiletype(file.name)) {
+		if (!OpenHR.isValidFileExtension(file.name)) {
 			//invalid extension
-			OpenHR.modalMessage("Executable file types cannot be uploaded.");
+			OpenHR.modalMessage("OpenHR Web cannot upload this type of file.");
 			return false;
 		}
 	}

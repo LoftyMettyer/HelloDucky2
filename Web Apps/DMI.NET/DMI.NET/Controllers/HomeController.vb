@@ -4808,9 +4808,8 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function oleFind_Submit(filSelectFile As HttpPostedFileBase) As PartialViewResult
+		Function oleFind_Submit(form As FormCollection) As ActionResult
 
-			'Dim objOLE
 			Dim filesize As Integer = 0
 			Dim buffer As Byte()
 			Dim iOLEType As OLEType
@@ -4821,40 +4820,18 @@ Namespace Controllers
 
 			iOLEType = CType(Request.Form("txtOLEType"), OLEType)
 
-			If (iOLEType = OLEType.Local Or iOLEType = OLEType.Server) And sAction = OptionActionType.Empty Then
-				' We're just copying a file from client to server.
-				' Read custom attributes
-				Dim fileName As String = Request.Form("txtOLEJustFileName")
-				Dim serverPath As String = Request.Form("txtOLEServerPath")
+			' Check that any uploaded files have a valid file extension
+			If Not IsValidFileExtension(Request.Form("txtOLEJustFileName")) Then
+				Return New HttpStatusCodeResult(400, "OpenHR Web cannot upload this type of file.")
+			End If
 
-				If serverPath.Substring(serverPath.Length - 1) <> "\" And serverPath.Length > 0 Then
-					serverPath &= "\"
-				End If
+			' Commit changes to the database		
+			If sAction = OptionActionType.LINKOLE Then
 
-				Try
-					' Read input stream from request
-					buffer = New Byte(filSelectFile.InputStream.Length - 1) {}
-					Dim offset As Integer = 0
-					Dim cnt As Integer = 0
-					While (InlineAssignHelper(cnt, filSelectFile.InputStream.Read(buffer, offset, 10))) > 0
-						offset += cnt
-					End While
+				If Request.Files.Count > 0 Then
+					Dim filSelectFile = Request.Files(0)
 
-					IO.File.WriteAllBytes(serverPath + fileName, buffer)
-
-				Catch ex As Exception
-					Session("ErrorTitle") = "File upload"
-					Session("ErrorText") = "You could not upload the file because of the following error:<p>" & ex.Message.RemoveSensitive
-					Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
-					'Return Json(data1, JsonRequestBehavior.AllowGet)
-				End Try
-
-			Else
-				' Moved to embedfile:
-				' Commit changes to the database		
-				If sAction = OptionActionType.LINKOLE Then
-
-					If Not filSelectFile Is Nothing Then
+					If filSelectFile IsNot Nothing Then
 						filesize = filSelectFile.InputStream.Length
 						buffer = New Byte(filSelectFile.InputStream.Length - 1) {}
 						Dim offset As Integer = 0
@@ -4863,71 +4840,97 @@ Namespace Controllers
 						While (InlineAssignHelper(cnt, filSelectFile.InputStream.Read(buffer, offset, 10))) > 0
 							offset += cnt
 						End While
+
+						' If this is an image type, check it's contents really are an image.
+						If Path.GetExtension(filSelectFile.FileName).IsPictureExtension() Then
+							If Not IsValidImageFromStream(filSelectFile.InputStream) Then
+								Return New HttpStatusCodeResult(400, "Not a valid image file.")
+							End If
+						End If
+
 					End If
 
-					' The file will (should) have already been copied from the client to the temp path
-					Dim objOLE As Ole = Session("OLEObject")
-					With objOLE
-						.OLEType = CType(Request.Form("txtOLEType"), OLEType)
-						.FileName = Request.Form("txtOLEFile")
-						.DisplayFilename = Request.Form("txtOLEJustFileName")
-						.OLEFileSize = filesize	' Request.Form("txtOLEFileSize")
-						Dim oleErrorResponse As String = .SaveStream(Session("optionRecordID"), Session("optionColumnID"), buffer)
+				End If
 
-						If oleErrorResponse.Length > 0 Then
-							oleErrorResponse = Server.HtmlEncode("Unable to embed file:" & vbCrLf & oleErrorResponse)
-						End If
-						Session("errorMessage") = oleErrorResponse
+				' The file will (should) have already been copied from the client to the temp path
+				Dim objOLE As Ole = Session("OLEObject")
 
-						If .OLEType = OLEType.Embedded Then
-							Session("optionFileValue") = .ExtractPhotoToBase64(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"))
-						Else
-							Session("optionFileValue") = .FileName
-						End If
+				Dim safeFileName As String = Request.Form("txtOLEFile")	' contains file path in IE
 
-					End With
-					Session("OLEObject") = objOLE
-					objOLE = Nothing
+				' Remove file path info.
+				safeFileName = Path.GetFileName(safeFileName)
 
-					Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
-					Session("timestamp") = objDatabase.GetRecordTimestamp(CleanNumeric(Session("optionRecordID")), Session("realSource"))
+				' Strip out all unicode characters/special characters to meet OWASP requirement
+				safeFileName = String.Join("_", safeFileName.Split(Path.GetInvalidFileNameChars()))
 
-					'Update the ID badge picture in Session only if the user that is being edited is the same as the logged in user and we are embeding a photo
-					If CInt(Session("PreviousRecordID")) = CInt(Session("LoggedInUserRecordID")) And Session("optionIsPhoto") = True Then
-						If Session("optionFileValue") = "" Then
-							Session("SelfServicePhotograph_Src") = Url.Content("~/Content/images/anonymous.png")
-						Else
-							Session("SelfServicePhotograph_Src") = "data:image/jpeg;base64," & Session("optionFileValue")
-						End If
+				' Ensure only one dot and alpha-numeric characters.
+				' Force filename and extension to both be present.
+				Dim regex As New Regex("[\w]{1,200}\.[\w]{1,10}", DirectCast(0, RegexOptions))	' taken from OWASP website.
+				If Not regex.IsMatch(safeFileName) Then
+					Return New HttpStatusCodeResult(400, "Your selected filename contains invalid characters and cannot be uploaded.")
+				End If
+
+
+				With objOLE
+					.OLEType = CType(Request.Form("txtOLEType"), OLEType)
+					.FileName = safeFileName
+					.DisplayFilename = safeFileName
+					.OLEFileSize = filesize
+					Dim oleErrorResponse As String = .SaveStream(Session("optionRecordID"), Session("optionColumnID"), buffer)
+
+					If oleErrorResponse.Length > 0 Then
+						oleErrorResponse = Server.HtmlEncode("Unable to embed file:" & vbCrLf & oleErrorResponse)
+					End If
+					Session("errorMessage") = oleErrorResponse
+
+					If .OLEType = OLEType.Embedded Then
+						Session("optionFileValue") = .ExtractPhotoToBase64(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"))
+					Else
+						Session("optionFileValue") = .FileName
+					End If
+
+				End With
+				Session("OLEObject") = objOLE
+				objOLE = Nothing
+
+				Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+				Session("timestamp") = objDatabase.GetRecordTimestamp(CleanNumeric(Session("optionRecordID")), Session("realSource"))
+
+				'Update the ID badge picture in Session only if the user that is being edited is the same as the logged in user and we are embeding a photo
+				If CInt(Session("PreviousRecordID")) = CInt(Session("LoggedInUserRecordID")) And Session("optionIsPhoto") = True Then
+					If Session("optionFileValue") = "" Then
+						Session("SelfServicePhotograph_Src") = Url.Content("~/Content/images/anonymous.png")
+					Else
+						Session("SelfServicePhotograph_Src") = "data:image/jpeg;base64," & Session("optionFileValue")
 					End If
 				End If
-
-				Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-				Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
-				Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-				Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
-				Session("optionValue") = Request.Form("txtGotoOptionValue")
-				Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
-				Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
-				Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
-				Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-				Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
-				Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
-				Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-				Session("optionFile") = Request.Form("txtGotoOptionFile")
-				Session("optionAction") = sAction
-				Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
-				Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
-				Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
-				Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-				Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
-				Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
-
-				If sAction = OptionActionType.CANCEL Then
-					Session("errorMessage") = sErrorMsg
-				End If
-
 			End If
+
+			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
+			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
+			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
+			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
+			Session("optionValue") = Request.Form("txtGotoOptionValue")
+			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
+			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
+			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
+			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
+			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
+			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
+			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
+			Session("optionFile") = Request.Form("txtGotoOptionFile")
+			Session("optionAction") = sAction
+			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
+			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
+			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
+			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
+			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
+			Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
+
+			If sAction = OptionActionType.CANCEL Then
+				Session("errorMessage") = sErrorMsg
+			End If
+
 
 		End Function
 
@@ -4968,33 +4971,61 @@ Namespace Controllers
 					Dim fileContent = Request.Files(file)
 					Dim columnID = form.Item("columnID")
 					Dim recordID = form.Item("recordID")
+					Dim fOk As Boolean = True
 
-					If Not fileContent Is Nothing And fileContent.ContentLength > 0 Then
-						Dim buffer As Byte()
-						buffer = New Byte(fileContent.InputStream.Length - 1) {}
-						Dim offset As Integer = 0
-						Dim cnt As Integer = 0
-						While (InlineAssignHelper(cnt, fileContent.InputStream.Read(buffer, offset, 10))) > 0
-							offset += cnt
-						End While
+					' OWASP checks on filename
+					Dim safeFileName As String = fileContent.FileName	' contains file path in IE
 
-						With objOLE
-							.OLEType = OLEType.Embedded
-							.FileName = fileContent.FileName
-							.DisplayFilename = Path.GetFileName(fileContent.FileName)
-							.OLEFileSize = fileContent.ContentLength.ToString()
+					' Remove file path info.
+					safeFileName = Path.GetFileName(safeFileName)
 
-							Dim oleErrorResponse As String = .SaveStream(recordID, columnID, buffer)
+					' Strip out all unicode characters/special characters to meet OWASP requirement
+					safeFileName = String.Join("_", safeFileName.Split(Path.GetInvalidFileNameChars()))
 
-							If oleErrorResponse.Length > 0 Then
-								oleErrorResponse = Server.HtmlEncode("Unable to embed file:" & vbCrLf & oleErrorResponse)
+					' Ensure only one dot and alpha-numeric characters.
+					' Force filename and extension to both be present.
+					Dim regex As New Regex("[\w]{1,200}\.[\w]{1,10}", DirectCast(0, RegexOptions))	' taken from OWASP website.
+					If Not regex.IsMatch(safeFileName) Then
+						Session("errorMessage") = "Your selected filename contains invalid characters and cannot be uploaded."
+						Return Session("errorMessage").ToString()						
+					Else
+						If (fileContent IsNot Nothing) AndAlso fileContent.ContentLength > 0 Then
+
+							' If this is an image type, check it's contents really are an image.
+							If Path.GetExtension(fileContent.FileName).IsPictureExtension() Then
+								If Not IsValidImageFromStream(fileContent.InputStream) Then
+									Session("errorMessage") = "Not a valid image file."
+									Return Session("errorMessage").ToString()
+								End If
 							End If
-							Session("errorMessage") = oleErrorResponse
+
+							Dim buffer As Byte()
+							buffer = New Byte(fileContent.InputStream.Length - 1) {}
+							Dim offset As Integer = 0
+							Dim cnt As Integer = 0
+							While (InlineAssignHelper(cnt, fileContent.InputStream.Read(buffer, offset, 10))) > 0
+								offset += cnt
+							End While
+
+							With objOLE
+								.OLEType = OLEType.Embedded
+								.FileName = fileContent.FileName
+								.DisplayFilename = Path.GetFileName(fileContent.FileName)
+								.OLEFileSize = fileContent.ContentLength.ToString()
+
+								Dim oleErrorResponse As String = .SaveStream(recordID, columnID, buffer)
+
+								If oleErrorResponse.Length > 0 Then
+									oleErrorResponse = Server.HtmlEncode("Unable to embed file:" & vbCrLf & oleErrorResponse)
+								End If
+								Session("errorMessage") = oleErrorResponse
 
 
-						End With
-						Session("OLEObject") = objOLE
-						objOLE = Nothing
+							End With
+							Session("OLEObject") = objOLE
+							objOLE = Nothing
+						End If
+
 
 					End If
 

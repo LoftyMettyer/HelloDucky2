@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SqlClient
+Imports System.IO
 
 Public Module GeneralUtilities
 	Public Function IsDataColumnDecimal(col As DataColumn) As Boolean
@@ -50,12 +51,50 @@ Public Module GeneralUtilities
 	'Look at https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Values,_variables,_and_literals#Literals
 	'\xXX The character with the Latin-1 encoding specified by the two hexadecimal digits XX between 00 and FF
 	Public Function EncodeStringToJavascriptSpecialCharacters(s As String) As String
-	Dim retVal As String = ""
+		Dim retVal As String = ""
 
-	For i = 0 To s.Length - 1
-		retVal = String.Concat(retVal, "\x", AscW(s.Chars(i)).ToString("X"))
-	Next
+		For i = 0 To s.Length - 1
+			retVal = String.Concat(retVal, "\x", AscW(s.Chars(i)).ToString("X"))
+		Next
 
-	Return retVal
+		Return retVal
 	End Function
+
+	Public Function IsValidFileExtension(filename As String) As Boolean
+
+		If filename = "" Then Return True ' no filename provided. Fine.
+		
+		Try
+			Dim arrValidExtensions() As String = HttpContext.Current.Session("ValidFileExtensions").ToString().ToLower().Split(",")
+			Dim fileExtension As String = Path.GetExtension(filename)
+
+			If fileExtension = "" Then Return False ' no extension is also invalid
+			fileExtension = fileExtension.Replace(".", "").ToLower()
+
+			Return (Array.IndexOf(arrValidExtensions, fileExtension) >= 0)
+
+		Catch ex As Exception
+			Return False
+		End Try
+
+
+	End Function
+
+	Public Function IsValidImageFromStream(filename As Stream) As Boolean
+		Try
+			filename.Seek(0, SeekOrigin.Begin)			
+			Dim img As System.Drawing.Image = System.Drawing.Image.FromStream(filename)
+		Catch
+			' Image.FromFile throws an OutOfMemoryException  
+			' if the file does not have a valid image format or 
+			' GDI+ does not support the pixel format of the file. 
+			' 
+			Return False
+		Finally
+			filename.Seek(0, SeekOrigin.Begin)
+		End Try
+		Return True
+	End Function
+
+
 End Module
