@@ -86,6 +86,10 @@ Partial Class Site
 		SetupViewport()
 	End Sub
 
+	Private Sub Page_Load() Handles MyBase.Load
+		SiteCSSLink.Attributes.Add("href", Request.ApplicationPath & "/content/site.css") 'Set the site.css path as absolute
+	End Sub
+
 	Public Sub ShowDialog(title As String, message As String, Optional redirectTo As String = "")
 
 		dialogTitle.InnerText = title

@@ -9,7 +9,7 @@
         <link rel="shortcut icon" type="image/x-icon" href="images/logo.ico" />
         <link rel="icon" type="image/ico" href="images/logo.ico" />
         <link rel="apple-touch-icon" href="Images/Adv_hr&payroll.gif" />
-        <link href="content/site.css" rel="stylesheet" type="text/css" />
+        <link runat="server" id="SiteCSSLink" rel="stylesheet" type="text/css" />
         <title></title>
         
         <style type="text/css">

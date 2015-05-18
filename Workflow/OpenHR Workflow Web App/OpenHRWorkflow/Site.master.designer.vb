@@ -14,6 +14,15 @@ Option Explicit On
 Partial Public Class Site
 
 	'''<summary>
+	'''SiteCSSLink control.
+	'''</summary>
+	'''<remarks>
+	'''Auto-generated field.
+	'''To modify move field declaration from designer file to code-behind file.
+	'''</remarks>
+	Protected WithEvents SiteCSSLink As Global.System.Web.UI.HtmlControls.HtmlLink
+
+	'''<summary>
 	'''headCPH control.
 	'''</summary>
 	'''<remarks>
