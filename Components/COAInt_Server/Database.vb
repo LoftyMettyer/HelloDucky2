@@ -47,6 +47,9 @@ Public Class Database
             ' Update UserSettings collection as this is what's actually used post-login.
             UserSettings = SessionInfo.UserSettings
 
+            Dim objSetting As UserSetting = UserSettings.GetUserSetting(strSection, strKey)
+            objSetting.Value = varSetting
+
         Catch ex As Exception
             Throw
 
