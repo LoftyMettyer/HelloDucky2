@@ -30,6 +30,8 @@ Public Class MvcApplication
 			InputValidation.Initialise()
 		End If
 
+		'Suppress the X-Frame-Options: SameOrigin server header; the user can configure in IIS if they want/need OpenHR to be embedded on an iframe (see installation guide)
+		AntiForgeryConfig.SuppressXFrameOptionsHeader = True
 	End Sub
 
 	Protected Sub Application_End()
