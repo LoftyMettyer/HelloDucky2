@@ -27,35 +27,32 @@ Public Class Database
 			Return prmResult.Value.ToString()
 
 		Catch ex As Exception
-			Return ""
+            Return ""
 
-		End Try
+        End Try
 
-	End Function
+    End Function
 
 
-	Public Sub SaveUserSetting(strSection As String, strKey As String, varSetting As Object)
+    Public Sub SaveUserSetting(strSection As String, strKey As String, varSetting As Object)
 
-		Try
+        Try
 
-			DB.ExecuteSP("sp_ASRIntSaveSetting" _
-					, New SqlParameter("psSection", SqlDbType.VarChar, 255) With {.Value = strSection} _
-					, New SqlParameter("psKey", SqlDbType.VarChar, 255) With {.Value = strKey} _
-					, New SqlParameter("pfUserSetting", SqlDbType.Bit) With {.Value = True} _
-					, New SqlParameter("psValue", SqlDbType.VarChar, -1) With {.Value = varSetting})
+            DB.ExecuteSP("sp_ASRIntSaveSetting" _
+                    , New SqlParameter("psSection", SqlDbType.VarChar, 255) With {.Value = strSection} _
+                    , New SqlParameter("psKey", SqlDbType.VarChar, 255) With {.Value = strKey} _
+                    , New SqlParameter("pfUserSetting", SqlDbType.Bit) With {.Value = True} _
+                    , New SqlParameter("psValue", SqlDbType.VarChar, -1) With {.Value = varSetting})
 
-			' Update UserSettings collection as this is what's actually used post-login.
-			UserSettings = SessionInfo.UserSettings
+            ' Update UserSettings collection as this is what's actually used post-login.
+            UserSettings = SessionInfo.UserSettings
 
-			Dim objSetting As UserSetting = UserSettings.GetUserSetting(strSection, strKey)
-			objSetting.Value = varSetting.ToString()
+        Catch ex As Exception
+            Throw
 
-		Catch ex As Exception
-			Throw
+        End Try
 
-		End Try
-
-	End Sub
+    End Sub
 
 	''' <summary>
 	''' Saves the system settings
