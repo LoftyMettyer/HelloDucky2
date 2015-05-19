@@ -459,6 +459,7 @@
 			if (validFileExtensions.indexOf(fileExtension) == -1) {
 				//invalid extension
 				alert("Invalid image type.\n\nOnly .JPG, .BMP and .GIF images are accepted.");
+				$('#cmdSelect').button('disable');
 				return false;
 			}
 		} else {
@@ -466,6 +467,7 @@
 			if (!OpenHR.isValidFileExtension(filSelectFile.value)) {
 				//invalid extension - includes missing file extensions.
 				OpenHR.modalMessage("OpenHR Web cannot upload this type of file.");
+				$('#cmdSelect').button('disable');
 				return false;
 			}
 		}
@@ -476,6 +478,7 @@
 				var sMessage = new String(OpenHR.CheckOLEFileNameLength(filSelectFile.value));
 				if (sMessage.length > 0) {
 					OpenHR.messageBox(sMessage, 48);
+					$('#cmdSelect').button('disable');
 					bOK = false;
 				}
 			}
@@ -491,6 +494,7 @@
 
 			if (lngFileSize > maxRequestLength * 1000) {
 				OpenHR.modalMessage("File is too large to embed. \nMaximum file upload size for this column is " + maxRequestLength + "KB", 48);
+				$('#cmdSelect').button('disable');
 				bOK = false;
 			}
 		}
