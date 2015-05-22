@@ -880,7 +880,7 @@ function menu_MenuClick(sTool) {
 		}
 
 		if (sToolName == "mnutoolEmailEventLogFind") {
-			EventLog_emailEvent();
+			//EventLog_emailEvent();
 			return false;
 		}
 
@@ -1929,7 +1929,7 @@ function menu_refreshMenu() {
 							// Enable buttons
 							menu_setVisibleMenuItem("mnutoolViewEventLogFind", true);
 							menu_setVisibleMenuItem("mnutoolPurgeEventLogFind", true);
-							menu_setVisibleMenuItem("mnutoolEmailEventLogFind", true);
+							menu_setVisibleMenuItem("mnutoolEmailEventLogFind", false);
 							menu_setVisibleMenuItem("mnutoolDeleteEventLogFind", true);
 							
 							// Enable the Event Log tab

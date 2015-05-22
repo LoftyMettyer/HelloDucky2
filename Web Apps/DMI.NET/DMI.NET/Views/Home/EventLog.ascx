@@ -349,6 +349,7 @@
 	}
 
 	function EventLog_emailEvent() {
+		return false;
 		var eventID;
 		var sEventList = new String("");
 		var sURL;

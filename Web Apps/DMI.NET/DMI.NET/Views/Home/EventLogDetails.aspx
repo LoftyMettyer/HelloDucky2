@@ -221,7 +221,7 @@
 
 					</table>
 					<div id="divEventLogViewDetailsButtons" class="clearboth">
-						<input id="cmdEmail" type="button"  value="Email..." name="cmdEmail"  onclick="emailDetailEvent();" />
+						<%--<input id="cmdEmail" type="button"  value="Email..." name="cmdEmail"  onclick="emailDetailEvent();" />--%>
 						<input id="cmdPrint" type="button"  value="Print..." name="cmdPrint" onclick="printEvent();" />
 						<input id="cmdOK" type="button"  value="Close" name="cmdOK" onclick="okClick();" />
 					</div>
@@ -283,9 +283,9 @@
 
 				} else {
 					if ($("#txtEmailPermission").val() == 1) {
-						button_disable($('#cmdEmail'), false);
+						//button_disable($('#cmdEmail'), false);
 					} else {
-						button_disable($('#cmdEmail'), true);
+						//button_disable($('#cmdEmail'), true);
 					}
 					
 					populateEventInfo();
@@ -304,6 +304,7 @@
 			}
 
 			function emailDetailEvent() {
+				return false;
 				var sBatchInfo = "";
 				var sURL;
 				

@@ -2249,11 +2249,11 @@ Namespace Controllers
 
 #Region "Event Log Forms"
 
-		<ValidateAntiForgeryToken>
-		<PermissionAuthorizeAttribute(Category:="EVENTLOG", Item:="EMAIL")>
-		Function EventLogEmail(value As EmailSelectionModel) As ActionResult
-			Return View(value)
-		End Function
+		'<ValidateAntiForgeryToken>
+		'<PermissionAuthorizeAttribute(Category:="EVENTLOG", Item:="EMAIL")>
+		'Function EventLogEmail(value As EmailSelectionModel) As ActionResult
+		'	Return View(value)
+		'End Function
 
 		<HttpPost>
 		<ValidateAntiForgeryToken>
