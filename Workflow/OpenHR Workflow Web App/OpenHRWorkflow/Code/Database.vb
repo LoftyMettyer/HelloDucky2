@@ -210,14 +210,7 @@ Public Class Database
 		End Using
 	End Function
 
-	Public Function ForgotLogin(email As String) As String
-
-		'Check the email address relates to a user
-		Dim userId = GetUserId(email)
-
-		If userId = 0 Then
-			Return "No records exist with the given email address."
-		End If
+	Public Sub ForgotLogin(email As String)
 
 		'Send it all to sql to validate and email out
 		Using conn As New SqlConnection(_connectionString)
@@ -234,12 +227,8 @@ Public Class Database
 
 			cmd.ExecuteNonQuery()
 
-			' oWasp - Be as unhelpful as possible.
-			'Return CStr(cmd.Parameters("@psMessage").Value())
-			Return "An email has been sent to the entered address with your login details"
-
 		End Using
-	End Function
+	End Sub
 
 	Public Function GetLoginCount(userName As String) As Integer
 
