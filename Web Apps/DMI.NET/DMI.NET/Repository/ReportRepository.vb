@@ -59,6 +59,8 @@ Namespace Repository
 					, New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username} _
 					, New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = action})
 
+					objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
+
 					PopulateDefintion(objModel, dsDefinition.Tables(0))
 
 					If dsDefinition.Tables(0).Rows.Count = 1 Then
@@ -127,7 +129,6 @@ Namespace Repository
 				objModel.ChildTablesAvailable = CInt(_objSessionInfo.Relations.LongCount(Function(m) m.ParentID = objModel.BaseTableID))
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
-				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
 				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
 
 				_customreports.Remove(objModel.ID)
@@ -162,6 +163,8 @@ Namespace Repository
 						, New SqlParameter("@piReportID", SqlDbType.Int) With {.Value = objModel.ID} _
 						, New SqlParameter("@psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username} _
 						, New SqlParameter("@psAction", SqlDbType.VarChar, 255) With {.Value = action})
+
+					objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
 
 					PopulateDefintion(objModel, dsDefinition.Tables(0))
 
@@ -210,7 +213,6 @@ Namespace Repository
 
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
-				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
 				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
 
 				_mailmerges.Remove(objModel.ID)
@@ -431,6 +433,8 @@ Namespace Repository
 							New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username}, _
 							New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = action})
 
+					objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
+
 					PopulateDefintion(objModel, dsDefinition.Tables(0))
 					If dsDefinition.Tables(0).Rows.Count = 1 Then
 
@@ -536,7 +540,6 @@ Namespace Repository
 
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
-				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
 				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
 
 				_calendarreports.Remove(objModel.ID)
