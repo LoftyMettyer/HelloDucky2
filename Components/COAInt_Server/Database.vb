@@ -36,6 +36,9 @@ Public Class Database
 
     Public Sub SaveUserSetting(strSection As String, strKey As String, varSetting As Object)
 
+        Dim objSetting As New UserSetting
+        UserSettings = SessionInfo.UserSettings
+
         Try
 
             DB.ExecuteSP("sp_ASRIntSaveSetting" _
@@ -45,10 +48,15 @@ Public Class Database
                     , New SqlParameter("psValue", SqlDbType.VarChar, -1) With {.Value = varSetting})
 
             ' Update UserSettings collection as this is what's actually used post-login.
-            UserSettings = SessionInfo.UserSettings
-
-            Dim objSetting As UserSetting = UserSettings.GetUserSetting(strSection, strKey)
-            objSetting.Value = varSetting
+            If UserSettings.GetUserSetting(strSection, strKey) Is Nothing Then
+                objSetting.Section = strSection
+                objSetting.Key = strKey
+                objSetting.Value = varSetting
+                UserSettings.Add(objSetting)
+            Else
+                objSetting = UserSettings.GetUserSetting(strSection, strKey)
+                objSetting.Value = varSetting
+            End If
 
         Catch ex As Exception
             Throw
