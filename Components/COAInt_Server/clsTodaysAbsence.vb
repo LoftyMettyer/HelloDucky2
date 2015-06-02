@@ -23,42 +23,38 @@ Public Class clsTodaysAbsence
 	Public Function GetTodaysAbsences(ByRef RecordID As Integer, Optional ByRef dtStartDate As Date = #12:00:00 AM#, Optional ByRef dtEndDate As Date = #12:00:00 AM#) As DataTable
 
 		Dim plngEmployeeID As Integer
-		Dim objTableView As TablePrivilege
 		Dim pblnOK As Boolean
 
 		Try
 
-			' Check the user has permission to read the absence table.
-			For Each objTableView In gcoTablePrivileges.Collection
-				If (objTableView.TableID = AbsenceModule.glngAbsenceTableID) And (objTableView.AllowSelect) Then
-					pblnOK = True
-					Exit For
-				End If
-			Next objTableView
-			'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			objTableView = Nothing
+			' Check the user has permission to read the necessary absence columns.
+			Dim permissions = GetColumnPrivileges(AbsenceModule.gsAbsenceTableName)
 
-			If Not pblnOK Then
-				mstrErrorString = "You do not have permission to read the base table either directly or through any views."
-				Exit Function
+			If permissions(AbsenceModule.gsAbsenceStartDateColumnName).AllowSelect And _
+				permissions(AbsenceModule.gsAbsenceStartSessionColumnName).AllowSelect And _
+				permissions(AbsenceModule.gsAbsenceEndDateColumnName).AllowSelect And _
+				permissions(AbsenceModule.gsAbsenceEndSessionColumnName).AllowSelect Then
+
+				' Store the absence view name
+				mstrAbsenceRealSource = gcoTablePrivileges.Item(AbsenceModule.gsAbsenceTableName).RealSource
+
+				' Build the Personnel Select string
+				pblnOK = GenerateSQLSelect()
+				If pblnOK Then pblnOK = GenerateSQLFrom(PersonnelModule.gsPersonnelTableName)
+				If pblnOK Then pblnOK = GenerateSQLJoin(PersonnelModule.glngPersonnelTableID)
+				If pblnOK Then pblnOK = GenerateSQLWhere(PersonnelModule.glngPersonnelTableID, plngEmployeeID, RecordID)
+				If pblnOK Then pblnOK = MergeSQLStrings()
+
+				Return DB.GetDataTable(mstrSQL, CommandType.Text)
+
 			End If
-
-			' Store the absence view name
-			mstrAbsenceRealSource = gcoTablePrivileges.Item("Absence").RealSource
-
-			' Build the Personnel Select string
-			If pblnOK Then pblnOK = GenerateSQLSelect()
-			If pblnOK Then pblnOK = GenerateSQLFrom(PersonnelModule.gsPersonnelTableName)
-			If pblnOK Then pblnOK = GenerateSQLJoin(PersonnelModule.glngPersonnelTableID)
-			If pblnOK Then pblnOK = GenerateSQLWhere(PersonnelModule.glngPersonnelTableID, plngEmployeeID, RecordID)
-			If pblnOK Then pblnOK = MergeSQLStrings()
 
 		Catch ex As Exception
 			Throw
 
 		End Try
 
-		Return DB.GetDataTable(mstrSQL, CommandType.Text)
+		Return Nothing
 
 	End Function
 
