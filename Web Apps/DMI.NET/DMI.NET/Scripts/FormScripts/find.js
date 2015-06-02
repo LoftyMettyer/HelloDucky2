@@ -1772,12 +1772,12 @@ function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto, uniqueID)
 	if (!deleteflag) {
 		var maxRequestLength = Number($("#txtMaxRequestLength").val());
 
-		maxRequestLength = Math.min(maxRequestLength, 4000);
+		maxRequestLength = Math.min(maxRequestLength, (4096 * 1024));
 
 		var lngFileSize = file.size;
 
-		if (lngFileSize > maxRequestLength * 1000) {
-			OpenHR.modalMessage("File is too large to embed. \nMaximum file upload size for this column is " + maxRequestLength + "KB", 48);
+		if (lngFileSize > maxRequestLength) {
+			OpenHR.modalMessage("File is too large to embed. \nMaximum file upload size for this column is " + (maxRequestLength / 1024) + "KB", 48);
 			return false;
 		}
 	}

@@ -490,10 +490,10 @@
 
 			lngFileSize = filSelectFile.files[0].size;
 
-			maxRequestLength = Math.min(maxRequestLength, 4000);			
+			maxRequestLength = Math.min(maxRequestLength, (4096 * 1024));			
 
-			if (lngFileSize > maxRequestLength * 1000) {
-				OpenHR.modalMessage("File is too large to embed. \nMaximum file upload size for this column is " + maxRequestLength + "KB", 48);
+			if (lngFileSize > maxRequestLength) {
+				OpenHR.modalMessage("File is too large to embed. \nMaximum file upload size for this column is " + (maxRequestLength / 1024) + "KB", 48);
 				$('#cmdSelect').button('disable');
 				bOK = false;
 			}
