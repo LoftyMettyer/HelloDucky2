@@ -338,19 +338,19 @@ Namespace ScriptDB
 
       Dim sValidation As String
 
-      Dim sSqlWriteableColumns As String
-      Dim sQlInsteadOfInsertColumns As String
-      Dim sqlAfterInsertColumns As String
+			Dim sqlWriteableColumns As String
+			Dim sqlInsteadOfInsertColumns As String
+			Dim sqlAfterInsertColumns As String
 
-      Dim sSqlCalculatedColumns As String
-      Dim sSqlPostAuditCalcs As String
-      Dim sSqlParentColumns As String
-      Dim sSqlParentColumnsDelete As String
-      Dim sSqlChildColumns As String
+			Dim sSqlCalculatedColumns As String
+			Dim sSqlPostAuditCalcs As String
+			Dim sSqlParentColumns As String
+			Dim sSqlParentColumnsDelete As String
+			Dim sSqlChildColumns As String
 
-      Dim sSqlSpecialUpdate As String
-      Dim sSqlCategoryUpdate As String
-      Dim sSqlFusionCode As String
+			Dim sSqlSpecialUpdate As String
+			Dim sSqlCategoryUpdate As String
+			Dim sSqlFusionCode As String
 
 			Dim sSqlHeadcountCheck As String = ""
 
@@ -642,14 +642,14 @@ Namespace ScriptDB
 
 					' Update statement of all the non read only columns (free entry columns)
 					If aryBaseTableColumns.ToArray.Length > 0 Then
-						sSqlWriteableColumns = String.Format("    /* Update any columns specified in the update clause */" & vbNewLine & _
+						sqlWriteableColumns = String.Format("    /* Update any columns specified in the update clause */" & vbNewLine & _
 							"    UPDATE [dbo].[{0}]" & vbNewLine & _
 							"        SET [updflag] = base.[updflag], [_deleted] = base.[_deleted], [_deleteddate] = base.[_deleteddate]," & vbNewLine & _
 							"        {1}" & vbNewLine & _
 							"        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
 							, objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryBaseTableColumns.ToArray()))
 					Else
-						sSqlWriteableColumns = String.Format("    /* Update any columns specified in the update clause */" & vbNewLine & _
+						sqlWriteableColumns = String.Format("    /* Update any columns specified in the update clause */" & vbNewLine & _
 							"    UPDATE [dbo].[{0}]" & vbNewLine & _
 							"        SET [updflag] = base.[updflag], [_deleted] = base.[_deleted], [_deleteddate] = base.[_deleteddate]" & vbNewLine & _
 							"        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
@@ -676,12 +676,13 @@ Namespace ScriptDB
 
 					' Instead of writeable columns
 					If aryAllWriteableColumns.ToArray.Length > 0 Then
-						sQlInsteadOfInsertColumns = String.Format("    /* Commit writeable columns */" & vbNewLine & _
-							 "    INSERT [dbo].[{0}] ({1})" & vbNewLine & _
+						sqlInsteadOfInsertColumns = String.Format("    -- Commit writeable columns" & vbNewLine & _
+							 "    INSERT [dbo].[{0}]  ({1})" & vbNewLine & _
+							 "        OUTPUT inserted.ID INTO @insertedRow" & vbNewLine & _
 							 "        SELECT {2} FROM inserted base;" & vbNewLine & vbNewLine _
 							 , objTable.PhysicalName, String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
 					Else
-						sQlInsteadOfInsertColumns = String.Format("    /* Commit writeable columns */" & vbNewLine & _
+						sqlInsteadOfInsertColumns = String.Format("    -- Commit writeable columns" & vbNewLine & _
 							 "    INSERT [dbo].[{0}] ([updflag]) VALUES (1);" & vbNewLine & vbNewLine _
 							 , objTable.PhysicalName)
 					End If
@@ -755,21 +756,18 @@ Namespace ScriptDB
 					sSqlPostUpdateTriggerCode = SpecialTrigger_TriggerCode(objTable, TriggerCodePosition.AfterU02Update)
 
 					' INSTEAD OF INSERT
-					sSql = sSqlHeadcountCheck & vbNewLine & vbNewLine & String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
-							"            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-							"    SET @sValidation = '';" & vbNewLine & _
-							"    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-							"    INSERT {5} ([tablefromid], [actiontype], [nestlevel]) VALUES ({2}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
-							sQlInsteadOfInsertColumns _
-							, objTable.Name, "", objTable.Id _
-							, String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()), Consts.SysTriggerTransaction)
+					sSql = sSqlHeadcountCheck & vbNewLine & vbNewLine & String.Format("    DECLARE @sValidation nvarchar(MAX) = '';" & vbNewLine & vbNewLine & _
+							"    INSERT {1} ([tablefromid], [actiontype], [nestlevel])" & vbNewLine & _
+							"       VALUES ({0}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
+							sqlInsteadOfInsertColumns & vbNewLine & vbNewLine & _
+							"    SELECT @localID = ID FROM @insertedRow;" & vbNewLine & _
+							"    SET CONTEXT_INFO @localID;" & vbNewLine _
+							, objTable.Id, Consts.SysTriggerTransaction)
 					ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSql, existingTriggers, objTable.InsertTriggerDisabled)
 
 					' AFTER INSERT
 					sSql = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
-						"    DECLARE @dChangeDate datetime," & vbNewLine & _
-						"            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-						"    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+						"    DECLARE @sValidation nvarchar(MAX) = '';" & vbNewLine & vbNewLine & _
 						sqlAfterInsertColumns & vbNewLine & _
 						"    /* Audit Trail */" & vbNewLine & _
 						"{2}" & vbNewLine & vbNewLine & _
@@ -782,49 +780,39 @@ Namespace ScriptDB
 					ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSql, existingTriggers, False)
 
 					' INSTEAD OF UPDATE
-					sSql = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
-						"            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-						"    SET @sValidation = '';" & vbNewLine & _
-						"    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+					sSql = String.Format("    DECLARE @sValidation nvarchar(MAX) = '';" & vbNewLine & vbNewLine & _
 						sSqlCodeBypass & _
-						"    INSERT [dbo].[{4}] ([tablefromid], [actiontype], [nestlevel]) VALUES ({5}, 2, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
-						"{3}" & vbNewLine & vbNewLine & _
+						"    INSERT [dbo].[{2}] ([tablefromid], [actiontype], [nestlevel]) VALUES ({3}, 2, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
+						"{1}" & vbNewLine & vbNewLine & _
 						sValidation & vbNewLine & vbNewLine & _
-						"    DELETE [dbo].[{4}] WHERE [tablefromid] = {2};" & vbNewLine _
-						, objTable.Name, "" _
+						"    DELETE [dbo].[{2}] WHERE [tablefromid] = {0};" & vbNewLine _
 						, objTable.Id _
-						, sSqlWriteableColumns _
+						, sqlWriteableColumns _
 						, Consts.SysTriggerTransaction, objTable.Id)
 					ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSql, existingTriggers, objTable.UpdateTriggerDisabled)
 
 					' AFTER UPDATE
 					sSql = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
-						"    DECLARE @dChangeDate datetime," & vbNewLine & _
-						"            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-						"    SELECT TOP 1 @startingtrigger = ISNULL([actiontype],2) FROM {4} WHERE [tablefromid] = {3} ORDER BY [nestlevel] ASC;" & vbNewLine & _
-						"    SELECT TOP 1 @startingtriggertable = ISNULL([tablefromid],0) FROM {4} ORDER BY [nestlevel] ASC;" & vbNewLine & _
-						"    SET @sValidation = '';" & vbNewLine & _
-						"    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+						"    DECLARE @sValidation nvarchar(MAX) = '';" & vbNewLine & vbNewLine & _
+						"    SELECT TOP 1 @startingtrigger = ISNULL([actiontype],2) FROM {1} WHERE [tablefromid] = {0} ORDER BY [nestlevel] ASC;" & vbNewLine & _
+						"    SELECT TOP 1 @startingtriggertable = ISNULL([tablefromid],0) FROM {1} ORDER BY [nestlevel] ASC;" & vbNewLine & vbNewLine & _
 						sSqlCalculatedColumns & vbNewLine & vbNewLine & _
 						sSqlParentColumns & vbNewLine & _
 						sSqlChildColumns & vbNewLine & vbNewLine & _
-						"{6}" & vbNewLine & _
+						"{3}" & vbNewLine & _
 						sSqlCodeAudit & _
 						sSqlSpecialUpdate & _
-						"{7}" & vbNewLine & vbNewLine & _
-						"{8}" & vbNewLine & vbNewLine & _
-						"{9}" & vbNewLine & vbNewLine & _
-						"{5}" & vbNewLine & vbNewLine _
-						, objTable.Name, "" _
-						, "", objTable.Id, Consts.SysTriggerTransaction _
+						"{4}" & vbNewLine & vbNewLine & _
+						"{5}" & vbNewLine & vbNewLine & _
+						"{6}" & vbNewLine & vbNewLine & _
+						"{2}" & vbNewLine & vbNewLine _
+						, objTable.Id, Consts.SysTriggerTransaction _
 						, sSqlPostUpdateTriggerCode _
 						, sSqlCodeAuditUpdate, sSqlPostAuditCalcs, objTable.SysMgrUpdateTrigger, sSqlFusionCode) & vbNewLine & vbNewLine
 					ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSql, existingTriggers, objTable.UpdateTriggerDisabled)
 
 					' INSTEAD OF DELETE
-					sSql = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
-						"    DECLARE @dChangeDate datetime;" & vbNewLine & _
-						"    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+					sSql = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & vbNewLine & _
 						"    INSERT [dbo].[{3}] ([tablefromid], [actiontype], [nestlevel]) VALUES ({4}, 3, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
 					 "     /* Purge if already deleted */" & vbNewLine & _
 						"    WITH base AS (SELECT * FROM dbo.[{0}]" & vbNewLine & _
@@ -956,8 +944,10 @@ Namespace ScriptDB
 					"    {3}" & vbNewLine & "AS" & vbNewLine & _
 					"BEGIN" & vbNewLine & _
 					"    SET NOCOUNT ON;" & vbNewLine & _
+					"    DECLARE @insertedRow TABLE (id integer);" & vbNewLine & _
 					"    DECLARE @iCount                integer," & vbNewLine & _
-					"            @localID               integer," & vbNewLine & _
+					"            @dChangeDate           datetime = GETDATE()," & vbNewLine & _
+					"            @localID               integer = 0," & vbNewLine & _
 					"            @isovernight           bit," & vbNewLine & _
 					"            @startingtrigger       tinyint," & vbNewLine & _
 					"            @startingtriggertable  integer," & vbNewLine & _
@@ -970,7 +960,7 @@ Namespace ScriptDB
 					"    SELECT @username =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'OPENHR WORKFLOW' THEN 'OpenHR Workflow'" & vbNewLine & _
 					"          ELSE CASE WHEN @isovernight = 1 THEN 'OpenHR Overnight Process' ELSE RTRIM(SYSTEM_USER) END END" & vbNewLine & vbNewLine & _
 					"    IF OBJECT_ID('tempdb..#intransactiontrigger') IS NULL" & vbNewLine & _
-					"        CREATE TABLE {5}([tablefromid] [int] NOT NULL, [nestlevel] [int] NOT NULL, [actiontype] [tinyint] NOT NULL)" & vbNewLine & vbNewLine & _
+					"        CREATE TABLE {5}([tablefromid] [int] NOT NULL, [nestlevel] [int] NOT NULL, [actiontype] [tinyint] NOT NULL);" & vbNewLine & _
 					"{4}" & vbNewLine & vbNewLine & _
 					"END" _
 					, sTriggerName, [role], table.PhysicalName, sTriggerType, [bodyCode], Consts.SysTriggerTransaction)

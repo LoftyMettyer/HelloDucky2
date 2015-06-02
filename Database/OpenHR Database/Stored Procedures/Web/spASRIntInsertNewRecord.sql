@@ -18,25 +18,21 @@ BEGIN
 		@sTempString	nvarchar(MAX),
 		@sInsertString	nvarchar(MAX),
 		@iTemp			integer,
-		@iCounter		integer,
+		@iCounter		integer = 0,
 		@iIndex1		integer,
 		@iIndex2		integer,
 		@iIndex3		integer,
 		@sColumnID		varchar(255),
 		@sValue			varchar(MAX),
 		@sColumnList	varchar(MAX),
-		@sValueList		varchar(MAX),
+		@sValueList		varchar(MAX) = '',
 		@iCopiedRecordID	integer,
 		@iDataType		integer,
 		@sColumnName	varchar(255),
 		@sRealSource	sysname,
 		@sMask			varchar(255),
 		@iOLEType		integer,
-		@fCopyImageData	bit,
-		@tablename		varchar(255);
-
-	SET @sColumnList = '';
-	SET @sValueList = '';
+		@fCopyImageData	bit;
 
 	SET @iIndex1 = charindex(CHAR(9), @psInsertDef);
 	SET @iIndex2 = charindex(CHAR(9), @psInsertDef, @iIndex1+1);
@@ -50,8 +46,7 @@ BEGIN
 	SET @psInsertDef = SUBSTRING(@psInsertDef, @iIndex3+1, LEN(@psInsertDef) - @iIndex3);
 
 	SET @sColumnList = 'INSERT ' + convert(varchar(255), @sRealSource) + ' (';
-	SET @sValueList = '';
-	SET @iCounter = 0;
+
 
 	WHILE charindex(CHAR(9), @psInsertDef) > 0
 	BEGIN
@@ -67,11 +62,11 @@ BEGIN
 		END
 		ELSE
 		BEGIN
-			SELECT @sColumnName = ASRSysColumns.columnName,
-				@iDataType = ASRSysColumns.dataType,
-				@sMask = ASRSysColumns.mask
+			SELECT @sColumnName = columnName,
+				@iDataType = dataType,
+				@sMask = mask
 			FROM ASRSysColumns
-			WHERE ASRSysColumns.columnId = convert(integer, @sColumnID);
+			WHERE columnId = convert(integer, @sColumnID);
 
 			-- Date
 			IF (@iDataType = 11 AND @sValue <> 'null') SET @sValue = '''' + @sValue + '''';
@@ -130,9 +125,7 @@ BEGIN
 	EXECUTE sp_executesql @sInsertString;	
 
 	-- Get the most recent inserted key
-	SELECT @tablename = 'tbuser_' + TableName FROM ASRSysTables	WHERE tableID = @piTableID
-	SELECT @piNewRecordID = convert(int, i.last_value) FROM sys.tables t
-		INNER JOIN sys.identity_columns i on t.object_id = i.object_id where t.name = @tablename;
+	SELECT piNewRecordID = convert(int,convert(varbinary(4),CONTEXT_INFO()));
 
 	-- Copy any child data
 	DECLARE @sParamDefinition nvarchar(MAX);
