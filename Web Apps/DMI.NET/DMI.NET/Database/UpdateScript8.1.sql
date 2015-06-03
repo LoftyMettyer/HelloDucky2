@@ -52748,7 +52748,7 @@ BEGIN
 	EXECUTE sp_executesql @sInsertString;	
 
 	-- Get the most recent inserted key
-	SELECT piNewRecordID = convert(int,convert(varbinary(4),CONTEXT_INFO()));
+	SELECT @piNewRecordID = convert(int,convert(varbinary(4),CONTEXT_INFO()));
 
 	-- Copy any child data
 	DECLARE @sParamDefinition nvarchar(MAX);
