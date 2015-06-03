@@ -415,7 +415,11 @@ Namespace Controllers
 				Dim maxRequestLength As Integer = (4096 * 1024)
 				Dim section As HttpRuntimeSection = TryCast(ConfigurationManager.GetSection("system.web/httpRuntime"), HttpRuntimeSection)
 				If section IsNot Nothing Then
-					maxRequestLength = section.MaxRequestLength
+					Try
+						maxRequestLength = section.MaxRequestLength * 1024
+					Catch ex As Exception
+						' leave as default 4Mb
+					End Try
 				End If
 
 				Session("maxRequestLength") = maxRequestLength
