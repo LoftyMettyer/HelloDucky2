@@ -1740,7 +1740,8 @@ function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto, uniqueID)
 
 	data.append("columnID", columnID);
 	data.append("recordID", recordID);
-	
+	data.append("__RequestVerificationToken", $('[name="__RequestVerificationToken"]').val());
+
 	if (!deleteflag) {
 		file = fileobject.files[0];
 		data.append("file", file);
@@ -1781,7 +1782,7 @@ function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto, uniqueID)
 			return false;
 		}
 	}
-
+	
 	$.ajax({
 		type: "POST",
 		url: "AjaxFileUpload",

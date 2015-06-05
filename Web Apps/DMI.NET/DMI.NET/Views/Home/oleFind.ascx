@@ -364,7 +364,7 @@
 				} else {
 					frmGotoOption.txtGotoOptionAction.value = optionActionType.SELECTOLE.EMPTY;
 				}
-
+				
 				frmGotoOption.txtGotoOptionPage.value = "emptyoption";
 				
 				recEdit_setData($('#txtOptionColumnID').val(), $('#txtFile').val());
@@ -373,11 +373,7 @@
 				
 				var form = document.getElementById("frmFindForm");
 				var data = new FormData(form);
-				var file = "";
-				var filSelectFile = document.getElementById('filSelectFile');
-				file = filSelectFile.files[0];
-				data.append("file", file);
-
+				
 				$.ajax({
 					type: "POST",
 					url: "oleFind_Submit",

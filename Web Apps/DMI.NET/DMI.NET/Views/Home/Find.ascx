@@ -722,6 +722,7 @@ Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDes
 		<input type="hidden" id="txtFindEditRowID" value=""/>
 		<input type="hidden" id="txtFindEditLastRowID" value=""/>
 		<input type="hidden" id="txtFindEditRowData" value=""/>
+		<%=Html.AntiForgeryToken()%>
 	</form>
 
 

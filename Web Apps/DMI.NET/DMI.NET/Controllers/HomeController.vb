@@ -4950,17 +4950,19 @@ Namespace Controllers
 
 		End Function
 
-		<HttpPost> _
-	 Public Function Upload(filSelectFile As HttpPostedFileBase) As ActionResult
-			Const path As String = "D:\Temp\"
+		'<ValidateAntiForgeryToken>
+		'<HttpPost>
+		'Public Function Upload(filSelectFile As HttpPostedFileBase) As ActionResult
+		'	Const path As String = "D:\Temp\"
 
-			If filSelectFile IsNot Nothing Then
-				filSelectFile.SaveAs(path & Convert.ToString(filSelectFile.FileName))
-			End If
+		'	If filSelectFile IsNot Nothing Then
+		'		filSelectFile.SaveAs(path & Convert.ToString(filSelectFile.FileName))
+		'	End If
 
-			'Return RedirectToAction("Index")
-		End Function
+		'	'Return RedirectToAction("Index")
+		'End Function
 
+		<ValidateAntiForgeryToken>
 		<HttpPost> _
 	 Public Function AjaxFileUpload(form As FormCollection) As String
 
@@ -4989,7 +4991,7 @@ Namespace Controllers
 					Dim regex As New Regex("[\w]{1,200}\.[\w]{1,10}", DirectCast(0, RegexOptions))	' taken from OWASP website.
 					If Not regex.IsMatch(safeFileName) Then
 						Session("errorMessage") = "Your selected filename contains invalid characters and cannot be uploaded."
-						Return Session("errorMessage").ToString()						
+						Return Session("errorMessage").ToString()
 					Else
 						If (fileContent IsNot Nothing) AndAlso fileContent.ContentLength > 0 Then
 
