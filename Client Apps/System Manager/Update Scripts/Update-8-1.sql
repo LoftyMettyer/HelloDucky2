@@ -223,7 +223,7 @@ END'
 
 
 /* ------------------------------------------------------- */
-PRINT 'Step - XML Export Improvement'
+PRINT 'Step - Export additions'
 /* ------------------------------------------------------- */
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'XSDFileName')
@@ -231,6 +231,7 @@ PRINT 'Step - XML Export Improvement'
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'SplitXMLNodesFile')
 		EXEC sp_executesql N'ALTER TABLE ASRSysExportName ADD SplitXMLNodesFile bit;';
+
 
 /* --------------------------------------------------------- */
 PRINT 'Step - Update ASRSysCrossTab definition for 9-Box Grid'
@@ -4865,6 +4866,27 @@ PRINT 'Optimise indexes'
 	IF EXISTS(SELECT Name FROM sysindexes WHERE id = object_id(N'ASRSysSummaryFields') AND name = N'IDX_HistoryTableSequenceID')
 		DROP INDEX ASRSysSummaryFields.[IDX_HistoryTableSequenceID];
 	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_HistoryTableSequenceID] ON ASRSysSummaryFields ([HistoryTableID],[Sequence])';
+
+
+PRINT 'New record functionality'
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRInsertNewRecord]') AND xtype = 'P')
+			DROP PROCEDURE [dbo].[sp_ASRInsertNewRecord];
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRInsertNewRecord]
+		(
+			@piNewRecordID integer OUTPUT,   /* Output variable to hold the new record ID. */
+			@psInsertString nvarchar(MAX)    /* SQL Insert string to insert the new record. */
+		)
+		AS
+		BEGIN
+			SET NOCOUNT ON;
+
+			-- Run the given SQL INSERT
+			EXECUTE sp_executesql @psInsertString;
+
+			-- Calculate the ID
+			SELECT @piNewRecordID = convert(int,convert(varbinary(4),CONTEXT_INFO()));
+
+	END'
 
 
 PRINT 'Remove redundant stored procedure'
