@@ -1424,8 +1424,8 @@ Namespace Controllers
 			Session("ELFilterType") = dataViewModel.txtELFilterType
 			Session("ELFilterStatus") = dataViewModel.txtELFilterStatus
 			Session("ELFilterMode") = dataViewModel.txtELFilterMode
-			Session("ELOrderColumn") = dataViewModel.txtELOrderColumn
-			Session("ELOrderOrder") = dataViewModel.txtELOrderOrder
+			Session("ELOrderColumn") = "datetime"	'dataViewModel.txtELOrderColumn
+			Session("ELOrderOrder") = "DESC"	'dataViewModel.txtELOrderOrder
 
 			Session("ELAction") = dataViewModel.txtELAction
 
