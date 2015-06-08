@@ -46,6 +46,7 @@ Private mlngExportChildMaxRecords As Long
 'Private mstrExportOutputType As String
 'Private mstrOutputFilename As String
 Private mblnExportQuotes As Boolean
+Private mblnStripDelimiter As Boolean
 'Private mblnExportHeader As Boolean
 Private mintExportHeader As Integer
 Private mstrExportHeaderText As String
@@ -53,6 +54,7 @@ Private mintExportFooter As Integer
 Private mstrExportFooterText As String
 Private mstrExportDelimiter As String
 Private mstrExportOtherDelimiter As String
+Private mstrExportActualDelimiter As String
 Private mstrExportDateFormat As String
 Private mstrExportDateSeparator As String
 'Private mstrExportDateYearDigits As String
@@ -64,6 +66,9 @@ Private mblnFooter As Boolean
 Private mbForceHeader As Boolean                    ' Always force header if no records found
 Private mbOmitHeader As Boolean                     ' Omit header if appending to file
 Private mbAuditChangesOnly As Boolean
+
+Private mbSplitFile As Boolean
+Private mlngSplitFileSize As Long
 
 Private mlngOutputFormat As Long
 Private mblnOutputSave As Boolean
@@ -130,6 +135,8 @@ Private mstrExportFileCode As String
 Private mlngCMGRecordIdentifier As Long
 Private mbUpdateAuditLog As Boolean
 Private mdLastSuccessfulOutput As Date
+
+Private mdExportCreateDate As Date
 
 Private Enum CMGFields
   NewValue = 0    ' "NewValue"
@@ -361,6 +368,7 @@ Public Function RunExport() As Boolean
   Dim fOK As Boolean
   Dim sToday As String
   
+  mdExportCreateDate = Now
   mstrErrorString = vbNullString
   mblnNoRecords = False
   
@@ -630,6 +638,10 @@ Private Function GetExportDefinition() As Boolean
     'mstrExportOutputType = !outputtype
     'mstrExportOutputName = !outputname
     mblnExportQuotes = !Quotes
+    mblnStripDelimiter = IIf(IsNull(!StripDelimiterFromData), False, !StripDelimiterFromData)
+    
+    mlngSplitFileSize = IIf(IsNull(!SplitFileSize), 0, !SplitFileSize)
+    mbSplitFile = IIf(IsNull(!SplitFile), False, !SplitFile And mlngSplitFileSize > 0)
     
     mstrExportFileCode = IIf(IsNull(!CMGExportFileCode), "", !CMGExportFileCode)
     mlngCMGRecordIdentifier = IIf(IsNull(!CMGExportRecordID), 0, !CMGExportRecordID)
@@ -642,6 +654,13 @@ Private Function GetExportDefinition() As Boolean
     
     mstrExportDelimiter = IIf(IsNull(!delimiter), "", !delimiter)
     mstrExportOtherDelimiter = IIf(IsNull(!otherdelimiter), "", !otherdelimiter)
+   
+    Select Case UCase(mstrExportDelimiter)
+      Case ",": mstrExportActualDelimiter = mstrExportDelimiter
+      Case "<TAB>": mstrExportActualDelimiter = vbTab
+      Case "<OTHER>": mstrExportActualDelimiter = mstrExportOtherDelimiter
+      Case Else: mstrExportActualDelimiter = mstrExportDelimiter
+    End Select
    
     'mbAppendToFile = IIf(IsNull(!AppendToFile), False, !AppendToFile)
     mbForceHeader = IIf(IsNull(!ForceHeader), False, !ForceHeader)
@@ -693,7 +712,7 @@ Private Function GetExportDefinition() As Boolean
     mbPreserveTransformPath = IIf(IsNull(!PreserveTransformPath), False, !PreserveTransformPath)
     mbPreserveXSDPath = IIf(IsNull(!PreserveXSDPath), False, !PreserveXSDPath)
 
-    mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
+    mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!userName)))
     mbAuditChangesOnly = IIf(IsNull(!AuditChangesOnly), False, !AuditChangesOnly)
 
     If Not IsRecordSelectionValid Then
@@ -1085,12 +1104,12 @@ Private Function GenerateSQLSelect() As Boolean
       
       ' Check permission on that column
       Set mobjColumnPrivileges = GetColumnPrivileges(pstrTempTableName)
-      mstrRealSource = gcoTablePrivileges.Item(pstrTempTableName).RealSource
+      mstrRealSource = gcoTablePrivileges.item(pstrTempTableName).RealSource
       
       pblnColumnOK = mobjColumnPrivileges.IsValid(pstrTempColumnName)
         
       If pblnColumnOK Then
-        pblnColumnOK = mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect
+        pblnColumnOK = mobjColumnPrivileges.item(pstrTempColumnName).AllowSelect
       End If
       
       If pblnColumnOK Then
@@ -1146,14 +1165,14 @@ Private Function GenerateSQLSelect() As Boolean
           (mobjTableView.AllowSelect) Then
           
             pstrSource = mobjTableView.ViewName
-            mstrRealSource = gcoTablePrivileges.Item(pstrSource).RealSource
+            mstrRealSource = gcoTablePrivileges.item(pstrSource).RealSource
             
             ' Get the column permission for the view
             Set mobjColumnPrivileges = GetColumnPrivileges(pstrSource)
             
             ' If we can see the column from this view
             If mobjColumnPrivileges.IsValid(pstrTempColumnName) Then
-              If mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect Then
+              If mobjColumnPrivileges.item(pstrTempColumnName).AllowSelect Then
                 
                 ReDim Preserve mstrViews(UBound(mstrViews) + 1)
                 mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
@@ -1413,7 +1432,7 @@ Private Function GenerateSQLFrom() As Boolean
   
   Set pobjTableView = New CTablePrivilege
   
-    mstrSQLFrom = gcoTablePrivileges.Item(mstrExportBaseTableName).RealSource
+    mstrSQLFrom = gcoTablePrivileges.item(mstrExportBaseTableName).RealSource
   
 '  Else
 '
@@ -1622,7 +1641,7 @@ Private Function DoChildOrderString(rsTemp As Recordset, ByRef psJoinCode As Str
       ' Check if the user can read the column.
       Set pobjOrderCol = gcoTablePrivileges.FindTableID(rsTemp!TableID)
       Set objColumnPrivileges = GetColumnPrivileges(pobjOrderCol.TableName)
-      fColumnOK = objColumnPrivileges.Item(rsTemp!ColumnName).AllowSelect
+      fColumnOK = objColumnPrivileges.item(rsTemp!ColumnName).AllowSelect
       Set objColumnPrivileges = Nothing
       
       If fColumnOK Then
@@ -1655,14 +1674,14 @@ Private Function DoChildOrderString(rsTemp As Recordset, ByRef psJoinCode As Str
             iTempCounter = iNextIndex
             
             psJoinCode = psJoinCode & _
-              " LEFT OUTER JOIN " & pobjOrderCol.RealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & _
-              " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(rsTemp!TableID)) & _
-              " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
+              " LEFT OUTER JOIN " & pobjOrderCol.RealSource & " ASRSysTemp_" & Trim(str(iTempCounter)) & _
+              " ON " & sCurrentTableViewName & ".ID_" & Trim(str(rsTemp!TableID)) & _
+              " = ASRSysTemp_" & Trim(str(iTempCounter)) & ".ID"
           End If
         
           DoChildOrderString = DoChildOrderString & _
             IIf(Len(DoChildOrderString) > 0, ",", "") & _
-            "ASRSysTemp_" & Trim(Str(iTempCounter)) & "." & rsTemp!ColumnName & _
+            "ASRSysTemp_" & Trim(str(iTempCounter)) & "." & rsTemp!ColumnName & _
             IIf(rsTemp!Ascending, "", " DESC")
         End If
       Else
@@ -1677,13 +1696,13 @@ Private Function DoChildOrderString(rsTemp As Recordset, ByRef psJoinCode As Str
               (objTableView.AllowSelect) Then
 
               sSource = objTableView.ViewName
-              sRealSource = gcoTablePrivileges.Item(sSource).RealSource
+              sRealSource = gcoTablePrivileges.item(sSource).RealSource
 
               ' Get the column permission for the view.
               Set objColumnPrivileges = GetColumnPrivileges(sSource)
 
               If objColumnPrivileges.IsValid(rsTemp!ColumnName) Then
-                If objColumnPrivileges.Item(rsTemp!ColumnName).AllowSelect Then
+                If objColumnPrivileges.item(rsTemp!ColumnName).AllowSelect Then
                   ' Add the view info to an array to be put into the column list or order code below.
                   iNextIndex = UBound(asViews) + 1
                   ReDim Preserve asViews(iNextIndex)
@@ -1712,9 +1731,9 @@ Private Function DoChildOrderString(rsTemp As Recordset, ByRef psJoinCode As Str
                     iTempCounter = iNextIndex
 
                     psJoinCode = psJoinCode & _
-                      " LEFT OUTER JOIN " & sRealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & _
-                      " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(objTableView.TableID)) & _
-                      " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
+                      " LEFT OUTER JOIN " & sRealSource & " ASRSysTemp_" & Trim(str(iTempCounter)) & _
+                      " ON " & sCurrentTableViewName & ".ID_" & Trim(str(objTableView.TableID)) & _
+                      " = ASRSysTemp_" & Trim(str(iTempCounter)) & ".ID"
                   End If
                 End If
               End If
@@ -1734,7 +1753,7 @@ Private Function DoChildOrderString(rsTemp As Recordset, ByRef psJoinCode As Str
               End If
 
               sColumnCode = sColumnCode & _
-                " WHEN NOT ASRSysTemp_" & Trim(Str(iNextIndex)) & "." & rsTemp!ColumnName & " IS NULL THEN ASRSysTemp_" & Trim(Str(iNextIndex)) & "." & rsTemp!ColumnName
+                " WHEN NOT ASRSysTemp_" & Trim(str(iNextIndex)) & "." & rsTemp!ColumnName & " IS NULL THEN ASRSysTemp_" & Trim(str(iNextIndex)) & "." & rsTemp!ColumnName
             Next iNextIndex
 
             If Len(sColumnCode) > 0 Then
@@ -2063,7 +2082,7 @@ Private Function CheckRecordSet() As Boolean
   mrstExportOutput.MoveLast
   mrstExportOutput.MoveFirst
   
-  mlngExportRecordCount = mrstExportOutput.RecordCount
+  mlngExportRecordCount = mrstExportOutput.recordCount
   
   If gblnBatchMode = False Then
     gobjProgress.Bar1MaxValue = mlngExportRecordCount
@@ -2584,7 +2603,7 @@ Private Function ExportData_XML() As Boolean
   Dim prstReadyToExport As Recordset
   Dim rstConverted As Recordset
   Dim iFileCount As Integer
-  Dim strOutputFileName As String
+  Dim strOutputFilename As String
   Dim sLimitedColumns As String
   Dim iCount As Integer
   
@@ -2592,7 +2611,7 @@ Private Function ExportData_XML() As Boolean
   Dim sXSDTransformFile As String
   Dim sWhereClause As String
   
-  strOutputFileName = mstrOutputFileName
+  strOutputFilename = mstrOutputFileName
   sXSDName = mstrXSDFilename
   sXSDTransformFile = mstrTransformFile
   
@@ -2641,14 +2660,14 @@ Private Function ExportData_XML() As Boolean
       iFileCount = iFileCount + 1
 
       If Len(sXSDTransformFile) > 0 Then
-        sExportText = prstReadyToExport(0).Value
+        sExportText = prstReadyToExport(0).value
         sTransFormText = GetFileText(sXSDTransformFile)
         sSQL = "SELECT convert(nvarchar(MAX), dbo.udfASRNetApplyXsltTransform(convert(xml,'" & Replace(sExportText, "'", "''") & "'), convert(xml,'" & Replace(sTransFormText, "'", "''") & "')))"
         Set rstConverted = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
-        sExportText = PrettyPrintXml(rstConverted(0).Value)
+        sExportText = PrettyPrintXml(rstConverted(0).value)
       Else
-        If Not IsNull(prstReadyToExport(0).Value) Then
-          sExportText = prstReadyToExport(0).Value
+        If Not IsNull(prstReadyToExport(0).value) Then
+          sExportText = prstReadyToExport(0).value
           sExportText = PrettyPrintXml(sExportText)
           
           If Len(sXSDName) > 0 Then
@@ -2659,8 +2678,11 @@ Private Function ExportData_XML() As Boolean
       End If
 
       If mbSplitXMLIntoFiles Then
-        strOutputFileName = InsertNumberIntoFilename(mstrOutputFileName, iFileCount)
+        strOutputFilename = InsertNumberIntoFilename(mstrOutputFileName, iFileCount)
       End If
+
+      ' Process the file name
+      strOutputFilename = ReplaceFormatExpressions(strOutputFilename, 1, mlngExportRecordCount)
 
       Select Case mlngOutputSaveExisting
       Case 0  ' Overwrite
@@ -2673,7 +2695,7 @@ Private Function ExportData_XML() As Boolean
         Exit Function
     
       Case 2  ' Add sequential number to filename
-        mstrOutputFileName = GetSequentialNumberedFile(strOutputFileName)
+        mstrOutputFileName = GetSequentialNumberedFile(strOutputFilename)
         bAppended = False
       
       Case 3  ' Append to Existing File
@@ -2685,9 +2707,9 @@ Private Function ExportData_XML() As Boolean
       pintFileNo = FreeFile
     
       If bAppended Then
-        Open strOutputFileName For Append As pintFileNo
+        Open strOutputFilename For Append As pintFileNo
       Else
-        Open strOutputFileName For Output As pintFileNo
+        Open strOutputFilename For Output As pintFileNo
       End If
        
       Print #pintFileNo, sExportText
@@ -2869,7 +2891,7 @@ Private Function ExportData_CMGfile() As Boolean
   Do While Not prstReadyToExport.EOF
     
     If lngRecordCount > UBound(astrRecordIDs) Then ReDim Preserve astrRecordIDs(lngRecordCount + 100)
-    astrRecordIDs(lngRecordCount) = prstReadyToExport.Fields(0).Value
+    astrRecordIDs(lngRecordCount) = prstReadyToExport.Fields(0).value
     
     If ((lngRecordCount + 1) Mod 1000) = 0 Then
       ReDim Preserve astrBulkRecordIDs(UBound(astrBulkRecordIDs) + 1)
@@ -2879,7 +2901,7 @@ Private Function ExportData_CMGfile() As Boolean
     End If
     
     astrBulkRecordIDs(UBound(astrBulkRecordIDs)) = astrBulkRecordIDs(UBound(astrBulkRecordIDs)) & _
-      CStr(prstReadyToExport.Fields(0).Value)
+      CStr(prstReadyToExport.Fields(0).value)
     
     ' If user cancels the export, abort
     If gobjProgress.Cancelled Then
@@ -2889,7 +2911,7 @@ Private Function ExportData_CMGfile() As Boolean
       Exit Function
     Else
       If lngRecordCount Mod 50 = 0 Then
-        gobjProgress.Bar1Caption = "Calculating Audit Records ( " & Trim$(Str(lngRecordCount)) & " of " & Trim(Str(prstReadyToExport.RecordCount)) & " )"
+        gobjProgress.Bar1Caption = "Calculating Audit Records ( " & Trim$(str(lngRecordCount)) & " of " & Trim(str(prstReadyToExport.recordCount)) & " )"
       End If
     End If
       
@@ -2905,7 +2927,7 @@ Private Function ExportData_CMGfile() As Boolean
     pstrExportString.TheString = vbNullString
 
     If Not rsAffectedRecords.EOF Then
-      strRecordIdentifier = IIf(Not IsNull(prstReadyToExport.Fields(1).Value), prstReadyToExport.Fields(1).Value, vbNullString)
+      strRecordIdentifier = IIf(Not IsNull(prstReadyToExport.Fields(1).value), prstReadyToExport.Fields(1).value, vbNullString)
 
       If bUseCSV Then
         ' strRecordIdentifier = strRecordIdentifier & ","
@@ -2921,7 +2943,7 @@ Private Function ExportData_CMGfile() As Boolean
       ' so that we can exclude any null values completely - otherwise the identifier goes into the export file.
 
       For iCount = 0 To UBound(astrColumnIDs, 1)
-        If astrColumnIDs(iCount) = rsAffectedRecords.Fields(CMGFields.ColumnID).Value Then
+        If astrColumnIDs(iCount) = rsAffectedRecords.Fields(CMGFields.ColumnID).value Then
           strCMGCode = astrColumnCodes(iCount)
           iDataType = aiDataTypes(iCount)
           'NPG20071218 Fault 12867
@@ -2934,11 +2956,11 @@ Private Function ExportData_CMGfile() As Boolean
 
       'NPG20080617 Suggestion S000816
       If strSuppressNulls _
-        And (rsAffectedRecords.Fields(CMGFields.NewValue).Value = vbNullString _
-              Or (Left(rsAffectedRecords.Fields(CMGFields.NewValue).Value, 2) = "0." And Val(rsAffectedRecords.Fields(CMGFields.NewValue).Value) = "0") _
-              Or rsAffectedRecords.Fields(CMGFields.NewValue).Value = "0" _
-              Or rsAffectedRecords.Fields(CMGFields.NewValue).Value = "00:00" _
-              Or rsAffectedRecords.Fields(CMGFields.NewValue).Value = "False") Then
+        And (rsAffectedRecords.Fields(CMGFields.NewValue).value = vbNullString _
+              Or (Left(rsAffectedRecords.Fields(CMGFields.NewValue).value, 2) = "0." And Val(rsAffectedRecords.Fields(CMGFields.NewValue).value) = "0") _
+              Or rsAffectedRecords.Fields(CMGFields.NewValue).value = "0" _
+              Or rsAffectedRecords.Fields(CMGFields.NewValue).value = "00:00" _
+              Or rsAffectedRecords.Fields(CMGFields.NewValue).value = "False") Then
         pbNullSuppressed = True
       End If
       
@@ -2994,11 +3016,11 @@ Private Function ExportData_CMGfile() As Boolean
         'NPG20071218 Fault 12867
         Select Case strConvertCase
           Case "1"
-              varNewValue = IIf(IsNull(rsAffectedRecords.Fields(CMGFields.NewValue).Value), vbNullString, UCase(rsAffectedRecords.Fields(CMGFields.NewValue).Value))
+              varNewValue = IIf(IsNull(rsAffectedRecords.Fields(CMGFields.NewValue).value), vbNullString, UCase(rsAffectedRecords.Fields(CMGFields.NewValue).value))
           Case "2"
-              varNewValue = IIf(IsNull(rsAffectedRecords.Fields(CMGFields.NewValue).Value), vbNullString, LCase(rsAffectedRecords.Fields(CMGFields.NewValue).Value))
+              varNewValue = IIf(IsNull(rsAffectedRecords.Fields(CMGFields.NewValue).value), vbNullString, LCase(rsAffectedRecords.Fields(CMGFields.NewValue).value))
           Case Else
-              varNewValue = IIf(IsNull(rsAffectedRecords.Fields(CMGFields.NewValue).Value), vbNullString, rsAffectedRecords.Fields(CMGFields.NewValue).Value)
+              varNewValue = IIf(IsNull(rsAffectedRecords.Fields(CMGFields.NewValue).value), vbNullString, rsAffectedRecords.Fields(CMGFields.NewValue).value)
         End Select
 
         ' Format the new value
@@ -3020,7 +3042,7 @@ Private Function ExportData_CMGfile() As Boolean
   
             ' Last changed date
             If bCMGExportLastChangeDate Then
-              dLastChangeDate = IIf(IsNull(rsAffectedRecords.Fields(CMGFields.DateTime).Value), #12/31/9999#, rsAffectedRecords.Fields(CMGFields.DateTime).Value)
+              dLastChangeDate = IIf(IsNull(rsAffectedRecords.Fields(CMGFields.DateTime).value), #12/31/9999#, rsAffectedRecords.Fields(CMGFields.DateTime).value)
               pstrExportString.Append IIf(bUseCSV, "," & Format(dLastChangeDate, mstrExportDateFormat), SetStringLength(Format(dLastChangeDate, mstrExportDateFormat), iCMGExportLastChangeDateSize))
             End If
   
@@ -3042,7 +3064,7 @@ Private Function ExportData_CMGfile() As Boolean
   
             ' Last changed date
             If bCMGExportLastChangeDate Then
-              dLastChangeDate = IIf(IsNull(rsAffectedRecords.Fields(CMGFields.DateTime).Value), #12/31/9999#, rsAffectedRecords.Fields(CMGFields.DateTime).Value)
+              dLastChangeDate = IIf(IsNull(rsAffectedRecords.Fields(CMGFields.DateTime).value), #12/31/9999#, rsAffectedRecords.Fields(CMGFields.DateTime).value)
               pstrExportString.Append IIf(bUseCSV, "," & Format(dLastChangeDate, mstrExportDateFormat), SetStringLength(Format(dLastChangeDate, mstrExportDateFormat), iCMGExportLastChangeDateSize))
             End If
           End If
@@ -3063,7 +3085,7 @@ Private Function ExportData_CMGfile() As Boolean
           
           If iCMGExportLastChangeDateOrderID = iRow And bCMGExportLastChangeDate Then
             ' If iRow < 4 And bUseCSV Then pstrExportString.Append ","
-            dLastChangeDate = IIf(IsNull(rsAffectedRecords.Fields(CMGFields.DateTime).Value), #12/31/9999#, rsAffectedRecords.Fields(CMGFields.DateTime).Value)
+            dLastChangeDate = IIf(IsNull(rsAffectedRecords.Fields(CMGFields.DateTime).value), #12/31/9999#, rsAffectedRecords.Fields(CMGFields.DateTime).value)
             ' Insert the delimeter if required.
             If bUseCSV And Not fNewRow Then pstrExportString.Append "," ' may need to set fnewrow to false here...
             pstrExportString.Append IIf(bUseCSV, Format(dLastChangeDate, mstrExportDateFormat), SetStringLength(Format(dLastChangeDate, mstrExportDateFormat), iCMGExportLastChangeDateSize))
@@ -3090,6 +3112,9 @@ Private Function ExportData_CMGfile() As Boolean
       End If
        
     Loop
+
+    ' Process the file name
+    mstrOutputFileName = ReplaceFormatExpressions(mstrOutputFileName, 1, mlngExportRecordCount)
 
     ' Output all the columns for this record ID
     If pstrExportString.Length <> 0 Then
@@ -3301,6 +3326,7 @@ Private Function ReadDataIntoArray() As Boolean
   Dim lngMaxCols As Long
   Dim lngCount As Long
   Dim lngExportRows As Long
+  Dim iStartRow As Integer
 
   If Len(Dir(mstrOutputFileName)) > 0 Then
     bAppended = (mlngOutputSaveExisting = 3)  'Check if we are appending to file
@@ -3349,12 +3375,19 @@ Private Function ReadDataIntoArray() As Boolean
   ' Omit the header if we are appending to file (if specified)
   If Not (bAppended And mbOmitHeader) Or bForceHeader Then
   
-    Select Case mintExportHeader
-    Case 1  'Column Names
+    If mintExportHeader = 2 Or mintExportHeader = 3 Then   'Custom Heading
+      mblnHeader = True
+      ReDim mstrArrayHeader(lngMaxCols, 0)
+      mstrArrayHeader(0, 0) = ReplaceFormatExpressions(mstrExportHeaderText, 1, mlngExportRecordCount)
+      iStartRow = 1
+    End If
+  
+    ' Column Names
+    If mintExportHeader = 1 Or mintExportHeader = 3 Then
       mblnHeader = True
       lngCol = 0
-      lngRow = 0
-      ReDim mstrArrayHeader(lngMaxCols, 0) As String
+      lngRow = iStartRow
+      ReDim Preserve mstrArrayHeader(lngMaxCols, iStartRow) As String
       For pintLoop = 1 To prstReadyToExport.Fields.Count
         If mvarColDetails(0, pintLoop) = "R" Then   'Carriage Return
           lngCol = -1
@@ -3368,12 +3401,8 @@ Private Function ReadDataIntoArray() As Boolean
         End If
         lngCol = lngCol + 1
       Next
-    Case 2  'Custom Heading
-      mblnHeader = True
-      ReDim mstrArrayHeader(0, 0)
-      mstrArrayHeader(0, 0) = mstrExportHeaderText
-    End Select
-  
+    End If
+        
   End If
   
   ' If we only need to output the header bomb out here
@@ -3427,16 +3456,16 @@ Private Function ReadDataIntoArray() As Boolean
           mstrArrayData(lngCol, lngRow) = Space$(mvarColDetails(6, pintLoop + 1))
 
         ElseIf mvarColDetails(7, pintLoop + 1) = True Then
-          mstrArrayData(lngCol, lngRow) = Format(prstReadyToExport.Fields(pintLoop).Value, mstrExportDateFormat)
+          mstrArrayData(lngCol, lngRow) = Format(prstReadyToExport.Fields(pintLoop).value, mstrExportDateFormat)
   
         ElseIf mvarColDetails(12, pintLoop + 1) Then
           tmpLen = mvarColDetails(6, pintLoop + 1)
           tmpDec = mvarColDetails(11, pintLoop + 1)
           'TM19032004 Fault 8052 - DO NOT format Null values to zero. Set to empty string instead.
-          If IsNull(prstReadyToExport.Fields(pintLoop).Value) Then
+          If IsNull(prstReadyToExport.Fields(pintLoop).value) Then
             strTemp = vbNullString
           Else
-            strTemp = FormatNumeric(prstReadyToExport.Fields(pintLoop).Value, tmpLen, tmpDec)
+            strTemp = FormatNumeric(prstReadyToExport.Fields(pintLoop).value, tmpLen, tmpDec)
           End If
           
           mstrArrayData(lngCol, lngRow) = strTemp
@@ -3444,10 +3473,10 @@ Private Function ReadDataIntoArray() As Boolean
         Else
           'MH20030401 Fault 5225
           'mstrArrayData(lngCol, lngRow) = Left(prstReadyToExport.Fields(pintLoop), mvarColDetails(6, pintLoop + 1))
-          If IsNull(prstReadyToExport.Fields(pintLoop).Value) Then
+          If IsNull(prstReadyToExport.Fields(pintLoop).value) Then
             mstrArrayData(lngCol, lngRow) = vbNullString
           Else
-            mstrArrayData(lngCol, lngRow) = prstReadyToExport.Fields(pintLoop).Value
+            mstrArrayData(lngCol, lngRow) = prstReadyToExport.Fields(pintLoop).value
           End If
         End If
 
@@ -3459,8 +3488,10 @@ Private Function ReadDataIntoArray() As Boolean
           Case 2    ' Lower Case
             mstrArrayData(lngCol, lngRow) = LCase(mstrArrayData(lngCol, lngRow))
         End Select
-        
-        
+                
+        If mblnStripDelimiter Then
+          mstrArrayData(lngCol, lngRow) = Replace(mstrArrayData(lngCol, lngRow), mstrExportActualDelimiter, "")
+        End If
         
         If lngCol >= 0 Then
           'Add spaces for fixed length or trim is data is too long...
@@ -3491,8 +3522,13 @@ Private Function ReadDataIntoArray() As Boolean
   
     ReDim Preserve mstrArrayData(lngMaxCols, lngRow)
      
-    Select Case mintExportFooter
-    Case 1  'Column Names
+    If mintExportFooter = 2 Then  'Custom Footing
+      mblnFooter = True
+      ReDim mstrArrayFooter(lngMaxCols, 0)
+      mstrArrayFooter(0, 0) = ReplaceFormatExpressions(mstrExportFooterText, 1, mlngExportRecordCount)
+    End If
+
+    If mintExportFooter = 1 Then  'Column Names
       mblnFooter = True
       lngCol = 0
       lngRow = 0
@@ -3510,12 +3546,8 @@ Private Function ReadDataIntoArray() As Boolean
         End If
         lngCol = lngCol + 1
       Next
-    Case 2  'Custom Footing
-      mblnFooter = True
-      ReDim mstrArrayFooter(0, 0)
-      mstrArrayFooter(0, 0) = mstrExportFooterText
-    End Select
-
+    End If
+      
     ' Close the final output file
     'Close #pintFileNo
 
@@ -3547,75 +3579,106 @@ ReadDataIntoArray_ERROR:
 
 End Function
 
-
 Private Function SendArrayToOutputOptions()
 
   Dim objOutput As clsOutputRun
   Dim objColumn As clsColumn
   Dim lngLoop As Long
-
+  Dim intBlockLoop As Integer
+  Dim intBlockTotal As Integer
+  Dim sExtension As String
+  Dim sFileName As String
+  Dim aryOutputData() As String
 
   Set objOutput = New clsOutputRun
 
-  If objOutput.SetOptions _
-      (False, mlngOutputFormat, False, _
-      False, vbNullString, _
-      mblnOutputSave, mlngOutputSaveExisting, _
-      mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFileName) Then
-
-    'If mbForceHeader Or Not (Dir(mstrOutputFilename) <> vbNullString And mbOmitHeader) Then
-    '  objOutput.FileHeader
-    'End If
-
-      ' Check delimiter. Ie, if Tab selected, replace "<Tab>" with a vbtab
-      Select Case UCase(mstrExportDelimiter)
-        Case ",": objOutput.FileDelimiter = mstrExportDelimiter
-        Case "<TAB>": objOutput.FileDelimiter = vbTab
-        Case "<OTHER>": objOutput.FileDelimiter = mstrExportOtherDelimiter
-        Case Else: objOutput.FileDelimiter = mstrExportDelimiter
-      End Select
-
-    objOutput.ApplyStyles = False
-    'objOutput.FileDelimiter = IIf(mstrExportDelimiter = "<tab>", vbTab, mstrExportDelimiter)
-    objOutput.SizeColumnsIndependently = True
+  ' How many files required for this export?
+  If mbSplitFile Then
+    intBlockTotal = Floor(UBound(mstrArrayData, 2) / mlngSplitFileSize) + 1
     
-    If objOutput.GetFile Then
-  
-      For lngLoop = 1 To UBound(mvarColDetails, 2)
-        objOutput.AddColumn _
-          CStr(mvarColDetails(13, lngLoop)), _
-          IIf(mvarColDetails(12, lngLoop), sqlNumeric, sqlVarChar), _
-          CLng(mvarColDetails(11, lngLoop))
-      Next
+    ' If split into blocks ensure that there is some logic for the filename
+    If InStr(mstrOutputFileName, "{BLOCKNUMBER}") = 0 Then
+      sExtension = "." & Mid(mstrOutputFileName, InStrRev(mstrOutputFileName, ".") + 1, Len(mstrOutputFileName))
+      mstrOutputFileName = Replace(mstrOutputFileName, sExtension, "_{BLOCKNUMBER}" + sExtension)
+    End If
+    
+  Else
+    intBlockTotal = 1
+  End If
 
-      objOutput.HeaderRows = 0
-      objOutput.AddPage mstrExportName, mstrExportName
+  For intBlockLoop = 1 To intBlockTotal
 
+    ' Get a block of exporting data
+    If mbSplitFile And mlngSplitFileSize > 0 Then
+      aryOutputData = OutputArrayBlock(intBlockLoop)
+      
       If mblnHeader Then
-        objOutput.DataArray mstrArrayHeader
+        mstrArrayHeader(0, 0) = ReplaceFormatExpressions(mstrExportHeaderText, intBlockLoop, UBound(aryOutputData, 2) + 1)
       End If
-
-      objOutput.EncloseInQuotes = mblnExportQuotes
-      If Not mblnNoRecords Then
-        objOutput.UpdateProgressPerRow = True
-        objOutput.DataArray mstrArrayData
-        objOutput.UpdateProgressPerRow = False
-      End If
-      objOutput.EncloseInQuotes = False
-
+      
       If mblnFooter Then
-        objOutput.DataArray mstrArrayFooter
+        mstrArrayFooter(0, 0) = ReplaceFormatExpressions(mstrExportFooterText, intBlockLoop, UBound(aryOutputData, 2) + 1)
       End If
-
-      If Not gblnBatchMode Then
-        gobjProgress.CloseProgress
-      End If
-      objOutput.Complete
-
+      
+    Else
+      aryOutputData = mstrArrayData
     End If
 
-  End If
+    ' Process the file name
+    sFileName = ReplaceFormatExpressions(mstrOutputFileName, intBlockLoop, UBound(aryOutputData, 2))
+  
+    If objOutput.SetOptions _
+        (False, mlngOutputFormat, False, _
+        False, vbNullString, _
+        mblnOutputSave, mlngOutputSaveExisting, _
+        mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
+        mstrOutputEmailAttachAs, sFileName) Then
+  
+      objOutput.FileDelimiter = mstrExportActualDelimiter
+      objOutput.ApplyStyles = False
+      objOutput.SizeColumnsIndependently = True
+    
+      If objOutput.GetFile Then
+    
+        For lngLoop = 1 To UBound(mvarColDetails, 2)
+          objOutput.AddColumn _
+            CStr(mvarColDetails(13, lngLoop)), _
+            IIf(mvarColDetails(12, lngLoop), sqlNumeric, sqlVarChar), _
+            CLng(mvarColDetails(11, lngLoop))
+        Next
+  
+        objOutput.HeaderRows = 0
+        objOutput.AddPage mstrExportName, mstrExportName
+  
+        If mblnHeader Then
+          objOutput.DisableDelimiterCheck = True
+          objOutput.DataArray mstrArrayHeader
+        End If
+    
+        objOutput.EncloseInQuotes = mblnExportQuotes
+        If Not mblnNoRecords Then
+          objOutput.DisableDelimiterCheck = False
+          objOutput.UpdateProgressPerRow = True
+          objOutput.DataArray aryOutputData
+          objOutput.UpdateProgressPerRow = False
+        End If
+        objOutput.EncloseInQuotes = False
+  
+        If mblnFooter Then
+          objOutput.DisableDelimiterCheck = True
+          objOutput.DataArray mstrArrayFooter
+        End If
+  
+        If Not gblnBatchMode Then
+          gobjProgress.CloseProgress
+        End If
+        objOutput.Complete
+     
+      End If
+      
+    End If
+    
+  Next intBlockLoop
 
   objOutput.ClearUp
   mstrErrorString = objOutput.ErrorMessage
@@ -3659,4 +3722,53 @@ Function GetFileNameOnly(pstrFilePath As String) As String
   Dim astrPath() As String
   astrPath = Split(pstrFilePath, "\")
   GetFileNameOnly = astrPath(UBound(astrPath))
+End Function
+
+Private Function ReplaceFormatExpressions(ByVal value As String, ByVal blockNumber As Integer, ByVal blockRecordCount As Integer) As String
+
+  ' Replace variables
+  value = Replace(value, "{BLOCKNUMBER}", blockNumber)
+  value = Replace(value, "{BLOCKCOUNT}", blockRecordCount)
+  value = Replace(value, "{RECORDCOUNT}", mlngExportRecordCount)
+  value = Replace(value, "{DATETIME}", Format(mdExportCreateDate, mstrExportDateFormat + "hhnnss"))
+  value = Replace(value, "{DATE}", Format(DateValue(mdExportCreateDate), mstrExportDateFormat))
+
+  ReplaceFormatExpressions = value
+
+End Function
+
+Private Function Floor(ByVal dblValue As Double) As Double
+  Dim myDec As Long
+  myDec = InStr(1, CStr(dblValue), ".", vbTextCompare)
+  If myDec > 0 Then
+    Floor = CDbl(Left(CStr(dblValue), myDec))
+  Else
+    Floor = dblValue
+  End If
+End Function
+
+Private Function OutputArrayBlock(ByVal intBlockNumber As Integer) As String()
+
+  On Error GoTo ArrayExceeded:
+   
+  Dim iStartBlock As Integer
+  Dim iRowsInBlock As Integer
+  Dim lngTotalRows As Long
+  Dim iColumnLoop As Integer
+  Dim j As Integer
+        
+  lngTotalRows = UBound(mstrArrayData, 2)
+  iStartBlock = (intBlockNumber - 1) * mlngSplitFileSize
+  iRowsInBlock = Minimum(mlngSplitFileSize, CLng(lngTotalRows - iStartBlock) + 1)
+  ReDim aryOutput(UBound(mstrArrayData, 1), iRowsInBlock - 1) As String
+   
+  For iColumnLoop = 0 To UBound(mstrArrayData, 1)
+    For j = 0 To iRowsInBlock - 1
+      aryOutput(iColumnLoop, j) = mstrArrayData(iColumnLoop, j + iStartBlock)
+    Next j
+  Next iColumnLoop
+
+ArrayExceeded:
+  OutputArrayBlock = aryOutput
+
 End Function

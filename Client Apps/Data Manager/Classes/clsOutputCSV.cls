@@ -24,6 +24,7 @@ Private mblnEmail As Boolean
 Private mstrFileName As String
 Private mstrDelim As String
 Private mblnQuotes As Boolean
+Private mblnDisableDelimiterCheck As Boolean
 
 'Private mlngSaveFileFormat As Long
 'Private mlngEmailFileFormat As Long
@@ -181,7 +182,7 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
 
       blnQuoteRequired = InStr(strTemp, Chr(34))
       If mstrDelim <> vbNullString Then
-        blnQuoteRequired = (blnQuoteRequired Or InStr(strTemp, mstrDelim) > 0)
+        blnQuoteRequired = (blnQuoteRequired Or (InStr(strTemp, mstrDelim) > 0 And Not mblnDisableDelimiterCheck))
       End If
 
       If mblnQuotes Or blnQuoteRequired Then
@@ -258,10 +259,15 @@ End Sub
 Private Sub Class_Initialize()
   mstrDelim = ","
   mblnQuotes = False
+  mblnDisableDelimiterCheck = False
 End Sub
 
 Public Property Let FileDelimiter(ByVal strNewValue As String)
   mstrDelim = strNewValue
+End Property
+
+Public Property Let DisableDelimiterCheck(ByVal blnNewValue As Boolean)
+  mblnDisableDelimiterCheck = blnNewValue
 End Property
 
 Public Property Let EncloseInQuotes(ByVal blnNewValue As Boolean)

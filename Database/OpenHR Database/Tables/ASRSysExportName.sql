@@ -23,7 +23,7 @@
 	[UserName] [varchar](50) NULL,
 	[TimeStamp] [timestamp] NULL,
 	[DateSeparator] [varchar](6) NULL,
-	[HeaderText] [varchar](255) NULL,
+	[HeaderText] [varchar](MAX) NULL,
 	[CMGExportFileCode] [varchar](10) NULL,
 	[CMGExportUpdateAudit] [bit] NULL,
 	[CMGExportRecordID] [int] NULL,
@@ -32,7 +32,7 @@
 	[Parent2AllRecords] [bit] NULL,
 	[Parent2Picklist] [int] NULL,
 	[Footer] [int] NULL,
-	[FooterText] [varchar](255) NULL,
+	[FooterText] [varchar](MAX) NULL,
 	[AppendToFile] [bit] NULL,
 	[ForceHeader] [bit] NULL,
 	[OmitHeader] [bit] NULL,
@@ -48,5 +48,12 @@
     [TransformFile] NVARCHAR(MAX) NULL, 
     [XMLDataNodeName] NVARCHAR(50) NULL, 
     [LastSuccessfulOutput] DATETIME NULL, 
-    [AuditChangesOnly] BIT NULL
+    [AuditChangesOnly] BIT NULL, 
+    [StripDelimiterFromData] BIT NULL, 
+    [SplitFile] BIT NULL, 
+    [SplitFileSize] INT NULL, 
+    [XSDFileName] NVARCHAR(255) NULL, 
+    [PreserveTransformPath] BIT NULL, 
+    [PreserveXSDPath] BIT NULL, 
+    [SplitXMLNodesFile] BIT NULL
 ) ON [PRIMARY]
