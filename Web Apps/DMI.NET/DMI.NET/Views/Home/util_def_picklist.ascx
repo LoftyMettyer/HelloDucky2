@@ -6,7 +6,7 @@
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_picklists")%>" type="text/javascript"></script>
 
-<form id="frmDefinition">
+<form id="frmDefinition" name="frmDefinition">
 	<div class="absolutefull" style="padding-top: 15px">
 		<div class="nowrap">
 			<div class="tablerow">

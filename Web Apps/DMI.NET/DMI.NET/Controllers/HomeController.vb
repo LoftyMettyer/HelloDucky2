@@ -3961,6 +3961,9 @@ Namespace Controllers
 #Region "Picklists"
 
 		Function util_def_picklist() As ActionResult
+			If Session("sessionCurrentUser") Is Nothing Then
+				Return RedirectToAction("Login", "Account")
+			End If
 			Return PartialView()
 		End Function
 
