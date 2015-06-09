@@ -7,12 +7,6 @@
 	<div class="formField">
 		<label>OpenHR :</label>
 		<label>Version <%:session("Version")%></label>
-		<br />
-		<label>Server :</label>
-		<label><%:ApplicationSettings.LoginPage_Server%></label>
-		<br />
-		<label>Database :</label>
-		<label><%:ApplicationSettings.LoginPage_Database%></label>
 		<%If Len(Session("Username")) > 0 Then%>
 			<br />
 			<label>Current user :</label>
