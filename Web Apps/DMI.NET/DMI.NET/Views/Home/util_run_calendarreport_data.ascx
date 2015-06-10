@@ -258,7 +258,7 @@
 		<%=Html.AntiForgeryToken()%>
 </form>
 
-<form id="frmCalendarData" name="frmCalendarData" style="visibility: visible; display: block">
+<div id="frmCalendarData" name="frmCalendarData" style="visibility: visible; display: block">
 <%
 	
 	Dim sErrorDescription As String = ""
@@ -304,9 +304,9 @@
 	
 	Response.Write("<input type='hidden' id=txtCalendarMode name=txtCalendarMode value=" & Session("CalRep_Mode") & ">" & vbCrLf)
 	Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
-
+	
 %>
-</form>
+</div>
 
 <form action="util_run_calendarreport_download" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
 	<input type="hidden" id="txtPreview" name="txtPreview" value="<%=objCalendar.OutputPreview%>">
