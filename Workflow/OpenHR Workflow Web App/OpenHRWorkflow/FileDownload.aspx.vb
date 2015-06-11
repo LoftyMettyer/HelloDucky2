@@ -30,6 +30,7 @@ Partial Class FileDownload
 
 		If sErrorMessage.Length > 0 Then
 			If sErrorMessage.Length > 0 Then
+				sErrorMessage = "An error occurred."	' Quick fix to fix an XSS issue.
 				sErrorMessage = "Unable to download file.<BR>" & sErrorMessage & "<BR><BR>"
 			End If
 
