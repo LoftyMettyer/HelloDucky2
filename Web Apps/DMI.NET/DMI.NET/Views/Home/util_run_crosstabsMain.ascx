@@ -167,11 +167,11 @@
 	<%	Html.RenderPartial("~/Views/Home/util_run_outputoptions.ascx")%>
 </div>
 
-<form id="frmOutput" name="frmOutput">
+<div id="frmOutput">
 	<input type="hidden" id="fok" name="fok" value="">
 	<input type="hidden" id="cancelled" name="cancelled" value="">
 	<input type="hidden" id="statusmessage" name="statusmessage" value="">
-</form>
+</div>
 
 
 
