@@ -210,6 +210,7 @@
     <Compile Include="Classes\Licence.vb" />
     <Compile Include="Classes\PromptedValue.vb" />
     <Compile Include="Code\Attributes\PermissionAuthorizeAttribute.vb" />
+    <Compile Include="Controllers\ApiController.vb" />
     <Compile Include="Helpers\AntiForgeryTokenHelper.vb" />
     <Compile Include="Models\EmailSelectionModel.vb" />
     <Compile Include="Models\EventDetailModel.vb" />
@@ -1835,6 +1836,7 @@
     <Content Include="Views\Shared\Error.aspx" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Views\Api\" />
     <Folder Include="Views\Home\pictures\" />
   </ItemGroup>
   <ItemGroup>
