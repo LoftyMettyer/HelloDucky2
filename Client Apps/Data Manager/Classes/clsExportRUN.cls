@@ -1674,14 +1674,14 @@ Private Function DoChildOrderString(rsTemp As Recordset, ByRef psJoinCode As Str
             iTempCounter = iNextIndex
             
             psJoinCode = psJoinCode & _
-              " LEFT OUTER JOIN " & pobjOrderCol.RealSource & " ASRSysTemp_" & Trim(str(iTempCounter)) & _
-              " ON " & sCurrentTableViewName & ".ID_" & Trim(str(rsTemp!TableID)) & _
-              " = ASRSysTemp_" & Trim(str(iTempCounter)) & ".ID"
+              " LEFT OUTER JOIN " & pobjOrderCol.RealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & _
+              " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(rsTemp!TableID)) & _
+              " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
           End If
         
           DoChildOrderString = DoChildOrderString & _
             IIf(Len(DoChildOrderString) > 0, ",", "") & _
-            "ASRSysTemp_" & Trim(str(iTempCounter)) & "." & rsTemp!ColumnName & _
+            "ASRSysTemp_" & Trim(Str(iTempCounter)) & "." & rsTemp!ColumnName & _
             IIf(rsTemp!Ascending, "", " DESC")
         End If
       Else
@@ -1731,9 +1731,9 @@ Private Function DoChildOrderString(rsTemp As Recordset, ByRef psJoinCode As Str
                     iTempCounter = iNextIndex
 
                     psJoinCode = psJoinCode & _
-                      " LEFT OUTER JOIN " & sRealSource & " ASRSysTemp_" & Trim(str(iTempCounter)) & _
-                      " ON " & sCurrentTableViewName & ".ID_" & Trim(str(objTableView.TableID)) & _
-                      " = ASRSysTemp_" & Trim(str(iTempCounter)) & ".ID"
+                      " LEFT OUTER JOIN " & sRealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & _
+                      " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(objTableView.TableID)) & _
+                      " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
                   End If
                 End If
               End If
@@ -1753,7 +1753,7 @@ Private Function DoChildOrderString(rsTemp As Recordset, ByRef psJoinCode As Str
               End If
 
               sColumnCode = sColumnCode & _
-                " WHEN NOT ASRSysTemp_" & Trim(str(iNextIndex)) & "." & rsTemp!ColumnName & " IS NULL THEN ASRSysTemp_" & Trim(str(iNextIndex)) & "." & rsTemp!ColumnName
+                " WHEN NOT ASRSysTemp_" & Trim(Str(iNextIndex)) & "." & rsTemp!ColumnName & " IS NULL THEN ASRSysTemp_" & Trim(Str(iNextIndex)) & "." & rsTemp!ColumnName
             Next iNextIndex
 
             If Len(sColumnCode) > 0 Then
@@ -2082,7 +2082,7 @@ Private Function CheckRecordSet() As Boolean
   mrstExportOutput.MoveLast
   mrstExportOutput.MoveFirst
   
-  mlngExportRecordCount = mrstExportOutput.recordCount
+  mlngExportRecordCount = mrstExportOutput.RecordCount
   
   If gblnBatchMode = False Then
     gobjProgress.Bar1MaxValue = mlngExportRecordCount
@@ -2911,7 +2911,7 @@ Private Function ExportData_CMGfile() As Boolean
       Exit Function
     Else
       If lngRecordCount Mod 50 = 0 Then
-        gobjProgress.Bar1Caption = "Calculating Audit Records ( " & Trim$(str(lngRecordCount)) & " of " & Trim(str(prstReadyToExport.recordCount)) & " )"
+        gobjProgress.Bar1Caption = "Calculating Audit Records ( " & Trim$(Str(lngRecordCount)) & " of " & Trim(Str(prstReadyToExport.RecordCount)) & " )"
       End If
     End If
       
@@ -3724,7 +3724,7 @@ Function GetFileNameOnly(pstrFilePath As String) As String
   GetFileNameOnly = astrPath(UBound(astrPath))
 End Function
 
-Private Function ReplaceFormatExpressions(ByVal value As String, ByVal blockNumber As Integer, ByVal blockRecordCount As Integer) As String
+Private Function ReplaceFormatExpressions(ByVal value As String, ByVal blockNumber As Long, ByVal blockRecordCount As Long) As String
 
   ' Replace variables
   value = Replace(value, "{BLOCKNUMBER}", blockNumber)
