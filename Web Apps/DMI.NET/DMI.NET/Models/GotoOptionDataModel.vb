@@ -64,7 +64,6 @@ Namespace Models
 
 		Public Property txtGotoOptionLookupMandatory As String
 
-		<AllowHtml>
 		Public Property txtGotoOptionLookupValue As String
 
 		Public Property txtGotoOptionFile As String
