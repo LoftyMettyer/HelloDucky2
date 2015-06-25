@@ -36,7 +36,8 @@ CREATE PROC sp_generate_inserts
 
 	--Lofty's extras
 	@replaceCol		varchar(MAX) = NULL,
-	@replaceColWith	varchar(MAX) = NULL
+	@replaceColWith	varchar(MAX) = NULL,
+	@ordercolumn	varchar(MAX) = NULL
 	
 )
 AS
@@ -202,7 +203,8 @@ ELSE
 	END
 
 --Variable declarations
-DECLARE		@Column_ID int, 		
+DECLARE		@Table_Order varchar(max),
+		@Column_ID int, 		
 		@Column_List varchar(8000), 
 		@Column_Name varchar(128), 
 		@Start_Insert varchar(786), 
@@ -214,9 +216,12 @@ DECLARE		@Column_ID int,
 SET @IDN = ''
 SET @Column_ID = 0
 SET @Column_Name = ''
+SET @Table_Order = ''
 SET @Column_List = ''
 SET @Actual_Values = ''
 
+IF @ordercolumn IS NOT NULL
+	SET @Table_Order = ' ORDER BY ' + @ordercolumn
 
 
 IF @owner IS NULL 
@@ -371,7 +376,8 @@ IF (@include_column_list <> 0)
 			'''' + RTRIM(@Start_Insert) + 
 			' ''+' + '''(' + RTRIM(@Column_List) +  '''+' + ''')''' + 
 			' +''VALUES(''+ ' +  @Actual_Values  + '+'')''' + ' ' + 
-			COALESCE(@from,' FROM ' + CASE WHEN @owner IS NULL THEN '' ELSE '[' + LTRIM(RTRIM(@owner)) + '].' END + '[' + rtrim(@table_name) + ']' + '(NOLOCK)')
+			COALESCE(@from,' FROM ' + CASE WHEN @owner IS NULL THEN '' ELSE '[' + LTRIM(RTRIM(@owner)) + '].' END + '[' + rtrim(@table_name) + ']' + '(NOLOCK)') +
+			@Table_Order
 	END
 ELSE IF (@include_column_list = 0)
 	BEGIN
@@ -380,7 +386,8 @@ ELSE IF (@include_column_list = 0)
 			CASE WHEN @top IS NULL OR @top < 0 THEN '' ELSE ' TOP ' + LTRIM(STR(@top)) + ' ' END + 
 			'''' + RTRIM(@Start_Insert) + 
 			' '' +''VALUES(''+ ' +  @Actual_Values + '+'')''' + ' ' + 
-			COALESCE(@from,' FROM ' + CASE WHEN @owner IS NULL THEN '' ELSE '[' + LTRIM(RTRIM(@owner)) + '].' END + '[' + rtrim(@table_name) + ']' + '(NOLOCK)')
+			COALESCE(@from,' FROM ' + CASE WHEN @owner IS NULL THEN '' ELSE '[' + LTRIM(RTRIM(@owner)) + '].' END + '[' + rtrim(@table_name) + ']' + '(NOLOCK)') +
+			@Table_Order
 	END	
 
 --Determining whether to ouput any debug information
@@ -498,16 +505,29 @@ INSERT @statements
 	VALUES ('DECLARE @exportID integer;');
 
 INSERT @statements
-	EXEC sp_generate_inserts ASRSysExportName, @ommit_identity = 1, @from = "from ASRSysExportName where id = 26"
+	EXEC sp_generate_inserts ASRSysExportName, @ommit_identity = 1, @from = "from ASRSysExportName where id = 27"
 
 INSERT @statements
 	VALUES ('SELECT @exportID = MAX(ID) FROM ASRSysExportName;');
 
 INSERT @statements
-	EXEC sp_generate_inserts ASRSysExportDetails, @cols_to_exclude = "'id'", @from = "from ASRSysExportDetails where exportid = 26", @replaceCol = '[exportid]', @replaceColWith = '@exportID'
+	EXEC sp_generate_inserts ASRSysExportDetails, @cols_to_exclude = "'id'", @from = "from ASRSysExportDetails where exportid = 27", @replaceCol = '[exportid]', @replaceColWith = '@exportID', @ordercolumn = 'id'
 
-SELECT @script = @script + command + CHAR(13) FROM @statements;
+INSERT @statements
+	EXEC sp_generate_inserts ASRSysExportAccess, @from = "from ASRSysExportAccess where id = 27", @replaceCol = '[id]', @replaceColWith = '@exportID'
 
-SELECT @script
 
---select * from @statements;
+DECLARE @commands CURSOR 
+
+SET @commands = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR SELECT command FROM @statements
+OPEN @commands
+FETCH NEXT FROM @commands INTO @script
+WHILE (@@fetch_status = 0)
+BEGIN
+	PRINT @script
+	FETCH NEXT FROM @commands INTO @script
+END
+
+
+--SELECT @script = @script + command + CHAR(13) FROM @statements;
+--SELECT @script FOR XML PATH(''), TYPE
