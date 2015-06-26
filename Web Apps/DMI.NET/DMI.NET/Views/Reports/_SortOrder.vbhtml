@@ -64,6 +64,8 @@
 			var datarow = $("#SortOrders").getRowData(rowID);
 			var thisIndex = $("#SortOrders").getInd(rowID);
 
+			datarow["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
+
 			OpenHR.postData('Reports/RemoveSortOrder', datarow);
 			$("#SortOrders").jqGrid('delRowData', rowID);
 
@@ -83,6 +85,7 @@
 
 			for (var i = 0; i < rows.length; i++) {
 				var datarow = $("#SortOrders").getRowData(rows[i]);
+				datarow["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
 				OpenHR.postData('Reports/RemoveSortOrder', datarow);
 			}
 
@@ -227,6 +230,8 @@
 			}
 
 			var gridData = $("#SortOrders").getRowData(rowID);
+			gridData["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
+
 			OpenHR.OpenDialog("Reports/EditSortOrder", "divPopupReportDefinition", gridData, 'auto');
 		}
 

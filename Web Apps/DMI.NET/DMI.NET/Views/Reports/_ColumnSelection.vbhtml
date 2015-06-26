@@ -160,6 +160,7 @@
 			rowID = selectedRows[i];
 			var datarow = getDatarowFromAvailable(selectedRows[i]);
 
+			datarow["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
 			OpenHR.postData("Reports/AddReportColumn", datarow);
 
 			$("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
@@ -237,7 +238,8 @@
 			SelectionType: sType,
 			ColumnsTableID: $("#SelectedTableID").val(),
 			TableName: $("#SelectedTableID option:selected").text(),
-			Columns: allRows
+			Columns: allRows,
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
 
 		OpenHR.postData("Reports/AddAllReportColumns", postData);
@@ -333,7 +335,8 @@
 			ReportID: '@Model.ID',
 			ReportType: '@Model.ReportType',
 			ColumnsTableID: $("#SelectedTableID").val(),
-			Columns: selectedRows
+			Columns: selectedRows,
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
 
 		for (var i = 0; i <= selectedRows.length - 1; i++) {
@@ -393,7 +396,8 @@
 
 		var dataSend = {
 			ReportID: '@Model.ID',
-			ReportType: '@Model.ReportType'
+			ReportType: '@Model.ReportType',
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
 
 		OpenHR.postData("Reports/RemoveAllReportColumns", dataSend);

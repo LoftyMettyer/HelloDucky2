@@ -170,7 +170,8 @@ End Code
 			BreakOnChange: $("#frmPostSortOrder #BreakOnChange").is(':checked'),
 			PageOnChange: $("#frmPostSortOrder #PageOnChange").is(':checked'),
 			ValueOnChange: $("#frmPostSortOrder #ValueOnChange").is(':checked'),
-			SuppressRepeated: $("#frmPostSortOrder #SuppressRepeated").is(':checked')
+			SuppressRepeated: $("#frmPostSortOrder #SuppressRepeated").is(':checked'),
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
 
 		// Post to server

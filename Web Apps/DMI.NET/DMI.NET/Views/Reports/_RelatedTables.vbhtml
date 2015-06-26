@@ -315,6 +315,8 @@
 		var columnList = $("#SelectedColumns").getDataIDs();
 		var iColumnCount = 0;
 
+		gridData["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
+
 		for (i = 0; i < columnList.length; i++) {
 			rowData = $("#SelectedColumns").getRowData(columnList[i]);
 			if (rowData.TableID == gridData.TableID) {

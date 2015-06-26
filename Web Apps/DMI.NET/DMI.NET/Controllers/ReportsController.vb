@@ -588,6 +588,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function EditSortOrder(objModel As SortOrderViewModel) As ActionResult
 
 			Dim objReport = objReportRepository.RetrieveParent(objModel)
@@ -598,6 +599,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Sub PostSortOrder(objModel As SortOrderViewModel)
 
 			Dim objReport As IReport
@@ -614,6 +616,7 @@ Namespace Controllers
 		End Sub
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Sub RemoveSortOrder(objModel As SortOrderViewModel)
 
 			Dim objReport As IReport
@@ -628,6 +631,7 @@ Namespace Controllers
 		End Sub
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Sub AddAllReportColumns(objModel As ReportColumnCollection)
 
 			Dim objReport As ReportBaseModel
@@ -654,6 +658,7 @@ Namespace Controllers
 		End Sub
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Sub AddReportColumn(objModel As ReportColumnItem)
 
 			Dim objReport As ReportBaseModel
@@ -664,6 +669,7 @@ Namespace Controllers
 		End Sub
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Sub RemoveAllChildTables(objModel As ReportColumnItem)
 
 			Dim objReport As CustomReportModel
@@ -684,6 +690,7 @@ Namespace Controllers
 		End Sub
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Sub RemoveChildTable(objModel As ReportColumnItem)
 
 			Dim objReport As CustomReportModel
@@ -701,6 +708,7 @@ Namespace Controllers
 		End Sub
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Sub RemoveReportColumn(objModel As ReportColumnCollection)
 
 			Dim objReport As ReportBaseModel
@@ -714,6 +722,7 @@ Namespace Controllers
 		End Sub
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Sub RemoveAllReportColumns(objModel As ReportColumnItem)
 
 			Dim objReport As ReportBaseModel

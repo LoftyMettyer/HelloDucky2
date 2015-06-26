@@ -647,7 +647,12 @@
 
 	function removeAllChildTables(baseTableChanged) {
 
-		var data = { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }
+		var data = {
+			ReportID: "@Model.ID",
+			ReportType: "@Model.ReportType",
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		}
+
 		OpenHR.postData("Reports/RemoveAllChildTables", data, function () { removeAllChildTablesCompleted(baseTableChanged) });
 		enableSaveButton();
 	}
