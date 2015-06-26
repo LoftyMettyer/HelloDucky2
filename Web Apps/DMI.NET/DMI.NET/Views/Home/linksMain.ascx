@@ -1625,6 +1625,7 @@
 				chartColumnName, chartColumnName2) {
 		
 		var chartModel = {
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val(),
 			multiAxis: multiAxis,
 			showLegend: showLegend,
 			showGrid: showGrid,
@@ -1660,7 +1661,7 @@
 			open: function (event, ui) {
 				//Load the showChart action which will return 
 				// the partial view _showChart
-				$(this).load("<%:Url.Action("ShowChart", "Home")%>", chartModel);
+				$(this).load("<%:Url.Action("ShowChart", "Home")%>", chartModel );
 			},
 			resize: function () {
 				var doit;				

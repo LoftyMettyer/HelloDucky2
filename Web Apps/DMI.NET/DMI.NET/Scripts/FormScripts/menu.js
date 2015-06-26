@@ -146,8 +146,8 @@ function menu_abMainMenu_DataReady() {
 	//Disable/Hide menu items that are irrelevent for this user...
 	menu_refreshMenu();
 
-	if (OpenHR.currentWorkPage() == "DEFAULT") {		
-		OpenHR.postData("WorkflowOutOfOffice_Check", null, menu_OutOfOfficeTurnOff);
+	if (OpenHR.currentWorkPage() == "DEFAULT") {
+		OpenHR.postData("WorkflowOutOfOffice_Check", {__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()}, menu_OutOfOfficeTurnOff);
 	}
 
 	//Set up search box with all available/accessible options in the menu.
@@ -2371,7 +2371,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 }
 
 function menu_WorkflowOutOfOffice() {
-	OpenHR.postData("WorkflowOutOfOffice_Check", null, menu_OutOfOfficeToggle);
+	OpenHR.postData("WorkflowOutOfOffice_Check", { __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val() }, menu_OutOfOfficeToggle);
 }
 
 function menu_OutOfOfficeToggle(status) {
@@ -2409,7 +2409,7 @@ function menu_OutOfOfficeToggle(status) {
 
 	OpenHR.modalPrompt(sMsg, 4, "Out of Office").then(function (answer) {
 		if (answer == 6) {
-			OpenHR.postData("WorkflowOutOfOffice_Enable", { enable: !status.outOfOfficeOn }, null);
+			OpenHR.postData("WorkflowOutOfOffice_Enable", {__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val(), enable: !status.outOfOfficeOn }, null);
 		}
 
 	});

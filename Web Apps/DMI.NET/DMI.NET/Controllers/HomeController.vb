@@ -1055,6 +1055,7 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		<ValidateAntiForgeryToken()>
 		<HttpPost()>
 		Function RefreshSession() As Boolean
 			' This function simply resets the session timeout
@@ -1163,6 +1164,7 @@ Namespace Controllers
 
 		End Function
 
+		<ValidateAntiForgeryToken()>
 		<HttpPost>
 		Function DefinitionProperties(ID As Integer, Type As UtilityType, Name As String) As ActionResult
 
@@ -5303,13 +5305,13 @@ Namespace Controllers
 			Return PartialView(model)
 		End Function
 
-		<HttpPost()>
-		Public Sub ResetSessionVars()
+		Sub ResetSessionVars()
 			Session("recordID") = ""
 			Session("linkType") = ""
 			Session("ViewDescription") = ""
 		End Sub
 
+		<ValidateAntiForgeryToken()>
 		<HttpPost()>
 		Public Function ShowChart(model As PopoutChartModel) As PartialViewResult
 
@@ -5415,6 +5417,7 @@ Namespace Controllers
 
 		End Function
 
+		<ValidateAntiForgeryToken()>
 		<HttpPost>
 		Function WorkflowOutOfOffice_Check() As JsonResult
 
@@ -5451,6 +5454,7 @@ Namespace Controllers
 
 		End Function
 
+		<ValidateAntiForgeryToken()>
 		<HttpPost>
 		Function WorkflowOutOfOffice_Enable(enable As Boolean) As JsonResult
 

@@ -407,12 +407,10 @@
 	openDialog = function (url, targetWin, jsonData, dialogWidth) { //dialogWidth should be passed as a string, not a number: i.e 'auto' or '900px'
 
 		var $frame;
-
 		$.ajax({
 			url: url,
 			type: "POST",
-			data: JSON.stringify(jsonData),
-			contentType: "application/json;charset=utf-8",
+			data: jsonData,
 			async: true,
 			success: function (html) {
 

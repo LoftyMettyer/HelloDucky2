@@ -808,7 +808,7 @@
 
 	function resetSession() {
 		var mins = <%:Session.Timeout%>; 
-		$.post('RefreshSession', function () {});
+		$.post('RefreshSession', { __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val() },  function () {});
 		Decrement(mins);
 	}
 
