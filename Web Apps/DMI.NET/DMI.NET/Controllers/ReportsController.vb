@@ -520,7 +520,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
-	 Function ChangeEventLookupTable(objModel As CalendarEventDetailViewModel) As ActionResult
+	 Function ChangeEventLookupTable(objModel As CalendarEventDetailViewModel) As ActionResult 'No ValidateAntiForgeryToken necessary for this method: it's never invoked!
 
 			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
 			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)

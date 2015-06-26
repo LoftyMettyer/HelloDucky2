@@ -209,7 +209,7 @@ End Code
 	<input type="button" id="butEventEditCancel" value="Cancel" onclick="closeThisCalendarEvent();" />
 	<input type="button" id="butEventEditOK" value="OK" onclick="postThisCalendarEvent();" />
 </div>
-
+@Html.AntiForgeryToken()
 @code
 	Html.EndForm()
 End Code
