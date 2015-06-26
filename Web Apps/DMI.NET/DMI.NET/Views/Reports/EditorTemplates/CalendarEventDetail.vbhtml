@@ -467,8 +467,9 @@ End Code
 		grid.setGridParam({ sortname: 'EventKey', sortorder: "Asc" }).trigger('reloadGrid');
 		grid.jqGrid("setSelection", '@Model.EventKey');
 
-
 		setViewAccess('FILTER', $("#CalendarEventsViewAccess"), $("#FilterViewAccess").val(), $("#EventName").val());
+
+		datarow["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
 
 		// Post to server
 		OpenHR.postData("Reports/PostCalendarEvent", datarow)

@@ -127,16 +127,16 @@
 
 
 	function eventAdd() {
-		OpenHR.OpenDialog("Reports/AddCalendarEvent", "divPopupReportDefinition", { ReportID: "@Model.ID" }, '1000');
+		OpenHR.OpenDialog("Reports/AddCalendarEvent", "divPopupReportDefinition", { ReportID: "@Model.ID", __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val() }, '1000');
 	}
 
 	function eventEdit() {
-
 		var rowID = $('#CalendarEvents').jqGrid('getGridParam', 'selrow');
 		var datarow = $("#CalendarEvents").getRowData(rowID);
 
-		OpenHR.OpenDialog("Reports/EditCalendarEvent", "divPopupReportDefinition", datarow, '1000');
+		datarow["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
 
+		OpenHR.OpenDialog("Reports/EditCalendarEvent", "divPopupReportDefinition", datarow, '1000');
 	}
 
 	function removeEvent() {
@@ -147,6 +147,7 @@
 		var datarow = $("#CalendarEvents").getRowData(rowID);
 		var thisIndex = $("#CalendarEvents").getInd(rowID);
 
+		datarow["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
 		OpenHR.postData("Reports/RemoveCalendarEvent", datarow)
 		$('#CalendarEvents').jqGrid('delRowData', rowID)
 
@@ -166,6 +167,7 @@
 
 		for (i = 0; i < rows.length; i++) {
 			var datarow = grid.jqGrid('getRowData', rows[i]);
+			datarow["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
 			OpenHR.postData("Reports/RemoveCalendarEvent", datarow)
 		}
 

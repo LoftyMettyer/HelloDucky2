@@ -454,6 +454,7 @@ Namespace Controllers
 		End Sub
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function AddCalendarEvent(ReportID As Integer) As ActionResult
 
 			Dim objReport = objReportRepository.RetrieveCalendarReport(ReportID)
@@ -479,6 +480,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function EditCalendarEvent(objModel As CalendarEventDetailViewModel) As ActionResult
 
 			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
@@ -489,6 +491,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Sub PostCalendarEvent(objModel As CalendarEventDetailViewModel)
 
 			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
@@ -526,6 +529,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Sub RemoveCalendarEvent(objModel As CalendarEventDetailViewModel)
 
 			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
