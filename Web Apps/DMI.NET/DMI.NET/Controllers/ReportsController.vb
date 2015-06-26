@@ -436,8 +436,8 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Sub PostChildTable(objModel As ChildTableViewModel)
-
 			Try
 
 				Dim objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
@@ -448,9 +448,7 @@ Namespace Controllers
 
 			Catch ex As Exception
 				Throw
-
 			End Try
-
 		End Sub
 
 		<HttpPost>

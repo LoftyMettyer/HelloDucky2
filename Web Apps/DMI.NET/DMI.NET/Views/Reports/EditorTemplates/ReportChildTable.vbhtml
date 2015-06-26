@@ -63,7 +63,7 @@ End Code
 	</div>
 	</div>
 </div>
-
+@Html.AntiForgeryToken()
 @Code
 	Html.EndForm()
 End Code
@@ -201,6 +201,9 @@ End Code
 			OrderName: $("#txtFieldRecOrder").val(),
 			Records: sAll_Records
 		};
+
+		//Set antiforgery token before we post
+		datarow["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
 
 		setViewAccess('FILTER', $("#ChildTablesViewAccess"), $("#FilterViewAccess").val(), $("#ChildTableID option:selected").text());
 
