@@ -396,6 +396,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function AddChildTable(ReportID As Integer) As ActionResult
 
 			Dim objModel As New ChildTableViewModel With {.ReportID = ReportID, .ReportType = UtilityType.utlCustomReport}
@@ -421,6 +422,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function EditChildTable(objModel As ChildTableViewModel) As ActionResult
 
 			Dim objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
@@ -501,13 +503,14 @@ Namespace Controllers
 		End Sub
 
 		<HttpPost>
-	 Function ChangeEventBaseTable(objModel As CalendarEventDetailViewModel) As ActionResult
+		<ValidateAntiForgeryToken>
+		Function ChangeEventBaseTable(objModel As CalendarEventDetailViewModel) As ActionResult
 
 			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
 
 			objModel.ChangeBaseTable()
 			objModel.AvailableTables = objReportRepository.GetTablesWithEvents(objReport.BaseTableID)
-			
+
 			ModelState.Clear()
 			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
 
@@ -543,6 +546,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function ChangeBaseTable(ReportID As Integer, ReportType As UtilityType, BaseTableID As Integer) As JsonResult
 
 			Dim iChildTablesAvailable As Integer
@@ -562,6 +566,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function AddSortOrder(ReportID As Integer, ReportType As UtilityType) As ActionResult
 
 			Dim objModel As New SortOrderViewModel

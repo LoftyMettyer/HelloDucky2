@@ -220,7 +220,14 @@
 		}
 
 		function addSortOrder() {
-			OpenHR.OpenDialog("Reports/AddSortOrder", "divPopupReportDefinition", { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }, 'auto');
+
+			var postData = {
+				ReportID: "@Model.ID",
+				ReportType: "@Model.ReportType",
+				__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+			};
+
+			OpenHR.OpenDialog("Reports/AddSortOrder", "divPopupReportDefinition", postData, 'auto');
 		}
 
 		function editSortSorder(rowID) {

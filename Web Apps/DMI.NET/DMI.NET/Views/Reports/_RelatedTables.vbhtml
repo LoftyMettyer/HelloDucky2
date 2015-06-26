@@ -174,7 +174,7 @@
 		var currentID = $("#txtParent2PicklistID").val();
 		var tableName = $("#Parent2_Name").val();
 
-		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {			
+		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
 			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && '@Model.CanEditSecurityGroups.ToString.ToLower' == "false") {
 				$("#txtParent2PicklistID").val(0);
 				$("#txtParent2Picklist").val('None');
@@ -237,7 +237,12 @@
 
 	function addChildTable() {
 
-		OpenHR.OpenDialog("Reports/AddChildTable", "divPopupReportDefinition", { ReportID: "@Model.ID" }, '800');
+		var postData = {
+			ReportID: "@Model.ID",
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		};
+
+		OpenHR.OpenDialog("Reports/AddChildTable", "divPopupReportDefinition", postData, '800');
 
 	}
 
@@ -248,6 +253,8 @@
 		}
 
 		var gridData = $("#ChildTables").getRowData(rowID);
+		gridData["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
+
 		OpenHR.OpenDialog("Reports/EditChildTable", "divPopupReportDefinition", gridData, '800');
 
 	}
@@ -365,14 +372,14 @@
 	}
 
 	function getColumnIndexByName(grid, columnName) {
-		var cm = grid.jqGrid('getGridParam', 'colModel'), i, l;		
+		var cm = grid.jqGrid('getGridParam', 'colModel'), i, l;
 			for (i = 1, l = cm.length; i < l; i += 1) {
 				if (cm[i].name === columnName) {
 					return i; // return the index
 				}
 			}
 			return -1;
-		}	
+		}
 
 	$(function () {
 
@@ -418,7 +425,7 @@
 				button_disable($("#btnChildRemove")[0], isDefinitionReadOnly());
 			},
 			gridComplete: function () {
-				
+
 				var tablesSelected = $(this).getGridParam("reccount");
 				var tablesAvailable = $("#ChildTablesAvailable").val() - tablesSelected;
 
@@ -429,16 +436,16 @@
 
 				refreshViewAccess();
 			},
-			loadComplete: function(json) {
-				
+			loadComplete: function (json) {
+
 				// Highlight top row
 				var ids = $(this).jqGrid("getDataIDs");
 				if (ids && ids.length > 0)
 					$(this).jqGrid("setSelection", ids[0]);
 
-				var iCol = getColumnIndexByName($(this), 'Records'), rows = this.rows, i,	c = rows.length;
-				for (i = 1; i < c; i += 1) {					
-					if ($(rows[i].cells[iCol])[0].innerText == 0 ) {
+				var iCol = getColumnIndexByName($(this), 'Records'), rows = this.rows, i, c = rows.length;
+				for (i = 1; i < c; i += 1) {
+					if ($(rows[i].cells[iCol])[0].innerText == 0) {
 						$(rows[i].cells[iCol])[0].innerText = "All Records"
 					}
 				}

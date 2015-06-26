@@ -539,7 +539,8 @@
 		var dataSend = {
 			ReportID: '@Model.ID',
 			ReportType: '@Model.ReportType',
-			BaseTableID: $("#BaseTableID option:selected").val()
+			BaseTableID: $("#BaseTableID option:selected").val(),
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
 
 		OpenHR.postData("Reports/ChangeBaseTable", dataSend, changeReportBaseTableCompleted);
