@@ -1446,6 +1446,7 @@ Namespace Controllers
 
 		End Function
 
+		<ValidateAntiForgeryToken()>
 		<HttpPost()>
 		Function LinksMain(Optional psScreenInfo As String = "") As ActionResult
 			' Get dashboard items

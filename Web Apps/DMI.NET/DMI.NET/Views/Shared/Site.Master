@@ -534,11 +534,14 @@
 				} catch (e) { //continue with navigation 
 					if (rowWasModified) return false;
 				}
-			}			
+			}
+			
+			var csrfProt = "";
+			if (action.toUpperCase().substr(0, 9) === "LINKSMAIN") csrfProt = $('[name="__RequestVerificationToken"]').val();
 
 			$.ajax({
 				url: window.ROOT + controller + "/" + action,
-				data: { psScreenInfo: params },
+				data: { psScreenInfo: params, __RequestVerificationToken: csrfProt },
 				dataType: 'html',
 				type: "POST",
 				success: function (html) {

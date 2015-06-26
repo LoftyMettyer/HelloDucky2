@@ -123,7 +123,7 @@
 				url: 'linksMain',
 				dataType: 'html',
 				type: 'POST',
-				data: { psScreenInfo: '<%=session("SingleRecordTableID")%>!<%=session("SingleRecordViewID")%>_0' },
+				data: { psScreenInfo: '<%=session("SingleRecordTableID")%>!<%=session("SingleRecordViewID")%>_0', __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val() },
 				success: function(html) {
 					try {
 						var jsonResponse = $.parseJSON(html);
