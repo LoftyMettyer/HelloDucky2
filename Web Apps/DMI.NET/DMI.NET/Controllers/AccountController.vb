@@ -178,6 +178,11 @@ Namespace Controllers
 
 			Try
 
+				If Not ModelState.IsValid Then
+					LoginViewModel.ReadFromCookie()
+					Return View("login", LoginViewModel)
+				End If
+
 				If LoginViewModel.UserName.ToLower() = "sa" Then
 					ModelState.AddModelError(Function(i As LoginViewModel) i.UserName, "The System Administrator cannot use the OpenHR Web module.")
 					LoginViewModel.ReadFromCookie()
@@ -220,6 +225,7 @@ Namespace Controllers
 				End If
 
 			Catch ex As Exception
+				Throw
 
 			End Try
 
@@ -231,6 +237,7 @@ Namespace Controllers
 				Response.Cookies.Add(New HttpCookie("ASP.NET_SessionId", ""))
 
 			Catch ex As Exception
+				Throw
 
 			End Try
 
@@ -245,11 +252,6 @@ Namespace Controllers
 				Optional widgetServer As String = "") As ActionResult
 
 			Try
-
-				If Not ModelState.IsValid Then
-					loginviewmodel.ReadFromCookie()
-					Return View("login", loginviewmodel)
-				End If
 
 
 				'Dim sReferringPage
