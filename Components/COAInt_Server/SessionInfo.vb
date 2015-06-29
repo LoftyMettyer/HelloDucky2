@@ -100,7 +100,7 @@ Public Class SessionInfo
 
 	End Function
 
-	Public Function SessionLogin(UserName As String, sPassword As String, sDatabaseName As String, sServerName As String, bWindowsAuthentication As Boolean) As LoginInfo
+	Public Function SessionLogin(UserName As String, sPassword As String, sDatabaseName As String, sServerName As String, bWindowsAuthentication As Boolean, verifyOnly As Boolean) As LoginInfo
 
 		Dim objRow As DataRow
 
@@ -125,27 +125,31 @@ Public Class SessionInfo
 			DatabaseStatus.IsLocked = CBool(rowDBInfo("IsLocked"))
 			DatabaseStatus.LockMessage = rowDBInfo("lockmessage").ToString()
 
-			' Populate our system settings
-			Permissions = New Collection(Of Permission)
-			For Each objRow In dsLoginData.Tables(2).Rows
-				Dim objPermissionItem = New Permission
-				objPermissionItem.CategoryKey = objRow("categorykey").ToString()
-				objPermissionItem.Key = objRow("itemkey").ToString()
-				objPermissionItem.IsPermitted = CBool(objRow("permitted"))
-				Permissions.Add(objPermissionItem)
-			Next
+			If Not verifyOnly Then
 
-			_objLogin.UserGroup = dsLoginData.Tables(0).Rows(0)(1).ToString()
+				' Populate our system settings
+				Permissions = New Collection(Of Permission)
+				For Each objRow In dsLoginData.Tables(2).Rows
+					Dim objPermissionItem = New Permission
+					objPermissionItem.CategoryKey = objRow("categorykey").ToString()
+					objPermissionItem.Key = objRow("itemkey").ToString()
+					objPermissionItem.IsPermitted = CBool(objRow("permitted"))
+					Permissions.Add(objPermissionItem)
+				Next
 
-			_objLogin.IsDMIUser = Permissions.IsPermitted("MODULEACCESS", "INTRANET")
-			_objLogin.IsSSIUser = Permissions.IsPermitted("MODULEACCESS", "SSINTRANET")
-			_objLogin.IsSystemOrSecurityAdmin = Permissions.IsPermitted("MODULEACCESS", "SYSTEMMANAGER")
+				_objLogin.UserGroup = dsLoginData.Tables(0).Rows(0)(1).ToString()
 
-			objRow = dsLoginData.Tables(3).Rows(0)
-			_objLogin.IsServerRole = CBool(objRow("IsServeradmin")) OrElse CBool(objRow("IsSecurityadmin")) OrElse CBool(objRow("IsSysadmin"))
+				_objLogin.IsDMIUser = Permissions.IsPermitted("MODULEACCESS", "INTRANET")
+				_objLogin.IsSSIUser = Permissions.IsPermitted("MODULEACCESS", "SSINTRANET")
+				_objLogin.IsSystemOrSecurityAdmin = Permissions.IsPermitted("MODULEACCESS", "SYSTEMMANAGER")
 
-			If _objLogin.IsDMIUser Then
-				_objLogin.DefaultWebArea = WebArea.DMI
+				objRow = dsLoginData.Tables(3).Rows(0)
+				_objLogin.IsServerRole = CBool(objRow("IsServeradmin")) OrElse CBool(objRow("IsSecurityadmin")) OrElse CBool(objRow("IsSysadmin"))
+
+				If _objLogin.IsDMIUser Then
+					_objLogin.DefaultWebArea = WebArea.DMI
+				End If
+
 			End If
 
 		Catch ex As SqlException

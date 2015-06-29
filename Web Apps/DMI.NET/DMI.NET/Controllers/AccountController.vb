@@ -174,7 +174,55 @@ Namespace Controllers
 
 		<HttpPost()>
 <ValidateAntiForgeryToken>
-		Function Login(loginviewmodel As LoginViewModel) As ActionResult
+		Function Login(LoginViewModel As LoginViewModel) As ActionResult
+
+			Try
+
+				If LoginViewModel.UserName.ToLower() = "sa" Then
+					ModelState.AddModelError(Function(i As LoginViewModel) i.UserName, "The System Administrator cannot use the OpenHR Web module.")
+					LoginViewModel.ReadFromCookie()
+					Return View("login", LoginViewModel)
+				End If
+
+				Dim sErrorMessage As String
+				Dim systemConnection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
+				Dim objServerSession As New SessionInfo
+
+				' Is the DB the correct version
+				Dim objAppVersion As Version = Assembly.GetExecutingAssembly().GetName().Version
+
+				Dim objLogin = objServerSession.SessionLogin(LoginViewModel.UserName, LoginViewModel.Password, systemConnection.Database, systemConnection.DataSource, LoginViewModel.WindowsAuthentication, True)
+
+				' Generic login fail.
+				If objLogin.LoginFailReason.Length <> 0 Then
+					ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, objServerSession.LoginInfo.LoginFailReason)
+					Return View("login", LoginViewModel)
+				End If
+
+				' Database update in progress
+				If objServerSession.DatabaseStatus.IsUpdateInProgress Then
+					ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, "A database update is in progress.")
+					Return View("login", LoginViewModel)
+				End If
+
+				' Users that are assigned certain server roles cannot log in (I think its dodgy because we rely too heavily on dbo)
+				If objLogin.IsServerRole Then
+					ModelState.AddModelError(Function(i As LoginViewModel) i.UserName, "Users assigned to fixed SQL Server roles cannot use OpenHR web.")
+					Return View("login", LoginViewModel)
+				End If
+
+				If Not CompareVersion(objServerSession.DatabaseStatus.IntranetVersion, objAppVersion, False) _
+					Or Not CompareVersion(objServerSession.DatabaseStatus.SysMgrVersion, objAppVersion, True) Then
+					sErrorMessage = String.Format("The database is out of date. Please ask the System Administrator to update the database for use with version {0}.{1}.{2}." _
+							, objAppVersion.Major, objAppVersion.Minor, objAppVersion.Build)
+					ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, sErrorMessage)
+					Return View("login", LoginViewModel)
+				End If
+
+			Catch ex As Exception
+
+			End Try
+
 
 			Try
 				LicenceHub.RemoveUnauthenticatedSession(Session.SessionID)
@@ -186,7 +234,7 @@ Namespace Controllers
 
 			End Try
 
-			Return RedirectToAction("ActualLogin", "Account", loginviewmodel)
+			Return RedirectToAction("ActualLogin", "Account", LoginViewModel)
 
 		End Function
 
@@ -203,11 +251,6 @@ Namespace Controllers
 					Return View("login", loginviewmodel)
 				End If
 
-				If loginviewmodel.UserName.ToLower() = "sa" Then
-					ModelState.AddModelError(Function(i As LoginViewModel) i.UserName, "The System Administrator cannot use the OpenHR Web module.")
-					loginviewmodel.ReadFromCookie()
-					Return View("login", loginviewmodel)
-				End If
 
 				'Dim sReferringPage
 				Dim sUserName As String
@@ -260,18 +303,8 @@ Namespace Controllers
 					' Read the database/server from the configuration
 					Dim systemConnection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
 
-					' Is the DB the correct version
-					Dim objAppVersion As Version = Assembly.GetExecutingAssembly().GetName().Version
-
-					If Not Licence.IsValid Then
-						sErrorMessage = String.Format("The database licence is invalid. Please ask the System Administrator to update the database for use with version {0}.{1}.{2}." _
-								, objAppVersion.Major, objAppVersion.Minor, objAppVersion.Build)
-						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, sErrorMessage)
-						Return View("login", loginviewmodel)
-					End If
-
 					' Validate the login
-					objLogin = objServerSession.SessionLogin(sUserName, sPassword, systemConnection.Database, systemConnection.DataSource, bWindowsAuthentication)
+					objLogin = objServerSession.SessionLogin(sUserName, sPassword, systemConnection.Database, systemConnection.DataSource, bWindowsAuthentication, False)
 
 					' Has the password expired? Cannot log in until they've successfully changed it.
 					If objLogin.MustChangePassword Then
@@ -279,37 +312,12 @@ Namespace Controllers
 						Return RedirectToAction("ForcedPasswordChange", "Account")
 					End If
 
-					' Generic login fail.
-					If objLogin.LoginFailReason.Length <> 0 Then
-						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, objServerSession.LoginInfo.LoginFailReason)
-						Return View("login", loginviewmodel)
-					End If
-
-					' Database update in progress
-					If objServerSession.DatabaseStatus.IsUpdateInProgress Then
-						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, "A database update is in progress.")
-						Return View("login", loginviewmodel)
-					End If
-
-					' Users that are assigned certain server roles cannot log in (I think its dodgy because we rely too heavily on dbo)
-					If objLogin.IsServerRole Then
-						ModelState.AddModelError(Function(i As LoginViewModel) i.UserName, "Users assigned to fixed SQL Server roles cannot use OpenHR web.")
-						Return View("login", loginviewmodel)
-					End If
-
-					If Not CompareVersion(objServerSession.DatabaseStatus.IntranetVersion, objAppVersion, False) _
-						Or Not CompareVersion(objServerSession.DatabaseStatus.SysMgrVersion, objAppVersion, True) Then
-						sErrorMessage = String.Format("The database is out of date. Please ask the System Administrator to update the database for use with version {0}.{1}.{2}." _
-								, objAppVersion.Major, objAppVersion.Minor, objAppVersion.Build)
-						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, sErrorMessage)
-						Return View("login", loginviewmodel)
-					End If
-
 					' Valid login, but do we have any kind of access?
 					If Not (objLogin.IsSSIUser OrElse objLogin.IsDMIUser) Then
 						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, "You are not permitted to use OpenHR Web with this user name.")
 						Return View("login", loginviewmodel)
 					End If
+
 
 					' User is allowed into OpenHR, now populate some metadata
 					objServerSession.RegionalSettings = Platform.PopulateRegionalSettings(sLocaleCultureName)
