@@ -282,6 +282,8 @@ End Code
 			}
 		}
 
+		gridData["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
+
 		if ('@Model.TableID' != $("#ChildTableID").val() && '@Model.IsAdd' == 'False') {
 			if (iColumnCount > 0) {				
 				OpenHR.modalPrompt("One or more columns from '" + "@Model.TableName" + "' table have been included in the report definition." +
