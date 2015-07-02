@@ -14,7 +14,8 @@ Public Class App
    End Sub
 
    Sub Application_BeginRequest(ByVal sender As Object, ByVal e As EventArgs)
-      ' Fires at the beginning of each request
+		' Fires at the beginning of each request
+		HttpContext.Current.Response.Headers.Remove("Server")
    End Sub
 
    Sub Application_AuthenticateRequest(ByVal sender As Object, ByVal e As EventArgs)

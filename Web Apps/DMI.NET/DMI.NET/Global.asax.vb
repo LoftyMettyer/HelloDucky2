@@ -39,6 +39,11 @@ Public Class MvcApplication
 		DatabaseHub.UnRegister()
 	End Sub
 
+	Sub Application_BeginRequest(ByVal sender As Object, ByVal e As EventArgs)
+		' Fires at the beginning of each request
+		HttpContext.Current.Response.Headers.Remove("Server")
+	End Sub
+
 	Sub Session_Start()
 
 		'If the user isn't requesting the Login form, redirect them there.
