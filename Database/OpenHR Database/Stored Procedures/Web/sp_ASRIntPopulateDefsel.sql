@@ -152,21 +152,22 @@ BEGIN
 		BEGIN
 			SET @strSQL = 'SELECT ' + @strTableName + '.Name, ' +
 				'replace(' + @strTableName + '.Description, char(9), '''') AS [description], ' +
-				'lower(' +@strTableName + '.Username) as ''Username'', ';
+				'lower(' + @strTableName + '.Username) as [Username], ';
 				
 			IF (@fSysSecMgr = 0)  
 			BEGIN
 				SET @strSQL = @strSQL +
-					'lower(' + @sAccessTableName + '.Access) as ''Access'', ';
+					'CASE WHEN Username = SYSTEM_USER THEN ''rw'' ELSE LOWER(' + @sAccessTableName + '.Access) END AS [Access], ';
+
 			END
 			ELSE
 			BEGIN
 				SET @strSQL = @strSQL +
-					'''rw'' as ''Access'', ';
+					'''rw'' as [Access], ';
 			END
 								
 			SET @strSQL = @strSQL +
-				@strTableName + '.' + @strIDName + '  as ''ID'' 
+				@strTableName + '.' + @strIDName + '  AS [ID] 
 				FROM ' + @strTableName + 
 				' INNER JOIN ' + @sAccessTableName + ' ON ' + @strTableName + '.' + @strIDName +  ' = ' + @sAccessTableName + '.ID
 				AND ' + @sAccessTableName + '.groupname = ''' + @sRoleName + '''';
@@ -223,19 +224,19 @@ BEGIN
 		END
 		ELSE
 		BEGIN
-			SET @strSQL = 'SELECT Name, replace(Description, char(9), '''') AS [description], lower(Username) as ''Username'', ';
+			SET @strSQL = 'SELECT Name, replace(Description, char(9), '''') AS [description], lower(Username) AS [Username], ';
 			IF (@fSysSecMgr = 0)  
 			BEGIN
 				SET @strSQL = @strSQL +
-					'lower(Access) as ''Access'', ';
+					'CASE WHEN Username = SYSTEM_USER THEN ''rw'' ELSE LOWER([Access]) END AS [Access], ';
 			END
 			ELSE
 			BEGIN
 				SET @strSQL = @strSQL +
-					'''rw'' as ''Access'', ';
+					'''rw'' AS [Access], ';
 			END
 			SET @strSQL = @strSQL +
-				@strIDName + '  as ''ID'' FROM ' + @strTableName;
+				@strIDName + '  AS [ID] FROM ' + @strTableName;
 
 			IF (@fSysSecMgr = 0)  
 			BEGIN
@@ -289,7 +290,7 @@ BEGIN
 		END
 	END
 	
-	/* Return the resultset. */
+	-- Return the resultset.
 	EXECUTE sp_executeSQL @strSQL;
 	
 END
