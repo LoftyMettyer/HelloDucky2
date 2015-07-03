@@ -21,7 +21,7 @@
 
 		<p class="centered">Version <%:session("Version")%></p><br />
 
-		<p id="ancientBrowser" class="centered hidden">OpenHR Web and Self Service cannot be accessed using this version of Internet Explorer.</p>
+		<p id="ancientBrowser" class="centered hidden">OpenHR Web and Self Service cannot be accessed using this browser.</p>
 		<p id="systemLocked" class="centered hidden">A system administrator has locked the database.</p>
 
 
