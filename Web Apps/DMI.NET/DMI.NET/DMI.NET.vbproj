@@ -206,6 +206,7 @@
     <Compile Include="App_Start\RouteConfig.vb" />
     <Compile Include="App_Start\SettingsConfig.vb" />
     <Compile Include="App_Start\Startup.vb" />
+    <Compile Include="Models\UserModel.vb" />
     <Compile Include="Classes\jqGridHelper.vb" />
     <Compile Include="Classes\Licence.vb" />
     <Compile Include="Classes\PromptedValue.vb" />

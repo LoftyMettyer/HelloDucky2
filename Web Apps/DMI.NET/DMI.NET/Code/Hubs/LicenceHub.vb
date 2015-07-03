@@ -122,13 +122,20 @@ Namespace Code.Hubs
 
 		Private Shared Sub UpdateUserList()
 
-			Dim objLogins As New List(Of LoginViewModel)
+			Dim objUsers As New List(Of UserModel)
 
 			For Each sSession In SessionIds
-				objLogins.AddRange(Logins.Where(Function(m) m.IsLoggedIn = True AndAlso m.SessionId = sSession))
+
+				Dim login = Logins.FirstOrDefault(Function(m) m.IsLoggedIn = True AndAlso m.SessionId = sSession)
+				If login IsNot Nothing Then
+					objUsers.Add(New UserModel() With {.UserName = login.UserName,
+																							.DeviceBrowser = login.DeviceBrowser,
+																							.WebArea = login.WebArea})
+				End If
+
 			Next
 
-			Dim results = New With {.total = 1, .page = 1, .records = objLogins.Count(), .rows = objLogins}
+			Dim results = New With {.total = 1, .page = 1, .records = objUsers.Count(), .rows = objUsers}
 
 			Dim objSerialize As New JavaScriptSerializer
 			Dim result = objSerialize.Serialize(results)
