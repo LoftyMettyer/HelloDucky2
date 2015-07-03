@@ -733,7 +733,7 @@ Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDes
 		find_window_onload();
 		
 		if (menu_isSSIMode()) {
-			$('.ViewDescription p').text('My Dashboard');		
+			$('.ViewDescription p').text('');		
 		} else {
 			$('div#workframeset').animate({ scrollTop: 0 }, 0);
 			$('.ViewDescription p').text('');			

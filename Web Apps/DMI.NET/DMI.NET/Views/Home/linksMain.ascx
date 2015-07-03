@@ -1603,7 +1603,15 @@
 
 
 		//display view details
-		$('.ViewDescription p').html('<%=Html.Encode(Session("ViewDescription").ToString())%>');
+		//font-size is reduced for the welcome message as it is deemed too big.
+		var viewDescription = '<%=Html.Encode(Session("ViewDescription").ToString())%>';
+		if (viewDescription.substring(0, 7) == "Welcome") {
+			$('.ViewDescription p').css("font-size", "medium");
+		} else {
+			$('.ViewDescription p').css("font-size", "xx-large");
+		}
+
+		$('.ViewDescription p').html(viewDescription);
 
 		if (window.currentLayout == "tiles") {
 			$('header').css('background-image', 'none').css('background-color', 'none');			

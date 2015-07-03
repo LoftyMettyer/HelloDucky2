@@ -180,6 +180,12 @@
 
 		menu_setVisibleMenuItem('mnutoolFixedWorkflowOutOfOffice', "<%:ViewData("showOutOfOffice")%>");
 
+		if (menu_isSSIMode() === false) {
+			//display welcome message
+			$('.ViewDescription p').html('<%=Html.Encode(Session("ViewDescription").ToString())%>');
+		}
+
+
 	});
 	
 

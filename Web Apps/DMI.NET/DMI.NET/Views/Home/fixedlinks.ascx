@@ -1182,7 +1182,7 @@
 			</ul>
 		</div>
 	</div>
-	<div class="FixedLinksRight" title="<%=Session("welcomemessage")%>">
+	<div class="FixedLinksRight">
 		<div class="userpic">
 			<img id="UserPicture" style="vertical-align: middle; height: 48px; width: 48px;" src="<%=Session("SelfServicePhotograph_src")%>" alt="Photo" />
 		</div>

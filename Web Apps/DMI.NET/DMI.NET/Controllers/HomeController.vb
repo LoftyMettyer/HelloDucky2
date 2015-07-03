@@ -386,6 +386,8 @@ Namespace Controllers
 				ViewData("showOutOfOffice") = ShowOutOfOffice(NullSafeInteger(Session("SingleRecordTableID")), NullSafeInteger(Session("SingleRecordViewID")))
 			End If
 
+			Session("ViewDescription") = Session("welcomemessage")
+
 			If bOK Then
 				Return View()
 			Else
@@ -1544,9 +1546,10 @@ Namespace Controllers
 				End Try
 
 			Else
-				Session("ViewDescription") = "My Dashboard"
+				Session("ViewDescription") = Session("welcomemessage")
 			End If
 
+			Session("welcomemessage") = ""	' reset welcome message so that it shows just once
 
 			Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
 			objNavigation.SessionInfo = CType(Session("SessionContext"), SessionInfo)
