@@ -203,6 +203,12 @@ Namespace Controllers
 
 				Dim objLogin = objServerSession.SessionLogin(LoginViewModel.UserName, LoginViewModel.Password, systemConnection.Database, systemConnection.DataSource, LoginViewModel.WindowsAuthentication, True)
 
+				' Has the password expired? Cannot log in until they've successfully changed it.
+				If objLogin.MustChangePassword Then
+					Session("sessionChangePassword") = objLogin
+					Return RedirectToAction("ForcedPasswordChange", "Account")
+				End If
+
 				' Generic login fail.
 				If objLogin.LoginFailReason.Length <> 0 Then
 					ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, objServerSession.LoginInfo.LoginFailReason)
@@ -322,12 +328,6 @@ Namespace Controllers
 
 					' Validate the login
 					objLogin = objServerSession.SessionLogin(sUserName, sPassword, systemConnection.Database, systemConnection.DataSource, bWindowsAuthentication, False)
-
-					' Has the password expired? Cannot log in until they've successfully changed it.
-					If objLogin.MustChangePassword Then
-						Session("sessionChangePassword") = objLogin
-						Return RedirectToAction("ForcedPasswordChange", "Account")
-					End If
 
 					' Valid login, but do we have any kind of access?
 					If Not (objLogin.IsSSIUser OrElse objLogin.IsDMIUser) Then
