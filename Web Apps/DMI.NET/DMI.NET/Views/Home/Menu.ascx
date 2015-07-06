@@ -153,7 +153,7 @@
 	' ------------------------------------------------------------------------------
 	' Create the sub-routine to populate the history screens menu.
 	' ------------------------------------------------------------------------------
-	Response.Write("function menu_refreshHistoryScreensMenu(pParentScreenID) {" & vbCrLf)
+	Response.Write("function menu_refreshHistoryScreensMenu(pParentScreenID) {" & vbCrLf)	
 	
 	' Clear out any existing history sub-menus.
 	Response.Write("  var objFileTool;" & vbCrLf)
@@ -174,7 +174,10 @@
 	End If
 	
 	iLoop = 0
-	For Each objHistoryScreen In avHistoryMenuInfo.OrderBy(Function(n) n.parentScreenID)
+	
+	Dim avHistoryMenuInfoSorted = avHistoryMenuInfo.OrderBy(Function(n) n.parentScreenID)
+	
+	For Each objHistoryScreen In avHistoryMenuInfoSorted
 
 		If iLastParentScreenID <> objHistoryScreen.parentScreenID Then
 			If iDoneCount > 0 Then
@@ -192,9 +195,9 @@
 		Response.Write("    objFileToolCaption = """ & CleanStringForJavaScript(Replace(objHistoryScreen.childScreenName, "_", " ")) & "..."";" & vbCrLf)
 		Response.Write("    objFileToolStyle = 0;" & vbCrLf)
 
-		If iLoop < avHistoryMenuInfo.Count() - 1 Then
-			If objHistoryScreen.parentScreenID = avHistoryMenuInfo(iLoop + 1).parentScreenID Then
-				iNextChildTableID = avHistoryMenuInfo(iLoop + 1).childTableID
+		If iLoop < avHistoryMenuInfoSorted.Count() - 1 Then
+			If objHistoryScreen.parentScreenID = avHistoryMenuInfoSorted(iLoop + 1).parentScreenID Then
+				iNextChildTableID = avHistoryMenuInfoSorted(iLoop + 1).childTableID
 			Else
 				iNextChildTableID = 0
 			End If
@@ -208,7 +211,22 @@
 			sBand = "mnuhistorysubband_" & CleanStringForJavaScript(objHistoryScreen.childTableName)
 			Response.Write("    menu_insertMenuItem(""" & sBand & """, objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf & vbCrLf)
 		Else
-			Response.Write("   menu_insertMenuItem(""mnubandHistory"", objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf)
+			' Response.Write("   menu_insertMenuItem(""mnubandHistory"", objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf)
+			If (iNextChildTableID = objHistoryScreen.childTableID And iLoop > 0) Then	'Added iLoop condition because the first item retrieved (in this case Working Patterns) wasn't being properly added to the menu
+				' The current screen is for the same table as the next screen to be added
+				' but is for a different table to the last screen added to the menu
+				' so create a sub-menu, and add this screen to the sub-menu.
+				sBand = "mnuhistorysubband_" & CleanStringForJavaScript(objHistoryScreen.childTableName)
+				Response.Write("    objBandToolCaption = """ & CleanStringForJavaScript(Replace(objHistoryScreen.childTableName, "_", " ")) & """;" & vbCrLf)
+				Response.Write("    objBandToolSubBand = """ & sBand & """;" & vbCrLf)
+					
+				Response.Write("    menu_insertSubMenuItem(""mnubandHistory"", objBandToolCaption.replace(""&&"", ""&""), ""HTP_"" + objFileToolID, objBandToolSubBand);" & vbCrLf)
+				Response.Write("    menu_insertMenuItem(objBandToolSubBand, objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf & vbCrLf)
+			Else
+				' The current screen is for a different table/view to the next and last screens
+				' added to the menu so just add this screen to the main menu as normal.
+				Response.Write("   menu_insertMenuItem(""mnubandHistory"", objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf)
+			End If
 		End If
 
 		iLastParentScreenID = objHistoryScreen.parentScreenID
