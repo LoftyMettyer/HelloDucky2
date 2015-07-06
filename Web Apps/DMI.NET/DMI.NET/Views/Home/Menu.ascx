@@ -32,7 +32,7 @@
 	' ------------------------------------------------------------------------------
 	Response.Write("function refreshDatabaseMenu() {" & vbCrLf)
 	If objSessionContext.LoginInfo.IsDMIUser Then
-
+	
 		Response.Write("  var objFileTool;" & vbCrLf)
 		Response.Write("  var sLastToolName;" & vbCrLf)
 		Response.Write("  var lngLastScreenID;" & vbCrLf & vbCrLf)
@@ -154,7 +154,7 @@
 	' Create the sub-routine to populate the history screens menu.
 	' ------------------------------------------------------------------------------
 	Response.Write("function menu_refreshHistoryScreensMenu(pParentScreenID) {" & vbCrLf)
-
+	
 	' Clear out any existing history sub-menus.
 	Response.Write("  var objFileTool;" & vbCrLf)
 	Response.Write("  var fDone = false;" & vbCrLf)
@@ -208,21 +208,7 @@
 			sBand = "mnuhistorysubband_" & CleanStringForJavaScript(objHistoryScreen.childTableName)
 			Response.Write("    menu_insertMenuItem(""" & sBand & """, objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf & vbCrLf)
 		Else
-			If (iNextChildTableID = objHistoryScreen.childTableID And iLoop > 0) Then	'Added iLoop condition because the first item retrieved (in this case Working Patterns) wasn't being properly added to the menu
-				' The current screen is for the same table as the next screen to be added
-				' but is for a different table to the last screen added to the menu
-				' so create a sub-menu, and add this screen to the sub-menu.
-				sBand = "mnuhistorysubband_" & CleanStringForJavaScript(objHistoryScreen.childTableName)
-				Response.Write("    objBandToolCaption = """ & CleanStringForJavaScript(Replace(objHistoryScreen.childTableName, "_", " ")) & """;" & vbCrLf)
-				Response.Write("    objBandToolSubBand = """ & sBand & """;" & vbCrLf)
-					
-				Response.Write("    menu_insertSubMenuItem(""mnubandHistory"", objBandToolCaption.replace(""&&"", ""&""), ""0"", objBandToolSubBand);" & vbCrLf)
-				Response.Write("    menu_insertMenuItem(objBandToolSubBand, objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf & vbCrLf)
-			Else
-				' The current screen is for a different table/view to the next and last screens
-				' added to the menu so just add this screen to the main menu as normal.
-				Response.Write("   menu_insertMenuItem(""mnubandHistory"", objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf)
-			End If
+			Response.Write("   menu_insertMenuItem(""mnubandHistory"", objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf)
 		End If
 
 		iLastParentScreenID = objHistoryScreen.parentScreenID
