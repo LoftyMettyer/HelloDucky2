@@ -7,10 +7,13 @@ Imports HR.Intranet.Server
 Imports System.Data.SqlClient
 Imports System.Reflection
 Imports System.Web.Configuration
+Imports System.Web.Razor.Parser.SyntaxTree
+Imports System.Web.Script.Serialization
 Imports HR.Intranet.Server.Structures
 Imports HR.Intranet.Server.Extensions
 Imports DMI.NET.Models
 Imports DMI.NET.Code.Hubs
+Imports Microsoft.Ajax.Utilities
 
 Namespace Controllers
 	Public Class AccountController
@@ -176,6 +179,8 @@ Namespace Controllers
 <ValidateAntiForgeryToken>
 		Function Login(LoginViewModel As LoginViewModel) As ActionResult
 
+			Dim sEncryptKey = Guid.NewGuid().ToString()
+
 			Try
 
 				If Not ModelState.IsValid Then
@@ -234,27 +239,50 @@ Namespace Controllers
 				LicenceHub.RemoveUnauthenticatedSession(Session.SessionID)
 
 				Session.Abandon()
-				Response.Cookies.Add(New HttpCookie("ASP.NET_SessionId", ""))
+
+				Dim cookie = New HttpCookie("ASP.NET_SessionId")
+				cookie.Value = sEncryptKey
+				Response.Cookies.Add(cookie)
 
 			Catch ex As Exception
 				Throw
 
 			End Try
 
-			Return RedirectToAction("ActualLogin", "Account", LoginViewModel)
+			Dim objSerialize As New JavaScriptSerializer
+			Dim modelSerialized As String = objSerialize.Serialize(LoginViewModel)		
+			Dim objCrypt As New clsCrypt
+
+			Dim sEncryptedString = objCrypt.EncryptString(modelSerialized, sEncryptKey, True)
+			sEncryptedString = objCrypt.CompactString(sEncryptedString)
+
+			Return RedirectToAction("ActualLogin", "Account", New With { _
+				Key .linkRef = sEncryptedString
+			})
 
 		End Function
 
-		Public Function ActualLogin(loginviewmodel As LoginViewModel, Optional isWidgetLogin As Boolean = False,
-				Optional widgetUser As String = "",
-				Optional widgetPassword As String = "",
-				Optional widgetDatabase As String = "",
-				Optional widgetServer As String = "") As ActionResult
+		'		Public Function ActualLogin(loginviewmodel As LoginViewModel, Optional isWidgetLogin As Boolean = False,
+		Public Function ActualLogin(linkRef As String) As ActionResult
 
 			Try
 
+				Dim objSerialize As New JavaScriptSerializer
+				Dim objCrypt As New clsCrypt
+				Dim loginviewmodel As LoginViewModel
 
-				'Dim sReferringPage
+				Try
+					Dim modelString = objCrypt.DecompactString(linkRef)
+
+					Dim encryptKey = Request.Cookies("ASP.NET_SessionId").Value.ToString()
+					modelString = objCrypt.DecryptString(modelString, encryptKey, True)
+					loginviewmodel = objSerialize.Deserialize(Of LoginViewModel)(modelString)
+
+				Catch ex As Exception
+					Return New HttpStatusCodeResult(400, "Incorrect details.")
+
+				End Try
+
 				Dim sUserName As String
 				Dim sPassword As String
 
@@ -263,31 +291,18 @@ Namespace Controllers
 				Dim sLocaleDecimalSeparator As String
 				Dim sLocaleThousandSeparator As String
 				Dim bWindowsAuthentication As Boolean = False
-				Dim sErrorMessage As String
 
-				If Not isWidgetLogin Then
-					' Read the User Name and Password from the Login form.
-					sUserName = loginviewmodel.UserName
-					sPassword = loginviewmodel.Password
-					If loginviewmodel.WindowsAuthentication Then
-						bWindowsAuthentication = True
-					End If
-
-					sLocaleCultureName = loginviewmodel.txtLocaleCulture
-					sLocaleDecimalSeparator = loginviewmodel.txtLocaleDecimalSeparator
-					sLocaleThousandSeparator = loginviewmodel.txtLocaleThousandSeparator
-
-				Else
-					' Read the User Name and Password from the Login form.
-					sUserName = widgetUser
-					sPassword = widgetPassword
-					' widgetServer
-					bWindowsAuthentication = False
-
-					sLocaleDecimalSeparator = "."
-					sLocaleThousandSeparator = ","
-
+				' Read the User Name and Password from the Login form.
+				sUserName = loginviewmodel.UserName
+				sPassword = loginviewmodel.Password
+				If loginviewmodel.WindowsAuthentication Then
+					bWindowsAuthentication = True
 				End If
+
+				sLocaleCultureName = loginviewmodel.txtLocaleCulture
+				sLocaleDecimalSeparator = loginviewmodel.txtLocaleDecimalSeparator
+				sLocaleThousandSeparator = loginviewmodel.txtLocaleThousandSeparator
+
 
 				Session("isMobileDevice") = (Platform.IsMobileDevice() = True)
 
@@ -481,7 +496,6 @@ Namespace Controllers
 
 				End Try
 
-				Dim objCrypt As New clsCrypt
 				Dim cookie = New HttpCookie("LoginScreenInitialValues")
 				cookie.Expires = DateTime.Now.AddYears(1)
 				cookie.HttpOnly = True

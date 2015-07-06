@@ -362,49 +362,57 @@ Public Class clsCrypt
 		Dim iAscCode As Int32
 		Dim iTrailingCharsToIgnore As Int16
 
-		sDecompactedString = ""
-		iTrailingCharsToIgnore = CShort(Right(psSourceString, 1))
-		sModifiedSourceString = Left(psSourceString, psSourceString.Length - 1)
+		Try
 
-		Do While Len(sModifiedSourceString) > 0
-			sSubString = Left(sModifiedSourceString & "00", 2)
-			sModifiedSourceString = Mid(sModifiedSourceString, 3)
-			iTempTotal = 0
+			sDecompactedString = ""
+			iTrailingCharsToIgnore = CShort(Right(psSourceString, 1))
+			sModifiedSourceString = Left(psSourceString, psSourceString.Length - 1)
 
-			iAscCode = Asc(Mid(sSubString, 2, 1))
-			If iAscCode = 64 Then	' @
-				iTemp = 63
-			ElseIf iAscCode = 36 Then	' $
-				iTemp = 62
-			ElseIf iAscCode >= 97 Then ' a-z
-				iTemp = iAscCode - 61
-			ElseIf iAscCode >= 65 Then 'A-Z
-				iTemp = iAscCode - 55
-			Else ' 0-9
-				iTemp = iAscCode - 48
-			End If
-			iTempTotal = iTempTotal + iTemp
+			Do While Len(sModifiedSourceString) > 0
+				sSubString = Left(sModifiedSourceString & "00", 2)
+				sModifiedSourceString = Mid(sModifiedSourceString, 3)
+				iTempTotal = 0
 
-			iAscCode = Asc(Left(sSubString, 1))
-			If iAscCode = 64 Then	' @
-				iTemp = 63
-			ElseIf iAscCode = 36 Then	' $
-				iTemp = 62
-			ElseIf iAscCode >= 97 Then ' a-z
-				iTemp = iAscCode - 61
-			ElseIf iAscCode >= 65 Then 'A-Z
-				iTemp = iAscCode - 55
-			Else ' 0-9
-				iTemp = iAscCode - 48
-			End If
-			iTempTotal = iTempTotal + (iTemp * 64)
+				iAscCode = Asc(Mid(sSubString, 2, 1))
+				If iAscCode = 64 Then	' @
+					iTemp = 63
+				ElseIf iAscCode = 36 Then	' $
+					iTemp = 62
+				ElseIf iAscCode >= 97 Then ' a-z
+					iTemp = iAscCode - 61
+				ElseIf iAscCode >= 65 Then 'A-Z
+					iTemp = iAscCode - 55
+				Else ' 0-9
+					iTemp = iAscCode - 48
+				End If
+				iTempTotal = iTempTotal + iTemp
 
-			sNewString = Right("000" & Hex$(iTempTotal), 3)
-			sDecompactedString = sDecompactedString & sNewString
-		Loop
+				iAscCode = Asc(Left(sSubString, 1))
+				If iAscCode = 64 Then	' @
+					iTemp = 63
+				ElseIf iAscCode = 36 Then	' $
+					iTemp = 62
+				ElseIf iAscCode >= 97 Then ' a-z
+					iTemp = iAscCode - 61
+				ElseIf iAscCode >= 65 Then 'A-Z
+					iTemp = iAscCode - 55
+				Else ' 0-9
+					iTemp = iAscCode - 48
+				End If
+				iTempTotal = iTempTotal + (iTemp * 64)
 
-		sDecompactedString = Left(sDecompactedString, Len(sDecompactedString) - iTrailingCharsToIgnore)
-		DecompactString = sDecompactedString
+				sNewString = Right("000" & Hex$(iTempTotal), 3)
+				sDecompactedString = sDecompactedString & sNewString
+			Loop
+
+			sDecompactedString = Left(sDecompactedString, Len(sDecompactedString) - iTrailingCharsToIgnore)
+			Return sDecompactedString
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
 	End Function
 
 	Public Function SimpleEncrypt(ByVal psStringToEncrypt As String, ByVal psKey As String) As String
