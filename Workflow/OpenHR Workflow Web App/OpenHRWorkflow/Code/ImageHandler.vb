@@ -10,14 +10,15 @@ Public Class ImageHandler
 		ContentMap.Add(".gif", "image/gif")
 		ContentMap.Add(".ico", "image/x-icon")
 		ContentMap.Add(".jpeg", "image/jpeg")
+		ContentMap.Add(".jpg", "image/jpeg")
 		ContentMap.Add(".*", "image/x-unknown")
 	End Sub
 
 	Public Sub ProcessRequest(context As HttpContext) Implements IHttpHandler.ProcessRequest
 
 		Dim request = context.Request,
-		  response = context.Response,
-		  id As Integer
+			response = context.Response,
+			id As Integer
 
 		Integer.TryParse(request.QueryString("id"), id)
 
