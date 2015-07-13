@@ -4572,6 +4572,21 @@ PRINT 'Step - Cleanup metadata interim build issues'
 
 
 /* --------------------------------------------------------- */
+PRINT 'Step - Shared Table Transfer Field Definition'
+/* --------------------------------------------------------- */
+
+	MERGE INTO [dbo].[ASRSysAccordTransferFieldDefinitions] AS Target 
+	USING (
+		VALUES (230, 0, 0, 'Date of Birth Verified', 0, 0, 2, 0, 0)
+	) 
+	AS Source ([TransferFieldID], [TransferTypeID], [Mandatory], [Description], [IsCompanyCode], [IsEmployeeCode], [Direction], [IsKeyField], [AlwaysTransfer]) 
+	ON Target.[TransferFieldID] = Source.[TransferFieldID] AND Target.[TransferTypeID] = Source.[TransferTypeID]
+	WHEN NOT MATCHED BY TARGET THEN 
+	INSERT ([TransferFieldID], [TransferTypeID], [Mandatory], [Description], [IsCompanyCode], [IsEmployeeCode], [Direction], [IsKeyField], [AlwaysTransfer]) 
+	VALUES ([TransferFieldID], [TransferTypeID], [Mandatory], [Description], [IsCompanyCode], [IsEmployeeCode], [Direction], [IsKeyField], [AlwaysTransfer]); 
+
+
+/* --------------------------------------------------------- */
 PRINT 'Step - P&E Core functions'
 /* --------------------------------------------------------- */
 
