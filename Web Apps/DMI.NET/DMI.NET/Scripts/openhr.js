@@ -33,9 +33,9 @@
 		messageBox(html.ErrorMessage.replace("<p>", "\n\n"), 48, html.ErrorTitle);
 
 		//redirect if specified...
-		if (html.Redirect.length > 0) {
-			//alert("redirecting to " + html.Redirect);
-			window.location.href = html.Redirect;
+		if (html.Redirect.length > 0) {			
+			if (html.Route === "" || html.Route === null) html.Route = "home";
+			window.location.href = window.ROOT + html.Route + "/" + html.Redirect;
 		}
 
 	}

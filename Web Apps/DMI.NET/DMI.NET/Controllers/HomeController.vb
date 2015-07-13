@@ -255,9 +255,9 @@ Namespace Controllers
 
 							' Tell the user that the password was changed okay.
 							Session("ErrorTitle") = "Change Password Page"
-							Session("ErrorText") = "Password changed successfully. You will now be redirected to the login page."
+							Session("ErrorText") = "Password changed successfully.<p>You will now be redirected to the login page."
 
-							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = "/Account/Login"}
+							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = "Login", .Route = "Account"}
 							Return Json(data, JsonRequestBehavior.AllowGet)
 
 						Catch ex As Exception
@@ -5492,6 +5492,7 @@ Namespace Controllers
 		Public Property ErrorTitle As String
 		Public Property ErrorMessage As String
 		Public Property Redirect As String
+		Public Property Route As String = "home"
 	End Class
 
 	Public Class ViewDataUploadFilesResult
