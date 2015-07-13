@@ -255,9 +255,9 @@ Namespace Controllers
 
 							' Tell the user that the password was changed okay.
 							Session("ErrorTitle") = "Change Password Page"
-							Session("ErrorText") = "Password changed successfully."
+							Session("ErrorText") = "Password changed successfully. You will now be redirected to the login page."
 
-							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = "Main"}
+							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = "/Account/Login"}
 							Return Json(data, JsonRequestBehavior.AllowGet)
 
 						Catch ex As Exception
