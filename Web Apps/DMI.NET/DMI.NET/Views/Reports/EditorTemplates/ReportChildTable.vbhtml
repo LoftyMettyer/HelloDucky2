@@ -227,7 +227,6 @@ End Code
 		var sortColumnList = $("#SortOrders").getDataIDs();
 
 		$('#ChildTables').jqGrid('delRowData', rowID);
-		loadAvailableTablesForReport(false);
 
 		// Reset row selection for SelectedColumns and SortOrder grid
 		$("#SelectedColumns").jqGrid('resetSelection');
