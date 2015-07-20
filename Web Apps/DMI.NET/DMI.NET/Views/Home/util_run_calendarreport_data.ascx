@@ -9,7 +9,6 @@
 <link href="<%: Url.LatestContent("~/Themes/scheduler_white.css")%>" rel="stylesheet" type="text/css" />
 <link href="<%: Url.LatestContent("~/Themes/calendar_white.css")%>" rel="stylesheet" type="text/css" />
 <link href="<%: Url.LatestContent("~/Themes/layout.css")%>" rel="stylesheet" type="text/css" />
-<script src="<%: Url.LatestContent("~/scripts/jquery/jquery.maskedinput.js")%>" type="text/javascript"></script>
 <script src="<%: Url.LatestContent("~/scripts/jquery/MonthPicker.js")%>" type="text/javascript"></script>
 
 <%	

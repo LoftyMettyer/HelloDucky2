@@ -31,7 +31,7 @@ Namespace App_Start
 				"~/Scripts/jquery/jsTree/jquery.jstree.js",
 				"~/Scripts/jquery.gridster.js",
 				"~/Scripts/jquery/jquery.menu.js",
-				"~/Scripts/jquery/jquery.maskedinput.js",
+				"~/Scripts/jquery.maskedinput.js",
 				"~/Scripts/jquery/jquery.mousewheel.js",
 				"~/Scripts/jquery/jquery.numeric.js",
 				"~/Scripts/jquery/jOrgChart/prettify.js",

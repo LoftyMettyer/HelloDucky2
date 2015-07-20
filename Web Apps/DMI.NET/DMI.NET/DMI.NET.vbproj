@@ -1262,6 +1262,8 @@
     <Content Include="Scripts\jquery.gridster.min.js" />
     <Content Include="Scripts\jquery.gridster.with-extras.js" />
     <Content Include="Scripts\jquery.gridster.with-extras.min.js" />
+    <Content Include="Scripts\jquery.maskedinput.js" />
+    <Content Include="Scripts\jquery.maskedinput.min.js" />
     <Content Include="Scripts\jquery.signalR-2.1.1.js" />
     <Content Include="Scripts\jquery.signalR-2.1.1.min.js" />
     <Content Include="Scripts\jquery\datepicker-locale.js" />
@@ -1455,7 +1457,6 @@
     <Content Include="Scripts\FormScripts\recordEdit.js" />
     <Content Include="Scripts\FormScripts\util_def_exprcomponent.js" />
     <Content Include="Scripts\FormScripts\util_def_expression.js" />
-    <Content Include="Scripts\jquery\jquery.maskedinput.js" />
     <Content Include="Scripts\jquery\jsTree\themes\apple\bg.jpg" />
     <Content Include="Scripts\jquery\jsTree\themes\apple\d.png" />
     <Content Include="Scripts\jquery\jsTree\themes\apple\dot_for_ie.gif" />
