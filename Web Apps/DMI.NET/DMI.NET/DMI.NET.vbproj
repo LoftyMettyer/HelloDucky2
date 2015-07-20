@@ -366,6 +366,7 @@
     <Content Include="Content\images\ui-bg_glass_75_d0e5f5_1x400.png" />
     <Content Include="Content\images\Utilities.gif" />
     <Content Include="Content\images\warning.png" />
+    <Content Include="Content\jquery.gridster.min.css" />
     <Content Include="Content\jquery.jqGrid\ellipsis-xbl.xml" />
     <Content Include="Content\jquery.jqGrid\ui.jqgrid.css" />
     <Content Include="Content\jquery.mCustomScrollbar.css" />
@@ -1257,6 +1258,10 @@
     <Content Include="Scripts\FormScripts\customreport.js" />
     <Content Include="Scripts\FormScripts\BulkBooking.js" />
     <Content Include="Scripts\FormScripts\BulkBookingSelection.js" />
+    <Content Include="Scripts\jquery.gridster.js" />
+    <Content Include="Scripts\jquery.gridster.min.js" />
+    <Content Include="Scripts\jquery.gridster.with-extras.js" />
+    <Content Include="Scripts\jquery.gridster.with-extras.min.js" />
     <Content Include="Scripts\jquery.signalR-2.1.1.js" />
     <Content Include="Scripts\jquery.signalR-2.1.1.min.js" />
     <Content Include="Scripts\jquery\datepicker-locale.js" />
