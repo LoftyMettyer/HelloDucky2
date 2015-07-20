@@ -16,11 +16,8 @@ Namespace App_Start
 			bundles.Add(New ScriptBundle("~/bundles/jQuery").Include(
 					"~/Scripts/jquery-{version}.js",
 					"~/Scripts/jquery/jquery.cookie.js",
-					"~/Scripts/jquery/jquery-flip.js",
 					"~/Scripts/jquery/jquery-unobtrusive-ajax.js",
 					"~/Scripts/jquery-validate-vsdoc.js",
-					"~/Scripts/jquery-validate.js",
-					"~/Scripts/jquery-validate-unobtrusive.js",
 					"~/Scripts/date.js"))
 
 
@@ -34,12 +31,9 @@ Namespace App_Start
 				"~/Scripts/jquery/jsTree/jquery.jstree.js",
 				"~/Scripts/jquery/jquery.gridster.js",
 				"~/Scripts/jquery/jquery.menu.js",
-				"~/Scripts/jquery/jquery.marquee.js",
 				"~/Scripts/jquery/jquery.maskedinput.js",
 				"~/Scripts/jquery/jquery.mousewheel.js",
 				"~/Scripts/jquery/jquery.numeric.js",
-				"~/Scripts/jquery/jquery.rightClick.js",
-				"~/Scripts/jquery/jquery.ui.touch-punch.min.js",
 				"~/Scripts/jquery/jOrgChart/prettify.js",
 				"~/Scripts/jquery/jOrgChart/jquery.jOrgChart.js",
 				"~/Scripts/officebar/jquery.officebar_MODIFIED.js"))

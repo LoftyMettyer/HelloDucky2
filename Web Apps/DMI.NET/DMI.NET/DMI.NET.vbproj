@@ -1263,8 +1263,6 @@
     <Content Include="Scripts\jquery.jqGrid.js" />
     <Content Include="Scripts\jquery.jqGrid.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery\jquery.hotkeys.js" />
     <Content Include="Scripts\jquery\jquery.numeric.js" />
     <Content Include="Scripts\FormScripts\OptionDataGrid.js" />
@@ -1492,9 +1490,7 @@
     <Content Include="Content\OpenHR.css" />
     <Content Include="Content\widgetCSS\wdg_oHRHoliday.css" />
     <Content Include="Scripts\FormScripts\menu.js" />
-    <Content Include="Scripts\jquery\jquery.flip.js" />
     <Content Include="Scripts\jquery\jsTree\jquery.jstree.js" />
-    <Content Include="Scripts\jquery\jquery.marquee.js" />
     <Content Include="Scripts\jquery\jquery.gridster.js" />
     <Content Include="Scripts\jquery\jquery.mousewheel.js" />
     <Content Include="Scripts\officebar\winkit\AbsenceBreakdown64DIS.png" />
@@ -1648,8 +1644,6 @@
     </Content>
     <Content Include="Scripts\ctl_SetStyles.js" />
     <Content Include="Scripts\jquery\jquery.cookie.js" />
-    <Content Include="Scripts\jquery\jquery.rightClick.js" />
-    <Content Include="Scripts\jquery\jquery.ui.touch-punch.min.js" />
     <Content Include="Scripts\jquery\jquery.menu.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Themes\calendar_white.css" />
