@@ -1496,7 +1496,6 @@
     <Content Include="Content\widgetCSS\wdg_oHRHoliday.css" />
     <Content Include="Scripts\FormScripts\menu.js" />
     <Content Include="Scripts\jquery\jsTree\jquery.jstree.js" />
-    <Content Include="Scripts\jquery\jquery.gridster.js" />
     <Content Include="Scripts\jquery\jquery.mousewheel.js" />
     <Content Include="Scripts\officebar\winkit\AbsenceBreakdown64DIS.png" />
     <Content Include="Scripts\officebar\winkit\AbsenceBreakdown64HOVER.png" />

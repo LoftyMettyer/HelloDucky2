@@ -29,7 +29,7 @@ Namespace App_Start
 				"~/Scripts/jquery/grid.locale-en.js",
 				"~/Scripts/jquery/datepicker-locale.js",
 				"~/Scripts/jquery/jsTree/jquery.jstree.js",
-				"~/Scripts/jquery/jquery.gridster.js",
+				"~/Scripts/jquery.gridster.js",
 				"~/Scripts/jquery/jquery.menu.js",
 				"~/Scripts/jquery/jquery.maskedinput.js",
 				"~/Scripts/jquery/jquery.mousewheel.js",
