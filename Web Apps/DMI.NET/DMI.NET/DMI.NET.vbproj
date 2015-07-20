@@ -1264,6 +1264,8 @@
     <Content Include="Scripts\jquery.gridster.with-extras.min.js" />
     <Content Include="Scripts\jquery.maskedinput.js" />
     <Content Include="Scripts\jquery.maskedinput.min.js" />
+    <Content Include="Scripts\jquery.mousewheel.js" />
+    <Content Include="Scripts\jquery.mousewheel.min.js" />
     <Content Include="Scripts\jquery.signalR-2.1.1.js" />
     <Content Include="Scripts\jquery.signalR-2.1.1.min.js" />
     <Content Include="Scripts\jquery\datepicker-locale.js" />
@@ -1497,7 +1499,6 @@
     <Content Include="Content\widgetCSS\wdg_oHRHoliday.css" />
     <Content Include="Scripts\FormScripts\menu.js" />
     <Content Include="Scripts\jquery\jsTree\jquery.jstree.js" />
-    <Content Include="Scripts\jquery\jquery.mousewheel.js" />
     <Content Include="Scripts\officebar\winkit\AbsenceBreakdown64DIS.png" />
     <Content Include="Scripts\officebar\winkit\AbsenceBreakdown64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\AbsenceBreakdown64NORM.png" />
