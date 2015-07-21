@@ -1251,6 +1251,8 @@
     <Content Include="Content\themes\vader\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\vader\jquery.ui.tooltip.min.css" />
     <Content Include="Database\UpdateScript8.1.sql" />
+    <Content Include="Scripts\autoNumeric\autoNumeric-1.9.25.js" />
+    <Content Include="Scripts\autoNumeric\autoNumeric-1.9.25.min.js" />
     <Content Include="Scripts\ESAPIScripts\Base.esapi.properties.js" />
     <Content Include="Scripts\ESAPIScripts\esapi.js" />
     <Content Include="Scripts\ESAPIScripts\log4js.js" />
@@ -1325,7 +1327,6 @@
     <Content Include="Scripts\jquery\jOrgChart\prettify.js" />
     <Content Include="Scripts\jquery\jquery-debouncedresize.js" />
     <Content Include="Scripts\jquery\jquery.mCustomScrollbar.min.js" />
-    <Content Include="Scripts\autoNumeric-1.9.15.js" />
     <Content Include="Scripts\jquery\jquery.tablesorter.min.js" />
     <Content Include="Scripts\jquery\jsTree\themes\adv_themeroller\d.gif" />
     <Content Include="Scripts\jquery\jsTree\themes\adv_themeroller\d.png" />

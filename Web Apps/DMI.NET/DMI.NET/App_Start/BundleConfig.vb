@@ -93,7 +93,7 @@ Namespace App_Start
 				"~/Scripts/FormScripts/find.js",
 				"~/Scripts/FormScripts/optionData.js",
 				"~/Scripts/FormScripts/recordEdit.js",
-				"~/Scripts/autoNumeric-1.9.15.js",
+				"~/Scripts/autoNumeric/autoNumeric-1.9.25.js",
 				"~/Scripts/ColorPicker/spectrum.js"))
 
 			' OptionData grid bundle
