@@ -1262,6 +1262,9 @@
     <Content Include="Scripts\FormScripts\customreport.js" />
     <Content Include="Scripts\FormScripts\BulkBooking.js" />
     <Content Include="Scripts\FormScripts\BulkBookingSelection.js" />
+    <None Include="Scripts\jquery-2.1.4.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.4.js" />
+    <Content Include="Scripts\jquery-2.1.4.min.js" />
     <Content Include="Scripts\jquery.gridster.js" />
     <Content Include="Scripts\jquery.gridster.min.js" />
     <Content Include="Scripts\jquery.gridster.with-extras.js" />
@@ -1277,6 +1280,7 @@
     <Content Include="Scripts\jquery\datepicker-locale.js" />
     <Content Include="Scripts\jquery.jqGrid.js" />
     <Content Include="Scripts\jquery.jqGrid.min.js" />
+    <Content Include="Scripts\jquery-2.1.4.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery\jquery.hotkeys.js" />
     <Content Include="Scripts\jquery\jquery.numeric.js" />
