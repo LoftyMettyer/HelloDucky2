@@ -71,9 +71,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Aspose.Words.14.6.0\lib\net3.5-client\Aspose.Words.dll</HintPath>
     </Reference>
-    <Reference Include="Dapper">
-      <HintPath>..\packages\Dapper.1.27\lib\net45\Dapper.dll</HintPath>
-    </Reference>
     <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
@@ -1347,6 +1344,7 @@
     <Content Include="Scripts\jquery.jqGrid.js" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery\grid.locale-en.js" />
     <Content Include="Scripts\jquery\jquery.hotkeys.js" />
     <Content Include="Scripts\jquery\jquery.numeric.js" />
     <Content Include="Scripts\FormScripts\OptionDataGrid.js" />
@@ -1387,7 +1385,6 @@
     <None Include="My Project\PublishProfiles\QASRVR01 - OpenHRRanorex.pubxml" />
     <None Include="My Project\PublishProfiles\Stuart Jennings machine.pubxml" />
     <None Include="My Project\PublishProfiles\Westminster Kingsway.pubxml" />
-    <Content Include="Scripts\jquery\grid.locale-en.js" />
     <Content Include="Scripts\jquery\jOrgChart\css\bootstrap.min.css" />
     <Content Include="Scripts\jquery\jOrgChart\css\custom.css" />
     <Content Include="Scripts\jquery\jOrgChart\css\jquery.jOrgChart.css" />
@@ -1396,7 +1393,6 @@
     <Content Include="Scripts\jquery\jOrgChart\images\raspberry.jpg" />
     <Content Include="Scripts\jquery\jOrgChart\jquery.jOrgChart.js" />
     <Content Include="Scripts\jquery\jOrgChart\prettify.js" />
-    <Content Include="Scripts\jquery\jquery-debouncedresize.js" />
     <Content Include="Scripts\jquery\jquery.mCustomScrollbar.min.js" />
     <Content Include="Scripts\jquery\jquery.tablesorter.min.js" />
     <Content Include="Scripts\jquery\jsTree\themes\adv_themeroller\d.gif" />
@@ -1725,7 +1721,6 @@
     <Content Include="Scripts\ctl_SetStyles.js" />
     <Content Include="Scripts\jquery\jquery.cookie.js" />
     <Content Include="Scripts\jquery\jquery.menu.js" />
-    <Content Include="Scripts\_references.js" />
     <Content Include="Themes\calendar_white.css" />
     <Content Include="Themes\layout.css" />
     <Content Include="Themes\scheduler_white.css" />
