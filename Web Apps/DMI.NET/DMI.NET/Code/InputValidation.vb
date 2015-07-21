@@ -170,9 +170,6 @@
 				.Add("BREAKDOWN")
 				.Add("LOAD")
 				.Add("REFRESH")
-				.Add("OUTPUTRUN")
-				.Add("OUTPUTRUNTHENCLOSE")
-				.Add("OUTPUTPROMPT")
 				.Add("EMAILGROUP")
 				.Add("EMAILGROUPTHENCLOSE")
 			End With

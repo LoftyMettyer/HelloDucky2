@@ -83,12 +83,8 @@
 	'**************************************
 	' LOAD / PRINT
 	'**************************************
-	'		 	If Session("CT_Mode") = "LOAD" Or _
-	'
 	If Session("CT_Mode") = "LOAD" Or _
-			Session("CT_Mode") = "REFRESH" Or _
-		 Session("CT_Mode") = "OUTPUTRUN" Or _
-		 Session("CT_Mode") = "OUTPUTRUNTHENCLOSE" Then
+			Session("CT_Mode") = "REFRESH" Then
 		'Initalise Grid
 
 		objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
@@ -208,49 +204,6 @@
 	
 		Response.Write("  OpenHR.submitForm(frmBreakdown);" & vbCrLf)
 
-		'**************************************
-		' OUTPUTPROMPT
-		'**************************************
-
-	ElseIf Session("CT_Mode") = "OUTPUTPROMPT" Then
-
-		Response.Write("  frmExportData.txtUtilType = " & Session("utiltype") & ");" & vbCrLf)
-		Response.Write("  OpenHR.submitForm(frmExportData);" & vbCrLf)
-				
-				
-		'**************************************
-		' OUTPUTRUN
-		'**************************************
-
-	ElseIf Session("CT_Mode") = "OUTPUTPROMPT" Or _
-				 Session("CT_Mode") = "OUTPUTRUN" Or _
-				 Session("CT_Mode") = "OUTPUTRUNTHENCLOSE" Then
-		
-		If Session("CT_Mode") = "OUTPUTRUNTHENCLOSE" Then
-			Response.Write("  try {" & vbCrLf)
-			Response.Write("    if ( $(""#txtCancelPrint"").val() == 1) {" & vbCrLf)
-			Response.Write("      window.parent.parent.raiseError('',false,true);" & vbCrLf)
-			Response.Write("    }" & vbCrLf)
-			Response.Write("    else if (ClientDLL.ErrorMessage != """") {" & vbCrLf)
-			Response.Write("      window.parent.parent.raiseError(ClientDLL.ErrorMessage,false,false);" & vbCrLf)
-			Response.Write("    }" & vbCrLf)
-			Response.Write("    else {" & vbCrLf)
-			Response.Write("      window.parent.parent.raiseError('',true,false);" & vbCrLf)
-			Response.Write("    }" & vbCrLf)
-			Response.Write("  }" & vbCrLf)
-			Response.Write("  catch (e) {" & vbCrLf)
-			Response.Write("  }" & vbCrLf)
-		Else
-			Response.Write("  sUtilTypeDesc = frmPopup.txtUtilTypeDesc.value;" & vbCrLf)
-			Response.Write("  if ($(""#txtCancelPrint"").val() == 1) {" & vbCrLf)
-			Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\nCancelled by user."",64,sUtilTypeDesc);" & vbCrLf)
-			Response.Write("  }" & vbCrLf)
-			Response.Write("  else if (ClientDLL.ErrorMessage == """") {" & vbCrLf)
-			Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output complete."",64,sUtilTypeDesc);" & vbCrLf)
-			Response.Write("  }" & vbCrLf)
-		End If
-
-
 	ElseIf Session("CT_Mode") = "EMAILGROUP" Or _
 				 Session("CT_Mode") = "EMAILGROUPTHENCLOSE" Then
 		strEmailAddresses = ""
@@ -275,13 +228,7 @@
 		'Session("CT_EmailGroupAddr") = strEmailAddresses
 		Response.Write("  frmExportData.txtEmailGroupAddr.value = """ & CleanStringForJavaScript(strEmailAddresses) & """;" & vbCrLf)
 
-		If Session("CT_Mode") = "EMAILGROUPTHENCLOSE" Then
-			Response.Write("  ExportData(""OUTPUTRUNTHENCLOSE"");" & vbCrLf)
-		Else
-			Response.Write("  ExportData(""OUTPUTRUN"");" & vbCrLf)
-		End If
-		 
-
+ 
 	ElseIf Session("CT_Mode") = "" Then
 
 		'Must be the first time this asp is called...
@@ -380,12 +327,6 @@
 		frmGetData.txtPgb.value = lngPgb;
 		frmGetData.txtIntersectionType.value = txtIntType;
 		frmGetData.txtCellValue.value = txtCellValue;
-		OpenHR.submitForm(frmGetData);
-	}
-
-	function ExportData(strMode) {
-		var frmGetData = OpenHR.getForm("reportdataframe", "frmGetReportData");
-		frmGetData.txtMode.value = strMode;
 		OpenHR.submitForm(frmGetData);
 	}
 

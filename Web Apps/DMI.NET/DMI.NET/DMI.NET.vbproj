@@ -1368,7 +1368,6 @@
     <None Include="My Project\PublishProfiles\QASRVR01 - OpenHR.pubxml.user" />
     <None Include="My Project\PublishProfiles\QASRVR01 - OpenHRRanorex.pubxml.user" />
     <Content Include="Pictures\Logo.ico" />
-    <Content Include="Scripts\ClientDLL.js" />
     <Content Include="Scripts\ColorPicker\spectrum.js" />
     <Content Include="Scripts\date.js" />
     <Content Include="Scripts\FormScripts\find.js" />

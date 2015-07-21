@@ -41,7 +41,6 @@ Namespace App_Start
 			' OpenHR core
 			bundles.Add(New ScriptBundle("~/bundles/OpenHR_General").Include(
 				"~/Scripts/openHR.js",
-				"~/Scripts/clientDLL.js",
 				"~/Scripts/FormScripts/general.js",
 				"~/Scripts/FormScripts/menu.js",
 				"~/Scripts/ctl_SetStyles.js",
