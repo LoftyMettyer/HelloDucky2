@@ -1268,6 +1268,8 @@
     <Content Include="Scripts\jquery.mousewheel.min.js" />
     <Content Include="Scripts\jquery.signalR-2.1.1.js" />
     <Content Include="Scripts\jquery.signalR-2.1.1.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery\datepicker-locale.js" />
     <Content Include="Scripts\jquery.jqGrid.js" />
     <Content Include="Scripts\jquery.jqGrid.min.js" />
@@ -1768,7 +1770,6 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Scripts\jquery\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\Microsoft\MicrosoftAjax.js" />
     <Content Include="Scripts\Microsoft\MicrosoftMvcAjax.js" />
     <Content Include="Scripts\Microsoft\MicrosoftMvcValidation.js" />

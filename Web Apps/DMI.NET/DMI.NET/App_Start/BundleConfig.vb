@@ -16,7 +16,7 @@ Namespace App_Start
 			bundles.Add(New ScriptBundle("~/bundles/jQuery").Include(
 					"~/Scripts/jquery-{version}.js",
 					"~/Scripts/jquery/jquery.cookie.js",
-					"~/Scripts/jquery/jquery-unobtrusive-ajax.js",
+					"~/Scripts/jquery-unobtrusive-ajax.js",
 					"~/Scripts/jquery-validate-vsdoc.js",
 					"~/Scripts/date.js"))
 
