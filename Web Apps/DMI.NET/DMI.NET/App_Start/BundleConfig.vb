@@ -49,7 +49,7 @@ Namespace App_Start
 
 			' SignalR
 			bundles.Add(New ScriptBundle("~/bundles/SignalR").Include(
-				"~/Scripts/jquery.signalR-2.1.1.min.js",
+				"~/Scripts/jquery.signalR-{version}.js",
 				"~/signalr/hubs"))
 
 			' Custom Reports
