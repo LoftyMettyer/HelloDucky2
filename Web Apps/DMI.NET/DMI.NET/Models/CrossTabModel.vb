@@ -2,7 +2,6 @@
 Option Strict On
 
 Imports DMI.NET.Classes
-Imports Foolproof
 Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel.DataAnnotations
 Imports System.ComponentModel

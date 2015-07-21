@@ -100,9 +100,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="MVC Foolproof Validation">
-      <HintPath>..\packages\foolproof.0.9.4517\lib\MVC Foolproof Validation.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -1402,9 +1399,6 @@
     <Content Include="Scripts\jquery\jsTree\themes\adv_themeroller\throbber.gif" />
     <Content Include="Scripts\jquery\MonthPicker.js" />
     <Content Include="Scripts\modernizr-2.7.2.js" />
-    <Content Include="Scripts\mvcfoolproof.unobtrusive.min.js" />
-    <Content Include="Scripts\MvcFoolproofJQueryValidation.min.js" />
-    <Content Include="Scripts\MvcFoolproofValidation.min.js" />
     <Content Include="Scripts\officebar\winkit\GridEdit2DIS.png" />
     <Content Include="Scripts\officebar\winkit\GridEdit2HOVER.png" />
     <Content Include="Scripts\officebar\winkit\registry64DIS.png" />
