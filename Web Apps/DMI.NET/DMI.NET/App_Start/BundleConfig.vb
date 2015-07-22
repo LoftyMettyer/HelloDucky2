@@ -33,7 +33,7 @@ Namespace App_Start
 				"~/Scripts/jquery/jquery.menu.js",
 				"~/Scripts/jquery.maskedinput.js",
 				"~/Scripts/jquery.mousewheel.js",
-				"~/Scripts/jquery/jquery.numeric.js",
+				"~/Scripts/jquery.numeric.js",
 				"~/Scripts/jquery/jOrgChart/prettify.js",
 				"~/Scripts/jquery/jOrgChart/jquery.jOrgChart.js",
 				"~/Scripts/officebar/jquery.officebar_MODIFIED.js"))
