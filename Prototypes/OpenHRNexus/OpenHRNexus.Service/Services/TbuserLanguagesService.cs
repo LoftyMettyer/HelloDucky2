@@ -5,10 +5,10 @@ using OpenHRNexus.Repository.Interfaces;
 using OpenHRNexus.Service.Interfaces;
 
 namespace OpenHRNexus.Service.Services {
-	public class tbuser_LanguagesService : Itbuser_LanguagesService {
-		private readonly Itbuser_LanguagesRepository _tbuser_LanguagesRepository;
+	public class TbuserLanguagesService : ITbuserLanguagesService {
+		private readonly ITbuserLanguagesRepository _tbuser_LanguagesRepository;
 
-		public tbuser_LanguagesService(Itbuser_LanguagesRepository tbuser_LanguagesRepository) {
+		public TbuserLanguagesService(ITbuserLanguagesRepository tbuser_LanguagesRepository) {
 			_tbuser_LanguagesRepository = tbuser_LanguagesRepository;
 		}
 

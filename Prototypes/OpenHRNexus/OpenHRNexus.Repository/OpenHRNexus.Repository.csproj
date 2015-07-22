@@ -56,8 +56,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IPersonnelRecordsRepository.cs" />
-    <Compile Include="Interfaces\Itbuser_LanguagesRepository.cs" />
+    <Compile Include="Interfaces\INexusDbRepository.cs" />
+    <Compile Include="MockRepository\MockDatabase.cs" />
     <Compile Include="OpenHRNexusEntityDataModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -77,8 +77,11 @@
       <DependentUpon>OpenHRNexusEntityDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\MySQL\MySQLtbuser_LanguagesRepository.cs" />
-    <Compile Include="Repositories\SQLServer\SQLPersonnelRecordsRepository.cs" />
+    <Compile Include="MySQL\MySqlTbuserLanguagesRepository.cs" />
+    <Compile Include="SQLServer\SqlPersonnelRecordsRepository.cs" />
+    <Compile Include="Interfaces\IPersonnelRecordsRepository.cs" />
+    <Compile Include="Interfaces\ITbuserLanguagesRepository.cs" />
+    <Compile Include="DatabaseClasses\User.cs" />
     <Compile Include="tbuser_Languages.cs">
       <DependentUpon>OpenHRNexusEntityDataModel.tt</DependentUpon>
     </Compile>
@@ -87,7 +90,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <EntityDeploy Include="OpenHRNexusEntityDataModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>OpenHRNexusEntityDataModel.Designer.cs</LastGenOutput>
@@ -112,7 +117,15 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenHRNexus.Interfaces\OpenHRNexus.Interfaces.csproj">
+      <Project>{627c8a94-0e22-4eb6-9998-7f5865588288}</Project>
+      <Name>OpenHRNexus.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

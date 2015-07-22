@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using OpenHRNexus.Repository.Interfaces;
 
-namespace OpenHRNexus.Repository.Repositories.MySQL {
-	public class MySQLtbuser_LanguagesRepository : Itbuser_LanguagesRepository {
+namespace OpenHRNexus.Repository.MySQL {
+	public class MySqlTbuserLanguagesRepository : ITbuserLanguagesRepository {
 		public List<tbuser_Languages> List() {
-			List<tbuser_Languages> _listingList = new List<tbuser_Languages>();
+			List<tbuser_Languages> listingList = new List<tbuser_Languages>();
 
 			const string cs = @"Server=Localhost;Uid=user;Pwd=password;Database=database"; //MySQL connection string
 
@@ -24,7 +20,7 @@ namespace OpenHRNexus.Repository.Repositories.MySQL {
 			rdr = cmd.ExecuteReader();
 
 			while (rdr.Read()) {
-				_listingList.Add(
+				listingList.Add(
 					new tbuser_Languages {
 						ID = rdr.GetInt32(0),
 						ID_1 = rdr.GetInt32(1),
@@ -35,7 +31,7 @@ namespace OpenHRNexus.Repository.Repositories.MySQL {
 					});
 			}
 
-			return _listingList;
+			return listingList;
 		}
 	}
 }
