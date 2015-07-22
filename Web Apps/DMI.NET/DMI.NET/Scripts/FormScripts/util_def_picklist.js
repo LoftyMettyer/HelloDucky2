@@ -1,11 +1,19 @@
 ﻿
-var frmOriginalDefinition = OpenHR.getForm("workframe", "frmOriginalDefinition");
-var frmDefinition = OpenHR.getForm("workframe", "frmDefinition");
-var frmUseful = OpenHR.getForm("workframe", "frmUseful");
+var frmOriginalDefinition = OpenHR.getForm("workframe", "frmOriginalDefinition") || OpenHR.getForm("ToolsFrame", "frmOriginalDefinition");
+var frmDefinition = OpenHR.getForm("workframe", "frmDefinition") || OpenHR.getForm("ToolsFrame", "frmDefinition");
+var frmUseful = OpenHR.getForm("workframe", "frmUseful") || OpenHR.getForm("ToolsFrame", "frmUseful");
 
 function util_def_picklist_onload() {
 
-	$("#workframe").attr("data-framesource", "UTIL_DEF_PICKLIST");
+	if (IsToolsScreenLoadedFromReportDefinition()) {
+		$("#ToolsFrame").attr("data-framesource", "UTIL_DEF_PICKLIST");
+		$("#ToolsFrame").show();
+		$("#workframe").hide();
+	} else {
+		$("#workframe").attr("data-framesource", "UTIL_DEF_PICKLIST");
+		$("#workframe").show();
+		$("#ToolsFrame").hide();
+	}
 
 	// Expand the work frame and hide the option frame.
 	//            window.parent.document.all.item("workframeset").cols = "*, 0";
@@ -46,7 +54,7 @@ function util_def_picklist_onload() {
 
 function refreshControls() {
 
-	var frmUseful = OpenHR.getForm("workframe", "frmUseful");
+	var frmUseful = document.getElementById('frmUseful');
 
 	var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
 	var fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
@@ -59,7 +67,7 @@ function refreshControls() {
 	var fAddAllDisabled = fViewing;
 	var fRemoveDisabled = (fViewing == true);
 	var fRemoveAllDisabled = (fViewing == true);
-	
+
 	button_disable(frmDefinition.cmdAdd, fAddDisabled);
 	button_disable(frmDefinition.cmdAddAll, fAddAllDisabled);
 	//button_disable(frmDefinition.cmdFilteredAdd, false);	
@@ -87,20 +95,20 @@ function submitDefinition() {
 	if (frmUseful.txtAction.value.toUpperCase() == "EDIT") {
 		sTimeStamp = frmOriginalDefinition.txtDefn_Timestamp.value;
 		sUtilID = frmUseful.txtUtilID.value;
-		}
+	}
 	else {
 		sTimeStamp = 0;
 		sUtilID = 0;
 	}
 
 	var postData = {
-			validatePass: 1,
-			validateName: frmDefinition.txtName.value,
-			validateTimestamp: sTimeStamp,
-			validateUtilID: sUtilID,
-			validateBaseTableID: frmSend.txtSend_tableID.value,
-			validateAccess: frmSend.txtSend_access.value
-			};
+		validatePass: 1,
+		validateName: frmDefinition.txtName.value,
+		validateTimestamp: sTimeStamp,
+		validateUtilID: sUtilID,
+		validateBaseTableID: frmSend.txtSend_tableID.value,
+		validateAccess: frmSend.txtSend_access.value
+	};
 
 	OpenHR.submitForm(null, "reportframe", null, postData, "util_validate_picklist");
 
@@ -114,7 +122,7 @@ function addClick() {
 
 	var postData = {
 		TableID: $("#txtTableID").val(),
-		Action: "add",		
+		Action: "add",
 		IDs1: $('#ssOleDBGrid').getDataIDs().join(","),
 		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 	}
@@ -130,17 +138,17 @@ function addAllClick() {
 	picklistdef_makeSelection("ALLRECORDS", 0, "");
 }
 
-function filteredAddClick() {	
+function filteredAddClick() {
 
 	var tableID = $("#txtTableID").val();
 	var currentID = "";
 	var newHeight = (screen.height) / 2;
 	var newWidth = (screen.width) / 2;
-	
+
 	OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id) {
 		picklistdef_makeSelection("FILTER", id, '');
 	}, newWidth - 40, newHeight - 160, true);
-	
+
 }
 
 function removeClick() {
@@ -248,12 +256,12 @@ function removeAllClickFollowOn(iAnswer) {
 
 function cancelClick() {
 	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") || (definitionChanged() == false)) {
-		menu_loadDefSelPage(10, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
+		menu_LoadDefSel_Inside_Frame(10, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
 	}
 	else {
 		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 			if (answer == 1) {  // OK
-				menu_loadDefSelPage(10, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
+				menu_LoadDefSel_Inside_Frame(10, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
 			}
 		});
 	}
@@ -489,22 +497,22 @@ function disableAll() {
 
 function changeName() {
 	frmUseful.txtChanged.value = 1;
-	refreshControls();	
+	refreshControls();
 }
 
 function changeDescription() {
 	frmUseful.txtChanged.value = 1;
-	refreshControls();	
+	refreshControls();
 }
 
 function changeAccess() {
 	frmUseful.txtChanged.value = 1;
-	refreshControls();	
+	refreshControls();
 }
 
-function disableRemoveAndRemoveAllButton() {	
+function disableRemoveAndRemoveAllButton() {
 	if ($("#ssOleDBGrid").getGridParam('reccount') == 0)//If the grid is empty, disable the "Remove" and "Remove All" button
-	{		
+	{
 		button_disable(frmDefinition.cmdRemove, true);
 		button_disable(frmDefinition.cmdRemoveAll, true);
 	}
@@ -598,5 +606,5 @@ function BindDefaultGridOnNewDefinition() {
 		button_disable(frmDefinition.cmdRemove, true); //Disable the "Remove" button
 		button_disable(frmDefinition.cmdRemoveAll, true); //Disable the "Remove All" button
 	}
-		
+
 }

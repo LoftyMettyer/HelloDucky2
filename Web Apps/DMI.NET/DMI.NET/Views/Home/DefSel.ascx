@@ -10,8 +10,9 @@
 	Dim SelectedTableID As String = Request.Form("SelectedTableID")
 	Dim fGotId As Boolean
 	Dim iBaseTableID As Integer
-
+		
 	Dim iDefSelType = CType(Session("defseltype"), UtilityType)
+	Dim isLoadedFromReportDefiniton As Boolean = CType(Session("IsLoadedFromReportDefinition"), Boolean)
 
 	Dim objSession As SessionInfo = CType(Session("sessionContext"), SessionInfo)
 	
@@ -64,7 +65,8 @@
 	var isViewPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "VIEW").ToString.ToLower%>");
 	var isDeletePermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "DELETE").ToString.ToLower%>");
 	var isRunPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "RUN").ToString.ToLower%>");
-
+	var isLoadedFromReportDefiniton = <%:isLoadedFromReportDefiniton.ToString.ToLower%>;
+	
 	var defSelType = "<%:iDefSelType%>";
 	var menuSection = "Report";
 	if ((defSelType === "utlMailMerge") || (defSelType === "utlWorkflow")) menuSection = "Utilities";
@@ -143,11 +145,19 @@
 		if (parseInt($("#txtSingleRecordID").val()) > 0) {
 			$("#optionframe").attr("data-framesource", "DEFSEL");
 			$("#workframe").hide();
+			$("#ToolsFrame").hide();
 			$("#optionframe").show();
 		} else {
-			$("#workframe").attr("data-framesource", "DEFSEL");
-			$("#optionframe").hide();
-			$("#workframe").show();
+			if (isLoadedFromReportDefiniton) {
+				$("#ToolsFrame").attr("data-framesource", "TOOLS_SCREEN_LOADED_FROM_REPORT_DEFINITION");
+				$("#workframe").hide();
+				$("#ToolsFrame").show();
+			} else {
+				$("#workframe").attr("data-framesource", "DEFSEL");
+				$("#optionframe").hide();
+				$("#ToolsFrame").hide();
+				$("#workframe").show();
+			}
 		}
 
 
@@ -239,7 +249,6 @@
 	function refreshControls() {
 
 		//show the Defsel-Find menu block.
-
 		disableNonDefselTabs();
 		
 		var fFromMenu = (parseInt($("#txtSingleRecordID").val()) <= 0);		
@@ -263,8 +272,15 @@
 		menu_setVisibleMenuItem("mnutoolDelete" + menuSection + "Find", !isWorkflow && fFromMenu);
 		menu_setVisibleMenuItem("mnutoolProperties" + menuSection + "Find", !isWorkflow && fFromMenu);
 		menu_setVisibleMenuItem("mnutoolRun" + menuSection + "Find", (menuSection !== "Tools"));
-		menu_setVisibleMenuItem("mnutoolClose" + menuSection + "Find", !fFromMenu);
 
+		// Show the close button for the Calendar, Absence breakdown, Bradford Factor Reports and Mail Mearge defsel when it's loaded from the database section. (E.g. from personnal record)
+		// Show the close button for the tools (Picklist, Filter, Calculation) section if it's loaded from the report definition
+		menu_setVisibleMenuItem("mnutoolClose" + menuSection + "Find", !fFromMenu || isLoadedFromReportDefiniton);
+
+		// Set the report find toolbar group name to 'find' and hide the picklist/filter menu items
+		menu_setVisibletoolbarGroupById('mnuSectionReportToolsFind', false);
+		$('#toolbarReportFind').text('Find');
+		
 		if (!isWorkflow) {
 			menu_toolbarEnableItem("mnutoolNew" + menuSection + "Find", isNewPermitted && fFromMenu);
 			menu_toolbarEnableItem("mnutoolCopy" + menuSection + "Find", fHasRows && isNewPermitted && fFromMenu);
@@ -360,6 +376,14 @@
 
 		// Load the required definition selection screen
 		var displayDiv = (parseInt($("#txtSingleRecordID").val()) === 0 ? "workframe" : "optionframe");
+
+		// If definition is of tools type and loaded from the report definition then set load it inside the Tools frame
+		if ((defSelType === "utlPicklist") || (defSelType === "utlFilter") || (defSelType === "utlCalculation")) {
+			if (isLoadedFromReportDefiniton) {
+				displayDiv = "ToolsFrame";
+			}
+		}
+
 		var postData = {
 			txtTableID: piTableID,
 			utiltype: frmDefSel.utiltype.value,
@@ -737,6 +761,7 @@
 	}
 
 	$(function () {
+
 		attachDefSelGrid();
 
 		$("#selectTable").change(function () {
@@ -753,5 +778,64 @@
 		}
 		return true;
 	}
+
+
+  // Close the Tools Screen (Picklists/Filter/Calculation) & clear the tools frame and return the user to the same point they left in the original report definition screen.
+	function closeTools() {
+		
+		if (isLoadedFromReportDefiniton && !$("#mnutoolCloseToolsFind").hasClass("disabled")) {
+
+			var absenceBreakdownOrBreadfordFactorForm = OpenHR.getForm("workframe", "frmAbsenceDefinition");
+			var reportDefinitionForm = OpenHR.getForm("workframe", "frmReportDefintion");
+			var utilType = null;
+			
+			// Hide the find Group			
+			$("#toolbarToolsFind").parent().hide();
+
+			if (absenceBreakdownOrBreadfordFactorForm != null && reportDefinitionForm == null) {
+
+				// Refresh ribbon toolbar for the bradford factor and absence breakdown reports 			
+				$("#toolbarReportFind").parent().show();
+				$("#toolbarReportFind").click();
+
+				// Sets the ribbon buttons
+				SetsRibbonButtonsForAbsenceBreakdownAndBradfordFactor();
+			} 
+			else if(reportDefinitionForm != null && absenceBreakdownOrBreadfordFactorForm == null) 
+			{
+				// Refresh ribbon toolbar 
+				$("#toolbarReportNewEditCopy").parent().show();
+				$("#toolbarReportNewEditCopy").click();
+
+				// Reset the utility type to source report definition type (From where we came from to the tools screen)
+				utilType = reportDefinitionForm.txtReportType.value;
+			}
+
+			// Post data to reset the session variables which indicates that we have loaded the defsel into tools frame from the report definition.
+			var postSessionData = {
+				utiltype: utilType,
+				isLoadedFromReportDefinition: false,
+				__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+			};
+
+			OpenHR.submitForm(null, null, false, postSessionData, "ResetPageSourceFlag", function() {
+
+				// Hide & Clear the Toolsframe and show the Workframe
+				$("#ToolsFrame").html('');
+				$("#ToolsFrame").hide();
+				$("#workframe").show();
+
+				if (absenceBreakdownOrBreadfordFactorForm == null && reportDefinitionForm != null) {
+
+					// Show/Hide the picklist/filter/calculation ribbon button
+					ShowHideToolsButtons();
+
+					// Enable/Disable the picklist/filter/calculation ribbon button buttons based on the permissions granted		  
+					EnableDisableToolsButtons();
+				}
+			});
+		}
+	}
+
 </script>
 

@@ -90,6 +90,7 @@
 		
 		$("#optionframe").hide();
 		$("#workframe").show();
+		$("#ToolsFrame").html('').hide();
 	}
 </script>
 

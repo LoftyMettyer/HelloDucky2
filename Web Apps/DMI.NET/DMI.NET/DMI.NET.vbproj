@@ -1398,8 +1398,17 @@
     <Content Include="Scripts\jquery\jsTree\themes\adv_themeroller\throbber.gif" />
     <Content Include="Scripts\jquery\MonthPicker.js" />
     <Content Include="Scripts\modernizr-2.7.2.js" />
+    <Content Include="Scripts\officebar\winkit\Calculator64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\Calculator64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\Calculator64NORM.png" />
     <Content Include="Scripts\officebar\winkit\GridEdit2DIS.png" />
     <Content Include="Scripts\officebar\winkit\GridEdit2HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\Niche64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\Niche64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\Niche64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\Packet_Filtering64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\Packet_Filtering64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\Packet_Filtering64NORM.png" />
     <Content Include="Scripts\officebar\winkit\registry64DIS.png" />
     <Content Include="Scripts\officebar\winkit\registry64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\registry64NORM.png" />

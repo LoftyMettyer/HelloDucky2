@@ -101,7 +101,7 @@
 
 	
 		var frmUseful = document.getElementById("frmpicklistSelectionUseful");
-		var frmParentUseful = OpenHR.getForm("workframe", "frmUseful");
+		var frmParentUseful = OpenHR.getForm("workframe", "frmUseful") || OpenHR.getForm("ToolsFrame", "frmUseful");
 
 		if (frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") {
 			try {
@@ -143,7 +143,7 @@
 					return;
 
 				try {
-					frmParentUseful = OpenHR.getForm("workframe", "frmUseful");
+					frmParentUseful = OpenHR.getForm("workframe", "frmUseful") || OpenHR.getForm("ToolsFrame", "frmUseful");
 					frmParentUseful.txtChanged.value = 1;
 
 					picklistdef_makeSelection(frmUseful.txtSelectionType.value, 0, sSelectedIDs);

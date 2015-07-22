@@ -173,6 +173,7 @@
 	<input type="hidden" id="txtUtilID" name="txtUtilID" value='<% =session("utilid")%>'>
 	<input type="hidden" id="txtTableID" name="txtTableID" value='<% =session("utiltableid")%>'>
 	<input type="hidden" id="txtAction" name="txtAction" value='<% =session("action")%>'>
+	<input type="hidden" id="txtFlag_To_Identify_Page_Source" name="txtFlag_To_Identify_Page_Source" value='<%: Session("IsLoadedFromReportDefinition")%>'>
 	<%
 		Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
 	%>

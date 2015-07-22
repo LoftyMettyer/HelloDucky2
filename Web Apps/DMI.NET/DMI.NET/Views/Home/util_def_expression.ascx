@@ -37,7 +37,7 @@
 
 		<div class="clearboth">
 			<hr />
-		</div>
+		</div>		
 
 		<div class="gridwithbuttons clearboth">
 
@@ -140,7 +140,8 @@
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value='<%:CInt(Session("utiltype"))%>'>
 	<input type="hidden" id="txtLocaleDecimal" name="txtLocaleDecimal" value='<%:session("LocaleDecimalSeparator")%>'>
 	<input type="hidden" id="txtExprColourMode" name="txtExprColourMode" value='<%:session("ExprColourMode")%>'>
-	<input type="hidden" id="txtExprNodeMode" name="txtExprNodeMode" value='<%:session("ExprNodeMode")%>'>
+	<input type="hidden" id="txtExprNodeMode" name="txtExprNodeMode" value='<%:session("ExprNodeMode")%>'>	
+	<input type="hidden" id="txtFlag_To_Identify_Page_Source" name="txtFlag_To_Identify_Page_Source" value='<%: Session("IsLoadedFromReportDefinition")%>'>
 
 	<%
 		Dim sErrorDescription As String

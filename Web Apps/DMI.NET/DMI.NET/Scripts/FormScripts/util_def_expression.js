@@ -155,13 +155,22 @@ function buildjsTree() {
 
 
 function util_def_expression_onload() {
+	
+
+	resizeGridToFit();
 
 
-	resizeGridToFit(); 
-
-
-	$("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
-
+  // Hide/show the workframe and ToolsFrame based on screen loaded.
+	if (IsToolsScreenLoadedFromReportDefinition()) {
+		$("#ToolsFrame").attr("data-framesource", "UTIL_DEF_EXPRESSION");
+		$("#ToolsFrame").show();
+		$("#workframe").hide();
+	} else {
+		$("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
+		$("#workframe").show();
+		$("#ToolsFrame").hide();
+	}
+	
 	var fOK = true;
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
@@ -189,8 +198,8 @@ function util_def_expression_onload() {
 			
 		}
 
-		buildjsTree();
-		
+		buildjsTree();		
+
 
 		frmUseful.txtLoading.value = 'N';
 		try {			
@@ -204,7 +213,7 @@ function util_def_expression_onload() {
 		$('#cmdCancel').hide();
 
 	}
-
+	
 
 }
 
@@ -217,7 +226,8 @@ function resizeGridToFit() {
 	var newGridHeight = workPageHeight - gridTopPos;
 
 	$('#SSTree1').height(newGridHeight);
-	$('#SSTree1').width($('div.stretchyfill').outerWidth(true));
+	// Set the width of SSTree1 div
+	$('#SSTree1').width('100%');	
 }
 
 function resetIDandTag(dataObj) {
@@ -1159,7 +1169,15 @@ function setComponent(psComponentDefn, psAction, psLinkComponentID, psFunctionPa
 	var sTemp;
 
 	$("#optionframe").attr('style', 'display: none;');
-	$("#workframe").show();
+
+	// Hide/show the workframe and ToolsFrame based on screen loaded.
+	if (IsToolsScreenLoadedFromReportDefinition()) {
+		$("#ToolsFrame").attr("data-framesource", "UTIL_DEF_EXPRESSION");
+		$("#ToolsFrame").show();
+		$("#workframe").hide();
+	} else {
+		$("#workframe").show();
+	}
 
 	if ($('#SSTree1').find('#' + psLinkComponentID).length > 0) fNodeExists = true;
 
@@ -1445,15 +1463,15 @@ function okClick() {
 	return true;
 }
 
-function cancelClick() {	
-	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
-	if (definitionChanged() == false) {
-		menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
+function cancelClick() {
+		var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");	
+	if (definitionChanged() == false) {		
+		menu_LoadDefSel_Inside_Frame(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
 	}
 	else {
 		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 			if (answer == 1) {  // OK
-				menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
+					menu_LoadDefSel_Inside_Frame(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
 			}
 		});
 	}
@@ -1579,7 +1597,7 @@ function definitionChanged() {
 }
 
 function submitDefinition() {
-	
+
 	if (validateExpression() == false) { menu_refreshMenu(); return false; }
 	if (populateSendForm() == false) { menu_refreshMenu(); return false; }
 
@@ -1612,7 +1630,7 @@ function submitDefinition() {
 
 
 function reEnableControls() {
-
+	
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
 
@@ -1686,10 +1704,10 @@ function populateSendForm() {
 	var sNames = "";
 	var sComponents = "";
 	var reQuote = new RegExp("\"", "gi");
-	
+
 	var frmSend = OpenHR.getForm("divDefExpression", "frmSend");
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
-	var frmDefinition = OpenHR.getForm("workframe", "frmDefinition");
+	var frmDefinition = document.getElementById('frmDefinition');	
 
 	// Copy all the header information to frmSend
 	frmSend.txtSend_ID.value = frmUseful.txtUtilID.value;

@@ -331,6 +331,10 @@ Namespace Controllers
 			Session("utilid") = ""
 			Session("selectSQL") = ""
 
+			' Reset value of IsLoadedFromReportDefinition flag. 
+			' Which used to loads the tools screen to the ToolsFrame from report definition
+			Session("IsLoadedFromReportDefinition") = False
+
 			If Session("SSIMode") <> True Then Session("SSIMode") = False ' set default value
 
 			Session("ErrorText") = ""
@@ -5484,6 +5488,15 @@ Namespace Controllers
 
 		End Function
 
+		' Reset the page source and IsLoadedFromReportDefinition flag which used to identify that if the tools screen loaded inside the ToolsFrame from the report definition
+		<HttpPost()>
+		<ValidateAntiForgeryToken>
+		Sub ResetPageSourceFlag(isLoadedFromReportDefinition As Boolean, Optional ByVal utiltype As UtilityType? = Nothing)
+			If (utiltype IsNot Nothing) Then
+				Session("defseltype") = utiltype
+			End If
+			Session("IsLoadedFromReportDefinition") = isLoadedFromReportDefinition
+		End Sub
 
 	End Class
 

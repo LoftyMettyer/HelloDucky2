@@ -361,15 +361,17 @@ function menu_MenuClick(sTool) {
 			$("#toolbarReportNewEditCopy").parent().show();
 			$("#toolbarReportNewEditCopy").click();
 			switch (sToolName) {
-			case 'mnutoolNewReportFind':
-				$('#toolbarReportNewEditCopy').text('Report');
-				break;
-			case 'mnutoolNewUtilitiesFind':
-				$('#toolbarReportNewEditCopy').text('Utility');
-				break;
-			case 'mnutoolNewToolsFind':
-				$('#toolbarReportNewEditCopy').text('Tools');
-				break;
+				case 'mnutoolNewReportFind':
+					$('#toolbarReportNewEditCopy').text('Report');
+					break;
+				case 'mnutoolNewUtilitiesFind':
+					$('#toolbarReportNewEditCopy').text('Utility');
+					HideToolsRibbonButtons();
+					break;
+				case 'mnutoolNewToolsFind':
+					$('#toolbarReportNewEditCopy').text('Tools');
+					HideToolsRibbonButtons();
+					break;
 			}
 		} catch(e) {
 		} finally {
@@ -385,15 +387,17 @@ function menu_MenuClick(sTool) {
 			$("#toolbarReportNewEditCopy").parent().show();
 			$("#toolbarReportNewEditCopy").click();
 			switch (sToolName) {
-			case 'mnutoolCopyReportFind':
-				$('#toolbarReportNewEditCopy').text('Report');
-				break;
-			case 'mnutoolCopyUtilitiesFind':
-				$('#toolbarReportNewEditCopy').text('Utility');
-				break;
-			case 'mnutoolCopyToolsFind':
-				$('#toolbarReportNewEditCopy').text('Tools');
-				break;
+				case 'mnutoolCopyReportFind':
+					$('#toolbarReportNewEditCopy').text('Report');
+					break;
+				case 'mnutoolCopyUtilitiesFind':
+					$('#toolbarReportNewEditCopy').text('Utility');
+					HideToolsRibbonButtons();
+					break;
+				case 'mnutoolCopyToolsFind':
+					$('#toolbarReportNewEditCopy').text('Tools');
+					HideToolsRibbonButtons();
+					break;
 			}
 		} catch(e) {
 		} finally {
@@ -409,15 +413,17 @@ function menu_MenuClick(sTool) {
 			$("#toolbarReportNewEditCopy").parent().show();
 			$("#toolbarReportNewEditCopy").click();
 			switch (sToolName) {
-			case 'mnutoolEditReportFind':
-				$('#toolbarReportNewEditCopy').text('Report');
-				break;
-			case 'mnutoolEditUtilitiesFind':
-				$('#toolbarReportNewEditCopy').text('Utility');
-				break;
-			case 'mnutoolEditToolsFind':
-				$('#toolbarReportNewEditCopy').text('Tools');
-				break;
+				case 'mnutoolEditReportFind':
+					$('#toolbarReportNewEditCopy').text('Report');
+					break;
+				case 'mnutoolEditUtilitiesFind':
+					$('#toolbarReportNewEditCopy').text('Utility');
+					HideToolsRibbonButtons();
+					break;
+				case 'mnutoolEditToolsFind':
+					$('#toolbarReportNewEditCopy').text('Tools');
+					HideToolsRibbonButtons();
+					break;
 			}
 		} catch(e) {
 		} finally {
@@ -527,7 +533,7 @@ function menu_MenuClick(sTool) {
 		try {
 
 			var frmSubmit = $("#frmReportDefintion");
-			if (frmSubmit.length == 0) {
+			if (frmSubmit.length == 0 || IsToolsScreenLoadedFromReportDefinition() == true) {
 				okClick(); //Should be in scope	
 			} else {
 				saveReportDefinition(false);
@@ -544,7 +550,7 @@ function menu_MenuClick(sTool) {
 		try {
 
 			var frmSubmit = $("#frmReportDefintion");
-			if (frmSubmit.length == 0) {
+			if (frmSubmit.length == 0 || IsToolsScreenLoadedFromReportDefinition() == true) {
 				$("#cmdCancel").click(); //Should be in scope	
 			} else {
 				cancelReportDefinition();
@@ -851,6 +857,35 @@ function menu_MenuClick(sTool) {
 			return false;
 		}
 
+		/******* Begin Changes related to to user stories : 18362, 18363, 18628 & 18629  *********/
+
+		if (sToolName == "mnutoolCalculationReport") {
+			LoadToolsScreen(12);
+			return false;
+		}
+
+		if (sToolName == "mnutoolFilterReport" || sToolName == "mnutoolFilterReportFind") {
+			LoadToolsScreen(11);
+			return false;
+		}
+
+		if (sToolName == "mnutoolPicklistReport" || sToolName == "mnutoolPicklistReportFind") {
+			LoadToolsScreen(10);
+			return false;
+		}
+
+		// Close toobar button for the tools screen (picklist/filter/calculation) when loaded from report definition
+		if ((sToolName == 'mnutoolCloseToolsFind')) {
+			try {
+				closeTools();
+			} catch (e) {
+			} finally {
+				return false;
+			}
+		}
+
+		/******* End Changes related to to user stories : 18362, 18363, 18628 & 18629  *********/
+
 	// Administration Menu -------------------------------------------------------------------------------------------------------------------
 
 	
@@ -967,11 +1002,12 @@ function menu_MenuClick(sTool) {
 	if (hasChanged == 0) { // Prompt for navigation
 
 		if (sToolName.substr(0, 7) == "mnutool") {
-				
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+
+			OpenHR.modalPrompt(GetPromptMessage(), 1, "Confirm").then(function (answer) {
 				if (answer == 1) {  // OK
 					//not an expandable menu item, so continue.
 					window.onbeforeunload = null;
+					CleanToolsFrameAndResetPageSource();
 					menu_loadPage(sToolName.substr(7));
 				}
 				else {
@@ -980,10 +1016,11 @@ function menu_MenuClick(sTool) {
 			return false;
 		}
 		else {
-				//frmData = window.parent.frames("dataframe").document.forms("frmData");
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//frmData = window.parent.frames("dataframe").document.forms("frmData");
+			OpenHR.modalPrompt(GetPromptMessage(), 1, "Confirm").then(function (answer) {
 				if (answer == 1) {  // OK
 					window.onbeforeunload = null;
+					CleanToolsFrameAndResetPageSource();
 					menu_Navigate_LoadPage(sTool, sToolName, frmMenuInfo);
 				}
 				else {
@@ -994,9 +1031,11 @@ function menu_MenuClick(sTool) {
 	}
 	else if (hasChanged == 6) {  // Free navigation
 		if (sToolName.substr(0, 7) == "mnutool") {
+			CleanToolsFrameAndResetPageSource();
 			menu_loadPage(sToolName.substr(7));
 		}
 		else {
+			CleanToolsFrameAndResetPageSource();
 			menu_Navigate_LoadPage(sTool, sToolName, frmMenuInfo);
 		}
 		return false;
@@ -1008,7 +1047,7 @@ function saveChangesPrompt(sToolName, followonfunction) {
 
 	var hasChanged = menu_saveChanges(sToolName, true, false);
 	if (hasChanged === 0) { // Prompt for navigation
-		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
+		OpenHR.modalPrompt(GetPromptMessage(), 1, "Confirm").then(function (answer) {
 			if (answer === 1) { // OK			
 				window.onbeforeunload = null;
 				runPostSaveChangesPrompt(followonfunction);
@@ -1023,8 +1062,10 @@ function saveChangesPrompt(sToolName, followonfunction) {
 
 
 function runPostSaveChangesPrompt(followonfunction) {
-	try {
-		setTimeout(followonfunction, 0);
+	try
+	{
+		CleanToolsFrameAndResetPageSource();
+		setTimeout(followonfunction, 0);// Alerts 200
 	}
 	catch (e) {
 		alert("Function call failed.");
@@ -2353,6 +2394,11 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 					(sCurrentPage == "UTIL_DEF_MAILMERGE")) {
 		iResult = saveReportDefinition(true);
 		}
+
+		// @TODO : Uncomment below code, if we want to provide a confirmation message to be asked whilst the user attempting to nevigate away from the tools list/edit screen when tools utility defesel is loaded from the report definition.
+		//else if ((sCurrentPage == "TOOLS_SCREEN_LOADED_FROM_REPORT_DEFINITION") || (IsToolsScreenLoadedFromReportDefinition() == true)) {
+		//	iResult = saveReportDefinition(true);
+		//}
 
 	else if ((sCurrentPage == "UTIL_DEF_PICKLIST") ||
 		(sCurrentPage == "UTIL_DEF_EXPRESSION") ||
@@ -4753,3 +4799,146 @@ function toggleMandatoryColumns(pfSetting) {
 	}
 }
 
+/******* Begin Changes related to to user stories : 18362, 18363, 18628 & 18629  *********/
+
+// Loads the defsel for the provided utiltype when the cancel button of the tools details screen (picklist/filter/calc) clicked.
+function menu_LoadDefSel_Inside_Frame(piDefSelType, piUtilId, piTableId, pfFromMenu) {
+
+	// Load the required definition selection screen
+	var displayDiv = (pfFromMenu === true ? "workframe" : "optionframe");
+
+	// If the tools screen loaded from the report definition then set ToolsFrame
+	if ((piDefSelType == 10) || (piDefSelType == 11) || (piDefSelType == 12)) {
+		if ((IsToolsScreenLoadedFromReportDefinition() == true) || OpenHR.currentWorkPage() == "TOOLS_SCREEN_LOADED_FROM_REPORT_DEFINITION") {
+			displayDiv = "ToolsFrame";
+			pfFromMenu = false;
+		}
+	}
+
+	var postData = {
+		txtTableID: piTableId,
+		utiltype: piDefSelType,
+		utilID: piUtilId,
+		txtGotoFromMenu: pfFromMenu,
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+	};
+
+	OpenHR.submitForm(null, displayDiv, null, postData, "DefSel");
+	showDefaultRibbon();
+}
+
+// Check if the user has loaded the tools screen (picklist/filter/cal) from the report definition.
+function IsToolsScreenLoadedFromReportDefinition() {
+	var retVal = false;
+	var frmUseful = OpenHR.getForm("ToolsFrame", "frmUseful");
+	if (frmUseful != null && frmUseful.txtFlag_To_Identify_Page_Source.value != null) {
+		if (frmUseful.txtFlag_To_Identify_Page_Source.value.toLowerCase() == "true") {
+			retVal = true;
+		}
+	}
+	return retVal;
+}
+
+// Loads the Tools (Piclist/Filter/Calculation) screen based on its utility type. 
+// Also set a value indicating that the screen is loaded from the report definition screen. This value will be used to identify that in which frame this screen is loaded.
+function LoadToolsScreen(utilityType) {
+	var postSessionData = {
+		isLoadedFromReportDefinition: true,
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+	};
+
+	OpenHR.submitForm(null, null, false, postSessionData, "ResetPageSourceFlag", function () { LoadToolsScreenInToolsFrame(utilityType); });
+}
+
+// Loads Tools screen (Piclist/Filter/Calculation) into tools frame based on its type. 
+function LoadToolsScreenInToolsFrame(utilityType) {
+	var displayDiv = "ToolsFrame";
+	var postData = {
+		txtTableID: 0,
+		utiltype: utilityType,
+		utilID: 0,
+		txtGotoFromMenu: true,
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+	};
+
+	//// @TODO : Uncomment below code, if we want to provide a confirmation message to be asked whilst the user attempting to nevigate away from the tools screen which is loaded from the report definition.
+	// enableSaveButton();
+
+	SetOptionFrameToEmpty();
+
+	OpenHR.submitForm(null, displayDiv, null, postData, "DefSel");
+	showDefaultRibbon();
+}
+
+// Clear the option frame html
+function SetOptionFrameToEmpty() {
+	// If any report definition tree menu item is clicked after loading the record edit screen from the database section. (E.g. Calendar Report, Mail Mearge) then clean up the option frame. 
+	// Steps to reproduce the issue : Go to DatabaseMenu -> Personaal Record -> Edit Record -> click on the Calender Report/Mail Mearge button in ribbonbar -> Now click on any Report Definition -> Edit it -> Click on Picklist ribbon button = App will break.
+	if (OpenHR.getForm("optionframe", "frmDefSel") != null) {
+		$('#optionframe').html('');
+	}
+}
+
+// Hide Tools (Piclist/Filter/Calculation) ribbon buttons. 
+function HideToolsRibbonButtons() {
+	menu_setVisibleMenuItem("mnutoolFilterReport", false);
+	menu_setVisibleMenuItem("mnutoolPicklistReport", false);
+	menu_setVisibleMenuItem("mnutoolCalculationReport", false);
+}
+
+// Sets the ribbon buttons for the AbsenceBreakdown and BradfordFactor reports
+function SetsRibbonButtonsForAbsenceBreakdownAndBradfordFactor() {
+
+	// Set the report find toolbar group name to 'Tools' and show the picklist/filter menu items
+	menu_setVisibletoolbarGroupById('mnuSectionReportToolsFind', true);
+	$('#toolbarReportFind').text('Tools');
+
+	menu_setVisibleMenuItem("mnutoolNewReportFind", false);
+	menu_setVisibleMenuItem("mnutoolCopyReportFind", false);
+	menu_setVisibleMenuItem("mnutoolEditReportFind", false);
+	menu_setVisibleMenuItem("mnutoolDeleteReportFind", false);
+	menu_setVisibleMenuItem("mnutoolPropertiesReportFind", false);
+	menu_toolbarEnableItem("mnutoolRunReportFind", true);
+	menu_setVisibleMenuItem("mnutoolRunReportFind", true);
+	menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
+
+}
+
+// Cleans the tools frame and reset the page source.
+function CleanToolsFrameAndResetPageSource() {
+	if (OpenHR.currentWorkPage() == 'TOOLS_SCREEN_LOADED_FROM_REPORT_DEFINITION' || IsToolsScreenLoadedFromReportDefinition() == true) {
+
+		var utilType = null;
+		var reportDefinitionForm = OpenHR.getForm("workframe", "frmReportDefintion");
+
+		if (reportDefinitionForm != null) {
+			utilType = reportDefinitionForm.txtReportType.value;
+		}
+
+		// Post data to reset the session variables which was indicating that we have loaded the defsel into toolsframe from the report definition.
+		var postSessionData = {
+			utiltype: utilType,
+			isLoadedFromReportDefinition: false,
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		};
+
+		OpenHR.submitForm(null, null, false, postSessionData, "ResetPageSourceFlag", function () {
+			$("#ToolsFrame").html('');
+		});
+	}
+}
+
+// Gets the prompted message
+function GetPromptMessage() {
+
+	var defaultPromptMessage = "You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.";
+
+	//// @TODO : Uncomment below code and update with the proper message, if we want to provide a confirmation message to be asked whilst the user attempting to nevigate away from the tools screen which is loaded from the report definition.
+	//if (OpenHR.currentWorkPage() == "TOOLS_SCREEN_LOADED_FROM_REPORT_DEFINITION") {
+	//	defaultPromptMessage = "You are trying to move from the report definition source. Click 'OK' to discard your changes, or 'Cancel' to continue editing.";
+	//}
+
+	return defaultPromptMessage;
+}
+
+/******* End Changes related to to user stories : 18362, 18363, 18628 & 18629  *********/

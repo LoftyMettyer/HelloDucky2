@@ -646,11 +646,18 @@
 			if (!($("#workframe").css('display') == 'none')) {
 				//Work frame is in view.
 				sCurrentPage = $("#workframe").attr("data-framesource");
-			} else {
+			}
+			else if (!($("#optionframe").css('display') == 'none'))
+			{
 				//Option frame is in view.
 				sCurrentPage = $("#optionframe").attr("data-framesource");
 			}
 
+			//ToolsFrame frame is in view.
+			else if (!($("#ToolsFrame").css('display') == 'none')) {
+				sCurrentPage = $("#ToolsFrame").attr("data-framesource");
+			}
+			
 			//Popout optionframe check
 			try {
 				if ($("#optionframe").dialog("isOpen") == true) {

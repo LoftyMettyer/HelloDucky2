@@ -120,6 +120,9 @@
 			$(".displayTitleInReportHeader").hide();
 		}
 
+		ShowHideToolsButtons();
+		EnableDisableToolsButtons();
+
 		$('fieldset').css("border", "0");
 		$('table').css("border", "0");
 
@@ -814,7 +817,45 @@
 		}
 	}
 
+	// Enable/Disable the tools buttons based on the view permission
+	function EnableDisableToolsButtons() {
+		if ('@Model.IsPicklistsGranted' == 'False') {
+			menu_toolbarEnableItem("mnutoolPicklistReport", false);
+		}
+		if ('@Model.IsFiltersGranted' == 'False') {
+			menu_toolbarEnableItem("mnutoolFilterReport", false);
+		}
+		if ('@Model.IsCalculationsGranted' == 'False') {
+			menu_toolbarEnableItem("mnutoolCalculationReport", false);
+		}
 
+		EnableDisableSaveButton();
+	}
+
+	// Show/Hide tools buttons
+	function ShowHideToolsButtons() {
+
+		// Set the picklist & filter ribbon button to visible.
+		menu_setVisibleMenuItem("mnutoolPicklistReport", true);
+		menu_setVisibleMenuItem("mnutoolFilterReport", true);
+
+		// Set the calculation ribbon button to visible false when report type is crosstab OR 9-box grid, true otherwise
+		if ('@Model.ReportType' == '@UtilityType.utlCrossTab' || '@Model.ReportType' == '@UtilityType.utlNineBoxGrid') {
+			menu_setVisibleMenuItem("mnutoolCalculationReport", false);
+		}
+		else {
+			menu_setVisibleMenuItem("mnutoolCalculationReport", true);
+		}
+	}
+
+	// Enable/Disable the save of report definition button.
+	// (E.g. When the user comes to tools screen from the report definition and modify the tools definition. Then, even the report defition is not modified, the Save button for the report definition would remain enabled in this case.)
+	function EnableDisableSaveButton() {
+		if (!isDefinitionReadOnly()) {
+			var bHasChanged = $("#ctl_DefinitionChanged").val();
+			menu_toolbarEnableItem('mnutoolSaveReport', (bHasChanged == "true") ? true : false);
+		}
+	}
 
 </script>
 

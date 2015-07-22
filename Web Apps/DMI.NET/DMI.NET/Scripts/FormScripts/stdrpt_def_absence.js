@@ -990,3 +990,15 @@ function setcancel() {
 	menu_refreshMenu();
 
 }
+
+//// @TODO : Uncomment below code, if we want to provide a confirmation message to be asked whilst the user attempting to nevigate away from the tools screen which is loaded from the report definition.
+//// This function will be used to identify that we have loaded tools screen from the absence breakdown OR bradford factor report. And if user tries to nevigate away from the tools screen then prompt the user.
+//function saveReportDefinition(prompt) {
+//	return 0; //prompt for the navigation
+//}
+
+//// @TODO : Uncomment below code, if we want to provide a confirmation message to be asked whilst the user attempting to nevigate away from the tools screen which is loaded from the report definition.
+//// Overides the function to use it generic way to enable the save button for the report types.
+//function enableSaveButton() {
+//	// Nothing to do.
+//}

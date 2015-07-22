@@ -50,7 +50,5 @@
 	$('.popup').bind('dialogclose', function () {
 		closeclick();
 		$("#optionframe").hide();
-		$("#workframeset").show();
-		$("#workframe").show();
 	});
 </script>

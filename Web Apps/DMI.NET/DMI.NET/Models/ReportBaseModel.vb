@@ -164,5 +164,47 @@ Namespace Models
 			End Get
 		End Property
 
+		''' <summary>
+		''' Returns the value indicating that the user has view access for the calcuations or not.
+		''' </summary>
+		''' <returns>True if view permission granted, otherwise False</returns>
+		Public ReadOnly Property IsCalculationsGranted As Boolean
+			Get
+				Dim isPermissionGranted = False
+				If SessionInfo IsNot Nothing Then
+					isPermissionGranted = SessionInfo.IsPermissionGranted("CALCULATIONS", "VIEW")
+				End If
+				Return isPermissionGranted
+			End Get
+		End Property
+
+		''' <summary>
+		''' Returns the value indicating that the user has view access for the filters or not.
+		''' </summary>
+		''' <returns>True if view permission granted, otherwise False</returns>
+		Public ReadOnly Property IsFiltersGranted As Boolean
+			Get
+				Dim isPermissionGranted = False
+				If SessionInfo IsNot Nothing Then
+					isPermissionGranted = SessionInfo.IsPermissionGranted("FILTERS", "VIEW")
+				End If
+				Return isPermissionGranted
+			End Get
+			End Property
+
+		''' <summary>
+		''' Returns the value indicating that the user has view access for the picklists or not.
+		''' </summary>
+		''' <returns>True if view permission granted, otherwise False</returns>
+		Public ReadOnly Property IsPicklistsGranted As Boolean
+			Get
+				Dim isPermissionGranted = False
+				If SessionInfo IsNot Nothing Then
+					isPermissionGranted = SessionInfo.IsPermissionGranted("PICKLISTS", "VIEW")
+				End If
+				Return isPermissionGranted
+			End Get
+		End Property
+
 	End Class
 End Namespace

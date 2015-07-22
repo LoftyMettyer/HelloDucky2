@@ -893,21 +893,20 @@
 
 
 <script type="text/javascript">
+
 	stdrpt_def_absence_window_onload();
 
-	menu_setVisibleMenuItem("mnutoolNewReportFind", false);
-	menu_setVisibleMenuItem("mnutoolCopyReportFind", false);
-	menu_setVisibleMenuItem("mnutoolEditReportFind", false);
-	menu_setVisibleMenuItem("mnutoolDeleteReportFind", false);
-	menu_setVisibleMenuItem("mnutoolPropertiesReportFind", false);
-	menu_toolbarEnableItem("mnutoolRunReportFind", true);
-	menu_setVisibleMenuItem("mnutoolRunReportFind", true);
-	menu_setVisibleMenuItem('mnutoolCloseReportFind', false);
+	// Sets ribbon buttons
+	SetsRibbonButtonsForAbsenceBreakdownAndBradfordFactor();
 
 	//only display the 'close' button for defsel when called from rec edit...
 	<%	If Not Session("optionRecordID") = "0" Then%>
 	menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
 	menu_toolbarEnableItem('mnutoolCloseReportFind', true);
+
+	// Set the report find toolbar group name to 'Find' and Hide the picklist/filter menu items
+	menu_setVisibletoolbarGroupById('mnuSectionReportToolsFind', false);
+	$('#toolbarReportFind').text('Find');
 	<%	End If%>
 
 	// Show and select the tab
@@ -919,10 +918,10 @@
 	$(document).on('keydown', '.datepicker', function (event) {
 
 		switch (event.keyCode) {
-			case 113:
-				$(this).datepicker("setDate", new Date());
-				$(this).datepicker('widget').hide('true');
-				break;
+		case 113:
+			$(this).datepicker("setDate", new Date());
+			$(this).datepicker('widget').hide('true');
+			break;
 		}
 	});
 

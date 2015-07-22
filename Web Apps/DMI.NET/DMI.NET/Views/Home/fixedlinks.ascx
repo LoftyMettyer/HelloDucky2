@@ -803,26 +803,63 @@
 									<h6>Close</h6>
 								</a>
 							</div>
-						</li>						
+							</li>
+						<li id="mnuSectionReportToolsFind"><span>Definition</span>
+							<div id="mnutoolFilterReportFind" class="button">
+								<a href="#" rel="table" title="Filters">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/packet_Filtering64HOVER.png")%>" alt="" />
+									<i class="icon-FilterRecord"></i>
+									<h6>Filters</h6>
+								</a>
+							</div>
+							<div id="mnutoolPicklistReportFind" class="button">
+								<a href="#" rel="table" title="Picklists">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/niche64HOVER.png")%>" alt="" />
+									<i class="icon-PicklistRecord"></i>
+									<h6>Picklists</h6>
+								</a>
+							</div>
+						</li>
 					</ul>
 				</li>
 
 								<%-- Report NewEditCopy --%>
-								<li class="ui-corner-top"><a id="toolbarReportNewEditCopy" href="#" rel="Report_NewEditCopy">Definition</a>
+				<li class="ui-corner-top"><a id="toolbarReportNewEditCopy" href="#" rel="Report_NewEditCopy">Definition</a>
 					<ul>
 						<li id="mnuSectionNewEditCopyReport"><span>Definition</span>
 							<div id="mnutoolSaveReport" class="button">
 								<a href="#" rel="table" title="Save">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png")%>" alt="" />
-																<i class="icon-save"></i>
+									<i class="icon-save"></i>
 									<h6>Save</h6>
 								</a>
 							</div>
 							<div id="mnutoolCancelReport" class="button">
 								<a href="#" rel="table" title="Cancel">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cancel64HOVER.png")%>" alt="" />
-								<i class="icon-CancelReport"></i>
+									<i class="icon-CancelReport"></i>
 									<h6>Cancel</h6>
+								</a>
+							</div>
+							<div id="mnutoolFilterReport" class="button">
+								<a href="#" rel="table" title="Filters">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/packet_Filtering64HOVER.png")%>" alt="" />
+									<i class="icon-FilterRecord"></i>
+									<h6>Filters</h6>
+								</a>
+							</div>
+							<div id="mnutoolPicklistReport" class="button">
+								<a href="#" rel="table" title="Picklists">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/niche64HOVER.png")%>" alt="" />
+									<i class="icon-PicklistRecord"></i>
+									<h6>Picklists</h6>
+								</a>
+							</div>
+							<div id="mnutoolCalculationReport" class="button">
+								<a href="#" rel="table" title="Calculations">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/calculator64HOVER.png")%>" alt="" />
+									<i class="icon-CalculationRecord"></i>
+									<h6>Calculations</h6>
 								</a>
 							</div>
 						</li>
@@ -974,6 +1011,13 @@
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Run64HOVER.png")%>" alt="" />
 								<i class="icon-RunToolsFind"></i>
 									<h6>Run</h6>
+								</a>
+							</div>
+							<div id="mnutoolCloseToolsFind" class="button">
+								<a href="#" rel="table" title="Close">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
+									<i class="icon-CloseToolsFind"></i>
+									<h6>Close</h6>
 								</a>
 							</div>
 						</li>						

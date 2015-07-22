@@ -44,7 +44,7 @@
 	}
 	else {
 
-		var frmSend = OpenHR.getForm("workframe", "frmSend");
+		var frmSend = OpenHR.getForm("workframe", "frmSend") || OpenHR.getForm("ToolsFrame", "frmSend");
 		OpenHR.submitForm(frmSend);
 		closeclick();
 	}

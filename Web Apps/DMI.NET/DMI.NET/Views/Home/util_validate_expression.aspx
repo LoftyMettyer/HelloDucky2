@@ -76,9 +76,11 @@
 			}
 			else {
 
-				var frmSend = OpenHR.getForm("divDefExpression", "frmSend");
-				OpenHR.submitForm(frmSend, 'workframe', null, null, "util_def_expression_Submit", uve_cancelClick);
-
+				var frmSend = OpenHR.getForm("divDefExpression", "frmSend");	
+				
+				// Check if the user has loaded tools screen (picklist/filter/cal) from the report definition.
+				var displayDiv = (IsToolsScreenLoadedFromReportDefinition() == true ? "ToolsFrame" : "workframe");
+				OpenHR.submitForm(frmSend, displayDiv, null, null, "util_def_expression_Submit", uve_cancelClick);
 			}
 		}
 
