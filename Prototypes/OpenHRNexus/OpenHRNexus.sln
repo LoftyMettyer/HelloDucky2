@@ -17,15 +17,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHRNexus.Repository", "O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHRNexus.Service", "OpenHRNexus.Service\OpenHRNexus.Service.csproj", "{99EC13FB-F260-4EB2-AF83-CCED1A753E4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHRNexus.WebAPI", "OpenHRNexus.WebAPI\OpenHRNexus.WebAPI.csproj", "{B3ECDCC6-F5AC-47C7-8100-6FBF7B18F45A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHRNexus.WebAPI.Tests", "OpenHRNexus.WebAPI.Tests\OpenHRNexus.WebAPI.Tests.csproj", "{F4578C03-3B21-4078-B42D-38D4C10CE2EB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHRNexus.Interfaces", "OpenHRNexus.Interfaces\OpenHRNexus.Interfaces.csproj", "{627C8A94-0E22-4EB6-9998-7F5865588288}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 11
+		SccNumberOfProjects = 9
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath0 = .
@@ -50,15 +46,9 @@ Global
 		SccProjectUniqueName7 = OpenHRNexus.UnitTests\\OpenHRNexus.UnitTests.csproj
 		SccProjectName7 = OpenHRNexus.UnitTests
 		SccLocalPath7 = OpenHRNexus.UnitTests
-		SccProjectUniqueName8 = OpenHRNexus.WebAPI.Tests\\OpenHRNexus.WebAPI.Tests.csproj
-		SccProjectName8 = OpenHRNexus.WebAPI.Tests
-		SccLocalPath8 = OpenHRNexus.WebAPI.Tests
-		SccProjectUniqueName9 = OpenHRNexus.WebAPI\\OpenHRNexus.WebAPI.csproj
-		SccProjectName9 = OpenHRNexus.WebAPI
-		SccLocalPath9 = OpenHRNexus.WebAPI
-		SccProjectUniqueName10 = OpenHRNexus.Interfaces\\OpenHRNexus.Interfaces.csproj
-		SccProjectName10 = OpenHRNexus.Interfaces
-		SccLocalPath10 = OpenHRNexus.Interfaces
+		SccProjectUniqueName8 = OpenHRNexus.Interfaces\\OpenHRNexus.Interfaces.csproj
+		SccProjectName8 = OpenHRNexus.Interfaces
+		SccLocalPath8 = OpenHRNexus.Interfaces
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,14 +83,6 @@ Global
 		{99EC13FB-F260-4EB2-AF83-CCED1A753E4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99EC13FB-F260-4EB2-AF83-CCED1A753E4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99EC13FB-F260-4EB2-AF83-CCED1A753E4B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3ECDCC6-F5AC-47C7-8100-6FBF7B18F45A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3ECDCC6-F5AC-47C7-8100-6FBF7B18F45A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3ECDCC6-F5AC-47C7-8100-6FBF7B18F45A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3ECDCC6-F5AC-47C7-8100-6FBF7B18F45A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4578C03-3B21-4078-B42D-38D4C10CE2EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4578C03-3B21-4078-B42D-38D4C10CE2EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4578C03-3B21-4078-B42D-38D4C10CE2EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4578C03-3B21-4078-B42D-38D4C10CE2EB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{627C8A94-0E22-4EB6-9998-7F5865588288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{627C8A94-0E22-4EB6-9998-7F5865588288}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{627C8A94-0E22-4EB6-9998-7F5865588288}.Release|Any CPU.ActiveCfg = Release|Any CPU
