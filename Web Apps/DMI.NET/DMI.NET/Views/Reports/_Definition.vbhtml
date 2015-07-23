@@ -214,14 +214,9 @@
 			$("#txt" + psTable + "Picklist").val("");
 			$("#txt" + psTable + "PicklistID").val(0);
 			$("#txt" + psTable + "FilterID").val(0);
-			$('#DisplayTitleInReportHeader').prop('disabled', true);
-			$("#DisplayTitleInReportHeader").prop('checked', false);
-			$("#label_DisplayTitleInReportHeader").css("color", "#A59393");
 		}
-		else {
-			$('#DisplayTitleInReportHeader').prop('disabled', false);
-			$("#label_DisplayTitleInReportHeader").css("color", "#000000");
-		}
+
+		enableDisableDisplayTitleInReportHeader(psTable, psType);
 
 		if (psType == "PICKLIST") {
 			button_disable($("#cmd" + psTable + "Picklist")[0], false)
@@ -249,6 +244,21 @@
 
 		setViewAccess(psType, $("#" + psTable + "ViewAccess"), 'RW', '');
 
+	}
+
+	// Enable OR Disable the DisplayTitleInReportHeader checkbox. This should be enabled only for Filters/Picklists selected for the Base Table on Definition Tab.
+	function enableDisableDisplayTitleInReportHeader(psTable, psType) {
+		if (psTable == "Base") {
+			if (psType == "ALL") {
+				$('#DisplayTitleInReportHeader').prop('disabled', true);
+				$("#DisplayTitleInReportHeader").prop('checked', false);
+				$("#label_DisplayTitleInReportHeader").css("color", "#A59393");
+			}
+			else {
+				$('#DisplayTitleInReportHeader').prop('disabled', false);
+				$("#label_DisplayTitleInReportHeader").css("color", "#000000");
+			}
+		}
 	}
 
 	function refreshViewAccess() {
