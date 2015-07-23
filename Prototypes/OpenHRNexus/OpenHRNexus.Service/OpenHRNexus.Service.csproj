@@ -55,7 +55,7 @@
     <Compile Include="Configuration\AutoMapperConfig.cs" />
     <Compile Include="Configuration\NinjectConfig.cs" />
     <Compile Include="Interfaces\IAuthenticateEmail.cs" />
-    <Compile Include="Interfaces\INexusDbService.cs" />
+    <Compile Include="Interfaces\IAuthenticateService.cs" />
     <Compile Include="Interfaces\IPersonnelRecordsService.cs" />
     <Compile Include="Interfaces\ITbuserLanguagesService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

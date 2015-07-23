@@ -5,7 +5,7 @@ using OpenHRNexus.Repository.DatabaseClasses;
 using OpenHRNexus.Repository.Interfaces;
 
 namespace OpenHRNexus.Repository.MockRepository {
-	public class MockDatabase : INexusDbRepository {
+	public class MockAuthenticateRepository : IAuthenticateRepository {
 		public INexusUser RequestAccount(string email) {
 			return new User {
 				Id = Guid.NewGuid(),

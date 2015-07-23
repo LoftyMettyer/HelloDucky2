@@ -1,16 +1,17 @@
 ﻿using OpenHRNexus.Interfaces.Common;
+using OpenHRNexus.Repository.Interfaces;
 using OpenHRNexus.Service.Interfaces;
 
 namespace OpenHRNexus.Service.Services {
-	public class AuthenticateService : INexusDbService {
-		private readonly INexusDbService nexusDbService;
+	public class AuthenticateService : IAuthenticateService {
+		private readonly IAuthenticateRepository _nexusAuthenticateRepository;
 
-		public AuthenticateService(INexusDbService nexusDbService) {
-			nexusDbService = nexusDbService;
+		public AuthenticateService(IAuthenticateRepository nexusAuhenticateRepository) {
+			_nexusAuthenticateRepository = nexusAuhenticateRepository;
 		}
 
 		public INexusUser RequestAccount(string email) {
-			return nexusDbService.RequestAccount(email);
+			return _nexusAuthenticateRepository.RequestAccount(email);
 		}
 	}
 }

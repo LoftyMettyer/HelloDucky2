@@ -56,8 +56,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\INexusDbRepository.cs" />
-    <Compile Include="MockRepository\MockDatabase.cs" />
+    <Compile Include="Interfaces\IAuthenticateRepository.cs" />
+    <Compile Include="MockRepository\MockAuthenticateRepository.cs" />
     <Compile Include="OpenHRNexusEntityDataModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -117,9 +117,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Repositories\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\OpenHRNexus.Interfaces\OpenHRNexus.Interfaces.csproj">
       <Project>{627c8a94-0e22-4eb6-9998-7f5865588288}</Project>
