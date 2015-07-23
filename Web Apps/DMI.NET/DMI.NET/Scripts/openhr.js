@@ -102,8 +102,8 @@
 
 		},
 
-		modalExpressionSelect = function (type, tableId, currentID, followOnFunctionName, screenwidth, screenheight, returnResults) {
-			
+		modalExpressionSelect = function (type, tableId, currentID, followOnFunctionName, screenwidth, screenheight, returnResults, followOnFunctionToEnableSaveButton) {
+
 			var frame = $("#divExpressionSelection");
 			var capitalizedText = capitalizeMe(type);
 
@@ -146,6 +146,7 @@
 
 					if (returnResults) {
 						//launch promptedvalues to return filter result set.
+						if (followOnFunctionToEnableSaveButton != undefined) { followOnFunctionToEnableSaveButton();}
 						returnFilterResults(gridData);
 						frame.dialog("close");
 					} else {
@@ -163,6 +164,7 @@
 
 						if (returnResults) {
 							//launch promptedvalues to return filter result set.
+							if (followOnFunctionToEnableSaveButton != undefined) { followOnFunctionToEnableSaveButton(); }
 							returnFilterResults(gridData);
 							frame.dialog("close");
 						} else {
