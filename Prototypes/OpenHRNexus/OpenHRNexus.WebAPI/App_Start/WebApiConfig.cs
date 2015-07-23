@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Http;
 
 namespace OpenHRNexus.WebAPI {
@@ -12,14 +10,14 @@ namespace OpenHRNexus.WebAPI {
 			config.MapHttpAttributeRoutes();
 
 			config.Routes.MapHttpRoute(
-					name: "DefaultApi",
-					routeTemplate: "api/{controller}/{id}",
-					defaults: new { id = RouteParameter.Optional }
+				name: "DefaultApi",
+				routeTemplate: "api/{controller}/{id}",
+				defaults: new { id = RouteParameter.Optional }
 			);
 
-			var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
-			config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
-
+			//Return response as Json by default (i.e. remove support for xml media type)
+			//var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
+			//config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
 		}
 	}
 }

@@ -14,16 +14,16 @@ namespace OpenHRNexus.WebAPI {
 			//Add bindings
 			_kernel.Bind<IPersonnelRecordsService>().To<PersonnelRecordsService>();
 			_kernel.Bind<ITbuserLanguagesService>().To<TbuserLanguagesService>();
-			_kernel.Bind<INexusDbService>().To<AuthenticateService>();
+			_kernel.Bind<IAuthenticateService>().To<AuthenticateService>();
 
 			OpenHRNexus.Service.Configuration.NinjectConfig.Config(_kernel);
 		}
 
+		public IKernel Kernel { get { return _kernel; } }
+
 		public object GetService(Type serviceType) {
 			return _kernel.TryGet(serviceType);
 		}
-
-		public IKernel Kernel { get { return _kernel; } }
 
 		public IEnumerable<object> GetServices(Type serviceType) {
 			return _kernel.GetAll(serviceType);
