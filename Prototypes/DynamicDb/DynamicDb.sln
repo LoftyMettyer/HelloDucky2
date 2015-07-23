@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHarness", "AsWorkflows\TestHarness.csproj", "{4BB316E8-6219-44E0-A4D6-B9CEDEE0BF57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicDb", "DynamicDb\DynamicDb.csproj", "{71AE6C74-DDBC-4747-A17E-80235BFADE2E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4BB316E8-6219-44E0-A4D6-B9CEDEE0BF57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BB316E8-6219-44E0-A4D6-B9CEDEE0BF57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BB316E8-6219-44E0-A4D6-B9CEDEE0BF57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BB316E8-6219-44E0-A4D6-B9CEDEE0BF57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71AE6C74-DDBC-4747-A17E-80235BFADE2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71AE6C74-DDBC-4747-A17E-80235BFADE2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71AE6C74-DDBC-4747-A17E-80235BFADE2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71AE6C74-DDBC-4747-A17E-80235BFADE2E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = AsWorkflows\\TestHarness.csproj
+		SccProjectName1 = AsWorkflows
+		SccLocalPath1 = AsWorkflows
+		SccProjectUniqueName2 = DynamicDb\\DynamicDb.csproj
+		SccProjectName2 = DynamicDb
+		SccLocalPath2 = DynamicDb
+	EndGlobalSection
+EndGlobal
