@@ -41,7 +41,7 @@
 					<input type="button" id="btnColumnRemoveAll" class="enableSaveButtonOnClick" value="Remove All" onclick="requestRemoveAllSelectedColumns();" />
 				</div>
 				<div id="colbtngrp3" class="customReportsOnly">
-					<input type="button" id="btnColumnMoveUp" value="Move Up" disabled onclick="moveSelectedColumn('up');" />
+					<input type="button" id="btnColumnMoveUp" class="enableSaveButtonOnClick"  value="Move Up" disabled onclick="moveSelectedColumn('up');" />
 					<input type="button" id="btnColumnMoveDown" class="enableSaveButtonOnClick" value="Move Down" disabled onclick="moveSelectedColumn('down');" />
 				</div>
 			</fieldset>
@@ -695,13 +695,13 @@
 		var isBottomRow = true;
 		var isReadOnly = isDefinitionReadOnly();
 		var bRowSelected = false;
-	
+		
 		if (allRows.length > 0) {
 			bRowSelected = true;
 			isTopRow = (rowId == allRows[0]);
-			isBottomRow = (rowId == allRows[allRows.length - 1]);
+			isBottomRow = (rowId == allRows[allRows.length - 1]);			
 		}
-
+		
 		if (rowCount > 1 || allRows.length == 0) {
 			$("#definitionColumnProperties :input").attr("disabled", true);
 			$("#SelectedColumnHeading").val("");
@@ -739,7 +739,7 @@
 			var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
 			var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");
 			var isBaseOrParentTableColumn = (dataRow.TableID == $("#BaseTableID").val()) || (dataRow.TableID == $("#txtParent1ID").val()) || (dataRow.TableID == $("#txtParent2ID").val());
-			var isHidden = $("#SelectedColumnIsHidden").is(':checked');
+			var isHidden = $("#SelectedColumnIsHidden").is(':checked');			
 			var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');						
 			var isSize = (dataRow.DataType == '4');
 
@@ -781,7 +781,7 @@
 					}
 				}
 			}
-
+			
 			if (!isNumeric || isHidden || isGroupWithNext || isReadOnly) {
 				$(".numericOnly").css("color", "#A59393");
 			} else {
@@ -793,9 +793,9 @@
 			} else {
 				$(".cannotBeHidden").css("color", "#000000");
 			}
-
-			if (isBottomRow || isHidden || isReadOnly) {
-				$(".canGroupWithNext").css("color", "#A59393");
+			
+			if (isBottomRow || isHidden || isReadOnly) {				
+				$(".canGroupWithNext").css("color", "#A59393");				
 			} else {
 				$(".canGroupWithNext").css("color", "#000000");
 			}
