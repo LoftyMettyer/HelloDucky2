@@ -699,7 +699,11 @@
 		if (allRows.length > 0) {
 			bRowSelected = true;
 			isTopRow = (rowId == allRows[0]);
-			isBottomRow = (rowId == allRows[allRows.length - 1]);			
+			isBottomRow = (rowId == allRows[allRows.length - 1]);
+			if (isBottomRow) {				
+				$('#SelectedColumnIsGroupWithNext').prop('checked', false);
+				updateColumnsSelectedGrid();
+			}			
 		}
 		
 		if (rowCount > 1 || allRows.length == 0) {
