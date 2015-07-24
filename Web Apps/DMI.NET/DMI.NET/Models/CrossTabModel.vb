@@ -84,7 +84,7 @@ Namespace Models
 			End Get
 		End Property
 
-		<RegularExpression("True", ErrorMessage:="Page Break stop value must be greater than its start value")>
+		<RegularExpression("True", ErrorMessage:="Page break stop value must be greater than its start value")>
 		Public ReadOnly Property IsPageBreakStopOK As Boolean
 			Get
 				Return (PageBreakStop > PageBreakStart OrElse PageBreakStart = 0)
