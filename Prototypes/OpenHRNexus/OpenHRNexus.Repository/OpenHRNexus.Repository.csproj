@@ -60,7 +60,7 @@
     <Compile Include="Interfaces\IAuthenticateRepository.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\IWelcomeMessageData.cs" />
+    <Compile Include="Interfaces\IWelcomeMessageDataRepository.cs" />
     <Compile Include="Interfaces\IPersonnelRecordsRepository.cs">
       <SubType>Code</SubType>
     </Compile>

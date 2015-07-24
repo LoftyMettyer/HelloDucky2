@@ -61,6 +61,14 @@
       <Project>{c1e258da-54f0-4a84-aace-74ad2fa9a495}</Project>
       <Name>OpenHRNexus.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenHRNexus.Interfaces\OpenHRNexus.Interfaces.csproj">
+      <Project>{627c8a94-0e22-4eb6-9998-7f5865588288}</Project>
+      <Name>OpenHRNexus.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenHRNexus.Service\OpenHRNexus.Service.csproj">
+      <Project>{99ec13fb-f260-4eb2-af83-cced1a753e4b}</Project>
+      <Name>OpenHRNexus.Service</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -10,7 +10,7 @@ namespace OpenHRNexus.Service.Configuration {
 			kernel.Bind<IPersonnelRecordsRepository>().To<SqlPersonnelRecordsRepository>();
 			kernel.Bind<ITbuserLanguagesRepository>().To<MySqlTbuserLanguagesRepository>();
 			kernel.Bind<IAuthenticateRepository>().To<MockAuthenticateRepository>();
-			kernel.Bind<IWelcomeMessageData>().To<SqlUserRepository>();
+			kernel.Bind<IWelcomeMessageDataRepository>().To<SqlUserRepository>();
 		}
 	}
 }

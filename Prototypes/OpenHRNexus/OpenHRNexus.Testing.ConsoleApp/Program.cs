@@ -1,10 +1,16 @@
 ﻿using System;
 using NServiceBus;
 using OpenHRNexus.Common.Messaging.Commands;
+using OpenHRNexus.Interfaces.Common;
+using OpenHRNexus.Service.Interfaces;
 
 namespace OpenHRNexus.Testing.ConsoleApp {
 	internal class Program {
 		private static void Main(string[] args) {
+			// BusService_Test();
+		}
+
+		private static void BusService_Test() {
 			var busConfiguration = new BusConfiguration();
 			busConfiguration.EndpointName("OpenHRNexus.Testing.ConsoleApp");
 			busConfiguration.UseSerialization<JsonSerializer>();

@@ -1,23 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Web.Http;
+﻿using System.Web.Http;
 using OpenHRNexus.Interfaces.Common;
 using OpenHRNexus.Service.Interfaces;
 
 namespace OpenHRNexus.WebAPI.Controllers {
 	public class AuthenticateController : ApiController {
-		private readonly IAuthenticateService _nexusAuthenticateService;
+		private readonly IAuthenticateService _authenticateService;
 
 		public AuthenticateController() {
 		}
 
-		public AuthenticateController(IAuthenticateService nexusAuthenticateService) {
-			_nexusAuthenticateService = nexusAuthenticateService;
+		public AuthenticateController(IAuthenticateService authenticateService) {
+			_authenticateService = authenticateService;
 		}
 
-		// GET api/authenticate/user
+		// GET api/authenticate/authenticate?parameter=email
 		[HttpGet]
-		public IEnumerable<INexusUser> Authenticate(string id) {
-			return new List<INexusUser> { _nexusAuthenticateService.RequestAccount(id) };
+		public INexusUser Authenticate(string parameter) {
+			return _authenticateService.RequestAccount(parameter);
 		}
 	}
 }

@@ -86,5 +86,14 @@ namespace OpenHRNexus.WebAPI.Resources {
                 return ResourceManager.GetString("Label_Password", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome #FullName#, you last logged in on #LastLoginDate#; you Security Group is &quot;#SecurityGroup#&quot;.
+        /// </summary>
+        internal static string Text_WelcomeMessage {
+            get {
+                return ResourceManager.GetString("Text_WelcomeMessage", resourceCulture);
+            }
+        }
     }
 }

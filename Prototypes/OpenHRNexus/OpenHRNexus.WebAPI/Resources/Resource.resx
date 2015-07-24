@@ -126,4 +126,7 @@
   <data name="Label_Password" xml:space="preserve">
     <value>Password</value>
   </data>
+  <data name="Text_WelcomeMessage" xml:space="preserve">
+    <value>Welcome #FullName#, you last logged in on #LastLoginDate#; you Security Group is "#SecurityGroup#"</value>
+  </data>
 </root>

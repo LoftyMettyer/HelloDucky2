@@ -4,14 +4,14 @@ using OpenHRNexus.Service.Interfaces;
 
 namespace OpenHRNexus.Service.Services {
 	public class AuthenticateService : IAuthenticateService {
-		private readonly IAuthenticateRepository _nexusAuthenticateRepository;
+		private readonly IAuthenticateRepository _authenticateRepository;
 
-		public AuthenticateService(IAuthenticateRepository nexusAuhenticateRepository) {
-			_nexusAuthenticateRepository = nexusAuhenticateRepository;
+		public AuthenticateService(IAuthenticateRepository auhenticateRepository) {
+			_authenticateRepository = auhenticateRepository;
 		}
 
 		public INexusUser RequestAccount(string email) {
-			return _nexusAuthenticateRepository.RequestAccount(email);
+			return _authenticateRepository.RequestAccount(email);
 		}
 	}
 }

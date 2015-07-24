@@ -11,19 +11,19 @@ namespace OpenHRNexus.WebAPI.Tests.Controllers {
 	[TestClass]
 	public class AuthenticateControllerTest {
 		[TestMethod]
-		public void Get() {
+		public void Authenticate() {
 			// Arrange
 			var mockService = new Mock<IAuthenticateService>();
-		//	mockService.Setup(x => x.RequestAccount("SomeEmail"));
+			mockService.Setup(x => x.RequestAccount("SomeEmail"));
 
 			AuthenticateController controller = new AuthenticateController(mockService.Object);
 
 			// Act
-			IEnumerable<INexusUser> result = controller.Authenticate("UserName");
+			INexusUser result = controller.Authenticate("UserName");
 
 			// Assert
 			Assert.IsNotNull(result);
-			Assert.AreEqual(result.Count(), 1);
+			Assert.AreEqual(result.Role, "Employee");
 		}
 	}
 }
