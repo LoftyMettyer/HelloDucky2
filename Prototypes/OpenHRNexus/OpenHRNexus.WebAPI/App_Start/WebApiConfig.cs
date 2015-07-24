@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Web.Http;
+using OpenHRNexus.WebAPI.Localization;
 
 namespace OpenHRNexus.WebAPI {
 	public static class WebApiConfig {
@@ -14,6 +15,11 @@ namespace OpenHRNexus.WebAPI {
 				routeTemplate: "api/{controller}/{id}",
 				defaults: new { id = RouteParameter.Optional }
 			);
+
+			//Localization handler
+			var languageMessageHandler = new LanguageMessageHandler();
+			languageMessageHandler.PopulateSupportedLanguagesList();
+			config.MessageHandlers.Add(languageMessageHandler);
 
 			//Return response as Json by default (i.e. remove support for xml media type)
 			//var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
