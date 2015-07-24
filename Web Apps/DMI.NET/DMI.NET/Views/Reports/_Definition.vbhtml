@@ -415,6 +415,7 @@
 				// Clear some values when the base table changed
 				if (baseTableChanged) {
 					$("#txtDescription3").val('');
+					$("#Description3ID").val(0);
 					$('#Separator').val('None');
 					$('#Separator').prop('disabled', true);
 					$('#chkGroupByDescription').prop('disabled', false);
