@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.Entity;
-
+using DynamicDb;
 
 namespace AsWorkflows
 {
@@ -26,7 +26,6 @@ namespace AsWorkflows
             var dcf = new DynamicClassFactory();
 
             var context = new DynamicEntities();
-
 
 //            //var bigBlah = (from t in context.DynamicTemplates
 //            //               select t);
@@ -46,7 +45,7 @@ namespace AsWorkflows
             foreach (var dynamicTemplate in templates)
             {
                 var type = CreateType(dcf, dynamicTemplate.Name, dynamicTemplate.DynamicTemplateAttributes);
-                result.AddTable(type);
+               // result.AddTable(type);
             }
 
             //      return result;
@@ -61,6 +60,16 @@ namespace AsWorkflows
             return t;
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var sysMan = new SystemManager();
+            sysMan.CreateTables();
+        }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var dataLibrary = new DataLibrary();
+            dataLibrary.GetAllCustomerTables();
+        }
     }
 }

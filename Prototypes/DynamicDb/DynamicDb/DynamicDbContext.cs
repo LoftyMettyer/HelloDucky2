@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using MagicDbModelBuilder;
+using System.Linq;
+using System.Diagnostics;
 
 public partial class DynamicDbContext : DbContext
 {
@@ -35,5 +37,19 @@ public partial class DynamicDbContext : DbContext
             }
         }
     }
+
+    //public Type GetTable(string name)
+    //{
+    //    //return _tables.First();
+    //}
+
+    //public virtual DbSet<DynamicAttribute> DynamicAttributes { get; set; }
+
+    public Type GetTable(string name)
+    {
+        return _tables[name];
+    }
+
+    //public dbSet
 
 }

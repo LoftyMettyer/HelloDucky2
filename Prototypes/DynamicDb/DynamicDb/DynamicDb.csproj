@@ -53,6 +53,10 @@
       <HintPath>..\packages\Microsoft.Data.OData.5.6.5-beta\lib\net40\Microsoft.Data.OData.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Data.Services, Version=5.6.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.Services.5.6.5-beta\lib\net40\Microsoft.Data.Services.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Data.Services.Client, Version=5.6.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Data.Services.Client.5.6.5-beta\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
       <Private>True</Private>
@@ -61,10 +65,13 @@
       <HintPath>..\packages\Microsoft.OData.Edm.6.13.0-rc\lib\portable-net40+sl5+wp8+win8+wpa\Microsoft.OData.Edm.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.OData.EntityFrameworkProvider, Version=1.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.OData.EntityFrameworkProvider.1.0.0-beta2\lib\net40\Microsoft.OData.EntityFrameworkProvider.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Services" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
@@ -80,11 +87,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataLibrary.cs" />
     <Compile Include="DynamicAttribute.cs" />
     <Compile Include="DynamicClassFactory.cs" />
     <Compile Include="DynamicDbContext.cs" />
     <Compile Include="DynamicEntities.cs" />
     <Compile Include="DynamicEntity.cs" />
+    <Compile Include="DynamicODataService.cs" />
     <Compile Include="DynamicTemplate.cs" />
     <Compile Include="DynamicTemplateAttribute.cs" />
     <Compile Include="DynamicType.cs" />
@@ -94,6 +103,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />

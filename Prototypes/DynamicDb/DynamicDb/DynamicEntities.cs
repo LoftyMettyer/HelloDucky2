@@ -12,6 +12,10 @@ public partial class DynamicEntities : DbContext
     protected override void OnModelCreating(DbModelBuilder modelBuilder)
     {
         modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+        //    modelBuilder.Conventions.Remove<NavigationPropertyNameForeignKeyDiscoveryConvention>();
+
+    //    modelBuilder.HasDefaultSchema("ddo");
+
 
         //   throw new UnintentionalCodeFirstException();
     }
