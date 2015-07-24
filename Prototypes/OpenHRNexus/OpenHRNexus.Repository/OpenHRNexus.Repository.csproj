@@ -56,9 +56,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseClasses\WelcomeMessage.cs" />
     <Compile Include="Interfaces\IAuthenticateRepository.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Interfaces\IWelcomeMessageData.cs" />
     <Compile Include="Interfaces\IPersonnelRecordsRepository.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -88,6 +90,7 @@
     <Compile Include="MySQL\MySqlTbuserLanguagesRepository.cs" />
     <Compile Include="SQLServer\SqlPersonnelRecordsRepository.cs" />
     <Compile Include="DatabaseClasses\User.cs" />
+    <Compile Include="SQLServer\SqlUserRepository.cs" />
     <Compile Include="tbuser_Languages.cs">
       <DependentUpon>OpenHRNexusEntityDataModel.tt</DependentUpon>
     </Compile>
