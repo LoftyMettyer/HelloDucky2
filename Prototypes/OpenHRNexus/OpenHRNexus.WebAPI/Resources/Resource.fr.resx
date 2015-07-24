@@ -118,39 +118,39 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Label_AlternateLogins" xml:space="preserve">
-    <value>Or you can login using one of the social logins below</value>
+    <value>Ou vous pouvez vous connecter en utilisant l'une des connexions sociales ci-dessous</value>
   </data>
   <data name="Label_ConnectWithFacebook" xml:space="preserve">
-    <value>Connect with Facebook</value>
+    <value>connecter avec Facebook</value>
   </data>
   <data name="Label_ConnectWithGoogle" xml:space="preserve">
-    <value>Connect with Google+</value>
+    <value>connecter avec Google+</value>
   </data>
   <data name="Label_Home" xml:space="preserve">
-    <value>Home</value>
+    <value>Page d'accueil</value>
   </data>
   <data name="Label_Login" xml:space="preserve">
-    <value>Login</value>
+    <value>S'identifier</value>
   </data>
   <data name="Label_LoginButton" xml:space="preserve">
-    <value>Login</value>
+    <value>Entrer</value>
   </data>
   <data name="Label_Password" xml:space="preserve">
-    <value>Password</value>
+    <value>Mot de passe</value>
   </data>
   <data name="Label_SignUp" xml:space="preserve">
-    <value>Sign Up</value>
+    <value>S'inscrire</value>
   </data>
   <data name="Label_SocialLogins" xml:space="preserve">
-    <value>Social Logins</value>
+    <value>Connexions sociales</value>
   </data>
   <data name="Label_UseRefreshTokens" xml:space="preserve">
-    <value>Use Refresh Tokens</value>
+    <value>Utiliser des jetons de rafraîchissement</value>
   </data>
   <data name="Label_Username" xml:space="preserve">
-    <value>Username</value>
+    <value>Nom d'utilisateur</value>
   </data>
   <data name="Text_WelcomeMessage" xml:space="preserve">
-    <value>Welcome #FullName#, you last logged in on #LastLoginDate#; you Security Group is "#SecurityGroup#"</value>
+    <value>Bienvenido #FullName#, la ultima vez que usted accedio al sistema fue el #LastLoginDate#; su Grupo de Seguridad es "#SecurityGroup#"</value>
   </data>
 </root>

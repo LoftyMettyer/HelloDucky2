@@ -15,8 +15,9 @@ namespace OpenHRNexus.WebAPI.Controllers {
 		}
 
 		[HttpGet]
-		public IEnumerable<KeyValuePair<string, string>> GetResourceValues([FromUri] List<string> parameter) {
-			return parameter.Select(s => new KeyValuePair<string, string>(s, Resources.Resource.ResourceManager.GetString(s))).ToList();
+		public IEnumerable<KeyValuePair<string, string>> GetResourceValues([FromUri] List<string> parameter)
+		{
+			return parameter.ToDictionary(s => s, s => Resources.Resource.ResourceManager.GetString(s));
 		}
 
 		[HttpGet]
