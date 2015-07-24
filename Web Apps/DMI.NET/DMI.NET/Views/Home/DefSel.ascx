@@ -285,6 +285,7 @@
 			menu_toolbarEnableItem("mnutoolNew" + menuSection + "Find", isNewPermitted && fFromMenu);
 			menu_toolbarEnableItem("mnutoolCopy" + menuSection + "Find", fHasRows && isNewPermitted && fFromMenu);
 			menu_toolbarEnableItem("mnutoolEdit" + menuSection + "Find", fHasRows && (isEditPermitted || isViewPermitted) && fFromMenu);
+			menu_toolbarEnableItem("mnutoolDelete" + menuSection + "Find", fHasRows && isDeletePermitted && fFromMenu);
 			menu_toolbarEnableItem("mnutoolProperties" + menuSection + "Find", fHasRows && fFromMenu);
 			if (menuSection !== "Tools") menu_toolbarEnableItem("mnutoolRun" + menuSection + "Find", fHasRows && isRunPermitted);
 			if (menuSection !== "Tools") menu_toolbarEnableItem("mnutoolClose" + menuSection + "Find", !fFromMenu);
