@@ -294,8 +294,8 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Resource.fr.resx" />
-    <EmbeddedResource Include="Resources\Resource.es.resx" />
+    <EmbeddedResource Include="Resources\Resource.fr-FR.resx" />
+    <EmbeddedResource Include="Resources\Resource.es-ES.resx" />
     <EmbeddedResource Include="Resources\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>

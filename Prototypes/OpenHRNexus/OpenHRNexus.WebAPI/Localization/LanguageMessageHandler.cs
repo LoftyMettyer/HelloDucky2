@@ -30,21 +30,7 @@ namespace OpenHRNexus.WebAPI.Localization {
 				if (_supportedLanguagesList.Contains(lang.Value)) {
 					SetCulture(request, lang.Value);
 					return true;
-				}
-
-				try
-				{
-					string[] arrLang = lang.Value.Split(new string[] { "-" }, StringSplitOptions.None);
-					if (_supportedLanguagesList.Contains(arrLang[0]))
-					{
-						SetCulture(request, arrLang[0]);
-						return true;
-					}
-				}
-				catch (Exception)
-				{
-					throw;
-				}
+				}				
 			}
 
 			return false;
