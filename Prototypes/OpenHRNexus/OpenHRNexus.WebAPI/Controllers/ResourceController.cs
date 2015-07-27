@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using OpenHRNexus.Service.Interfaces;
@@ -22,12 +23,15 @@ namespace OpenHRNexus.WebAPI.Controllers {
 
 		[HttpGet]
 		public IEnumerable<string> GetResourceValue(string guid, string resource) {
+
+			var welcomeMessage = _welcomeMessageDataService.GetWelcomeMessageData(new Guid(guid), resource);
+
 			return new string[]
 			{
 				Resources.Resource.ResourceManager.GetString(resource)
-					.Replace("#FullName#", _welcomeMessageDataService.WelcomeMessageData)
-					.Replace("#LastLoginDate#", _welcomeMessageDataService.LastLoginDateTime.ToString())
-					.Replace("#SecurityGroup#", _welcomeMessageDataService.SecurityGroup)
+					.Replace("#FullName#", welcomeMessage.Message)
+					.Replace("#LastLoginDate#", welcomeMessage.LastLoggedOn.ToString())
+					.Replace("#SecurityGroup#", welcomeMessage.SecurityGroup)
 			};
 		}
 	}

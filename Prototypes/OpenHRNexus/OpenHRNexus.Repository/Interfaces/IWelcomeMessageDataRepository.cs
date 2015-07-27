@@ -1,11 +1,8 @@
 ﻿using System;
+using OpenHRNexus.Repository.Messages;
 
 namespace OpenHRNexus.Repository.Interfaces {
 	public interface IWelcomeMessageDataRepository {
-		Guid UserId { set; }
-		string Language { set; }
-		string WelcomeMessageData { get; }
-		DateTime LastLoginDateTime { get; }
-		string SecurityGroup { get; }
+		WelcomeDataMessage GetWelcomeMessageData(Guid? userID, string language);
 	}
 }

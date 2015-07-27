@@ -1,5 +1,6 @@
 ﻿using System;
 using OpenHRNexus.Repository.Interfaces;
+using OpenHRNexus.Repository.Messages;
 using OpenHRNexus.Service.Interfaces;
 
 namespace OpenHRNexus.Service.Services {
@@ -10,14 +11,9 @@ namespace OpenHRNexus.Service.Services {
 			_welcomeMessageDataRepository = welcomeMessageDataRepository;
 		}
 
-		public string WelcomeMessageData {
-			get { return _welcomeMessageDataRepository.WelcomeMessageData; }
-		}
-		public DateTime LastLoginDateTime {
-			get { return _welcomeMessageDataRepository.LastLoginDateTime; }
-		}
-		public string SecurityGroup {
-			get { return _welcomeMessageDataRepository.SecurityGroup; }
+		public WelcomeDataMessage GetWelcomeMessageData(Guid? userID, string language)
+		{
+			return _welcomeMessageDataRepository.GetWelcomeMessageData(userID, language);
 		}
 	}
 }

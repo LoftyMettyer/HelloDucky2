@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using Ninject;
+using OpenHRNexus.Repository.Interfaces;
 using OpenHRNexus.Service.Interfaces;
 using OpenHRNexus.Service.Services;
 
@@ -16,7 +17,7 @@ namespace OpenHRNexus.WebAPI {
 			_kernel.Bind<ITbuserLanguagesService>().To<TbuserLanguagesService>();
 			_kernel.Bind<IAuthenticateService>().To<AuthenticateService>();
 			_kernel.Bind<IWelcomeMessageDataService>().To<WelcomeMessageDataService>();
-
+	
 			OpenHRNexus.Service.Configuration.NinjectConfig.Config(_kernel);
 		}
 

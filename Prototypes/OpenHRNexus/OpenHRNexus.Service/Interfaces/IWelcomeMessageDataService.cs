@@ -1,9 +1,8 @@
 ﻿using System;
+using OpenHRNexus.Repository.Messages;
 
 namespace OpenHRNexus.Service.Interfaces {
 	public interface IWelcomeMessageDataService {
-		string WelcomeMessageData { get; }
-		DateTime LastLoginDateTime { get; }
-		string SecurityGroup { get; }
+		WelcomeDataMessage GetWelcomeMessageData(Guid? userID, string language);
 	}
 }

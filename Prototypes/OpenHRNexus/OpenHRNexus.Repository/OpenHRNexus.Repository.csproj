@@ -69,6 +69,7 @@
     <Compile Include="Interfaces\ITbuserLanguagesRepository.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Messages\WelcomeDataMessage.cs" />
     <Compile Include="MockRepository\MockAuthenticateRepository.cs" />
     <Compile Include="OpenHRNexusEntityDataModel.Context.cs">
       <AutoGen>True</AutoGen>
@@ -93,7 +94,6 @@
     <Compile Include="SQLServer\SqlAuthenticateRepository.cs" />
     <Compile Include="SQLServer\SqlPersonnelRecordsRepository.cs" />
     <Compile Include="DatabaseClasses\User.cs" />
-    <Compile Include="SQLServer\SqlUserRepository.cs" />
     <Compile Include="tbuser_Languages.cs">
       <DependentUpon>OpenHRNexusEntityDataModel.tt</DependentUpon>
     </Compile>
