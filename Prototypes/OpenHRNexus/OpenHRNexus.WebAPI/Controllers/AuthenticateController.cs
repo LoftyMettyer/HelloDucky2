@@ -3,6 +3,7 @@ using OpenHRNexus.Interfaces.Common;
 using OpenHRNexus.Service.Interfaces;
 
 namespace OpenHRNexus.WebAPI.Controllers {
+	[Authorize(Roles = "Admin")]
 	public class AuthenticateController : ApiController {
 		private readonly IAuthenticateService _authenticateService;
 
