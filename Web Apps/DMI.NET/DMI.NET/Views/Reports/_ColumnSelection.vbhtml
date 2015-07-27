@@ -201,7 +201,9 @@
 
 		datarow.ReportType = '@Model.ReportType';
 		datarow.ReportID = '@Model.ID';
-		datarow.Heading = datarow.Name.substr(0, 50);
+
+		// Replace all underscores with space for the heading field
+		datarow.Heading = datarow.Name.substr(0, 50).replace(/_/g, ' ');
 		
 		if (datarow.IsExpression == "false") {
 			datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
