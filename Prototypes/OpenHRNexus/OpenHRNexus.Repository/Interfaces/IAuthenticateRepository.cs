@@ -1,7 +1,7 @@
-﻿using OpenHRNexus.Interfaces.Common;
+﻿using OpenHRNexus.Repository.Messages;
 
 namespace OpenHRNexus.Repository.Interfaces {
 	public interface IAuthenticateRepository {
-		INexusUser RequestAccount(string email);
+		RegisterNewUserMessage RequestAccount(string email);
 	}
 }

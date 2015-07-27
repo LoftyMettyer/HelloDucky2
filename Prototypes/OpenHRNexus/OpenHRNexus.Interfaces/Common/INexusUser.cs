@@ -5,5 +5,6 @@ namespace OpenHRNexus.Interfaces.Common {
 		Guid Id { get; set; }
 		string Role { get; set; }
 		DateTime LastConnectDateTime { get; set; }
+		int RecordId { get; set; }
 	}
 }

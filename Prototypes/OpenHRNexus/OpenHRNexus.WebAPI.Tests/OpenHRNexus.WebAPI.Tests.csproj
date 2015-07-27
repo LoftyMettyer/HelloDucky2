@@ -112,6 +112,10 @@
       <Project>{627c8a94-0e22-4eb6-9998-7f5865588288}</Project>
       <Name>OpenHRNexus.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenHRNexus.Repository\OpenHRNexus.Repository.csproj">
+      <Project>{BDFF3BB0-3C7A-47A8-9CF5-1F3454A646E5}</Project>
+      <Name>OpenHRNexus.Repository</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenHRNexus.Service\OpenHRNexus.Service.csproj">
       <Project>{99ec13fb-f260-4eb2-af83-cced1a753e4b}</Project>
       <Name>OpenHRNexus.Service</Name>

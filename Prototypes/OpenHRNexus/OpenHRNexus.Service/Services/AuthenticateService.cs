@@ -1,5 +1,5 @@
-﻿using OpenHRNexus.Interfaces.Common;
-using OpenHRNexus.Repository.Interfaces;
+﻿using OpenHRNexus.Repository.Interfaces;
+using OpenHRNexus.Repository.Messages;
 using OpenHRNexus.Service.Interfaces;
 
 namespace OpenHRNexus.Service.Services {
@@ -10,7 +10,7 @@ namespace OpenHRNexus.Service.Services {
 			_authenticateRepository = auhenticateRepository;
 		}
 
-		public INexusUser RequestAccount(string email) {
+		public RegisterNewUserMessage RequestAccount(string email) {
 			return _authenticateRepository.RequestAccount(email);
 		}
 	}

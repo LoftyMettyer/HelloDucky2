@@ -56,6 +56,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\NewUserStatus.cs" />
+    <Compile Include="Messages\RegisterNewUserMessage.cs" />
     <Compile Include="DatabaseClasses\WelcomeMessage.cs" />
     <Compile Include="Interfaces\IAuthenticateRepository.cs">
       <SubType>Code</SubType>
@@ -88,6 +90,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MySQL\MySqlTbuserLanguagesRepository.cs" />
+    <Compile Include="SQLServer\SqlAuthenticateRepository.cs" />
     <Compile Include="SQLServer\SqlPersonnelRecordsRepository.cs" />
     <Compile Include="DatabaseClasses\User.cs" />
     <Compile Include="SQLServer\SqlUserRepository.cs" />

@@ -23,9 +23,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHRNexus.WebAPI", "OpenH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHRNexus.WebAPI.Tests", "OpenHRNexus.WebAPI.Tests\OpenHRNexus.WebAPI.Tests.csproj", "{A3EA477B-3938-4CA0-914F-577F201A1140}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHRNexus.Repository.Tests", "OpenHRNexus.Repository.Tests\OpenHRNexus.Repository.Tests.csproj", "{C3B65732-4AB7-4B7A-83D3-C460D7C35E86}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 11
+		SccNumberOfProjects = 12
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath0 = .
@@ -59,6 +61,9 @@ Global
 		SccProjectUniqueName10 = OpenHRNexus.WebAPI.Tests\\OpenHRNexus.WebAPI.Tests.csproj
 		SccProjectName10 = OpenHRNexus.WebAPI.Tests
 		SccLocalPath10 = OpenHRNexus.WebAPI.Tests
+		SccProjectUniqueName11 = OpenHRNexus.Repository.Tests\\OpenHRNexus.Repository.Tests.csproj
+		SccProjectName11 = OpenHRNexus.Repository.Tests
+		SccLocalPath11 = OpenHRNexus.Repository.Tests
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +110,10 @@ Global
 		{A3EA477B-3938-4CA0-914F-577F201A1140}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3EA477B-3938-4CA0-914F-577F201A1140}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3EA477B-3938-4CA0-914F-577F201A1140}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3B65732-4AB7-4B7A-83D3-C460D7C35E86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3B65732-4AB7-4B7A-83D3-C460D7C35E86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3B65732-4AB7-4B7A-83D3-C460D7C35E86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3B65732-4AB7-4B7A-83D3-C460D7C35E86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

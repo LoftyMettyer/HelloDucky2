@@ -1,5 +1,5 @@
 ﻿using System.Web.Http;
-using OpenHRNexus.Interfaces.Common;
+using OpenHRNexus.Repository.Messages;
 using OpenHRNexus.Service.Interfaces;
 
 namespace OpenHRNexus.WebAPI.Controllers {
@@ -16,7 +16,8 @@ namespace OpenHRNexus.WebAPI.Controllers {
 
 		// GET api/authenticate/authenticate?parameter=email
 		[HttpGet]
-		public INexusUser Authenticate(string parameter) {
+		public RegisterNewUserMessage Authenticate(string parameter)
+		{
 			return _authenticateService.RequestAccount(parameter);
 		}
 	}

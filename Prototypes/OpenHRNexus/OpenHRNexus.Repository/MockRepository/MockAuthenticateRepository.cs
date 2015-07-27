@@ -1,15 +1,15 @@
 ﻿using System;
-using OpenHRNexus.Interfaces.Common;
-using OpenHRNexus.Repository.DatabaseClasses;
 using OpenHRNexus.Repository.Interfaces;
+using OpenHRNexus.Repository.Messages;
+using Repository.Enums;
 
 namespace OpenHRNexus.Repository.MockRepository {
 	public class MockAuthenticateRepository : IAuthenticateRepository {
-		public INexusUser RequestAccount(string email) {
-			return new User {
-				Id = Guid.NewGuid(),
-				Role = "Employee",
-				LastConnectDateTime = DateTime.Now
+		public RegisterNewUserMessage RequestAccount(string email)
+		{
+			return new RegisterNewUserMessage {
+				UserID = Guid.NewGuid(), 
+				Status = NewUserStatus.Success
 			};
 		}
 	}
