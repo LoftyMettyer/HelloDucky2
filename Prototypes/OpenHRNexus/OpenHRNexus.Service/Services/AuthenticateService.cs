@@ -18,7 +18,7 @@ namespace OpenHRNexus.Service.Services {
 
 		public IEnumerable<string> GetRoles(Guid userId)
 		{
-			var roles = new List<string> {"Administrator", "Default User"};
+			var roles = new List<string> {"Admin", "Default User"};
 			return roles;
 		}
 	}
