@@ -4,8 +4,7 @@ using System.Web.Http;
 using OpenHRNexus.Repository.Messages;
 using OpenHRNexus.Service.Interfaces;
 
-namespace OpenHRNexus.WebAPI.Controllers {
-	[Authorize(Roles = "Admin")]
+namespace OpenHRNexus.WebAPI.Controllers {	
 	public class AuthenticateController : ApiController {
 		private readonly IAuthenticateService _authenticateService;
 
@@ -17,6 +16,7 @@ namespace OpenHRNexus.WebAPI.Controllers {
 		}
 
 		// GET api/authenticate/authenticate?parameter=email
+		//todo: secure this controller actions so only authservice can access it.
 		[HttpGet]
 		public RegisterNewUserMessage Authenticate(string parameter)
 		{
