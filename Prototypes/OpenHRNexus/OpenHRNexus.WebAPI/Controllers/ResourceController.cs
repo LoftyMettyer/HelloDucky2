@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Http;
 using OpenHRNexus.Service.Interfaces;
 
@@ -22,9 +23,17 @@ namespace OpenHRNexus.WebAPI.Controllers {
 		}
 
 		[HttpGet]
-		public IEnumerable<string> GetResourceValue(string guid, string resource) {
+		public IEnumerable<string> GetResourceValue(string guid, string resource)
+		{
 
-			var welcomeMessage = _welcomeMessageDataService.GetWelcomeMessageData(new Guid(guid), resource);
+			// TODO - Investigate whether this is the best way to interrogate languages - performance hit?
+			var language = "EN-GB";
+			if (HttpContext.Current.Request.UserLanguages != null)
+			{
+				language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
+			}
+
+			var welcomeMessage = _welcomeMessageDataService.GetWelcomeMessageData(new Guid(guid), language);
 
 			return new string[]
 			{
