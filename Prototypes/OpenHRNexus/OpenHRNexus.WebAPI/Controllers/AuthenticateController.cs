@@ -1,4 +1,6 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Web.Http;
 using OpenHRNexus.Repository.Messages;
 using OpenHRNexus.Service.Interfaces;
 
@@ -20,5 +22,12 @@ namespace OpenHRNexus.WebAPI.Controllers {
 		{
 			return _authenticateService.RequestAccount(parameter);
 		}
+
+		[HttpGet]
+		public IEnumerable<string> GetRoles(string userId)
+		{
+			return _authenticateService.GetRoles(new Guid(userId));
+		}
+
 	}
 }
