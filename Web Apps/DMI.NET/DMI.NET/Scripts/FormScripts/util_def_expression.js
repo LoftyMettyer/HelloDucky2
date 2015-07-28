@@ -1041,18 +1041,12 @@ function addClick() {
 
 function insertClick() {
 
-	var frmRefresh = OpenHR.getForm("refreshframe", "frmRefresh");
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 	var iFunctionID = 0;
 	var iParamIndex = 0;
 
 	fOK = true;
-
-	//???
-	OpenHR.submitForm(frmRefresh);
-
-
 
 	var sRelativeKey;
 	var nodParameter;
@@ -1288,6 +1282,7 @@ function cancelComponent() {
 	//$("#optionframe").hide();
 	//$("#workframe").show();
 	try {
+		$("#optionframe").hide();
 		$('#optionframe').dialog('close');
 	} catch (e) {	};
 
