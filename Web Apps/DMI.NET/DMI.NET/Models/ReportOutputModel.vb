@@ -60,6 +60,7 @@ Namespace Models
 		<DisplayName("Subject :")>
 		<RequiredIf("SendToEmail", True, ErrorMessage:="No email subject name entered.")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
+		<ExcludeChar("/*?""<>|")>
 		<AllowHtml>
 		Public Property EmailSubject As String
 

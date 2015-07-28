@@ -26,6 +26,8 @@ Namespace Models
 
 		<DisplayName("Template :"), DisplayFormat(ConvertEmptyStringToNull:=False)>
 		<Required(ErrorMessage:="No template name entered.")>
+		<ExcludeChar("/*?""<>|")>
+		<AllowHtml>
 		Public Property TemplateFileName As String
 
 		<DisplayName("Pause before merge")>

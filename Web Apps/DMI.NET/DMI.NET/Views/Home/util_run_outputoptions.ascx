@@ -498,29 +498,20 @@
 			window.focus();
 			return;
 		}
-			
-		var sAttachmentName = new String(frmOutputDef.txtEmailAttachAs.value);
-		if ((sAttachmentName.indexOf("/") != -1) ||
-				(sAttachmentName.indexOf("?") != -1) ||
-				(sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
-				(sAttachmentName.indexOf("<") != -1) ||
-				(sAttachmentName.indexOf(">") != -1) ||
-				(sAttachmentName.indexOf("|") != -1) ||
-				(sAttachmentName.indexOf("@") != -1) ||
-				(sAttachmentName.indexOf("~") != -1) ||
-				(sAttachmentName.indexOf("}") != -1) ||
-				(sAttachmentName.indexOf("{") != -1) ||
-				(sAttachmentName.indexOf("[") != -1) ||
-				(sAttachmentName.indexOf("]") != -1) ||
-				(sAttachmentName.indexOf("#") != -1) ||
-				(sAttachmentName.indexOf(";") != -1) ||
-				(sAttachmentName.indexOf("+") != -1) ||
-			(sAttachmentName.indexOf("'") != -1) ||
-		(sAttachmentName.indexOf("*") != -1)) {
-				OpenHR.messageBox("The email attachment file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
+
+		// Validate email attach as
+		if (doesContainsInvalidCharacters(frmOutputDef.txtEmailAttachAs.value)) {
+			OpenHR.messageBox("The email attachment file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
 			window.focus();
 			return;
-		}
+		};
+
+		// Validate email subject
+		if (doesContainsInvalidCharacters(frmOutputDef.txtEmailSubject.value)) {
+			OpenHR.messageBox("The email subject can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
+			window.focus();
+			return;
+		};
 
 		if ((frmOutputDef.chkDestination2.checked)
 				&& (frmOutputDef.txtFilename.value == "") ) {
@@ -528,29 +519,13 @@
 			window.focus();
 			return;
 		}
-			
-			sAttachmentName = new String(frmOutputDef.txtFilename.value);
-			if ((sAttachmentName.indexOf("/") != -1) ||
-				(sAttachmentName.indexOf("?") != -1) ||
-				(sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
-				(sAttachmentName.indexOf("<") != -1) ||
-				(sAttachmentName.indexOf(">") != -1) ||
-				(sAttachmentName.indexOf("|") != -1) ||
-				(sAttachmentName.indexOf("@") != -1) ||
-				(sAttachmentName.indexOf("~") != -1) ||
-				(sAttachmentName.indexOf("}") != -1) ||
-				(sAttachmentName.indexOf("{") != -1) ||
-				(sAttachmentName.indexOf("[") != -1) ||
-				(sAttachmentName.indexOf("]") != -1) ||
-				(sAttachmentName.indexOf("#") != -1) ||
-				(sAttachmentName.indexOf(";") != -1) ||
-				(sAttachmentName.indexOf("+") != -1) ||
-			(sAttachmentName.indexOf("'") != -1) ||
-				(sAttachmentName.indexOf("*") != -1)) {
-					OpenHR.messageBox("The Save To file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
-					window.focus();
-					return;
-			}
+
+		// Validate The Save to file name
+		if (doesContainsInvalidCharacters(frmOutputDef.txtFilename.value)) {
+			OpenHR.messageBox("The Save To file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
+			window.focus();
+			return;
+		};
 	
 			if ((frmOutputDef.chkDestination3.checked)
 				&& (frmOutputDef.txtEmailGroup.value == "" || frmOutputDef.txtEmailGroup.value == "None")) {
@@ -571,6 +546,32 @@
 		frmOutputDef.chkDestination1.checked = !(frmOutputDef.chkDestination2.checked || frmOutputDef.chkDestination3.checked);
 
 		doExport();
+	}
+
+	// Returns True is the text contains invalid characters. False oterwise.
+	function doesContainsInvalidCharacters(value) {
+		var retVal = false;
+		var valueTovalidate = new String(value);
+		if ((valueTovalidate.indexOf("/") != -1) ||
+			(valueTovalidate.indexOf("?") != -1) ||
+			(valueTovalidate.indexOf(String.fromCharCode(34)) != -1) ||
+			(valueTovalidate.indexOf("<") != -1) ||
+			(valueTovalidate.indexOf(">") != -1) ||
+			(valueTovalidate.indexOf("|") != -1) ||
+			(valueTovalidate.indexOf("@") != -1) ||
+			(valueTovalidate.indexOf("~") != -1) ||
+			(valueTovalidate.indexOf("}") != -1) ||
+			(valueTovalidate.indexOf("{") != -1) ||
+			(valueTovalidate.indexOf("[") != -1) ||
+			(valueTovalidate.indexOf("]") != -1) ||
+			(valueTovalidate.indexOf("#") != -1) ||
+			(valueTovalidate.indexOf(";") != -1) ||
+			(valueTovalidate.indexOf("+") != -1) ||
+		  (valueTovalidate.indexOf("'") != -1) ||
+			(valueTovalidate.indexOf("*") != -1)) {
+			retVal = true;
+		}
+		return retVal;
 	}
 
 	function doExport() {
