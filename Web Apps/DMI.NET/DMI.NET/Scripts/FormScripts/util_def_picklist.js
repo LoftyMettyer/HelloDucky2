@@ -146,7 +146,6 @@ function filteredAddClick() {
 	var newWidth = (screen.width) / 2;
 
 	OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id) {
-		frmUseful.txtChanged.value = 1;
 		picklistdef_makeSelection("FILTER", id, '');
 	}, newWidth - 40, newHeight - 160, true, function () { frmUseful.txtChanged.value = 1; });
 
