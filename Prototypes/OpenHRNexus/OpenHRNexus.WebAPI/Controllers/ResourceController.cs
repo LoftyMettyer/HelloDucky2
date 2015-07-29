@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Web;
 using System.Web.Http;
 using OpenHRNexus.Service.Interfaces;
+using OpenHRNexus.WebAPI.Resources;
 
 namespace OpenHRNexus.WebAPI.Controllers
 {
@@ -24,7 +25,7 @@ namespace OpenHRNexus.WebAPI.Controllers
 		[HttpGet]
 		public IEnumerable<KeyValuePair<string, string>> GetResourceValues([FromUri] List<string> parameter)
 		{
-			return parameter.ToDictionary(s => s, s => Resources.Resource.ResourceManager.GetString(s));
+			return parameter.ToDictionary(s => s, s => Resource.ResourceManager.GetString(s));
 		}
 
 		[HttpGet]
@@ -51,7 +52,7 @@ namespace OpenHRNexus.WebAPI.Controllers
 
 			return new string[]
 			{
-				Resources.Resource.ResourceManager.GetString(resource)
+				Resource.ResourceManager.GetString(resource)
 					.Replace("#FullName#", welcomeMessage.Message)
 					.Replace("#LastLoginDate#", welcomeMessage.LastLoggedOn.ToString())
 					.Replace("#SecurityGroup#", welcomeMessage.SecurityGroup)
