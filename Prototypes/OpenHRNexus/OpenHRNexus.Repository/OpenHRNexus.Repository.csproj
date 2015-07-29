@@ -56,6 +56,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseClasses\Role.cs" />
+    <Compile Include="DatabaseClasses\UserPermission.cs" />
+    <Compile Include="DatabaseClasses\UserRole.cs" />
     <Compile Include="Enums\NewUserStatus.cs" />
     <Compile Include="Messages\RegisterNewUserMessage.cs" />
     <Compile Include="DatabaseClasses\WelcomeMessage.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using OpenHRNexus.Repository.Interfaces;
 using OpenHRNexus.Repository.Messages;
 using Repository.Enums;
@@ -12,5 +13,11 @@ namespace OpenHRNexus.Repository.MockRepository {
 				Status = NewUserStatus.Success
 			};
 		}
+
+		public IEnumerable<string> GetUserPermissions(Guid userId)
+		{
+			throw new NotImplementedException();
+		}
+
 	}
 }
