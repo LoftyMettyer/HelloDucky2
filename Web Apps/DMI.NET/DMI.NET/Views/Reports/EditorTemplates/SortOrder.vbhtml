@@ -89,15 +89,17 @@ End Code
 			var dataRow = $('#SelectedColumns').jqGrid('getRowData', selectedSortColumnValue);
 
 			if (dataRow != null && dataRow.IsHidden.toUpperCase() == "TRUE") {
-				$("#frmPostSortOrder #SuppressRepeated, #frmPostSortOrder #ValueOnChange").prop({ checked: false, disabled: true });
-				$("#frmPostSortOrder #ValueOnChange, #frmPostSortOrder label[for='ValueOnChange'], #frmPostSortOrder #SuppressRepeated, #frmPostSortOrder label[for='SuppressRepeated']").css('opacity', '0.5');
+
+				$("#frmPostSortOrder #ValueOnChange").prop({ checked: false, disabled: true });
+				$("#frmPostSortOrder #ValueOnChange, #frmPostSortOrder label[for='ValueOnChange']").css('opacity', '0.5');
 			}
 			else {
-				$("#frmPostSortOrder #SuppressRepeated, #frmPostSortOrder #ValueOnChange").prop({ disabled: false });
-				$("#frmPostSortOrder #ValueOnChange, #frmPostSortOrder label[for='ValueOnChange'], #frmPostSortOrder #SuppressRepeated, #frmPostSortOrder label[for='SuppressRepeated']").css('opacity', '1');
+				$("#frmPostSortOrder #ValueOnChange").prop({ disabled: false });
+				$("#frmPostSortOrder #ValueOnChange, #frmPostSortOrder label[for='ValueOnChange']").css('opacity', '1');
 			}
 
-			if (dataRow != null && dataRow.IsRepeated.toUpperCase() == "TRUE") {
+			if (dataRow != null && (dataRow.IsRepeated.toUpperCase() == "TRUE" || dataRow.IsHidden.toUpperCase() == "TRUE") ) {
+
 				$("#frmPostSortOrder #SuppressRepeated").prop({ checked: false, disabled: true });
 				$("#frmPostSortOrder #SuppressRepeated, #frmPostSortOrder label[for='SuppressRepeated']").css('opacity', '0.5');
 			}
