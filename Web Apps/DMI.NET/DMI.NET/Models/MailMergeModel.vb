@@ -26,7 +26,7 @@ Namespace Models
 
 		<DisplayName("Template :"), DisplayFormat(ConvertEmptyStringToNull:=False)>
 		<Required(ErrorMessage:="No template name entered.")>
-		<ExcludeChar("/*?""<>|")>
+		<ExcludeChar("/?""<>|*@~[]{{}}#+'¬")>
 		<AllowHtml>
 		Public Property TemplateFileName As String
 
@@ -55,7 +55,7 @@ Namespace Models
 		<MaxLength(255, ErrorMessage:="File Name cannot be longer than 255 characters.")>
 		<DisplayName("File Name :")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
-		<ExcludeChar("/*?""<>|")>
+		<ExcludeChar("/?""<>|*@~[]{{}}#+'¬")>
 		<AllowHtml>
 		Public Property Filename As String
 
@@ -75,7 +75,7 @@ Namespace Models
 		<MaxLength(255, ErrorMessage:="Email attachment cannot be longer than 255 characters.")> _
 		<DisplayName("Attach As :")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
-		<ExcludeChar("/*?""<>|")>
+		<ExcludeChar("/?""<>|*@~[]{{}}#+'¬")>
 		<AllowHtml>
 		Public Property EmailAttachmentName As String
 

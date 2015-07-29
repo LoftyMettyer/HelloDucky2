@@ -266,50 +266,26 @@ function absence_okClick() {
 			}
 		}
 
+		// Validate The Email Attach AS
+		if (doesContainsInvalidCharacters(frmAbsenceDefinition.txtEmailAttachAs.value)) {
+			OpenHR.messageBox("The email attachment file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
+			window.focus();
+			return;
+		};
 
-		var sAttachmentName = new String(frmAbsenceDefinition.txtEmailAttachAs.value);
-		if ((sAttachmentName.indexOf("/") != -1) ||
-        (sAttachmentName.indexOf("?") != -1) ||
-        (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
-        (sAttachmentName.indexOf("<") != -1) ||
-        (sAttachmentName.indexOf(">") != -1) ||
-        (sAttachmentName.indexOf("|") != -1) ||
-        (sAttachmentName.indexOf("@") != -1) ||
-        (sAttachmentName.indexOf("~") != -1) ||
-        (sAttachmentName.indexOf("}") != -1) ||
-        (sAttachmentName.indexOf("{") != -1) ||
-        (sAttachmentName.indexOf("[") != -1) ||
-        (sAttachmentName.indexOf("]") != -1) ||
-        (sAttachmentName.indexOf("#") != -1) ||
-        (sAttachmentName.indexOf(";") != -1) ||
-        (sAttachmentName.indexOf("+") != -1) ||
-	    (sAttachmentName.indexOf("'") != -1) ||
-	    (sAttachmentName.indexOf("*") != -1)) {
-		    OpenHR.messageBox("The email attachment file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
-		    return;
-		}
+		// Validate The Save to file name
+		if (doesContainsInvalidCharacters(frmAbsenceDefinition.txtFilename.value)) {
+			OpenHR.messageBox("The Save To file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
+			window.focus();
+			return;
+		};
 
-		sAttachmentName = new String(frmAbsenceDefinition.txtFilename.value);
-		if ((sAttachmentName.indexOf("/") != -1) ||
-        (sAttachmentName.indexOf("?") != -1) ||
-        (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
-        (sAttachmentName.indexOf("<") != -1) ||
-        (sAttachmentName.indexOf(">") != -1) ||
-        (sAttachmentName.indexOf("|") != -1) ||
-        (sAttachmentName.indexOf("@") != -1) ||
-        (sAttachmentName.indexOf("~") != -1) ||
-        (sAttachmentName.indexOf("}") != -1) ||
-        (sAttachmentName.indexOf("{") != -1) ||
-        (sAttachmentName.indexOf("[") != -1) ||
-        (sAttachmentName.indexOf("]") != -1) ||
-        (sAttachmentName.indexOf("#") != -1) ||
-        (sAttachmentName.indexOf(";") != -1) ||
-        (sAttachmentName.indexOf("+") != -1) ||
-	    (sAttachmentName.indexOf("'") != -1) ||
-	    (sAttachmentName.indexOf("*") != -1)) {
-		    OpenHR.messageBox("The Save To file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
-		    return;
-		}
+		// Validate The email subject
+		if (doesContainsInvalidCharacters(frmAbsenceDefinition.txtEmailSubject.value)) {
+			OpenHR.messageBox("The email subject can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
+			window.focus();
+			return;
+		};
 
 		if (frmAbsenceDefinition.chkPreview.checked == true) {
 			frmPostDefinition.txtSend_OutputPreview.value = 1;
@@ -357,6 +333,31 @@ function absence_okClick() {
 		return;
 }
 
+// Returns True is the text contains invalid characters. False oterwise.
+function doesContainsInvalidCharacters(value) {
+	var retVal = false;
+	var valueTovalidate = new String(value);
+	if ((valueTovalidate.indexOf("/") != -1) ||
+		(valueTovalidate.indexOf("?") != -1) ||
+		(valueTovalidate.indexOf(String.fromCharCode(34)) != -1) ||
+		(valueTovalidate.indexOf("<") != -1) ||
+		(valueTovalidate.indexOf(">") != -1) ||
+		(valueTovalidate.indexOf("|") != -1) ||
+		(valueTovalidate.indexOf("@") != -1) ||
+		(valueTovalidate.indexOf("~") != -1) ||
+		(valueTovalidate.indexOf("}") != -1) ||
+		(valueTovalidate.indexOf("{") != -1) ||
+		(valueTovalidate.indexOf("[") != -1) ||
+		(valueTovalidate.indexOf("]") != -1) ||
+		(valueTovalidate.indexOf("#") != -1) ||
+		(valueTovalidate.indexOf(";") != -1) ||
+		(valueTovalidate.indexOf("+") != -1) ||
+		(valueTovalidate.indexOf("'") != -1) ||
+		(valueTovalidate.indexOf("*") != -1)) {
+		retVal = true;
+	}
+	return retVal;
+}
 
 function selectAbsencePicklist() {
 

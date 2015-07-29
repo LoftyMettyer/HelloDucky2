@@ -47,11 +47,11 @@ Namespace Models.ObjectRequests
 		<AllowHtml>
 		Public Property txtSend_OutputEmailSubject As String
 
-		<ExcludeChar("/*?""<>|")>
+		<ExcludeChar("/?""<>|*@~[]{{}}#+'¬")>
 		<AllowHtml>
 		Public Property txtSend_OutputEmailAttachAs As String
 
-		<ExcludeChar("/*?""<>|")>
+		<ExcludeChar("/?""<>|*@~[]{{}}#+'¬")>
 		<AllowHtml>
 		Public Property txtSend_OutputFilename As String
 
