@@ -29,7 +29,6 @@ namespace OpenHRNexus.WebAPI.Controllers
 		}
 
 		[HttpGet]
-		[Authorize]
 		public IEnumerable<string> GetResourceValue(string resource)
 		{
 			//get guid out of jwt claims list
@@ -39,24 +38,29 @@ namespace OpenHRNexus.WebAPI.Controllers
 													 where c.Type == "OpenHRDBGUID"
 													 select new { c.Value }).FirstOrDefault();
 
-			string OpenHRDBGUID = OpenHRDBGUIDs.Value;
-
-			// TODO - Investigate whether this is the best way to interrogate languages - performance hit?
-			var language = "EN-GB";
-			if (HttpContext.Current.Request.UserLanguages != null)
+			if (OpenHRDBGUIDs != null)
 			{
-				language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
+				string OpenHRDBGUID = OpenHRDBGUIDs.Value;
+
+
+				// TODO - Investigate whether this is the best way to interrogate languages - performance hit?
+				var language = "EN-GB";
+				if (HttpContext.Current.Request.UserLanguages != null)
+				{
+					language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
+				}
+
+				var welcomeMessage = _welcomeMessageDataService.GetWelcomeMessageData(new Guid(OpenHRDBGUID), language);
+
+				return new string[]
+				{
+					Resource.ResourceManager.GetString(resource)
+						.Replace("#FullName#", welcomeMessage.Message)
+						.Replace("#LastLoginDate#", welcomeMessage.LastLoggedOn.ToString())
+						.Replace("#SecurityGroup#", welcomeMessage.SecurityGroup)
+				};
 			}
-
-			var welcomeMessage = _welcomeMessageDataService.GetWelcomeMessageData(new Guid(OpenHRDBGUID), language);
-
-			return new string[]
-			{
-				Resource.ResourceManager.GetString(resource)
-					.Replace("#FullName#", welcomeMessage.Message)
-					.Replace("#LastLoginDate#", welcomeMessage.LastLoggedOn.ToString())
-					.Replace("#SecurityGroup#", welcomeMessage.SecurityGroup)
-			};
+			return new[] {string.Format("Welcome {0}.", User.Identity.Name)};
 		}
 	}
 }
