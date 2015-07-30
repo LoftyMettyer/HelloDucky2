@@ -6,7 +6,7 @@ namespace OpenHRNexus.Repository.MockRepository
 {
 	public class MockDataRepository : IDataRepository
 	{
-		public IEnumerable<DynamicDataModel> GetData()
+		public IEnumerable<DynamicDataModel> GetData(int id)
 		{
 
 			var data = new List<DynamicDataModel>

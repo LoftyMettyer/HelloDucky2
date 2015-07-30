@@ -72,6 +72,10 @@
     <Compile Include="Users\RegisterUser.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OpenHRNexus.Common\OpenHRNexus.Common.csproj">
+      <Project>{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}</Project>
+      <Name>OpenHRNexus.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenHRNexus.Repository\OpenHRNexus.Repository.csproj">
       <Project>{bdff3bb0-3c7a-47a8-9cf5-1f3454a646e5}</Project>
       <Name>OpenHRNexus.Repository</Name>

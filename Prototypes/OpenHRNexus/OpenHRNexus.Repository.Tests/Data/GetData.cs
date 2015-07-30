@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenHRNexus.Repository.SQLServer;
 
@@ -16,5 +14,16 @@ namespace OpenHRNexus.Repository.Tests.Data
 			Assert.IsNotNull(dataRepository);
 		}
 
+		[TestMethod]
+		public void DataRepository_GetDataReturnsEmptyCollectionForInvalidId()
+		{
+			var dataRepository = new SqlDataRepository();
+			var data = dataRepository.GetData(0);
+			Assert.IsNotNull(data);
+			Assert.AreEqual(data.LongCount(), 0);
+
+		}
+
 	}
+
 }

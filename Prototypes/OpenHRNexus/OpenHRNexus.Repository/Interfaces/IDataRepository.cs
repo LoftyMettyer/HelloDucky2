@@ -5,6 +5,6 @@ namespace OpenHRNexus.Repository.Interfaces
 {
 	public interface IDataRepository
 	{
-		IEnumerable<DynamicDataModel> GetData();
+		IEnumerable<DynamicDataModel> GetData(int id);
 	}
 }

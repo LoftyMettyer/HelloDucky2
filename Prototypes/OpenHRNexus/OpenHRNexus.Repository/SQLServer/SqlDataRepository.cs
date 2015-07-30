@@ -7,7 +7,7 @@ namespace OpenHRNexus.Repository.SQLServer
 {
 	public class SqlDataRepository : DbContext, IDataRepository
 	{
-		public IEnumerable<DynamicDataModel> GetData()
+		public IEnumerable<DynamicDataModel> GetData(int id)
 		{
 			return new List<DynamicDataModel>();
 		}
