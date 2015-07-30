@@ -120,14 +120,26 @@
   <data name="Label_AlternateLogins" xml:space="preserve">
     <value>Or you can login using one of the social logins below</value>
   </data>
+  <data name="Label_ConfirmPassword" xml:space="preserve">
+    <value>Confirm Password</value>
+  </data>
   <data name="Label_ConnectWithFacebook" xml:space="preserve">
     <value>Connect with Facebook</value>
   </data>
   <data name="Label_ConnectWithGoogle" xml:space="preserve">
     <value>Connect with Google+</value>
   </data>
+  <data name="Label_EmailAddress" xml:space="preserve">
+    <value>Email Address</value>
+  </data>
+  <data name="Label_FirstName" xml:space="preserve">
+    <value>First Name</value>
+  </data>
   <data name="Label_Home" xml:space="preserve">
     <value>Home</value>
+  </data>
+  <data name="Label_LastName" xml:space="preserve">
+    <value>Last Name</value>
   </data>
   <data name="Label_Login" xml:space="preserve">
     <value>Login</value>
@@ -144,11 +156,20 @@
   <data name="Label_SocialLogins" xml:space="preserve">
     <value>Social Logins</value>
   </data>
+  <data name="Label_SubmitButton" xml:space="preserve">
+    <value>Submit</value>
+  </data>
   <data name="Label_UseRefreshTokens" xml:space="preserve">
     <value>Use Refresh Tokens</value>
   </data>
   <data name="Label_Username" xml:space="preserve">
     <value>Username</value>
+  </data>
+  <data name="Text_LoginDescription" xml:space="preserve">
+    <value>If you have a Username and Password, you can use the button below to access OpenHR Nexus.</value>
+  </data>
+  <data name="Text_SignUpDescription" xml:space="preserve">
+    <value>Use the button below to create Username and Password to access OpenHR Nexus.</value>
   </data>
   <data name="Text_WelcomeMessage" xml:space="preserve">
     <value>Welcome #FullName#, you last logged in on #LastLoginDate#; you Security Group is "#SecurityGroup#"</value>

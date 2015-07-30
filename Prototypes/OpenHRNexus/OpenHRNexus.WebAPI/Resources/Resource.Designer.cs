@@ -70,6 +70,15 @@ namespace OpenHRNexus.WebAPI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Password.
+        /// </summary>
+        internal static string Label_ConfirmPassword {
+            get {
+                return ResourceManager.GetString("Label_ConfirmPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connect with Facebook.
         /// </summary>
         internal static string Label_ConnectWithFacebook {
@@ -88,11 +97,38 @@ namespace OpenHRNexus.WebAPI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email Address.
+        /// </summary>
+        internal static string Label_EmailAddress {
+            get {
+                return ResourceManager.GetString("Label_EmailAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First Name.
+        /// </summary>
+        internal static string Label_FirstName {
+            get {
+                return ResourceManager.GetString("Label_FirstName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
         internal static string Label_Home {
             get {
                 return ResourceManager.GetString("Label_Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Name.
+        /// </summary>
+        internal static string Label_LastName {
+            get {
+                return ResourceManager.GetString("Label_LastName", resourceCulture);
             }
         }
         
@@ -142,6 +178,15 @@ namespace OpenHRNexus.WebAPI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Submit.
+        /// </summary>
+        internal static string Label_SubmitButton {
+            get {
+                return ResourceManager.GetString("Label_SubmitButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use Refresh Tokens.
         /// </summary>
         internal static string Label_UseRefreshTokens {
@@ -156,6 +201,24 @@ namespace OpenHRNexus.WebAPI.Resources {
         internal static string Label_Username {
             get {
                 return ResourceManager.GetString("Label_Username", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you have a Username and Password, you can use the button below to access OpenHR Nexus..
+        /// </summary>
+        internal static string Text_LoginDescription {
+            get {
+                return ResourceManager.GetString("Text_LoginDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use the button below to create Username and Password to access OpenHR Nexus..
+        /// </summary>
+        internal static string Text_SignUpDescription {
+            get {
+                return ResourceManager.GetString("Text_SignUpDescription", resourceCulture);
             }
         }
         
