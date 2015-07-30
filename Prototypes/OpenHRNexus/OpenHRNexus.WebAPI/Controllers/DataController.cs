@@ -21,7 +21,19 @@ namespace OpenHRNexus.WebAPI.Controllers {
 		[HttpGet]
 		public IEnumerable<DynamicDataModel> GetReportData(string id)
 		{
-			return _dataService.GetData(Convert.ToInt32(id));
+			int dataId;
+
+			var result = Int32.TryParse(id, out dataId);
+
+			if (result)
+			{
+				return _dataService.GetData(dataId);
+			}
+			else
+			{
+				return _dataService.GetData();
+			}
+
 		}
 	}
 }

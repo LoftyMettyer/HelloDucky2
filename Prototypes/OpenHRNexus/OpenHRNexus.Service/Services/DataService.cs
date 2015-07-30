@@ -16,9 +16,12 @@ namespace OpenHRNexus.Service.Services
 		public IEnumerable<DynamicDataModel> GetData(int id)
 		{
 			return _dataRepository.GetData(id);
+		}
 
 
-
+		public IEnumerable<DynamicDataModel> GetData()
+		{
+			return _dataRepository.GetData();
 		}
 	}
 }

@@ -7,5 +7,6 @@ namespace OpenHRNexus.Service.Interfaces
 	public interface IDataService
 	{
 		IEnumerable<DynamicDataModel> GetData(int id);
+		IEnumerable<DynamicDataModel> GetData();
 	}
 }

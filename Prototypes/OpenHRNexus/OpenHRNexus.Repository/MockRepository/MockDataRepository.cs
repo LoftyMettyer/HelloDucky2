@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OpenHRNexus.Common.Models;
 using OpenHRNexus.Repository.Interfaces;
 
@@ -8,7 +9,13 @@ namespace OpenHRNexus.Repository.MockRepository
 	{
 		public IEnumerable<DynamicDataModel> GetData(int id)
 		{
+			var result = GetData().Where(m => m.Id == id);
+			return result;
+		}
 
+		public IEnumerable<DynamicDataModel> GetData()
+		{
+			
 			var data = new List<DynamicDataModel>
 			{
 				new DynamicDataModel
@@ -30,7 +37,7 @@ namespace OpenHRNexus.Repository.MockRepository
 			};
 
 			return data;
-		}
 
+		}
 	}
 }
