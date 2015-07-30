@@ -98,6 +98,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\DataControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\AuthenticateControllerTest.cs" />
   </ItemGroup>
@@ -108,6 +109,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OpenHRNexus.Common\OpenHRNexus.Common.csproj">
+      <Project>{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}</Project>
+      <Name>OpenHRNexus.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenHRNexus.Interfaces\OpenHRNexus.Interfaces.csproj">
       <Project>{627c8a94-0e22-4eb6-9998-7f5865588288}</Project>
       <Name>OpenHRNexus.Interfaces</Name>

@@ -17,6 +17,7 @@ namespace OpenHRNexus.WebAPI {
 			_kernel.Bind<ITbuserLanguagesService>().To<TbuserLanguagesService>();
 			_kernel.Bind<IAuthenticateService>().To<AuthenticateService>();
 			_kernel.Bind<IWelcomeMessageDataService>().To<WelcomeMessageDataService>();
+			_kernel.Bind<IDataService>().To<DataService>();
 	
 			OpenHRNexus.Service.Configuration.NinjectConfig.Config(_kernel);
 		}

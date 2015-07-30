@@ -60,6 +60,7 @@
     <Compile Include="DatabaseClasses\UserPermission.cs" />
     <Compile Include="DatabaseClasses\UserRole.cs" />
     <Compile Include="Enums\NewUserStatus.cs" />
+    <Compile Include="Interfaces\IDataRepository.cs" />
     <Compile Include="Messages\RegisterNewUserMessage.cs" />
     <Compile Include="DatabaseClasses\WelcomeMessage.cs" />
     <Compile Include="Interfaces\IAuthenticateRepository.cs">
@@ -74,6 +75,7 @@
     </Compile>
     <Compile Include="Messages\WelcomeDataMessage.cs" />
     <Compile Include="MockRepository\MockAuthenticateRepository.cs" />
+    <Compile Include="MockRepository\MockDataRepository.cs" />
     <Compile Include="OpenHRNexusEntityDataModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -95,6 +97,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MySQL\MySqlTbuserLanguagesRepository.cs" />
     <Compile Include="SQLServer\SqlAuthenticateRepository.cs" />
+    <Compile Include="SQLServer\SqlDataRepository.cs" />
     <Compile Include="SQLServer\SqlPersonnelRecordsRepository.cs" />
     <Compile Include="DatabaseClasses\User.cs" />
     <Compile Include="tbuser_Languages.cs">
@@ -134,6 +137,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\OpenHRNexus.Common\OpenHRNexus.Common.csproj">
+      <Project>{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}</Project>
+      <Name>OpenHRNexus.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenHRNexus.Interfaces\OpenHRNexus.Interfaces.csproj">
       <Project>{627c8a94-0e22-4eb6-9998-7f5865588288}</Project>
       <Name>OpenHRNexus.Interfaces</Name>
