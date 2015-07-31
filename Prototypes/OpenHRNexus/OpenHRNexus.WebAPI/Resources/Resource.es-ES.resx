@@ -130,48 +130,60 @@
     <value>Bienvenido #FullName#, la ultima vez que usted accedio al sistema fue el #LastLoginDate#; su Grupo de Seguridad es "#SecurityGroup#"</value>
   </data>
 	<data name="Label_AlternateLogins" xml:space="preserve">
-		<value>O puede iniciar sesión utilizando uno de los inicios de sesión sociales inferiores</value>
-	</data>
+    <value>O puede iniciar sesión utilizando uno de los inicios de sesión sociales inferiores</value>
+  </data>
 	<data name="Label_ConfirmPassword" xml:space="preserve">
-		<value>Confirmar Contraseña</value>
-	</data>
+    <value>Confirmar Contraseña</value>
+  </data>
 	<data name="Label_ConnectWithFacebook" xml:space="preserve">
-		<value>Conectarse con Facebook</value>
-	</data>
+    <value>Conectarse con Facebook</value>
+  </data>
 	<data name="Label_ConnectWithGoogle" xml:space="preserve">
-		<value>Conectar con Google+</value>
-	</data>
+    <value>Conectar con Google+</value>
+  </data>
 	<data name="Label_EmailAddress" xml:space="preserve">
-		<value>Dirección De Correo Electrónico</value>
-	</data>
+    <value>Dirección De Correo Electrónico</value>
+  </data>
 	<data name="Label_FirstName" xml:space="preserve">
-		<value>Nombre De Pila</value>
-	</data>
+    <value>Nombre De Pila</value>
+  </data>
 	<data name="Label_Home" xml:space="preserve">
-		<value>Página de Inicio</value>
-	</data>
+    <value>Página de Inicio</value>
+  </data>
 	<data name="Label_LastName" xml:space="preserve">
-		<value>Apellido</value>
-	</data>
+    <value>Apellido</value>
+  </data>
 	<data name="Label_SignUp" xml:space="preserve">
-		<value>Contratar</value>
-	</data>
+    <value>Contratar</value>
+  </data>
 	<data name="Label_SocialLogins" xml:space="preserve">
-		<value>Conexiones Sociales</value>
-	</data>
+    <value>Conexiones Sociales</value>
+  </data>
 	<data name="Label_SubmitButton" xml:space="preserve">
-		<value>Enviar</value>
-	</data>
+    <value>Enviar</value>
+  </data>
 	<data name="Label_UseRefreshTokens" xml:space="preserve">
-		<value>Use Actualizar Tokens</value>
-	</data>
+    <value>Use Actualizar Tokens</value>
+  </data>
 	<data name="Label_Username" xml:space="preserve">
-		<value>Nombre de usuario</value>
-	</data>
+    <value>Nombre de usuario</value>
+  </data>
 	<data name="Text_LoginDescription" xml:space="preserve">
-		<value>Si usted tiene un nombre de usuario y contraseña , puede utilizar el botón de abajo para acceder OpenHR Nexus .</value>
-	</data>
+    <value>Si usted tiene un nombre de usuario y contraseña , puede utilizar el botón de abajo para acceder OpenHR Nexus .</value>
+  </data>
 	<data name="Text_SignUpDescription" xml:space="preserve">
-		<value>Usa el botón de abajo para crear nombre de usuario y contraseña para acceder a OpenHR Nexus .</value>
+    <value>Usa el botón de abajo para crear nombre de usuario y contraseña para acceder a OpenHR Nexus .</value>
+  </data>
+	<data name="Text_DashboardWelcome" xml:space="preserve">
+    <value>Bienvenidos al portal de Advanced</value>
+  </data>
+	<data name="Label_Welcome" xml:space="preserve">
+		<value>Bienvenido</value>
+	</data>
+	<data name="Label_MyDashboard" xml:space="preserve">
+		<value>Mi tablero</value>
+	</data>
+	<data name="Label_RefreshToken" xml:space="preserve">
+		<value>Token de actualización</value>
 	</data>
 </root>

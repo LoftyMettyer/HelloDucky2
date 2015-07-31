@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+	<!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,119 +59,134 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="Label_AlternateLogins" xml:space="preserve">
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="Label_AlternateLogins" xml:space="preserve">
     <value>Ou vous pouvez vous connecter en utilisant l'une des connexions sociales ci-dessous</value>
   </data>
-  <data name="Label_ConfirmPassword" xml:space="preserve">
+	<data name="Label_ConfirmPassword" xml:space="preserve">
     <value>Confirmez Le Mot De Passe</value>
   </data>
-  <data name="Label_ConnectWithFacebook" xml:space="preserve">
+	<data name="Label_ConnectWithFacebook" xml:space="preserve">
     <value>connecter avec Facebook</value>
   </data>
-  <data name="Label_ConnectWithGoogle" xml:space="preserve">
+	<data name="Label_ConnectWithGoogle" xml:space="preserve">
     <value>connecter avec Google+</value>
   </data>
-  <data name="Label_EmailAddress" xml:space="preserve">
+	<data name="Label_EmailAddress" xml:space="preserve">
     <value>Adresse E-Mail</value>
   </data>
-  <data name="Label_FirstName" xml:space="preserve">
+	<data name="Label_FirstName" xml:space="preserve">
     <value>Prénom</value>
   </data>
-  <data name="Label_Home" xml:space="preserve">
+	<data name="Label_Home" xml:space="preserve">
     <value>Page d'accueil</value>
   </data>
-  <data name="Label_LastName" xml:space="preserve">
+	<data name="Label_LastName" xml:space="preserve">
     <value>Nom De Famille</value>
   </data>
-  <data name="Label_Login" xml:space="preserve">
+	<data name="Label_Login" xml:space="preserve">
     <value>S'identifier</value>
   </data>
-  <data name="Label_LoginButton" xml:space="preserve">
+	<data name="Label_LoginButton" xml:space="preserve">
     <value>Entrer</value>
   </data>
-  <data name="Label_Password" xml:space="preserve">
+	<data name="Label_Password" xml:space="preserve">
     <value>Mot de passe</value>
   </data>
-  <data name="Label_SignUp" xml:space="preserve">
+	<data name="Label_SignUp" xml:space="preserve">
     <value>S'inscrire</value>
   </data>
-  <data name="Label_SocialLogins" xml:space="preserve">
+	<data name="Label_SocialLogins" xml:space="preserve">
     <value>Connexions sociales</value>
   </data>
-  <data name="Label_SubmitButton" xml:space="preserve">
+	<data name="Label_SubmitButton" xml:space="preserve">
     <value>Inscription</value>
   </data>
-  <data name="Label_UseRefreshTokens" xml:space="preserve">
+	<data name="Label_UseRefreshTokens" xml:space="preserve">
     <value>Utiliser des jetons de rafraîchissement</value>
   </data>
-  <data name="Label_Username" xml:space="preserve">
+	<data name="Label_Username" xml:space="preserve">
     <value>Nom d'utilisateur</value>
   </data>
-  <data name="Text_LoginDescription" xml:space="preserve">
+	<data name="Text_DashboardWelcome" xml:space="preserve">
+    <value>Bienvenue sur le portail Advanced</value>
+  </data>
+	<data name="Text_LoginDescription" xml:space="preserve">
     <value>Si vous avez un nom d'utilisateur et mot de passe , vous pouvez utiliser le bouton ci-dessous pour accéder OpenHR Nexus.</value>
   </data>
-  <data name="Text_SignUpDescription" xml:space="preserve">
+	<data name="Text_SignUpDescription" xml:space="preserve">
     <value>Utilisez le bouton ci-dessous pour créer Nom d'utilisateur et mot de passe pour accéder OpenHR Nexus.</value>
   </data>
-  <data name="Text_WelcomeMessage" xml:space="preserve">
+	<data name="Text_WelcomeMessage" xml:space="preserve">
     <value>Bienvenue #FullName#, vous dernière connecté sur #LastLoginDate#; vous Security Group est "#SecurityGroup#"</value>
   </data>
+	<data name="Label_Welcome" xml:space="preserve">
+		<value>Bienvenue</value>
+	</data>
+	<data name="Label_MyDashboard" xml:space="preserve">
+		<value>Mon tableau de bord</value>
+	</data>
+	<data name="Label_RefreshToken" xml:space="preserve">
+		<value>Jeton rafraîchissement</value>
+	</data>
+	<data name="Label_Logout" xml:space="preserve">
+		<value>Se déconnecter</value>
+	</data>
 </root>

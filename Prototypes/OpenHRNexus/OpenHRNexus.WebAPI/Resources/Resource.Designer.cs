@@ -205,6 +205,15 @@ namespace OpenHRNexus.WebAPI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Welcome to the Advanced portal.
+        /// </summary>
+        internal static string Text_DashboardWelcome {
+            get {
+                return ResourceManager.GetString("Text_DashboardWelcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to If you have a Username and Password, you can use the button below to access OpenHR Nexus..
         /// </summary>
         internal static string Text_LoginDescription {
