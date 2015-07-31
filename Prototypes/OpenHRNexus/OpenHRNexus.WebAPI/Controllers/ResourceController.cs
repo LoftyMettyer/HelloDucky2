@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Web;
@@ -29,38 +30,44 @@ namespace OpenHRNexus.WebAPI.Controllers
 		}
 
 		[HttpGet]
-		public IEnumerable<string> GetResourceValue(string resource)
+		[Authorize(Roles="OpenHRUser")]
+		public IEnumerable<string> GetProtectedResourceValue(string resource)
 		{
-			//get guid out of jwt claims list
+			// TODO - Investigate whether this is the best way to interrogate languages - performance hit?
+			var language = "EN-GB";
+			if (HttpContext.Current.Request.UserLanguages != null)
+			{
+				language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
+			}
+
+			//Get the OpenHR guid out of the jwt
 			var identity = User.Identity as ClaimsIdentity;
 
-			var OpenHRDBGUIDs = (from c in identity.Claims
-													 where c.Type == "OpenHRDBGUID"
-													 select new { c.Value }).FirstOrDefault();
-
-			if (OpenHRDBGUIDs != null)
+			if (identity != null)
 			{
-				string OpenHRDBGUID = OpenHRDBGUIDs.Value;
+				var openHRDbGuids = (from c in identity.Claims
+					where c.Type == "OpenHRDBGUID"
+					select new { c.Value }).FirstOrDefault();
 
-
-				// TODO - Investigate whether this is the best way to interrogate languages - performance hit?
-				var language = "EN-GB";
-				if (HttpContext.Current.Request.UserLanguages != null)
+				if (openHRDbGuids != null)
 				{
-					language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
+					var openHRDbGuid = openHRDbGuids.Value;
+
+					var welcomeMessage = _welcomeMessageDataService.GetWelcomeMessageData(new Guid(openHRDbGuid), language);
+
+					var translation = Resource.ResourceManager.GetString(resource);
+					if (translation != null)
+						return new[]
+						{
+							translation
+								.Replace("#FullName#", welcomeMessage.Message)
+								.Replace("#LastLoginDate#", welcomeMessage.LastLoggedOn.ToString(CultureInfo.CurrentCulture))
+								.Replace("#SecurityGroup#", welcomeMessage.SecurityGroup)
+						};
 				}
-
-				var welcomeMessage = _welcomeMessageDataService.GetWelcomeMessageData(new Guid(OpenHRDBGUID), language);
-
-				return new string[]
-				{
-					Resource.ResourceManager.GetString(resource)
-						.Replace("#FullName#", welcomeMessage.Message)
-						.Replace("#LastLoginDate#", welcomeMessage.LastLoggedOn.ToString())
-						.Replace("#SecurityGroup#", welcomeMessage.SecurityGroup)
-				};
 			}
-			return new[] {string.Format("Welcome {0}.", User.Identity.Name)};
+
+			return new[] { "Welcome." };
 		}
 	}
 }

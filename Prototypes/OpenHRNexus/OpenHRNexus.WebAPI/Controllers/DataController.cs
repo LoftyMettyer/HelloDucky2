@@ -6,7 +6,7 @@ using OpenHRNexus.Common.Models;
 using OpenHRNexus.Service.Interfaces;
 
 namespace OpenHRNexus.WebAPI.Controllers {
-//	[Authorize(Roles = "ApplicationUser")]
+//	[Authorize(Roles = "OpenHRUser")]
 	public class DataController : ApiController {
 		private readonly IDataService _dataService;
 
