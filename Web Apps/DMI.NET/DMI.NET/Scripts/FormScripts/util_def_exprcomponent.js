@@ -1363,6 +1363,11 @@ function pVal_changeType() {
 		sTextDefaultVisibility = "visible";
 		sTextDefaultDisplay = "inline-block";
 		text_disable(frmMainForm.txtPValDefault, false);
+
+		// Set the default size to 1.
+		if (frmMainForm.txtPValSize.value.length == 0) {
+			frmMainForm.txtPValSize.value = 1;
+		}
 	}
 
 	if (iPValType == 2) {
@@ -1376,6 +1381,11 @@ function pVal_changeType() {
 		$('#frmMainForm #txtPValDefault').autoNumeric('init', {
 			vMax: 99999999.9999, aSep: "", aDec: OpenHR.LocaleDecimalSeparator(), mDec: 4, aPad: false
 		});
+
+		// Set the default size to 1.
+		if (frmMainForm.txtPValSize.value.length == 0) {
+			frmMainForm.txtPValSize.value = 1;
+		}
 
 		//Change prompted value sizes to match default value
 		$('.number').on('keyup', function () {
