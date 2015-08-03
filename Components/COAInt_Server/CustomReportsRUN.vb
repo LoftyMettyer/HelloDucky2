@@ -2386,7 +2386,7 @@ Public Class Report
 						strOrder = strOrder & ", "
 						strOrder = strOrder & "[Order_2] " & IIf(mbOrderBy2Asc = True, "Asc", "Desc")
 					Else
-						strOrder = strOrder & "[Order_1] " & IIf(mbOrderBy2Asc = True, "Asc", "Desc")
+						strOrder = strOrder & "[Order_2] " & IIf(mbOrderBy2Asc = True, "Asc", "Desc")
 					End If
 				End If
 				If (mlngOrderByColumnID = 0) And (mlngGroupByColumnID = 0) Then
