@@ -33,6 +33,10 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "DynamicWebService", "Dynami
 		SlnRelativePath = "DynamicWebService\"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemManager.Tests", "SystemManager.Tests\SystemManager.Tests.csproj", "{2E066B23-9A0A-45BF-83E1-9A07B83AAC66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemManagerService", "SystemManagerService\SystemManagerService.csproj", "{56B62CB0-4544-4EA9-AAEA-12EA83F675BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,12 +55,20 @@ Global
 		{8360F155-AEE7-440C-8948-145748A29BA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8360F155-AEE7-440C-8948-145748A29BA0}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{8360F155-AEE7-440C-8948-145748A29BA0}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{2E066B23-9A0A-45BF-83E1-9A07B83AAC66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E066B23-9A0A-45BF-83E1-9A07B83AAC66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E066B23-9A0A-45BF-83E1-9A07B83AAC66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E066B23-9A0A-45BF-83E1-9A07B83AAC66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56B62CB0-4544-4EA9-AAEA-12EA83F675BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56B62CB0-4544-4EA9-AAEA-12EA83F675BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56B62CB0-4544-4EA9-AAEA-12EA83F675BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56B62CB0-4544-4EA9-AAEA-12EA83F675BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
+		SccNumberOfProjects = 6
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath0 = .
@@ -71,5 +83,11 @@ Global
 		SccProjectName3 = DynamicWebService
 		SccLocalPath3 = DynamicWebService
 		SccProjectEnlistmentChoice3 = 2
+		SccProjectUniqueName4 = SystemManager.Tests\\SystemManager.Tests.csproj
+		SccProjectName4 = SystemManager.Tests
+		SccLocalPath4 = SystemManager.Tests
+		SccProjectUniqueName5 = SystemManagerService\\SystemManagerService.csproj
+		SccProjectName5 = SystemManagerService
+		SccLocalPath5 = SystemManagerService
 	EndGlobalSection
 EndGlobal

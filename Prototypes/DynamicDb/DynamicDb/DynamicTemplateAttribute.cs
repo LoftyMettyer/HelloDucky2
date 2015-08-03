@@ -1,4 +1,3 @@
-
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,7 +8,7 @@ public partial class DynamicTemplateAttribute
     public string DisplayName { get; set; }
     public int TypeId { get; set; }
 
-    [Column("id")]
+    [Key]
     public int Idx { get; set; }
 
     [ForeignKey("AttributeId")]

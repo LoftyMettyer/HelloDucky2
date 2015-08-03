@@ -27,29 +27,34 @@ namespace AsWorkflows
 
             var context = new DynamicEntities();
 
+            var result = new DynamicDbContext();
+
 //            //var bigBlah = (from t in context.DynamicTemplates
 //            //               select t);
 
-////            bigBlah.Load();
-//            foreach (var blah in context.DynamicTemplates)
-//            {
-//                blah.Name = blah.Name + "ddd";
-//                Debug.Print(blah.Name);
-//            }
+            ////            bigBlah.Load();
+            //            foreach (var blah in context.DynamicTemplates)
+            //            {
+            //                blah.Name = blah.Name + "ddd";
+            //                Debug.Print(blah.Name);
+            //            }
 
 
-        //    Database.SetInitializer<MyContext>(null);
+            //    Database.SetInitializer<MyContext>(null);
             var templates = (from t in context.DynamicTemplates.Include("DynamicTemplateAttributes").Include("DynamicTemplateAttributes.DynamicAttribute")
                              select t);
 
             foreach (var dynamicTemplate in templates)
             {
                 var type = CreateType(dcf, dynamicTemplate.Name, dynamicTemplate.DynamicTemplateAttributes);
-               // result.AddTable(type);
+                result.AddTable(type);
             }
 
+            Debug.Print("jello");
+
+
             //      return result;
-           // return null;
+            ///return null;
 
         }
 
@@ -70,6 +75,16 @@ namespace AsWorkflows
         {
             var dataLibrary = new DataLibrary();
             dataLibrary.GetAllCustomerTables();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }
