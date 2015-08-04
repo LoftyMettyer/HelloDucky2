@@ -12,11 +12,15 @@ namespace SystemManagerService.Entities
         [Index]
         public int Id { get; set; }
 
-        [Column("PermissionCategoryId")]
-        public int CategoryId { get; set; }
+        //[Column("PermissionCategoryId")]
+        //public int CategoryId { get; set; }
 
-        [Column("PermissionFacetId")]
-        public int FacetId { get; set; }
+        //[Column("PermissionFacetId")]
+        //public int FacetId { get; set; }
+
+        public string Category { get; set; }
+
+        public string Facet { get; set; }
 
     }
 

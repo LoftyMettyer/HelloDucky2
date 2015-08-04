@@ -30,10 +30,10 @@ namespace SystemManagerService.Migrations
             //    );
             //
 
-            context.Groups.AddOrUpdate(g => g.Name,
-                new Group { Name = "Admin" },
-                new Group { Name = "ProjectManager" },
-                new Group { Name = "Developer" }
+            context.PermissionGroups.AddOrUpdate(g => g.Name,
+                new PermissionGroup { Name = "Admin" },
+                new PermissionGroup { Name = "ProjectManager" },
+                new PermissionGroup { Name = "Developer" }
                 );
 
             context.PermissionCategories.AddOrUpdate(g => g.KeyName,
@@ -78,6 +78,7 @@ namespace SystemManagerService.Migrations
 
             context.PermissionFacets.AddOrUpdate(g => g.Name,
                 new PermissionFacet { Name = "New" },
+                new PermissionFacet { Name = "User" },
                 new PermissionFacet { Name = "Edit" },
                 new PermissionFacet { Name = "Run" },
                 new PermissionFacet { Name = "Delete" },

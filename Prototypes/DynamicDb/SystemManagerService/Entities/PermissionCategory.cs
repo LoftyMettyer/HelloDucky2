@@ -13,7 +13,7 @@ namespace SystemManagerService.Entities
         [StringLength(255)]
         public string Description { get; set; }
 
-//        public virtual IEnumerable<PermissionItem> Items { get; set; }
+        public virtual IEnumerable<PermissionItem> Items { get; set; }
 
 
     }

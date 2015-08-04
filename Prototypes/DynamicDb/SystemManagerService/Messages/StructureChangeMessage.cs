@@ -6,6 +6,8 @@ namespace SystemManagerService.Messages
 {
     public class StructureChangeMessage : IModifyMessage
     {
+        public int ModifiedId { get; set; }
+
         public SaveStatusEnum status { get; set; }
 
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration.Conventions;
-using System.Diagnostics;
+using System.Linq;
 using SystemManagerService.Entities;
 using SystemManagerService.Enums;
 using SystemManagerService.Interfaces;
@@ -9,39 +8,64 @@ using SystemManagerService.Messages;
 
 namespace SystemManagerService
 {
-    public class SecurityManager : DbContext
+    public class SecurityManager : SecurityManagerContext
     {
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
-        }
 
-        public IModifyMessage AddRole(string name, string description)
+        public IModifyMessage AddPermissionGroup(string name, string description)
         {
             var result = new PermissionChangeMessage();
 
             try {
-                Group newGroup = new Group() { Name = name, Description = description };
-                Groups.Add(newGroup);
+                PermissionGroup newGroup = new PermissionGroup() { Name = name, Description = description };
+                PermissionGroups.Add(newGroup);
+                SaveChanges();
+                result.ModifiedId = newGroup.Id;
+                result.status = SaveStatusEnum.Success;
+
+            }
+            catch (Exception e)
+            {
+                result.status = SaveStatusEnum.Failure;
+            }
+
+            return result;
+        }
+
+        public IModifyMessage AddPermissionToGroup(int groupId, string category, string facet)
+        {
+            var result = new PermissionChangeMessage();
+
+            try
+            {
+                var group = PermissionGroups
+                 .Where(g => g.Id == groupId)
+                 .First();
+
+                var newPermission = new PermissionItem() { Category = category, Facet = facet };
+                group.PermissionItems.Add(newPermission);
+
                 SaveChanges();
                 result.status = SaveStatusEnum.Success;
 
             }
             catch (Exception e)
             {
-                Debug.Print(e.InnerException.ToString());
+                result.status = SaveStatusEnum.Failure;
             }
 
             return result;
         }
 
-        public virtual DbSet<Group> Groups { get; set; }
+
+
+
+        public virtual DbSet<PermissionGroup> PermissionGroups { get; set; }
 
         public virtual DbSet<PermissionCategory> PermissionCategories { get; set; }
 
         public virtual DbSet<PermissionFacet> PermissionFacets { get; set; }
 
-        public virtual DbSet<PermissionItem> PermissionItems { get; set; }
+//        public virtual DbSet<PermissionItem> PermissionItems { get; set; }
 
 
     }
