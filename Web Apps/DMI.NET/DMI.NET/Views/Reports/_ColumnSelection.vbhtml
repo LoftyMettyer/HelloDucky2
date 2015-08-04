@@ -141,7 +141,15 @@
 	}
 
 	function moveSelectedColumn(direction) {
-		OpenHR.MoveItemInGrid($("#SelectedColumns"), direction);
+		OpenHR.MoveItemInGrid($("#SelectedColumns"), direction);		
+		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+		var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
+		var isBottomRow = (rowId == allRows[allRows.length - 1]);
+		if (isBottomRow) {
+			$('#SelectedColumnIsGroupWithNext').prop('checked', false);
+			updateColumnsSelectedGrid();
+		}
+		
 	}
 
 	function toggleColumnsCalculations(type) {
@@ -701,11 +709,7 @@
 		if (allRows.length > 0) {
 			bRowSelected = true;
 			isTopRow = (rowId == allRows[0]);
-			isBottomRow = (rowId == allRows[allRows.length - 1]);
-			if (isBottomRow) {				
-				$('#SelectedColumnIsGroupWithNext').prop('checked', false);
-				updateColumnsSelectedGrid();
-			}			
+			isBottomRow = (rowId == allRows[allRows.length - 1]);					
 		}
 		
 		if (rowCount > 1 || allRows.length == 0) {
@@ -964,10 +968,10 @@
 				$('#SelectedColumnIsHidden').prop('checked', JSON.parse(dataRow.IsHidden));
 				$('#SelectedColumnIsGroupWithNext').prop('checked', JSON.parse(dataRow.IsGroupWithNext));				
 				$('#SelectedColumnIsRepeated').prop('checked', JSON.parse(dataRow.IsRepeated));
-
+						
 				refreshcolumnPropertiesPanel(); 
 
-				disableColumnOptionsWhenGroupWithNextChecked();
+				disableColumnOptionsWhenGroupWithNextChecked();							
 
 				$('#SelectedColumns').focus();
 
