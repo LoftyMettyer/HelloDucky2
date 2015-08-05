@@ -1043,7 +1043,7 @@
 									<h6>Print Preview</h6></span>
 								</a>								
 							</div>
-							<div class="button">
+							<div class="button"  id="divBtnSelectOrgChart">
 								<a class="mnuBtnSelectOrgChart" href="#" rel="table" title="Select nodes to print">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Checkmark64HOVER.png")%>" alt="" /><span>			
 									<i class="icon-check"></i>

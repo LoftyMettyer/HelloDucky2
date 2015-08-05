@@ -27,10 +27,13 @@
 			menu_toolbarEnableItem('divBtnPrintOrgChart', false);
 			menu_toolbarEnableItem('divBtnPrintPreviewOrgChart', false);
 			menu_toolbarEnableItem('mnutoolOrgChartExpand', false);
+			menu_toolbarEnableItem('divBtnSelectOrgChart', false);
 			$('.mnuBtnPrintOrgChart>span').prop('disabled', true);
 			$('.mnuBtnPrintOrgChart').prop('disabled', true);
 			$('.mnuBtnPrintPreviewOrgChart>span').prop('disabled', true);
 			$('.mnuBtnPrintPreviewOrgChart').prop('disabled', true);
+			$('.mnuBtnSelectOrgChart>span').prop('disabled', true);
+			$('.mnuBtnSelectOrgChart').prop('disabled', true);
 
 		} else {
 			//process the results into unordered list.		
