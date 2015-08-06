@@ -114,13 +114,15 @@
 			//Show the click to expand plus/minus icon
 			showExpandNodeIcons();
 
+			//enable/disable expand all nodes button
+			menu_toolbarEnableItem("mnutoolOrgChartExpand", ($('.contracted').length > 0));
 			
 
 		}
 	});
 
-	function showExpandNodeIcons() {
-
+	function showExpandNodeIcons() {		
+		
 		$('.node').each(function () {
 			if ($(this).parent().parent().siblings().length > 0) {
 				$(this).find('.expandNode').show();
