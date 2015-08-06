@@ -568,6 +568,21 @@
 		}
 	}
 
+	// Removes a selected column from the selectedColumn grid on double click of column
+	function doubleClickSelectedColumn() {
+		if (!isDefinitionReadOnly()) {
+			var grid = $('#SelectedColumns');
+			var currentScrollPos = grid.parent().parent().scrollTop();
+			var rowid = grid.jqGrid('getGridParam', 'selrow');
+			requestRemoveSelectedColumns();
+
+			grid.focus();
+			grid.parent().parent().scrollTop(currentScrollPos);
+
+			return false;
+		}
+	}
+
 	function changeColumnIsHidden() {
 		
 		if ($("#SelectedColumnIsHidden").is(':checked')) {
@@ -971,10 +986,10 @@
 						
 				refreshcolumnPropertiesPanel(); 
 
-				disableColumnOptionsWhenGroupWithNextChecked();							
-
-				$('#SelectedColumns').focus();
-
+				disableColumnOptionsWhenGroupWithNextChecked();
+			},
+			ondblClickRow: function () {
+				doubleClickSelectedColumn();
 			},
 			loadComplete: function (data) {
 				var topID = $("#SelectedColumns").getDataIDs()[0]
