@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Mvc;
 using OpenHRNexus.Common.Models;
 using OpenHRNexus.Service.Interfaces;
+using OpenHRNexus.WebAPI.Extensions;
 
 namespace OpenHRNexus.WebAPI.Controllers {
 //	[Authorize(Roles = "OpenHRUser")]
@@ -18,8 +21,8 @@ namespace OpenHRNexus.WebAPI.Controllers {
 			_dataService = dataService;
 		}
 
-		[HttpGet]
-		public IEnumerable<DynamicDataModel> GetReportData(string id)
+		[System.Web.Http.HttpGet]
+		public MvcHtmlString GetReportData(string id)
 		{
 			int dataId;
 
@@ -27,11 +30,13 @@ namespace OpenHRNexus.WebAPI.Controllers {
 
 			if (result)
 			{
-				return _dataService.GetData(dataId);
+				var data = _dataService.GetData(dataId);
+				return data.ToJsonResult();
 			}
 			else
 			{
-				return _dataService.GetData();
+				var data = _dataService.GetData();
+				return data.ToJsonResult();
 			}
 
 		}

@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
+using OpenHRNexus.Interfaces.Common;
 
 namespace OpenHRNexus.Common.Models
 {
-	public class DynamicDataModel
+	public class DynamicDataModel : IJsonSerialize
 	{
 		public int Id { get; set; }
 
