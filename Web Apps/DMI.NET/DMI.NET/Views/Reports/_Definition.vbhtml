@@ -141,7 +141,7 @@
 			$('#DisplayTitleInReportHeader').prop('disabled', true);
 			$("#label_DisplayTitleInReportHeader").css("color", "#A59393");
 		}
-
+		
 		menu_toolbarEnableItem('mnutoolSaveReport', false);
 		if ($("#ActionType").val() == '@UtilityActionType.Copy') {
 			enableSaveButton()
@@ -672,12 +672,12 @@
 		enableSaveButton();
 	}
 
-	function enableSaveButton() {
+	function enableSaveButton() {		
 
 		if (!isDefinitionReadOnly()) {
 			$("#ctl_DefinitionChanged").val("true");
 			menu_toolbarEnableItem('mnutoolSaveReport', true);
-		}
+		}		
 	}
 
 	function saveReportDefinition(prompt) {
@@ -845,7 +845,7 @@
 
 	// Show/Hide tools buttons
 	function ShowHideToolsButtons() {
-
+		
 		// Set the picklist & filter ribbon button to visible.
 		menu_setVisibleMenuItem("mnutoolPicklistReport", true);
 		menu_setVisibleMenuItem("mnutoolFilterReport", true);
@@ -861,10 +861,13 @@
 
 	// Enable/Disable the save of report definition button.
 	// (E.g. When the user comes to tools screen from the report definition and modify the tools definition. Then, even the report defition is not modified, the Save button for the report definition would remain enabled in this case.)
-	function EnableDisableSaveButton() {
+	function EnableDisableSaveButton() {		
 		if (!isDefinitionReadOnly()) {
 			var bHasChanged = $("#ctl_DefinitionChanged").val();
 			menu_toolbarEnableItem('mnutoolSaveReport', (bHasChanged == "true") ? true : false);
+		}
+		else {
+			menu_toolbarEnableItem('mnutoolSaveReport', false);
 		}
 	}
 
