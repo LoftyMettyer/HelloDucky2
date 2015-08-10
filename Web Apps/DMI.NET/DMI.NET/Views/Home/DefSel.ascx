@@ -318,10 +318,10 @@
 	}
 
 	function showproperties() {
-
+		
 		if (!$("#mnutoolPropertiesUtil").hasClass("disabled")) {
 			var id = $("#DefSelRecords").getGridParam('selrow');
-			var type = $("#utiltype").val();
+			var type = document.getElementById('frmDefSel').utiltype.value;
 			var name = $("#utilname").val();
 			OpenHR.OpenDialog("DefinitionProperties", "divPopupReportDefinition", { ID: id, Type: type, Name: name, __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val() }, '900px');
 
