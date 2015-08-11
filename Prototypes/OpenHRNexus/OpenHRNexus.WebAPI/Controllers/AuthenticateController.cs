@@ -29,7 +29,7 @@ namespace OpenHRNexus.WebAPI.Controllers {
 		{
 		    string userId = User.Identity.GetUserId();
 
-			return _authenticateService.GetRoles(new Guid(userId));
+			return _authenticateService.GetClaims(new Guid(userId));
 		}
 
 	}

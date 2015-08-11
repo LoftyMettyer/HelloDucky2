@@ -29,7 +29,7 @@ namespace OpenHRNexus.WebAPI.Tests.Controllers {
 		{
 			// Arrange
 			var mockService = new Mock<IAuthenticateService>();
-			mockService.Setup(x => x.GetRoles(Guid.NewGuid()));
+			mockService.Setup(x => x.GetClaims(Guid.NewGuid()));
 
 			AuthenticateController controller = new AuthenticateController(mockService.Object);
 

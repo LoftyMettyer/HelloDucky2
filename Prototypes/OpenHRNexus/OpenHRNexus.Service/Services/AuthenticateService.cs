@@ -16,7 +16,7 @@ namespace OpenHRNexus.Service.Services {
 			return _authenticateRepository.RequestAccount(email);
 		}
 
-		public IEnumerable<string> GetRoles(Guid userId)
+		public IEnumerable<string> GetClaims(Guid userId)
 		{
 			return _authenticateRepository.GetUserPermissions(userId);
 		}
