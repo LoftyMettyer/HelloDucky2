@@ -12,12 +12,11 @@ namespace OpenHRNexus.Service.Services {
 			_authenticateRepository = auhenticateRepository;
 		}
 
-		public RegisterNewUserMessage RequestAccount(string email) {
-			return _authenticateRepository.RequestAccount(email);
+		public RegisterNewUserMessage RequestAccount(string email, string userId) {
+			return _authenticateRepository.RequestAccount(email, userId);
 		}
 
-		public IEnumerable<string> GetClaims(Guid userId)
-		{
+		public IEnumerable<string> GetClaims(Guid userId) {
 			return _authenticateRepository.GetUserPermissions(userId);
 		}
 	}

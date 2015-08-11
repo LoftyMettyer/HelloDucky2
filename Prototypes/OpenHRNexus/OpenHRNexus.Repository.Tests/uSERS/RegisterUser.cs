@@ -4,11 +4,9 @@ using Moq;
 using OpenHRNexus.Repository.SQLServer;
 using Repository.Enums;
 
-namespace OpenHRNexus.Repository.Tests.Users
-{
+namespace OpenHRNexus.Repository.Tests.Users {
 	[TestClass]
-	public class RegisterUser
-	{
+	public class RegisterUser {
 		//[TestMethod]
 		//public void ConnectToNexusUserDb()
 		//{
@@ -17,30 +15,27 @@ namespace OpenHRNexus.Repository.Tests.Users
 		//}
 
 		[TestMethod]
-		public void RegisterUnknownUser()
-		{
+		public void RegisterUnknownUser() {
 			var actualDb = new SqlAuthenticateRepository();
-			var message = actualDb.RequestAccount("nosuchuserexists@notsuchcompany.com");
+			var message = actualDb.RequestAccount("nosuchuserexists@notsuchcompany.com", new System.Guid().ToString());
 			Assert.AreEqual(message.Status, NewUserStatus.UnrecognizedEmail);
 
-	//		var mockDb = new Mock<IAuthenticateRepository>().Object;
-	//		var newUserMessage = mockDb.RequestAccount("nosuchuserexists@notsuchcompany.com");
-	//		Assert.AreEqual(newUserMessage.Status, NewUserStatus.UnrecognizedEmail);
+			//		var mockDb = new Mock<IAuthenticateRepository>().Object;
+			//		var newUserMessage = mockDb.RequestAccount("nosuchuserexists@notsuchcompany.com");
+			//		Assert.AreEqual(newUserMessage.Status, NewUserStatus.UnrecognizedEmail);
 		}
 
 		[TestMethod]
-		public void RegisterExistingUser()
-		{
+		public void RegisterExistingUser() {
 			var newUser = new SqlAuthenticateRepository();
-			var message = newUser.RequestAccount("John.Adams@HelloDuckyWorld.com");
+			var message = newUser.RequestAccount("John.Adams@HelloDuckyWorld.com", new System.Guid().ToString());
 			Assert.AreEqual(message.Status, NewUserStatus.AlreadyExists);
 		}
 
 		[TestMethod]
-		public void RegisterValidNewUser()
-		{
+		public void RegisterValidNewUser() {
 			var newUser = new SqlAuthenticateRepository();
-			var message = newUser.RequestAccount("Alexandre.Abley@HelloDuckyWorld.com");
+			var message = newUser.RequestAccount("Alexandre.Abley@HelloDuckyWorld.com", new System.Guid().ToString());
 			Assert.AreEqual(message.Status, NewUserStatus.Success);
 		}
 

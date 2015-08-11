@@ -12,12 +12,12 @@ namespace OpenHRNexus.WebAPI.Tests.Controllers {
 		public void Authenticate() {
 			// Arrange
 			var mockService = new Mock<IAuthenticateService>();
-			mockService.Setup(x => x.RequestAccount("SomeEmail"));
+			mockService.Setup(x => x.RequestAccount("SomeEmail", new System.Guid().ToString()));
 
 			AuthenticateController controller = new AuthenticateController(mockService.Object);
 
 			// Act
-			RegisterNewUserMessage result = controller.Authenticate("UserName");
+			RegisterNewUserMessage result = controller.Authenticate("UserName", new System.Guid().ToString());
 
 			// Assert
 			Assert.IsNotNull(result);
@@ -25,8 +25,7 @@ namespace OpenHRNexus.WebAPI.Tests.Controllers {
 		}
 
 		[TestMethod]
-		public void GetRoles()
-		{
+		public void GetRoles() {
 			// Arrange
 			var mockService = new Mock<IAuthenticateService>();
 			mockService.Setup(x => x.GetClaims(Guid.NewGuid()));
@@ -34,7 +33,7 @@ namespace OpenHRNexus.WebAPI.Tests.Controllers {
 			AuthenticateController controller = new AuthenticateController(mockService.Object);
 
 			var userId = Guid.NewGuid().ToString();
-			var result = controller.GetClaims();
+			var result = controller.GetClaims(userId);
 
 			// Assert
 			Assert.IsNotNull(result);

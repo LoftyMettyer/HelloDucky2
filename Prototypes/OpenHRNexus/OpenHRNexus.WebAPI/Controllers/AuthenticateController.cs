@@ -5,7 +5,7 @@ using Microsoft.AspNet.Identity;
 using OpenHRNexus.Repository.Messages;
 using OpenHRNexus.Service.Interfaces;
 
-namespace OpenHRNexus.WebAPI.Controllers {	
+namespace OpenHRNexus.WebAPI.Controllers {
 	public class AuthenticateController : ApiController {
 		private readonly IAuthenticateService _authenticateService;
 
@@ -19,16 +19,12 @@ namespace OpenHRNexus.WebAPI.Controllers {
 		// GET api/authenticate/authenticate?parameter=email
 		//todo: secure this controller actions so only authservice can access it.
 		[HttpGet]
-		public RegisterNewUserMessage Authenticate(string parameter)
-		{
-			return _authenticateService.RequestAccount(parameter);
+		public RegisterNewUserMessage Authenticate(string email, string userId) {
+			return _authenticateService.RequestAccount(email, userId);
 		}
 
 		[HttpGet]
-		public IEnumerable<string> GetClaims()
-		{
-		    string userId = User.Identity.GetUserId();
-
+		public IEnumerable<string> GetClaims(string userId) {
 			return _authenticateService.GetClaims(new Guid(userId));
 		}
 

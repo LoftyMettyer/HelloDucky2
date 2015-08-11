@@ -6,16 +6,13 @@ using Repository.Enums;
 
 namespace OpenHRNexus.Repository.MockRepository {
 	public class MockAuthenticateRepository : IAuthenticateRepository {
-		public RegisterNewUserMessage RequestAccount(string email)
-		{
+		public RegisterNewUserMessage RequestAccount(string email, string userId) {
 			return new RegisterNewUserMessage {
-				UserID = Guid.NewGuid(), 
 				Status = NewUserStatus.Success
 			};
 		}
 
-		public IEnumerable<string> GetUserPermissions(Guid userId)
-		{
+		public IEnumerable<string> GetUserPermissions(Guid userId) {
 			throw new NotImplementedException();
 		}
 
