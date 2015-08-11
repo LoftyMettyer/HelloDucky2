@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
 using OpenHRNexus.Repository.Messages;
 using OpenHRNexus.Service.Interfaces;
 
@@ -24,8 +25,10 @@ namespace OpenHRNexus.WebAPI.Controllers {
 		}
 
 		[HttpGet]
-		public IEnumerable<string> GetRoles(string userId)
+		public IEnumerable<string> GetClaims()
 		{
+		    string userId = User.Identity.GetUserId();
+
 			return _authenticateService.GetRoles(new Guid(userId));
 		}
 

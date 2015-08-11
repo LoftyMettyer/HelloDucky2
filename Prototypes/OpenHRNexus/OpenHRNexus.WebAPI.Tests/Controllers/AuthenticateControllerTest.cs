@@ -34,7 +34,7 @@ namespace OpenHRNexus.WebAPI.Tests.Controllers {
 			AuthenticateController controller = new AuthenticateController(mockService.Object);
 
 			var userId = Guid.NewGuid().ToString();
-			var result = controller.GetRoles(userId);
+			var result = controller.GetClaims();
 
 			// Assert
 			Assert.IsNotNull(result);
