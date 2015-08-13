@@ -49,6 +49,5 @@
 
 	$('.popup').bind('dialogclose', function () {
 		closeclick();
-		$("#optionframe").hide();
 	});
 </script>
