@@ -274,16 +274,22 @@
 	}
 
 	function crossTabHorizontalClick() {
-
+		
 		var horval = $("#HorizontalID").val();
+		var vertval = $("#VerticalID").val();
 
-		//reset ver and pb so none are disabled/hidden
+		//Reset ver and pb so none are disabled/hidden
 		$('#VerticalID option').removeAttr('disabled');
 		$('#PageBreakID option').removeAttr('disabled');
 
-		//now hide/disable matching items in ver and pb
-		$('#VerticalID option, #PageBreakID option').filter(function () {
+		//Hide/disable matching items in vertical
+		$('#VerticalID option').filter(function () {
 			return $(this).val() == horval;
+		}).attr('disabled', 'disabled');
+
+		//Hide/disable matching items in pagebreak
+		$('#PageBreakID option').filter(function () {
+			return $(this).val() == vertval || $(this).val() == horval;
 		}).attr('disabled', 'disabled');
 
 		//reset ver if it is selected by hor
@@ -307,13 +313,19 @@
 		var horval = $("#HorizontalID").val();
 		var vertval = $("#VerticalID").val();
 
-		//reset ver and pb so none are disabled/hidden
+		//Reset hor and pb so none are disabled/hidden
+		$('#HorizontalID option').removeAttr('disabled');
 		$('#PageBreakID option').removeAttr('disabled');
 
-		//now hide/disable matching items in ver and pb
+		//Hide/disable matching items in horizontal col
+		$('#HorizontalID option').filter(function () {
+			return $(this).val() == vertval;
+		}).attr('disabled', 'disabled');
+
+		//Hide/disable matching items in pagebreak
 		$('#PageBreakID option').filter(function () {
 			return $(this).val() == vertval || $(this).val() == horval;
-		}).attr('disabled', 'disabled');
+		}).attr('disabled', 'disabled');		
 
 		//reset pb if it is selected by hor or ver
 		if ($("#PageBreakID option:selected").val() == vertval || $("#PageBreakID option:selected").val() == horval) {
