@@ -62,66 +62,66 @@
 				<table id="tblNineBox_def" style="">
 					<tr>
 						<td class="yaxismajor" rowspan="3">
-							<p>@Html.TextBoxFor(Function(m) m.YAxisLabel)</p>
+							<p>@Html.TextBoxFor(Function(m) m.YAxisLabel, New With {.maxlength = 30})</p>
 						</td>
 						<td class="yaxisminor">
-							<p>@Html.TextBoxFor(Function(m) m.YAxisSubLabel1)</p>
+							<p>@Html.TextBoxFor(Function(m) m.YAxisSubLabel1, New With {.maxlength = 30})</p>
 						</td>
 						<td id="nineBoxR1C1" class="nineBoxGridCell">
-							<p>@Html.TextAreaFor(Function(m) m.Description1)</p>
+							<p>@Html.TextAreaFor(Function(m) m.Description1, New With {.maxlength = 30})</p>
 							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc1)</p>
 						</td>
 						<td id="nineBoxR1C2" class="nineBoxGridCell">
-							<p>@Html.TextAreaFor(Function(m) m.Description2)</p>
+							<p>@Html.TextAreaFor(Function(m) m.Description2, New With {.maxlength = 30})</p>
 							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc2)</p>
 						</td>
 						<td id="nineBoxR1C3" class="nineBoxGridCell">
-							<p>@Html.TextAreaFor(Function(m) m.Description3)</p>
+							<p>@Html.TextAreaFor(Function(m) m.Description3, New With {.maxlength = 30})</p>
 							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc3)</p>
 						</td>
 					</tr>
 					<tr>
 						<td class="yaxisminor">
-							<p>@Html.TextBoxFor(Function(m) m.YAxisSubLabel2)</p>
+							<p>@Html.TextBoxFor(Function(m) m.YAxisSubLabel2, New With {.maxlength = 30})</p>
 						</td>
 						<td id="nineBoxR2C1" class="nineBoxGridCell">
-							<p>@Html.TextAreaFor(Function(m) m.Description4)</p>
+							<p>@Html.TextAreaFor(Function(m) m.Description4, New With {.maxlength = 30})</p>
 							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc4)</p>
 						</td>
 						<td id="nineBoxR2C2" class="nineBoxGridCell">
-							<p>@Html.TextAreaFor(Function(m) m.Description5)</p>
+							<p>@Html.TextAreaFor(Function(m) m.Description5, New With {.maxlength = 30})</p>
 							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc5)</p>
 						</td>
 						<td id="nineBoxR2C3" class="nineBoxGridCell">
-							<p>@Html.TextAreaFor(Function(m) m.Description6)</p>
+							<p>@Html.TextAreaFor(Function(m) m.Description6, New With {.maxlength = 30})</p>
 							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc6)</p>
 						</td>
 					</tr>
 					<tr>
 						<td class="yaxisminor">
-							<p>@Html.TextBoxFor(Function(m) m.YAxisSubLabel3)</p>
+							<p>@Html.TextBoxFor(Function(m) m.YAxisSubLabel3, New With {.maxlength = 30})</p>
 						</td>
 						<td id="nineBoxR3C1" class="nineBoxGridCell">
-							<p>@Html.TextAreaFor(Function(m) m.Description7)</p>
+							<p>@Html.TextAreaFor(Function(m) m.Description7, New With {.maxlength = 30})</p>
 							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc7)</p>
 						</td>
 						<td id="nineBoxR3C2" class="nineBoxGridCell">
-							<p>@Html.TextAreaFor(Function(m) m.Description8)</p>
+							<p>@Html.TextAreaFor(Function(m) m.Description8, New With {.maxlength = 30})</p>
 							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc8)</p>
 						</td>
 						<td id="nineBoxR3C3" class="nineBoxGridCell">
-							<p>@Html.TextAreaFor(Function(m) m.Description9)</p>
+							<p>@Html.TextAreaFor(Function(m) m.Description9, New With {.maxlength = 30})</p>
 							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc9)</p>
 						</td>
 					</tr>
 					<tr>
 						<td colspan="2" rowspan="2" class="xaxis"></td>
-						<td class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisSubLabel1)</td>
-						<td class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisSubLabel2)</td>
-						<td class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisSubLabel3)</td>
+						<td class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisSubLabel1, New With {.maxlength = 30})</td>
+						<td class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisSubLabel2, New With {.maxlength = 30})</td>
+						<td class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisSubLabel3, New With {.maxlength = 30})</td>
 					</tr>
 					<tr>
-						<td colspan="3" class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisLabel)</td>
+						<td colspan="3" class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisLabel, New With {.maxlength = 30})</td>
 					</tr>
 				</table>
 			</td>
