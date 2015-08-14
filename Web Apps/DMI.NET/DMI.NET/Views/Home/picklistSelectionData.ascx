@@ -142,10 +142,10 @@
 			}).jqGrid('hideCol', 'cb');
 
 			//resize the grid to the height of its container.		
-			var workPageHeight = $('.optiondatagridpage').outerHeight(true);
-			var pageTitleHeight = $('.optiondatagridpage .pageTitle').outerHeight(true);
-			var dropdownHeight = $('.optiondatagridpage .nowrap').outerHeight(true);
-			var footerheight = $('.optiondatagridpage footer').outerHeight(true);
+			var workPageHeight = $('#PicklistSelection.optiondatagridpage').outerHeight(true);
+			var pageTitleHeight = $('#PicklistSelection.optiondatagridpage .pageTitle').outerHeight(true);
+			var dropdownHeight = $('#PicklistSelection.optiondatagridpage .nowrap').outerHeight(true);
+			var footerheight = $('#PicklistSelection.optiondatagridpage footer').outerHeight(true);
 
 			var newGridHeight = workPageHeight - pageTitleHeight - dropdownHeight - footerheight;
 

@@ -354,7 +354,7 @@
 
 </script>
 
-<div class="absolutefull optiondatagridpage">
+<div id="PicklistSelection" class="absolutefull optiondatagridpage">
 	<div>
 		<span class="pageTitle">
 			<%
