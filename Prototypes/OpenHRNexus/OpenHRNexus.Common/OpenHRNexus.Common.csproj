@@ -58,6 +58,7 @@
     <Compile Include="Models\DynamicDataModel.cs" />
     <Compile Include="Models\Personnel_Records_Model.cs" />
     <Compile Include="Models\tbuser_Languages_Model.cs" />
+    <Compile Include="Models\WebFormModel.cs" />
     <Compile Include="NServiceBusConfiguration\ConfigErrorQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
