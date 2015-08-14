@@ -27,7 +27,7 @@ namespace OpenHRNexus.WebAPI.Controllers
 		public IEnumerable<KeyValuePair<string, string>> GetResourceValues([FromUri] List<string> parameter)
 		{
 			return parameter.ToDictionary(s => s, s => Resource.ResourceManager.GetString(s));
-		}
+		}        
 
 		[HttpGet]
 		[Authorize(Roles="OpenHRUser")]
@@ -69,5 +69,13 @@ namespace OpenHRNexus.WebAPI.Controllers
 
 			return new[] { "Welcome." };
 		}
-	}
+
+        [HttpGet]
+        [Authorize(Roles = "OpenHRUser")]
+        public IEnumerable<string> InstantiateProcess(string InstanceId, string ElementId, bool NewRecord)
+        {
+            return new[] { "1", "2" };
+        }
+
+    }
 }
