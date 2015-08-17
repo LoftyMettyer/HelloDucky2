@@ -12,6 +12,7 @@ namespace OpenHRNexus.Common.Models
     public class WebFormFields
     {
         public int field_id { get; set; }
+        public int field_columnid { get; set; }
         public string field_title { get; set; }
         public string field_type { get; set; }
         public string field_value { get; set; }
