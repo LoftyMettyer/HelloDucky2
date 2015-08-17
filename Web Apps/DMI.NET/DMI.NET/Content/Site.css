@@ -469,7 +469,7 @@ select.readonly {
 #LegendCharacter {width: 30px}
 #frmPostCalendarEvent select {width: 100%;}
 #frmPostCalendarEvent #EventName {width: 99%;}
-#frmPostCalendarEvent #txtEventFilter{width: 85%;} 
+#frmPostCalendarEvent #txtEventFilter{width: 84%;} 
 #frmPostCalendarEvent fieldset {border:0}
 #frmPostCalendarEvent .tablecell {padding-bottom: 5px}
 
@@ -715,7 +715,7 @@ select.readonly {
 
 #ReportChildTableFilterDiv #txtChildFilter, 
 #ReportChildTableOrderDiv #txtFieldRecOrder {
-		width: 93%;
+		width: 92%;
 }
 
 #definitionPropertiesFields {

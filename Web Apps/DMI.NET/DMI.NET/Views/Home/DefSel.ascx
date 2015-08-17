@@ -574,9 +574,9 @@
 					<td height="10" colspan="3">
 						<table width="100%" class="invisible">
 							<tr>
-								<td style="width: 44px;">Table :
+								<td style="width: 51px;">Table :
 								</td>
-								<td width="10">&nbsp;
+								<td width="5">&nbsp;
 								</td>
 								<td width="175">
 									<select id="selectTable" name="selectTable" class="combo" style="height: 22px; width: 200px">
