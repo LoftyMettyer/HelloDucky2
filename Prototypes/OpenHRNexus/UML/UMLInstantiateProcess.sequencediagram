@@ -133,16 +133,16 @@ Applies translations from header (accept-language)</body>
               <lifelineMoniker Id="e2b52345-1d2c-4029-8a97-c74b20dac57e" LastKnownName="Nexus ApplicationUserManager" />
             </covered>
           </messageOccurrenceSpecification>
-          <messageOccurrenceSpecification Id="8b30c1db-1ada-483b-9b60-6a36946f83ea" name="MessageOccurrenceSpecification7">
-            <elementDefinition Id="46b944b2-6410-4ce5-b4d7-2e5d995d53b5" />
-            <covered>
-              <lifelineMoniker Id="e2b52345-1d2c-4029-8a97-c74b20dac57e" LastKnownName="Nexus ApplicationUserManager" />
-            </covered>
-          </messageOccurrenceSpecification>
           <messageOccurrenceSpecification Id="de48f701-3d23-42c6-9531-aa2b028ccbdc" name="MessageOccurrenceSpecification8">
             <elementDefinition Id="2a8186f9-0835-4ebb-b00f-fbe2b4d617ad" />
             <covered>
               <lifelineMoniker Id="94c70eb6-3f2d-43b7-be4c-ac27d882ec97" LastKnownName="Nexus WebAPI" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="8b30c1db-1ada-483b-9b60-6a36946f83ea" name="MessageOccurrenceSpecification7">
+            <elementDefinition Id="46b944b2-6410-4ce5-b4d7-2e5d995d53b5" />
+            <covered>
+              <lifelineMoniker Id="e2b52345-1d2c-4029-8a97-c74b20dac57e" LastKnownName="Nexus ApplicationUserManager" />
             </covered>
           </messageOccurrenceSpecification>
           <executionOccurrenceSpecification Id="7abf44b7-5ed3-4d5e-a1f3-608558be8c44" name="ExecutionOccurrenceSpecification4">
@@ -665,16 +665,16 @@ Applies translations from header (accept-language)</body>
               <lifelineMoniker Id="2669795a-6957-4d8b-898f-dda0f990a135" LastKnownName="Nexus Data Access Layer" />
             </covered>
           </executionOccurrenceSpecification>
-          <messageOccurrenceSpecification Id="14688996-eda2-485a-b6c6-95200b64f10d" name="MessageOccurrenceSpecification13">
-            <elementDefinition Id="5987a1a7-63d0-4e00-b4e0-d5598f7a5aa1" />
-            <covered>
-              <lifelineMoniker Id="94c70eb6-3f2d-43b7-be4c-ac27d882ec97" LastKnownName="Nexus WebAPI" />
-            </covered>
-          </messageOccurrenceSpecification>
           <messageOccurrenceSpecification Id="6f49bac6-d715-4c03-933d-911d2ef2d730" name="MessageOccurrenceSpecification14">
             <elementDefinition Id="e432d23f-f2c0-4d3e-87ec-3e6564c8c54a" />
             <covered>
               <lifelineMoniker Id="2669795a-6957-4d8b-898f-dda0f990a135" LastKnownName="Nexus Data Access Layer" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="14688996-eda2-485a-b6c6-95200b64f10d" name="MessageOccurrenceSpecification13">
+            <elementDefinition Id="5987a1a7-63d0-4e00-b4e0-d5598f7a5aa1" />
+            <covered>
+              <lifelineMoniker Id="94c70eb6-3f2d-43b7-be4c-ac27d882ec97" LastKnownName="Nexus WebAPI" />
             </covered>
           </messageOccurrenceSpecification>
           <messageOccurrenceSpecification Id="fc024b89-2c19-402a-ab92-7702e2fe3e3e" name="MessageOccurrenceSpecification16">
@@ -790,7 +790,7 @@ Applies translations from header (accept-language)</body>
           </lifeline>
         </lifelines>
         <messages>
-          <message Id="2b11227c-7acf-4181-81d1-70be6c6204e8" name="api/resource/instantiateprocess" messageKind="Complete" messageSort="SynchCall" createSelfMessage="false">
+          <message Id="2b11227c-7acf-4181-81d1-70be6c6204e8" name="api/data/instantiateprocess" messageKind="Complete" messageSort="SynchCall" createSelfMessage="false">
             <elementDefinition Id="46606d6b-04dc-459b-8f87-ba6c0bd6f62c" />
             <sendEvent>
               <messageOccurrenceSpecificationMoniker Id="7dcb51ff-e3ba-42f6-accd-6e09c6548a43" LastKnownName="MessageOccurrenceSpecification1" />

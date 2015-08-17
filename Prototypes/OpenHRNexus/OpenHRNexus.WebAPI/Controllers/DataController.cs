@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Web.Http;
-using System.Web.Mvc;
 using OpenHRNexus.Common.Models;
 using OpenHRNexus.Service.Interfaces;
 using OpenHRNexus.WebAPI.Extensions;
@@ -12,6 +11,7 @@ namespace OpenHRNexus.WebAPI.Controllers {
 //	[Authorize(Roles = "OpenHRUser")]
 	public class DataController : ApiController {
 		private readonly IDataService _dataService;
+        //private readonly IWorkflowService _workflowService;
 
 		public DataController() {
 		}
@@ -21,8 +21,8 @@ namespace OpenHRNexus.WebAPI.Controllers {
 			_dataService = dataService;
 		}
 
-		[System.Web.Http.HttpGet]
-		public MvcHtmlString GetReportData(string id)
+		[HttpGet]
+		public string GetReportData(string id)
 		{
 			int dataId;
 
@@ -31,14 +31,40 @@ namespace OpenHRNexus.WebAPI.Controllers {
 			if (result)
 			{
 				var data = _dataService.GetData(dataId);
-				return data.ToJsonResult();
+				return data.ToJsonResult().ToString();
 			}
 			else
 			{
 				var data = _dataService.GetData();
-				return data.ToJsonResult();
+				return data.ToJsonResult().ToString();
 			}
 
 		}
-	}
+
+        [HttpGet]
+        [Authorize(Roles = "OpenHRUser")]
+        public IEnumerable<WebFormModel> InstantiateProcess(int instanceId, int elementId, bool newRecord)
+        {
+
+            var fields = _dataService.GetWebFormFields(elementId);
+
+            //            fields.Translate("en-gb");
+
+            List<WebFormModel> form = new List<WebFormModel>();
+            form.Add(new WebFormModel
+            {
+                form_id = "1",
+                form_name = "Test Form",
+                form_fields = fields.ToList()
+            });
+
+            IEnumerable<WebFormModel> webFormModels = form;
+
+            return webFormModels;
+
+        }
+
+
+
+    }
 }

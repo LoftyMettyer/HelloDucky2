@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using OpenHRNexus.Repository.SQLServer;
-using OpenHRNexus.Service.Interfaces;
 using OpenHRNexus.Service.Services;
 using OpenHRNexus.WebAPI.Controllers;
+using OpenHRNexus.Common.Models;
 
 namespace OpenHRNexus.WebAPI.Tests.Controllers
 {
@@ -27,7 +22,6 @@ namespace OpenHRNexus.WebAPI.Tests.Controllers
             _mockService = new DataService(_mockRepository);
             _mockController = new DataController(_mockService);
         }
-
 
         [TestMethod]
 		public void GetReportData_ReturnsNonNullForSingleRow()
@@ -53,8 +47,22 @@ namespace OpenHRNexus.WebAPI.Tests.Controllers
 		}
 
 
+        [TestMethod]
+        public void InstanciateProcess_IsNotNull()
+        {
+            var result = _mockController.InstantiateProcess(1, 1, false);
+            Assert.IsNotNull(result);
+        }
 
-	}
+        [TestMethod]
+        public void InstanciateProcess_ContainsWebformModels()
+        {
+            var result = _mockController.InstantiateProcess(1, 1, false);
+            Assert.IsTrue(result is IEnumerable<WebFormModel>);
+        }
+
+
+    }
 
 
 }

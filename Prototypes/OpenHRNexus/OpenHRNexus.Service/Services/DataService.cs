@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using OpenHRNexus.Common.Models;
 using OpenHRNexus.Repository.Interfaces;
 using OpenHRNexus.Service.Interfaces;
@@ -18,10 +19,15 @@ namespace OpenHRNexus.Service.Services
 			return _dataRepository.GetData(id);
 		}
 
-
 		public IEnumerable<DynamicDataModel> GetData()
 		{
 			return _dataRepository.GetData();
 		}
-	}
+
+        public IEnumerable<WebFormFields> GetWebFormFields(int id)
+        {
+            return _dataRepository.GetWebFormFields(id);           
+        }
+
+    }
 }

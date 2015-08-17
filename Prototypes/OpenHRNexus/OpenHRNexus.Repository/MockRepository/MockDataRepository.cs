@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OpenHRNexus.Common.Models;
 using OpenHRNexus.Repository.Interfaces;
@@ -39,5 +40,10 @@ namespace OpenHRNexus.Repository.MockRepository
 			return data;
 
 		}
-	}
+
+        public IEnumerable<WebFormFields> GetWebFormFields(int id)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
