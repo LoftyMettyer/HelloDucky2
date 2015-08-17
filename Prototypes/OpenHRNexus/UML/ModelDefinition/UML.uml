@@ -56,6 +56,10 @@ Applies translations from header (accept-language)</body>
             Id="8f96f584-a5c8-447d-a422-ea7567b0b4df">
             <body>Returns Status Code and JSON object. Either webform or 'service step initiated'</body>
           </comment>
+          <comment
+            Id="16f7490a-5afd-44cd-8025-43a60b2e5dfd">
+            <body>Retrieves 'Next Step' endpoints and buttons for form</body>
+          </comment>
         </ownedCommentsInternal>
         <fragments>
           <behaviorExecutionSpecification
@@ -119,6 +123,14 @@ Applies translations from header (accept-language)</body>
               <messageOccurrenceSpecificationMoniker
                 Id="325d886f-469d-411a-bcf8-e89efcdb5bc3"
                 LastKnownName="MessageOccurrenceSpecification20"
+                LastKnownLocation="UML.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="8aa1f3a1-1c13-4ef8-9fc3-8bb69e9f725e"
+                LastKnownName="MessageOccurrenceSpecification37"
+                LastKnownLocation="UML.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="5a83e004-6d44-42ce-8e99-b3db08962c64"
+                LastKnownName="MessageOccurrenceSpecification40"
                 LastKnownLocation="UML.uml" />
               <operandOccurrenceSpecificationMoniker
                 Id="e0649f75-c5ad-4c96-bab7-d3f3849764d4"
@@ -363,22 +375,22 @@ Applies translations from header (accept-language)</body>
             </covered>
           </messageOccurrenceSpecification>
           <messageOccurrenceSpecification
-            Id="d953dbce-cbd0-440f-a211-839c47e739ce"
-            name="MessageOccurrenceSpecification32">
-            <covered>
-              <lifelineMoniker
-                Id="38a1a638-65cb-4aa6-aa6e-a33d3e9c10fa"
-                LastKnownName="Nexus WebAPI"
-                LastKnownLocation="UML.uml" />
-            </covered>
-          </messageOccurrenceSpecification>
-          <messageOccurrenceSpecification
             Id="7297b0d9-276a-4f85-9d13-a24ad5db5b15"
             name="MessageOccurrenceSpecification31">
             <covered>
               <lifelineMoniker
                 Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
                 LastKnownName="Nexus Data Access Layer"
+                LastKnownLocation="UML.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="d953dbce-cbd0-440f-a211-839c47e739ce"
+            name="MessageOccurrenceSpecification32">
+            <covered>
+              <lifelineMoniker
+                Id="38a1a638-65cb-4aa6-aa6e-a33d3e9c10fa"
+                LastKnownName="Nexus WebAPI"
                 LastKnownLocation="UML.uml" />
             </covered>
           </messageOccurrenceSpecification>
@@ -471,6 +483,16 @@ Applies translations from header (accept-language)</body>
             </operands>
           </combinedFragment>
           <operandOccurrenceSpecification
+            Id="73a6dd9f-72d4-402b-b1a8-63cd03f1eb46"
+            name="OperandOccurrenceSpecification5">
+            <covered>
+              <lifelineMoniker
+                Id="fba4b5f2-581e-4d09-acd7-64d55b642651"
+                LastKnownName="Nexus DB"
+                LastKnownLocation="UML.uml" />
+            </covered>
+          </operandOccurrenceSpecification>
+          <operandOccurrenceSpecification
             Id="b19566d7-ea9f-4078-8165-03d6baf4b3b4"
             name="OperandOccurrenceSpecification1">
             <covered>
@@ -487,16 +509,6 @@ Applies translations from header (accept-language)</body>
               <lifelineMoniker
                 Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
                 LastKnownName="Nexus Data Access Layer"
-                LastKnownLocation="UML.uml" />
-            </covered>
-          </operandOccurrenceSpecification>
-          <operandOccurrenceSpecification
-            Id="73a6dd9f-72d4-402b-b1a8-63cd03f1eb46"
-            name="OperandOccurrenceSpecification5">
-            <covered>
-              <lifelineMoniker
-                Id="fba4b5f2-581e-4d09-acd7-64d55b642651"
-                LastKnownName="Nexus DB"
                 LastKnownLocation="UML.uml" />
             </covered>
           </operandOccurrenceSpecification>
@@ -629,16 +641,6 @@ Applies translations from header (accept-language)</body>
             </covered>
           </executionOccurrenceSpecification>
           <messageOccurrenceSpecification
-            Id="7f8e596f-b6b3-42b4-a54f-a775fbb8b7b1"
-            name="MessageOccurrenceSpecification25">
-            <covered>
-              <lifelineMoniker
-                Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
-                LastKnownName="Nexus Data Access Layer"
-                LastKnownLocation="UML.uml" />
-            </covered>
-          </messageOccurrenceSpecification>
-          <messageOccurrenceSpecification
             Id="7b1eba2a-9adc-4654-b90d-18a4134853c0"
             name="MessageOccurrenceSpecification26">
             <covered>
@@ -649,12 +651,12 @@ Applies translations from header (accept-language)</body>
             </covered>
           </messageOccurrenceSpecification>
           <messageOccurrenceSpecification
-            Id="6d6065ce-c5f0-47f3-ab57-0c39373472ee"
-            name="MessageOccurrenceSpecification27">
+            Id="7f8e596f-b6b3-42b4-a54f-a775fbb8b7b1"
+            name="MessageOccurrenceSpecification25">
             <covered>
               <lifelineMoniker
-                Id="fba4b5f2-581e-4d09-acd7-64d55b642651"
-                LastKnownName="Nexus DB"
+                Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
+                LastKnownName="Nexus Data Access Layer"
                 LastKnownLocation="UML.uml" />
             </covered>
           </messageOccurrenceSpecification>
@@ -665,6 +667,16 @@ Applies translations from header (accept-language)</body>
               <lifelineMoniker
                 Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
                 LastKnownName="Nexus Data Access Layer"
+                LastKnownLocation="UML.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="6d6065ce-c5f0-47f3-ab57-0c39373472ee"
+            name="MessageOccurrenceSpecification27">
+            <covered>
+              <lifelineMoniker
+                Id="fba4b5f2-581e-4d09-acd7-64d55b642651"
+                LastKnownName="Nexus DB"
                 LastKnownLocation="UML.uml" />
             </covered>
           </messageOccurrenceSpecification>
@@ -687,22 +699,22 @@ Applies translations from header (accept-language)</body>
             </covered>
           </executionOccurrenceSpecification>
           <messageOccurrenceSpecification
-            Id="b96e53c4-0d20-42c2-be9b-d3cd842356d7"
-            name="MessageOccurrenceSpecification11">
-            <covered>
-              <lifelineMoniker
-                Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
-                LastKnownName="Nexus Data Access Layer"
-                LastKnownLocation="UML.uml" />
-            </covered>
-          </messageOccurrenceSpecification>
-          <messageOccurrenceSpecification
             Id="3fae18ae-e978-4675-a665-85a2d0d5178e"
             name="MessageOccurrenceSpecification12">
             <covered>
               <lifelineMoniker
                 Id="38a1a638-65cb-4aa6-aa6e-a33d3e9c10fa"
                 LastKnownName="Nexus WebAPI"
+                LastKnownLocation="UML.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="b96e53c4-0d20-42c2-be9b-d3cd842356d7"
+            name="MessageOccurrenceSpecification11">
+            <covered>
+              <lifelineMoniker
+                Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
+                LastKnownName="Nexus Data Access Layer"
                 LastKnownLocation="UML.uml" />
             </covered>
           </messageOccurrenceSpecification>
@@ -948,16 +960,114 @@ Applies translations from header (accept-language)</body>
                 LastKnownLocation="UML.uml" />
             </covered>
           </executionOccurrenceSpecification>
-          <operandOccurrenceSpecification
-            Id="e0649f75-c5ad-4c96-bab7-d3f3849764d4"
-            name="OperandOccurrenceSpecification2">
+          <behaviorExecutionSpecification
+            Id="98c83f74-92a4-40fb-a2c2-0a30fc07aa03"
+            name="BehaviorExecutionSpecification10">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
+                LastKnownName="Nexus Data Access Layer"
+                LastKnownLocation="UML.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="d593375c-0a7c-4d49-a4b8-659a5f5abcb6"
+                LastKnownName="ExecutionOccurrenceSpecification20"
+                LastKnownLocation="UML.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="c09ca92c-33bc-4a56-987c-f3faa2fbc1ad"
+                LastKnownName="ExecutionOccurrenceSpecification19"
+                LastKnownLocation="UML.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="f214b201-5f16-4477-bc0c-27e91017ff3e"
+                LastKnownName="MessageOccurrenceSpecification38"
+                LastKnownLocation="UML.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="20e637f1-3336-4ecc-901e-49c6603270e7"
+                LastKnownName="MessageOccurrenceSpecification39"
+                LastKnownLocation="UML.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="c09ca92c-33bc-4a56-987c-f3faa2fbc1ad"
+            name="ExecutionOccurrenceSpecification19">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="488310a1-52fe-4f8f-bb4b-07148fdab10e"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="UML.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
+                LastKnownName="Nexus Data Access Layer"
+                LastKnownLocation="UML.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="f214b201-5f16-4477-bc0c-27e91017ff3e"
+            name="MessageOccurrenceSpecification38">
+            <covered>
+              <lifelineMoniker
+                Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
+                LastKnownName="Nexus Data Access Layer"
+                LastKnownLocation="UML.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="8aa1f3a1-1c13-4ef8-9fc3-8bb69e9f725e"
+            name="MessageOccurrenceSpecification37">
             <covered>
               <lifelineMoniker
                 Id="38a1a638-65cb-4aa6-aa6e-a33d3e9c10fa"
                 LastKnownName="Nexus WebAPI"
                 LastKnownLocation="UML.uml" />
             </covered>
-          </operandOccurrenceSpecification>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="20e637f1-3336-4ecc-901e-49c6603270e7"
+            name="MessageOccurrenceSpecification39">
+            <covered>
+              <lifelineMoniker
+                Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
+                LastKnownName="Nexus Data Access Layer"
+                LastKnownLocation="UML.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="5a83e004-6d44-42ce-8e99-b3db08962c64"
+            name="MessageOccurrenceSpecification40">
+            <covered>
+              <lifelineMoniker
+                Id="38a1a638-65cb-4aa6-aa6e-a33d3e9c10fa"
+                LastKnownName="Nexus WebAPI"
+                LastKnownLocation="UML.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="d593375c-0a7c-4d49-a4b8-659a5f5abcb6"
+            name="ExecutionOccurrenceSpecification20">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="58726823-cfdf-47ff-936e-9ec6a3a9c5ca"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="UML.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
+                LastKnownName="Nexus Data Access Layer"
+                LastKnownLocation="UML.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
           <operandOccurrenceSpecification
             Id="4bae5dfd-925e-44bc-8489-a95496c6e66e"
             name="OperandOccurrenceSpecification4">
@@ -975,6 +1085,16 @@ Applies translations from header (accept-language)</body>
               <lifelineMoniker
                 Id="fba4b5f2-581e-4d09-acd7-64d55b642651"
                 LastKnownName="Nexus DB"
+                LastKnownLocation="UML.uml" />
+            </covered>
+          </operandOccurrenceSpecification>
+          <operandOccurrenceSpecification
+            Id="e0649f75-c5ad-4c96-bab7-d3f3849764d4"
+            name="OperandOccurrenceSpecification2">
+            <covered>
+              <lifelineMoniker
+                Id="38a1a638-65cb-4aa6-aa6e-a33d3e9c10fa"
+                LastKnownName="Nexus WebAPI"
                 LastKnownLocation="UML.uml" />
             </covered>
           </operandOccurrenceSpecification>
@@ -1123,22 +1243,22 @@ Applies translations from header (accept-language)</body>
             </covered>
           </messageOccurrenceSpecification>
           <messageOccurrenceSpecification
-            Id="f955f155-b8c2-402a-8888-342438da26a2"
-            name="MessageOccurrenceSpecification15">
-            <covered>
-              <lifelineMoniker
-                Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
-                LastKnownName="Nexus Data Access Layer"
-                LastKnownLocation="UML.uml" />
-            </covered>
-          </messageOccurrenceSpecification>
-          <messageOccurrenceSpecification
             Id="72757525-f16f-4f91-9a58-566df25372a7"
             name="MessageOccurrenceSpecification16">
             <covered>
               <lifelineMoniker
                 Id="38a1a638-65cb-4aa6-aa6e-a33d3e9c10fa"
                 LastKnownName="Nexus WebAPI"
+                LastKnownLocation="UML.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="f955f155-b8c2-402a-8888-342438da26a2"
+            name="MessageOccurrenceSpecification15">
+            <covered>
+              <lifelineMoniker
+                Id="1f3afe2b-5588-4567-9b4a-e36ad69c439c"
+                LastKnownName="Nexus Data Access Layer"
                 LastKnownLocation="UML.uml" />
             </covered>
           </messageOccurrenceSpecification>
@@ -1181,22 +1301,22 @@ Applies translations from header (accept-language)</body>
             </covered>
           </operandOccurrenceSpecification>
           <messageOccurrenceSpecification
-            Id="9eb71cb5-5e74-4f5a-8af5-cc537b60b19c"
-            name="MessageOccurrenceSpecification4">
-            <covered>
-              <lifelineMoniker
-                Id="58a10af4-dce1-41ac-a742-bf82582c1199"
-                LastKnownName="Client Button Click"
-                LastKnownLocation="UML.uml" />
-            </covered>
-          </messageOccurrenceSpecification>
-          <messageOccurrenceSpecification
             Id="47aec666-4d5c-4aa5-86f5-38d132b5d12c"
             name="MessageOccurrenceSpecification3">
             <covered>
               <lifelineMoniker
                 Id="38a1a638-65cb-4aa6-aa6e-a33d3e9c10fa"
                 LastKnownName="Nexus WebAPI"
+                LastKnownLocation="UML.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="9eb71cb5-5e74-4f5a-8af5-cc537b60b19c"
+            name="MessageOccurrenceSpecification4">
+            <covered>
+              <lifelineMoniker
+                Id="58a10af4-dce1-41ac-a742-bf82582c1199"
+                LastKnownName="Client Button Click"
                 LastKnownLocation="UML.uml" />
             </covered>
           </messageOccurrenceSpecification>
@@ -1301,6 +1421,14 @@ Applies translations from header (accept-language)</body>
               <executionOccurrenceSpecificationMoniker
                 Id="f394a3f1-4232-42f7-b84c-a2ca6dbb2c65"
                 LastKnownName="ExecutionOccurrenceSpecification10"
+                LastKnownLocation="UML.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="c09ca92c-33bc-4a56-987c-f3faa2fbc1ad"
+                LastKnownName="ExecutionOccurrenceSpecification19"
+                LastKnownLocation="UML.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="d593375c-0a7c-4d49-a4b8-659a5f5abcb6"
+                LastKnownName="ExecutionOccurrenceSpecification20"
                 LastKnownLocation="UML.uml" />
               <operandOccurrenceSpecificationMoniker
                 Id="4bae5dfd-925e-44bc-8489-a95496c6e66e"
@@ -1606,6 +1734,44 @@ Applies translations from header (accept-language)</body>
             </receiveEvent>
           </message>
           <message
+            Id="b7f98b97-f679-4eb9-908b-bd7d88575f10"
+            name="GetFormNavigationURLs"
+            messageKind="Complete"
+            messageSort="SynchCall"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="8aa1f3a1-1c13-4ef8-9fc3-8bb69e9f725e"
+                LastKnownName="MessageOccurrenceSpecification37"
+                LastKnownLocation="UML.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="f214b201-5f16-4477-bc0c-27e91017ff3e"
+                LastKnownName="MessageOccurrenceSpecification38"
+                LastKnownLocation="UML.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="84093420-7523-4f7f-b850-d81fde253d3f"
+            name="&lt;&lt;return&gt;&gt;"
+            messageKind="Complete"
+            messageSort="Reply"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="20e637f1-3336-4ecc-901e-49c6603270e7"
+                LastKnownName="MessageOccurrenceSpecification39"
+                LastKnownLocation="UML.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="5a83e004-6d44-42ce-8e99-b3db08962c64"
+                LastKnownName="MessageOccurrenceSpecification40"
+                LastKnownLocation="UML.uml" />
+            </receiveEvent>
+          </message>
+          <message
             Id="e5b53861-9fb4-437d-a65f-b24e5b2ef321"
             name="Initiate ProcessService"
             messageKind="Complete"
@@ -1743,6 +1909,16 @@ Applies translations from header (accept-language)</body>
     <packageHasNamedElement>
       <executionEvent
         Id="4262a37d-1b3e-4df3-a137-3e3e3632c9ff"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="488310a1-52fe-4f8f-bb4b-07148fdab10e"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="58726823-cfdf-47ff-936e-9ec6a3a9c5ca"
         name="ExecutionEvent" />
     </packageHasNamedElement>
   </packagedElements>
