@@ -486,9 +486,10 @@
 		}
 	}
 
-	function setcancel() {
-
-		if (parseInt($("#txtSingleRecordID").val()) > 0) {
+	function setcancel() {				
+		
+		if (parseInt($("#txtSingleRecordID").val()) > 0) {			
+			refreshData();
 			menu_disableMenu();
 
 			$("#optionframe").hide();
