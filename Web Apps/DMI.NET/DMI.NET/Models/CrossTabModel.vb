@@ -19,8 +19,14 @@ Namespace Models
 
 		<Range(1, Integer.MaxValue, ErrorMessage:="Horizontal column not selected")>
 		Public Property HorizontalID As Integer
+
+		<DisplayName("Horizontal start")>
 		Public Property HorizontalStart As Double
+
+		<DisplayName("Horizontal stop")>
 		Public Property HorizontalStop As Double
+
+		<DisplayName("Horizontal increment")>
 		Public Property HorizontalIncrement As Double
 
 		<HiddenInput>
@@ -28,16 +34,28 @@ Namespace Models
 
 		<Range(1, Integer.MaxValue, ErrorMessage:="Vertical column not selected")>
 		Public Property VerticalID As Integer
+
+		<DisplayName("Vertical start")>
 		Public Property VerticalStart As Double
+
+		<DisplayName("Vertical stop")>
 		Public Property VerticalStop As Double
+
+		<DisplayName("Vertical increment")>
 		Public Property VerticalIncrement As Double
 
 		<HiddenInput>
 		Public Property VerticalDataType As ColumnDataType
 
 		Public Property PageBreakID As Integer
+
+		<DisplayName("Page break start")>
 		Public Property PageBreakStart As Double
+
+		<DisplayName("Page break stop")>
 		Public Property PageBreakStop As Double
+
+		<DisplayName("Page break increment")>
 		Public Property PageBreakIncrement As Double
 
 		<HiddenInput>

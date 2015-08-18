@@ -19,7 +19,11 @@ Namespace Models
 
 		<Range(1, Integer.MaxValue, ErrorMessage:="Horizontal column not selected")>
 		Public Property HorizontalID As Integer
+
+		<DisplayName("Horizontal start")>
 		Public Property HorizontalStart As Double
+
+		<DisplayName("Horizontal stop")>
 		Public Property HorizontalStop As Double
 
 		<HiddenInput>
@@ -27,7 +31,11 @@ Namespace Models
 
 		<Range(1, Integer.MaxValue, ErrorMessage:="Vertical column not selected")>
 		Public Property VerticalID As Integer
+
+		<DisplayName("Vertical start")>
 		Public Property VerticalStart As Double
+
+		<DisplayName("Vertical stop")>
 		Public Property VerticalStop As Double
 
 		<HiddenInput>
@@ -114,14 +122,14 @@ Namespace Models
 		Public Overrides Sub SetBaseTable(TableID As Integer)
 		End Sub
 
-		<RegularExpression("True", ErrorMessage:="Vertical Maximum Value must be greater than its Minimum Value")>
+		<RegularExpression("True", ErrorMessage:="Vertical maximum value must be greater than its Minimum Value")>
 		Public ReadOnly Property IsVerticalStopOK As Boolean
 			Get
 				Return (VerticalStop > VerticalStart)
 			End Get
 		End Property
 
-		<RegularExpression("True", ErrorMessage:="Horizontal Maximum Value must be greater than its Minimum Value")>
+		<RegularExpression("True", ErrorMessage:="Horizontal maximum value must be greater than its Minimum Value")>
 		Public ReadOnly Property IsHorizontalStopOK As Boolean
 			Get
 				Return (HorizontalStop > HorizontalStart)
