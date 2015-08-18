@@ -18,8 +18,10 @@ namespace OpenHRNexus.WebAPI {
 			_kernel.Bind<IAuthenticateService>().To<AuthenticateService>();
 			_kernel.Bind<IWelcomeMessageDataService>().To<WelcomeMessageDataService>();
 			_kernel.Bind<IDataService>().To<DataService>();
-	
-			OpenHRNexus.Service.Configuration.NinjectConfig.Config(_kernel);
+            _kernel.Bind<IEntityService>().To<EntityService>();
+
+
+            OpenHRNexus.Service.Configuration.NinjectConfig.Config(_kernel);
 		}
 
 		public IKernel Kernel { get { return _kernel; } }
