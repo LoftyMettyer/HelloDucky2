@@ -348,9 +348,12 @@
 			enableSaveButton();
 		});
 
-		$('textarea:not([readonly])').on("keyup", function () { //Keyup catches more keys than keypress (for example, Backspace)
-			$("#ctlRecordEdit #changed").val("false");
-			enableSaveButton();
+		$('textarea:not([readonly])').on("keyup", function (e) { //Keyup catches more keys than keypress (for example, Backspace)			
+			if (e.keyCode < 37 || e.keyCode > 40)
+			{		
+				$("#ctlRecordEdit #changed").val("false");
+				enableSaveButton();
+			}
 		});
 
 		//need char live, spinner, dropdown, textarea,
@@ -401,7 +404,7 @@
 
 	}
 
-	function enableSaveButton() {
+	function enableSaveButton() {		
 		if ($("#ctlRecordEdit #changed").val() == "false") {
 			$("#ctlRecordEdit #changed").val("true");
 			menu_toolbarEnableItem("mnutoolSaveRecord", true);
