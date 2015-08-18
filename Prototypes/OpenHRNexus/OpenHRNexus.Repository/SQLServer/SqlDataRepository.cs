@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using OpenHRNexus.Common.Enums;
 using OpenHRNexus.Common.Models;
 using OpenHRNexus.Repository.Interfaces;
 
 namespace OpenHRNexus.Repository.SQLServer
 {
-	public class SqlDataRepository : DbContext, IDataRepository
-	{
+	public class SqlDataRepository : DbContext, IDataRepository, IEntityRepository
+    {
 		public IEnumerable<DynamicDataModel> GetData(int id)
 		{
 			var result = Data
@@ -180,6 +182,32 @@ namespace OpenHRNexus.Repository.SQLServer
             return fields;
         }
 
+        public IEnumerable<EntityModel> GetEntities(EntityType? id)
+        {
+
+            List<EntityModel> entities = new List<EntityModel>();
+
+            entities.Add(new EntityModel
+            {
+                Id = 1,
+                Name = "Personnel"
+            });
+
+            entities.Add(new EntityModel
+            {
+                Id = 2,
+                Name = "Holiday Request"
+            });
+
+            entities.Add(new EntityModel
+            {
+                Id = 3,
+                Name = "My Bank Details"
+            });
+
+            return entities;
+
+        }
 
         public virtual DbSet<DynamicDataModel> Data { get; set; }
         public virtual DbSet<WebFormFields> WebFormFields { get; set; }

@@ -1,6 +1,5 @@
 ﻿using Ninject;
 using OpenHRNexus.Repository.Interfaces;
-using OpenHRNexus.Repository.MockRepository;
 using OpenHRNexus.Repository.MySQL;
 using OpenHRNexus.Repository.SQLServer;
 
@@ -12,6 +11,7 @@ namespace OpenHRNexus.Service.Configuration {
 			kernel.Bind<IAuthenticateRepository>().To<SqlAuthenticateRepository>();
 			kernel.Bind<IWelcomeMessageDataRepository>().To<SqlAuthenticateRepository>();
 			kernel.Bind<IDataRepository>().To<SqlDataRepository>();
-		}
+            kernel.Bind<IEntityRepository>().To<SqlDataRepository>();
+        }
 	}
 }

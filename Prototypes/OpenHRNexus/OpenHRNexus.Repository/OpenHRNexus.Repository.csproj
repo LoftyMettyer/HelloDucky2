@@ -63,6 +63,7 @@
     <Compile Include="DatabaseClasses\UserRole.cs" />
     <Compile Include="Enums\NewUserStatus.cs" />
     <Compile Include="Interfaces\IDataRepository.cs" />
+    <Compile Include="Interfaces\IEntityRepository.cs" />
     <Compile Include="Messages\RegisterNewUserMessage.cs" />
     <Compile Include="DatabaseClasses\WelcomeMessage.cs" />
     <Compile Include="Interfaces\IAuthenticateRepository.cs">

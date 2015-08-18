@@ -67,12 +67,14 @@
     <Compile Include="Interfaces\IAuthenticateEmail.cs" />
     <Compile Include="Interfaces\IAuthenticateService.cs" />
     <Compile Include="Interfaces\IDataService.cs" />
+    <Compile Include="Interfaces\IEntityService.cs" />
     <Compile Include="Interfaces\IPersonnelRecordsService.cs" />
     <Compile Include="Interfaces\ITbuserLanguagesService.cs" />
     <Compile Include="Interfaces\IWelcomeMessageDataService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AuthenticateService.cs" />
     <Compile Include="Services\DataService.cs" />
+    <Compile Include="Services\EntityService.cs" />
     <Compile Include="Services\PersonnelRecordsService.cs" />
     <Compile Include="Services\TbuserLanguagesService.cs" />
     <Compile Include="Services\WelcomeMessageDataService.cs" />
