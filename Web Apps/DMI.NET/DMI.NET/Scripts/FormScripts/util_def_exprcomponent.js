@@ -2669,7 +2669,7 @@ function validateComponent() {
 			// Convert the date to SQL format (use this as a validation check).
 			// An empty string is returned if the date is invalid.			
 			sValue = OpenHR.convertLocaleDateToSQL(sValue);
-			if ((sValue.length == 0) || (sValue == 'null')) {
+			if ((OpenHR.IsValidDate(sValue) == false) || ((sValue.length == 0) || (sValue == 'null'))) {
 				sErrorMsg = "Invalid date value entered.";
 			}
 		}
