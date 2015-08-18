@@ -4592,10 +4592,11 @@ function menu_LoadEventLog() {
 
 	function menu_toolbarEnableItem(itemId, fNewSetting) {
 
-		if ($("#" + itemId).length == 0) {
-	//console.log('Wrong menu item ID in menu_toolbarEnableItem: ' + itemId); //To detect menu items that exist in menu.js but not on fixedlinks.ascx
-}
-	
+		if ((($("#" + itemId).length) == 0) || ($("#" + itemId) == undefined)) {
+			//console.log('Wrong menu item ID in menu_toolbarEnableItem: ' + itemId); //To detect menu items that exist in menu.js but not on fixedlinks.ascx
+			return;
+		}
+
 	var currSrc = $("#" + itemId + " img:first").attr("src");
 
 	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
