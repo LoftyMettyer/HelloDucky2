@@ -41,7 +41,7 @@ namespace OpenHRNexus.Repository.MockRepository
 
 		}
 
-        public IEnumerable<WebFormFields> GetWebFormFields(int id)
+        public WebForm GetWebForm(int id)
         {
             throw new NotImplementedException();
         }

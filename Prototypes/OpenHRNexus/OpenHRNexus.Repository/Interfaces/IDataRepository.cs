@@ -7,7 +7,7 @@ namespace OpenHRNexus.Repository.Interfaces
 	{
 		IEnumerable<DynamicDataModel> GetData(int id);
 		IEnumerable<DynamicDataModel> GetData();
-        IEnumerable<WebFormFields> GetWebFormFields(int id);
+        WebForm GetWebForm(int id);
 
     }
 }

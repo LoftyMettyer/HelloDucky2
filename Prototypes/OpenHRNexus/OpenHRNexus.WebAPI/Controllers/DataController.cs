@@ -46,25 +46,20 @@ namespace OpenHRNexus.WebAPI.Controllers {
         public IEnumerable<WebFormModel> InstantiateProcess(int instanceId, int elementId, bool newRecord)
         {
 
-            var fields = _dataService.GetWebFormFields(elementId);
-
-            //            fields.Translate("en-gb");
+            var webForm = _dataService.GetWebForm(elementId);
 
             List<WebFormModel> form = new List<WebFormModel>();
             form.Add(new WebFormModel
             {
-                form_id = "1",
-                form_name = "Test Form",
-                form_fields = fields.ToList()
+                form_id = webForm.id.ToString(),
+                form_name = webForm.Name,
+                form_fields = webForm.Fields
             });
 
             IEnumerable<WebFormModel> webFormModels = form;
-
             return webFormModels;
 
         }
-
-
 
     }
 }

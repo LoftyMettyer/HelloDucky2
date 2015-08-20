@@ -26,12 +26,26 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\ArchitectureTools\Microsoft.VisualStudio.TeamArchitect.ModelingProject.targets" Condition="'$(VSToolsPath)' != ''" />
   <ItemGroup>
+    <Content Include="Request Screen.sequencediagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Request Screen.sequencediagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>Request Screen.sequencediagram</DependentUpon>
+    </Content>
     <Content Include="UMLInstantiateProcess.sequencediagram">
       <SubType>Content</SubType>
     </Content>
     <Content Include="UMLInstantiateProcess.sequencediagram.layout">
       <SubType>Content</SubType>
       <DependentUpon>UMLInstantiateProcess.sequencediagram</DependentUpon>
+    </Content>
+    <Content Include="UMLRetreiveScreen.sequencediagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UMLRetreiveScreen.sequencediagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>UMLRetreiveScreen.sequencediagram</DependentUpon>
     </Content>
     <Folder Include="ModelDefinition\" />
     <Content Include="ModelDefinition\UML.uml">

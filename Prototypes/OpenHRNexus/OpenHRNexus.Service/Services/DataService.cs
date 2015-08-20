@@ -20,9 +20,10 @@ namespace OpenHRNexus.Service.Services {
 			return _dataRepository.GetData();
 		}
 
-		public IEnumerable<WebFormFields> GetWebFormFields(int id) {
-			return _dataRepository.GetWebFormFields(id);
-		}
+        WebForm IDataService.GetWebForm(int id)
+        {
+            return _dataRepository.GetWebForm(id);
+        }
 
-	}
+    }
 }

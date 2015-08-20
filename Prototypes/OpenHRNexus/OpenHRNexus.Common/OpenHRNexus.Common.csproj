@@ -60,6 +60,7 @@
     <Compile Include="Models\EntityModel.cs" />
     <Compile Include="Models\Personnel_Records_Model.cs" />
     <Compile Include="Models\tbuser_Languages_Model.cs" />
+    <Compile Include="Models\WebForm.cs" />
     <Compile Include="Models\WebFormFieldOption.cs" />
     <Compile Include="Models\WebFormFields.cs" />
     <Compile Include="Models\WebFormModel.cs" />

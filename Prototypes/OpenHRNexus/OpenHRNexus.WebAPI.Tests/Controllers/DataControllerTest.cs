@@ -48,19 +48,25 @@ namespace OpenHRNexus.WebAPI.Tests.Controllers
 
 
         [TestMethod]
-        public void InstanciateProcess_IsNotNull()
+        public void InstantiateProcess_IsNotNull()
         {
             var result = _mockController.InstantiateProcess(1, 1, false);
             Assert.IsNotNull(result);
         }
 
         [TestMethod]
-        public void InstanciateProcess_ContainsWebformModels()
+        public void InstantiateProcess_ContainsWebformModels()
         {
-            var result = _mockController.InstantiateProcess(1, 1, false);
+            var result = _mockController.InstantiateProcess(1, 15, false);
             Assert.IsTrue(result is IEnumerable<WebFormModel>);
         }
 
+        [TestMethod]
+        public void InstantiateProcess_ContainsSingleWebformModel()
+        {
+            var result = (List <WebFormModel>)_mockController.InstantiateProcess(1, 16, false);
+            Assert.IsTrue(result.Count == 1);
+        }
 
     }
 
