@@ -18,7 +18,7 @@ namespace OpenHRNexus.EnterpriseServices.ExceptionHandling {
 		public NexusExceptionManager(string subSystem, bool useEventLog, bool showExceptionPolicyName = false) {
 			LoggingConfiguration loggingConfiguration = BuildLoggingConfig(subSystem);
 			LogWriter logWriter = new LogWriter(loggingConfiguration);
-			//		Logger.SetLogWriter(logWriter, false);
+			//Logger.SetLogWriter(logWriter, false);
 
 			//Create the default ExceptionManager object from the configuration settings.
 			//ExceptionPolicyFactory policyFactory = new ExceptionPolicyFactory();
@@ -52,7 +52,7 @@ namespace OpenHRNexus.EnterpriseServices.ExceptionHandling {
 		private static ExceptionManager BuildExceptionManagerConfig(LogWriter logWriter, string subSystem, bool useEventLog, bool showExceptionPolicyName) {
 			var policies = new List<ExceptionPolicyDefinition>();
 
-			//Logging Exception Handler: to be added only if required
+			//Logging Exception Handler: to be added to the different policies if required
 			var loggingExceptionHandler = new LoggingExceptionHandler(ExceptionHandlingConstants.WindowsEventLogName, 9001, TraceEventType.Error, subSystem, 5, typeof(TextExceptionFormatter), logWriter);
 
 			//AssistingAdministrators policy
@@ -62,11 +62,11 @@ namespace OpenHRNexus.EnterpriseServices.ExceptionHandling {
 			}
 			assistingAdministratorsExceptionHandlers.Add(
 				new ReplaceHandler(
-					(showExceptionPolicyName ? "AssistingAdministrators" : "") +
-					" - Application error. Please advise your administrator and provide them with this error code: {handlingInstanceID}",
+					(showExceptionPolicyName ? "[AssistingAdministrators] " : "") +
+					"Application error. Please advise your administrator and provide them with this error code: {handlingInstanceID}",
 					typeof(Exception)));
 			var assistingAdministrators = new List<ExceptionPolicyEntry> {
-				new ExceptionPolicyEntry(typeof (Exception),
+				new ExceptionPolicyEntry(typeof(Exception),
 					PostHandlingAction.ThrowNewException,
 					assistingAdministratorsExceptionHandlers)
 			};
@@ -79,8 +79,8 @@ namespace OpenHRNexus.EnterpriseServices.ExceptionHandling {
 			}
 			exceptionShieldingExceptionHandlers.Add(
 				new WrapHandler(
-					(showExceptionPolicyName ? "ExceptionShielding" : "") +
-					" - Application error. Please contact your administrator.",
+					(showExceptionPolicyName ? "[ExceptionShielding] " : "") +
+					"Application error. Please contact your administrator.",
 					typeof(Exception)));
 			var exceptionShielding = new List<ExceptionPolicyEntry>{
 				new ExceptionPolicyEntry(typeof(Exception),

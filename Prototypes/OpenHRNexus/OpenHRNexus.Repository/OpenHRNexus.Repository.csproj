@@ -159,7 +159,7 @@
     </ProjectReference>
     <ProjectReference Include="..\OpenHRNexus.EnterpriseServices\OpenHRNexus.EnterpriseServices.csproj">
       <Project>{ab74e80c-fe32-49d0-b03a-e24a28dbfdd9}</Project>
-      <Name>OpenHRNexus.EnterpriseLibrary</Name>
+      <Name>OpenHRNexus.EnterpriseServices</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenHRNexus.Interfaces\OpenHRNexus.Interfaces.csproj">
       <Project>{627c8a94-0e22-4eb6-9998-7f5865588288}</Project>
