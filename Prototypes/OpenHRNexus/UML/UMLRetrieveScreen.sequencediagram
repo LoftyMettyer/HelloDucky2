@@ -1,22 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<SequenceDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="21120421-8429-4ac8-a424-96c5c6a4b76a" name="UMLRetreiveScreen" linkedPackageId="73fe8a0e-c4ea-4c1a-a3fa-e882418dfb2d" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner">
-  <profileInstances>
-    <packageHasProfileInstances Id="5ac7ddca-da4c-49eb-bef8-25818e76e116">
-      <profileInstance Id="69da2ae9-d608-4232-a8a9-f117a926ed6a" name="StandardProfileL2">
-        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
-      </profileInstance>
-      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
-    </packageHasProfileInstances>
-    <packageHasProfileInstances Id="8ab24223-d985-4526-bce7-e0661509caa3">
-      <profileInstance Id="e926004c-88c8-4dd0-bcd9-2158d8efcaa5" name="StandardProfileL3">
-        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
-      </profileInstance>
-      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
-    </packageHasProfileInstances>
-  </profileInstances>
+<SequenceDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="21120421-8429-4ac8-a424-96c5c6a4b76a" name="UMLRetrieveScreen" linkedPackageId="73fe8a0e-c4ea-4c1a-a3fa-e882418dfb2d" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner">
   <packagedElements>
     <packageHasNamedElement>
-      <interaction Id="543d5ccf-1067-479d-a163-758068fd40cf" name="UMLRetreiveScreen" collapseFragmentsFlag="false" isActiveClass="false" isAbstract="false" isLeaf="false" isReentrant="false">
+      <interaction Id="543d5ccf-1067-479d-a163-758068fd40cf" name="UMLRetrieveScreen" collapseFragmentsFlag="false" isActiveClass="false" isAbstract="false" isLeaf="false" isReentrant="false">
         <ownedCommentsInternal>
           <comment Id="8e52b025-c959-46c1-9777-0f2ae2efb66c">
             <elementDefinition Id="6a0c8610-7ebf-45d0-8e50-254cfc3817ca" />
@@ -189,16 +175,16 @@
               <lifelineMoniker Id="d9f13541-7553-46a3-9268-f87c84787685" LastKnownName="Repository Layer" />
             </covered>
           </messageOccurrenceSpecification>
-          <messageOccurrenceSpecification Id="13347c8c-1b38-405e-aa5a-336b0a949721" name="MessageOccurrenceSpecification18">
-            <elementDefinition Id="26dc6c7f-0caf-4f03-be3d-5d92cc297dc3" />
-            <covered>
-              <lifelineMoniker Id="d9f13541-7553-46a3-9268-f87c84787685" LastKnownName="Repository Layer" />
-            </covered>
-          </messageOccurrenceSpecification>
           <messageOccurrenceSpecification Id="ba2b8c91-372d-4989-a672-1de84c1e540c" name="MessageOccurrenceSpecification17">
             <elementDefinition Id="7e3e95d5-962c-424c-946b-a7ce89a49a0c" />
             <covered>
               <lifelineMoniker Id="848cbdaa-24c5-4beb-a9bc-e3303238bd34" LastKnownName="Nexus DB" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="13347c8c-1b38-405e-aa5a-336b0a949721" name="MessageOccurrenceSpecification18">
+            <elementDefinition Id="26dc6c7f-0caf-4f03-be3d-5d92cc297dc3" />
+            <covered>
+              <lifelineMoniker Id="d9f13541-7553-46a3-9268-f87c84787685" LastKnownName="Repository Layer" />
             </covered>
           </messageOccurrenceSpecification>
           <executionOccurrenceSpecification Id="8bb2a188-14a7-4433-ba2d-53ca92d3e00f" name="ExecutionOccurrenceSpecification10">
@@ -396,7 +382,7 @@
               <messageOccurrenceSpecificationMoniker Id="5090cbab-beb0-4e1e-b45e-a618dd56e289" LastKnownName="MessageOccurrenceSpecification12" />
             </receiveEvent>
           </message>
-          <message Id="a8affd2e-97a5-450b-967c-636d3d6119b7" name="Retrive WebForms" messageKind="Complete" messageSort="SynchCall" createSelfMessage="false">
+          <message Id="a8affd2e-97a5-450b-967c-636d3d6119b7" name="Retrieve WebForms" messageKind="Complete" messageSort="SynchCall" createSelfMessage="false">
             <elementDefinition Id="b786ba82-32e4-4080-ae37-a1dcc03e4440" />
             <sendEvent>
               <messageOccurrenceSpecificationMoniker Id="884501eb-8546-4f67-9d90-80bcb6d311fd" LastKnownName="MessageOccurrenceSpecification15" />
@@ -506,5 +492,19 @@
   </packagedElements>
   <package Id="73fe8a0e-c4ea-4c1a-a3fa-e882418dfb2d" name="UML">
     <elementDefinition Id="fec111f1-2260-4337-8e88-0ddea1c7f268" />
+    <profileInstances>
+      <packageHasProfileInstances Id="5ac7ddca-da4c-49eb-bef8-25818e76e116">
+        <profileInstance Id="69da2ae9-d608-4232-a8a9-f117a926ed6a" name="StandardProfileL2">
+          <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+        </profileInstance>
+        <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="8ab24223-d985-4526-bce7-e0661509caa3">
+        <profileInstance Id="e926004c-88c8-4dd0-bcd9-2158d8efcaa5" name="StandardProfileL3">
+          <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+        </profileInstance>
+        <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+      </packageHasProfileInstances>
+    </profileInstances>
   </package>
 </SequenceDesignerModel>
