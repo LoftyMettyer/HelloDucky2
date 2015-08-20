@@ -92,6 +92,14 @@
     <Reference Include="Microsoft.Owin.Security.OAuth">
       <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.ExceptionHandling, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.ExceptionHandling.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -225,6 +233,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Configuration\ExceptionHandlingConfiguration.cs" />
     <Compile Include="Controllers\AuthenticateController.cs" />
     <Compile Include="Controllers\DataController.cs" />
     <Compile Include="Controllers\EntityController.cs" />
@@ -233,6 +242,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Globals\Global.cs" />
     <Compile Include="Localization\LanguageMessageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Resource.Designer.cs">
@@ -296,6 +306,10 @@
     <ProjectReference Include="..\OpenHRNexus.Common\OpenHRNexus.Common.csproj">
       <Project>{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}</Project>
       <Name>OpenHRNexus.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenHRNexus.EnterpriseServices\OpenHRNexus.EnterpriseServices.csproj">
+      <Project>{ab74e80c-fe32-49d0-b03a-e24a28dbfdd9}</Project>
+      <Name>OpenHRNexus.EnterpriseServices</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenHRNexus.Interfaces\OpenHRNexus.Interfaces.csproj">
       <Project>{627c8a94-0e22-4eb6-9998-7f5865588288}</Project>

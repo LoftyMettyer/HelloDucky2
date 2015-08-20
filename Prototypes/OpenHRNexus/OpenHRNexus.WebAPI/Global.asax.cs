@@ -18,7 +18,10 @@ namespace OpenHRNexus.WebAPI {
 			DependencyResolver.SetResolver(ninjectConfig);
 			GlobalConfiguration.Configuration.DependencyResolver = new NinjectResolver(ninjectConfig.Kernel);
 
-			OpenHRNexus.Repository.Configuration.ExceptionHandlingConfiguration.Config();
+			//Initialise Exception Handling for all projects in solution
+			OpenHRNexus.WebAPI.Configuration.ExceptionHandlingConfiguration.Configure();
+			OpenHRNexus.Service.Configuration.ExceptionHandlingConfiguration.Configure();
+			OpenHRNexus.Repository.Configuration.ExceptionHandlingConfiguration.Configure();
 		}
 	}
 }
