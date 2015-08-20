@@ -116,6 +116,11 @@ function refreshGrid(jsonData) {
 		var dialogWidth = ((screen.width) / 2) - 59;	//40 margin, 19 scroll bar.
 		if (((colMode.length - 1) * 100) < dialogWidth) shrinkToFit = true;
 
+		//If no columns available then set shrinkToFit to false. This will show the grid with full width having no columns.
+		if (colData.length == 0) {
+			shrinkToFit = false;
+		}
+
 		$("#ssOleDBGridSelRecords").jqGrid({
 			autoencode: true,
 			data: colData,
@@ -139,7 +144,7 @@ function refreshGrid(jsonData) {
 				resetSelection();
 			}
 		}).jqGrid('hideCol', 'cb');
-
+		
 
 		$("#ssOleDBGridSelRecords").jqGrid('bindKeys', {
 			"onEnter": function () {
