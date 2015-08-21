@@ -913,7 +913,7 @@ Namespace Expressions
 
 		End Function
 
-		Friend Function RuntimeCalculationCode(ByRef palngSourceTables(,) As Integer, ByRef psCalcCode As String, ByRef pastrUDFsRequired() As String _
+		Public Function RuntimeCalculationCode(ByRef palngSourceTables(,) As Integer, ByRef psCalcCode As String, ByRef pastrUDFsRequired() As String _
 																					 , ByRef pfApplyPermissions As Boolean _
 																					 , Optional ByRef pfValidating As Boolean = False, Optional ByRef pavPromptedValues As Object = Nothing _
 																					 , Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean

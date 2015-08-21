@@ -4,7 +4,7 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
-
+<%@ Import Namespace="HR.Intranet.Server.Expressions" %>
 <%="" %>
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_standardreports")%>" type="text/javascript"></script>
@@ -21,7 +21,7 @@
 	' Settings objects
 	Dim objSettings As New HR.Intranet.Server.clsSettings
 	objSettings.SessionInfo = CType(Session("SessionContext"), SessionInfo)
-	
+		
 	Dim aColumnNames
 	Dim aAbsenceTypes() As String
 	Dim sErrorDescription As String
@@ -82,6 +82,9 @@
 	Dim lngDefaultColumnID As Integer
 	Dim lngConfigColumnID As Integer
 	Dim strSaveExisting As String
+	Dim lngStartDateExprID As Integer
+	Dim lngEndDateExprID As Integer
+	Dim blnCustom As Boolean
 	
 	Response.Write("<script type=""text/javascript"">" & vbCrLf)
 
@@ -105,15 +108,44 @@
 			Response.Write("frmAbsenceDefinition.chkAbsenceType_" & iCount & ".checked = 1;" & vbCrLf)
 		End If
 	Next
-
+	
 	' Report period	
 	Dim rstReportDates = objDataAccess.GetDataTable("spASRIntGetStandardReportDates", CommandType.StoredProcedure, _
 					New SqlParameter("piReportType", SqlDbType.Int) With {.Value = iUtilType})
-
+	
+	'In Absence/Bradford Report Configuration,if we set Custom Date range which have prompted (start and end date) then below condition will execute.
 	If rstReportDates.Rows.Count > 0 Then
-		dtStartDate = CalculatePromptedDate(rstReportDates.Rows(0))
-		dtEndDate = CalculatePromptedDate(rstReportDates.Rows(1))
-	Else
+		If rstReportDates.Rows(0)("StartEndType").ToString().ToLower = "start" Then
+			dtStartDate = CalculatePromptedDate(rstReportDates.Rows(0))
+		ElseIf rstReportDates.Rows(0)("StartEndType").ToString().ToLower = "end" Then
+			dtEndDate = CalculatePromptedDate(rstReportDates.Rows(0))
+		End If
+		
+		If rstReportDates.Rows.Count > 1 Then
+			If rstReportDates.Rows(1)("StartEndType").ToString().ToLower = "end" Then
+				dtEndDate = CalculatePromptedDate(rstReportDates.Rows(1))
+			End If
+		End If
+	End If
+	
+	'In Absence/Bradford Report Configuration, if we set Custom Date range which do not not prompted (start and end date) then below condition will execute.
+	blnCustom = (objDatabase.GetSystemSetting(strReportType, "Custom Dates", "0") = "1")
+	
+	'If dtstartdate variable set to invalid date(i.e 01/01/0001)
+	If ((dtStartDate.Year = 1) And (dtEndDate.Year = 1) And (blnCustom)) Then
+		lngStartDateExprID = objDatabase.GetSystemSetting(strReportType, "Start Date", 0)
+		dtStartDate = GetValueForRecordIndependantCalc(lngStartDateExprID)
+		
+		lngEndDateExprID = objDatabase.GetSystemSetting(strReportType, "End Date", 0)
+		dtEndDate = GetValueForRecordIndependantCalc(lngEndDateExprID)
+	ElseIf ((dtStartDate.Year = 1) And (dtEndDate.Year <> 1) And (blnCustom)) Then
+		lngStartDateExprID = objDatabase.GetSystemSetting(strReportType, "Start Date", 0)
+		dtStartDate = GetValueForRecordIndependantCalc(lngStartDateExprID)
+	ElseIf ((dtStartDate.Year <> 1) And (dtEndDate.Year = 1) And (blnCustom)) Then
+		lngEndDateExprID = objDatabase.GetSystemSetting(strReportType, "End Date", 0)
+		dtEndDate = GetValueForRecordIndependantCalc(lngEndDateExprID)
+	ElseIf (Not blnCustom) Then
+		'For default Date Range
 		Dim thisMonth As New DateTime(DateTime.Today.Year, DateTime.Today.Month, 1)
 		dtStartDate = thisMonth.AddYears(-1)
 		dtEndDate = dtStartDate.AddYears(1).AddDays(-1)
@@ -152,8 +184,8 @@
 		Response.Write("RecordSelection.style.visibility = ""hidden"";" & vbCrLf)
 	End If
 
-	' Display picklist in header
-	Response.Write("frmAbsenceDefinition.chkPrintInReportHeader.checked =  " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "PrintFilterHeader", "0")) & vbCrLf)
+	' Display picklist in header	
+	 Response.Write("frmAbsenceDefinition.chkPrintInReportHeader.checked =  " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "PrintFilterHeader", "0")) & vbCrLf)
 
 	' Bradford Factor specific stuff
 	If iUtilType = UtilityType.utlBradfordFactor Then
@@ -934,4 +966,50 @@
 
 	$('table').attr('border', '0');
 	$('fieldset').css("border", '0');
+	</script>
+
+<script runat="server" language="vb">
+	
+	Private Function GetValueForRecordIndependantCalc(lngExprID As Integer, Optional ByRef pvarPrompts As Object = Nothing) As Date
+
+		Dim objExpr As clsExprExpression
+		Dim rsTemp As DataTable
+		Dim strSQL As String = ""
+		Dim fOK As Boolean
+		Dim lngViews(,) As Integer
+		' Settings objects
+		Dim objSettings As New clsSettings
+		objSettings.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+		Dim DB As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+		ReDim lngViews(2, 0)
+		Try
+
+			objExpr = New clsExprExpression(objSettings.SessionInfo)
+			With objExpr
+				' Initialise the filter expression object.
+				fOK = .Initialise(0, lngExprID, ExpressionTypes.giEXPR_RECORDINDEPENDANTCALC, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+
+				If fOK Then
+					fOK = objExpr.RuntimeCalculationCode(lngViews, strSQL, Nothing, True)
+				End If
+
+				If fOK Then
+					rsTemp = DB.GetDataTable("SELECT " & strSQL)
+					If rsTemp.Rows.Count > 0 Then
+						Return CDate(rsTemp.Rows(0)(0))
+					End If
+				End If
+
+			End With
+			objExpr = Nothing
+			
+		Catch ex As Exception
+			Return Date.MinValue
+
+		End Try
+
+		Return Date.MinValue
+
+	End Function
+	
 </script>
