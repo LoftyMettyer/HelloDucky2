@@ -1188,15 +1188,17 @@
 
 		$("#SignalRDialogTitle").html("You are about to be logged out");
 		$("#SignalRDialogContentText").html("Your browser has been inactive for a while, so for your security<BR/>you will be automatically logged off your OpenHR session.");
+
+		$("#divSignalRMessage").dialog({
+			dialogClass: 'alert',
+			closeText: 'Log Out',
+			close: function () { window.onbeforeunload = null; try { window.location.href = "Main"; } catch (e) { } return false; }
+		});
+
 		$("#divSignalRMessage").dialog('open');
 
 		$("#SignalRDialogClick").off('click').on('click', function () {
-			window.onbeforeunload = null;
-			try {
-				window.location.href = "Main";
-			} catch (e) {
-			}
-			return false;
+			$("#divSignalRMessage").dialog('close');
 		});
 
 	},
