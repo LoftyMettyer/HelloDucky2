@@ -13,35 +13,32 @@ namespace OpenHRNexus.EnterpriseServices.ExceptionHandling {
 		/// <summary>
 		/// Create a new instance of the NexusExceptionManager
 		/// </summary>
-		/// <param name="subSystem">The name of the OpenHRNexus SubSystem to log error information for (Repository, Web API, etc.)</param>
+		/// <param name="subSystem">The name of the OpenHRNexus SubSystem to log error information for (Repository, WebAPI, etc.)</param>
+		/// <param name="useEventLog">Use the event log?</param>
 		/// <param name="showExceptionPolicyName">If set to true, also log the ExceptionPolicyName (useful for debugging). Default is false</param>
-		public NexusExceptionManager(string subSystem, bool useEventLog, bool showExceptionPolicyName = false) {
+		public NexusExceptionManager(string subSystem, bool useEventLog = false, bool showExceptionPolicyName = false) {
 			LoggingConfiguration loggingConfiguration = BuildLoggingConfig(subSystem);
 			LogWriter logWriter = new LogWriter(loggingConfiguration);
-			//Logger.SetLogWriter(logWriter, false);
-
-			//Create the default ExceptionManager object from the configuration settings.
-			//ExceptionPolicyFactory policyFactory = new ExceptionPolicyFactory();
-			//ExceptionManager = policyFactory.CreateManager();
 
 			// Create the default ExceptionManager object programatically
 			ExceptionManager = BuildExceptionManagerConfig(logWriter, subSystem, useEventLog, showExceptionPolicyName);
 		}
 
 		private static LoggingConfiguration BuildLoggingConfig(string subSystem) {
-			//Create a new event log if it doesn't exist
-			if (!EventLog.Exists(ExceptionHandlingConstants.WindowsEventLogName)) {
-				if (!EventLog.SourceExists(ExceptionHandlingConstants.WindowsEventLogName)) {
-					EventLog.CreateEventSource(ExceptionHandlingConstants.WindowsEventLogName, ExceptionHandlingConstants.WindowsEventLogName);
-				}
+			//Create a new event log and source ("subsystem") if it doesn't exist
+			if (!EventLog.SourceExists(subSystem)) {
+				EventLog.CreateEventSource(subSystem, NexusExceptionHandlingConstants.WindowsEventLogName);
 			}
 
-			var eventLog = new EventLog(ExceptionHandlingConstants.WindowsEventLogName, ".", subSystem);
+			var eventLog = new EventLog {
+				Log = NexusExceptionHandlingConstants.WindowsEventLogName,
+				Source = subSystem
+			};
 			var eventLogTraceListener = new FormattedEventLogTraceListener(eventLog);
 
 			//Build Configuration
 			var loggingConfig = new LoggingConfiguration();
-			loggingConfig.AddLogSource(ExceptionHandlingConstants.WindowsEventLogName, SourceLevels.All, false).AddTraceListener(eventLogTraceListener);
+			loggingConfig.AddLogSource(NexusExceptionHandlingConstants.WindowsEventLogName, SourceLevels.All, false).AddTraceListener(eventLogTraceListener);
 
 			//Special Sources Configuration
 			loggingConfig.SpecialSources.LoggingErrorsAndWarnings.AddTraceListener(eventLogTraceListener);
@@ -53,7 +50,7 @@ namespace OpenHRNexus.EnterpriseServices.ExceptionHandling {
 			var policies = new List<ExceptionPolicyDefinition>();
 
 			//Logging Exception Handler: to be added to the different policies if required
-			var loggingExceptionHandler = new LoggingExceptionHandler(ExceptionHandlingConstants.WindowsEventLogName, 9001, TraceEventType.Error, subSystem, 5, typeof(TextExceptionFormatter), logWriter);
+			var loggingExceptionHandler = new LoggingExceptionHandler(NexusExceptionHandlingConstants.WindowsEventLogName, 9001, TraceEventType.Error, subSystem, 5, typeof(TextExceptionFormatter), logWriter);
 
 			//AssistingAdministrators policy
 			var assistingAdministratorsExceptionHandlers = new List<IExceptionHandler>();

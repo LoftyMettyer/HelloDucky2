@@ -61,7 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExceptionHandling\ExceptionHandlingConstants.cs" />
+    <Compile Include="ExceptionHandling\NexusExceptionHandlingConstants.cs" />
     <Compile Include="ExceptionHandling\NexusExceptionPolicyNames.cs" />
     <Compile Include="ExceptionHandling\NexusExceptionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

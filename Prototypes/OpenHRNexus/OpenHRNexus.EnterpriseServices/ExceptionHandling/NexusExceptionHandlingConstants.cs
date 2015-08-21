@@ -1,5 +1,5 @@
 ﻿namespace OpenHRNexus.EnterpriseServices.ExceptionHandling {
-	public class ExceptionHandlingConstants {
+	public class NexusExceptionHandlingConstants {
 		public const string WindowsEventLogName = "OpenHRNexus";
 	}
 }
