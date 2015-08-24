@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using OpenHRNexus.WebAPI.Handlers;
 
 namespace OpenHRNexus.WebAPI {
 	public class WebApiApplication : System.Web.HttpApplication {
@@ -18,10 +19,13 @@ namespace OpenHRNexus.WebAPI {
 			DependencyResolver.SetResolver(ninjectConfig);
 			GlobalConfiguration.Configuration.DependencyResolver = new NinjectResolver(ninjectConfig.Kernel);
 
+			//Add the message logging handler to the message handlers collection
+			GlobalConfiguration.Configuration.MessageHandlers.Add(new MessageLoggingHandler());
+
 			//Initialise Exception Handling for all projects in solution
-			OpenHRNexus.WebAPI.Configuration.ExceptionHandlingConfiguration.Configure();
-			OpenHRNexus.Service.Configuration.ExceptionHandlingConfiguration.Configure();
-			OpenHRNexus.Repository.Configuration.ExceptionHandlingConfiguration.Configure();
+			OpenHRNexus.WebAPI.Configuration.EnterpriseServicesConfiguration.Configure();
+			OpenHRNexus.Service.Configuration.EnterpriseServicesConfiguration.Configure();
+			OpenHRNexus.Repository.Configuration.EnterpriseServicesConfiguration.Configure();
 		}
 	}
 }

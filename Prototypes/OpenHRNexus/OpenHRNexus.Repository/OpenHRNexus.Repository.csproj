@@ -66,7 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\ExceptionHandlingConfiguration.cs" />
+    <Compile Include="Configuration\EnterpriseServicesConfiguration.cs" />
     <Compile Include="DatabaseClasses\Role.cs" />
     <Compile Include="DatabaseClasses\UserPermission.cs" />
     <Compile Include="DatabaseClasses\UserRole.cs" />

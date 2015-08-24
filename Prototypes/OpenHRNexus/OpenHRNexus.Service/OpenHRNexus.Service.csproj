@@ -71,7 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\AutoMapperConfig.cs" />
-    <Compile Include="Configuration\ExceptionHandlingConfiguration.cs" />
+    <Compile Include="Configuration\EnterpriseServicesConfiguration.cs" />
     <Compile Include="Configuration\NinjectConfig.cs" />
     <Compile Include="Globals\Global.cs" />
     <Compile Include="Interfaces\IAuthenticateEmail.cs" />
