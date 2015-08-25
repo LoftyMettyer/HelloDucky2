@@ -202,8 +202,7 @@
 				autoOpen: false,
 				modal: true,
 				height: 'auto',
-				width: 'auto',
-				position: ['center', 100],
+				width: 'auto',				
 				dialogClass: 'no-close',
 				resizable: false
 			});
