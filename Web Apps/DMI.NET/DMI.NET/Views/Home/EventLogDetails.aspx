@@ -270,16 +270,11 @@
 				$("#ssOleDBGridEventLogDetails").setGridWidth($("#findGridRow").width());
 
 				if ($('#txtEventExists').val() == 0) {
-					var frmOpenerRefresh = OpenHR.getForm("workframe", "frmRefresh");
-					var frmMainLog = OpenHR.getForm("workframe", "frmLog");
 
 					OpenHR.messageBox("This record no longer exists in the event log.", 48, "Event Log");
-					frmOpenerRefresh.txtCurrentUsername.value = frmMainLog.cboUsername.options[frmMainLog.cboUsername.selectedIndex].value;
-					frmOpenerRefresh.txtCurrentType.value = frmMainLog.cboType.options[frmMainLog.cboType.selectedIndex].value;
-					frmOpenerRefresh.txtCurrentMode.value = frmMainLog.cboMode.options[frmMainLog.cboMode.selectedIndex].value;
-					frmOpenerRefresh.txtCurrentStatus.value = frmMainLog.cboStatus.options[frmMainLog.cboStatus.selectedIndex].value;
-					frmOpenerRefresh.submit();
-					okClick();
+
+  				okClick();
+					refreshGrid();
 
 				} else {
 					if ($("#txtEmailPermission").val() == 1) {
