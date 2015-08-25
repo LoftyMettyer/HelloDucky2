@@ -26,6 +26,13 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\ArchitectureTools\Microsoft.VisualStudio.TeamArchitect.ModelingProject.targets" Condition="'$(VSToolsPath)' != ''" />
   <ItemGroup>
+    <Content Include="ProcessObject.classdiagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ProcessObject.classdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>ProcessObject.classdiagram</DependentUpon>
+    </Content>
     <Content Include="UMLInstantiateProcess.sequencediagram">
       <SubType>Content</SubType>
     </Content>
