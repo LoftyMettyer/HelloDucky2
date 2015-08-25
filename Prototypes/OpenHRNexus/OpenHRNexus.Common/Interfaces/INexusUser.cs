@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenHRNexus.Interfaces.Common {
+namespace OpenHRNexus.Common.Interfaces {
 	public interface INexusUser {
 		Guid Id { get; set; }
 		string Role { get; set; }

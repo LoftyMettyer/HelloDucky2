@@ -13,8 +13,6 @@ namespace OpenHRNexus.WebAPI {
 		public NinjectConfig() {
 			_kernel = new StandardKernel();
 			//Add bindings
-			_kernel.Bind<IPersonnelRecordsService>().To<PersonnelRecordsService>();
-			_kernel.Bind<ITbuserLanguagesService>().To<TbuserLanguagesService>();
 			_kernel.Bind<IAuthenticateService>().To<AuthenticateService>();
 			_kernel.Bind<IWelcomeMessageDataService>().To<WelcomeMessageDataService>();
 			_kernel.Bind<IDataService>().To<DataService>();

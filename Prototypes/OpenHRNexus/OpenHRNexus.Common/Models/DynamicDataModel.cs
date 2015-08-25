@@ -1,11 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
-using OpenHRNexus.Interfaces.Common;
+﻿using OpenHRNexus.Common.Interfaces;
 
-namespace OpenHRNexus.Common.Models
-{
-	public class DynamicDataModel : IJsonSerialize
-	{
+namespace OpenHRNexus.Common.Models {
+	public class DynamicDataModel : IJsonSerialize {
 		public int Id { get; set; }
 
 		//[Column("Forename")]
@@ -18,6 +14,6 @@ namespace OpenHRNexus.Common.Models
 		public string Column3 { get; set; }
 
 		//[Column("Date Of Birth")]
-		public string Column4 { get; set; } 
+		public string Column4 { get; set; }
 	}
 }

@@ -1,8 +1,6 @@
 ﻿using System;
 using NServiceBus;
 using OpenHRNexus.Common.Messaging.Commands;
-using OpenHRNexus.Interfaces.Common;
-using OpenHRNexus.Service.Interfaces;
 
 namespace OpenHRNexus.Testing.ConsoleApp {
 	internal class Program {

@@ -4,7 +4,6 @@ using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Data.SqlClient;
 using System.Linq;
-using OpenHRNexus.Interfaces.Common;
 using OpenHRNexus.Repository.DatabaseClasses;
 using OpenHRNexus.Repository.Interfaces;
 using OpenHRNexus.Repository.Messages;

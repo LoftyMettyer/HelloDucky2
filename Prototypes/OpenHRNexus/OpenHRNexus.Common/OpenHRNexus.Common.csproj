@@ -54,13 +54,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\EntityType.cs" />
+    <Compile Include="Interfaces\IJsonSerialize.cs" />
+    <Compile Include="Interfaces\INexusUser.cs" />
     <Compile Include="Messaging\Commands\LoginAttemptCommand.cs" />
     <Compile Include="Messaging\Events\LoginAttemptEvent.cs" />
     <Compile Include="Models\DynamicColumn.cs" />
     <Compile Include="Models\DynamicDataModel.cs" />
     <Compile Include="Models\EntityModel.cs" />
-    <Compile Include="Models\Personnel_Records_Model.cs" />
-    <Compile Include="Models\tbuser_Languages_Model.cs" />
     <Compile Include="Models\WebForm.cs" />
     <Compile Include="Models\WebFormFieldOption.cs" />
     <Compile Include="Models\WebFormFields.cs" />
@@ -74,12 +74,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OpenHRNexus.Interfaces\OpenHRNexus.Interfaces.csproj">
-      <Project>{627C8A94-0E22-4EB6-9998-7F5865588288}</Project>
-      <Name>OpenHRNexus.Interfaces</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

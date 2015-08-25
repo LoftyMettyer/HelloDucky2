@@ -2,11 +2,9 @@
 using OpenHRNexus.Common.Models;
 using System.Collections.Generic;
 
-namespace OpenHRNexus.Repository.Interfaces
-{
-    public interface IEntityRepository
-    {
-        IEnumerable<EntityModel> GetEntities(EntityType? id);
+namespace OpenHRNexus.Repository.Interfaces {
+	public interface IEntityRepository {
+		IEnumerable<EntityModel> GetEntities(EntityType? id);
+	}
 
-    }
 }

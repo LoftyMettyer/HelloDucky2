@@ -1,4 +1,4 @@
-﻿using OpenHRNexus.Interfaces.Common;
+﻿using OpenHRNexus.Common.Interfaces;
 using System.Collections.Generic;
 using System;
 

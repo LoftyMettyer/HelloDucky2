@@ -1,5 +1,5 @@
 ﻿using System;
-using OpenHRNexus.Interfaces.Common;
+using OpenHRNexus.Common.Interfaces;
 
 namespace OpenHRNexus.Repository.DatabaseClasses {
 	public class User : INexusUser {
