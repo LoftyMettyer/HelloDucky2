@@ -74,6 +74,7 @@
     <Compile Include="Globals\Global.cs" />
     <Compile Include="Interfaces\IDataRepository.cs" />
     <Compile Include="Interfaces\IEntityRepository.cs" />
+    <Compile Include="Interfaces\IProcessRepository.cs" />
     <Compile Include="Messages\RegisterNewUserMessage.cs" />
     <Compile Include="DatabaseClasses\WelcomeMessage.cs" />
     <Compile Include="Interfaces\IAuthenticateRepository.cs">
@@ -151,7 +152,9 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="NewFolder1\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenHRNexus.Common\OpenHRNexus.Common.csproj">
       <Project>{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}</Project>

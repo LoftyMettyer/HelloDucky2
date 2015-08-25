@@ -7,5 +7,6 @@ namespace OpenHRNexus.Repository.Interfaces
     public interface IEntityRepository
     {
         IEnumerable<EntityModel> GetEntities(EntityType? id);
+
     }
 }

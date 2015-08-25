@@ -56,6 +56,7 @@
     <Compile Include="Enums\EntityType.cs" />
     <Compile Include="Messaging\Commands\LoginAttemptCommand.cs" />
     <Compile Include="Messaging\Events\LoginAttemptEvent.cs" />
+    <Compile Include="Models\DynamicColumn.cs" />
     <Compile Include="Models\DynamicDataModel.cs" />
     <Compile Include="Models\EntityModel.cs" />
     <Compile Include="Models\Personnel_Records_Model.cs" />

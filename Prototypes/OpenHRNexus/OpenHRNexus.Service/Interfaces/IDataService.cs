@@ -8,7 +8,7 @@ namespace OpenHRNexus.Service.Interfaces
 	{
 		IEnumerable<DynamicDataModel> GetData(int id);
 		IEnumerable<DynamicDataModel> GetData();
-        WebForm GetWebForm(int id);
+        WebFormModel GetWebForm(int id, Guid userId);
 
     }
 }

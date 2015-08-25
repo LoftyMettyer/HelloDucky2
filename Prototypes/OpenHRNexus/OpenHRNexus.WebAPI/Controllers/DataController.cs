@@ -6,6 +6,8 @@ using System.Web.Http;
 using OpenHRNexus.Common.Models;
 using OpenHRNexus.Service.Interfaces;
 using OpenHRNexus.WebAPI.Extensions;
+using System.Security.Claims;
+using Microsoft.AspNet.Identity;
 
 namespace OpenHRNexus.WebAPI.Controllers {
 //	[Authorize(Roles = "OpenHRUser")]
@@ -46,15 +48,15 @@ namespace OpenHRNexus.WebAPI.Controllers {
         public IEnumerable<WebFormModel> InstantiateProcess(int instanceId, int elementId, bool newRecord)
         {
 
-            var webForm = _dataService.GetWebForm(elementId);
+            // TODO - This bit needs to extract from the JWT
+            //var identity = User.Identity as ClaimsIdentity;
+            //var openHRDbGuid = new Guid(identity.GetUserId());
+            var openHRDbGuid = new Guid("088C6A78-E14A-41B0-AD93-4FB7D3ADE96C");
+
+            var webForm = _dataService.GetWebForm(elementId, openHRDbGuid);
 
             List<WebFormModel> form = new List<WebFormModel>();
-            form.Add(new WebFormModel
-            {
-                form_id = webForm.id.ToString(),
-                form_name = webForm.Name,
-                form_fields = webForm.Fields
-            });
+            form.Add(webForm);
 
             IEnumerable<WebFormModel> webFormModels = form;
             return webFormModels;

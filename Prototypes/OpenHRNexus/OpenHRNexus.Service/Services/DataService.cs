@@ -20,9 +20,19 @@ namespace OpenHRNexus.Service.Services {
 			return _dataRepository.GetData();
 		}
 
-        WebForm IDataService.GetWebForm(int id)
+        WebFormModel IDataService.GetWebForm(int id, Guid userId)
         {
-            return _dataRepository.GetWebForm(id);
+            WebForm webForm = _dataRepository.GetWebForm(id);
+
+            var result = _dataRepository.PopulateFormWithData(webForm, userId);
+
+
+
+
+            // Implement translation as a design pattern (a template one? - I can't remember - need to review training notes)
+            //result.translate(language)
+
+            return result;
         }
 
     }

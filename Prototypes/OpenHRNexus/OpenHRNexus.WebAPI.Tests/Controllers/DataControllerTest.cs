@@ -4,6 +4,8 @@ using OpenHRNexus.Repository.SQLServer;
 using OpenHRNexus.Service.Services;
 using OpenHRNexus.WebAPI.Controllers;
 using OpenHRNexus.Common.Models;
+using Moq;
+using OpenHRNexus.Service.Interfaces;
 
 namespace OpenHRNexus.WebAPI.Tests.Controllers
 {
@@ -64,6 +66,19 @@ namespace OpenHRNexus.WebAPI.Tests.Controllers
         [TestMethod]
         public void InstantiateProcess_ContainsSingleWebformModel()
         {
+
+            //var mockService = new Mock<IDataService>();
+            //mockService.Setup(x => x.GetClaims(Guid.NewGuid()));
+
+            //AuthenticateController controller = new AuthenticateController(mockService.Object);
+
+            //var userId = Guid.NewGuid().ToString();
+            //var result = controller.GetClaims(userId);
+
+
+
+
+
             var result = (List <WebFormModel>)_mockController.InstantiateProcess(1, 16, false);
             Assert.IsTrue(result.Count == 1);
         }

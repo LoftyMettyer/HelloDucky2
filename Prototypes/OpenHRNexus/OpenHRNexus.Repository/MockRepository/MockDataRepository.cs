@@ -45,5 +45,10 @@ namespace OpenHRNexus.Repository.MockRepository
         {
             throw new NotImplementedException();
         }
+
+        public WebFormModel PopulateFormWithData(WebForm webForm, Guid userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
