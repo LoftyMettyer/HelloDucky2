@@ -318,7 +318,7 @@
       <Project>{ab74e80c-fe32-49d0-b03a-e24a28dbfdd9}</Project>
       <Name>Nexus.EnterpriseServices</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Nexus.Repository\Nexus.Repository.csproj">
+    <ProjectReference Include="..\Nexus.Sql_DAL\Nexus.Sql_DAL.csproj">
       <Project>{BDFF3BB0-3C7A-47A8-9CF5-1F3454A646E5}</Project>
       <Name>Nexus.Repository</Name>
     </ProjectReference>

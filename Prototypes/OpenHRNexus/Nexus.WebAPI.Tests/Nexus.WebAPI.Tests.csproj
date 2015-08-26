@@ -135,7 +135,7 @@
       <Project>{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}</Project>
       <Name>Nexus.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Nexus.Repository\Nexus.Repository.csproj">
+    <ProjectReference Include="..\Nexus.Sql_DAL\Nexus.Sql_DAL.csproj">
       <Project>{BDFF3BB0-3C7A-47A8-9CF5-1F3454A646E5}</Project>
       <Name>Nexus.Repository</Name>
     </ProjectReference>
