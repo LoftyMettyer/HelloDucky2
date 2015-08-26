@@ -1,33 +1,30 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nexus.Common.Enums;
 using Nexus.Common.Models;
-using Nexus.Repository.SQLServer;
 using Nexus.Service.Services;
-using System.Collections.Generic;
+using Nexus.Sql_Repository;
+using Nexus.WebAPI.Controllers;
 
-namespace Nexus.WebAPI.Controllers.Tests
-{
-    [TestClass()]
-    public class EntityControllerTests
-    {
+namespace Nexus.WebAPI.Tests.Controllers {
+	[TestClass()]
+	public class EntityControllerTests {
 
-        SqlDataRepository _mockRepository;
-        EntityService _mockService;
-        EntityController _mockController;
+		SqlDataRepository _mockRepository;
+		EntityService _mockService;
+		EntityController _mockController;
 
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            _mockRepository = new SqlDataRepository();
-            _mockService = new EntityService(_mockRepository);
-            _mockController = new EntityController(_mockService);
-        }
+		[TestInitialize]
+		public void TestInitialize() {
+			_mockRepository = new SqlDataRepository();
+			_mockService = new EntityService(_mockRepository);
+			_mockController = new EntityController(_mockService);
+		}
 
-        [TestMethod()]
-        public void GetEntitiesTest_IsValidModel()
-        {
-            var result = _mockController.GetEntities(EntityType.DataEntry);
-            Assert.IsTrue(result is IEnumerable<EntityModel>);
-        }
-    }
+		[TestMethod()]
+		public void GetEntitiesTest_IsValidModel() {
+			var result = _mockController.GetEntities(EntityType.DataEntry);
+			Assert.IsTrue(result is IEnumerable<EntityModel>);
+		}
+	}
 }

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
-using Microsoft.AspNet.Identity;
-using Nexus.Repository.Messages;
+using Nexus.Common.Messages;
 using Nexus.Service.Interfaces;
 
 namespace Nexus.WebAPI.Controllers {

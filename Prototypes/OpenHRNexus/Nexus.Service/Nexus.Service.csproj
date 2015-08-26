@@ -94,9 +94,9 @@
       <Project>{ab74e80c-fe32-49d0-b03a-e24a28dbfdd9}</Project>
       <Name>Nexus.EnterpriseService</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Nexus.Sql_DAL\Nexus.Sql_DAL.csproj">
+    <ProjectReference Include="..\Nexus.Sql_Repository\Nexus.Sql_Repository.csproj">
       <Project>{bdff3bb0-3c7a-47a8-9cf5-1f3454a646e5}</Project>
-      <Name>Nexus.Sql_DAL</Name>
+      <Name>Nexus.Sql_Repository</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

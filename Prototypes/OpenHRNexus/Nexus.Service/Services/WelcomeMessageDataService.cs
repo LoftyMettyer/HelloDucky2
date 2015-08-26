@@ -1,6 +1,6 @@
 ﻿using System;
-using Nexus.Repository.Interfaces;
-using Nexus.Repository.Messages;
+using Nexus.Common.Interfaces.Repository;
+using Nexus.Common.Messages;
 using Nexus.Service.Interfaces;
 
 namespace Nexus.Service.Services {
@@ -11,8 +11,7 @@ namespace Nexus.Service.Services {
 			_welcomeMessageDataRepository = welcomeMessageDataRepository;
 		}
 
-		public WelcomeDataMessage GetWelcomeMessageData(Guid? userID, string language)
-		{
+		public WelcomeDataMessage GetWelcomeMessageData(Guid? userID, string language) {
 			return _welcomeMessageDataRepository.GetWelcomeMessageData(userID, language);
 		}
 	}

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Nexus.Repository.SQLServer;
 using Nexus.Service.Services;
 using Nexus.WebAPI.Controllers;
 using Nexus.Common.Models;
 using Moq;
 using Nexus.Service.Interfaces;
+using Nexus.Sql_Repository;
 
 namespace Nexus.WebAPI.Tests.Controllers
 {

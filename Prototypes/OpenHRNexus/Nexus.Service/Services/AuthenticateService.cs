@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Nexus.Repository.Interfaces;
-using Nexus.Repository.Messages;
+using Nexus.Common.Interfaces.Repository;
+using Nexus.Common.Messages;
 using Nexus.Service.Interfaces;
 
 namespace Nexus.Service.Services {

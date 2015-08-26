@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Nexus.Common")]
+[assembly: AssemblyTitle("Nexus.Mock_Repository")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Nexus.Common")]
+[assembly: AssemblyProduct("Nexus.Mock_Repository")]
 [assembly: AssemblyCopyright("Copyright © Advanced Computer Software 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("11f4cbf6-db13-4dec-b415-011a41ac0760")]
+[assembly: Guid("ed88e507-b9b6-493e-9b7e-ec892b5df5cb")]
 
 // Version information for an assembly consists of the following four values:
 //

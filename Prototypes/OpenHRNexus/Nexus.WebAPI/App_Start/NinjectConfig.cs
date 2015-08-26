@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using Ninject;
-using Nexus.Repository.Interfaces;
 using Nexus.Service.Interfaces;
 using Nexus.Service.Services;
 

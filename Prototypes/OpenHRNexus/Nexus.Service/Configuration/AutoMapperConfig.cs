@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Nexus.Common.Models;
-using Nexus.Repository;
 
 namespace Nexus.Service.Configuration {
 	public class AutoMapperConfig {

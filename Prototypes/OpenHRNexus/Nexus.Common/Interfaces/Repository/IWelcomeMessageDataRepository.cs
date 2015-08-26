@@ -1,8 +1,8 @@
 ﻿using System;
 using Nexus.Common.Messages;
 
-namespace Nexus.Service.Interfaces {
-	public interface IWelcomeMessageDataService {
+namespace Nexus.Common.Interfaces.Repository {
+	public interface IWelcomeMessageDataRepository {
 		WelcomeDataMessage GetWelcomeMessageData(Guid? userID, string language);
 	}
 }

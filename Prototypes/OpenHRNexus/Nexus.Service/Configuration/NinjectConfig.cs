@@ -1,6 +1,6 @@
-﻿using Ninject;
-using Nexus.Repository.Interfaces;
-using Nexus.Repository.SQLServer;
+﻿using Nexus.Common.Interfaces.Repository;
+using Ninject;
+using Nexus.Sql_Repository;
 
 namespace Nexus.Service.Configuration {
 	public class NinjectConfig {

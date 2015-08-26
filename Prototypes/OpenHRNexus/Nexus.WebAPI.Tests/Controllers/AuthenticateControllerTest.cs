@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Nexus.Repository.Messages;
+using Nexus.Common.Messages;
 using Nexus.Service.Interfaces;
 using Nexus.WebAPI.Controllers;
 

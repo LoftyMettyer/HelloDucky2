@@ -54,8 +54,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\EntityType.cs" />
+    <Compile Include="Enums\NewUserStatus.cs" />
     <Compile Include="Interfaces\IJsonSerialize.cs" />
     <Compile Include="Interfaces\INexusUser.cs" />
+    <Compile Include="Interfaces\Repository\IAuthenticateRepository.cs" />
+    <Compile Include="Interfaces\Repository\IDataRepository.cs" />
+    <Compile Include="Interfaces\Repository\IEntityRepository.cs" />
+    <Compile Include="Interfaces\Repository\IWelcomeMessageDataRepository.cs" />
+    <Compile Include="Messages\RegisterNewUserMessage.cs" />
+    <Compile Include="Messages\WelcomeDataMessage.cs" />
     <Compile Include="Models\DynamicColumn.cs" />
     <Compile Include="Models\DynamicDataModel.cs" />
     <Compile Include="Models\EntityModel.cs" />

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Common", "Nexus.Commo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Testing.ConsoleApp", "Nexus.Testing.ConsoleApp\Nexus.Testing.ConsoleApp.csproj", "{4782CBC3-FA2A-48E7-A9F4-0566994CBC1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Sql_DAL", "Nexus.Sql_DAL\Nexus.Sql_DAL.csproj", "{BDFF3BB0-3C7A-47A8-9CF5-1F3454A646E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Sql_Repository", "Nexus.Sql_Repository\Nexus.Sql_Repository.csproj", "{BDFF3BB0-3C7A-47A8-9CF5-1F3454A646E5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Service", "Nexus.Service\Nexus.Service.csproj", "{99EC13FB-F260-4EB2-AF83-CCED1A753E4B}"
 EndProject
@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.WebAPI", "Nexus.WebAP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.WebAPI.Tests", "Nexus.WebAPI.Tests\Nexus.WebAPI.Tests.csproj", "{A3EA477B-3938-4CA0-914F-577F201A1140}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Sql_DAL.Tests", "Nexus.Sql_DAL.Tests\Nexus.Sql_DAL.Tests.csproj", "{C3B65732-4AB7-4B7A-83D3-C460D7C35E86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Sql_Repository.Tests", "Nexus.Sql_Repository.Tests\Nexus.Sql_Repository.Tests.csproj", "{C3B65732-4AB7-4B7A-83D3-C460D7C35E86}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{015D9149-67A0-4472-AC73-1EB5942E7EC5}"
 	ProjectSection(SolutionItems) = preProject
@@ -32,11 +32,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebAPI", "WebAPI", "{A29D91
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Architecture", "Architecture", "{CF5245AA-DED6-4BD5-AF2F-106617107324}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccessLayer", "DataAccessLayer", "{1B4299DF-5083-42EC-9A7B-882E48666264}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repository", "Repository", "{1B4299DF-5083-42EC-9A7B-882E48666264}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.EnterpriseService", "Nexus.EnterpriseService\Nexus.EnterpriseService.csproj", "{AB74E80C-FE32-49D0-B03A-E24A28DBFDD9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{A201E9CA-5D20-4236-9E59-4F0FC76E2CA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Mock_Repository", "Nexus.Mock_Repository\Nexus.Mock_Repository.csproj", "{ED88E507-B9B6-493E-9B7E-EC892B5DF5CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,6 +82,10 @@ Global
 		{AB74E80C-FE32-49D0-B03A-E24A28DBFDD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB74E80C-FE32-49D0-B03A-E24A28DBFDD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB74E80C-FE32-49D0-B03A-E24A28DBFDD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED88E507-B9B6-493E-9B7E-EC892B5DF5CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED88E507-B9B6-493E-9B7E-EC892B5DF5CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED88E507-B9B6-493E-9B7E-EC892B5DF5CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED88E507-B9B6-493E-9B7E-EC892B5DF5CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,12 +99,13 @@ Global
 		{C3B65732-4AB7-4B7A-83D3-C460D7C35E86} = {1B4299DF-5083-42EC-9A7B-882E48666264}
 		{44EAD20D-89BA-4E68-89E2-5BD0205F5C7C} = {CF5245AA-DED6-4BD5-AF2F-106617107324}
 		{AB74E80C-FE32-49D0-B03A-E24A28DBFDD9} = {0D661700-C3A4-4F6F-8FB0-E83A0FBB59D5}
+		{ED88E507-B9B6-493E-9B7E-EC892B5DF5CB} = {1B4299DF-5083-42EC-9A7B-882E48666264}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.ExceptionHandling.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.ExceptionHandling.Logging.6.0.1304.0\lib\NET45
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 10
+		SccNumberOfProjects = 11
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath0 = .
@@ -125,17 +132,21 @@ Global
 		SccProjectTopLevelParentUniqueName6 = Nexus.sln
 		SccProjectName6 = Nexus.WebAPI
 		SccLocalPath6 = Nexus.WebAPI
-		SccProjectUniqueName7 = Nexus.Sql_DAL.Tests\\Nexus.Sql_DAL.Tests.csproj
+		SccProjectUniqueName7 = Nexus.EnterpriseService\\Nexus.EnterpriseService.csproj
 		SccProjectTopLevelParentUniqueName7 = Nexus.sln
-		SccProjectName7 = Nexus.Sql_DAL.Tests
-		SccLocalPath7 = Nexus.Sql_DAL.Tests
-		SccProjectUniqueName8 = Nexus.Sql_DAL\\Nexus.Sql_DAL.csproj
+		SccProjectName7 = Nexus.EnterpriseService
+		SccLocalPath7 = Nexus.EnterpriseService
+		SccProjectUniqueName8 = Nexus.Sql_Repository\\Nexus.Sql_Repository.csproj
 		SccProjectTopLevelParentUniqueName8 = Nexus.sln
-		SccProjectName8 = Nexus.Sql_DAL
-		SccLocalPath8 = Nexus.Sql_DAL
-		SccProjectUniqueName9 = Nexus.EnterpriseService\\Nexus.EnterpriseService.csproj
+		SccProjectName8 = Nexus.Sql_Repository
+		SccLocalPath8 = Nexus.Sql_Repository
+		SccProjectUniqueName9 = Nexus.Sql_Repository.Tests\\Nexus.Sql_Repository.Tests.csproj
 		SccProjectTopLevelParentUniqueName9 = Nexus.sln
-		SccProjectName9 = Nexus.EnterpriseService
-		SccLocalPath9 = Nexus.EnterpriseService
+		SccProjectName9 = Nexus.Sql_Repository.Tests
+		SccLocalPath9 = Nexus.Sql_Repository.Tests
+		SccProjectUniqueName10 = Nexus.Mock_Repository\\Nexus.Mock_Repository.csproj
+		SccProjectTopLevelParentUniqueName10 = Nexus.sln
+		SccProjectName10 = Nexus.Mock_Repository
+		SccLocalPath10 = Nexus.Mock_Repository
 	EndGlobalSection
 EndGlobal

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
-using Nexus.Repository.Interfaces;
 using Nexus.Service.Interfaces;
 
 namespace Nexus.Service.Services {
@@ -20,20 +20,19 @@ namespace Nexus.Service.Services {
 			return _dataRepository.GetData();
 		}
 
-        WebFormModel IDataService.GetWebForm(int id, Guid userId)
-        {
-            WebForm webForm = _dataRepository.GetWebForm(id);
+		WebFormModel IDataService.GetWebForm(int id, Guid userId) {
+			WebForm webForm = _dataRepository.GetWebForm(id);
 
-            var result = _dataRepository.PopulateFormWithData(webForm, userId);
-
+			var result = _dataRepository.PopulateFormWithData(webForm, userId);
 
 
 
-            // Implement translation as a design pattern (a template one? - I can't remember - need to review training notes)
-            //result.translate(language)
 
-            return result;
-        }
+			// Implement translation as a design pattern (a template one? - I can't remember - need to review training notes)
+			//result.translate(language)
 
-    }
+			return result;
+		}
+
+	}
 }

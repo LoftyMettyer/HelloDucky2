@@ -25,7 +25,7 @@ namespace Nexus.WebAPI {
 			//Initialise Exception Handling for all projects in solution
 			Nexus.WebAPI.Configuration.EnterpriseServicesConfiguration.Configure();
 			Nexus.Service.Configuration.EnterpriseServicesConfiguration.Configure();
-			Nexus.Repository.Configuration.EnterpriseServicesConfiguration.Configure();
+			Nexus.Sql_Repository.Configuration.EnterpriseServicesConfiguration.Configure();
 		}
 	}
 }
