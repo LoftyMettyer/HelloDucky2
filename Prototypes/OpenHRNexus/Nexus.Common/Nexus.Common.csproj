@@ -56,8 +56,6 @@
     <Compile Include="Enums\EntityType.cs" />
     <Compile Include="Interfaces\IJsonSerialize.cs" />
     <Compile Include="Interfaces\INexusUser.cs" />
-    <Compile Include="Messaging\Commands\LoginAttemptCommand.cs" />
-    <Compile Include="Messaging\Events\LoginAttemptEvent.cs" />
     <Compile Include="Models\DynamicColumn.cs" />
     <Compile Include="Models\DynamicDataModel.cs" />
     <Compile Include="Models\EntityModel.cs" />
@@ -65,12 +63,9 @@
     <Compile Include="Models\WebFormFieldOption.cs" />
     <Compile Include="Models\WebFormFields.cs" />
     <Compile Include="Models\WebFormModel.cs" />
-    <Compile Include="NServiceBusConfiguration\ConfigErrorQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Messaging\Messages\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />

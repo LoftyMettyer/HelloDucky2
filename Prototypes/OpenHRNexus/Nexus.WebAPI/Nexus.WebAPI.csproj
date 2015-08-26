@@ -314,13 +314,13 @@
       <Project>{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}</Project>
       <Name>Nexus.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Nexus.EnterpriseServices\Nexus.EnterpriseServices.csproj">
+    <ProjectReference Include="..\Nexus.EnterpriseService\Nexus.EnterpriseService.csproj">
       <Project>{ab74e80c-fe32-49d0-b03a-e24a28dbfdd9}</Project>
-      <Name>Nexus.EnterpriseServices</Name>
+      <Name>Nexus.EnterpriseService</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nexus.Sql_DAL\Nexus.Sql_DAL.csproj">
       <Project>{BDFF3BB0-3C7A-47A8-9CF5-1F3454A646E5}</Project>
-      <Name>Nexus.Repository</Name>
+      <Name>Nexus.Sql_DAL</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nexus.Service\Nexus.Service.csproj">
       <Project>{99ec13fb-f260-4eb2-af83-cced1a753e4b}</Project>

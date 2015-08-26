@@ -90,13 +90,13 @@
       <Project>{c1e258da-54f0-4a84-aace-74ad2fa9a495}</Project>
       <Name>Nexus.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Nexus.EnterpriseServices\Nexus.EnterpriseServices.csproj">
+    <ProjectReference Include="..\Nexus.EnterpriseService\Nexus.EnterpriseService.csproj">
       <Project>{ab74e80c-fe32-49d0-b03a-e24a28dbfdd9}</Project>
-      <Name>Nexus.EnterpriseServices</Name>
+      <Name>Nexus.EnterpriseService</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nexus.Sql_DAL\Nexus.Sql_DAL.csproj">
       <Project>{bdff3bb0-3c7a-47a8-9cf5-1f3454a646e5}</Project>
-      <Name>Nexus.Repository</Name>
+      <Name>Nexus.Sql_DAL</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

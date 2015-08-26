@@ -1,5 +1,5 @@
-﻿using Nexus.EnterpriseServices.ExceptionHandling;
-using Nexus.EnterpriseServices.Logging;
+﻿using Nexus.EnterpriseService.ExceptionHandling;
+using Nexus.EnterpriseService.Logging;
 
 namespace Nexus.Repository.Globals {
 	public class Global {

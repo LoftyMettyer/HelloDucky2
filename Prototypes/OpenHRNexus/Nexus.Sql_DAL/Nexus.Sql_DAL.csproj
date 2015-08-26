@@ -109,9 +109,9 @@
       <Project>{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}</Project>
       <Name>Nexus.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Nexus.EnterpriseServices\Nexus.EnterpriseServices.csproj">
+    <ProjectReference Include="..\Nexus.EnterpriseService\Nexus.EnterpriseService.csproj">
       <Project>{ab74e80c-fe32-49d0-b03a-e24a28dbfdd9}</Project>
-      <Name>Nexus.EnterpriseServices</Name>
+      <Name>Nexus.EnterpriseService</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

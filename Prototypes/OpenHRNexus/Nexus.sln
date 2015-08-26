@@ -3,15 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Messaging.Publisher", "Nexus.Messaging.Publisher\Nexus.Messaging.Publisher.csproj", "{31518226-A3C8-4E7F-8EC1-F4DD767AE9DA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Common", "Nexus.Common\Nexus.Common.csproj", "{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Messaging.Subscriber", "Nexus.Messaging.Subscriber\Nexus.Messaging.Subscriber.csproj", "{6D9530C4-C958-4256-8EFE-5BA2268E3000}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Testing.ConsoleApp", "Nexus.Testing.ConsoleApp\Nexus.Testing.ConsoleApp.csproj", "{4782CBC3-FA2A-48E7-A9F4-0566994CBC1C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.UnitTests", "Nexus.UnitTests\Nexus.UnitTests.csproj", "{F692DA20-209D-4DE2-B4C3-AC025FF03B1F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Sql_DAL", "Nexus.Sql_DAL\Nexus.Sql_DAL.csproj", "{BDFF3BB0-3C7A-47A8-9CF5-1F3454A646E5}"
 EndProject
@@ -32,19 +26,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{015D91
 EndProject
 Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "Nexus.UML", "Nexus.UML\Nexus.UML.modelproj", "{44EAD20D-89BA-4E68-89E2-5BD0205F5C7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.EnterpriseServices", "Nexus.EnterpriseServices\Nexus.EnterpriseServices.csproj", "{AB74E80C-FE32-49D0-B03A-E24A28DBFDD9}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messaging", "Messaging", "{5176BB22-7747-4C70-A686-9A3F4C544044}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{0D661700-C3A4-4F6F-8FB0-E83A0FBB59D5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebAPI", "WebAPI", "{A29D918B-9E14-46BD-BBEB-9575FFFA0731}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{65E103A5-0121-49C4-9E27-6CF580F67334}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Architecture", "Architecture", "{CF5245AA-DED6-4BD5-AF2F-106617107324}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccessLayer", "DataAccessLayer", "{1B4299DF-5083-42EC-9A7B-882E48666264}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.EnterpriseService", "Nexus.EnterpriseService\Nexus.EnterpriseService.csproj", "{AB74E80C-FE32-49D0-B03A-E24A28DBFDD9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{A201E9CA-5D20-4236-9E59-4F0FC76E2CA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,26 +44,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{31518226-A3C8-4E7F-8EC1-F4DD767AE9DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31518226-A3C8-4E7F-8EC1-F4DD767AE9DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31518226-A3C8-4E7F-8EC1-F4DD767AE9DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31518226-A3C8-4E7F-8EC1-F4DD767AE9DA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6D9530C4-C958-4256-8EFE-5BA2268E3000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6D9530C4-C958-4256-8EFE-5BA2268E3000}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6D9530C4-C958-4256-8EFE-5BA2268E3000}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6D9530C4-C958-4256-8EFE-5BA2268E3000}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4782CBC3-FA2A-48E7-A9F4-0566994CBC1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4782CBC3-FA2A-48E7-A9F4-0566994CBC1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4782CBC3-FA2A-48E7-A9F4-0566994CBC1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4782CBC3-FA2A-48E7-A9F4-0566994CBC1C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F692DA20-209D-4DE2-B4C3-AC025FF03B1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F692DA20-209D-4DE2-B4C3-AC025FF03B1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F692DA20-209D-4DE2-B4C3-AC025FF03B1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F692DA20-209D-4DE2-B4C3-AC025FF03B1F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BDFF3BB0-3C7A-47A8-9CF5-1F3454A646E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BDFF3BB0-3C7A-47A8-9CF5-1F3454A646E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDFF3BB0-3C7A-47A8-9CF5-1F3454A646E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -105,11 +85,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{31518226-A3C8-4E7F-8EC1-F4DD767AE9DA} = {5176BB22-7747-4C70-A686-9A3F4C544044}
 		{C1E258DA-54F0-4A84-AACE-74AD2FA9A495} = {0D661700-C3A4-4F6F-8FB0-E83A0FBB59D5}
-		{6D9530C4-C958-4256-8EFE-5BA2268E3000} = {5176BB22-7747-4C70-A686-9A3F4C544044}
-		{F692DA20-209D-4DE2-B4C3-AC025FF03B1F} = {65E103A5-0121-49C4-9E27-6CF580F67334}
 		{BDFF3BB0-3C7A-47A8-9CF5-1F3454A646E5} = {1B4299DF-5083-42EC-9A7B-882E48666264}
+		{99EC13FB-F260-4EB2-AF83-CCED1A753E4B} = {A201E9CA-5D20-4236-9E59-4F0FC76E2CA6}
 		{7F3C005B-ADE2-4E1D-AEFB-A5EAD394D644} = {A29D918B-9E14-46BD-BBEB-9575FFFA0731}
 		{A3EA477B-3938-4CA0-914F-577F201A1140} = {A29D918B-9E14-46BD-BBEB-9575FFFA0731}
 		{C3B65732-4AB7-4B7A-83D3-C460D7C35E86} = {1B4299DF-5083-42EC-9A7B-882E48666264}
@@ -120,7 +98,7 @@ Global
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.ExceptionHandling.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.ExceptionHandling.Logging.6.0.1304.0\lib\NET45
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 13
+		SccNumberOfProjects = 10
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath0 = .
@@ -128,47 +106,36 @@ Global
 		SccProjectTopLevelParentUniqueName1 = Nexus.sln
 		SccProjectName1 = Nexus.Common
 		SccLocalPath1 = Nexus.Common
-		SccProjectUniqueName2 = Nexus.EnterpriseServices\\Nexus.EnterpriseServices.csproj
+		SccProjectUniqueName2 = Nexus.Service\\Nexus.Service.csproj
 		SccProjectTopLevelParentUniqueName2 = Nexus.sln
-		SccProjectName2 = Nexus.EnterpriseServices
-		SccLocalPath2 = Nexus.EnterpriseServices
-		SccProjectUniqueName3 = Nexus.Messaging.Publisher\\Nexus.Messaging.Publisher.csproj
-		SccProjectTopLevelParentUniqueName3 = Nexus.sln
-		SccProjectName3 = Nexus.Messaging.Publisher
-		SccLocalPath3 = Nexus.Messaging.Publisher
-		SccProjectUniqueName4 = Nexus.Messaging.Subscriber\\Nexus.Messaging.Subscriber.csproj
+		SccProjectName2 = Nexus.Service
+		SccLocalPath2 = Nexus.Service
+		SccProjectUniqueName3 = Nexus.Testing.ConsoleApp\\Nexus.Testing.ConsoleApp.csproj
+		SccProjectName3 = Nexus.Testing.ConsoleApp
+		SccLocalPath3 = Nexus.Testing.ConsoleApp
+		SccProjectUniqueName4 = Nexus.UML\\Nexus.UML.modelproj
 		SccProjectTopLevelParentUniqueName4 = Nexus.sln
-		SccProjectName4 = Nexus.Messaging.Subscriber
-		SccLocalPath4 = Nexus.Messaging.Subscriber
-		SccProjectUniqueName5 = Nexus.Service\\Nexus.Service.csproj
-		SccProjectName5 = Nexus.Service
-		SccLocalPath5 = Nexus.Service
-		SccProjectUniqueName6 = Nexus.Testing.ConsoleApp\\Nexus.Testing.ConsoleApp.csproj
-		SccProjectName6 = Nexus.Testing.ConsoleApp
-		SccLocalPath6 = Nexus.Testing.ConsoleApp
-		SccProjectUniqueName7 = Nexus.UML\\Nexus.UML.modelproj
+		SccProjectName4 = Nexus.UML
+		SccLocalPath4 = Nexus.UML
+		SccProjectUniqueName5 = Nexus.WebAPI.Tests\\Nexus.WebAPI.Tests.csproj
+		SccProjectTopLevelParentUniqueName5 = Nexus.sln
+		SccProjectName5 = Nexus.WebAPI.Tests
+		SccLocalPath5 = Nexus.WebAPI.Tests
+		SccProjectUniqueName6 = Nexus.WebAPI\\Nexus.WebAPI.csproj
+		SccProjectTopLevelParentUniqueName6 = Nexus.sln
+		SccProjectName6 = Nexus.WebAPI
+		SccLocalPath6 = Nexus.WebAPI
+		SccProjectUniqueName7 = Nexus.Sql_DAL.Tests\\Nexus.Sql_DAL.Tests.csproj
 		SccProjectTopLevelParentUniqueName7 = Nexus.sln
-		SccProjectName7 = Nexus.UML
-		SccLocalPath7 = Nexus.UML
-		SccProjectUniqueName8 = Nexus.UnitTests\\Nexus.UnitTests.csproj
+		SccProjectName7 = Nexus.Sql_DAL.Tests
+		SccLocalPath7 = Nexus.Sql_DAL.Tests
+		SccProjectUniqueName8 = Nexus.Sql_DAL\\Nexus.Sql_DAL.csproj
 		SccProjectTopLevelParentUniqueName8 = Nexus.sln
-		SccProjectName8 = Nexus.UnitTests
-		SccLocalPath8 = Nexus.UnitTests
-		SccProjectUniqueName9 = Nexus.WebAPI.Tests\\Nexus.WebAPI.Tests.csproj
+		SccProjectName8 = Nexus.Sql_DAL
+		SccLocalPath8 = Nexus.Sql_DAL
+		SccProjectUniqueName9 = Nexus.EnterpriseService\\Nexus.EnterpriseService.csproj
 		SccProjectTopLevelParentUniqueName9 = Nexus.sln
-		SccProjectName9 = Nexus.WebAPI.Tests
-		SccLocalPath9 = Nexus.WebAPI.Tests
-		SccProjectUniqueName10 = Nexus.WebAPI\\Nexus.WebAPI.csproj
-		SccProjectTopLevelParentUniqueName10 = Nexus.sln
-		SccProjectName10 = Nexus.WebAPI
-		SccLocalPath10 = Nexus.WebAPI
-		SccProjectUniqueName11 = Nexus.Sql_DAL.Tests\\Nexus.Sql_DAL.Tests.csproj
-		SccProjectTopLevelParentUniqueName11 = Nexus.sln
-		SccProjectName11 = Nexus.Sql_DAL.Tests
-		SccLocalPath11 = Nexus.Sql_DAL.Tests
-		SccProjectUniqueName12 = Nexus.Sql_DAL\\Nexus.Sql_DAL.csproj
-		SccProjectTopLevelParentUniqueName12 = Nexus.sln
-		SccProjectName12 = Nexus.Sql_DAL
-		SccLocalPath12 = Nexus.Sql_DAL
+		SccProjectName9 = Nexus.EnterpriseService
+		SccLocalPath9 = Nexus.EnterpriseService
 	EndGlobalSection
 EndGlobal
