@@ -4,7 +4,8 @@ using System.Data.Entity;
 using System.Linq;
 using Nexus.Common.Enums;
 using Nexus.Common.Models;
-using Nexus.Repository.Interfaces;
+using Nexus.Common.Interfaces;
+using Nexus.Common.Classes;
 
 namespace Nexus.Repository.SQLServer
 {
@@ -127,12 +128,18 @@ namespace Nexus.Repository.SQLServer
 
         }
 
+        public BusinessProcess GetBusinessProcess(int Id)
+        {
+            return Processes.Where(p => p.Id == Id).First();
+        }
+
         public virtual DbSet<DynamicDataModel> Data { get; set; }
+
+        public virtual DbSet<BusinessProcess> Processes { get; set; }
 
         public virtual DbSet<WebForm> WebForms { get; set; }
         public virtual DbSet<WebFormField> WebFormFields { get; set; }
         public virtual DbSet<WebFormFieldOption> WebFormFieldOptions { get; set; }
-
 
         // Metadata for the dynamic objects
         public virtual DbSet<DynamicColumn> Columns { get; set; }

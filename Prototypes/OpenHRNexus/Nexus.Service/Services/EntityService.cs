@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Nexus.Common.Enums;
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
+using Nexus.Common.Interfaces;
 
 namespace Nexus.Service.Services {
 	public class EntityService : IEntityService {

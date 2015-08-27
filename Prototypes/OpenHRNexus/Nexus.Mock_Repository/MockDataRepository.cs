@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Nexus.Common.Classes;
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
 
@@ -44,5 +45,10 @@ namespace Nexus.Mock_Repository {
 		public WebFormModel PopulateFormWithData(WebForm webForm, Guid userId) {
 			throw new NotImplementedException();
 		}
-	}
+
+        public BusinessProcess GetBusinessProcess(int Id)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

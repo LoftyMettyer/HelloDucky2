@@ -135,13 +135,13 @@
       <Project>{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}</Project>
       <Name>Nexus.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Nexus.Sql_Repository\Nexus.Sql_Repository.csproj">
-      <Project>{BDFF3BB0-3C7A-47A8-9CF5-1F3454A646E5}</Project>
-      <Name>Nexus.Sql_Repository</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Nexus.Service\Nexus.Service.csproj">
       <Project>{99ec13fb-f260-4eb2-af83-cced1a753e4b}</Project>
       <Name>Nexus.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nexus.Sql_Repository\Nexus.Sql_Repository.csproj">
+      <Project>{bdff3bb0-3c7a-47a8-9cf5-1f3454a646e5}</Project>
+      <Name>Nexus.Sql_Repository</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nexus.WebAPI\Nexus.WebAPI.csproj">
       <Project>{7F3C005B-ADE2-4E1D-AEFB-A5EAD394D644}</Project>

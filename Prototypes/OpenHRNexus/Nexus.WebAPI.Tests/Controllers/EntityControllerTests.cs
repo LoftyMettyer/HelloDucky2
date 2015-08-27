@@ -3,8 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nexus.Common.Enums;
 using Nexus.Common.Models;
 using Nexus.Service.Services;
-using Nexus.Sql_Repository;
 using Nexus.WebAPI.Controllers;
+using Nexus.Sql_Repository;
 
 namespace Nexus.WebAPI.Tests.Controllers {
 	[TestClass()]

@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using OpenHRNexus.Common.Models;
 
 namespace OpenHRNexus.Service.Interfaces
 {
-	public interface IDataService
+	public interface IBusinessProcessService
 	{
-		IEnumerable<DynamicDataModel> GetData(int id);
-		IEnumerable<DynamicDataModel> GetData();
-        WebFormModel GetWebForm(int id, Guid userId);
+//		IEnumerable<DynamicDataModel> GetData(int id);
+//		IEnumerable<DynamicDataModel> GetData();
+        WebFormModel GetWebFormForProcessAndUser(int processId, Guid userId);
 
     }
 }

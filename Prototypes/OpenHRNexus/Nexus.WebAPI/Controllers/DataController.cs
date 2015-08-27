@@ -23,25 +23,25 @@ namespace Nexus.WebAPI.Controllers {
 			_dataService = dataService;
 		}
 
-		[HttpGet]
-		public string GetReportData(string id)
-		{
-			int dataId;
+		//[HttpGet]
+		//public string GetReportData(string id)
+		//{
+		//	int dataId;
 
-			var result = Int32.TryParse(id, out dataId);
+		//	var result = Int32.TryParse(id, out dataId);
 
-			if (result)
-			{
-				var data = _dataService.GetData(dataId);
-				return data.ToJsonResult().ToString();
-			}
-			else
-			{
-				var data = _dataService.GetData();
-				return data.ToJsonResult().ToString();
-			}
+		//	if (result)
+		//	{
+		//		var data = _dataService.GetData(dataId);
+		//		return data.ToJsonResult().ToString();
+		//	}
+		//	else
+		//	{
+		//		var data = _dataService.GetData();
+		//		return data.ToJsonResult().ToString();
+		//	}
 
-		}
+		//}
 
         [HttpGet]
         [Authorize(Roles = "OpenHRUser")]

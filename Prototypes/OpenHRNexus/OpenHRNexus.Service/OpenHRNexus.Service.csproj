@@ -70,12 +70,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\BusinessProcess.cs" />
+    <Compile Include="Classes\BaseBusinessProcessStep.cs" />
+    <Compile Include="Classes\BusinessProcessStep.cs" />
+    <Compile Include="Classes\WebForm.cs" />
     <Compile Include="Configuration\AutoMapperConfig.cs" />
     <Compile Include="Configuration\EnterpriseServicesConfiguration.cs" />
     <Compile Include="Configuration\NinjectConfig.cs" />
     <Compile Include="Globals\Global.cs" />
     <Compile Include="Interfaces\IAuthenticateEmail.cs" />
     <Compile Include="Interfaces\IAuthenticateService.cs" />
+    <Compile Include="Interfaces\IBusinessProcessStep.cs" />
     <Compile Include="Interfaces\IDataService.cs" />
     <Compile Include="Interfaces\IEntityService.cs" />
     <Compile Include="Interfaces\IWelcomeMessageDataService.cs" />

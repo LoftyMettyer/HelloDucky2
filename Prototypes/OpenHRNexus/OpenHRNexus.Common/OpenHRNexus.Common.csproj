@@ -53,9 +53,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\BusinessProcessStepType.cs" />
     <Compile Include="Enums\EntityType.cs" />
+    <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\IJsonSerialize.cs" />
     <Compile Include="Interfaces\INexusUser.cs" />
+    <Compile Include="Interfaces\ITranslate.cs" />
     <Compile Include="Messaging\Commands\LoginAttemptCommand.cs" />
     <Compile Include="Messaging\Events\LoginAttemptEvent.cs" />
     <Compile Include="Models\DynamicColumn.cs" />

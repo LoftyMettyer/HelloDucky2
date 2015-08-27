@@ -1,5 +1,5 @@
-﻿using Nexus.Common.Interfaces.Repository;
-using Ninject;
+﻿using Ninject;
+using Nexus.Common.Interfaces.Repository;
 using Nexus.Sql_Repository;
 
 namespace Nexus.Service.Configuration {

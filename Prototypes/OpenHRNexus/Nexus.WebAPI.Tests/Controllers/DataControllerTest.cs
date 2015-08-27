@@ -3,8 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nexus.Service.Services;
 using Nexus.WebAPI.Controllers;
 using Nexus.Common.Models;
-using Moq;
-using Nexus.Service.Interfaces;
 using Nexus.Sql_Repository;
 
 namespace Nexus.WebAPI.Tests.Controllers
@@ -25,28 +23,28 @@ namespace Nexus.WebAPI.Tests.Controllers
             _mockController = new DataController(_mockService);
         }
 
-        [TestMethod]
-		public void GetReportData_ReturnsNonNullForSingleRow()
-		{
-			// Arrange
-	//		var mockService = new Mock<IDataService>();
-//			mockService.Setup(x => x.GetData(78));
+//        [TestMethod]
+//		public void GetReportData_ReturnsNonNullForSingleRow()
+//		{
+//			// Arrange
+//	//		var mockService = new Mock<IDataService>();
+////			mockService.Setup(x => x.GetData(78));
 
-			var result = _mockController.GetReportData(78.ToString());
-			Assert.IsNotNull(result);
-		}
+//			var result = _mockController.GetReportData(78.ToString());
+//			Assert.IsNotNull(result);
+//		}
 
-		[TestMethod]
-		public void GetReportData_ReturnsNonNullForMultipleRows()
-		{
-			// Arrange
-//			var mockService = new Mock<IDataService>();
-//			mockService.Setup(x => x.GetData());
-//			DataController controller = new DataController(mockService.Object);
+//		[TestMethod]
+//		public void GetReportData_ReturnsNonNullForMultipleRows()
+//		{
+//			// Arrange
+////			var mockService = new Mock<IDataService>();
+////			mockService.Setup(x => x.GetData());
+////			DataController controller = new DataController(mockService.Object);
 
-			var result = _mockController.GetReportData("nothing");
-			Assert.IsNotNull(result);
-		}
+//			var result = _mockController.GetReportData("nothing");
+//			Assert.IsNotNull(result);
+//		}
 
 
         [TestMethod]

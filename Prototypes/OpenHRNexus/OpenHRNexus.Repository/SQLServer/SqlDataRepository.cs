@@ -66,6 +66,10 @@ namespace OpenHRNexus.Repository.SQLServer
         public WebFormModel PopulateFormWithData(WebForm webForm, Guid userId)
         {
 
+            webForm.Translate("en-GB");
+
+
+
             var result = new WebFormModel
             {
                 form_id = webForm.id.ToString(),
@@ -74,6 +78,7 @@ namespace OpenHRNexus.Repository.SQLServer
             };
 
             //webForm.RemoveFieldsWithNoAccess();
+
 
             // Find all the tables that we need
 
@@ -102,9 +107,6 @@ namespace OpenHRNexus.Repository.SQLServer
 
             // Dynamically build up a class to hoof this dynamic SQL into
             DynamicDataModel data = new DynamicDataModel();
-
-
-
 
 
             foreach (WebFormField element in result.form_fields)

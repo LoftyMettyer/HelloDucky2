@@ -14,14 +14,14 @@ namespace OpenHRNexus.WebAPI.Tests.Controllers
 	{
 
         SqlDataRepository _mockRepository;
-        DataService _mockService;
+        ProcessService _mockService;
         DataController _mockController;
 
         [TestInitialize]
 		public void TestInitialize()
 		{
             _mockRepository = new SqlDataRepository();
-            _mockService = new DataService(_mockRepository);
+            _mockService = new ProcessService(_mockRepository);
             _mockController = new DataController(_mockService);
         }
 

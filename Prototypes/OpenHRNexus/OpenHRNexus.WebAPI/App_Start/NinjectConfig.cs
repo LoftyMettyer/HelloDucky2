@@ -15,7 +15,7 @@ namespace OpenHRNexus.WebAPI {
 			//Add bindings
 			_kernel.Bind<IAuthenticateService>().To<AuthenticateService>();
 			_kernel.Bind<IWelcomeMessageDataService>().To<WelcomeMessageDataService>();
-			_kernel.Bind<IDataService>().To<DataService>();
+			_kernel.Bind<IBusinessProcessService>().To<ProcessService>();
 			_kernel.Bind<IEntityService>().To<EntityService>();
 
 

@@ -5,10 +5,10 @@ using OpenHRNexus.Repository.Interfaces;
 using OpenHRNexus.Service.Interfaces;
 
 namespace OpenHRNexus.Service.Services {
-	public class DataService : IDataService {
+	public class ProcessService : IBusinessProcessService {
 		private IDataRepository _dataRepository;
 
-		public DataService(IDataRepository dataRepository) {
+		public ProcessService(IDataRepository dataRepository) {
 			_dataRepository = dataRepository;
 		}
 
@@ -20,12 +20,14 @@ namespace OpenHRNexus.Service.Services {
 			return _dataRepository.GetData();
 		}
 
-        WebFormModel IDataService.GetWebForm(int id, Guid userId)
+        WebFormModel IBusinessProcessService.GetWebFormForProcessAndUser(int id, Guid userId)
         {
+
+            //BusinessProcess = _dataRepository
+
             WebForm webForm = _dataRepository.GetWebForm(id);
 
             var result = _dataRepository.PopulateFormWithData(webForm, userId);
-
 
 
 
