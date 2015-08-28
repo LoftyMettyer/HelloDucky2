@@ -15,48 +15,42 @@ namespace Nexus.WebAPI.Controllers {
 		private readonly IDataService _dataService;
         //private readonly IWorkflowService _workflowService;
 
-		public DataController() {
+        private ClaimsIdentity _identity;
+
+        public DataController() {
 		}
 
 		public DataController(IDataService dataService)
 		{
 			_dataService = dataService;
+            _identity = User.Identity as ClaimsIdentity;
 		}
 
-		//[HttpGet]
-		//public string GetReportData(string id)
-		//{
-		//	int dataId;
+        public DataController(IDataService dataService, ClaimsIdentity claims)
+        {
+            _identity = claims;
+            _dataService = dataService;
+        }
 
-		//	var result = Int32.TryParse(id, out dataId);
-
-		//	if (result)
-		//	{
-		//		var data = _dataService.GetData(dataId);
-		//		return data.ToJsonResult().ToString();
-		//	}
-		//	else
-		//	{
-		//		var data = _dataService.GetData();
-		//		return data.ToJsonResult().ToString();
-		//	}
-
-		//}
 
         [HttpGet]
         [Authorize(Roles = "OpenHRUser")]
         public IEnumerable<WebFormModel> InstantiateProcess(int instanceId, int elementId, bool newRecord)
         {
 
-            // TODO - This bit needs to extract from the JWT
-            //var identity = User.Identity as ClaimsIdentity;
-            //var openHRDbGuid = new Guid(identity.GetUserId());
-            var openHRDbGuid = new Guid("088C6A78-E14A-41B0-AD93-4FB7D3ADE96C");
-
-            var webForm = _dataService.GetWebForm(elementId, openHRDbGuid);
-
+            var openHRDbGuid = new Guid(_identity.GetUserId());
             List<WebFormModel> form = new List<WebFormModel>();
-            form.Add(webForm);
+            WebFormModel webForm;
+
+            if (openHRDbGuid == null || openHRDbGuid == Guid.Empty) {
+                // Berties error handler goes here ?
+            }
+            else
+            {
+                webForm = _dataService.GetWebForm(elementId, openHRDbGuid);
+                form.Add(webForm);
+
+            }
 
             IEnumerable<WebFormModel> webFormModels = form;
             return webFormModels;

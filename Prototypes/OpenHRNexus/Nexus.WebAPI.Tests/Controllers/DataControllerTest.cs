@@ -4,6 +4,7 @@ using Nexus.Service.Services;
 using Nexus.WebAPI.Controllers;
 using Nexus.Common.Models;
 using Nexus.Sql_Repository;
+using System.Security.Claims;
 
 namespace Nexus.WebAPI.Tests.Controllers
 {
@@ -14,38 +15,20 @@ namespace Nexus.WebAPI.Tests.Controllers
         SqlDataRepository _mockRepository;
         DataService _mockService;
         DataController _mockController;
+        ClaimsIdentity _claims;
 
         [TestInitialize]
 		public void TestInitialize()
 		{
+            _claims = new ClaimsIdentity();
+            _claims.AddClaim(new Claim(ClaimTypes.Name, "testUser"));
+            _claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, "088C6A78-E14A-41B0-AD93-4FB7D3ADE96C"));
+
             _mockRepository = new SqlDataRepository();
             _mockService = new DataService(_mockRepository);
-            _mockController = new DataController(_mockService);
+            _mockController = new DataController(_mockService, _claims);
+
         }
-
-//        [TestMethod]
-//		public void GetReportData_ReturnsNonNullForSingleRow()
-//		{
-//			// Arrange
-//	//		var mockService = new Mock<IDataService>();
-////			mockService.Setup(x => x.GetData(78));
-
-//			var result = _mockController.GetReportData(78.ToString());
-//			Assert.IsNotNull(result);
-//		}
-
-//		[TestMethod]
-//		public void GetReportData_ReturnsNonNullForMultipleRows()
-//		{
-//			// Arrange
-////			var mockService = new Mock<IDataService>();
-////			mockService.Setup(x => x.GetData());
-////			DataController controller = new DataController(mockService.Object);
-
-//			var result = _mockController.GetReportData("nothing");
-//			Assert.IsNotNull(result);
-//		}
-
 
         [TestMethod]
         public void InstantiateProcess_IsNotNull()
@@ -59,6 +42,22 @@ namespace Nexus.WebAPI.Tests.Controllers
         {
             var result = _mockController.InstantiateProcess(1, 15, false);
             Assert.IsTrue(result is IEnumerable<WebFormModel>);
+        }
+
+        [TestMethod]
+        public void InstantiateProcess_HandlesInvalidUser()
+        {
+            _claims = new ClaimsIdentity();
+            _claims.AddClaim(new Claim(ClaimTypes.Name, "NoSuchUser"));
+            _claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, "00000000-0000-0000-0000-000000000000"));
+
+            _mockController = new DataController(_mockService, _claims);
+
+            var result = (List<WebFormModel>)_mockController.InstantiateProcess(1, 16, false);
+            
+            Assert.IsTrue(result is IEnumerable<WebFormModel>);
+            Assert.IsTrue(result.Count == 0);
+
         }
 
         [TestMethod]
