@@ -32,7 +32,13 @@ namespace Nexus.WebAPI.Controllers {
             _dataService = dataService;
         }
 
-
+				/// <summary>
+				/// Instatiate a Process (DO WE NEED A GLOSSARY SOMEWHERE SO THIRD PARTY USERS KNOW WHAT A "PROCESS" IS?
+				/// </summary>
+				/// <param name="instanceId">Value one</param>
+				/// <param name="elementId">Value two</param>
+				/// <param name="newRecord">Value three</param>
+				/// <returns></returns>
         [HttpGet]
         [Authorize(Roles = "OpenHRUser")]
         public IEnumerable<WebFormModel> InstantiateProcess(int instanceId, int elementId, bool newRecord)

@@ -2,8 +2,11 @@
 // package to your project.
 ////#define Handle_PageResultOfT
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
+using System.Web;
 using System.Web.Http;
 using Nexus.WebAPI.Areas.HelpPage.SampleGeneration;
 
@@ -26,16 +29,16 @@ namespace Nexus.WebAPI.Areas.HelpPage.App_Start {
 				Justification = "Part of a URI.")]
 		public static void Register(HttpConfiguration config) {
 			//// Uncomment the following to use the documentation from XML documentation file.
-			//config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/App_Data/XmlDocument.xml")));
+			config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/bin/Nexus.WebAPI.XML")));
 
 			//// Uncomment the following to use "sample string" as the sample for all actions that have string as the body parameter or return type.
 			//// Also, the string arrays will be used for IEnumerable<string>. The sample objects will be serialized into different media type 
 			//// formats by the available formatters.
-			//config.SetSampleObjects(new Dictionary<Type, object>
-			//{
-			//    {typeof(string), "sample string"},
-			//    {typeof(IEnumerable<string>), new string[]{"sample 1", "sample 2"}}
-			//});
+			config.SetSampleObjects(new Dictionary<Type, object>
+			{
+					{typeof(string), "sample string"},
+					{typeof(IEnumerable<string>), new string[]{"sample 1", "sample 2"}}
+			});
 
 			// Extend the following to provide factories for types not handled automatically (those lacking parameterless
 			// constructors) or for which you prefer to use non-default property values. Line below provides a fallback
