@@ -11,7 +11,7 @@
 		
 		$(".popup").dialog({
 			resizable: false			
-		});
+		}).parent().find('.ui-dialog-title').html('&nbsp;');
 
 		$(".popup").css('height', '540px');
 		$(".popup").dialog('option', 'position', 'center');
