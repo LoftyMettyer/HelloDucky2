@@ -104,8 +104,22 @@ namespace Nexus.Sql_Repository
             // Dynamically build up a class to hoof this dynamic SQL into
             DynamicDataModel data = new DynamicDataModel();
 
+//            var sql = string.Format("SELECT {0} FROM Personnel", string.Join(", ", result.form_fields));
 
+            var sql = string.Format("SELECT id, Surname AS Column1, HolidayTaken AS Column2 FROM Personnel base ");
 
+            // Append security filter
+            sql += string.Format("INNER JOIN [User] u ON u.RecordId = base.Id WHERE u.UserID = '{0}'", userId);
+              
+          //  IEnumerable< DynamicDataModel> dummyData = Database.SqlQuery<string>(sql).ToList();
+
+            var dummyData = Database.SqlQuery<DynamicDataModel>(sql).SingleOrDefault();
+
+         //   var dummyDataSimple = Database.SqlQuery<string>(sql).ToList();
+
+            //Data.Load()
+
+            //    Data = Database.SqlQuery<string>(sql).ToList();
 
 
             foreach (WebFormField element in result.form_fields)
@@ -113,13 +127,19 @@ namespace Nexus.Sql_Repository
                 var column = Columns.Where(c => c.Id == element.field_columnid).First();
 
                 // Security implemented here?
+             //   sql
 
 
-
-                if (element.field_type == "textfield")
+                if (element.field_columnid == 2)
                 {
-                    element.field_value = "hello ducky";
+                    element.field_value = dummyData.Column1;                   
                 }
+
+                if (element.field_columnid == 14)
+                {
+                    element.field_value = dummyData.Column2.ToString();
+                }
+
 
             }
 
