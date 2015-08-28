@@ -133,6 +133,7 @@ function absence_okClick() {
 	var frmAbsenceDefinition = $('#frmAbsenceDefinition')[0];
 	var frmPostDefinition = $('#frmPostDefinition')[0];
 	var dataCollection = frmAbsenceDefinition.elements;
+	var dStartDate, dEndDate;
 
 	var sValue = frmAbsenceDefinition.txtDateFrom.value;
 	if (sValue.length == 0) {
@@ -142,6 +143,8 @@ function absence_okClick() {
 		sValue = absencedef_convertLocaleDateToSQL(sValue);
 		if (sValue.length == 0) {
 			fOK = false;
+		} else {
+			dStartDate = new Date(sValue);
 		}
 	}
 
@@ -151,7 +154,7 @@ function absence_okClick() {
 		frmAbsenceDefinition.txtDateFrom.focus();
 		return;
 	}
-
+	 
 	sValue = frmAbsenceDefinition.txtDateTo.value;
 	if (sValue.length == 0) {
 		fOK = false;
@@ -160,6 +163,8 @@ function absence_okClick() {
 		sValue = absencedef_convertLocaleDateToSQL(sValue);
 		if (sValue.length == 0) {
 			fOK = false;
+		} else {
+			dEndDate = new Date(sValue);
 		}
 	}
 
@@ -170,45 +175,42 @@ function absence_okClick() {
 		return;
 	}
 
-		//Check if report end date is before the report start date
-		var dStartDate = new Date(frmAbsenceDefinition.txtDateFrom.value);
-		var dEndDate = new Date(frmAbsenceDefinition.txtDateTo.value);
-
-		if (dEndDate < dStartDate) {
-				OpenHR.messageBox("The report end date is before the report start date.");
-				display_Absence_Page(1);
-				frmAbsenceDefinition.txtDateFrom.focus();
-				return;
-		}
+	//Validates if the report end date is before the report start date
+	if (dEndDate != null && dStartDate != null && dEndDate < dStartDate) {
+		OpenHR.messageBox("The report end date is before the report start date.");
+		display_Absence_Page(1);
+		frmAbsenceDefinition.txtDateFrom.focus();
+		return;
+	}
 
 	frmPostDefinition.txtFromDate.value = absencedef_convertLocaleDateToSQL(frmAbsenceDefinition.txtDateFrom.value);
 	frmPostDefinition.txtToDate.value = absencedef_convertLocaleDateToSQL(frmAbsenceDefinition.txtDateTo.value);
-		frmPostDefinition.txtAbsenceTypes.value = "";
+	frmPostDefinition.txtAbsenceTypes.value = "";
 
-		if (dataCollection!=null) 
+	if (dataCollection != null)
+	{
+		for (iIndex = 0; iIndex < dataCollection.length; iIndex++)    
 		{
-				for (iIndex=0; iIndex<dataCollection.length; iIndex++)  
-				{
-					try {
-						sControlName = dataCollection.item(iIndex).name;
+			try {
+				sControlName = dataCollection.item(iIndex).name;
 
-						if (sControlName.substr(0, 15) == "chkAbsenceType_") {
-							if (dataCollection.item(iIndex).checked == true) {
-								//Who hardcoded the "7"???? - frmPostDefinition.txtAbsenceTypes.value = frmPostDefinition.txtAbsenceTypes.value + dataCollection.item(iIndex).attributes[7].nodeValue + ",";
-								frmPostDefinition.txtAbsenceTypes.value = frmPostDefinition.txtAbsenceTypes.value + $(dataCollection.item(iIndex)).attr('tagname') + ",";
-							}
-						}
+				if (sControlName.substr(0, 15) == "chkAbsenceType_") {
+					if (dataCollection.item(iIndex).checked == true) {
+						//Who hardcoded the "7"???? - frmPostDefinition.txtAbsenceTypes.value = frmPostDefinition.txtAbsenceTypes.value + dataCollection.item(iIndex).attributes[7].nodeValue + ",";
+						frmPostDefinition.txtAbsenceTypes.value = frmPostDefinition.txtAbsenceTypes.value + $(dataCollection.item(iIndex)).attr('tagname') + ",";
 					}
-					catch(e) {}
 				}
+			}
+			catch(e) {}
 		}
+	}
 
 
-		if (frmPostDefinition.txtAbsenceTypes.value == "") {
-			OpenHR.messageBox("You must have at least 1 absence type selected.");
-			display_Absence_Page(1);
-			fOK = false;
-		}
+	if (frmPostDefinition.txtAbsenceTypes.value == "") {
+		OpenHR.messageBox("You must have at least 1 absence type selected.");
+		display_Absence_Page(1);
+		fOK = false;
+	}
 
 
 	frmPostDefinition.ID.value = "0";
@@ -226,111 +228,111 @@ function absence_okClick() {
 			frmPostDefinition.txtFilterName.value = frmAbsenceDefinition.txtBaseFilter.value;
 		}
 	}
-	if ((frmAbsenceDefinition.optPickList.checked == true) && (frmPostDefinition.txtBasePicklistID.value == "0")) 
-		{
-				OpenHR.messageBox("You must have a picklist selected.");
-				display_Absence_Page(1);
-				fOK = false;
-		}
-		
-		if ((frmAbsenceDefinition.optFilter.checked == true) && (frmPostDefinition.txtBaseFilterID.value == "0"))
-		{
-				OpenHR.messageBox("You must have a filter selected.");
-				display_Absence_Page(1);		
-				fOK = false;
-		}
+	if ((frmAbsenceDefinition.optPickList.checked == true) && (frmPostDefinition.txtBasePicklistID.value == "0"))
+	{
+		OpenHR.messageBox("You must have a picklist selected.");
+		display_Absence_Page(1);
+		fOK = false;
+	}
 
-		frmPostDefinition.txtPrintFPinReportHeader.value = frmAbsenceDefinition.chkPrintInReportHeader.checked;
+	if ((frmAbsenceDefinition.optFilter.checked == true) && (frmPostDefinition.txtBaseFilterID.value == "0"))
+	{
+		OpenHR.messageBox("You must have a filter selected.");
+		display_Absence_Page(1);
+		fOK = false;
+	}
 
-		// Bradford Specific data
-		frmPostDefinition.txtSRV.value = frmAbsenceDefinition.chkSRV.checked;
-		frmPostDefinition.txtShowDurations.value = frmAbsenceDefinition.chkShowDurations.checked;
-		frmPostDefinition.txtShowInstances.value = frmAbsenceDefinition.chkShowInstances.checked;
-		frmPostDefinition.txtShowFormula.value = frmAbsenceDefinition.chkShowFormula.checked;
-		frmPostDefinition.txtOmitBeforeStart.value = frmAbsenceDefinition.chkOmitBeforeStart.checked;
-		frmPostDefinition.txtOmitAfterEnd.value = frmAbsenceDefinition.chkOmitAfterEnd.checked;
-		frmPostDefinition.txtOrderBy1.value = frmAbsenceDefinition.cboOrderBy1.options[frmAbsenceDefinition.cboOrderBy1.selectedIndex].text;
-		frmPostDefinition.txtOrderBy1ID.value = frmAbsenceDefinition.cboOrderBy1.options[frmAbsenceDefinition.cboOrderBy1.selectedIndex].value;
-		frmPostDefinition.txtOrderBy1Asc.value = frmAbsenceDefinition.chkOrderBy1Asc.checked;
-		frmPostDefinition.txtOrderBy2.value = frmAbsenceDefinition.cboOrderBy2.options[frmAbsenceDefinition.cboOrderBy2.selectedIndex].text;
-		frmPostDefinition.txtOrderBy2ID.value = frmAbsenceDefinition.cboOrderBy2.options[frmAbsenceDefinition.cboOrderBy2.selectedIndex].value;
-		frmPostDefinition.txtOrderBy2Asc.value = frmAbsenceDefinition.chkOrderBy2Asc.checked;
-		frmPostDefinition.txtMinimumBradfordFactor.value = frmAbsenceDefinition.chkMinimumBradfordFactor.checked;
-		frmPostDefinition.txtMinimumBradfordFactorAmount.value = frmAbsenceDefinition.txtMinimumBradfordFactor.value;
-		frmPostDefinition.txtDisplayBradfordDetail.value = frmAbsenceDefinition.chkShowAbsenceDetails.checked;
-    
+	frmPostDefinition.txtPrintFPinReportHeader.value = frmAbsenceDefinition.chkPrintInReportHeader.checked;
+
+	// Bradford Specific data
+	frmPostDefinition.txtSRV.value = frmAbsenceDefinition.chkSRV.checked;
+	frmPostDefinition.txtShowDurations.value = frmAbsenceDefinition.chkShowDurations.checked;
+	frmPostDefinition.txtShowInstances.value = frmAbsenceDefinition.chkShowInstances.checked;
+	frmPostDefinition.txtShowFormula.value = frmAbsenceDefinition.chkShowFormula.checked;
+	frmPostDefinition.txtOmitBeforeStart.value = frmAbsenceDefinition.chkOmitBeforeStart.checked;
+	frmPostDefinition.txtOmitAfterEnd.value = frmAbsenceDefinition.chkOmitAfterEnd.checked;
+	frmPostDefinition.txtOrderBy1.value = frmAbsenceDefinition.cboOrderBy1.options[frmAbsenceDefinition.cboOrderBy1.selectedIndex].text;
+	frmPostDefinition.txtOrderBy1ID.value = frmAbsenceDefinition.cboOrderBy1.options[frmAbsenceDefinition.cboOrderBy1.selectedIndex].value;
+	frmPostDefinition.txtOrderBy1Asc.value = frmAbsenceDefinition.chkOrderBy1Asc.checked;
+	frmPostDefinition.txtOrderBy2.value = frmAbsenceDefinition.cboOrderBy2.options[frmAbsenceDefinition.cboOrderBy2.selectedIndex].text;
+	frmPostDefinition.txtOrderBy2ID.value = frmAbsenceDefinition.cboOrderBy2.options[frmAbsenceDefinition.cboOrderBy2.selectedIndex].value;
+	frmPostDefinition.txtOrderBy2Asc.value = frmAbsenceDefinition.chkOrderBy2Asc.checked;
+	frmPostDefinition.txtMinimumBradfordFactor.value = frmAbsenceDefinition.chkMinimumBradfordFactor.checked;
+	frmPostDefinition.txtMinimumBradfordFactorAmount.value = frmAbsenceDefinition.txtMinimumBradfordFactor.value;
+	frmPostDefinition.txtDisplayBradfordDetail.value = frmAbsenceDefinition.chkShowAbsenceDetails.checked;
+
 	// Validate the output options
-		if (fOK == true) {
-			if (validateAbsenceTab3() == false) {
-				return;
-			}
-		}
-
-		// Validate The Email Attach AS
-		if (doesContainsInvalidCharacters(frmAbsenceDefinition.txtEmailAttachAs.value)) {
-			OpenHR.messageBox("The email attachment file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
-			window.focus();
+	if (fOK == true) {
+		if (validateAbsenceTab3() == false) {
 			return;
-		};
-
-		// Validate The Save to file name
-		if (doesContainsInvalidCharacters(frmAbsenceDefinition.txtFilename.value)) {
-			OpenHR.messageBox("The Save To file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
-			window.focus();
-			return;
-		};
-
-		// Validate The email subject
-		if (doesContainsInvalidCharacters(frmAbsenceDefinition.txtEmailSubject.value)) {
-			OpenHR.messageBox("The email subject can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
-			window.focus();
-			return;
-		};
-
-		if (frmAbsenceDefinition.chkPreview.checked == true) {
-			frmPostDefinition.txtSend_OutputPreview.value = 1;
 		}
-		else {
-			frmPostDefinition.txtSend_OutputPreview.value = 0;
-		}
+	}
 
-		frmPostDefinition.txtSend_OutputFormat.value = 0;
-		if (frmAbsenceDefinition.optDefOutputFormat1.checked) frmPostDefinition.txtSend_OutputFormat.value = 1;
-		if (frmAbsenceDefinition.optDefOutputFormat2.checked) frmPostDefinition.txtSend_OutputFormat.value = 2;
-		if (frmAbsenceDefinition.optDefOutputFormat3.checked) frmPostDefinition.txtSend_OutputFormat.value = 3;
-		if (frmAbsenceDefinition.optDefOutputFormat4.checked) frmPostDefinition.txtSend_OutputFormat.value = 4;
-		if (frmAbsenceDefinition.optDefOutputFormat5.checked) frmPostDefinition.txtSend_OutputFormat.value = 5;
-		if (frmAbsenceDefinition.optDefOutputFormat6.checked) frmPostDefinition.txtSend_OutputFormat.value = 6;
-
-		if (frmAbsenceDefinition.chkDestination2.checked == true) {
-			frmPostDefinition.txtSend_OutputSave.value = 1;
-			//frmPostDefinition.txtSend_OutputSaveExisting.value = frmAbsenceDefinition.cboSaveExisting.options[frmAbsenceDefinition.cboSaveExisting.selectedIndex].value;
-		}
-		else {
-			frmPostDefinition.txtSend_OutputSave.value = 0;
-			frmPostDefinition.txtSend_OutputSaveExisting.value = 0;
-		}
-
-		if (frmAbsenceDefinition.chkDestination3.checked == true) {
-			frmPostDefinition.txtSend_OutputEmail.value = 1;
-			frmPostDefinition.txtSend_OutputEmailAddr.value = frmAbsenceDefinition.txtAbsenceEmailGroupID.value;
-			frmPostDefinition.txtSend_OutputEmailSubject.value = frmAbsenceDefinition.txtEmailSubject.value;
-			frmPostDefinition.txtSend_OutputEmailAttachAs.value = frmAbsenceDefinition.txtEmailAttachAs.value;
-		}
-		else {
-			frmPostDefinition.txtSend_OutputEmail.value = 0;
-			frmPostDefinition.txtSend_OutputEmailAddr.value = 0;
-			frmPostDefinition.txtSend_OutputEmailSubject.value = '';
-			frmPostDefinition.txtSend_OutputEmailAttachAs.value = '';
-		}
-
-		frmPostDefinition.txtSend_OutputFilename.value = frmAbsenceDefinition.txtFilename.value;
-
-		if (fOK == true) {
-			OpenHR.submitForm(frmPostDefinition, "reportframe", null, null, "util_run_standardreport_promptedvalues");
-		}
-
+	// Validate The Email Attach AS
+	if (doesContainsInvalidCharacters(frmAbsenceDefinition.txtEmailAttachAs.value)) {
+		OpenHR.messageBox("The email attachment file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
+		window.focus();
 		return;
+	};
+
+	// Validate The Save to file name
+	if (doesContainsInvalidCharacters(frmAbsenceDefinition.txtFilename.value)) {
+		OpenHR.messageBox("The Save To file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
+		window.focus();
+		return;
+	};
+
+	// Validate The email subject
+	if (doesContainsInvalidCharacters(frmAbsenceDefinition.txtEmailSubject.value)) {
+		OpenHR.messageBox("The email subject can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
+		window.focus();
+		return;
+	};
+
+	if (frmAbsenceDefinition.chkPreview.checked == true) {
+		frmPostDefinition.txtSend_OutputPreview.value = 1;
+	}
+	else {
+		frmPostDefinition.txtSend_OutputPreview.value = 0;
+	}
+
+	frmPostDefinition.txtSend_OutputFormat.value = 0;
+	if (frmAbsenceDefinition.optDefOutputFormat1.checked) frmPostDefinition.txtSend_OutputFormat.value = 1;
+	if (frmAbsenceDefinition.optDefOutputFormat2.checked) frmPostDefinition.txtSend_OutputFormat.value = 2;
+	if (frmAbsenceDefinition.optDefOutputFormat3.checked) frmPostDefinition.txtSend_OutputFormat.value = 3;
+	if (frmAbsenceDefinition.optDefOutputFormat4.checked) frmPostDefinition.txtSend_OutputFormat.value = 4;
+	if (frmAbsenceDefinition.optDefOutputFormat5.checked) frmPostDefinition.txtSend_OutputFormat.value = 5;
+	if (frmAbsenceDefinition.optDefOutputFormat6.checked) frmPostDefinition.txtSend_OutputFormat.value = 6;
+
+	if (frmAbsenceDefinition.chkDestination2.checked == true) {
+		frmPostDefinition.txtSend_OutputSave.value = 1;
+		//frmPostDefinition.txtSend_OutputSaveExisting.value = frmAbsenceDefinition.cboSaveExisting.options[frmAbsenceDefinition.cboSaveExisting.selectedIndex].value;
+	}
+	else {
+		frmPostDefinition.txtSend_OutputSave.value = 0;
+		frmPostDefinition.txtSend_OutputSaveExisting.value = 0;
+	}
+
+	if (frmAbsenceDefinition.chkDestination3.checked == true) {
+		frmPostDefinition.txtSend_OutputEmail.value = 1;
+		frmPostDefinition.txtSend_OutputEmailAddr.value = frmAbsenceDefinition.txtAbsenceEmailGroupID.value;
+		frmPostDefinition.txtSend_OutputEmailSubject.value = frmAbsenceDefinition.txtEmailSubject.value;
+		frmPostDefinition.txtSend_OutputEmailAttachAs.value = frmAbsenceDefinition.txtEmailAttachAs.value;
+	}
+	else {
+		frmPostDefinition.txtSend_OutputEmail.value = 0;
+		frmPostDefinition.txtSend_OutputEmailAddr.value = 0;
+		frmPostDefinition.txtSend_OutputEmailSubject.value = '';
+		frmPostDefinition.txtSend_OutputEmailAttachAs.value = '';
+	}
+
+	frmPostDefinition.txtSend_OutputFilename.value = frmAbsenceDefinition.txtFilename.value;
+
+	if (fOK == true) {
+		OpenHR.submitForm(frmPostDefinition, "reportframe", null, null, "util_run_standardreport_promptedvalues");
+	}
+
+	return;
 }
 
 // Returns True is the text contains invalid characters. False oterwise.
