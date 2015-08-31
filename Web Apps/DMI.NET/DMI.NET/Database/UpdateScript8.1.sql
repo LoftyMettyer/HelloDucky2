@@ -47324,9 +47324,9 @@ BEGIN
 		--SET @sFilterSQL = @sFilterSQL + ' Mode = ' + convert(varchar(MAX), @piFilterMode) + ' ';
 		SET @sFilterSQL = @sFilterSQL + 
 			CASE @piFilterMode 
-				WHEN 1 THEN '[Mode] = 1 AND [ReportPack] = 0'
+				WHEN 1 THEN '[Mode] = 1 AND ([ReportPack] = 0 OR [ReportPack] IS NULL)'
 				WHEN 2 THEN '[ReportPack] = 1'
-				WHEN 0 THEN '[Mode] = 0 AND [ReportPack] = 0'
+				WHEN 0 THEN '[Mode] = 0 AND ([ReportPack] = 0 OR [ReportPack] IS NULL)'
 			END 
 	END
 	
