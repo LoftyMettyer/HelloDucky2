@@ -56,6 +56,8 @@
     <Compile Include="Classes\BaseEntity.cs" />
     <Compile Include="Classes\BusinessProcess.cs" />
     <Compile Include="Classes\BusinessProcessStep.cs" />
+    <Compile Include="Classes\BusinessProcessStepResponse.cs" />
+    <Compile Include="Enums\BusinessProcessStepStatus.cs" />
     <Compile Include="Enums\BusinessProcessStepType.cs" />
     <Compile Include="Enums\ColumnDataType.cs" />
     <Compile Include="Enums\EntityType.cs" />

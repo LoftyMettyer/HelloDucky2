@@ -8,6 +8,8 @@ using Nexus.Service.Interfaces;
 using Nexus.WebAPI.Extensions;
 using System.Security.Claims;
 using Microsoft.AspNet.Identity;
+using Nexus.Common.Classes;
+using Nexus.Common.Enums;
 
 namespace Nexus.WebAPI.Controllers {
 //	[Authorize(Roles = "OpenHRUser")]
@@ -59,6 +61,20 @@ namespace Nexus.WebAPI.Controllers {
 
             IEnumerable<WebFormModel> webFormModels = form;
             return webFormModels;
+
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "OpenHRUser")]
+        public BusinessProcessStepResponse SubmitStep(Guid stepId, List<KeyValuePair<int, string>> data)
+        {
+
+            return new BusinessProcessStepResponse
+            {
+                Status = BusinessProcessStepStatus.Success,
+                Message = "Success",
+                FollowOnUrl = String.Empty
+            };
 
         }
 

@@ -5,6 +5,9 @@ using Nexus.WebAPI.Controllers;
 using Nexus.Common.Models;
 using Nexus.Sql_Repository;
 using System.Security.Claims;
+using System;
+using Nexus.Common.Classes;
+using System.Web.Mvc;
 
 namespace Nexus.WebAPI.Tests.Controllers
 {
@@ -90,6 +93,24 @@ namespace Nexus.WebAPI.Tests.Controllers
             var result = (List <WebFormModel>)_mockController.InstantiateProcess(1, 16, false);
             Assert.IsTrue(result.Count == 1);
         }
+
+        [TestMethod]
+        public void SubmitStep_ResponseReceived()
+        {
+
+            var stepID = new Guid();
+
+            var data = new List<KeyValuePair<int, string>>() {
+                new KeyValuePair<int, string>(1, "John"),
+                new KeyValuePair<int, string>(2, "Smith")
+            };
+
+
+            var result = _mockController.SubmitStep(stepID, data);
+            Assert.IsTrue(result is BusinessProcessStepResponse);
+
+        }
+
 
     }
 
