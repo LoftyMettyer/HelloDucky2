@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Messages;
-using Nexus.Sql_Repository.DatabaseClasses;
+using Nexus.Sql_Repository.DatabaseClasses.Security;
 
 namespace Nexus.Sql_Repository {
 	public class SqlAuthenticateRepository : DbContext, IWelcomeMessageDataRepository, IAuthenticateRepository {
@@ -78,19 +78,22 @@ namespace Nexus.Sql_Repository {
 		public virtual DbSet<Role> Roles { get; set; }
 		public virtual DbSet<UserRole> UserRoles { get; set; }
 
-		//	public virtual DbSet<INexusUser> Users { get; set; }
+        public virtual DbSet<User> User { get; set; }
 
-		//public IEnumerable<string> GetUserRoles(Guid userId)
-		//{
-		//	var roles = new List<string> {"Admin", "Default User"};
-		//	return roles;
-		//}
 
-		//public IEnumerable<string> GetUserClaims(Guid userId)
-		//{
-		//	var roles = new List<string> { "Admin", "Default User" };
-		//	return roles;
-		//}
+        //	public virtual DbSet<INexusUser> Users { get; set; }
 
-	}
+        //public IEnumerable<string> GetUserRoles(Guid userId)
+        //{
+        //	var roles = new List<string> {"Admin", "Default User"};
+        //	return roles;
+        //}
+
+        //public IEnumerable<string> GetUserClaims(Guid userId)
+        //{
+        //	var roles = new List<string> { "Admin", "Default User" };
+        //	return roles;
+        //}
+
+    }
 }

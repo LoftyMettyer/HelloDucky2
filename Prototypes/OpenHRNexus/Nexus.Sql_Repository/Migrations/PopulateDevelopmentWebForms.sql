@@ -7,6 +7,11 @@ DECLARE @insertedForm table (id integer);
 DECLARE @webFormId integer,
 		@WebFormFieldId integer;
 
+-- Basic tables
+INSERT [DynamicTable] (name, Type) VALUES ('Personnel', 0)
+INSERT [DynamicTable] (name, Type) VALUES ('Absence', 0)
+
+
 -- Original dummy personnel screen
 INSERT dbo.[WebForm] (Name) OUTPUT inserted.id INTO @insertedForm VALUES ('Personnel');
 

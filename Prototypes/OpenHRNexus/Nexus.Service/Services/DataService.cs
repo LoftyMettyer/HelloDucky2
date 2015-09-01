@@ -23,7 +23,9 @@ namespace Nexus.Service.Services {
         {
 
             // Move to a factory for flexibility and eaiser reading?
-            var businessProcess = _dataRepository.GetBusinessProcess(businessProcessId);
+       //     var businessProcess = _dataRepository.GetBusinessProcess(businessProcessId);
+
+    //        if (businessProcess == null) return null;
 
             //var businessProcess = (BusinessProcessModel)_dataRepository.GetBusinessProcess(businessProcessId);
 
@@ -40,7 +42,7 @@ namespace Nexus.Service.Services {
 
 
             WebForm webForm = _dataRepository.GetWebForm(businessProcessId);
-            webForm.Translate("en-GB");
+       //     webForm.Translate("en-GB");
 
 
             var result = _dataRepository.PopulateFormWithData(webForm, userId);

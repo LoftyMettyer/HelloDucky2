@@ -40,8 +40,19 @@ namespace Nexus.WebAPI.Tests.Controllers
         [TestMethod]
         public void InstantiateProcess_ContainsWebformModels()
         {
-            var result = _mockController.InstantiateProcess(1, 15, false);
+            var getID = 15;
+            var result = (List<WebFormModel>)_mockController.InstantiateProcess(1, getID, false);
+
             Assert.IsTrue(result is IEnumerable<WebFormModel>);
+            Assert.IsTrue(result[0].form_id == getID.ToString());
+
+        }
+
+        [TestMethod]
+        [Description("Building up a sql statement can cause errors if the column is included in the select multiple times. Ensure that we handle this.")]
+        public void InstantiateProcess_HandlesTheSameColumnMultipleTimes()
+        {
+            Assert.Fail("Not yet implemented");
         }
 
         [TestMethod]

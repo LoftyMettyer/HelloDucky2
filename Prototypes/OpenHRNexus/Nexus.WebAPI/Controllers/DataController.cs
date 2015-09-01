@@ -55,7 +55,6 @@ namespace Nexus.WebAPI.Controllers {
             {
                 webForm = _dataService.GetWebForm(elementId, openHRDbGuid);
                 form.Add(webForm);
-
             }
 
             IEnumerable<WebFormModel> webFormModels = form;

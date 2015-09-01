@@ -57,8 +57,10 @@
     <Compile Include="Classes\BusinessProcess.cs" />
     <Compile Include="Classes\BusinessProcessStep.cs" />
     <Compile Include="Enums\BusinessProcessStepType.cs" />
+    <Compile Include="Enums\ColumnDataType.cs" />
     <Compile Include="Enums\EntityType.cs" />
     <Compile Include="Enums\NewUserStatus.cs" />
+    <Compile Include="Enums\TableType.cs" />
     <Compile Include="Interfaces\IJsonSerialize.cs" />
     <Compile Include="Interfaces\INexusUser.cs" />
     <Compile Include="Interfaces\ITranslate.cs" />
@@ -68,8 +70,6 @@
     <Compile Include="Interfaces\Repository\IWelcomeMessageDataRepository.cs" />
     <Compile Include="Messages\RegisterNewUserMessage.cs" />
     <Compile Include="Messages\WelcomeDataMessage.cs" />
-    <Compile Include="Models\DynamicColumn.cs" />
-    <Compile Include="Models\DynamicDataModel.cs" />
     <Compile Include="Models\EntityModel.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Models\WebForm.cs" />

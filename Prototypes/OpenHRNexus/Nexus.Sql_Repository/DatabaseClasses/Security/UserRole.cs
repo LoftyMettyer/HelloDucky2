@@ -1,7 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Nexus.Sql_Repository.DatabaseClasses {
+namespace Nexus.Sql_Repository.DatabaseClasses.Security
+{
 	public class UserRole {
 		[Key]
 		public int Id { get; set; }

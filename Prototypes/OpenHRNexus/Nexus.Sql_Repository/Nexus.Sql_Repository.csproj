@@ -53,6 +53,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -63,9 +64,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\EnterpriseServicesConfiguration.cs" />
-    <Compile Include="DatabaseClasses\Role.cs" />
-    <Compile Include="DatabaseClasses\UserPermission.cs" />
-    <Compile Include="DatabaseClasses\UserRole.cs" />
+    <Compile Include="DatabaseClasses\Security\Role.cs" />
+    <Compile Include="DatabaseClasses\Security\UserPermission.cs" />
+    <Compile Include="DatabaseClasses\Security\UserRole.cs" />
+    <Compile Include="DatabaseClasses\Structure\DynamicClassFactory.cs" />
+    <Compile Include="DatabaseClasses\Structure\DynamicColumn.cs" />
+    <Compile Include="DatabaseClasses\Structure\DynamicEntity.cs" />
+    <Compile Include="DatabaseClasses\Structure\DynamicTable.cs" />
     <Compile Include="Globals\Global.cs" />
     <Compile Include="DatabaseClasses\WelcomeMessage.cs" />
     <Compile Include="Migrations\Configuration.cs" />
@@ -73,7 +78,7 @@
     <Compile Include="SqlRepositoryContext.cs" />
     <Compile Include="SqlAuthenticateRepository.cs" />
     <Compile Include="SqlDataRepository.cs" />
-    <Compile Include="DatabaseClasses\User.cs" />
+    <Compile Include="DatabaseClasses\Security\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

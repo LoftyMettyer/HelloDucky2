@@ -6,29 +6,33 @@ using Nexus.Common.Classes;
 using Nexus.Common.Enums;
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
+using Nexus.Sql_Repository.DatabaseClasses.Structure;
+using System.Diagnostics;
+using System.Data.Entity.Infrastructure;
+using System.ComponentModel;
 
 namespace Nexus.Sql_Repository
 {
 	public class SqlDataRepository : SqlRepositoryContext, IDataRepository, IEntityRepository
     {
-		public IEnumerable<DynamicDataModel> GetData(int id)
-		{
-			var result = Data
-				.Where(c => c.Id == id);
+		//public IEnumerable<DynamicDataModel> GetData(int id)
+		//{
+		//	var result = Data
+		//		.Where(c => c.Id == id);
 
-			return result.ToList();
+		//	return result.ToList();
 		
-		}
+		//}
 
-		public IEnumerable<DynamicDataModel> GetData()
-		{
-			return Data.ToList();
-		}
+		//public IEnumerable<DynamicDataModel> GetData()
+		//{
+		//	return Data.ToList();
+		//}
 
 
         public WebForm GetWebForm(int id)
         {
-            var webForm = WebForms.Where(w => w.id == id).First();
+            var webForm = WebForms.Where(w => w.id == id).FirstOrDefault();
 
             // TODO - Need these 2 because the above is not loading on demand. I'm sure there's some linq that does this, but off the top of my head I don't know what it is.
             List<WebFormField> fields = WebFormFields.ToList();
@@ -67,6 +71,8 @@ namespace Nexus.Sql_Repository
         public WebFormModel PopulateFormWithData(WebForm webForm, Guid userId)
         {
 
+            var webFormId = webForm.id;
+
             var result = new WebFormModel
             {
                 form_id = webForm.id.ToString(),
@@ -74,86 +80,63 @@ namespace Nexus.Sql_Repository
                 form_fields = webForm.Fields
             };
 
-            //webForm.RemoveFieldsWithNoAccess();
 
-            // Find all the tables that we need
+        
+              // Build column list
+            var formFields = (from cols in Columns
+                join form in WebFormFields on cols.Id equals form.field_columnid
+                where form.WebForm.id == webFormId
+                select cols).ToList();
 
-//          IProcessRepository getSomeStuff; //= new WebForm();
-          //  var blah = getSomeStuff.GetBaseTableInForm();
+            // Build tables
 
+            var formTables = (from cols in Columns
+                join form in WebFormFields on cols.Id equals form.field_columnid
+                join t in DynamicTables on cols.TableId equals t.Id
+                where form.WebForm.id == webFormId
+                select t).ToList();
 
+            // filter in security here???
 
+            //            var tables = "Personnel";
+            var tables = formTables.FirstOrDefault().Name;
 
-            //string tableInForm = webForm.GetBaseTableInForm();
+            // Build select string
+            var dynamicSQL = string.Format("SELECT id, {0} FROM {1} base ",
+                string.Join(", ", formFields.Select(c => "ISNULL([" +  c.Name + "], '') AS column_" + c.Id)),
+                tables);
 
-
-            //List<string> relationsInForm = webForm.RelationsInForm();
-            //List<string> columnsInForm = webForm.ColumnsInForm();
-            //List<string> filtersInForm = webForm.FiltersInForm();
-            //List<string> ordersInForm = webForm.OrdersInForm();
-
-
-            //// Populate somehow?
-            //string dynamicSQL = string.Format("SELECT {0} FROM {1} {2} {3} {4}"
-            //    , string.Join(",", columnsInForm)
-            //    , string.Join("", relationsInForm)
-            //    , tableInForm
-            //    , string.Join("", filtersInForm)
-            //    , string.Join("", ordersInForm));
-
-            // Dynamically build up a class to hoof this dynamic SQL into
-            DynamicDataModel data = new DynamicDataModel();
-
-//            var sql = string.Format("SELECT {0} FROM Personnel", string.Join(", ", result.form_fields));
-
-            var sql = string.Format("SELECT id, Surname AS Column1, HolidayTaken AS Column2 FROM Personnel base ");
 
             // Append security filter
-            sql += string.Format("INNER JOIN [User] u ON u.RecordId = base.Id WHERE u.UserID = '{0}'", userId);
-              
-          //  IEnumerable< DynamicDataModel> dummyData = Database.SqlQuery<string>(sql).ToList();
-
-            var dummyData = Database.SqlQuery<DynamicDataModel>(sql).SingleOrDefault();
-
-         //   var dummyDataSimple = Database.SqlQuery<string>(sql).ToList();
-
-            //Data.Load()
-
-            //    Data = Database.SqlQuery<string>(sql).ToList();
+            dynamicSQL += string.Format("INNER JOIN [User] u ON u.RecordId = base.Id WHERE u.UserID = '{0}'", userId);
 
 
-            foreach (WebFormField element in result.form_fields)
-            {
-                var column = Columns.Where(c => c.Id == element.field_columnid).First();
-
-                // Security implemented here?
-             //   sql
+            var factory = new DynamicClassFactory();
+            var dynamicType = CreateType(factory, "webForm", formFields);
+            var data = Database.SqlQuery(dynamicType, dynamicSQL);
 
 
-                if (element.field_columnid == 2)
+
+            
+            foreach (var row in data)
+            {                            
+                foreach (WebFormField element in result.form_fields)
                 {
-                    element.field_value = dummyData.Column1;                   
+                    var property = row.GetType().GetProperty("column_" + element.field_columnid);
+
+                    var value = property.GetValue(row, null);
+                    element.field_value = value == null ? string.Empty : value.ToString();
                 }
-
-                if (element.field_columnid == 14)
-                {
-                    element.field_value = dummyData.Column2.ToString();
-                }
-
-
             }
-
-
+ 
             return result;
 
         }
 
         public BusinessProcess GetBusinessProcess(int Id)
         {
-            return Processes.Where(p => p.Id == Id).First();
+            return Processes.Where(p => p.Id == Id).FirstOrDefault();
         }
-
-        public virtual DbSet<DynamicDataModel> Data { get; set; }
 
         public virtual DbSet<BusinessProcess> Processes { get; set; }
 
@@ -163,7 +146,23 @@ namespace Nexus.Sql_Repository
 
 
         // Metadata for the dynamic objects
+
         public virtual DbSet<DynamicColumn> Columns { get; set; }
+
+        public virtual DbSet<DynamicTable> DynamicTables { get; set; }
+
+
+        private Type CreateType(DynamicClassFactory dcf, string name, ICollection<DynamicColumn> dynamicAttributes)
+        {
+
+            // Original that creates the column as a name
+            //            var props = dynamicAttributes.ToDictionary(da => da.DynamicAttribute.Name, da => typeof(string));
+            var props = dynamicAttributes.ToDictionary(da => "column_" + da.Id, da => da.DynamicDataType);
+
+            var t = dcf.CreateDynamicType<BaseDynamicEntity>(name, props);
+            return t;
+        }
+
 
 
     }
