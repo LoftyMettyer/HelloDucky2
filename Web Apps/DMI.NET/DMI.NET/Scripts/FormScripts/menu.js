@@ -1639,7 +1639,7 @@ function menu_refreshMenu() {
 			//New functionality: switch ribbon tab to required item.
 			$("#toolbarRecordFind").parent().show();
 			$("#toolbarRecordFind").click();			
-
+			
 			// Enable the record editing options as necessary.
 			menu_setVisibleMenuItem("mnutoolNewRecordFind", true);
 			var fMnutoolNewRecordFind = ((frmFind.txtInsertGranted.value.toUpperCase() == "TRUE") &&
@@ -1659,6 +1659,11 @@ function menu_refreshMenu() {
 					(frmFind.txtCurrentParentTableID.value > 0) ||
 					(frmFind.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) ||
 					(frmFind.txtQuickEntry.value.toUpperCase() == "TRUE"))));
+			if (fMnutoolNewRecordFind) {
+				menu_SetmnutoolButtonCaption("mnutoolEditRecordFind", "Edit");
+			} else {
+				menu_SetmnutoolButtonCaption("mnutoolEditRecordFind", "View");
+			}
 
 			menu_setVisibleMenuItem("mnutoolParentRecordFind", !menu_isSSIMode());
 			menu_toolbarEnableItem("mnutoolParentRecordFind", (frmFind.txtCurrentParentTableID.value > 0));
@@ -2275,7 +2280,7 @@ function menu_enableFindMenu() {
 		//$("#officebar").hide('drop', { direction: 'right' }, 1000);
 		$("#officebar").fadeIn("fast");
 	}
-	else { //disable menu items on Record tab.
+	else { //disable menu items on Record tab.		
 		menu_toolbarEnableItem('mnutoolNewRecordFind', true);
 		menu_toolbarEnableItem('mnutoolEditRecordFind', true);
 		menu_toolbarEnableItem('mnutoolCopyRecordFind', true);
