@@ -18,5 +18,10 @@ namespace Nexus.Mock_Repository {
         {
             throw new NotImplementedException();
         }
+
+        public WebFormModel PopulateFormWithNavigationControls(WebForm webForm, Guid userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

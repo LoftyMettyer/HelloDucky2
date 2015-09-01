@@ -35,7 +35,7 @@ namespace Nexus.Service.Services {
 
             //, businessProcessId);
             //var webForm = businessProcess.GetFirstStep;
-           
+         
 
 
          //   firstStep.Translate("en-GB");
@@ -48,6 +48,7 @@ namespace Nexus.Service.Services {
             var result = _dataRepository.PopulateFormWithData(webForm, userId);
             //var result = new WebFormModel();
 
+      //      var result2 = _dataRepository.PopulateFormWithNavigationControls(webForm, userId);
 
 
             // Implement translation as a design pattern (a template one? - I can't remember - need to review training notes)
@@ -58,10 +59,16 @@ namespace Nexus.Service.Services {
 
             foreach (var formField in result.form_fields)
             {
-
                 formField.WebForm = null;
             }
-//            result.form_fields.Remove[0];
+
+            foreach (var formField in result.form_buttons)
+            {
+                formField.button_targeturl = string.Format(formField.button_targeturl, Guid.NewGuid());
+                formField.WebForm = null;
+            }
+
+            //            result.form_fields.Remove[0];
 
 
 

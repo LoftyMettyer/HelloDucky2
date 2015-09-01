@@ -8,6 +8,7 @@ namespace Nexus.Common.Models
         public int id { get; set; }
         public string Name { get; set; }
         public List<WebFormField> Fields { get; set; }
+        public List<WebFormButton> Buttons { get; set; }
 
         public void Translate(string language)
         {

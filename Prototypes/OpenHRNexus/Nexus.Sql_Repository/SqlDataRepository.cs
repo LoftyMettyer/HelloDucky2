@@ -7,28 +7,11 @@ using Nexus.Common.Enums;
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
 using Nexus.Sql_Repository.DatabaseClasses.Structure;
-using System.Diagnostics;
-using System.Data.Entity.Infrastructure;
-using System.ComponentModel;
 
 namespace Nexus.Sql_Repository
 {
 	public class SqlDataRepository : SqlRepositoryContext, IDataRepository, IEntityRepository
     {
-		//public IEnumerable<DynamicDataModel> GetData(int id)
-		//{
-		//	var result = Data
-		//		.Where(c => c.Id == id);
-
-		//	return result.ToList();
-		
-		//}
-
-		//public IEnumerable<DynamicDataModel> GetData()
-		//{
-		//	return Data.ToList();
-		//}
-
 
         public WebForm GetWebForm(int id)
         {
@@ -37,6 +20,7 @@ namespace Nexus.Sql_Repository
             // TODO - Need these 2 because the above is not loading on demand. I'm sure there's some linq that does this, but off the top of my head I don't know what it is.
             List<WebFormField> fields = WebFormFields.ToList();
             List<WebFormFieldOption> options = WebFormFieldOptions.ToList();
+            List<WebFormButton> buttons = WebFormButtons.ToList();
 
             return webForm;
         }
@@ -77,9 +61,9 @@ namespace Nexus.Sql_Repository
             {
                 form_id = webForm.id.ToString(),
                 form_name = webForm.Name,
-                form_fields = webForm.Fields
+                form_fields = webForm.Fields,
+                form_buttons = webForm.Buttons
             };
-
 
         
               // Build column list
@@ -132,6 +116,27 @@ namespace Nexus.Sql_Repository
 
         }
 
+        public WebFormModel PopulateFormWithNavigationControls(WebForm webForm, Guid userId)
+        {
+
+            // Do the data opulation bit
+            var formButtons = (from butt in WebFormButtons
+                               where butt.WebForm.id == webForm.id
+                               select butt).ToList();
+
+            var result = new WebFormModel
+            {
+                form_id = webForm.id.ToString(),
+                form_name = webForm.Name,
+                form_fields = webForm.Fields,
+                form_buttons = webForm.Buttons
+            };
+
+
+
+            return result;
+        }
+
         public BusinessProcess GetBusinessProcess(int Id)
         {
             return Processes.Where(p => p.Id == Id).FirstOrDefault();
@@ -141,8 +146,8 @@ namespace Nexus.Sql_Repository
 
         public virtual DbSet<WebForm> WebForms { get; set; }
         public virtual DbSet<WebFormField> WebFormFields { get; set; }
+        public virtual DbSet<WebFormButton> WebFormButtons { get; set; }
         public virtual DbSet<WebFormFieldOption> WebFormFieldOptions { get; set; }
-
 
         // Metadata for the dynamic objects
 
