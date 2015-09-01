@@ -70,6 +70,7 @@ namespace Nexus.Sql_Repository
             var formFields = (from cols in Columns
                 join form in WebFormFields on cols.Id equals form.columnid
                 where form.WebForm.id == webFormId
+                orderby form.sequence
                 select cols).ToList();
 
             // Build tables
