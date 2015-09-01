@@ -53,6 +53,20 @@ namespace Nexus.Service.Services {
             // Implement translation as a design pattern (a template one? - I can't remember - need to review training notes)
             //result.translate(language)
 
+            // TODO - Fettle to get rid of recursive webform references. Ultimate solution is to return a different webform item to the internal
+            // service and repository objects.
+
+            foreach (var formField in result.form_fields)
+            {
+
+                formField.WebForm = null;
+            }
+//            result.form_fields.Remove[0];
+
+
+
+
+
             return result;
         }
 

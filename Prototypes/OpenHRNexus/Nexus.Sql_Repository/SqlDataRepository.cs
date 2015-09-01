@@ -89,7 +89,6 @@ namespace Nexus.Sql_Repository
                 select cols).ToList();
 
             // Build tables
-
             var formTables = (from cols in Columns
                 join form in WebFormFields on cols.Id equals form.field_columnid
                 join t in DynamicTables on cols.TableId equals t.Id
