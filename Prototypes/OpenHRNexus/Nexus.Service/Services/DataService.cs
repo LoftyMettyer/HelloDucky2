@@ -2,6 +2,9 @@
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
 using Nexus.Service.Interfaces;
+using Nexus.Common.Classes;
+using System.Collections.Generic;
+using Nexus.Common.Enums;
 
 namespace Nexus.Service.Services {
 	public class DataService : IDataService {
@@ -10,14 +13,6 @@ namespace Nexus.Service.Services {
 		public DataService(IDataRepository dataRepository) {
 			_dataRepository = dataRepository;
 		}
-
-		//public IEnumerable<DynamicDataModel> GetData(int id) {
-		//	return _dataRepository.GetData(id);
-		//}
-
-		//public IEnumerable<DynamicDataModel> GetData() {
-		//	return _dataRepository.GetData();
-		//}
 
         WebFormModel IDataService.GetWebForm(int businessProcessId, Guid userId)
         {
@@ -76,6 +71,33 @@ namespace Nexus.Service.Services {
 
             return result;
         }
+
+        BusinessProcessStepResponse IDataService.SubmitStepForUser(Guid stepId, Guid userID, IEnumerable<KeyValuePair<int, string>> data)
+        {
+
+            // Get the form for this submitted step
+
+            // Apply and security to fields submitted, i.e. if they've hacked values in, only allow through what they actually have access to.
+
+            // Is this handled in the repository?
+            //          _dataRepository.GetWriteableColumnsForUser();
+            //            _dataRepository.GetWriteableTablesForUser();
+
+            //_dataRepository.SetUserPermissions(); ??
+
+//            var currentForm = _dataRepository.GetWebForm(businessProcessId);
+
+
+
+            return new BusinessProcessStepResponse
+            {
+                Status = BusinessProcessStepStatus.Success,
+                Message = "Success",
+                FollowOnUrl = String.Empty
+            };
+
+        }
+
 
     }
 }

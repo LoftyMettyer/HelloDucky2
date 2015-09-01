@@ -1,5 +1,7 @@
 ﻿using System;
 using Nexus.Common.Models;
+using Nexus.Common.Classes;
+using System.Collections.Generic;
 
 namespace Nexus.Service.Interfaces
 {
@@ -8,7 +10,7 @@ namespace Nexus.Service.Interfaces
 		//IEnumerable<DynamicDataModel> GetData(int id);
 		//IEnumerable<DynamicDataModel> GetData();
         WebFormModel GetWebForm(int id, Guid userId);
-   //     BusinessProcessStepResponse 
+        BusinessProcessStepResponse SubmitStepForUser(Guid stepId, Guid UserId, IEnumerable<KeyValuePair<int, string>> data);
 
     }
 }

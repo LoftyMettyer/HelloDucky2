@@ -69,15 +69,11 @@ namespace Nexus.WebAPI.Controllers {
         public BusinessProcessStepResponse SubmitStep(Guid stepId, List<KeyValuePair<int, string>> data)
         {
 
-       //     _dataService.Su
+            // Put some clever code in an attribute extension to validate that there is a identity getuserguid?
+            // Maybe this is already covered by the authorize roles = OpenHRUser?
+            var userId = new Guid(_identity.GetUserId());
 
-
-            return new BusinessProcessStepResponse
-            {
-                Status = BusinessProcessStepStatus.Success,
-                Message = "Success",
-                FollowOnUrl = String.Empty
-            };
+            return _dataService.SubmitStepForUser(stepId, userId, data);
 
         }
 
