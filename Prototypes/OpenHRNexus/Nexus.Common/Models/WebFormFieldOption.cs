@@ -4,9 +4,8 @@ namespace Nexus.Common.Models
 {
     public class WebFormFieldOption
     {
-        [Key]
-        public int option_id { get; set; }
-        public string option_title { get; set; }
-        public int option_value { get; set; }
+        public int id { get; set; }
+        public string title { get; set; }
+        public int value { get; set; }
     }
 }

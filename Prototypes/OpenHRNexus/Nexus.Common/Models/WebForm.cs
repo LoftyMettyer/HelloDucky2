@@ -14,9 +14,9 @@ namespace Nexus.Common.Models
         {
             foreach (WebFormField field in Fields)
             {
-                if (language == "FR-FR" && field.field_type == "textfield")
+                if (language == "FR-FR" && field.type == "textfield")
                 {
-                    field.field_value = "La " + field.field_value;
+                    field.value = "La " + field.value;
                 }
             }
         }

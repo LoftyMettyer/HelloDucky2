@@ -57,14 +57,14 @@ namespace Nexus.Service.Services {
             // TODO - Fettle to get rid of recursive webform references. Ultimate solution is to return a different webform item to the internal
             // service and repository objects.
 
-            foreach (var formField in result.form_fields)
+            foreach (var formField in result.fields)
             {
                 formField.WebForm = null;
             }
 
-            foreach (var formField in result.form_buttons)
+            foreach (var formField in result.buttons)
             {
-                formField.button_targeturl = string.Format(formField.button_targeturl, Guid.NewGuid());
+                formField.targeturl = string.Format(formField.targeturl, Guid.NewGuid());
                 formField.WebForm = null;
             }
 

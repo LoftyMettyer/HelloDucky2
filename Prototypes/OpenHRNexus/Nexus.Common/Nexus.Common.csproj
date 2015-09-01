@@ -59,6 +59,7 @@
     <Compile Include="Classes\BusinessProcessStepResponse.cs" />
     <Compile Include="Enums\BusinessProcessStepStatus.cs" />
     <Compile Include="Enums\BusinessProcessStepType.cs" />
+    <Compile Include="Enums\ButtonAction.cs" />
     <Compile Include="Enums\ColumnDataType.cs" />
     <Compile Include="Enums\EntityType.cs" />
     <Compile Include="Enums\NewUserStatus.cs" />

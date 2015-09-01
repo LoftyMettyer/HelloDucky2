@@ -6,10 +6,10 @@ namespace Nexus.Common.Models
     public class WebFormModel
     {
         [Key]
-        public string form_id { get; set; }
-        public string form_name { get; set; }
-        public List<WebFormField> form_fields { get; set; }
-        public List<WebFormButton> form_buttons { get; set; }
+        public string id { get; set; }
+        public string name { get; set; }
+        public List<WebFormField> fields { get; set; }
+        public List<WebFormButton> buttons { get; set; }
 
     }
 

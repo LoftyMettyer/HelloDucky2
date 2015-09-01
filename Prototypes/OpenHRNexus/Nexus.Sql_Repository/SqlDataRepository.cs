@@ -59,22 +59,22 @@ namespace Nexus.Sql_Repository
 
             var result = new WebFormModel
             {
-                form_id = webForm.id.ToString(),
-                form_name = webForm.Name,
-                form_fields = webForm.Fields,
-                form_buttons = webForm.Buttons
+                id = webForm.id.ToString(),
+                name = webForm.Name,
+                fields = webForm.Fields,
+                buttons = webForm.Buttons
             };
 
         
               // Build column list
             var formFields = (from cols in Columns
-                join form in WebFormFields on cols.Id equals form.field_columnid
+                join form in WebFormFields on cols.Id equals form.columnid
                 where form.WebForm.id == webFormId
                 select cols).ToList();
 
             // Build tables
             var formTables = (from cols in Columns
-                join form in WebFormFields on cols.Id equals form.field_columnid
+                join form in WebFormFields on cols.Id equals form.columnid
                 join t in DynamicTables on cols.TableId equals t.Id
                 where form.WebForm.id == webFormId
                 select t).ToList();
@@ -103,12 +103,12 @@ namespace Nexus.Sql_Repository
             
             foreach (var row in data)
             {                            
-                foreach (WebFormField element in result.form_fields)
+                foreach (WebFormField element in result.fields)
                 {
-                    var property = row.GetType().GetProperty("column_" + element.field_columnid);
+                    var property = row.GetType().GetProperty("column_" + element.columnid);
 
                     var value = property.GetValue(row, null);
-                    element.field_value = value == null ? string.Empty : value.ToString();
+                    element.value = value == null ? string.Empty : value.ToString();
                 }
             }
  
@@ -126,10 +126,10 @@ namespace Nexus.Sql_Repository
 
             var result = new WebFormModel
             {
-                form_id = webForm.id.ToString(),
-                form_name = webForm.Name,
-                form_fields = webForm.Fields,
-                form_buttons = webForm.Buttons
+                id = webForm.id.ToString(),
+                name = webForm.Name,
+                fields = webForm.Fields,
+                buttons = webForm.Buttons
             };
 
 

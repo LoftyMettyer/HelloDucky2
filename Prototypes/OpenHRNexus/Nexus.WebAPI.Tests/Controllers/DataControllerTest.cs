@@ -47,7 +47,7 @@ namespace Nexus.WebAPI.Tests.Controllers
             var result = (List<WebFormModel>)_mockController.InstantiateProcess(1, getID, false);
 
             Assert.IsTrue(result is IEnumerable<WebFormModel>);
-            Assert.IsTrue(result[0].form_id == getID.ToString());
+            Assert.IsTrue(result[0].id == getID.ToString());
 
         }
 
