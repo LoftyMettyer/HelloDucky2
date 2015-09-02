@@ -77,6 +77,7 @@
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Models\WebForm.cs" />
     <Compile Include="Models\WebFormButton.cs" />
+    <Compile Include="Models\WebFormControl.cs" />
     <Compile Include="Models\WebFormFieldOption.cs" />
     <Compile Include="Models\WebFormFields.cs" />
     <Compile Include="Models\WebFormModel.cs" />

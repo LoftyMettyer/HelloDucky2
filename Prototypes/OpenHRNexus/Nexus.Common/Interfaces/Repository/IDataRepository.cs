@@ -1,6 +1,7 @@
 ﻿using System;
 using Nexus.Common.Models;
 using Nexus.Common.Classes;
+using System.Collections.Generic;
 
 namespace Nexus.Common.Interfaces.Repository {
 	public interface IDataRepository {
@@ -10,5 +11,7 @@ namespace Nexus.Common.Interfaces.Repository {
 		WebFormModel PopulateFormWithData(WebForm webForm, Guid userId);
         WebFormModel PopulateFormWithNavigationControls(WebForm webForm, Guid userId);
         BusinessProcess GetBusinessProcess(int Id);
+        BusinessProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form);
+
     }
 }

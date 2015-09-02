@@ -7,6 +7,10 @@ using Nexus.Common.Enums;
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
 using Nexus.Sql_Repository.DatabaseClasses.Structure;
+using Nexus.Sql_Repository.DatabaseClasses.Data;
+using System.Diagnostics;
+using System.Data.Entity.Validation;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nexus.Sql_Repository
 {
@@ -60,6 +64,7 @@ namespace Nexus.Sql_Repository
             var result = new WebFormModel
             {
                 id = webForm.id.ToString(),
+                stepid = Guid.NewGuid(),
                 name = webForm.Name,
                 fields = webForm.Fields,
                 buttons = webForm.Buttons
@@ -156,6 +161,7 @@ namespace Nexus.Sql_Repository
 
         public virtual DbSet<DynamicTable> DynamicTables { get; set; }
 
+        public virtual DbSet<ProcessInFlow> ProcessInFlow { get; set; }
 
         private Type CreateType(DynamicClassFactory dcf, string name, ICollection<DynamicColumn> dynamicAttributes)
         {
@@ -168,7 +174,45 @@ namespace Nexus.Sql_Repository
             return t;
         }
 
+        public BusinessProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form)
+        {
+            var response = new BusinessProcessStepResponse();
+            //    var formData = new ProcessInFlowData() { fields = form.fields };
+
+//            var blah = form.fields.ToList();
+  //          var step = new ProcessInFlow() { Id = stepId, UserId = userID, Data = form.fields.ToList() };
 
 
+       //     var fieldValues = form.fields.ToList<ProcessInFlowData>();
+
+
+//            ProcessInFlow.Add(step);
+
+            try
+            {
+       //         SaveChanges();
+
+                response = new BusinessProcessStepResponse()
+                {
+                    Status = BusinessProcessStepStatus.Success,
+                    Message = "Success",
+                    FollowOnUrl = String.Empty
+                };
+
+            }
+            catch (DbEntityValidationException e)
+            {
+                response = new BusinessProcessStepResponse()
+                {
+                    Status = BusinessProcessStepStatus.ServerError,
+                    Message = e.Message,
+                    FollowOnUrl = String.Empty
+                };
+
+            }
+
+            return response;
+
+        }
     }
 }

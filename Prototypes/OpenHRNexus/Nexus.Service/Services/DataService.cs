@@ -66,16 +66,17 @@ namespace Nexus.Service.Services {
             //            result.form_fields.Remove[0];
 
 
-
-
-
             return result;
         }
 
-        BusinessProcessStepResponse IDataService.SubmitStepForUser(Guid stepId, Guid userID, IEnumerable<KeyValuePair<int, string>> data)
+        BusinessProcessStepResponse IDataService.SubmitStepForUser(Guid stepId, Guid userID, WebFormModel form)
         {
 
+            //IEnumerable<KeyValuePair<int, string>> data
+
             // Get the form for this submitted step
+
+            // Find out what our next steps are.
 
             // Apply and security to fields submitted, i.e. if they've hacked values in, only allow through what they actually have access to.
 
@@ -85,16 +86,13 @@ namespace Nexus.Service.Services {
 
             //_dataRepository.SetUserPermissions(); ??
 
-//            var currentForm = _dataRepository.GetWebForm(businessProcessId);
+            //            var currentForm = _dataRepository.GetWebForm(businessProcessId);
+
+            // if its a save for later, well just do it!
+            var result = _dataRepository.SaveStepForLater(stepId, userID, form);
 
 
-
-            return new BusinessProcessStepResponse
-            {
-                Status = BusinessProcessStepStatus.Success,
-                Message = "Success",
-                FollowOnUrl = String.Empty
-            };
+            return result;
 
         }
 

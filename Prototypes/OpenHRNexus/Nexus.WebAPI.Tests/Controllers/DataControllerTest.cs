@@ -98,15 +98,17 @@ namespace Nexus.WebAPI.Tests.Controllers
         public void SubmitStep_ResponseReceived()
         {
 
-            var stepID = new Guid();
+            var field = new WebFormField { sequence = 1, columnid = 2, value = "Smith" };
 
-            var data = new List<KeyValuePair<int, string>>() {
-                new KeyValuePair<int, string>(1, "John"),
-                new KeyValuePair<int, string>(2, "Smith")
-            };
+            var form = new WebFormModel {
+                stepid = Guid.NewGuid(),
+                fields = new List<WebFormField>() {
+                    new WebFormField { id=1, sequence = 1, columnid = 1, value = "John" },
+                    new WebFormField { id=1, sequence = 2, columnid = 2, value = "Smith" },
+                }};
 
 
-            var result = _mockController.SubmitStep(stepID, data);
+            var result = _mockController.SubmitStep(form);
             Assert.IsTrue(result is BusinessProcessStepResponse);
 
         }

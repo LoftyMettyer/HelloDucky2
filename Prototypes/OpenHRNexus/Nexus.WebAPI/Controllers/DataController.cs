@@ -66,14 +66,16 @@ namespace Nexus.WebAPI.Controllers {
 
         [HttpPost]
         [Authorize(Roles = "OpenHRUser")]
-        public BusinessProcessStepResponse SubmitStep(Guid stepId, List<KeyValuePair<int, string>> data)
+        public BusinessProcessStepResponse SubmitStep(WebFormModel form)
         {
+            //Guid stepId, List< KeyValuePair < int, string>> data
+
 
             // Put some clever code in an attribute extension to validate that there is a identity getuserguid?
             // Maybe this is already covered by the authorize roles = OpenHRUser?
             var userId = new Guid(_identity.GetUserId());
 
-            return _dataService.SubmitStepForUser(stepId, userId, data);
+            return _dataService.SubmitStepForUser(form.stepid, userId, form);
 
         }
 

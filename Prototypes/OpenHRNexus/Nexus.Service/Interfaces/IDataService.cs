@@ -10,7 +10,7 @@ namespace Nexus.Service.Interfaces
 		//IEnumerable<DynamicDataModel> GetData(int id);
 		//IEnumerable<DynamicDataModel> GetData();
         WebFormModel GetWebForm(int id, Guid userId);
-        BusinessProcessStepResponse SubmitStepForUser(Guid stepId, Guid UserId, IEnumerable<KeyValuePair<int, string>> data);
+        BusinessProcessStepResponse SubmitStepForUser(Guid stepId, Guid UserId, WebFormModel form);
 
     }
 }

@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Nexus.Common.Models
 {
-    public class WebFormField
+    public class WebFormField : WebFormControl
     {
-        public int id { get; set; }
         public int sequence { get; set; }
         public int columnid { get; set; }
+
+        public string elementid { get
+            {
+                return string.Format("we_{0}_{1}", id.ToString(), sequence.ToString());
+            }
+        }
 
      //   Public DynamicColumn Column { get; set; }
         public string title { get; set; }
@@ -16,6 +20,6 @@ namespace Nexus.Common.Models
         public bool required { get; set; }
         public bool disabled { get; set; }
         public List<WebFormFieldOption> options { get; set; }
-        public WebForm WebForm { get; set; }
+
     }
 }
