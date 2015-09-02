@@ -56,6 +56,7 @@
     <Compile Include="Classes\BaseEntity.cs" />
     <Compile Include="Classes\BusinessProcess.cs" />
     <Compile Include="Classes\BusinessProcessStep.cs" />
+    <Compile Include="Classes\BusinessProcessStepEmail.cs" />
     <Compile Include="Classes\BusinessProcessStepResponse.cs" />
     <Compile Include="Enums\BusinessProcessStepStatus.cs" />
     <Compile Include="Enums\BusinessProcessStepType.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Enums\EntityType.cs" />
     <Compile Include="Enums\NewUserStatus.cs" />
     <Compile Include="Enums\TableType.cs" />
+    <Compile Include="Interfaces\IBusinessProcessStep.cs" />
     <Compile Include="Interfaces\IJsonSerialize.cs" />
     <Compile Include="Interfaces\INexusUser.cs" />
     <Compile Include="Interfaces\ITranslate.cs" />

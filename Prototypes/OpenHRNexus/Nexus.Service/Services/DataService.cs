@@ -5,6 +5,7 @@ using Nexus.Service.Interfaces;
 using Nexus.Common.Classes;
 using System.Collections.Generic;
 using Nexus.Common.Enums;
+using OpenHRNexus.Common.Enums;
 
 namespace Nexus.Service.Services {
 	public class DataService : IDataService {
@@ -71,12 +72,12 @@ namespace Nexus.Service.Services {
 
         BusinessProcessStepResponse IDataService.SubmitStepForUser(Guid stepId, Guid userID, WebFormModel form)
         {
-
-            //IEnumerable<KeyValuePair<int, string>> data
-
-            // Get the form for this submitted step
+            var result = new BusinessProcessStepResponse();
 
             // Find out what our next steps are.
+            var currentStep = _dataRepository.GetBusinessProcessStep(stepId);
+
+            currentStep.Validate();
 
             // Apply and security to fields submitted, i.e. if they've hacked values in, only allow through what they actually have access to.
 
@@ -89,8 +90,30 @@ namespace Nexus.Service.Services {
             //            var currentForm = _dataRepository.GetWebForm(businessProcessId);
 
             // if its a save for later, well just do it!
-            var result = _dataRepository.SaveStepForLater(stepId, userID, form);
+            // Find out what the next step is.
 
+            var nextStep = _dataRepository.GetBusinessProcessNextStep(currentStep);
+
+            // Oooh they decided to save for later.
+
+            // Oooh they want to send an email
+            switch (nextStep.Type)
+            {
+                case BusinessProcessStepType.Email:
+                    EmailService emailService = new EmailService();
+                    var details = (BusinessProcessStepEmail)nextStep;
+                    emailService.Send(details.Message, details.To);
+                    break;
+
+                case BusinessProcessStepType.StoredData:
+                    result = _dataRepository.SaveStepForLater(stepId, userID, form);
+                    break;
+
+                default:
+                    Console.WriteLine("Default case");
+                    break;
+            }
+        
 
             return result;
 

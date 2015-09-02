@@ -11,6 +11,7 @@ using Nexus.Sql_Repository.DatabaseClasses.Data;
 using System.Diagnostics;
 using System.Data.Entity.Validation;
 using System.ComponentModel.DataAnnotations.Schema;
+using Nexus.Common.Interfaces;
 
 namespace Nexus.Sql_Repository
 {
@@ -213,6 +214,16 @@ namespace Nexus.Sql_Repository
 
             return response;
 
+        }
+
+        public IBusinessProcessStep GetBusinessProcessStep(Guid stepId)
+        {
+            return new BusinessProcessStepEmail();
+        }
+
+        public IBusinessProcessStep GetBusinessProcessNextStep(IBusinessProcessStep currentStep)
+        {
+            return new BusinessProcessStepEmail();
         }
     }
 }

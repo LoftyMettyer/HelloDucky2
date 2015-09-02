@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System;
 using Nexus.Common.Classes;
 using System.Web.Mvc;
+using Nexus.Common.Enums;
 
 namespace Nexus.WebAPI.Tests.Controllers
 {
@@ -110,6 +111,27 @@ namespace Nexus.WebAPI.Tests.Controllers
 
             var result = _mockController.SubmitStep(form);
             Assert.IsTrue(result is BusinessProcessStepResponse);
+
+        }
+
+        [TestMethod]
+        public void SubmitStep_EmailSendsSuccessfully()
+        {
+
+            var field = new WebFormField { sequence = 1, columnid = 2, value = "Smith" };
+
+            var form = new WebFormModel
+            {
+                stepid = Guid.NewGuid(),
+                fields = new List<WebFormField>() {
+                    new WebFormField { id=1, sequence = 1, columnid = 1, value = "John" },
+                    new WebFormField { id=1, sequence = 2, columnid = 2, value = "Smith" },
+                }
+            };
+
+            var result = _mockController.SubmitStep(form);
+            Assert.IsTrue(result is BusinessProcessStepResponse);
+            Assert.IsTrue(result.Status == BusinessProcessStepStatus.Success);
 
         }
 

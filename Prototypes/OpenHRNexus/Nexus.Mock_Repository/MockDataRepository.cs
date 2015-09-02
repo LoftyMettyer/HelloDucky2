@@ -1,5 +1,6 @@
 ﻿using System;
 using Nexus.Common.Classes;
+using Nexus.Common.Interfaces;
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
 
@@ -25,6 +26,16 @@ namespace Nexus.Mock_Repository {
         }
 
         public BusinessProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IBusinessProcessStep GetBusinessProcessStep(Guid stepId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IBusinessProcessStep GetBusinessProcessNextStep(IBusinessProcessStep currentStep)
         {
             throw new NotImplementedException();
         }

@@ -13,5 +13,8 @@ namespace Nexus.Common.Interfaces.Repository {
         BusinessProcess GetBusinessProcess(int Id);
         BusinessProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form);
 
+        IBusinessProcessStep GetBusinessProcessStep(Guid stepId);
+        IBusinessProcessStep GetBusinessProcessNextStep(IBusinessProcessStep currentStep);
+
     }
 }
