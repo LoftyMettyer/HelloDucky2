@@ -704,7 +704,7 @@
 
 						Dim iloop = 1
 						For Each objRow As DataRow In dtControls.Rows
-							Response.Write("<input type='hidden' id=txtRecEditControl_" & iloop & " name=txtRecEditControl_" & iloop & " value=""" & Replace(objRow("controlDefinition").ToString(), """", "&quot;") & """>" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtRecEditControl_" & iloop & " name=txtRecEditControl_" & iloop & " value=""" & Replace(Replace(objRow("controlDefinition").ToString(), """", "&quot;"), "&&", "&") & """>" & vbCrLf)
 							iloop += 1
 						Next
 
