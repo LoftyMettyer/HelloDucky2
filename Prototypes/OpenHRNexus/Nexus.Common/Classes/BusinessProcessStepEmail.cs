@@ -2,29 +2,24 @@
 using OpenHRNexus.Common.Enums;
 using Nexus.Common.Enums;
 
-namespace Nexus.Common.Classes
-{
-    public class BusinessProcessStepEmail : IBusinessProcessStep
-    {
-        public int Id { get; set; }
+namespace Nexus.Common.Classes {
+	public class BusinessProcessStepEmail : IBusinessProcessStep {
+		public int Id { get; set; }
 
-        public BusinessProcessStepType Type
-        {
-            get
-            {
-                return BusinessProcessStepType.Email;
-            }
+		public BusinessProcessStepType Type {
+			get {
+				return BusinessProcessStepType.Email;
+			}
+		}
 
-        }
+		public BusinessProcessStepStatus Validate() {
+			return BusinessProcessStepStatus.Success;
+		}
 
-        public BusinessProcessStepStatus Validate()
-        {
-            return BusinessProcessStepStatus.Success;
-        }
+		public string To => "roberto.caballero@advancedcomputersoftware.com";
 
-        public string To { get { return "roberto.caballero@advancedcomputersoftware.com"; } }
+		public string Message => "Hello Ducky";
 
-        public string Message { get { return "Hello Ducky "; } }
-
-    }
+		public string Subject => "Ducky subject";
+	}
 }

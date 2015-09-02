@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Postmark.Convenience</name>
+    </assembly>
+    <members>
+        <member name="T:PostmarkDotNet.Legacy.FullProfileLegacyClientExtension">
+            <summary>
+            A legacy shim, proxying the 1.x client calls.
+            </summary>
+            <remarks>This shim is provided as a convenience to consumers of the 1.x client. 
+            It is recommended that consumers use the 2.0 Task-based methods instead of these extensions.</remarks>
+        </member>
+        <member name="M:PostmarkDotNet.NameValueCollectionCompatibilityExtensions.AsHeaderCollection(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Converts a NameValueCollection 
+            (as is used in the 1.x client) 
+            to the HeaderCollection required for the 2.0 client.
+            </summary>
+            <param name="collection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkMessageFullProfileExtensions.AddAttachment(PostmarkDotNet.PostmarkMessage,System.String,System.String,System.String)">
+            <summary>
+            Add a file from the specified path to this message.
+            </summary>
+            <param name="message"></param>
+            <param name="path"></param>
+            <param name="contentType"></param>
+            <param name="contentId"></param>
+        </member>
+        <member name="M:PostmarkDotNet.SystemMailExtensions.SendMessageAsync(PostmarkDotNet.PostmarkClient,System.Net.Mail.MailMessage)">
+            <summary>
+            Send a System.Net.MailMessage (transparently converts to the PostmarkMessage).
+            </summary>
+            <param name="client"></param>
+            <param name="message"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PostmarkDotNet.SystemMailExtensions.SendMessagesAsync(PostmarkDotNet.PostmarkClient,System.Net.Mail.MailMessage[])">
+            <summary>
+            Send a System.Net.MailMessage(s) (transparently converts to the PostmarkMessages).
+            </summary>
+            <param name="client"></param>
+            <param name="messages"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PostmarkDotNet.SystemMailExtensions.ConvertSystemMailMessage(System.Net.Mail.MailMessage)">
+            <summary>
+              Initializes a new instance of the <see cref="T:PostmarkDotNet.PostmarkMessage"/> class
+              based on an existing <see cref="T:System.Net.Mail.MailMessage"/> instance. 
+            
+              Only the first recipient of the message is added to the <see cref="T:PostmarkDotNet.PostmarkMessage"/>
+              instance.
+            </summary>
+            <param name="message">The existing message.</param>
+        </member>
+    </members>
+</doc>

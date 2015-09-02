@@ -1,0 +1,692 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Postmark.WindowsPhone</name>
+    </assembly>
+    <members>
+        <member name="T:PostmarkDotNet.IPostmarkClient">
+            <summary>
+             Defines the contract for the Postmark API.
+            </summary>
+        </member>
+        <member name="M:PostmarkDotNet.IPostmarkClient.SendMessage(System.String,System.String,System.String,System.String,System.Action{PostmarkDotNet.PostmarkResponse})">
+            <summary>
+            Sends a message through the Postmark API.
+            All email addresses must be valid, and the sender must be
+            a valid sender signature according to Postmark. To obtain a valid
+            sender signature, log in to Postmark and navigate to:
+            http://postmarkapp.com/signatures.
+            </summary>
+            <param name="from">An email address for a sender.</param>
+            <param name="to">An email address for a recipient.</param>
+            <param name="subject">The message subject line.</param>
+            <param name="body">The message body.</param>
+            <param name="callback">The callback invoked when a <see cref="T:PostmarkDotNet.PostmarkResponse"/> is received from the API</param>
+        </member>
+        <member name="M:PostmarkDotNet.IPostmarkClient.SendMessage(System.String,System.String,System.String,System.String,Hammock.Silverlight.Compat.NameValueCollection,System.Action{PostmarkDotNet.PostmarkResponse})">
+            <summary>
+            Sends a message through the Postmark API.
+            All email addresses must be valid, and the sender must be
+            a valid sender signature according to Postmark. To obtain a valid
+            sender signature, log in to Postmark and navigate to:
+            http://postmarkapp.com/signatures.
+            </summary>
+            <param name="from">An email address for a sender</param>
+            <param name="to">An email address for a recipient</param>
+            <param name="subject">The message subject line</param>
+            <param name="body">The message body</param>
+            <param name="headers">A collection of additional mail headers to send with the message</param>
+            <param name="callback">The callback invoked when a response is received from the API</param>
+            <returns>A <see cref="T:PostmarkDotNet.PostmarkResponse"/> with details about the transaction</returns>
+        </member>
+        <member name="M:PostmarkDotNet.IPostmarkClient.SendMessage(PostmarkDotNet.PostmarkMessage,System.Action{PostmarkDotNet.PostmarkResponse})">
+            <summary>
+            Sends a message through the Postmark API.
+            All email addresses must be valid, and the sender must be
+            a valid sender signature according to Postmark. To obtain a valid
+            sender signature, log in to Postmark and navigate to:
+            http://postmarkapp.com/signatures.
+            </summary>
+            <param name="message">A prepared message instance</param>
+            <param name="callback">The callback invoked when a response is received from the API</param>
+        </member>
+        <member name="M:PostmarkDotNet.IPostmarkClient.SendMessages(System.Collections.Generic.IEnumerable{PostmarkDotNet.PostmarkMessage},System.Action{System.Collections.Generic.IEnumerable{PostmarkDotNet.PostmarkResponse}})">
+            <summary>
+            Sends a batch of up to messages through the Postmark API.
+            All email addresses must be valid, and the sender must be
+            a valid sender signature according to Postmark. To obtain a valid
+            sender signature, log in to Postmark and navigate to:
+            http://postmarkapp.com/signatures.
+            </summary>
+            <param name="messages">A prepared message batch.</param>
+            <param name="callback">The callback invoked when a response is received from the API</param>
+        </member>
+        <member name="P:PostmarkDotNet.IPostmarkClient.Authority">
+            <summary>
+              Override the REST API endpoint by specifying your own address, if necessary.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.IPostmarkClient.ServerToken">
+            <summary>
+            Gets the server token issued with your Postmark email server configuration.
+            </summary>
+            <value>The server token.</value>
+        </member>
+        <member name="T:PostmarkDotNet.PostmarkBounce">
+            <summary>
+              Represents an email bounce logged by Postmark.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounce.ID">
+            <summary>
+              The bounce ID.
+              This is used for other API calls that require the ID.
+            </summary>
+            <value>The ID</value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounce.Type">
+            <summary>
+              The <see cref="T:PostmarkDotNet.PostmarkBounceType"/> for this bounce.
+            </summary>
+            <value>The type</value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounce.Details">
+            <summary>
+              The bounce details set by the server.
+            </summary>
+            <value>The details</value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounce.Email">
+            <summary>
+              The email recipient that initiated the bounce.
+            </summary>
+            <value>The email</value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounce.BouncedAt">
+            <summary>
+              The time the bounce occurred.
+            </summary>
+            <value>The time of the bounce</value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounce.DumpAvailable">
+            <summary>
+              A value indicating whether a raw STMP dump is available.
+            </summary>
+            <value><c>true</c> if a dump is available; otherwise, <c>false</c></value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounce.Inactive">
+            <summary>
+              A value indicating whether this <see cref="T:PostmarkDotNet.PostmarkBounce"/> is inactive.
+            </summary>
+            <value><c>true</c> if inactive; otherwise, <c>false</c></value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounce.CanActivate">
+            <summary>
+              A value indicating whether this bounce can be activated.
+            </summary>
+            <value>
+              <c>true</c> if this instance can be activated; otherwise, <c>false</c>
+            </value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounce.MessageID">
+            <summary>
+              The MessageID of the email that caused the bounce, can be Empty.
+            </summary>
+            <value>
+              The original email message ID
+            </value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounce.Description">
+            <summary>
+              The detailed information about the cause of the bounce 
+            </summary>
+            <value>The description of the bounce</value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounce.Tag">
+            <summary>
+            The tags users add to emails
+            </summary>
+            <value>The specific tag string</value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounce.Subject">
+            <summary>
+            Subject of the message sent
+            </summary>
+            <value>Subject text of the original message</value>
+        </member>
+        <member name="T:PostmarkDotNet.PostmarkBounceActivation">
+            <summary>
+              Represents the results of a request to activate a <see cref="T:PostmarkDotNet.PostmarkBounce"/>.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounceActivation.Message">
+            <summary>
+              The server message accompanying the activation request.
+            </summary>
+            <value>The message.</value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounceActivation.Bounce">
+            <summary>
+              The activated bounce.
+            </summary>
+            <value>The activated bounce.</value>
+        </member>
+        <member name="T:PostmarkDotNet.PostmarkBounceDump">
+            <summary>
+             Represents the raw SMTP details of a particular bounce.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounceDump.Body">
+            <summary>
+              The body of the bounce dump.
+            </summary>
+            <value>The body.</value>
+        </member>
+        <member name="T:PostmarkDotNet.PostmarkBounces">
+            <summary>
+              Represents a partial result of bounces obtained from a search.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounces.TotalCount">
+            <summary>
+              The total number of bounces logged by the server.
+              Use this number to base paging parameters in subsequent
+              calls to retrieve bounces.
+            </summary>
+            <value>The total count.</value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounces.Bounces">
+            <summary>
+              The bounces returned in this query result.
+            </summary>
+            <value>The bounces.</value>
+        </member>
+        <member name="T:PostmarkDotNet.PostmarkBounceSummary">
+            <summary>
+              Represents an aggregate view of bounces.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounceSummary.Type">
+            <summary>
+              An summary for a <see cref="T:PostmarkDotNet.PostmarkBounceType"/>.
+            </summary>
+            <value>The type.</value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounceSummary.Name">
+            <summary>
+              The name of the summary.
+            </summary>
+            <value>The name.</value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkBounceSummary.Count">
+            <summary>
+              The numebr of results in the summary.
+            </summary>
+            <value>The count.</value>
+        </member>
+        <member name="T:PostmarkDotNet.PostmarkBounceType">
+            <summary>
+              Represents the type of bounce for a <see cref="T:PostmarkDotNet.PostmarkBounce"/>.
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.HardBounce">
+            <summary>
+              HardBounce
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.Transient">
+            <summary>
+              Transient
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.Unsubscribe">
+            <summary>
+              Unsubscribe
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.Subscribe">
+            <summary>
+              Subscribe
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.AutoResponder">
+            <summary>
+              AutoResponder
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.AddressChange">
+            <summary>
+              AddressChange
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.DnsError">
+            <summary>
+              DnsError
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.SpamNotification">
+            <summary>
+              SpamNotification
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.OpenRelayTest">
+            <summary>
+              OpenRelayTest
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.Unknown">
+            <summary>
+              Unknown
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.SoftBounce">
+            <summary>
+              SoftBounce
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.VirusNotification">
+            <summary>
+              VirusNotification
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.ChallengeVerification">
+            <summary>
+              ChallengeVerification
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.BadEmailAddress">
+            <summary>
+              BadEmailAddress
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.SpamComplaint">
+            <summary>
+              SpamComplaint
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.ManuallyDeactivated">
+            <summary>
+              ManuallyDeactivated
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.Unconfirmed">
+            <summary>
+              Unconfirmed
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.Blocked">
+            <summary>
+              Blocked
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.SMTPApiError">
+            
+              SMTPApiError
+             
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkBounceType.AOLSpamNotification">
+            <summary>
+            AOL Spam Notification
+            </summary>
+        </member>
+        <member name="T:PostmarkDotNet.PostmarkDeliveryStats">
+            <summary>
+              Represents delivery statistics at a particular time.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkDeliveryStats.InactiveMails">
+            <summary>
+              The total number of inactive or bounced mails delivered.
+            </summary>
+            <value>The inactive mails.</value>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkDeliveryStats.Bounces">
+            <summary>
+              The list of summary results for the bounces in this report.
+            </summary>
+            <value>The bounces.</value>
+        </member>
+        <member name="T:PostmarkDotNet.PostmarkMessage">
+            <summary>
+              A message destined for the Postmark service.
+            </summary>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkMessage.#ctor">
+            <summary>
+              Initializes a new instance of the <see cref="T:PostmarkDotNet.PostmarkMessage"/> class.
+            </summary>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkMessage.#ctor(System.String,System.String,System.String,System.String)">
+            <summary>
+              Initializes a new instance of the <see cref="T:PostmarkDotNet.PostmarkMessage"/> class.
+            </summary>
+            <param name="from">An email address for a sender.</param>
+            <param name="to">An email address for a recipient.</param>
+            <param name="subject">The message subject line.</param>
+            <param name="body">The message body.</param>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkMessage.#ctor(System.String,System.String,System.String,System.String,Hammock.Silverlight.Compat.NameValueCollection)">
+            <summary>
+              Initializes a new instance of the <see cref="T:PostmarkDotNet.PostmarkMessage"/> class.
+            </summary>
+            <param name="from">An email address for a sender.</param>
+            <param name="to">An email address for a recipient.</param>
+            <param name="subject">The message subject line.</param>
+            <param name="body">The message body.</param>
+            <param name="headers">A collection of additional mail headers to send with the message.</param>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkMessage.AddAttachment(System.String)">
+            <summary>
+              Adds a file attachment.
+              Assumes the content type default of "application/octet-stream".
+            </summary>
+            <param name = "path">The full path to the file to attach</param>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkMessage.AddAttachment(System.String,System.String)">
+            <summary>
+              Adds a file attachment.
+            </summary>
+            <param name = "path">The full path to the file to attach</param>
+            <param name = "contentType">The content type.</param>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkMessage.AddAttachment(System.String,System.String,System.String)">
+            <summary>
+              Adds a file attachment with an inline image.
+            </summary>
+            <param name = "path">The full path to the file to attach</param>
+            <param name = "contentType">The content type.</param>
+            <param name = "contentId">ContentID for inline images</param>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkMessage.AddAttachment(System.Byte[],System.String,System.String)">
+            <summary>
+              Adds a file attachment using a byte[] array
+            </summary>
+            <param name = "path">The full path to the file to attach</param>
+            <param name = "contentType">ContentID for inline images.</param>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkMessage.AddAttachment(System.Byte[],System.String,System.String,System.String)">
+            <summary>
+              Adds a file attachment using a byte[] array with inline support
+            </summary>
+            <param name = "path">The full path to the file to attach</param>
+            <param name = "contentType">The content type.</param>
+            <param name = "contentId">The ContentId for inline images.</param>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkMessage.ValidateAttachmentPath(System.String)">
+            <summary>
+            Be sure the path to the attachment actually exists
+            </summary>
+            <param name="path"></param>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkMessage.ValidateAttachmentLength(System.String)">
+            <summary>
+            Restrict attacments to 10 mb. The API will do this anyway but this is faster
+            </summary>
+            <param name="content"></param>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessage.From">
+            <summary>
+              The sender's email address.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessage.To">
+            <summary>
+              Any recipients. Separate multiple recipients with a comma.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessage.Cc">
+            <summary>
+              Any CC recipients. Separate multiple recipients with a comma.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessage.Bcc">
+            <summary>
+              Any BCC recipients. Separate multiple recipients with a comma.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessage.ReplyTo">
+            <summary>
+              The email address to reply to. This is optional.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessage.Subject">
+            <summary>
+              The message subject line.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessage.HtmlBody">
+            <summary>
+              The message body, if the message contains
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessage.TextBody">
+            <summary>
+              The message body, if the message is plain text.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessage.Tag">
+            <summary>
+              An optional message tag, that is used for breaking down
+              statistics using the Postmark web administration UI.
+              For example, you can break email down into application specific
+              areas like "Invitation", or "BillingReminder".
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessage.TrackOpens">
+            <summary>
+            Track this message using Postmark's OpenTracking feature. Message should be in html
+            to allow for tracking techniques
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessage.Headers">
+            <summary>
+              A collection of optional message headers.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessage.Attachments">
+            <summary>
+              A collection of optional file attachments.
+            </summary>
+        </member>
+        <member name="T:PostmarkDotNet.PostmarkMessageAttachment">
+            <summary>
+              An optional file attachment that accompanies a <see cref="T:PostmarkDotNet.PostmarkMessage"/>.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessageAttachment.Name">
+            <summary>
+              The name of this attachment.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessageAttachment.Content">
+            <summary>
+              The raw, Base64 encoded content in this attachment.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessageAttachment.ContentType">
+            <summary>
+              The content type for this attachment.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkMessageAttachment.ContentId">
+            <summary>
+            The ContentID (CID) for inline image attachments
+            </summary>
+        </member>
+        <member name="T:PostmarkDotNet.PostmarkResponse">
+            <summary>
+              A response from the Postmark API after a request sent with <see cref="T:PostmarkDotNet.PostmarkClient"/>.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkResponse.MessageID">
+            <summary>
+              The Message ID returned from Postmark.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkResponse.Status">
+            <summary>
+              The status outcome of the response.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkResponse.Message">
+            <summary>
+              The message from the API.  
+              In the event of an error, this message may contain helpful text.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkResponse.SubmittedAt">
+            <summary>
+              The time the request was received by Postmark.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkResponse.To">
+            <summary>
+              The recipient of the submitted request.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkResponse.ErrorCode">
+            <summary>
+              The error code returned from Postmark.
+              This does not map to HTTP status codes.
+            </summary>
+        </member>
+        <member name="T:PostmarkDotNet.PostmarkStatus">
+            <summary>
+              A list of possible status outcomes associated with a <see cref="T:PostmarkDotNet.PostmarkResponse"/>.
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkStatus.Unknown">
+            <summary>
+              The response is unknown to this version of the Postmark.NET API.
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkStatus.Success">
+            <summary>
+              The request was successful.
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkStatus.UserError">
+            <summary>
+              The request was unsuccessful because of a user error.
+            </summary>
+        </member>
+        <member name="F:PostmarkDotNet.PostmarkStatus.ServerError">
+            <summary>
+              The request was unsuccessful because of a server error.
+            </summary>
+        </member>
+        <member name="T:PostmarkDotNet.PostmarkClient">
+            <summary>
+              A client for the Postmark application. 
+              Use this client in place of an <see cref="!:SmtpClient"/> to send messages
+              through this service.
+            </summary>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkClient.#ctor(System.String)">
+            <summary>
+              Initializes a new instance of the <see cref="T:PostmarkDotNet.PostmarkClient"/> class.
+              If you do not have a server token you can request one by signing up to
+              use Postmark: http://postmarkapp.com.
+            </summary>
+            <param name="serverToken">The server token.</param>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkClient.#ctor(System.String,System.Int32)">
+            <summary>
+              Initializes a new instance of the <see cref="T:PostmarkDotNet.PostmarkClient"/> class.
+              If you do not have a server token you can request one by signing up to
+              use Postmark: http://postmarkapp.com.
+            </summary>
+            <param name="serverToken">The server token.</param>
+            <param name="timeout">Time to wait for the API in seconds.</param>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkClient.#ctor(System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PostmarkDotNet.PostmarkClient"/> class.
+            If you do not have a server token you can request one by signing up to
+            use Postmark: http://postmarkapp.com.
+            Extra signature to override https
+            </summary>
+            <param name="serverToken">You can get a server token by signing up at http://www.postmarkapp.com</param>
+            <param name="noSSL">Skip https usage</param>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkClient.SendMessage(System.String,System.String,System.String,System.String,System.Action{PostmarkDotNet.PostmarkResponse})">
+            <summary>
+              Sends a message through the Postmark API.
+              All email addresses must be valid, and the sender must be
+              a valid sender signature according to Postmark. To obtain a valid
+              sender signature, log in to Postmark and navigate to:
+              http://postmarkapp.com/signatures.
+            </summary>
+            <param name="from">An email address for a sender.</param>
+            <param name="to">An email address for a recipient.</param>
+            <param name="subject">The message subject line.</param>
+            <param name="body">The message body.</param>
+            <param name="callback">The callback invoked when a <see cref="T:PostmarkDotNet.PostmarkResponse"/> is received from the API</param>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkClient.SendMessage(System.String,System.String,System.String,System.String,Hammock.Silverlight.Compat.NameValueCollection,System.Action{PostmarkDotNet.PostmarkResponse})">
+            <summary>
+              Sends a message through the Postmark API.
+              All email addresses must be valid, and the sender must be
+              a valid sender signature according to Postmark. To obtain a valid
+              sender signature, log in to Postmark and navigate to:
+              http://postmarkapp.com/signatures.
+            </summary>
+            <param name="from">An email address for a sender</param>
+            <param name="to">An email address for a recipient</param>
+            <param name="subject">The message subject line</param>
+            <param name="body">The message body</param>
+            <param name="headers">A collection of additional mail headers to send with the message</param>
+            <param name="callback">The callback invoked when a response is received from the API</param>
+            <returns>A <see cref="T:PostmarkDotNet.PostmarkResponse"/> with details about the transaction</returns>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkClient.SendMessage(PostmarkDotNet.PostmarkMessage,System.Action{PostmarkDotNet.PostmarkResponse})">
+            <summary>
+              Sends a message through the Postmark API.
+              All email addresses must be valid, and the sender must be
+              a valid sender signature according to Postmark. To obtain a valid
+              sender signature, log in to Postmark and navigate to:
+              http://postmarkapp.com/signatures.
+            </summary>
+            <param name = "message">A prepared message instance</param>
+            <param name="callback">The callback invoked when a response is received from the API</param>
+        </member>
+        <member name="M:PostmarkDotNet.PostmarkClient.SendMessages(System.Collections.Generic.IEnumerable{PostmarkDotNet.PostmarkMessage},System.Action{System.Collections.Generic.IEnumerable{PostmarkDotNet.PostmarkResponse}})">
+            <summary>
+              Sends a batch of up to messages through the Postmark API.
+              All email addresses must be valid, and the sender must be
+              a valid sender signature according to Postmark. To obtain a valid
+              sender signature, log in to Postmark and navigate to:
+              http://postmarkapp.com/signatures.
+            </summary>
+            <param name="messages">A prepared message batch.</param>
+            <param name="callback">The callback invoked when a response is received from the API</param>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkClient.Authority">
+            <summary>
+              Override the REST API endpoint by specifying your own address, if necessary.
+            </summary>
+        </member>
+        <member name="P:PostmarkDotNet.PostmarkClient.ServerToken">
+            <summary>
+              Gets the server token issued with your Postmark email server configuration.
+            </summary>
+            <value>The server token.</value>
+        </member>
+        <member name="T:PostmarkDotNet.Validation.ValidationException">
+            <summary>
+              An exception thrown when request inputs fail an <see cref="!:ISpecification"/> or other test.
+            </summary>
+        </member>
+        <member name="M:PostmarkDotNet.Validation.ValidationException.#ctor">
+            <summary>
+              Initializes a new instance of the <see cref="T:PostmarkDotNet.Validation.ValidationException"/> class.
+            </summary>
+        </member>
+        <member name="M:PostmarkDotNet.Validation.ValidationException.#ctor(System.String)">
+            <summary>
+              Initializes a new instance of the <see cref="T:PostmarkDotNet.Validation.ValidationException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+    </members>
+</doc>

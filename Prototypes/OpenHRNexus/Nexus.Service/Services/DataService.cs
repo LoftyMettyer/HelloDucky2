@@ -100,9 +100,9 @@ namespace Nexus.Service.Services {
             switch (nextStep.Type)
             {
                 case BusinessProcessStepType.Email:
-                    EmailService emailService = new EmailService();
+                    var emailService = new EmailService();
                     var details = (BusinessProcessStepEmail)nextStep;
-                    emailService.Send(details.Message, details.To);
+                    result = emailService.Send(details.To, details.Subject, details.Message);
                     break;
 
                 case BusinessProcessStepType.StoredData:
