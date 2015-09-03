@@ -1,30 +1,19 @@
 ﻿using Nexus.Common.Enums;
 using Nexus.Common.Models;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nexus.Sql_Repository.DatabaseClasses.Structure
 {
     public class DynamicColumn: EntityModel
     {
-
-
-      //  [Column("TableId")]
-    //    [ForeignKey("TableId")]
-    //    public DynamicTable Table { get; set; }
+        //[ForeignKey("TableId")]
+        //public virtual DynamicTable Table { get; set; }
 
         public int TableId { get; set; }
-        //public int AttributeId { get; set; }
+
         public string DisplayName { get; set; }
         public ColumnDataType DataType { get; set; }
-
-     //   [Key]
-    //    public int Idx { get; set; }
-
-        //[ForeignKey("AttributeId")]
-        //public virtual DynamicAttribute DynamicAttribute { get; set; }
-
-        //[ForeignKey("TemplateId")]
-        //public virtual DynamicTable DynamicTemplate { get; set; }
 
         public Type DynamicDataType
         {
@@ -32,6 +21,8 @@ namespace Nexus.Sql_Repository.DatabaseClasses.Structure
             {
                 switch (DataType)
                 {
+                    case ColumnDataType.Decimal:
+                        return Type.GetType("System.Decimal");
                     case ColumnDataType.Integer:
                         return Type.GetType("System.Int32");
                     case ColumnDataType.DateTime:
@@ -43,6 +34,43 @@ namespace Nexus.Sql_Repository.DatabaseClasses.Structure
                 }
             }
         }
+
+        public string PhysicalName
+        {
+            get
+            {
+                return string.Format("column{0}", Id);
+            }
+        }
+
+        [Obsolete("As soon as the CreateType function can create nullable types this will serve no purpose")]
+        public string PhysicalNameWithNullCheck
+        {
+            get
+            {
+                string nullValue;
+
+                switch (DataType)
+                {
+                    case ColumnDataType.Decimal:
+                    case ColumnDataType.Integer:
+                        nullValue = "0";
+                        break;
+                    case ColumnDataType.DateTime:
+                        nullValue = "''";
+                        break;
+                    case ColumnDataType.Boolean:
+                        nullValue = "0";
+                        break;
+                    default:
+                        nullValue = "''";
+                        break;
+                }
+
+                return string.Format("ISNULL([column{0}], {1}) AS [column{0}]", Id, nullValue);
+            }
+        }
+
 
     }
 }

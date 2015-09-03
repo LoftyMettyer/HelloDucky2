@@ -37,5 +37,29 @@ namespace Nexus.Sql_Repository.Tests.Data
             Assert.IsTrue(result.Status == BusinessProcessStepStatus.Success);
 
         }
+
+        [TestMethod]
+        public void ProcessStep_CommitStepForAllDataTypes()
+        {
+
+            var form = new WebFormModel
+            {
+                stepid = Guid.NewGuid(),
+                fields = new List<WebFormField>() {
+                    new WebFormField { id=1, sequence = 1, columnid = 5, value = DateTime.Now.ToString()},
+                    new WebFormField { id=1, sequence = 2, columnid = 13, value = 3.75.ToString() },
+                    new WebFormField { id=1, sequence = 2, columnid = 4, value = "Jones" },
+                    new WebFormField { id=1, sequence = 2, columnid = 7, value = true.ToString() },
+                    new WebFormField { id=1, sequence = 2, columnid = 25, value = 0.ToString() }
+                }
+            };
+
+            var userId = new Guid("088C6A78-E14A-41B0-AD93-4FB7D3ADE96C");
+
+            var result = _mockRepository.CommitStep(form.stepid, userId, form);
+            Assert.IsTrue(result.Status == BusinessProcessStepStatus.Success);
+
+        }
+
     }
 }

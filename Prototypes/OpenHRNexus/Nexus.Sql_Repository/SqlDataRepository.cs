@@ -12,11 +12,13 @@ using System.Diagnostics;
 using System.Data.Entity.Validation;
 using System.ComponentModel.DataAnnotations.Schema;
 using Nexus.Common.Interfaces;
+using Nexus.Sql_Repository.Enums;
 
 namespace Nexus.Sql_Repository
 {
 	public class SqlDataRepository : SqlRepositoryContext, IDataRepository, IEntityRepository
     {
+        bool _ExecuteImmediate = true;
 
         public WebForm GetWebForm(int id)
         {
@@ -89,13 +91,19 @@ namespace Nexus.Sql_Repository
             // filter in security here???
 
             //            var tables = "Personnel";
-            var tables = formTables.FirstOrDefault().Name;
+            var tables = formTables.FirstOrDefault().PhysicalName;
+
+            // TODO - The Dynamic type builder is not handling nulls and so we are forcing not nulls at this point
+            // This causes an error below when we loop around the datarow.
+            // Modify the class type builder to handle better.
+
 
             // Build select string
             var dynamicSQL = string.Format("SELECT id, {0} FROM {1} base ",
-                string.Join(", ", formFields.Select(c => "ISNULL([" +  c.Name + "], '') AS column_" + c.Id)),
+                             string.Join(", ", formFields.Select(c => c.PhysicalNameWithNullCheck)),
                 tables);
 
+            //string.Join(", ", formFields.Select(c => "ISNULL([" + c.PhysicalName + "], '') AS " + c.PhysicalName)),
 
             // Append security filter
             dynamicSQL += string.Format("INNER JOIN [User] u ON u.RecordId = base.Id WHERE u.UserID = '{0}'", userId);
@@ -105,14 +113,12 @@ namespace Nexus.Sql_Repository
             var dynamicType = CreateType(factory, "webForm", formFields);
             var data = Database.SqlQuery(dynamicType, dynamicSQL);
 
-
-
             
             foreach (var row in data)
             {                            
                 foreach (WebFormField element in result.fields)
                 {
-                    var property = row.GetType().GetProperty("column_" + element.columnid);
+                    var property = row.GetType().GetProperty("column" + element.columnid);
 
                     var value = property.GetValue(row, null);
                     element.value = value == null ? string.Empty : value.ToString();
@@ -172,7 +178,7 @@ namespace Nexus.Sql_Repository
 
             // Original that creates the column as a name
             //            var props = dynamicAttributes.ToDictionary(da => da.DynamicAttribute.Name, da => typeof(string));
-            var props = dynamicAttributes.ToDictionary(da => "column_" + da.Id, da => da.DynamicDataType);
+            var props = dynamicAttributes.ToDictionary(da => "column" + da.Id, da => da.DynamicDataType);
 
             var t = dcf.CreateDynamicType<BaseDynamicEntity>(name, props);
             return t;
@@ -229,30 +235,52 @@ namespace Nexus.Sql_Repository
             return new BusinessProcessStepEmail();
         }
 
-        private BusinessProcessStepResponse ExecuteStatemenForUser(string dynamicSQL, Guid UserId)
+        private BusinessProcessStepResponse ExecuteStatemenForUser(string dynamicSQL, Guid UserId, bool Immediate)
         {
+            var response = new BusinessProcessStepResponse();
 
-            var statement = new TransactionStatement() {
+            var transaction = new TransactionStatement() {
                 Id = Guid.NewGuid(),
                 Statement = dynamicSQL,
                 UserID = UserId,
                 Time = DateTime.Now };
 
-            Statements.Add(statement);
-            SaveChanges();
-
-            var response = new BusinessProcessStepResponse()
+            try
             {
-                Status = BusinessProcessStepStatus.Success,
-                Message = "Success",
-                FollowOnUrl = String.Empty
-            };
+                Statements.Add(transaction);
+                Database.ExecuteSqlCommand(transaction.Statement);
+                SaveChanges();
+
+                response = new BusinessProcessStepResponse()
+                {
+                    Status = BusinessProcessStepStatus.Success,
+                    Message = "Success",
+                    FollowOnUrl = String.Empty
+                };
+
+            }
+            catch (Exception e)
+            {
+                response = new BusinessProcessStepResponse()
+                {
+                    Status = BusinessProcessStepStatus.ServerError,
+                    Message = e.Message,
+                    FollowOnUrl = String.Empty
+                };
+
+            }
 
             return response;
         }
 
         public BusinessProcessStepResponse CommitStep(Guid stepId, Guid userId, WebFormModel data)
         {
+
+            // Is Step insert/update/delete?
+            var storedType = StoredDataType.Insert;
+
+
+
 
             // Get form field values in table/column enumerator
 //            List<KeyValuePair<DynamicColumn, string>> dataValues;
@@ -269,13 +297,15 @@ namespace Nexus.Sql_Repository
                                where columnIds.Contains(cols.Id)
                                select cols).ToList();
 
-            var table = "Holiday_Taken";
-            var dynamicSQL = string.Format("INSERT {0} ({1}) VALUES ({2});",
-                table,
-                string.Join(", ", columns.Select(c => "[" + c.Name + "]")),
-                string.Join(", ", data.fields.Select(c => "'" + c.value + "'")));
+            var tableId = columns.FirstOrDefault().TableId;
+            var table = DynamicTables.Where(t => t.Id == tableId).FirstOrDefault();
 
-            var response = ExecuteStatemenForUser(dynamicSQL, userId);
+            var dynamicSQL = string.Format("INSERT [{0}] ({1}) VALUES ({2});",
+                table.PhysicalName,
+                string.Join(", ", columns.Select(c => "[" + c.PhysicalName + "]")),
+                string.Join(", ", data.fields.OrderBy(c => c.columnid).Select(c => "'" + c.value + "'")));
+
+            var response = ExecuteStatemenForUser(dynamicSQL, userId, _ExecuteImmediate);
 
             return response;
          

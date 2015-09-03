@@ -5,6 +5,7 @@
         String = 0,
         DateTime = 2,
         Boolean = 3,
-        Integer = 4
+        Decimal = 4,
+        Integer = 5
     }
 }

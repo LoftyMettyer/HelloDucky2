@@ -33,7 +33,6 @@ namespace Nexus.Service.Services {
             //var webForm = businessProcess.GetFirstStep;
          
 
-
          //   firstStep.Translate("en-GB");
 
 
@@ -110,7 +109,7 @@ namespace Nexus.Service.Services {
 												string.Format(details.Message, "AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ"));
                     break;
 
-                case BusinessProcessStepType.StoreData:
+                case BusinessProcessStepType.StoredData:
                     //result = _dataRepository.SaveStepForLater(stepId, userID, form);
                     result = _dataRepository.CommitStep(stepId, userID, form);
                     break;

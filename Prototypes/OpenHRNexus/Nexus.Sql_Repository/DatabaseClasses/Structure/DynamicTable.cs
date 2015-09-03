@@ -2,7 +2,6 @@
 using Nexus.Common.Models;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity;
 
 namespace Nexus.Sql_Repository.DatabaseClasses.Structure
 {
@@ -15,5 +14,12 @@ namespace Nexus.Sql_Repository.DatabaseClasses.Structure
         [ForeignKey("TableId")]
         public virtual ICollection<DynamicColumn> Columns { get; set; }
 
+        public string PhysicalName
+        {
+            get
+            {
+                return string.Format("UserDefined{0}", Id);
+            }
+        }
     }
 }

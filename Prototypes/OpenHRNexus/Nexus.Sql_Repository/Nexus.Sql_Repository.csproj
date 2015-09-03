@@ -74,6 +74,7 @@
     <Compile Include="DatabaseClasses\Structure\DynamicColumn.cs" />
     <Compile Include="DatabaseClasses\Structure\DynamicEntity.cs" />
     <Compile Include="DatabaseClasses\Structure\DynamicTable.cs" />
+    <Compile Include="Enums\StoredDataType.cs" />
     <Compile Include="Globals\Global.cs" />
     <Compile Include="DatabaseClasses\WelcomeMessage.cs" />
     <Compile Include="Migrations\Configuration.cs" />
