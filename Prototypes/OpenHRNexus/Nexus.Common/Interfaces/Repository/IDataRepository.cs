@@ -12,7 +12,7 @@ namespace Nexus.Common.Interfaces.Repository {
         WebFormModel PopulateFormWithNavigationControls(WebForm webForm, Guid userId);
         BusinessProcess GetBusinessProcess(int Id);
         BusinessProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form);
-
+        BusinessProcessStepResponse CommitStep(Guid stepId, Guid userID, WebFormModel form);
         IBusinessProcessStep GetBusinessProcessStep(Guid stepId);
         IBusinessProcessStep GetBusinessProcessNextStep(IBusinessProcessStep currentStep);
 

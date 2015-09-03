@@ -64,7 +64,7 @@ namespace Nexus.Sql_Repository
 
             var result = new WebFormModel
             {
-                id = webForm.id.ToString(),
+                id = webForm.id,
                 stepid = Guid.NewGuid(),
                 name = webForm.Name,
                 fields = webForm.Fields,
@@ -133,7 +133,7 @@ namespace Nexus.Sql_Repository
 
             var result = new WebFormModel
             {
-                id = webForm.id.ToString(),
+                id = webForm.id,
                 name = webForm.Name,
                 fields = webForm.Fields,
                 buttons = webForm.Buttons
@@ -163,6 +163,9 @@ namespace Nexus.Sql_Repository
         public virtual DbSet<DynamicTable> DynamicTables { get; set; }
 
         public virtual DbSet<ProcessInFlow> ProcessInFlow { get; set; }
+
+        public virtual DbSet<TransactionStatement> Statements { get; set; }
+
 
         private Type CreateType(DynamicClassFactory dcf, string name, ICollection<DynamicColumn> dynamicAttributes)
         {
@@ -224,6 +227,59 @@ namespace Nexus.Sql_Repository
         public IBusinessProcessStep GetBusinessProcessNextStep(IBusinessProcessStep currentStep)
         {
             return new BusinessProcessStepEmail();
+        }
+
+        private BusinessProcessStepResponse ExecuteStatemenForUser(string dynamicSQL, Guid UserId)
+        {
+
+            var statement = new TransactionStatement() {
+                Id = Guid.NewGuid(),
+                Statement = dynamicSQL,
+                UserID = UserId,
+                Time = DateTime.Now };
+
+            Statements.Add(statement);
+            SaveChanges();
+
+            var response = new BusinessProcessStepResponse()
+            {
+                Status = BusinessProcessStepStatus.Success,
+                Message = "Success",
+                FollowOnUrl = String.Empty
+            };
+
+            return response;
+        }
+
+        public BusinessProcessStepResponse CommitStep(Guid stepId, Guid userId, WebFormModel data)
+        {
+
+            // Get form field values in table/column enumerator
+//            List<KeyValuePair<DynamicColumn, string>> dataValues;
+     //       var BLAH = data.fields.Select(f => f.columnid).Contains(1);
+
+            var columnIds = data.fields.Select(f => f.columnid).ToList();
+
+            //var vals = (from cols in Columns
+            //              where columnIds.Contains(cols.Id)
+            //              select cols, "hello").ToList();
+
+
+            var columns = (from cols in Columns
+                               where columnIds.Contains(cols.Id)
+                               select cols).ToList();
+
+            var table = "Holiday_Taken";
+            var dynamicSQL = string.Format("INSERT {0} ({1}) VALUES ({2});",
+                table,
+                string.Join(", ", columns.Select(c => "[" + c.Name + "]")),
+                string.Join(", ", data.fields.Select(c => "'" + c.value + "'")));
+
+            var response = ExecuteStatemenForUser(dynamicSQL, userId);
+
+            return response;
+         
+
         }
     }
 }

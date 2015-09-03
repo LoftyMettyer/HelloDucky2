@@ -39,5 +39,10 @@ namespace Nexus.Mock_Repository {
         {
             throw new NotImplementedException();
         }
+
+        public BusinessProcessStepResponse CommitStep(Guid stepId, Guid userID, WebFormModel form)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

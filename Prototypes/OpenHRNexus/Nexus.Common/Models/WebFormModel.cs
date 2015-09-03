@@ -6,7 +6,7 @@ namespace Nexus.Common.Models
 {
     public class WebFormModel
     {
-        public string id { get; set; }
+        public int id { get; set; }
         [Key]
         public Guid stepid { get; set; }
         public string name { get; set; }

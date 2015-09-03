@@ -48,7 +48,7 @@ namespace Nexus.WebAPI.Tests.Controllers
             var result = (List<WebFormModel>)_mockController.InstantiateProcess(1, getID, false);
 
             Assert.IsTrue(result is IEnumerable<WebFormModel>);
-            Assert.IsTrue(result[0].id == getID.ToString());
+            Assert.IsTrue(result[0].id == getID);
 
         }
 
@@ -118,8 +118,6 @@ namespace Nexus.WebAPI.Tests.Controllers
         public void SubmitStep_EmailSendsSuccessfully()
         {
 
-            var field = new WebFormField { sequence = 1, columnid = 2, value = "Smith" };
-
             var form = new WebFormModel
             {
                 stepid = Guid.NewGuid(),
@@ -131,7 +129,7 @@ namespace Nexus.WebAPI.Tests.Controllers
 
             var result = _mockController.SubmitStep(form);
             Assert.IsTrue(result is BusinessProcessStepResponse);
-            Assert.IsTrue(result.Status == BusinessProcessStepStatus.Success);
+            Assert.IsTrue(result.Status == BusinessProcessStepStatus.EmailSuccessfullySent);
 
         }
 

@@ -96,6 +96,10 @@ namespace Nexus.Service.Services {
 
             // Oooh they decided to save for later.
 
+            // Commit the step (change later to put in below logic
+            result = _dataRepository.CommitStep(stepId, userID, form);
+
+
             // Oooh they want to send an email
             switch (nextStep.Type)
             {
@@ -106,7 +110,8 @@ namespace Nexus.Service.Services {
                     break;
 
                 case BusinessProcessStepType.StoredData:
-                    result = _dataRepository.SaveStepForLater(stepId, userID, form);
+                    //result = _dataRepository.SaveStepForLater(stepId, userID, form);
+                    result = _dataRepository.CommitStep(stepId, userID, form);
                     break;
 
                 default:
