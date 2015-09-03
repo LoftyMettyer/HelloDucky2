@@ -106,10 +106,11 @@ namespace Nexus.Service.Services {
                 case BusinessProcessStepType.Email:
                     var emailService = new EmailService();
                     var details = (BusinessProcessStepEmail)nextStep;
-                    result = emailService.Send(details.To, details.Subject, details.Message);
+										result = emailService.Send(details.To, details.Subject,
+												string.Format(details.Message, "AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ"));
                     break;
 
-                case BusinessProcessStepType.StoredData:
+                case BusinessProcessStepType.StoreData:
                     //result = _dataRepository.SaveStepForLater(stepId, userID, form);
                     result = _dataRepository.CommitStep(stepId, userID, form);
                     break;
