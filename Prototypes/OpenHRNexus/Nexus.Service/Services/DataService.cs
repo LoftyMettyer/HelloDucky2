@@ -109,7 +109,7 @@ namespace Nexus.Service.Services {
 												string.Format(details.Message, "AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ"));
                     break;
 
-                case BusinessProcessStepType.StoredData:
+                case BusinessProcessStepType.StoreData:
                     //result = _dataRepository.SaveStepForLater(stepId, userID, form);
                     result = _dataRepository.CommitStep(stepId, userID, form);
                     break;
