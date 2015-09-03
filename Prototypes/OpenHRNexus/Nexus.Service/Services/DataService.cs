@@ -6,6 +6,7 @@ using Nexus.Common.Classes;
 using System.Collections.Generic;
 using Nexus.Common.Enums;
 using OpenHRNexus.Common.Enums;
+using Nexus.Common.Interfaces;
 
 namespace Nexus.Service.Services {
 	public class DataService : IDataService {
@@ -14,6 +15,15 @@ namespace Nexus.Service.Services {
 		public DataService(IDataRepository dataRepository) {
 			_dataRepository = dataRepository;
 		}
+
+        public IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters)
+        {
+            // Some preprocesslogic
+
+            // get definitions of the data
+            return _dataRepository.GetReportData(reportID, filters);
+
+        }
 
         WebFormModel IDataService.GetWebForm(int businessProcessId, Guid userId)
         {

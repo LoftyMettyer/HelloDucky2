@@ -58,6 +58,7 @@
     <Compile Include="Classes\BusinessProcessStep.cs" />
     <Compile Include="Classes\BusinessProcessStepEmail.cs" />
     <Compile Include="Classes\BusinessProcessStepResponse.cs" />
+    <Compile Include="Classes\DataFilters\CalendarFilter.cs" />
     <Compile Include="Enums\BusinessProcessStepStatus.cs" />
     <Compile Include="Enums\BusinessProcessStepType.cs" />
     <Compile Include="Enums\ButtonAction.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Interfaces\IBusinessProcessStep.cs" />
     <Compile Include="Interfaces\IJsonSerialize.cs" />
     <Compile Include="Interfaces\INexusUser.cs" />
+    <Compile Include="Interfaces\IReportDataFilter.cs" />
     <Compile Include="Interfaces\ITranslate.cs" />
     <Compile Include="Interfaces\Repository\IAuthenticateRepository.cs" />
     <Compile Include="Interfaces\Repository\IDataRepository.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="Interfaces\Repository\IWelcomeMessageDataRepository.cs" />
     <Compile Include="Messages\RegisterNewUserMessage.cs" />
     <Compile Include="Messages\WelcomeDataMessage.cs" />
+    <Compile Include="Models\CalendarEventModel.cs" />
     <Compile Include="Models\EntityModel.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Models\WebForm.cs" />

@@ -133,6 +133,17 @@ namespace Nexus.WebAPI.Tests.Controllers
 
         }
 
+        [TestMethod]
+        public void GetCalendarData_GetsDataForTodaysRange()
+        {
+
+            var result = (List<CalendarEventModel>)_mockController.GetCalendarData("absence", DateTime.Now, DateTime.Now);
+            Assert.IsTrue(result is IEnumerable<CalendarEventModel>);
+
+
+        }
+
+
 
     }
 

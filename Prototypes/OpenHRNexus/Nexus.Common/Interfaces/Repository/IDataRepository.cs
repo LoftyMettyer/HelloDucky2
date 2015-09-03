@@ -15,6 +15,7 @@ namespace Nexus.Common.Interfaces.Repository {
         BusinessProcessStepResponse CommitStep(Guid stepId, Guid userID, WebFormModel form);
         IBusinessProcessStep GetBusinessProcessStep(Guid stepId);
         IBusinessProcessStep GetBusinessProcessNextStep(IBusinessProcessStep currentStep);
+        IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters);
 
     }
 }

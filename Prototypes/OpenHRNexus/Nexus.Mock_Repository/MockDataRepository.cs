@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Nexus.Common.Classes;
 using Nexus.Common.Interfaces;
 using Nexus.Common.Interfaces.Repository;
@@ -41,6 +42,11 @@ namespace Nexus.Mock_Repository {
         }
 
         public BusinessProcessStepResponse CommitStep(Guid stepId, Guid userID, WebFormModel form)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters)
         {
             throw new NotImplementedException();
         }

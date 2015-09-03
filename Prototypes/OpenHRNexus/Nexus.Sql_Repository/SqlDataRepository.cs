@@ -8,9 +8,7 @@ using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
 using Nexus.Sql_Repository.DatabaseClasses.Structure;
 using Nexus.Sql_Repository.DatabaseClasses.Data;
-using System.Diagnostics;
 using System.Data.Entity.Validation;
-using System.ComponentModel.DataAnnotations.Schema;
 using Nexus.Common.Interfaces;
 using Nexus.Sql_Repository.Enums;
 
@@ -309,6 +307,20 @@ namespace Nexus.Sql_Repository
 
             return response;
          
+
+        }
+
+        public IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters)
+        {
+            var results = new List<CalendarEventModel>();
+
+            results.Add(new CalendarEventModel()
+            {
+                start = DateTime.Now,
+                end = DateTime.Now.AddDays(2)
+            });
+
+            return  results;
 
         }
     }

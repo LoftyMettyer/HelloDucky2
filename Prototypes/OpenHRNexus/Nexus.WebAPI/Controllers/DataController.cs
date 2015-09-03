@@ -10,6 +10,7 @@ using System.Security.Claims;
 using Microsoft.AspNet.Identity;
 using Nexus.Common.Classes;
 using Nexus.Common.Enums;
+using Nexus.Common.Classes.DataFilters;
 
 namespace Nexus.WebAPI.Controllers {
 //	[Authorize(Roles = "OpenHRUser")]
@@ -78,6 +79,22 @@ namespace Nexus.WebAPI.Controllers {
             return _dataService.SubmitStepForUser(form.stepid, userId, form);
 
         }
+
+        [HttpGet]
+        [Authorize(Roles = "OpenHRUser")]
+        public IEnumerable<CalendarEventModel> GetCalendarData(string calendarType, DateTime from, DateTime to)
+        {
+
+            var userId = new Guid(_identity.GetUserId());
+
+            var filters = new List<CalendarFilter>();
+            filters.Add(new CalendarFilter() { StartRange = from, EndRange = to });
+
+            return _dataService.GetReportData(1, filters);
+
+        }
+
+
 
     }
 }
