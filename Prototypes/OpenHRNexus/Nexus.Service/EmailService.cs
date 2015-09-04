@@ -34,6 +34,8 @@ namespace Nexus.Service {
 			//	};
 			//}
 
+			//Uncoment the lines above to restore email-sending functionality//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 			return new BusinessProcessStepResponse() {
 				Status = BusinessProcessStepStatus.EmailSuccessfullySent,
 				Message = "Email successfully sent",

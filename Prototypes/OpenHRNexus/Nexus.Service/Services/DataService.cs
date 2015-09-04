@@ -114,9 +114,12 @@ namespace Nexus.Service.Services {
             {
                 case BusinessProcessStepType.Email:
                     var emailService = new EmailService();
-                    var details = (BusinessProcessStepEmail)nextStep;
-										result = emailService.Send(details.To, details.Subject,
-												string.Format(details.Message, "AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ"));
+                    var businessProcessStepEmail = (BusinessProcessStepEmail)nextStep;
+
+                    //Todo: Determine what type of email template we are using so we can do some extra processing on the template, such as replacing certain placeholders, etc.
+
+                    result = emailService.Send(businessProcessStepEmail.To, businessProcessStepEmail.Subject,
+												string.Format(businessProcessStepEmail.Message, "Debbie Avery", "two day", "19/09/2015", "25/09/2015", "Holiday","Sorry it's short notice!", "http://www.bbc.co.uk", "http://www.bbc.co.uk", "http://www.bbc.co.uk", "http://www.bbc.co.uk"));
                     break;
 
                 case BusinessProcessStepType.StoredData:
