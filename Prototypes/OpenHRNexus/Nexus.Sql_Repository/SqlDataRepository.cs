@@ -23,7 +23,7 @@ namespace Nexus.Sql_Repository
             var webForm = WebForms.Where(w => w.id == id).FirstOrDefault();
 
             // TODO - Need these 2 because the above is not loading on demand. I'm sure there's some linq that does this, but off the top of my head I don't know what it is.
-            List<WebFormField> fields = WebFormFields.ToList();
+            List<WebFormField> fields = WebFormFields.OrderBy(f => f.sequence).ToList();
             List<WebFormFieldOption> options = WebFormFieldOptions.ToList();
             List<WebFormButton> buttons = WebFormButtons.ToList();
 
