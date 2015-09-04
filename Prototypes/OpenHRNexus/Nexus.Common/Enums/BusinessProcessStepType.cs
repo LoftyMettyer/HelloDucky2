@@ -8,6 +8,6 @@
         Email = 4,
         Decision = 5,
         Junction = 6,
-        StoreData = 7
+        StoredData = 7
     }
 }
