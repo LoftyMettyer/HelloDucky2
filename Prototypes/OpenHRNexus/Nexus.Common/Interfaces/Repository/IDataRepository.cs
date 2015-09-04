@@ -7,7 +7,7 @@ namespace Nexus.Common.Interfaces.Repository {
 	public interface IDataRepository {
 //		IEnumerable<DynamicDataModel> GetData(int id);
 //		IEnumerable<DynamicDataModel> GetData();
-		WebForm GetWebForm(int id);
+		WebForm GetWebForm(int id, string language);
 		WebFormModel PopulateFormWithData(WebForm webForm, Guid userId);
         WebFormModel PopulateFormWithNavigationControls(WebForm webForm, Guid userId);
         BusinessProcess GetBusinessProcess(int Id);

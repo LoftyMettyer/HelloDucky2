@@ -25,13 +25,13 @@ namespace Nexus.Service.Services {
 
         }
 
-        WebFormModel IDataService.GetWebForm(int businessProcessId, Guid userId)
+        WebFormModel IDataService.GetWebForm(int businessProcessId, Guid userId, string language)
         {
 
             // Move to a factory for flexibility and eaiser reading?
-       //     var businessProcess = _dataRepository.GetBusinessProcess(businessProcessId);
+            //     var businessProcess = _dataRepository.GetBusinessProcess(businessProcessId);
 
-    //        if (businessProcess == null) return null;
+            //        if (businessProcess == null) return null;
 
             //var businessProcess = (BusinessProcessModel)_dataRepository.GetBusinessProcess(businessProcessId);
 
@@ -41,12 +41,11 @@ namespace Nexus.Service.Services {
 
             //, businessProcessId);
             //var webForm = businessProcess.GetFirstStep;
-         
-
-         //   firstStep.Translate("en-GB");
 
 
-            WebForm webForm = _dataRepository.GetWebForm(businessProcessId);
+            //   firstStep.Translate("en-GB");
+
+            WebForm webForm = _dataRepository.GetWebForm(businessProcessId, language);
        //     webForm.Translate("en-GB");
 
 

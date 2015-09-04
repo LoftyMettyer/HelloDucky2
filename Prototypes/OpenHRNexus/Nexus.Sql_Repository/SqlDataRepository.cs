@@ -11,6 +11,7 @@ using Nexus.Sql_Repository.DatabaseClasses.Data;
 using System.Data.Entity.Validation;
 using Nexus.Common.Interfaces;
 using Nexus.Sql_Repository.Enums;
+using System.Data.Entity.Infrastructure;
 
 namespace Nexus.Sql_Repository
 {
@@ -18,7 +19,62 @@ namespace Nexus.Sql_Repository
     {
         bool _ExecuteImmediate = true;
 
-        public WebForm GetWebForm(int id)
+        private List<WebFormFieldOption> GetLookupData(int columnId, string language)
+        {
+            var lookupTable = (from cols in Columns
+                               where cols.Id == columnId
+                               select cols).First();
+
+            var formFields = (from cols in Columns
+                              where cols.TableId == lookupTable.Id
+                              select cols).ToList();
+            var factory = new DynamicClassFactory();
+            //            var dynamicType = CreateType(factory, string.Format("Lookup{0}", lookupTable.Id), formFields);
+
+            var dynamicSQL = string.Format("SELECT * FROM Lookups WHERE Language = '{0}' AND WebFormField_id = {1}", language, columnId);
+
+            //var dynamicSQL = string.Format("SELECT {0} FROM {1}",
+            //     string.Join(", ", formFields.Select(c => c.PhysicalNameWithNullCheck)),
+            //     lookupTable.PhysicalName);
+
+            var data = Database.SqlQuery<WebFormFieldOption>(dynamicSQL);
+
+             return data.ToList();
+
+
+
+            //          SELECT id, column36 AS[title], column34 AS value, 17 AS WebFormField_id FROM userdefined4 where column35 = 'en-GB';
+            //            SELECT id, column39 AS[title], column37 AS value, 21 AS WebFormField_id FROM userdefined5 where column38 = 'en-GB';
+
+            //            SELECT id, column39 AS[title], column37 AS value, 21 AS WebFormField_id FROM userdefined5 where column38 = 'en-GB';
+
+
+//            var result = new List<WebFormFieldOption>();
+
+//            foreach (var row in data)
+//            {
+//                WebFormFieldOption dataRow = new WebFormFieldOption();
+
+//                //dataRow.id
+//result.Add(dataRow);
+
+
+//                foreach (WebFormField element in result.fields)
+//                {
+//                    var property = row.GetType().GetProperty("column" + element.columnid);
+
+//                    var value = property.GetValue(row, null);
+//                    element.value = value == null ? string.Empty : value.ToString();
+//                }
+//            }
+
+
+
+//            return data;
+        }
+
+
+        public WebForm GetWebForm(int id, string language)
         {
             var webForm = WebForms.Where(w => w.id == id).FirstOrDefault();
 
@@ -26,6 +82,27 @@ namespace Nexus.Sql_Repository
             List<WebFormField> fields = WebFormFields.OrderBy(f => f.sequence).ToList();
             List<WebFormFieldOption> options = WebFormFieldOptions.ToList();
             List<WebFormButton> buttons = WebFormButtons.ToList();
+
+            List<WebFormFieldOption> columnOptions;
+
+
+
+            //            SELECT id, column36 AS[title], column34 AS value, 17 AS WebFormField_id FROM userdefined4 where column35 = 'en-GB';
+            //          SELECT id, column39 AS[title], column37 AS value, 21 AS WebFormField_id FROM userdefined5 where column38 = 'en-GB';
+
+
+            // Get lookup values and translate
+                        
+
+            foreach (var lookup in webForm.Fields.Where(f => f.columnid == 25)) {
+                lookup.options = GetLookupData(lookup.columnid, language);
+            }
+
+            foreach (var lookup in webForm.Fields.Where(f => f.columnid == 21))
+            {
+                lookup.options = GetLookupData(lookup.columnid,language);
+            }
+
 
             return webForm;
         }
@@ -71,8 +148,8 @@ namespace Nexus.Sql_Repository
                 buttons = webForm.Buttons
             };
 
-        
-              // Build column list
+
+            // Build column list
             var formFields = (from cols in Columns
                 join form in WebFormFields on cols.Id equals form.columnid
                 where form.WebForm.id == webFormId

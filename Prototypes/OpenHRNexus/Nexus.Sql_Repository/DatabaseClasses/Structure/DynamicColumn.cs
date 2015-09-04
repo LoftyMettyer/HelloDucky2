@@ -15,6 +15,8 @@ namespace Nexus.Sql_Repository.DatabaseClasses.Structure
         public string DisplayName { get; set; }
         public ColumnDataType DataType { get; set; }
 
+        public int? LookupTableId { get; set; }
+
         public Type DynamicDataType
         {
             get
@@ -23,6 +25,7 @@ namespace Nexus.Sql_Repository.DatabaseClasses.Structure
                 {
                     case ColumnDataType.Decimal:
                         return Type.GetType("System.Decimal");
+                    case ColumnDataType.LookupValue:
                     case ColumnDataType.Integer:
                         return Type.GetType("System.Int32");
                     case ColumnDataType.DateTime:
@@ -53,6 +56,7 @@ namespace Nexus.Sql_Repository.DatabaseClasses.Structure
                 switch (DataType)
                 {
                     case ColumnDataType.Decimal:
+                    case ColumnDataType.LookupValue:
                     case ColumnDataType.Integer:
                         nullValue = "0";
                         break;

@@ -9,7 +9,7 @@ namespace Nexus.Service.Interfaces {
 	public interface IDataService {
 		//IEnumerable<DynamicDataModel> GetData(int id);
 		//IEnumerable<DynamicDataModel> GetData();
-		WebFormModel GetWebForm(int id, Guid userId);
+		WebFormModel GetWebForm(int id, Guid userId, string language);
 
         BusinessProcessStepResponse SubmitStepForUser(Guid stepId, Guid userId, WebFormModel form);
         IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters);

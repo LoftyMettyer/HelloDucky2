@@ -8,7 +8,7 @@ using Nexus.Common.Models;
 namespace Nexus.Mock_Repository {
 	public class MockDataRepository : IDataRepository {
 
-		public WebForm GetWebForm(int id) {
+		public WebForm GetWebForm(int id, string language) {
 			throw new NotImplementedException();
 		}
 

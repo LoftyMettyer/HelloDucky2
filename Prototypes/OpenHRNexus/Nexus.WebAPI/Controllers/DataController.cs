@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using Nexus.Common.Classes;
 using Nexus.Common.Enums;
 using Nexus.Common.Classes.DataFilters;
+using System.Web;
 
 namespace Nexus.WebAPI.Controllers {
 //	[Authorize(Roles = "OpenHRUser")]
@@ -19,6 +20,7 @@ namespace Nexus.WebAPI.Controllers {
         //private readonly IWorkflowService _workflowService;
 
         private ClaimsIdentity _identity;
+        private string _language;
 
         public DataController() {
 		}
@@ -27,21 +29,23 @@ namespace Nexus.WebAPI.Controllers {
 		{
 			_dataService = dataService;
             _identity = User.Identity as ClaimsIdentity;
-		}
+            _language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
+        }
 
-        public DataController(IDataService dataService, ClaimsIdentity claims)
+        public DataController(IDataService dataService, ClaimsIdentity claims, string language)
         {
             _identity = claims;
             _dataService = dataService;
+            _language = language;
         }
 
-				/// <summary>
-				/// Instatiate a Process (DO WE NEED A GLOSSARY SOMEWHERE SO THIRD PARTY USERS KNOW WHAT A "PROCESS" IS?
-				/// </summary>
-				/// <param name="instanceId">Value one</param>
-				/// <param name="elementId">Value two</param>
-				/// <param name="newRecord">Value three</param>
-				/// <returns></returns>
+        /// <summary>
+        /// Instatiate a Process (DO WE NEED A GLOSSARY SOMEWHERE SO THIRD PARTY USERS KNOW WHAT A "PROCESS" IS?
+        /// </summary>
+        /// <param name="instanceId">Value one</param>
+        /// <param name="elementId">Value two</param>
+        /// <param name="newRecord">Value three</param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize(Roles = "OpenHRUser")]
         public IEnumerable<WebFormModel> InstantiateProcess(int instanceId, int elementId, bool newRecord)
@@ -56,7 +60,7 @@ namespace Nexus.WebAPI.Controllers {
             }
             else
             {
-                webForm = _dataService.GetWebForm(elementId, openHRDbGuid);
+                webForm = _dataService.GetWebForm(elementId, openHRDbGuid, _language);
                 form.Add(webForm);
             }
 

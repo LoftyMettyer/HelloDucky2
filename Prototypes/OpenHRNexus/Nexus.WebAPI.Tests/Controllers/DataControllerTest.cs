@@ -30,7 +30,7 @@ namespace Nexus.WebAPI.Tests.Controllers
 
             _mockRepository = new SqlDataRepository();
             _mockService = new DataService(_mockRepository);
-            _mockController = new DataController(_mockService, _claims);
+            _mockController = new DataController(_mockService, _claims, "fr-fr");
 
         }
 
@@ -66,7 +66,7 @@ namespace Nexus.WebAPI.Tests.Controllers
             _claims.AddClaim(new Claim(ClaimTypes.Name, "NoSuchUser"));
             _claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, "00000000-0000-0000-0000-000000000000"));
 
-            _mockController = new DataController(_mockService, _claims);
+            _mockController = new DataController(_mockService, _claims, "en-GB");
 
             var result = (List<WebFormModel>)_mockController.InstantiateProcess(1, 16, false);
             
@@ -139,7 +139,6 @@ namespace Nexus.WebAPI.Tests.Controllers
 
             var result = (List<CalendarEventModel>)_mockController.GetCalendarData("absence", DateTime.Now, DateTime.Now);
             Assert.IsTrue(result is IEnumerable<CalendarEventModel>);
-
 
         }
 

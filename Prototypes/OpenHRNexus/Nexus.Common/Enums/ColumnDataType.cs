@@ -6,6 +6,7 @@
         DateTime = 2,
         Boolean = 3,
         Decimal = 4,
-        Integer = 5
+        Integer = 5,
+        LookupValue = 6
     }
 }
