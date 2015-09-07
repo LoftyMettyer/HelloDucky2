@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("Advanced Business Software and Solutions Limited")> 
 <Assembly: AssemblyProduct("OpenHR Workflow")> 
-<Assembly: AssemblyCopyright("Copyright Advanced Business Software and Solutions Limited 2000-2012")> 
+<Assembly: AssemblyCopyright("Copyright Advanced Business Software and Solutions Limited 2000-2015")> 
 <Assembly: AssemblyTrademark("")> 
 <Assembly: CLSCompliant(True)> 
 
@@ -29,6 +29,6 @@ Imports System.Runtime.InteropServices
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
 
-<Assembly: AssemblyVersion("8.1.6.00")> 
+<Assembly: AssemblyVersion("8.2.3.00")> 
 
-<Assembly: AssemblyFileVersionAttribute("8.1.6.00")> 
+<Assembly: AssemblyFileVersionAttribute("8.2.3.00")> 
