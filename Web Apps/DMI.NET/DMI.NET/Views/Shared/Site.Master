@@ -65,7 +65,7 @@
 		window.SSIMode = '<%=session("SSIMode")%>';
 		window.isMobileDevice = '<%=Session("isMobileDevice")%>';
 
-		document.title = 'OpenHR 8.1';	
+		document.title = 'OpenHR <%:session("VersionShorter")%>';	
 
 		//Force all dialogs to have no close button by default.
 		$.extend($.ui.dialog.prototype.options, {

@@ -48,6 +48,7 @@ Public Class MvcApplication
 
 		'If the user isn't requesting the Login form, redirect them there.
 		Session("version") = My.Application.Info.Version.Major & "." & My.Application.Info.Version.Minor & "." & My.Application.Info.Version.Build
+		Session("versionShorter") = My.Application.Info.Version.Major & "." & My.Application.Info.Version.Minor
 
 		Server.ScriptTimeout = 1000
 
