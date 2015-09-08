@@ -28,7 +28,7 @@ namespace Nexus.EnterpriseService.Logging {
 			TextFormatter extendedFormatter = new TextFormatter("Timestamp: {timestamp}{newline}Message: {message}{newline}Category: {category}{newline}Priority: {priority}{newline}EventId: {eventid}{newline}Severity: {severity}{newline}Title: {title}{newline}Activity ID: {property(ActivityId)}{newline}Machine: {localMachine}{newline}App Domain: {localAppDomain}{newline}ProcessId: {localProcessId}{newline}Process Name: {localProcessName}{newline}Thread Name: {threadName}{newline}Win32 ThreadId:{win32ThreadId}{newline}Extended Properties: {dictionary({key} - {value}{newline})}");
 
 			// Trace Listeners
-			var flatFileTraceListener = new FlatFileTraceListener(@"C:\Temp\FlatFile.log", "----------------------------------------", "----------------------------------------", briefFormatter);
+			// var flatFileTraceListener = new FlatFileTraceListener(@"Nexus.log", "----------------------------------------", "----------------------------------------", briefFormatter);
 			var eventLog = new EventLog {
 				Log = NexusEnterpriseConstants.WindowsEventLogName,
 				Source = subSystem
@@ -38,7 +38,7 @@ namespace Nexus.EnterpriseService.Logging {
 			// Build Configuration
 			var loggingConfig = new LoggingConfiguration();
 			loggingConfig.AddLogSource(NexusEnterpriseConstants.WindowsEventLogName, SourceLevels.All, false).AddTraceListener(eventLogTraceListener);
-			loggingConfig.AddLogSource("DiskFiles", SourceLevels.All, true).AddTraceListener(flatFileTraceListener);
+			// loggingConfig.AddLogSource("DiskFiles", SourceLevels.All, true).AddTraceListener(flatFileTraceListener);
 
 			return loggingConfig;
 		}
