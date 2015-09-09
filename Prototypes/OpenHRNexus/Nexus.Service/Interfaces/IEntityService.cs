@@ -6,6 +6,6 @@ namespace Nexus.Service.Interfaces
 {
     public interface IEntityService
     {
-        IEnumerable<EntityModel> GetEntities(EntityType? id);
+        IEnumerable<EntityModel> GetEntities(EntityType id);
     }
 }

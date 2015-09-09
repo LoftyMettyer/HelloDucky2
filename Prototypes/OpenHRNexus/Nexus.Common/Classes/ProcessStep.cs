@@ -3,10 +3,10 @@ using System.Diagnostics;
 
 namespace Nexus.Common.Classes
 {
-    public class BusinessProcessStep
+    public class ProcessStep
     {
         public int Id { get; set; }
-        public BusinessProcessStepType Type { get; set; }
+        public ProcessStepType Type { get; set; }
 
         public void Validate() {
             // Perform validation?

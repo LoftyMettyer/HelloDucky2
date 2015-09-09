@@ -18,7 +18,7 @@ namespace Nexus.WebAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<EntityModel> GetEntities(EntityType? entityType)
+        public IEnumerable<EntityModel> GetEntities(EntityType entityType)
         {
             return _entityService.GetEntities(entityType).ToList();
         }

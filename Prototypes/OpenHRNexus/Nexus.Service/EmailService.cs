@@ -12,7 +12,7 @@ using PostmarkDotNet.Legacy;
 
 namespace Nexus.Service {
 	public class EmailService {
-		public BusinessProcessStepResponse Send(string to, string subject, string body) {
+		public ProcessStepResponse Send(string to, string subject, string body) {
 			//var message = new PostmarkMessage {
 			//	From = "roberto.caballero@advancedcomputersoftware.com",
 			//	To = to,
@@ -36,8 +36,8 @@ namespace Nexus.Service {
 
 			//Uncoment the lines above to restore email-sending functionality//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			return new BusinessProcessStepResponse() {
-				Status = BusinessProcessStepStatus.EmailSuccessfullySent,
+			return new ProcessStepResponse() {
+				Status = ProcessStepStatus.EmailSuccessfullySent,
 				Message = "Email successfully sent",
 				FollowOnUrl = String.Empty
 			};

@@ -1,6 +1,7 @@
 ﻿namespace Nexus.Common.Enums {
 	public enum EntityType {
 		DataEntry = 0,
-		Report = 1
+		Report = 1,
+        Process = 2
 	}
 }

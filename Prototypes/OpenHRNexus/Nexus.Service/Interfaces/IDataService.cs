@@ -11,7 +11,7 @@ namespace Nexus.Service.Interfaces {
 		//IEnumerable<DynamicDataModel> GetData();
 		WebFormModel GetWebForm(int id, Guid userId, string language);
 
-        BusinessProcessStepResponse SubmitStepForUser(Guid stepId, Guid userId, WebFormModel form);
+        ProcessStepResponse SubmitStepForUser(Guid stepId, Guid userId, WebFormModel form);
         IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters);
     }
 }

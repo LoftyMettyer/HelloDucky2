@@ -4,16 +4,10 @@ using System.Collections.Generic;
 
 namespace Nexus.Common.Classes
 {
-    public class BusinessProcess : BaseEntity
+    public class Process : BaseEntity
     {
-        //IDataRepository _repository;
 
-        //public BusinessProcess(IDataRepository repository)
-        //{
-        //    _repository = repository;
-        //}
-
-        IEnumerable<BusinessProcessStep> Steps { get; set; }
+        public List<ProcessStep> Steps { get; set; }
 
         public WebForm GetFirstStep {
             get

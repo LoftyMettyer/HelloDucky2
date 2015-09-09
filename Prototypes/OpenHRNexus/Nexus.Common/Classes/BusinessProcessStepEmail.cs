@@ -3,17 +3,17 @@ using OpenHRNexus.Common.Enums;
 using Nexus.Common.Enums;
 
 namespace Nexus.Common.Classes {
-	public class BusinessProcessStepEmail : IBusinessProcessStep {
+	public class ProcessStepEmail : IProcessStep {
 		public int Id { get; set; }
 
-		public BusinessProcessStepType Type {
+		public ProcessStepType Type {
 			get {
-				return BusinessProcessStepType.Email;
+				return ProcessStepType.Email;
 			}
 		}
 
-		public BusinessProcessStepStatus Validate() {
-			return BusinessProcessStepStatus.Success;
+		public ProcessStepStatus Validate() {
+			return ProcessStepStatus.Success;
 		}
 
 		public string To => "roberto.caballero@advancedcomputersoftware.com";

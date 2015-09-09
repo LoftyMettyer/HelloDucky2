@@ -71,7 +71,7 @@ namespace Nexus.WebAPI.Controllers {
 
         [HttpPost]
         [Authorize(Roles = "OpenHRUser")]
-        public BusinessProcessStepResponse SubmitStep(WebFormModel form)
+        public ProcessStepResponse SubmitStep(WebFormModel form)
         {
             //Guid stepId, List< KeyValuePair < int, string>> data
 

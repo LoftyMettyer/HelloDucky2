@@ -110,7 +110,7 @@ namespace Nexus.WebAPI.Tests.Controllers
 
 
             var result = _mockController.SubmitStep(form);
-            Assert.IsTrue(result is BusinessProcessStepResponse);
+            Assert.IsTrue(result is ProcessStepResponse);
 
         }
 
@@ -128,8 +128,8 @@ namespace Nexus.WebAPI.Tests.Controllers
             };
 
             var result = _mockController.SubmitStep(form);
-            Assert.IsTrue(result is BusinessProcessStepResponse);
-            Assert.IsTrue(result.Status == BusinessProcessStepStatus.EmailSuccessfullySent);
+            Assert.IsTrue(result is ProcessStepResponse);
+            Assert.IsTrue(result.Status == ProcessStepStatus.EmailSuccessfullySent);
 
         }
 

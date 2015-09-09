@@ -16,7 +16,7 @@ namespace Nexus.Mock_Repository {
 			throw new NotImplementedException();
 		}
 
-        public BusinessProcess GetBusinessProcess(int Id)
+        public Process GetProcess(int Id)
         {
             throw new NotImplementedException();
         }
@@ -26,22 +26,22 @@ namespace Nexus.Mock_Repository {
             throw new NotImplementedException();
         }
 
-        public BusinessProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form)
+        public ProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form)
         {
             throw new NotImplementedException();
         }
 
-        public IBusinessProcessStep GetBusinessProcessStep(Guid stepId)
+        public IProcessStep GetProcessStep(Guid stepId)
         {
             throw new NotImplementedException();
         }
 
-        public IBusinessProcessStep GetBusinessProcessNextStep(IBusinessProcessStep currentStep)
+        public IProcessStep GetProcessNextStep(IProcessStep currentStep)
         {
             throw new NotImplementedException();
         }
 
-        public BusinessProcessStepResponse CommitStep(Guid stepId, Guid userID, WebFormModel form)
+        public ProcessStepResponse CommitStep(Guid stepId, Guid userID, WebFormModel form)
         {
             throw new NotImplementedException();
         }

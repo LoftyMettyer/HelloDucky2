@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Nexus.Service.Classes
 {
-    public class BusinessProcessModel : BusinessProcess
+    public class ProcessModel : Process
     {
         //private IDataRepository _repository;
 
@@ -21,7 +21,7 @@ namespace Nexus.Service.Classes
         //    this = _repository.GetBusinessProcess(id);
         //}
 
-        IEnumerable<BusinessProcessStep> Steps { get; set; }
+        IEnumerable<ProcessStep> Steps { get; set; }
 
         public WebForm GetFirstStep()
         {

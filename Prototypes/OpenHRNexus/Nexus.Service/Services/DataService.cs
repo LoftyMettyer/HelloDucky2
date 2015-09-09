@@ -25,7 +25,7 @@ namespace Nexus.Service.Services {
 
         }
 
-        WebFormModel IDataService.GetWebForm(int businessProcessId, Guid userId, string language)
+        WebFormModel IDataService.GetWebForm(int ProcessId, Guid userId, string language)
         {
 
             // Move to a factory for flexibility and eaiser reading?
@@ -45,7 +45,7 @@ namespace Nexus.Service.Services {
 
             //   firstStep.Translate("en-GB");
 
-            WebForm webForm = _dataRepository.GetWebForm(businessProcessId, language);
+            WebForm webForm = _dataRepository.GetWebForm(ProcessId, language);
        //     webForm.Translate("en-GB");
 
 
@@ -78,12 +78,12 @@ namespace Nexus.Service.Services {
             return result;
         }
 
-        BusinessProcessStepResponse IDataService.SubmitStepForUser(Guid stepId, Guid userID, WebFormModel form)
+        ProcessStepResponse IDataService.SubmitStepForUser(Guid stepId, Guid userID, WebFormModel form)
         {
-            var result = new BusinessProcessStepResponse();
+            var result = new ProcessStepResponse();
 
             // Find out what our next steps are.
-            var currentStep = _dataRepository.GetBusinessProcessStep(stepId);
+            var currentStep = _dataRepository.GetProcessStep(stepId);
 
             currentStep.Validate();
 
@@ -100,7 +100,7 @@ namespace Nexus.Service.Services {
             // if its a save for later, well just do it!
             // Find out what the next step is.
 
-            var nextStep = _dataRepository.GetBusinessProcessNextStep(currentStep);
+            var nextStep = _dataRepository.GetProcessNextStep(currentStep);
 
             // Oooh they decided to save for later.
 
@@ -111,17 +111,17 @@ namespace Nexus.Service.Services {
             // Oooh they want to send an email
             switch (nextStep.Type)
             {
-                case BusinessProcessStepType.Email:
+                case ProcessStepType.Email:
                     var emailService = new EmailService();
-                    var businessProcessStepEmail = (BusinessProcessStepEmail)nextStep;
+                    var processStepEmail = (ProcessStepEmail)nextStep;
 
                     //Todo: Determine what type of email template we are using so we can do some extra processing on the template, such as replacing certain placeholders, etc.
 
-                    result = emailService.Send(businessProcessStepEmail.To, businessProcessStepEmail.Subject,
-												string.Format(businessProcessStepEmail.Message, "Debbie Avery", "two day", "19/09/2015", "25/09/2015", "Holiday","Sorry it's short notice!", "http://www.bbc.co.uk", "http://www.bbc.co.uk", "http://www.bbc.co.uk", "http://www.bbc.co.uk"));
+                    result = emailService.Send(processStepEmail.To, processStepEmail.Subject,
+												string.Format(processStepEmail.Message, "Debbie Avery", "two day", "19/09/2015", "25/09/2015", "Holiday","Sorry it's short notice!", "http://www.bbc.co.uk", "http://www.bbc.co.uk", "http://www.bbc.co.uk", "http://www.bbc.co.uk"));
                     break;
 
-                case BusinessProcessStepType.StoredData:
+                case ProcessStepType.StoredData:
                     //result = _dataRepository.SaveStepForLater(stepId, userID, form);
                     result = _dataRepository.CommitStep(stepId, userID, form);
                     break;

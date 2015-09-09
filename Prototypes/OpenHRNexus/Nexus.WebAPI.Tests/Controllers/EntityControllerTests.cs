@@ -26,5 +26,6 @@ namespace Nexus.WebAPI.Tests.Controllers {
 			var result = _mockController.GetEntities(EntityType.DataEntry);
 			Assert.IsTrue(result is IEnumerable<EntityModel>);
 		}
+
 	}
 }

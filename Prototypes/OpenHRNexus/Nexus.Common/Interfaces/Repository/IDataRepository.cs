@@ -10,11 +10,11 @@ namespace Nexus.Common.Interfaces.Repository {
 		WebForm GetWebForm(int id, string language);
 		WebFormModel PopulateFormWithData(WebForm webForm, Guid userId);
         WebFormModel PopulateFormWithNavigationControls(WebForm webForm, Guid userId);
-        BusinessProcess GetBusinessProcess(int Id);
-        BusinessProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form);
-        BusinessProcessStepResponse CommitStep(Guid stepId, Guid userID, WebFormModel form);
-        IBusinessProcessStep GetBusinessProcessStep(Guid stepId);
-        IBusinessProcessStep GetBusinessProcessNextStep(IBusinessProcessStep currentStep);
+        Process GetProcess(int Id);
+        ProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form);
+        ProcessStepResponse CommitStep(Guid stepId, Guid userID, WebFormModel form);
+        IProcessStep GetProcessStep(Guid stepId);
+        IProcessStep GetProcessNextStep(IProcessStep currentStep);
         IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters);
 
     }

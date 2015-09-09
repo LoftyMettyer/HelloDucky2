@@ -1,5 +1,5 @@
 ﻿namespace Nexus.Common.Enums {
-	public enum BusinessProcessStepStatus {
+	public enum ProcessStepStatus {
 		Success = 1,
 		ValidationFailure = 2,
 		MoreInformationRequired = 3,

@@ -3,10 +3,10 @@ using OpenHRNexus.Common.Enums;
 
 namespace Nexus.Common.Interfaces
 {
-    public interface IBusinessProcessStep
+    public interface IProcessStep
     {
         int Id { get; set; }
-        BusinessProcessStepType Type { get; }
-        BusinessProcessStepStatus Validate();
+        ProcessStepType Type { get; }
+        ProcessStepStatus Validate();
     }
 }

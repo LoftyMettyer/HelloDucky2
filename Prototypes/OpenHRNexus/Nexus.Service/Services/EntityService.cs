@@ -14,7 +14,7 @@ namespace Nexus.Service.Services {
 			_entityRepository = entityRepository;
 		}
 
-		public IEnumerable<EntityModel> GetEntities(EntityType? id) {
+		public IEnumerable<EntityModel> GetEntities(EntityType id) {
 			return _entityRepository.GetEntities(id);
 		}
 	}

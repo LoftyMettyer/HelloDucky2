@@ -4,7 +4,7 @@ using Nexus.Common.Models;
 
 namespace Nexus.Common.Interfaces.Repository {
 	public interface IEntityRepository {
-		IEnumerable<EntityModel> GetEntities(EntityType? id);
+		IEnumerable<EntityModel> GetEntities(EntityType id);
 	}
 
 }

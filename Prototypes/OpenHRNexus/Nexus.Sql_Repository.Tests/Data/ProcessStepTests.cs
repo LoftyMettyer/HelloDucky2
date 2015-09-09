@@ -34,7 +34,7 @@ namespace Nexus.Sql_Repository.Tests.Data
             var userId =  new Guid("088C6A78-E14A-41B0-AD93-4FB7D3ADE96C");
 
             var result = _mockRepository.CommitStep(form.stepid, userId, form);
-            Assert.IsTrue(result.Status == BusinessProcessStepStatus.Success);
+            Assert.IsTrue(result.Status == ProcessStepStatus.Success);
 
         }
 
@@ -57,7 +57,7 @@ namespace Nexus.Sql_Repository.Tests.Data
             var userId = new Guid("088C6A78-E14A-41B0-AD93-4FB7D3ADE96C");
 
             var result = _mockRepository.CommitStep(form.stepid, userId, form);
-            Assert.IsTrue(result.Status == BusinessProcessStepStatus.Success);
+            Assert.IsTrue(result.Status == ProcessStepStatus.Success);
 
         }
 

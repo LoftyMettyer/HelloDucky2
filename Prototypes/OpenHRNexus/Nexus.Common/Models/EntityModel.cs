@@ -4,6 +4,7 @@ namespace Nexus.Common.Models
 {
     public class EntityModel
     {
+
         public int Id { get; set; }
 
         [MaxLength(250)]

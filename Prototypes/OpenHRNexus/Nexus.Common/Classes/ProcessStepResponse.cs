@@ -2,9 +2,9 @@
 
 namespace Nexus.Common.Classes
 {
-    public class BusinessProcessStepResponse
+    public class ProcessStepResponse
     {
-        public BusinessProcessStepStatus Status { get; set; }
+        public ProcessStepStatus Status { get; set; }
         public string Message { get; set; }
         public string FollowOnUrl { get; set; }
     }

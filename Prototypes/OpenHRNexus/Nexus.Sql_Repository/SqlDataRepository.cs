@@ -107,28 +107,21 @@ namespace Nexus.Sql_Repository
             return webForm;
         }
 
-        public IEnumerable<EntityModel> GetEntities(EntityType? id)
+        public IEnumerable<EntityModel> GetEntities(EntityType type)
         {
 
-            List<EntityModel> entities = new List<EntityModel>();
+            IEnumerable<EntityModel> entities = new List<EntityModel>();
 
-            entities.Add(new EntityModel
+            switch (type)
             {
-                Id = 1,
-                Name = "Personnel"
-            });
+                case EntityType.Process:
+                    //entities = Processes.Select(p => new EntityModel(p.Id, p.Name));
 
-            entities.Add(new EntityModel
-            {
-                Id = 2,
-                Name = "Holiday Request"
-            });
+                    entities = Processes.Select(p => new EntityModel() { Id = p.Id, Name = p.Name });
 
-            entities.Add(new EntityModel
-            {
-                Id = 3,
-                Name = "My Bank Details"
-            });
+                    break;
+
+            }
 
             return entities;
 
@@ -225,12 +218,10 @@ namespace Nexus.Sql_Repository
             return result;
         }
 
-        public BusinessProcess GetBusinessProcess(int Id)
+        public Process GetProcess(int Id)
         {
             return Processes.Where(p => p.Id == Id).FirstOrDefault();
         }
-
-        public virtual DbSet<BusinessProcess> Processes { get; set; }
 
         public virtual DbSet<WebForm> WebForms { get; set; }
         public virtual DbSet<WebFormField> WebFormFields { get; set; }
@@ -242,6 +233,11 @@ namespace Nexus.Sql_Repository
         public virtual DbSet<DynamicColumn> Columns { get; set; }
 
         public virtual DbSet<DynamicTable> DynamicTables { get; set; }
+
+
+        public virtual DbSet<Process> Processes { get; set; }
+        public virtual DbSet<ProcessStep> ProcessSteps { get; set; }
+
 
         public virtual DbSet<ProcessInFlow> ProcessInFlow { get; set; }
 
@@ -259,9 +255,9 @@ namespace Nexus.Sql_Repository
             return t;
         }
 
-        public BusinessProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form)
+        public ProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form)
         {
-            var response = new BusinessProcessStepResponse();
+            var response = new ProcessStepResponse();
             //    var formData = new ProcessInFlowData() { fields = form.fields };
 
 //            var blah = form.fields.ToList();
@@ -277,9 +273,9 @@ namespace Nexus.Sql_Repository
             {
        //         SaveChanges();
 
-                response = new BusinessProcessStepResponse()
+                response = new ProcessStepResponse()
                 {
-                    Status = BusinessProcessStepStatus.Success,
+                    Status = ProcessStepStatus.Success,
                     Message = "Success",
                     FollowOnUrl = String.Empty
                 };
@@ -287,9 +283,9 @@ namespace Nexus.Sql_Repository
             }
             catch (DbEntityValidationException e)
             {
-                response = new BusinessProcessStepResponse()
+                response = new ProcessStepResponse()
                 {
-                    Status = BusinessProcessStepStatus.ServerError,
+                    Status = ProcessStepStatus.ServerError,
                     Message = e.Message,
                     FollowOnUrl = String.Empty
                 };
@@ -300,19 +296,19 @@ namespace Nexus.Sql_Repository
 
         }
 
-        public IBusinessProcessStep GetBusinessProcessStep(Guid stepId)
+        public IProcessStep GetProcessStep(Guid stepId)
         {
-            return new BusinessProcessStepEmail();
+            return new ProcessStepEmail();
         }
 
-        public IBusinessProcessStep GetBusinessProcessNextStep(IBusinessProcessStep currentStep)
+        public IProcessStep GetProcessNextStep(IProcessStep currentStep)
         {
-            return new BusinessProcessStepEmail();
+            return new ProcessStepEmail();
         }
 
-        private BusinessProcessStepResponse ExecuteStatemenForUser(string dynamicSQL, Guid UserId, bool Immediate)
+        private ProcessStepResponse ExecuteStatemenForUser(string dynamicSQL, Guid UserId, bool Immediate)
         {
-            var response = new BusinessProcessStepResponse();
+            var response = new ProcessStepResponse();
 
             var transaction = new TransactionStatement() {
                 Id = Guid.NewGuid(),
@@ -326,9 +322,9 @@ namespace Nexus.Sql_Repository
                 Database.ExecuteSqlCommand(transaction.Statement);
                 SaveChanges();
 
-                response = new BusinessProcessStepResponse()
+                response = new ProcessStepResponse()
                 {
-                    Status = BusinessProcessStepStatus.Success,
+                    Status = ProcessStepStatus.Success,
                     Message = "Success",
                     FollowOnUrl = String.Empty
                 };
@@ -336,9 +332,9 @@ namespace Nexus.Sql_Repository
             }
             catch (Exception e)
             {
-                response = new BusinessProcessStepResponse()
+                response = new ProcessStepResponse()
                 {
-                    Status = BusinessProcessStepStatus.ServerError,
+                    Status = ProcessStepStatus.ServerError,
                     Message = e.Message,
                     FollowOnUrl = String.Empty
                 };
@@ -348,7 +344,7 @@ namespace Nexus.Sql_Repository
             return response;
         }
 
-        public BusinessProcessStepResponse CommitStep(Guid stepId, Guid userId, WebFormModel data)
+        public ProcessStepResponse CommitStep(Guid stepId, Guid userId, WebFormModel data)
         {
 
             // Is Step insert/update/delete?
