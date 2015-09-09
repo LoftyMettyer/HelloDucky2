@@ -17,11 +17,10 @@ namespace Nexus.WebAPI.Localization {
 
 		public void PopulateSupportedLanguagesList() {
 			//Populate the list of supported languages from the list of resource files
-			DirectoryInfo directoryInfo = new DirectoryInfo(HostingEnvironment.MapPath(@"~/Resources"));
-			FileInfo[] files = directoryInfo.GetFiles("Resource*.resx");
-			foreach (var file in files) {
-				if (file.Name != "Resource.resx")
-					_supportedLanguagesList.Add(file.Name.Replace("Resource.", "").Replace(".resx", ""));
+			DirectoryInfo directoryInfo = new DirectoryInfo(HostingEnvironment.MapPath(@"~/bin"));
+			DirectoryInfo[] folders = directoryInfo.GetDirectories("??-??");
+			foreach (var folder in folders) {
+				_supportedLanguagesList.Add(folder.Name);
 			}
 		}
 
@@ -30,7 +29,7 @@ namespace Nexus.WebAPI.Localization {
 				if (_supportedLanguagesList.Contains(lang.Value)) {
 					SetCulture(request, lang.Value);
 					return true;
-				}				
+				}
 			}
 
 			return false;
