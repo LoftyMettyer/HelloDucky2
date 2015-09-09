@@ -59,6 +59,7 @@
     <Compile Include="Classes\BusinessProcessStepEmail.cs" />
     <Compile Include="Classes\ProcessStepResponse.cs" />
     <Compile Include="Classes\DataFilters\CalendarFilter.cs" />
+    <Compile Include="Enums\DesignStatus.cs" />
     <Compile Include="Enums\ProcessStepStatus.cs" />
     <Compile Include="Enums\ProcessStepType.cs" />
     <Compile Include="Enums\ButtonAction.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Interfaces\ITranslate.cs" />
     <Compile Include="Interfaces\Repository\IAuthenticateRepository.cs" />
     <Compile Include="Interfaces\Repository\IDataRepository.cs" />
+    <Compile Include="Interfaces\Repository\IDesignRepository.cs" />
     <Compile Include="Interfaces\Repository\IEntityRepository.cs" />
     <Compile Include="Interfaces\Repository\IWelcomeMessageDataRepository.cs" />
     <Compile Include="Interfaces\Services\IAuthenticateService.cs" />
@@ -85,6 +87,7 @@
     <Compile Include="Models\CalendarEventModel.cs" />
     <Compile Include="Models\EntityModel.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
+    <Compile Include="Models\TableModel.cs" />
     <Compile Include="Models\WebForm.cs" />
     <Compile Include="Models\WebFormButton.cs" />
     <Compile Include="Models\WebFormControl.cs" />

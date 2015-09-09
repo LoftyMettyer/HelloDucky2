@@ -121,6 +121,7 @@
     <Compile Include="Configuration\NinjectConfig.cs" />
     <Compile Include="Controllers\DataControllerTest.cs" />
     <Compile Include="Controllers\EntityControllerTests.cs" />
+    <Compile Include="Controllers\DesignerControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\AuthenticateControllerTest.cs" />
   </ItemGroup>

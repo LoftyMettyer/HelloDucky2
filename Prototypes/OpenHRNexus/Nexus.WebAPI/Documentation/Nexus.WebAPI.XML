@@ -490,6 +490,25 @@
             <param name="newRecord">Value three</param>
             <returns></returns>
         </member>
+        <member name="T:Nexus.WebAPI.Controllers.DesignerController">
+            <summary>
+            This controller is used for accessing the nexus metadata design services
+            </summary>
+        </member>
+        <member name="M:Nexus.WebAPI.Controllers.DesignerController.#ctor(Nexus.Common.Interfaces.Services.IDesignerService)">
+            <summary>
+            Loads the design contoller
+            </summary>
+            <param name="designerService"></param>
+        </member>
+        <member name="M:Nexus.WebAPI.Controllers.DesignerController.#ctor(Nexus.Common.Interfaces.Services.IDesignerService,System.Security.Claims.ClaimsIdentity,System.String)">
+            <summary>
+            Loads the design controller with parameters from the unit test projects
+            </summary>
+            <param name="designerService"></param>
+            <param name="claims"></param>
+            <param name="language"></param>
+        </member>
         <member name="T:Nexus.WebAPI.Resources.Resource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

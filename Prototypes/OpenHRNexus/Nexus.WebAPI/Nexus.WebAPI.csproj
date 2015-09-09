@@ -201,6 +201,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Data\" />
+    <Folder Include="Views\Designer\" />
     <Folder Include="Views\Entity\" />
   </ItemGroup>
   <ItemGroup>
@@ -241,6 +242,7 @@
     <Compile Include="Configuration\EnterpriseServicesConfiguration.cs" />
     <Compile Include="Controllers\AuthenticateController.cs" />
     <Compile Include="Controllers\DataController.cs" />
+    <Compile Include="Controllers\DesignerController.cs" />
     <Compile Include="Controllers\EntityController.cs" />
     <Compile Include="Controllers\ResourceController.cs" />
     <Compile Include="Extensions\ToJsonResultExtension.cs" />
