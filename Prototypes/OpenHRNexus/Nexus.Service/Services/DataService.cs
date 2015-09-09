@@ -1,12 +1,11 @@
 ﻿using System;
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
-using Nexus.Service.Interfaces;
 using Nexus.Common.Classes;
 using System.Collections.Generic;
-using Nexus.Common.Enums;
 using OpenHRNexus.Common.Enums;
 using Nexus.Common.Interfaces;
+using Nexus.Common.Interfaces.Services;
 
 namespace Nexus.Service.Services {
 	public class DataService : IDataService {

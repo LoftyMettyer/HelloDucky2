@@ -1,9 +1,8 @@
-﻿using Nexus.Service.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Nexus.Common.Enums;
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
-using Nexus.Common.Interfaces;
+using Nexus.Common.Interfaces.Services;
 
 namespace Nexus.Service.Services {
 	public class EntityService : IEntityService {

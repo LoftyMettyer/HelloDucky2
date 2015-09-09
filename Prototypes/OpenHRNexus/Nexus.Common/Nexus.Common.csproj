@@ -75,6 +75,11 @@
     <Compile Include="Interfaces\Repository\IDataRepository.cs" />
     <Compile Include="Interfaces\Repository\IEntityRepository.cs" />
     <Compile Include="Interfaces\Repository\IWelcomeMessageDataRepository.cs" />
+    <Compile Include="Interfaces\Services\IAuthenticateService.cs" />
+    <Compile Include="Interfaces\Services\IDataService.cs" />
+    <Compile Include="Interfaces\Services\IDesignerService.cs" />
+    <Compile Include="Interfaces\Services\IEntityService.cs" />
+    <Compile Include="Interfaces\Services\IWelcomeMessageDataService.cs" />
     <Compile Include="Messages\RegisterNewUserMessage.cs" />
     <Compile Include="Messages\WelcomeDataMessage.cs" />
     <Compile Include="Models\CalendarEventModel.cs" />

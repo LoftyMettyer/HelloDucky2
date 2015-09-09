@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Http;
 using Nexus.Common.Messages;
-using Nexus.Service.Interfaces;
+using Nexus.Common.Interfaces.Services;
 
 namespace Nexus.WebAPI.Controllers {
 	public class AuthenticateController : ApiController {

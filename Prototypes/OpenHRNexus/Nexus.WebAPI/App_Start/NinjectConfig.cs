@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using Ninject;
-using Nexus.Service.Interfaces;
 using Nexus.Service.Services;
+using Nexus.Common.Interfaces.Services;
 
 namespace Nexus.WebAPI {
 	public class NinjectConfig : IDependencyResolver {

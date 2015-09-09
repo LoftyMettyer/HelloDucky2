@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Messages;
-using Nexus.Service.Interfaces;
+using Nexus.Common.Interfaces.Services;
 
 namespace Nexus.Service.Services {
 	public class AuthenticateService : IAuthenticateService {

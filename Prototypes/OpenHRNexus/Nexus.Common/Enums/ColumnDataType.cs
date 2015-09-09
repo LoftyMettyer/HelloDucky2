@@ -7,6 +7,7 @@
         Boolean = 3,
         Decimal = 4,
         Integer = 5,
-        LookupValue = 6
+        SimpleLookupValue = 6,
+        LookupValue = 7
     }
 }

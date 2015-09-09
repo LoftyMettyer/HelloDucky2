@@ -25,7 +25,7 @@ namespace Nexus.Sql_Repository.Tests.Users {
 		[TestMethod]
 		public void RegisterExistingUser() {
 			var newUser = new SqlAuthenticateRepository();
-			var message = newUser.RequestAccount("John.Adams@HelloDuckyWorld.com", new System.Guid().ToString());
+			var message = newUser.RequestAccount("Nick.Gibson@advancedcomputersoftware.com", new System.Guid().ToString());
 			Assert.AreEqual(message.Status, NewUserStatus.AlreadyExists);
 		}
 

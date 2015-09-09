@@ -38,7 +38,8 @@ namespace Nexus.WebAPI.Tests.Controllers
         public void InstantiateProcess_IsNotNull()
         {
             var result = _mockController.InstantiateProcess(1, 1, false);
-            Assert.IsNotNull(result);
+            //Assert.IsNotNull(result);
+            Assert.Fail("Not yet implemented");
         }
 
         [TestMethod]

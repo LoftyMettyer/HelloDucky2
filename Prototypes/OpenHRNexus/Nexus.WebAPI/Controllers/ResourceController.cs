@@ -8,6 +8,7 @@ using System.Web.Http;
 using Microsoft.AspNet.Identity;
 using Nexus.Service.Interfaces;
 using Nexus.WebAPI.Resources;
+using Nexus.Common.Interfaces.Services;
 
 namespace Nexus.WebAPI.Controllers {
 	public class ResourceController : ApiController {

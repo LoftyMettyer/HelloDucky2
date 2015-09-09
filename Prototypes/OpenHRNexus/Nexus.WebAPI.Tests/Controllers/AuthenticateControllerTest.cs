@@ -2,8 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Nexus.Common.Messages;
-using Nexus.Service.Interfaces;
 using Nexus.WebAPI.Controllers;
+using Nexus.Common.Interfaces.Services;
 
 namespace Nexus.WebAPI.Tests.Controllers {
 	[TestClass]

@@ -2,7 +2,7 @@
 using Nexus.Common.Models;
 using System.Collections.Generic;
 
-namespace Nexus.Service.Interfaces
+namespace Nexus.Common.Interfaces.Services
 {
     public interface IEntityService
     {

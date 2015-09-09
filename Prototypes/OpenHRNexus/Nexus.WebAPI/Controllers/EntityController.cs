@@ -4,6 +4,7 @@ using System.Web.Http;
 using Nexus.Common.Models;
 using Nexus.Service.Interfaces;
 using Nexus.Common.Enums;
+using Nexus.Common.Interfaces.Services;
 
 namespace Nexus.WebAPI.Controllers
 {

@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Web.Http;
 using Nexus.Common.Models;
-using Nexus.Service.Interfaces;
-using Nexus.WebAPI.Extensions;
 using System.Security.Claims;
 using Microsoft.AspNet.Identity;
 using Nexus.Common.Classes;
-using Nexus.Common.Enums;
 using Nexus.Common.Classes.DataFilters;
 using System.Web;
+using Nexus.Common.Interfaces.Services;
 
 namespace Nexus.WebAPI.Controllers {
 //	[Authorize(Roles = "OpenHRUser")]
