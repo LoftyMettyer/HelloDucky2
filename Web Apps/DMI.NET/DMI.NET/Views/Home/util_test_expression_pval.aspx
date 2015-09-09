@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage(of DMI.NET.Models.ObjectRequests.TestExpressionModel)"%>
+﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage(of DMI.NET.Models.ObjectRequests.TestExpressionModel)" %>
 
 <%@ Import Namespace="System.Globalization" %>
 <%@ Import Namespace="DMI.NET" %>
@@ -17,7 +17,7 @@
 		window.UserLocale = "<%:Session("LocaleCultureName").ToString().ToLower()%>";
 		window.parent.OpenHR.setDatepickerLanguage();
 		
-		var frmPromptedValues = document.getElementById('frmPromptedValues');
+		var frmPromptedValues = document.getElementById('frmPromptedValues');			
 
 		$(".datepicker").datepicker();
 		$(document).on('keydown', '.datepicker', function (event) {
@@ -35,7 +35,7 @@
 				e.preventDefault();
 			}
 		});
-
+		
 		if (frmPromptedValues.txtPromptCount.value == 0) {
 
 			var postData = {
@@ -54,12 +54,12 @@
 					var sControlName = controlCollection.item(i).name;
 					var sControlPrefix = sControlName.substr(0, 7);
 
-					if ((sControlPrefix == "prompt_") || (sControlName.substr(0, 13) == "promptLookup_")) {
+					if ((sControlPrefix == "prompt_") || (sControlName.substr(0, 13) == "promptLookup_")) {			
 						if (sControlName.substr(0, 9) != "prompt_4_") {
 							controlCollection.item(i).focus();
 							break;
 						}
-					}
+					}					
 				}
 			}
 
@@ -81,7 +81,71 @@
 				$('#divValidateExpression').dialog('option', 'width', dialogWidth);
 			}
 		}
-	}
+
+		if (frmPromptedValues.txtPromptCount.value > 0) {
+			
+			var controlCollection = frmPromptedValues.elements;
+			var icolumnSize =0; 
+			var iDecimals =2; 
+			var maximumValue = 9999999999;
+			var sSource=[];
+			var dDefaultValue =[];
+			var icolumnSize=[];
+			var iDecimals=[];			
+
+			if (controlCollection != null) {				
+				for (var i = 0; i < controlCollection.length; i++) 
+				{					
+					var sControlName = controlCollection.item(i).name;						
+					if (sControlName.substr(0, 9) == "prompt_2_") 
+					{					
+						sSource.push(controlCollection.item(i).id);						
+						dDefaultValue.push(controlCollection.item(i).defaultValue);
+						$("#"+sSource[i]).autoNumeric('destroy');						
+					}
+				}
+				
+				for (var i = 0; i < controlCollection.length; i++) 
+				{//get column size of Numeric prompted value
+					var sControlName = controlCollection.item(i).name;					
+					if(sControlName.substr(0, 11) == "promptSize_") {
+						icolumnSize.push(controlCollection.item(i).value);						
+					}					
+				}
+
+				for (var i = 0; i < controlCollection.length; i++) 
+				{//get decimal size of Numeric prompted value
+					var sControlName = controlCollection.item(i).name;
+					if(sControlName.substr(0, 11) == "promptDecs_")
+					{
+						iDecimals.push(controlCollection.item(i).value);						
+					}				
+				}	
+				
+				for (var j=0; j < sSource.length; j++)
+				{
+					var maxValueAllowedBeforeDecimal = '9';
+					for (var i = 1; i < parseInt(icolumnSize[j]) ; i++) {
+						maxValueAllowedBeforeDecimal = maxValueAllowedBeforeDecimal + '9';
+					}
+
+					var maxValueAllowedAfterDecimal = '9';
+					for (var i = 1; i < parseInt(iDecimals[j]) ; i++) {
+						maxValueAllowedAfterDecimal = maxValueAllowedAfterDecimal + '9';
+					}					
+					// Set the maximum value
+					maximumValue = parseFloat(maxValueAllowedBeforeDecimal + "." + maxValueAllowedAfterDecimal);
+
+					//Set autonumeric for individual Numeric prompted value
+					$('#'+sSource[j]).autoNumeric('init',{ aSep: ',', aNeg: '', vMax: maximumValue, mDec: parseInt(iDecimals[j]), aPad: false,mRound: 'S'});					
+					$('#'+sSource[j]).val(dDefaultValue[j]);
+					
+				}				
+
+		 }
+	 }
+
+}
 	
 	function SubmitPrompts() {
 
@@ -358,7 +422,7 @@
 				}
 			}
 		}
-	}
+	}	
 
 </script>
 
@@ -410,7 +474,7 @@
 				iParameterIndex = 0
 				Do While Len(sPrompts) > 0
 					iCharIndex = InStr(sPrompts, "	")
-					iParameterIndex = iParameterIndex + 1									
+					iParameterIndex = iParameterIndex + 1
 										
 					If iCharIndex >= 0 Then
 						Select Case iParameterIndex
@@ -841,128 +905,128 @@
 
 <script runat="server" language="vb">
 
-		Function promptParameter(psDefnString As String, psParameter As String) As String
+	Function promptParameter(psDefnString As String, psParameter As String) As String
 				
-				Dim iCharIndex As Integer
-				Dim sDefn As String
+		Dim iCharIndex As Integer
+		Dim sDefn As String
 	
-				sDefn = psDefnString
+		sDefn = psDefnString
 
+		iCharIndex = InStr(sDefn, "	")
+		If iCharIndex >= 0 Then
+			If psParameter = "NODEKEY" Then
+				promptParameter = Left(sDefn, iCharIndex - 1)
+				Exit Function
+			End If
+		
+			sDefn = Mid(sDefn, iCharIndex + 1)
+			iCharIndex = InStr(sDefn, "	")
+			If iCharIndex >= 0 Then
+				If psParameter = "PROMPTDESCRIPTION" Then
+					promptParameter = Left(sDefn, iCharIndex - 1)
+					Exit Function
+				End If
+			
+				sDefn = Mid(sDefn, iCharIndex + 1)
 				iCharIndex = InStr(sDefn, "	")
 				If iCharIndex >= 0 Then
-						If psParameter = "NODEKEY" Then
-								promptParameter = Left(sDefn, iCharIndex - 1)
-								Exit Function
+					If psParameter = "VALUETYPE" Then
+						promptParameter = Left(sDefn, iCharIndex - 1)
+						Exit Function
+					End If
+				
+					sDefn = Mid(sDefn, iCharIndex + 1)
+					iCharIndex = InStr(sDefn, "	")
+					If iCharIndex >= 0 Then
+						If psParameter = "PROMPTSIZE" Then
+							promptParameter = Left(sDefn, iCharIndex - 1)
+							Exit Function
 						End If
-		
+					
 						sDefn = Mid(sDefn, iCharIndex + 1)
 						iCharIndex = InStr(sDefn, "	")
 						If iCharIndex >= 0 Then
-								If psParameter = "PROMPTDESCRIPTION" Then
-										promptParameter = Left(sDefn, iCharIndex - 1)
-										Exit Function
+							If psParameter = "PROMPTDECIMALS" Then
+								promptParameter = Left(sDefn, iCharIndex - 1)
+								Exit Function
+							End If
+						
+							sDefn = Mid(sDefn, iCharIndex + 1)
+							iCharIndex = InStr(sDefn, "	")
+							If iCharIndex >= 0 Then
+								If psParameter = "PROMPTMASK" Then
+									promptParameter = Left(sDefn, iCharIndex - 1)
+									Exit Function
 								End If
-			
+							
 								sDefn = Mid(sDefn, iCharIndex + 1)
 								iCharIndex = InStr(sDefn, "	")
 								If iCharIndex >= 0 Then
-										If psParameter = "VALUETYPE" Then
-												promptParameter = Left(sDefn, iCharIndex - 1)
-												Exit Function
+									If psParameter = "FIELDTABLEID" Then
+										promptParameter = Left(sDefn, iCharIndex - 1)
+										Exit Function
+									End If
+								
+									sDefn = Mid(sDefn, iCharIndex + 1)
+									iCharIndex = InStr(sDefn, "	")
+									If iCharIndex >= 0 Then
+										If psParameter = "FIELDCOLUMNID" Then
+											promptParameter = Left(sDefn, iCharIndex - 1)
+											Exit Function
 										End If
-				
+									
 										sDefn = Mid(sDefn, iCharIndex + 1)
 										iCharIndex = InStr(sDefn, "	")
 										If iCharIndex >= 0 Then
-												If psParameter = "PROMPTSIZE" Then
-														promptParameter = Left(sDefn, iCharIndex - 1)
-														Exit Function
+											If psParameter = "VALUECHARACTER" Then
+												promptParameter = Left(sDefn, iCharIndex - 1)
+												Exit Function
+											End If
+										
+											sDefn = Mid(sDefn, iCharIndex + 1)
+											iCharIndex = InStr(sDefn, "	")
+											If iCharIndex >= 0 Then
+												If psParameter = "VALUENUMERIC" Then
+													promptParameter = Left(sDefn, iCharIndex - 1)
+													Exit Function
 												End If
-					
+											
 												sDefn = Mid(sDefn, iCharIndex + 1)
 												iCharIndex = InStr(sDefn, "	")
 												If iCharIndex >= 0 Then
-														If psParameter = "PROMPTDECIMALS" Then
-																promptParameter = Left(sDefn, iCharIndex - 1)
-																Exit Function
-														End If
-						
-														sDefn = Mid(sDefn, iCharIndex + 1)
-														iCharIndex = InStr(sDefn, "	")
-														If iCharIndex >= 0 Then
-																If psParameter = "PROMPTMASK" Then
-																		promptParameter = Left(sDefn, iCharIndex - 1)
-																		Exit Function
-																End If
-							
-																sDefn = Mid(sDefn, iCharIndex + 1)
-																iCharIndex = InStr(sDefn, "	")
-																If iCharIndex >= 0 Then
-																		If psParameter = "FIELDTABLEID" Then
-																				promptParameter = Left(sDefn, iCharIndex - 1)
-																				Exit Function
-																		End If
-								
-																		sDefn = Mid(sDefn, iCharIndex + 1)
-																		iCharIndex = InStr(sDefn, "	")
-																		If iCharIndex >= 0 Then
-																				If psParameter = "FIELDCOLUMNID" Then
-																						promptParameter = Left(sDefn, iCharIndex - 1)
-																						Exit Function
-																				End If
-									
-																				sDefn = Mid(sDefn, iCharIndex + 1)
-																				iCharIndex = InStr(sDefn, "	")
-																				If iCharIndex >= 0 Then
-																						If psParameter = "VALUECHARACTER" Then
-																								promptParameter = Left(sDefn, iCharIndex - 1)
-																								Exit Function
-																						End If
-										
-																						sDefn = Mid(sDefn, iCharIndex + 1)
-																						iCharIndex = InStr(sDefn, "	")
-																						If iCharIndex >= 0 Then
-																								If psParameter = "VALUENUMERIC" Then
-																										promptParameter = Left(sDefn, iCharIndex - 1)
-																										Exit Function
-																								End If
-											
-																								sDefn = Mid(sDefn, iCharIndex + 1)
-																								iCharIndex = InStr(sDefn, "	")
-																								If iCharIndex >= 0 Then
-																										If psParameter = "VALUELOGIC" Then
-																												promptParameter = Left(sDefn, iCharIndex - 1)
-																												Exit Function
-																										End If
+													If psParameter = "VALUELOGIC" Then
+														promptParameter = Left(sDefn, iCharIndex - 1)
+														Exit Function
+													End If
 												
-																										sDefn = Mid(sDefn, iCharIndex + 1)
-																										iCharIndex = InStr(sDefn, "	")
-																										If iCharIndex >= 0 Then
-																												If psParameter = "VALUEDATE" Then
-																														promptParameter = Left(sDefn, iCharIndex - 1)
-																														Exit Function
-																												End If
-													
-																												sDefn = Mid(sDefn, iCharIndex + 1)
-																												If psParameter = "PROMPTDATETYPE" Then
-																														promptParameter = Left(sDefn, iCharIndex - 1)
-																														Exit Function
-																												End If
-																										End If
-																								End If
-																						End If
-																				End If
-																		End If
-																End If
+													sDefn = Mid(sDefn, iCharIndex + 1)
+													iCharIndex = InStr(sDefn, "	")
+													If iCharIndex >= 0 Then
+														If psParameter = "VALUEDATE" Then
+															promptParameter = Left(sDefn, iCharIndex - 1)
+															Exit Function
 														End If
+													
+														sDefn = Mid(sDefn, iCharIndex + 1)
+														If psParameter = "PROMPTDATETYPE" Then
+															promptParameter = Left(sDefn, iCharIndex - 1)
+															Exit Function
+														End If
+													End If
 												End If
+											End If
 										End If
+									End If
 								End If
+							End If
 						End If
+					End If
 				End If
+			End If
+		End If
 	
-				promptParameter = ""
-		End Function
+		promptParameter = ""
+	End Function
 
-
+	
 </script>
