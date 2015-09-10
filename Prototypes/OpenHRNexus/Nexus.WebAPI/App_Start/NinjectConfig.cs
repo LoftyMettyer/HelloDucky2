@@ -17,8 +17,7 @@ namespace Nexus.WebAPI {
 			_kernel.Bind<IDataService>().To<DataService>();
 			_kernel.Bind<IEntityService>().To<EntityService>();
 
-
-			Nexus.Service.Configuration.NinjectConfig.Config(_kernel);
+            Nexus.Service.Configuration.NinjectConfig.Config(_kernel);
 		}
 
 		public IKernel Kernel { get { return _kernel; } }

@@ -64,7 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\EnterpriseServicesConfiguration.cs" />
-    <Compile Include="DatabaseClasses\Data\LookupValue.cs" />
+    <Compile Include="DatabaseClasses\Data\DictionaryItem.cs" />
     <Compile Include="DatabaseClasses\Data\ProcessInFlow.cs" />
     <Compile Include="DatabaseClasses\Data\ProcessInFlowData.cs" />
     <Compile Include="DatabaseClasses\Data\TransactionStatement.cs" />
@@ -81,6 +81,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlDesignRepository.cs" />
+    <Compile Include="SqlDictionaryRepository.cs" />
     <Compile Include="SqlRepositoryContext.cs" />
     <Compile Include="SqlAuthenticateRepository.cs" />
     <Compile Include="SqlDataRepository.cs" />

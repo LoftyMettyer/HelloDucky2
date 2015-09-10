@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="MockAuthenticateRepository.cs" />
     <Compile Include="MockDataRepository.cs" />
+    <Compile Include="MockDictionaryRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

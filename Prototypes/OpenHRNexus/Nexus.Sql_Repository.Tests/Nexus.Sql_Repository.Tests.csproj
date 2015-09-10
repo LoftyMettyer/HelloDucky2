@@ -71,6 +71,7 @@
     <Compile Include="Data\GetData.cs" />
     <Compile Include="Data\ProcessStepTests.cs" />
     <Compile Include="Data\ProcessTests.cs" />
+    <Compile Include="DictionaryTest.cs" />
     <Compile Include="Users\ConnectUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Users\RegisterUser.cs" />
@@ -79,6 +80,10 @@
     <ProjectReference Include="..\Nexus.Common\Nexus.Common.csproj">
       <Project>{C1E258DA-54F0-4A84-AACE-74AD2FA9A495}</Project>
       <Name>Nexus.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nexus.Mock_Repository\Nexus.Mock_Repository.csproj">
+      <Project>{ed88e507-b9b6-493e-9b7e-ec892b5df5cb}</Project>
+      <Name>Nexus.Mock_Repository</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nexus.Sql_Repository\Nexus.Sql_Repository.csproj">
       <Project>{bdff3bb0-3c7a-47a8-9cf5-1f3454a646e5}</Project>

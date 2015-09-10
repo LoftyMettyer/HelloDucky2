@@ -1,5 +1,4 @@
-﻿using Nexus.Common.Interfaces.Repository;
-using Nexus.Common.Models;
+﻿using Nexus.Common.Models;
 using System.Collections.Generic;
 
 namespace Nexus.Common.Classes
@@ -9,12 +8,6 @@ namespace Nexus.Common.Classes
 
         public List<ProcessStep> Steps { get; set; }
 
-        public WebForm GetFirstStep {
-            get
-            {
-                return new WebForm();
-            }
-        }
     }
 
 }

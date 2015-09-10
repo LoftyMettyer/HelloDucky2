@@ -73,27 +73,88 @@ namespace Nexus.Sql_Repository
 //            return data;
         }
 
-
         public WebForm GetWebForm(int id, string language)
         {
+
+
+            ////         .Where(x => x.AppliedOn >= day1 && x.AppliedOn <= day31 &&
+            ////            x.ResultTypeId == (int)MatchResultType.Accepted)
+            ////.GroupBy(x => new { x.BuyerId, x.AppliedOn })
+            ////.ToList() // this causes the query to execute
+            ////.Select(x => new FundedCount(x.Key.BuyerId, x.Count() / 30 * daysInMonth));
+            //    var list = (from u in WebForms select new WebForm(dict));
+            //    var webForm3 = list.FirstOrDefault();
+
             var webForm = WebForms.Where(w => w.id == id).FirstOrDefault();
+            //var webForm2 = WebForms
+            //    .Include(
+            //    .Where(w => w.id == id)
+
+
 
             // TODO - Need these 2 because the above is not loading on demand. I'm sure there's some linq that does this, but off the top of my head I don't know what it is.
+
+
+            IDictionary dict = new SqlDictionaryRepository();
+            dict.SetLanguage(language);
+            //    .FirstOrDefault();
+
+
+            ////         .Where(x => x.AppliedOn >= day1 && x.AppliedOn <= day31 &&
+            ////            x.ResultTypeId == (int)MatchResultType.Accepted)
+            ////.GroupBy(x => new { x.BuyerId, x.AppliedOn })
+            ////.ToList() // this causes the query to execute
+            ////.Select(x => new FundedCount(x.Key.BuyerId, x.Count() / 30 * daysInMonth));
+
+            //    var fields = WebFormFields
+            //.OrderBy(f => f.sequence)
+            //.ToList()
+            //.Select(f => new WebFormField(dict));
+
+
+            //List<WebFormField> fields = WebFormFields
+            //    .OrderBy(f => f.sequence)
+            //    .ToList()
+            //    .Select(f => new WebFormField(dict));
+
+            // TODO - Hack Alert Add dictionary - this should suerely be ninject/structure mappable
+
+
+            //var blah2 = WebFormFields
+            //    .OrderBy(f => f.sequence)
+            //    .ToList()
+            //    .Select(f => new WebFormField() { _dictionary = dict });
+
             List<WebFormField> fields = WebFormFields.OrderBy(f => f.sequence).ToList();
+
+            //foreach (var field in webForm.Fields)
+            //{
+            //    field._dictionary = dict;
+            //    var balh56 = field.title;
+            //}
+
             List<WebFormFieldOption> options = WebFormFieldOptions.ToList();
             List<WebFormButton> buttons = WebFormButtons.ToList();
 
             List<WebFormFieldOption> columnOptions;
 
+            var blah = WebFormFields.OrderBy(f => f.sequence).ToList();
+
+
+            foreach (var field in webForm.Fields)
+            {
+                field.SetDictionary(dict);
+                field.title = field.title;
+            }
 
 
             //            SELECT id, column36 AS[title], column34 AS value, 17 AS WebFormField_id FROM userdefined4 where column35 = 'en-GB';
             //          SELECT id, column39 AS[title], column37 AS value, 21 AS WebFormField_id FROM userdefined5 where column38 = 'en-GB';
 
 
-            // Get lookup values and translate
-                        
 
+
+            // Get lookup values and translate
             foreach (var lookup in webForm.Fields.Where(f => f.columnid == 25)) {
                 lookup.options = GetLookupData(lookup.columnid, language);
             }
@@ -102,6 +163,13 @@ namespace Nexus.Sql_Repository
             {
                 lookup.options = GetLookupData(lookup.columnid,language);
             }
+
+            //// Translate the labels
+            //foreach (WebFormField label in webForm.Fields)
+            //{
+            //    label.Translate(langauge);
+            //}
+
 
 
             return webForm;
@@ -240,9 +308,6 @@ namespace Nexus.Sql_Repository
 
 
         public virtual DbSet<ProcessInFlow> ProcessInFlow { get; set; }
-
-
-        public virtual DbSet<LookupValue> LookupValues { get; set; }
 
 
         public virtual DbSet<TransactionStatement> Statements { get; set; }

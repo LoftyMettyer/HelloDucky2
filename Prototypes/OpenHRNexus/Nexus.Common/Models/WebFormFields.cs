@@ -1,9 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using Nexus.Common.Interfaces;
+using System.Collections.Generic;
 
 namespace Nexus.Common.Models
 {
     public class WebFormField : WebFormControl
     {
+        public IDictionary _dictionary;
+        string _title;
+
+        public WebFormField() { }
+
+        public WebFormField(IDictionary dictionary)
+        {
+            _dictionary = dictionary;
+        }
+
+        // TODO - Hacky bit - this should be ninjectable
+        public void SetDictionary(IDictionary dictionary)
+        {
+            _dictionary = dictionary;
+        }
+
+
         public int sequence { get; set; }
         public int columnid { get; set; }
 
@@ -14,7 +32,19 @@ namespace Nexus.Common.Models
         }
 
      //   Public DynamicColumn Column { get; set; }
-        public string title { get; set; }
+        public string title {
+            get
+            {
+                if (_dictionary != null)
+                {
+                    return _dictionary.GetTranslation(_title);
+                }
+
+                return _title;
+
+            }
+             set { _title = value; }
+        }
         public string type { get; set; }
         public string value { get; set; }
         public bool required { get; set; }

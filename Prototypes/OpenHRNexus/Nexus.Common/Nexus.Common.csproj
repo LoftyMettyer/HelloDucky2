@@ -68,10 +68,10 @@
     <Compile Include="Enums\NewUserStatus.cs" />
     <Compile Include="Enums\TableType.cs" />
     <Compile Include="Interfaces\IBusinessProcessStep.cs" />
+    <Compile Include="Interfaces\IDictionary.cs" />
     <Compile Include="Interfaces\IJsonSerialize.cs" />
     <Compile Include="Interfaces\INexusUser.cs" />
     <Compile Include="Interfaces\IReportDataFilter.cs" />
-    <Compile Include="Interfaces\ITranslate.cs" />
     <Compile Include="Interfaces\Repository\IAuthenticateRepository.cs" />
     <Compile Include="Interfaces\Repository\IDataRepository.cs" />
     <Compile Include="Interfaces\Repository\IDesignRepository.cs" />
