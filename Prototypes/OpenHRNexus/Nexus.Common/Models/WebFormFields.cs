@@ -5,7 +5,7 @@ namespace Nexus.Common.Models
 {
     public class WebFormField : WebFormControl
     {
-        public IDictionary _dictionary;
+        protected IDictionary _dictionary;
         string _title;
 
         public WebFormField() { }
