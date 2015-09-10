@@ -241,6 +241,10 @@ namespace Nexus.Sql_Repository
 
         public virtual DbSet<ProcessInFlow> ProcessInFlow { get; set; }
 
+
+        public virtual DbSet<LookupValue> LookupValues { get; set; }
+
+
         public virtual DbSet<TransactionStatement> Statements { get; set; }
 
 

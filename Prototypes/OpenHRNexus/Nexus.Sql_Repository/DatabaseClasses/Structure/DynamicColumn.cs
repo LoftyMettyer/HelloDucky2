@@ -25,13 +25,14 @@ namespace Nexus.Sql_Repository.DatabaseClasses.Structure
                 {
                     case ColumnDataType.Decimal:
                         return Type.GetType("System.Decimal");
-                    case ColumnDataType.LookupValue:
+                    case ColumnDataType.SimpleLookupValue:
                     case ColumnDataType.Integer:
                         return Type.GetType("System.Int32");
                     case ColumnDataType.DateTime:
                         return Type.GetType("System.DateTime");
                     case ColumnDataType.Boolean:
                         return Type.GetType("System.Boolean");
+                    case ColumnDataType.LookupValue:
                     default:
                         return Type.GetType("System.String");
                 }

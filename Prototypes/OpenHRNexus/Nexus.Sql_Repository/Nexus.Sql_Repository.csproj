@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\EnterpriseServicesConfiguration.cs" />
+    <Compile Include="DatabaseClasses\Data\LookupValue.cs" />
     <Compile Include="DatabaseClasses\Data\ProcessInFlow.cs" />
     <Compile Include="DatabaseClasses\Data\ProcessInFlowData.cs" />
     <Compile Include="DatabaseClasses\Data\TransactionStatement.cs" />
