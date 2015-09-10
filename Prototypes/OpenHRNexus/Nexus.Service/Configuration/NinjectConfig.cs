@@ -10,7 +10,7 @@ namespace Nexus.Service.Configuration {
 			kernel.Bind<IWelcomeMessageDataRepository>().To<SqlAuthenticateRepository>();
 			kernel.Bind<IDataRepository>().To<SqlDataRepository>();
 			kernel.Bind<IEntityRepository>().To<SqlDataRepository>();
-            kernel.Bind<IDictionary>().To<SqlDictionaryRepository>();
+            //kernel.Bind<IDictionary>().To<SqlDictionaryRepository>();
         }
     }
 }
