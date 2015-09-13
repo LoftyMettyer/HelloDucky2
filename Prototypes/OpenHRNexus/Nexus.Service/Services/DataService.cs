@@ -29,30 +29,19 @@ namespace Nexus.Service.Services {
 
             var process = _dataRepository.GetProcess(ProcessId);
 
-            //        if (businessProcess == null) return null;
+            var firstStep = process.GetEntryPoint();
 
-            // improve by?
-            //var webForm = process.GetFirstStep;
-            int firstWebFormId = 0;
-            foreach (var element in process.Elements)
-            {
-                if (element.Type == ProcessElementType.WebForm)
-                {
-                    firstWebFormId = element.WebForm.id;
-                }
-
-            }
 
             // Yes , we could use the webform above (and very soon we will), but for the moment the translation isn't
             // quite hooked in properly.
-            WebForm webForm = _dataRepository.GetWebForm(firstWebFormId, language);
+            WebForm webForm = _dataRepository.GetWebForm(firstStep.id, language);
        //     webForm.Translate("en-GB");
 
 
             var result = _dataRepository.PopulateFormWithData(webForm, userId);
             //var result = new WebFormModel();
 
-      //      var result2 = _dataRepository.PopulateFormWithNavigationControls(webForm, userId);
+            //      var result2 = _dataRepository.PopulateFormWithNavigationControls(webForm, userId);
 
 
             // Implement translation as a design pattern (a template one? - I can't remember - need to review training notes)

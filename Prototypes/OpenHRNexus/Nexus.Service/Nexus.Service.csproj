@@ -87,7 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EmailService.cs" />
-    <Compile Include="Models\Process.cs" />
     <Compile Include="Configuration\AutoMapperConfig.cs" />
     <Compile Include="Configuration\EnterpriseServicesConfiguration.cs" />
     <Compile Include="Configuration\NinjectConfig.cs" />
