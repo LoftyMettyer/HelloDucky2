@@ -20,6 +20,7 @@ namespace Nexus.Common.Models
         public List<WebFormField> Fields { get; set; }
         public List<WebFormButton> Buttons { get; set; }
 
+
     }
 
 }

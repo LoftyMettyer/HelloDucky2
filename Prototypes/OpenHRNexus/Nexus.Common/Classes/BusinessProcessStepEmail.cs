@@ -6,9 +6,9 @@ namespace Nexus.Common.Classes {
 	public class ProcessStepEmail : IProcessStep {
 		public int Id { get; set; }
 
-		public ProcessStepType Type {
+		public ProcessElementType Type {
 			get {
-				return ProcessStepType.Email;
+				return ProcessElementType.Email;
 			}
 		}
 

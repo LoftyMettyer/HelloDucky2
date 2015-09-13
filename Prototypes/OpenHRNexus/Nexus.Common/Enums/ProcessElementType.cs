@@ -1,6 +1,6 @@
 ﻿namespace OpenHRNexus.Common.Enums
 {
-    public enum ProcessStepType
+    public enum ProcessElementType
     {
         BeginElement = 1,
         EndElement = 2,

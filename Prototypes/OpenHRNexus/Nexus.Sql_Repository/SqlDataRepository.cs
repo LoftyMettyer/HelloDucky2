@@ -288,7 +288,15 @@ namespace Nexus.Sql_Repository
 
         public Process GetProcess(int Id)
         {
-            return Processes.Where(p => p.Id == Id).FirstOrDefault();
+            return Processes
+                .Include("Elements")
+                .Include("Elements.WebForm")
+                .Include("Elements.WebForm.Fields")
+                .Include("Elements.WebForm.Fields.options")
+                .Include("Elements.WebForm.Buttons")
+                .Where(p => p.Id == Id)
+                .FirstOrDefault();
+                
         }
 
         public virtual DbSet<WebForm> WebForms { get; set; }
@@ -304,7 +312,7 @@ namespace Nexus.Sql_Repository
 
 
         public virtual DbSet<Process> Processes { get; set; }
-        public virtual DbSet<ProcessStep> ProcessSteps { get; set; }
+        public virtual DbSet<ProcessElement> ProcessElements { get; set; }
 
 
         public virtual DbSet<ProcessInFlow> ProcessInFlow { get; set; }

@@ -37,7 +37,7 @@ namespace Nexus.WebAPI.Tests.Controllers
         [TestMethod]
         public void InstantiateProcess_IsNotNull()
         {
-            var result = _mockController.InstantiateProcess(1, 1, false);
+            var result = _mockController.InstantiateProcess(1);
             //Assert.IsNotNull(result);
             Assert.Fail("Not yet implemented");
         }
@@ -45,8 +45,8 @@ namespace Nexus.WebAPI.Tests.Controllers
         [TestMethod]
         public void InstantiateProcess_ContainsWebformModels()
         {
-            var getID = 15;
-            var result = (List<WebFormModel>)_mockController.InstantiateProcess(1, getID, false);
+            var getID = 1;
+            var result = (List<WebFormModel>)_mockController.InstantiateProcess(getID);
 
             Assert.IsTrue(result is IEnumerable<WebFormModel>);
             Assert.IsTrue(result[0].id == getID);
@@ -69,7 +69,7 @@ namespace Nexus.WebAPI.Tests.Controllers
 
             _mockController = new DataController(_mockService, _claims, "en-GB");
 
-            var result = (List<WebFormModel>)_mockController.InstantiateProcess(1, 16, false);
+            var result = (List<WebFormModel>)_mockController.InstantiateProcess(2);
             
             Assert.IsTrue(result is IEnumerable<WebFormModel>);
             Assert.IsTrue(result.Count == 0);
@@ -88,11 +88,7 @@ namespace Nexus.WebAPI.Tests.Controllers
             //var userId = Guid.NewGuid().ToString();
             //var result = controller.GetClaims(userId);
 
-
-
-
-
-            var result = (List <WebFormModel>)_mockController.InstantiateProcess(1, 16, false);
+            var result = (List <WebFormModel>)_mockController.InstantiateProcess(2);
             Assert.IsTrue(result.Count == 1);
         }
 

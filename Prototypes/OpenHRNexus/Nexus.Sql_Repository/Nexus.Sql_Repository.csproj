@@ -94,6 +94,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Migrations\PopulateCloudDb.sql" />
     <Content Include="Migrations\PopulateDevelopmentWebForms.sql" />
   </ItemGroup>
   <ItemGroup>

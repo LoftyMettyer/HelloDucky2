@@ -481,13 +481,11 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:Nexus.WebAPI.Controllers.DataController.InstantiateProcess(System.Int32,System.Int32,System.Boolean)">
+        <member name="M:Nexus.WebAPI.Controllers.DataController.InstantiateProcess(System.Int32)">
             <summary>
             Instatiate a Process (DO WE NEED A GLOSSARY SOMEWHERE SO THIRD PARTY USERS KNOW WHAT A "PROCESS" IS?
             </summary>
-            <param name="instanceId">Value one</param>
-            <param name="elementId">Value two</param>
-            <param name="newRecord">Value three</param>
+            <param name="processId">Value of the process</param>
             <returns></returns>
         </member>
         <member name="T:Nexus.WebAPI.Controllers.DesignerController">

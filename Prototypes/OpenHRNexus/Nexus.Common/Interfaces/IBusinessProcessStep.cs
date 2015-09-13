@@ -6,7 +6,7 @@ namespace Nexus.Common.Interfaces
     public interface IProcessStep
     {
         int Id { get; set; }
-        ProcessStepType Type { get; }
+        ProcessElementType Type { get; }
         ProcessStepStatus Validate();
     }
 }

@@ -21,7 +21,7 @@ namespace Nexus.Service.Classes
         //    this = _repository.GetBusinessProcess(id);
         //}
 
-        IEnumerable<ProcessStep> Steps { get; set; }
+        IEnumerable<ProcessElement> Steps { get; set; }
 
     }
 

@@ -23,28 +23,29 @@ namespace Nexus.Service.Services {
             return _dataRepository.GetReportData(reportID, filters);
 
         }
-
-        WebFormModel IDataService.GetWebForm(int ProcessId, Guid userId, string language)
+ 
+        WebFormModel IDataService.InstantiateProcess(int ProcessId, Guid userId, string language)
         {
 
-            // Move to a factory for flexibility and eaiser reading?
-            //     var businessProcess = _dataRepository.GetBusinessProcess(businessProcessId);
+            var process = _dataRepository.GetProcess(ProcessId);
 
             //        if (businessProcess == null) return null;
 
-            //var businessProcess = (BusinessProcessModel)_dataRepository.GetBusinessProcess(businessProcessId);
+            // improve by?
+            //var webForm = process.GetFirstStep;
+            int firstWebFormId = 0;
+            foreach (var element in process.Elements)
+            {
+                if (element.Type == ProcessElementType.WebForm)
+                {
+                    firstWebFormId = element.WebForm.id;
+                }
 
-            //   BusinessProcessModel businessProcess2 = (BusinessProcessModel)_dataRepository.GetBusinessProcess(businessProcessId);
-            //    var model = new BusinessProcessModel(businessProcess);
-            //            var businessProcess = new BusinessProcessModel(_dataRepository);
+            }
 
-            //, businessProcessId);
-            //var webForm = businessProcess.GetFirstStep;
-
-
-            //   firstStep.Translate("en-GB");
-
-            WebForm webForm = _dataRepository.GetWebForm(ProcessId, language);
+            // Yes , we could use the webform above (and very soon we will), but for the moment the translation isn't
+            // quite hooked in properly.
+            WebForm webForm = _dataRepository.GetWebForm(firstWebFormId, language);
        //     webForm.Translate("en-GB");
 
 
@@ -110,7 +111,7 @@ namespace Nexus.Service.Services {
             // Oooh they want to send an email
             switch (nextStep.Type)
             {
-                case ProcessStepType.Email:
+                case ProcessElementType.Email:
                     var emailService = new EmailService();
                     var processStepEmail = (ProcessStepEmail)nextStep;
 
@@ -120,7 +121,7 @@ namespace Nexus.Service.Services {
 												string.Format(processStepEmail.Message, "Debbie Avery", "two day", "19/09/2015", "25/09/2015", "Holiday","Sorry it's short notice!", "http://www.bbc.co.uk", "http://www.bbc.co.uk", "http://www.bbc.co.uk", "http://www.bbc.co.uk"));
                     break;
 
-                case ProcessStepType.StoredData:
+                case ProcessElementType.StoredData:
                     //result = _dataRepository.SaveStepForLater(stepId, userID, form);
                     result = _dataRepository.CommitStep(stepId, userID, form);
                     break;

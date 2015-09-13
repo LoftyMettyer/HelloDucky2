@@ -55,13 +55,13 @@
   <ItemGroup>
     <Compile Include="Classes\BaseEntity.cs" />
     <Compile Include="Classes\Process.cs" />
-    <Compile Include="Classes\ProcessStep.cs" />
+    <Compile Include="Classes\ProcessElement.cs" />
     <Compile Include="Classes\BusinessProcessStepEmail.cs" />
     <Compile Include="Classes\ProcessStepResponse.cs" />
     <Compile Include="Classes\DataFilters\CalendarFilter.cs" />
     <Compile Include="Enums\DesignStatus.cs" />
     <Compile Include="Enums\ProcessStepStatus.cs" />
-    <Compile Include="Enums\ProcessStepType.cs" />
+    <Compile Include="Enums\ProcessElementType.cs" />
     <Compile Include="Enums\ButtonAction.cs" />
     <Compile Include="Enums\ColumnDataType.cs" />
     <Compile Include="Enums\EntityType.cs" />
