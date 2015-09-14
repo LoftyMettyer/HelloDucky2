@@ -8,8 +8,8 @@ namespace Nexus.Service.Configuration {
 		public static void Config(IKernel kernel) {
 			kernel.Bind<IAuthenticateRepository>().To<SqlAuthenticateRepository>();
 			kernel.Bind<IWelcomeMessageDataRepository>().To<SqlAuthenticateRepository>();
-			kernel.Bind<IDataRepository>().To<SqlDataRepository>();
-			kernel.Bind<IEntityRepository>().To<SqlDataRepository>();
+			kernel.Bind<IProcessRepository>().To<SqlProcessRepository>();
+			kernel.Bind<IEntityRepository>().To<SqlProcessRepository>();
             //kernel.Bind<IDictionary>().To<SqlDictionaryRepository>();
         }
     }

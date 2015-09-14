@@ -11,12 +11,12 @@ namespace Nexus.Sql_Repository.Tests.Data
     [TestClass]
     public class ProcessTests
     {
-        IDataRepository _mockRepository;
+        IProcessRepository _mockRepository;
 
         //[TestMethod]
         //public void Process_GetList_ReturnsListOfValidProcesses()
         //{
-        //    _mockRepository = new SqlDataRepository();
+        //    _mockRepository = new SqlProcessRepository();
 
         //    var result = _mockRepository.GetEntities(EntityType.Process);
         //    Assert.IsTrue(result.ToList().Count > 0);
@@ -28,7 +28,7 @@ namespace Nexus.Sql_Repository.Tests.Data
         public void Process_GetEntryPoint_AlwaysReturnsValidWebForm()
         {
 
-            _mockRepository = new SqlDataRepository();
+            _mockRepository = new SqlProcessRepository();
 
             var process = _mockRepository.GetProcess(1);
             var firstStep = process.GetEntryPoint();

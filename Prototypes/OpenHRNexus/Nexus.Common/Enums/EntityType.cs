@@ -4,6 +4,7 @@
 		Report = 1,
         Process = 2,
         Table = 3,
-        Column = 4
+        Column = 4,
+        ProcessInFlow = 5
 	}
 }

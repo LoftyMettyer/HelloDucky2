@@ -15,7 +15,7 @@ using System.Data.Entity.Infrastructure;
 
 namespace Nexus.Sql_Repository
 {
-	public class SqlDataRepository : SqlRepositoryContext, IDataRepository, IEntityRepository
+	public class SqlProcessRepository : SqlRepositoryContext, IProcessRepository, IEntityRepository
     {
         bool _ExecuteImmediate = true;
 

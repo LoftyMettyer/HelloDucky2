@@ -13,13 +13,13 @@ namespace Nexus.WebAPI.Tests.Controllers {
 	[TestClass()]
 	public class EntityControllerTests {
 
-		SqlDataRepository _mockRepository;
+		SqlProcessRepository _mockRepository;
 		EntityService _mockService;
 		EntityController _mockController;
 
 		[TestInitialize]
 		public void TestInitialize() {
-			_mockRepository = new SqlDataRepository();
+			_mockRepository = new SqlProcessRepository();
 			_mockService = new EntityService(_mockRepository);
 			_mockController = new EntityController(_mockService);
 		}

@@ -17,7 +17,7 @@
 //		{
 //			_kernel = new StandardKernel();
 //			_kernel.Bind<IDataService>().To<DataService>();
-//			_kernel.Bind<IDataRepository>().To<SqlDataRepository>();
+//			_kernel.Bind<IProcessRepository>().To<SqlProcessRepository>();
 
 //			Nexus.Service.Configuration.NinjectConfig.Config(_kernel);
 //		}

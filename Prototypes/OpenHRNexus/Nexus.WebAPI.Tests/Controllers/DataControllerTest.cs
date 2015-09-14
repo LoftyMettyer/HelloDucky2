@@ -16,7 +16,7 @@ namespace Nexus.WebAPI.Tests.Controllers
 	public class DataControllerTest
 	{
 
-        SqlDataRepository _mockRepository;
+        SqlProcessRepository _mockRepository;
         DataService _mockService;
         DataController _mockController;
         ClaimsIdentity _claims;
@@ -28,7 +28,7 @@ namespace Nexus.WebAPI.Tests.Controllers
             _claims.AddClaim(new Claim(ClaimTypes.Name, "testUser"));
             _claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, "088C6A78-E14A-41B0-AD93-4FB7D3ADE96C"));
 
-            _mockRepository = new SqlDataRepository();
+            _mockRepository = new SqlProcessRepository();
             _mockService = new DataService(_mockRepository);
             _mockController = new DataController(_mockService, _claims, "fr-fr");
 

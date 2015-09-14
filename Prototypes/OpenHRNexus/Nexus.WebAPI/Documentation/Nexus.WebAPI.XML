@@ -512,6 +512,20 @@
             Controller for Processes
             </summary>
         </member>
+        <member name="M:Nexus.WebAPI.Controllers.ProcessController.#ctor(Nexus.Common.Interfaces.Services.IDataService)">
+            <summary>
+            Controller constructor for use with Ninject
+            </summary>
+            <param name="dataService"></param>
+        </member>
+        <member name="M:Nexus.WebAPI.Controllers.ProcessController.#ctor(Nexus.Common.Interfaces.Services.IDataService,System.Security.Claims.ClaimsIdentity,System.String)">
+            <summary>
+            Controller constructor with injection from Unit Test projects
+            </summary>
+            <param name="dataService"></param>
+            <param name="claims"></param>
+            <param name="language"></param>
+        </member>
         <member name="M:Nexus.WebAPI.Controllers.ProcessController.GetPendingProcesses">
             <summary>
             Request a list of processes currently in mid-flow

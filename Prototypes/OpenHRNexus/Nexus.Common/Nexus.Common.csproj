@@ -74,7 +74,7 @@
     <Compile Include="Interfaces\INexusUser.cs" />
     <Compile Include="Interfaces\IReportDataFilter.cs" />
     <Compile Include="Interfaces\Repository\IAuthenticateRepository.cs" />
-    <Compile Include="Interfaces\Repository\IDataRepository.cs" />
+    <Compile Include="Interfaces\Repository\IProcessRepository.cs" />
     <Compile Include="Interfaces\Repository\IDesignRepository.cs" />
     <Compile Include="Interfaces\Repository\IEntityRepository.cs" />
     <Compile Include="Interfaces\Repository\IWelcomeMessageDataRepository.cs" />

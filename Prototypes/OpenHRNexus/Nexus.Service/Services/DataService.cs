@@ -6,14 +6,28 @@ using System.Collections.Generic;
 using OpenHRNexus.Common.Enums;
 using Nexus.Common.Interfaces;
 using Nexus.Common.Interfaces.Services;
+using Nexus.Common.Enums;
+using Nexus.Sql_Repository.DatabaseClasses.Data;
+using System.Linq;
 
 namespace Nexus.Service.Services {
 	public class DataService : IDataService {
-		private IDataRepository _dataRepository;
+		private IProcessRepository _dataRepository;
 
-		public DataService(IDataRepository dataRepository) {
+		public DataService(IProcessRepository dataRepository) {
 			_dataRepository = dataRepository;
 		}
+
+        /// <summary>
+        /// TODO - This function will return all entities types. At present all it returns is processes in flow.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public IEnumerable<ProcessInFlow> GetEntitiesForUser(EntityType type, Guid userId)
+        {
+            return _dataRepository.GetProcesses(userId).ToList();
+        }
 
         public IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters)
         {

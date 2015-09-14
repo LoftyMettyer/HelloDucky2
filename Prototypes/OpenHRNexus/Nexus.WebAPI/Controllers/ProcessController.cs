@@ -1,4 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNet.Identity;
+using Nexus.Common.Enums;
+using Nexus.Common.Interfaces.Services;
+using Nexus.Sql_Repository.DatabaseClasses.Data;
+using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Web;
 using System.Web.Http;
 
 namespace Nexus.WebAPI.Controllers
@@ -9,16 +16,48 @@ namespace Nexus.WebAPI.Controllers
     [RoutePrefix("api/process")]
     public class ProcessController : ApiController
     {
+
+        private readonly IDataService _dataService;
+
+        private ClaimsIdentity _identity;
+        private string _language;
+
+        /// <summary>
+        /// Controller constructor for use with Ninject
+        /// </summary>
+        /// <param name="dataService"></param>
+        public ProcessController(IDataService dataService)
+        {
+            _dataService = dataService;
+            _identity = User.Identity as ClaimsIdentity;
+            _language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
+        }
+
+        /// <summary>
+        /// Controller constructor with injection from Unit Test projects
+        /// </summary>
+        /// <param name="dataService"></param>
+        /// <param name="claims"></param>
+        /// <param name="language"></param>
+        public ProcessController(IDataService dataService, ClaimsIdentity claims, string language)
+        {
+            _identity = claims;
+            _dataService = dataService;
+            _language = language;
+        }
+
+
+
         /// <summary>
         /// Request a list of processes currently in mid-flow
         /// </summary>
         /// <returns>A JSON object containing all in-flow processes</returns>
         [Authorize(Roles="OpenHRUser")]
         [Route("pendingprocesses")]
-        public IEnumerable<string> GetPendingProcesses()
+        public IEnumerable<ProcessInFlow> GetPendingProcesses()
         {
-            //Get all pending processes
-            return new[] {"OK"};
+            var userId = new Guid(_identity.GetUserId());
+            return _dataService.GetEntitiesForUser(EntityType.ProcessInFlow, userId);
         }
 
         /// <summary>

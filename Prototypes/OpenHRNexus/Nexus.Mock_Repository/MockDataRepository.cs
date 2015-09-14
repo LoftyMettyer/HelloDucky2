@@ -7,7 +7,7 @@ using Nexus.Common.Models;
 using Nexus.Sql_Repository.DatabaseClasses.Data;
 
 namespace Nexus.Mock_Repository {
-	public class MockDataRepository : IDataRepository {
+	public class MockProcessRepository : IProcessRepository {
 
 		public WebForm GetWebForm(int id, string language) {
 			throw new NotImplementedException();

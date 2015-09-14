@@ -82,7 +82,7 @@
     <Compile Include="SqlDictionaryRepository.cs" />
     <Compile Include="SqlRepositoryContext.cs" />
     <Compile Include="SqlAuthenticateRepository.cs" />
-    <Compile Include="SqlDataRepository.cs" />
+    <Compile Include="SqlProcessRepository.cs" />
     <Compile Include="DatabaseClasses\Security\User.cs" />
   </ItemGroup>
   <ItemGroup>

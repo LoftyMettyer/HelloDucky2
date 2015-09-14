@@ -9,12 +9,12 @@ namespace Nexus.Sql_Repository.Tests.Data
     [TestClass]
     public class ProcessStepTests
     {
-        SqlDataRepository _mockRepository;
+        SqlProcessRepository _mockRepository;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            _mockRepository = new SqlDataRepository();
+            _mockRepository = new SqlProcessRepository();
         }
 
         [TestMethod]
