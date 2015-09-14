@@ -884,7 +884,30 @@ function menu_MenuClick(sTool) {
 			}
 		}
 
-		/******* End Changes related to to user stories : 18362, 18363, 18628 & 18629  *********/
+	/******* End Changes related to to user stories : 18362, 18363, 18628 & 18629  *********/
+
+
+	/******* Begin Changes related to to uer story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
+
+		if (sToolName == "mnutoolCustomReportsFind") {
+			return false;
+		}
+
+		if (sToolName == "mnutoolCalendarReportsFind") {
+			return false;
+		}
+
+		if (sToolName == "mnutoolMailMergeFind") {
+			return false;
+		}
+
+		if (sToolName == "mnutoolDataTransferFind") {
+			return false;
+		}
+
+		
+	/******* End Changes related to user story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
+
 
 	// Administration Menu -------------------------------------------------------------------------------------------------------------------
 
@@ -1620,7 +1643,7 @@ function menu_refreshMenu() {
 		if (sCurrentWorkPage == "FIND") {
 			//frmFind = window.parent.frames("workframe").document.forms("frmFindForm");
 
-			frmFind = document.getElementById("frmFindForm");	
+			frmFind = document.getElementById("frmFindForm");
 
 			lngRecordID = selectedRecordID(); //should be in scope at runtime.
 
@@ -4734,8 +4757,8 @@ function menu_LoadEventLog() {
 
 	function menu_SetmnutoolRecordPositionCaption(newCaption) {
 	//update the record position text.
-	$("#mnutoolRecordPosition span").text(newCaption);
-	$("#mnutoolPositionRecordFind span").text(newCaption);
+		$("#mnutoolRecordPosition span").text(newCaption);
+		$("#mnutoolPositionRecordFind span").text(newCaption);
 }
 
 	function menu_SetmnutoolEventLogRecordPositionCaption(newCaption) {

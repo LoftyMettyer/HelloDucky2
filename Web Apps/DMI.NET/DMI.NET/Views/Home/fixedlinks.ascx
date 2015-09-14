@@ -337,6 +337,40 @@
 								</a>
 							</div>
 						</li>
+						<li id="mnuSectionReportsAndUtility"><span>Run</span>
+							<div id="mnutoolCustomReportsFind" class="button">
+								<a href="#" rel="table" title="Custom Reports">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/EntityRelationshipModel64HOVER.png")%>"
+										alt="" />
+									<h6>Custom<br />
+										Reports</h6>
+								</a>
+							</div>
+							<div id="mnutoolCalendarReportsFind" class="button">
+								<a href="#" rel="table" title="Calendar Reports">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CalendarReports64HOVER.png") %>"
+										alt="" />
+									<h6>Calendar<br />
+										Reports</h6>
+								</a>
+							</div>
+							<div id="mnutoolMailMergeFind" class="button">
+								<a href="#" rel="table" title="Mail Merge">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/MailMerge64HOVER.png") %>"
+										alt="" />
+									<h6>Mail<br />
+										Merge</h6>
+								</a>
+							</div>
+							<div id="mnutoolDataTransferFind" class="button">
+								<a href="#" rel="table" title="Data Transfer">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/DataTransfer64HOVER.png")%>"
+										alt="" />
+									<h6>Data<br />
+										Transfer</h6>
+								</a>
+							</div>
+						</li>
 						<li id="mnuSectionPositionRecordFind"><span>Record Count</span>
 							<div id="mnutoolPositionRecordFind" class="textboxlist">
 								<ul>
