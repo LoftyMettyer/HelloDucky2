@@ -78,7 +78,7 @@ namespace Nexus.Sql_Repository.Tests.Data
 
             var userId = new Guid("088C6A78-E14A-41B0-AD93-4FB7D3ADE96C");
 
-            var result = _mockRepository.RecordProcessStep(form);
+            var result = _mockRepository.RecordProcessStepForUser(form, userId);
             Assert.IsInstanceOfType(result, typeof(Guid));
             Assert.AreNotEqual(result, Guid.Empty);
 
@@ -87,7 +87,7 @@ namespace Nexus.Sql_Repository.Tests.Data
         [TestMethod]
         public void ProcessStep_RecordProcessStep_EmptyFormReturnsEmptyGuid()
         {
-            var result = _mockRepository.RecordProcessStep(null);
+            var result = _mockRepository.RecordProcessStepForUser(null, Guid.Empty);
             Assert.AreEqual(result, Guid.Empty);
         }
 

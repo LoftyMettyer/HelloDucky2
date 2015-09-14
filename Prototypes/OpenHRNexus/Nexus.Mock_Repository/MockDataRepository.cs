@@ -4,6 +4,7 @@ using Nexus.Common.Classes;
 using Nexus.Common.Interfaces;
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
+using Nexus.Sql_Repository.DatabaseClasses.Data;
 
 namespace Nexus.Mock_Repository {
 	public class MockDataRepository : IDataRepository {
@@ -51,7 +52,12 @@ namespace Nexus.Mock_Repository {
             throw new NotImplementedException();
         }
 
-        public Guid RecordProcessStep(WebForm form)
+        public Guid RecordProcessStepForUser(WebForm form, Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ProcessInFlow> GetProcesses(Guid userId)
         {
             throw new NotImplementedException();
         }

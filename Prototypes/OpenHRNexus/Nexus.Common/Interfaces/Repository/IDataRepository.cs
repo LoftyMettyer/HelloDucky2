@@ -2,6 +2,7 @@
 using Nexus.Common.Models;
 using Nexus.Common.Classes;
 using System.Collections.Generic;
+using Nexus.Sql_Repository.DatabaseClasses.Data;
 
 namespace Nexus.Common.Interfaces.Repository {
 	public interface IDataRepository {
@@ -17,7 +18,8 @@ namespace Nexus.Common.Interfaces.Repository {
         IProcessStep GetProcessNextStep(IProcessStep currentStep);
         IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters);
 
-        Guid RecordProcessStep(WebForm form);
+        Guid RecordProcessStepForUser(WebForm form, Guid userId);
 
+        IEnumerable<ProcessInFlow> GetProcesses(Guid userId);
     }
 }

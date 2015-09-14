@@ -474,12 +474,28 @@ namespace Nexus.Sql_Repository
 
         }
 
-        public Guid RecordProcessStep(WebForm form)
+        public Guid RecordProcessStepForUser(WebForm form, Guid userID)
         {
             if (form == null) return Guid.Empty;
 
-            return Guid.NewGuid();
+            var stepId = Guid.NewGuid();
+
+            var process = new ProcessInFlow() { Id = stepId, UserId = userID, WebFormId = form .id};
+
+            ProcessInFlow.Add(process);
+            SaveChanges();
+
+            return stepId;
 
         }
+
+        public IEnumerable<ProcessInFlow> GetProcesses(Guid userId)
+        {
+            var result = ProcessInFlow
+                .Where(u => u.UserId == userId);
+            return result;
+
+        }
+
     }
 }

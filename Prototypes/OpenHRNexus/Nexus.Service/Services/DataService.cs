@@ -37,8 +37,7 @@ namespace Nexus.Service.Services {
             WebForm webForm = _dataRepository.GetWebForm(firstStep.id, language);
             //     webForm.Translate("en-GB");
 
-
-            var stepId = _dataRepository.RecordProcessStep(webForm);
+            var stepId = _dataRepository.RecordProcessStepForUser(webForm, userId);
 
 
             var result = _dataRepository.PopulateFormWithData(webForm, userId);

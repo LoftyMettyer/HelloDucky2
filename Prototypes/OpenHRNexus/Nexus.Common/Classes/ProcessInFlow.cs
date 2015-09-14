@@ -1,7 +1,6 @@
-﻿using Nexus.Common.Models;
+﻿using Nexus.Common.Classes;
+using Nexus.Common.Models;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nexus.Sql_Repository.DatabaseClasses.Data
 {
@@ -10,7 +9,7 @@ namespace Nexus.Sql_Repository.DatabaseClasses.Data
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-
-        public IEnumerable<ProcessInFlowData> Data { get; set; }
+        public Process Process { get; set; }
+        public int WebFormId { get; set; }
     }
 }

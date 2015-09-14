@@ -65,8 +65,6 @@
   <ItemGroup>
     <Compile Include="Configuration\EnterpriseServicesConfiguration.cs" />
     <Compile Include="DatabaseClasses\Data\DictionaryItem.cs" />
-    <Compile Include="DatabaseClasses\Data\ProcessInFlow.cs" />
-    <Compile Include="DatabaseClasses\Data\ProcessInFlowData.cs" />
     <Compile Include="DatabaseClasses\Data\TransactionStatement.cs" />
     <Compile Include="DatabaseClasses\Security\Role.cs" />
     <Compile Include="DatabaseClasses\Security\UserPermission.cs" />
