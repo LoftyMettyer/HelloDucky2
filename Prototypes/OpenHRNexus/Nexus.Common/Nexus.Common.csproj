@@ -89,7 +89,7 @@
     <Compile Include="Models\EntityModel.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Models\TableModel.cs" />
-    <Compile Include="Models\WebForm.cs" />
+    <Compile Include="Classes\ProcessFormElement.cs" />
     <Compile Include="Models\WebFormButton.cs" />
     <Compile Include="Models\WebFormControl.cs" />
     <Compile Include="Models\WebFormFieldOption.cs" />

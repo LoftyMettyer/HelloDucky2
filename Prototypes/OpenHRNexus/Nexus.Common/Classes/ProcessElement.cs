@@ -15,7 +15,7 @@ namespace Nexus.Common.Classes
             Debug.Print("codestub here");
         }
 
-        public WebForm WebForm { get; set; }
+        public ProcessFormElement WebForm { get; set; }
 
     }
 }

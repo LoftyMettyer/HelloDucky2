@@ -73,7 +73,7 @@ namespace Nexus.Sql_Repository
 //            return data;
         }
 
-        public WebForm GetWebForm(int id, string language)
+        public ProcessFormElement GetWebForm(int id, string language)
         {
 
 
@@ -195,20 +195,10 @@ namespace Nexus.Sql_Repository
 
         }
 
-        public WebFormModel PopulateFormWithData(WebForm webForm, Guid userId)
+        public ProcessFormElement PopulateFormWithData(ProcessFormElement webForm, Guid userId)
         {
 
             var webFormId = webForm.id;
-
-            var result = new WebFormModel
-            {
-                id = webForm.id,
-                stepid = Guid.NewGuid(),
-                name = webForm.Name,
-                fields = webForm.Fields,
-                buttons = webForm.Buttons
-            };
-
 
             // Build column list
             var formFields = (from cols in Columns
@@ -252,7 +242,7 @@ namespace Nexus.Sql_Repository
             
             foreach (var row in data)
             {                            
-                foreach (WebFormField element in result.fields)
+                foreach (WebFormField element in webForm.Fields)
                 {
                     var property = row.GetType().GetProperty("column" + element.columnid);
 
@@ -261,11 +251,11 @@ namespace Nexus.Sql_Repository
                 }
             }
  
-            return result;
+            return webForm;
 
         }
 
-        public WebFormModel PopulateFormWithNavigationControls(WebForm webForm, Guid userId)
+        public WebFormModel PopulateFormWithNavigationControls(ProcessFormElement webForm, Guid userId)
         {
 
             // Do the data opulation bit
@@ -299,7 +289,7 @@ namespace Nexus.Sql_Repository
                 
         }
 
-        public virtual DbSet<WebForm> WebForms { get; set; }
+        public virtual DbSet<ProcessFormElement> WebForms { get; set; }
         public virtual DbSet<WebFormField> WebFormFields { get; set; }
         public virtual DbSet<WebFormButton> WebFormButtons { get; set; }
         public virtual DbSet<WebFormFieldOption> WebFormFieldOptions { get; set; }
@@ -474,7 +464,7 @@ namespace Nexus.Sql_Repository
 
         }
 
-        public Guid RecordProcessStepForUser(WebForm form, Guid userID)
+        public Guid RecordProcessStepForUser(ProcessFormElement form, Guid userID)
         {
             if (form == null) return Guid.Empty;
 

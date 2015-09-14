@@ -10,7 +10,7 @@ namespace Nexus.Common.Classes
 
         public List<ProcessElement> Elements { get; set; }
 
-        public WebForm GetEntryPoint()
+        public ProcessFormElement GetEntryPoint()
         {
             var first = Elements
                 .Where(e => e.Type == ProcessElementType.WebForm)

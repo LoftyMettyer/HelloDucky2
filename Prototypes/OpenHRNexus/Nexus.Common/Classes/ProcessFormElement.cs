@@ -1,9 +1,9 @@
-﻿using Nexus.Common.Interfaces;
+﻿using Nexus.Common.Models;
 using System.Collections.Generic;
 
-namespace Nexus.Common.Models
+namespace Nexus.Common.Classes
 {
-    public class WebForm
+    public class ProcessFormElement
     {
         //IDictionary _dictionary;
 

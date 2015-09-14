@@ -7,8 +7,10 @@ using Nexus.Sql_Repository.DatabaseClasses.Data;
 namespace Nexus.Common.Interfaces.Repository {
 	public interface IProcessRepository {
 
-		WebForm GetWebForm(int id, string language);
-		WebFormModel PopulateFormWithData(WebForm webForm, Guid userId);
+		ProcessFormElement GetWebForm(int id, string language);
+        ProcessFormElement PopulateFormWithData(ProcessFormElement webForm, Guid userId);
+
+
     //    WebFormModel PopulateFormWithNavigationControls(WebForm webForm, Guid userId);
         Process GetProcess(int Id);
         ProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form);
@@ -17,7 +19,7 @@ namespace Nexus.Common.Interfaces.Repository {
         IProcessStep GetProcessNextStep(IProcessStep currentStep);
         IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters);
 
-        Guid RecordProcessStepForUser(WebForm form, Guid userId);
+        Guid RecordProcessStepForUser(ProcessFormElement form, Guid userId);
 
         IEnumerable<ProcessInFlow> GetProcesses(Guid userId);
     }

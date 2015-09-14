@@ -9,11 +9,11 @@ using Nexus.Sql_Repository.DatabaseClasses.Data;
 namespace Nexus.Mock_Repository {
 	public class MockProcessRepository : IProcessRepository {
 
-		public WebForm GetWebForm(int id, string language) {
+		public ProcessFormElement GetWebForm(int id, string language) {
 			throw new NotImplementedException();
 		}
 
-		public WebFormModel PopulateFormWithData(WebForm webForm, Guid userId) {
+		public ProcessFormElement PopulateFormWithData(ProcessFormElement webForm, Guid userId) {
 			throw new NotImplementedException();
 		}
 
@@ -22,7 +22,7 @@ namespace Nexus.Mock_Repository {
             throw new NotImplementedException();
         }
 
-        public WebFormModel PopulateFormWithNavigationControls(WebForm webForm, Guid userId)
+        public WebFormModel PopulateFormWithNavigationControls(ProcessFormElement webForm, Guid userId)
         {
             throw new NotImplementedException();
         }
@@ -52,7 +52,7 @@ namespace Nexus.Mock_Repository {
             throw new NotImplementedException();
         }
 
-        public Guid RecordProcessStepForUser(WebForm form, Guid userId)
+        public Guid RecordProcessStepForUser(ProcessFormElement form, Guid userId)
         {
             throw new NotImplementedException();
         }

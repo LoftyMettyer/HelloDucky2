@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Nexus.Common.Models;
 using System.Linq;
 using Nexus.Common.Interfaces.Repository;
+using Nexus.Common.Classes;
 
 namespace Nexus.Sql_Repository.Tests.Data
 {
@@ -33,7 +34,7 @@ namespace Nexus.Sql_Repository.Tests.Data
             var process = _mockRepository.GetProcess(1);
             var firstStep = process.GetEntryPoint();
             Assert.IsNotNull(firstStep);
-            Assert.IsInstanceOfType(firstStep, typeof(WebForm));
+            Assert.IsInstanceOfType(firstStep, typeof(ProcessFormElement));
 
         }
     }

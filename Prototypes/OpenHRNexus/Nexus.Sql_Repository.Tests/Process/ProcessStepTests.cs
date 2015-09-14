@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Nexus.Common.Classes;
 using Nexus.Common.Enums;
 using Nexus.Common.Models;
 using System;
@@ -65,7 +66,7 @@ namespace Nexus.Sql_Repository.Tests.Data
         public void ProcessStep_RecordProcessStep_ReturnsGuid()
         {
 
-            var form = new WebForm
+            var form = new ProcessFormElement
             {
                 Fields = new List<WebFormField>() {
                     new WebFormField { id=1, sequence = 1, columnid = 5, value = DateTime.Now.ToString()},

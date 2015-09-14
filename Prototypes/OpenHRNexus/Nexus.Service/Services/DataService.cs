@@ -48,13 +48,14 @@ namespace Nexus.Service.Services {
 
             // Yes , we could use the webform above (and very soon we will), but for the moment the translation isn't
             // quite hooked in properly.
-            WebForm webForm = _dataRepository.GetWebForm(firstStep.id, language);
+            ProcessFormElement webForm = _dataRepository.GetWebForm(firstStep.id, language);
             //     webForm.Translate("en-GB");
 
             var stepId = _dataRepository.RecordProcessStepForUser(webForm, userId);
 
 
-            var result = _dataRepository.PopulateFormWithData(webForm, userId);
+            var populatedForm = _dataRepository.PopulateFormWithData(webForm, userId);
+
             //var result = new WebFormModel();
 
             //      var result2 = _dataRepository.PopulateFormWithNavigationControls(webForm, userId);
@@ -63,6 +64,32 @@ namespace Nexus.Service.Services {
 
             // Implement translation as a design pattern (a template one? - I can't remember - need to review training notes)
             //result.translate(language)
+
+            // Tempry hack to convert internal to external webform models
+            return PrepareWebFormModelFromInternalClass(populatedForm, stepId);
+
+
+        }
+
+        /// <summary>
+        /// This is a tempry code stub to separate internal from external webformmodels. To be replaced by an interfaced object -
+        /// but my powers of magic are required elsewhere. Hence marked function as obsolete
+        /// </summary>
+        /// <param name="form"></param>
+        /// <param name="stepId"></param>
+        /// <returns></returns>
+        [Obsolete]
+        private WebFormModel PrepareWebFormModelFromInternalClass(ProcessFormElement form, Guid stepId)
+        {
+
+            var result = new WebFormModel
+            {
+                id = form.id,
+                stepid = Guid.NewGuid(),
+                name = form.Name,
+                fields = form.Fields,
+                buttons = form.Buttons
+            };
 
             // TODO - Fettle to get rid of recursive webform references. Ultimate solution is to return a different webform item to the internal
             // service and repository objects.
@@ -78,11 +105,10 @@ namespace Nexus.Service.Services {
                 formField.WebForm = null;
             }
 
-            //            result.form_fields.Remove[0];
-
-
             return result;
+
         }
+
 
         ProcessStepResponse IDataService.SubmitStepForUser(Guid stepId, Guid userID, WebFormModel form)
         {
