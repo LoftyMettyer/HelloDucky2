@@ -14,9 +14,7 @@ namespace Nexus.WebAPI {
 	public class Startup {
 		public void Configuration(IAppBuilder app) {
 			HttpConfiguration config = new HttpConfiguration();
-
-			config.MapHttpAttributeRoutes();
-
+        
 			ConfigureOAuth(app);
 
 			app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);

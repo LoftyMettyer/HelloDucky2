@@ -244,6 +244,7 @@
     <Compile Include="Controllers\DataController.cs" />
     <Compile Include="Controllers\DesignerController.cs" />
     <Compile Include="Controllers\EntityController.cs" />
+    <Compile Include="Controllers\ProcessController.cs" />
     <Compile Include="Controllers\ResourceController.cs" />
     <Compile Include="Extensions\ToJsonResultExtension.cs" />
     <Compile Include="Global.asax.cs">

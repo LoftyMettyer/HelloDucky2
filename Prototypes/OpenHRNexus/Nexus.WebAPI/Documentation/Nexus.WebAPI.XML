@@ -507,6 +507,30 @@
             <param name="claims"></param>
             <param name="language"></param>
         </member>
+        <member name="T:Nexus.WebAPI.Controllers.ProcessController">
+            <summary>
+            Controller for Processes
+            </summary>
+        </member>
+        <member name="M:Nexus.WebAPI.Controllers.ProcessController.GetPendingProcesses">
+            <summary>
+            Request a list of processes currently in mid-flow
+            </summary>
+            <returns>A JSON object containing all in-flow processes</returns>
+        </member>
+        <member name="M:Nexus.WebAPI.Controllers.ProcessController.DeletePendingProcesses">
+            <summary>
+            Delete ALL processes currently in mid-flow
+            </summary>
+            <returns>Success flag</returns>
+        </member>
+        <member name="M:Nexus.WebAPI.Controllers.ProcessController.DeletePendingProcesses(System.Int32)">
+            <summary>
+            Delete a single process currently in mid-flow
+            </summary>
+            <param name="processId"></param>
+            <returns>Success flag</returns>
+        </member>
         <member name="T:Nexus.WebAPI.Resources.Resource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
