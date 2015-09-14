@@ -473,5 +473,13 @@ namespace Nexus.Sql_Repository
             return  results;
 
         }
+
+        public Guid RecordProcessStep(WebForm form)
+        {
+            if (form == null) return Guid.Empty;
+
+            return Guid.NewGuid();
+
+        }
     }
 }

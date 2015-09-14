@@ -17,5 +17,7 @@ namespace Nexus.Common.Interfaces.Repository {
         IProcessStep GetProcessNextStep(IProcessStep currentStep);
         IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters);
 
+        Guid RecordProcessStep(WebForm form);
+
     }
 }

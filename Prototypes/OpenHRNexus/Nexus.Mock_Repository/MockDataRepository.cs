@@ -50,5 +50,10 @@ namespace Nexus.Mock_Repository {
         {
             throw new NotImplementedException();
         }
+
+        public Guid RecordProcessStep(WebForm form)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

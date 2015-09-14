@@ -56,7 +56,7 @@
     <Compile Include="Classes\BaseEntity.cs" />
     <Compile Include="Classes\Process.cs" />
     <Compile Include="Classes\ProcessElement.cs" />
-    <Compile Include="Classes\BusinessProcessStepEmail.cs" />
+    <Compile Include="Classes\ProcessStepEmail.cs" />
     <Compile Include="Classes\ProcessStepResponse.cs" />
     <Compile Include="Classes\DataFilters\CalendarFilter.cs" />
     <Compile Include="Enums\DesignStatus.cs" />

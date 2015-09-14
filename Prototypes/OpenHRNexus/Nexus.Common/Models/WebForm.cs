@@ -7,7 +7,7 @@ namespace Nexus.Common.Models
     {
         //IDictionary _dictionary;
 
-        private WebForm() { }
+    //    private WebForm() { }
 
         //public WebForm(IDictionary dictionary) : base()
         //{

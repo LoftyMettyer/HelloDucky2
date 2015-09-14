@@ -61,5 +61,35 @@ namespace Nexus.Sql_Repository.Tests.Data
 
         }
 
+        [TestMethod]
+        public void ProcessStep_RecordProcessStep_ReturnsGuid()
+        {
+
+            var form = new WebForm
+            {
+                Fields = new List<WebFormField>() {
+                    new WebFormField { id=1, sequence = 1, columnid = 5, value = DateTime.Now.ToString()},
+                    new WebFormField { id=1, sequence = 2, columnid = 13, value = 3.75.ToString() },
+                    new WebFormField { id=1, sequence = 2, columnid = 4, value = "Jones" },
+                    new WebFormField { id=1, sequence = 2, columnid = 7, value = true.ToString() },
+                    new WebFormField { id=1, sequence = 2, columnid = 25, value = 0.ToString() }
+                }
+            };
+
+            var userId = new Guid("088C6A78-E14A-41B0-AD93-4FB7D3ADE96C");
+
+            var result = _mockRepository.RecordProcessStep(form);
+            Assert.IsInstanceOfType(result, typeof(Guid));
+            Assert.AreNotEqual(result, Guid.Empty);
+
+        }
+
+        [TestMethod]
+        public void ProcessStep_RecordProcessStep_EmptyFormReturnsEmptyGuid()
+        {
+            var result = _mockRepository.RecordProcessStep(null);
+            Assert.AreEqual(result, Guid.Empty);
+        }
+
     }
 }

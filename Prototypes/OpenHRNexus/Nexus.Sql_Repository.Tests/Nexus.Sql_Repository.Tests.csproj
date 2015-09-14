@@ -69,7 +69,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Data\GetData.cs" />
-    <Compile Include="Data\ProcessStepTests.cs" />
+    <Compile Include="Process\ProcessStepTests.cs" />
     <Compile Include="Data\ProcessTests.cs" />
     <Compile Include="DictionaryTest.cs" />
     <Compile Include="Users\ConnectUser.cs" />

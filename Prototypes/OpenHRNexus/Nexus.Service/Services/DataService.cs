@@ -35,13 +35,17 @@ namespace Nexus.Service.Services {
             // Yes , we could use the webform above (and very soon we will), but for the moment the translation isn't
             // quite hooked in properly.
             WebForm webForm = _dataRepository.GetWebForm(firstStep.id, language);
-       //     webForm.Translate("en-GB");
+            //     webForm.Translate("en-GB");
+
+
+            var stepId = _dataRepository.RecordProcessStep(webForm);
 
 
             var result = _dataRepository.PopulateFormWithData(webForm, userId);
             //var result = new WebFormModel();
 
             //      var result2 = _dataRepository.PopulateFormWithNavigationControls(webForm, userId);
+
 
 
             // Implement translation as a design pattern (a template one? - I can't remember - need to review training notes)
@@ -57,7 +61,7 @@ namespace Nexus.Service.Services {
 
             foreach (var formField in result.buttons)
             {
-                formField.targeturl = string.Format(formField.targeturl, Guid.NewGuid());
+                formField.targeturl = string.Format(formField.targeturl, stepId);
                 formField.WebForm = null;
             }
 
@@ -70,6 +74,9 @@ namespace Nexus.Service.Services {
         ProcessStepResponse IDataService.SubmitStepForUser(Guid stepId, Guid userID, WebFormModel form)
         {
             var result = new ProcessStepResponse();
+
+
+
 
             // Find out what our next steps are.
             var currentStep = _dataRepository.GetProcessStep(stepId);
