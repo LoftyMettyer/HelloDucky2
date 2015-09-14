@@ -889,6 +889,12 @@ function menu_MenuClick(sTool) {
 
 	/******* Begin Changes related to to uer story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
 
+		if (sToolName == "mnutoolMultiSelectFind") {
+			var multiSelectText = ($('#mnutoolMultiSelectFind h6').text().indexOf('Off') > -1 ? "Multi-Select <br/>On" : "Multi-Select <br/>Off");
+			$('#mnutoolMultiSelectFind h6').html(multiSelectText);
+			return false;
+		}
+
 		if (sToolName == "mnutoolCustomReportsFind") {
 			return false;
 		}
@@ -4971,3 +4977,21 @@ function GetPromptMessage() {
 }
 
 /******* End Changes related to to user stories : 18362, 18363, 18628 & 18629  *********/
+
+
+/******* Begin Changes related to to uer story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
+
+// Enable Multi Select ribbon button if the multifind param is false and find grid has non editable grid
+function EnableMultiSelectButton(enable) {
+
+ // Hide multi select button if ssi mode is enabledgroup for SSI...
+ if (menu_isSSIMode() == true) {
+  menu_setVisibleMenuItem("mnutoolMultiSelectFind", false);
+ }
+ else {
+  menu_setVisibleMenuItem("mnutoolMultiSelectFind", true);
+  menu_toolbarEnableItem("mnutoolMultiSelectFind", enable);
+ }
+}
+
+/******* End Changes related to user story 19436: As a user, I want to run reports and utilities from the Find Window  *********/

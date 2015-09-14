@@ -73,6 +73,8 @@
 					menu_editRecord();
 				}
 			});
+			//Enable Multi Select ribbon button if the multifind param is false and find grid has non editable grid
+			EnableMultiSelectButton(!multifind && !thereIsAtLeastOneEditableColumn);
 		}
 	}
 </script>
