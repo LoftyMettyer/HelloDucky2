@@ -994,6 +994,16 @@ function setcancel() {
 
 }
 
+// Disable the tools buttons based on the view permission
+function DisableRibbonButtonsForAbsenceBreakdownAndBradfordFactor() {
+	if (frmAbsenceDefinition.txtIsPicklistsGranted.value.toUpperCase() == "FALSE") {
+		menu_toolbarEnableItem("mnutoolPicklistReportFind", false);
+	}
+	if (frmAbsenceDefinition.txtIsFiltersGranted.value.toUpperCase() == "FALSE") {
+		menu_toolbarEnableItem("mnutoolFilterReportFind", false);
+	}	
+}
+
 //// @TODO : Uncomment below code, if we want to provide a confirmation message to be asked whilst the user attempting to nevigate away from the tools screen which is loaded from the report definition.
 //// This function will be used to identify that we have loaded tools screen from the absence breakdown OR bradford factor report. And if user tries to nevigate away from the tools screen then prompt the user.
 //function saveReportDefinition(prompt) {

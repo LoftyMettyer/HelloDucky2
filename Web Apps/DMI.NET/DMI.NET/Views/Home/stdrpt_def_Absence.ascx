@@ -21,6 +21,8 @@
 	' Settings objects
 	Dim objSettings As New HR.Intranet.Server.clsSettings
 	objSettings.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+	Dim IsFiltersGranted As Boolean = objSettings.SessionInfo.IsPermissionGranted("FILTERS", "VIEW")
+	Dim IsPicklistsGranted As Boolean = objSettings.SessionInfo.IsPermissionGranted("PICKLISTS", "VIEW")
 		
 	Dim aColumnNames
 	Dim aAbsenceTypes() As String
@@ -859,6 +861,8 @@
 
 		<input type="hidden" id="txtAction" name="txtAction" value="<%=Session("action")%>">
 		<input type="hidden" id="txtUtilID" name="txtUtilID" value='<%=session("utilid")%>'>
+		<input type="hidden" id="txtIsFiltersGranted" name="txtIsFiltersGranted" value='<%:IsFiltersGranted%>'>
+		<input type="hidden" id="txtIsPicklistsGranted" name="txtIsPicklistsGranted" value='<%:IsPicklistsGranted%>'>
 	</form>
 </div>
 
@@ -930,6 +934,7 @@
 
 	// Sets ribbon buttons
 	SetsRibbonButtonsForAbsenceBreakdownAndBradfordFactor();
+	DisableRibbonButtonsForAbsenceBreakdownAndBradfordFactor();
 
 	//only display the 'close' button for defsel when called from rec edit...
 	<%	If Not Session("optionRecordID") = "0" Then%>
