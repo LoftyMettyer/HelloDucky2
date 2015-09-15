@@ -1,4 +1,5 @@
 ﻿using Nexus.Common.Models;
+using System;
 using System.Collections.Generic;
 
 namespace Nexus.Common.Classes
@@ -20,6 +21,14 @@ namespace Nexus.Common.Classes
         public List<WebFormField> Fields { get; set; }
         public List<WebFormButton> Buttons { get; set; }
 
+
+        public void SetButtonEndpoints(Guid stepId)
+        {
+            foreach (var button in Buttons)
+            {
+                button.targeturl = string.Format("{0}/stepId={1}", button.targeturl, stepId);
+            }
+        }
 
     }
 

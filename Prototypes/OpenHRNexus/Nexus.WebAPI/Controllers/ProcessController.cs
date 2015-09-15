@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNet.Identity;
+using Nexus.Common.Classes;
 using Nexus.Common.Enums;
 using Nexus.Common.Interfaces.Services;
+using Nexus.Common.Models;
 using Nexus.Sql_Repository.DatabaseClasses.Data;
 using System;
 using System.Collections.Generic;
@@ -84,6 +86,57 @@ namespace Nexus.WebAPI.Controllers
             //Delete specified pending process
             return new[] { "Delete " + processId };
         }
+
+        /// <summary>
+        /// Instantiates a business process.Returns a pre-populated, translated WebFormModel
+        /// </summary>
+        /// <param name="processId"></param>
+        /// <param name="stepId"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "OpenHRUser")]
+        [Route("process/{processId:int, stepId: Guid}")]
+        public IEnumerable<WebFormModel> GetProcessStep([FromUri] int processId, [FromUri] Guid? stepId)
+        {
+
+            // if not step id, start the process, else get an existing step
+
+            var openHRDbGuid = new Guid(_identity.GetUserId());
+            List<WebFormModel> form = new List<WebFormModel>();
+            WebFormModel webForm;
+
+            if (openHRDbGuid == null || openHRDbGuid == Guid.Empty)
+            {
+                // Berties error handler goes here ?
+            }
+            else
+            {
+                webForm = _dataService.InstantiateProcess(processId, openHRDbGuid, _language);
+                form.Add(webForm);
+            }
+
+            IEnumerable<WebFormModel> webFormModels = form;
+            return webFormModels;
+
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="form"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "OpenHRUser")]
+        [Route("process")]
+        public ProcessStepResponse PostProcessStep(WebFormModel form)
+        {
+
+            // Put some clever code in an attribute extension to validate that there is a identity getuserguid?
+            // Maybe this is already covered by the authorize roles = OpenHRUser?
+            var userId = new Guid(_identity.GetUserId());
+
+            return _dataService.SubmitStepForUser(form.stepid, userId, form);
+        }
+
 
     }
 }

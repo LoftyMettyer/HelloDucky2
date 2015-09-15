@@ -53,12 +53,11 @@ namespace Nexus.Service.Services {
 
             var stepId = _dataRepository.RecordProcessStepForUser(webForm, userId);
 
-
             var populatedForm = _dataRepository.PopulateFormWithData(webForm, userId);
 
-            //var result = new WebFormModel();
 
-            //      var result2 = _dataRepository.PopulateFormWithNavigationControls(webForm, userId);
+            populatedForm.SetButtonEndpoints(stepId);
+
 
 
 
@@ -66,7 +65,7 @@ namespace Nexus.Service.Services {
             //result.translate(language)
 
             // Tempry hack to convert internal to external webform models
-            return PrepareWebFormModelFromInternalClass(populatedForm, stepId);
+            return PrepareWebFormModelFromInternalClass(populatedForm);
 
 
         }
@@ -76,10 +75,9 @@ namespace Nexus.Service.Services {
         /// but my powers of magic are required elsewhere. Hence marked function as obsolete
         /// </summary>
         /// <param name="form"></param>
-        /// <param name="stepId"></param>
         /// <returns></returns>
-        [Obsolete]
-        private WebFormModel PrepareWebFormModelFromInternalClass(ProcessFormElement form, Guid stepId)
+        [Obsolete("A temporary code stub while I figure out how to implement WebFormModel and ProcessFormElement to pull from the same interface.")]
+        private WebFormModel PrepareWebFormModelFromInternalClass(ProcessFormElement form)
         {
 
             var result = new WebFormModel
@@ -101,7 +99,6 @@ namespace Nexus.Service.Services {
 
             foreach (var formField in result.buttons)
             {
-                formField.targeturl = string.Format(formField.targeturl, stepId);
                 formField.WebForm = null;
             }
 

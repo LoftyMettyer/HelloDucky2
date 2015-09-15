@@ -34,49 +34,7 @@ namespace Nexus.WebAPI.Controllers {
             _dataService = dataService;
             _language = language;
         }
-
-        /// <summary>
-        /// Instatiate a Process (DO WE NEED A GLOSSARY SOMEWHERE SO THIRD PARTY USERS KNOW WHAT A "PROCESS" IS?
-        /// </summary>
-        /// <param name="processId">Value of the process</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Authorize(Roles = "OpenHRUser")]
-        public IEnumerable<WebFormModel> InstantiateProcess(int processId)
-        {
-
-            var openHRDbGuid = new Guid(_identity.GetUserId());
-            List<WebFormModel> form = new List<WebFormModel>();
-            WebFormModel webForm;
-
-            if (openHRDbGuid == null || openHRDbGuid == Guid.Empty) {
-                // Berties error handler goes here ?
-            }
-            else
-            {
-                webForm = _dataService.InstantiateProcess(processId, openHRDbGuid, _language);
-                form.Add(webForm);
-            }
-
-            IEnumerable<WebFormModel> webFormModels = form;
-            return webFormModels;
-
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "OpenHRUser")]
-        public ProcessStepResponse SubmitStep(WebFormModel form)
-        {
-            //Guid stepId, List< KeyValuePair < int, string>> data
-
-
-            // Put some clever code in an attribute extension to validate that there is a identity getuserguid?
-            // Maybe this is already covered by the authorize roles = OpenHRUser?
-            var userId = new Guid(_identity.GetUserId());
-
-            return _dataService.SubmitStepForUser(form.stepid, userId, form);
-
-        }
+       
 
         [HttpGet]
         [Authorize(Roles = "OpenHRUser")]

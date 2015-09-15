@@ -10,6 +10,10 @@ namespace Nexus.Common.Classes
 
         public List<ProcessElement> Elements { get; set; }
 
+        /// <summary>
+        /// Returns the first ProcessFormElement for this entity
+        /// </summary>
+        /// <returns></returns>
         public ProcessFormElement GetEntryPoint()
         {
             var first = Elements

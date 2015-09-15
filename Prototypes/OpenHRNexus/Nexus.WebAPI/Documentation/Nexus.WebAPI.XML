@@ -481,13 +481,6 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:Nexus.WebAPI.Controllers.DataController.InstantiateProcess(System.Int32)">
-            <summary>
-            Instatiate a Process (DO WE NEED A GLOSSARY SOMEWHERE SO THIRD PARTY USERS KNOW WHAT A "PROCESS" IS?
-            </summary>
-            <param name="processId">Value of the process</param>
-            <returns></returns>
-        </member>
         <member name="T:Nexus.WebAPI.Controllers.DesignerController">
             <summary>
             This controller is used for accessing the nexus metadata design services
@@ -544,6 +537,21 @@
             </summary>
             <param name="processId"></param>
             <returns>Success flag</returns>
+        </member>
+        <member name="M:Nexus.WebAPI.Controllers.ProcessController.GetProcessStep(System.Int32,System.Nullable{System.Guid})">
+            <summary>
+            Instantiates a business process.Returns a pre-populated, translated WebFormModel
+            </summary>
+            <param name="processId"></param>
+            <param name="stepId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Nexus.WebAPI.Controllers.ProcessController.PostProcessStep(Nexus.Common.Models.WebFormModel)">
+            <summary>
+            
+            </summary>
+            <param name="form"></param>
+            <returns></returns>
         </member>
         <member name="T:Nexus.WebAPI.Resources.Resource">
             <summary>

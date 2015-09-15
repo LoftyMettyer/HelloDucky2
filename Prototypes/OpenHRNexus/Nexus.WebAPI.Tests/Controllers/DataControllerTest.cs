@@ -35,101 +35,33 @@ namespace Nexus.WebAPI.Tests.Controllers
         }
 
         [TestMethod]
-        public void InstantiateProcess_IsNotNull()
-        {
-            var result = _mockController.InstantiateProcess(1);
-            //Assert.IsNotNull(result);
-            Assert.Fail("Not yet implemented");
-        }
-
-        [TestMethod]
-        public void InstantiateProcess_ContainsWebformModels()
-        {
-            var getID = 1;
-            var result = (List<WebFormModel>)_mockController.InstantiateProcess(getID);
-
-            Assert.IsTrue(result is IEnumerable<WebFormModel>);
-            Assert.IsTrue(result[0].id == getID);
-
-        }
-
-        [TestMethod]
         [Description("Building up a sql statement can cause errors if the column is included in the select multiple times. Ensure that we handle this.")]
         public void InstantiateProcess_HandlesTheSameColumnMultipleTimes()
         {
             Assert.Fail("Not yet implemented");
         }
 
-        [TestMethod]
-        public void InstantiateProcess_HandlesInvalidUser()
-        {
-            _claims = new ClaimsIdentity();
-            _claims.AddClaim(new Claim(ClaimTypes.Name, "NoSuchUser"));
-            _claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, "00000000-0000-0000-0000-000000000000"));
-
-            _mockController = new DataController(_mockService, _claims, "en-GB");
-
-            var result = (List<WebFormModel>)_mockController.InstantiateProcess(2);
-            
-            Assert.IsTrue(result is IEnumerable<WebFormModel>);
-            Assert.IsTrue(result.Count == 0);
-
-        }
-
-        [TestMethod]
-        public void InstantiateProcess_ContainsSingleWebformModel()
-        {
-
-            //var mockService = new Mock<IDataService>();
-            //mockService.Setup(x => x.GetClaims(Guid.NewGuid()));
-
-            //AuthenticateController controller = new AuthenticateController(mockService.Object);
-
-            //var userId = Guid.NewGuid().ToString();
-            //var result = controller.GetClaims(userId);
-
-            var result = (List <WebFormModel>)_mockController.InstantiateProcess(2);
-            Assert.IsTrue(result.Count == 1);
-        }
 
 
-        [TestMethod]
-        public void SubmitStep_ResponseReceived()
-        {
 
-            var field = new WebFormField { sequence = 1, columnid = 2, value = "Smith" };
+        //[TestMethod]
+        //public void SubmitStep_EmailSendsSuccessfully()
+        //{
 
-            var form = new WebFormModel {
-                stepid = Guid.NewGuid(),
-                fields = new List<WebFormField>() {
-                    new WebFormField { id=1, sequence = 1, columnid = 1, value = "John" },
-                    new WebFormField { id=1, sequence = 2, columnid = 2, value = "Smith" },
-                }};
+        //    var form = new WebFormModel
+        //    {
+        //        stepid = Guid.NewGuid(),
+        //        fields = new List<WebFormField>() {
+        //            new WebFormField { id=1, sequence = 1, columnid = 1, value = "John" },
+        //            new WebFormField { id=1, sequence = 2, columnid = 2, value = "Smith" },
+        //        }
+        //    };
 
+        //    var result = _mockController.SubmitStep(form);
+        //    Assert.IsTrue(result is ProcessStepResponse);
+        //    Assert.IsTrue(result.Status == ProcessStepStatus.EmailSuccessfullySent);
 
-            var result = _mockController.SubmitStep(form);
-            Assert.IsTrue(result is ProcessStepResponse);
-
-        }
-
-        [TestMethod]
-        public void SubmitStep_EmailSendsSuccessfully()
-        {
-
-            var form = new WebFormModel
-            {
-                stepid = Guid.NewGuid(),
-                fields = new List<WebFormField>() {
-                    new WebFormField { id=1, sequence = 1, columnid = 1, value = "John" },
-                    new WebFormField { id=1, sequence = 2, columnid = 2, value = "Smith" },
-                }
-            };
-
-            var result = _mockController.SubmitStep(form);
-            Assert.IsTrue(result is ProcessStepResponse);
-            Assert.IsTrue(result.Status == ProcessStepStatus.EmailSuccessfullySent);
-
-        }
+        //}
 
         [TestMethod]
         public void GetCalendarData_GetsDataForTodaysRange()
