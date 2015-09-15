@@ -22,11 +22,6 @@ namespace Nexus.Mock_Repository {
             throw new NotImplementedException();
         }
 
-        public WebFormModel PopulateFormWithNavigationControls(ProcessFormElement webForm, Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-
         public ProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form)
         {
             throw new NotImplementedException();

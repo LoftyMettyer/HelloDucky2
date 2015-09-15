@@ -9,10 +9,8 @@ namespace Nexus.Common.Interfaces.Repository {
 
 		ProcessFormElement GetWebForm(int id, string language);
         ProcessFormElement PopulateFormWithData(ProcessFormElement webForm, Guid userId);
-//        ProcessFormElement PopulateFormWithNavigation(ProcessFormElement webForm);
 
-
-        //    WebFormModel PopulateFormWithNavigationControls(WebForm webForm, Guid userId);
+        
         Process GetProcess(int Id);
         ProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form);
         ProcessStepResponse CommitStep(Guid stepId, Guid userID, WebFormModel form);

@@ -72,7 +72,7 @@ namespace Nexus.WebAPI.Tests.Controllers
         }
 
         [TestMethod]
-        public void InstantiateProcess_ContainsWebformModels()
+        public void GetProcessStep_ContainsWebformModels()
         {
             var getID = 1;
             var result = (List<WebFormModel>)_mockController.GetProcessStep(getID, null);
