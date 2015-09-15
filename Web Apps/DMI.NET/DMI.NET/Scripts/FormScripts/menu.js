@@ -892,6 +892,10 @@ function menu_MenuClick(sTool) {
 		if (sToolName == "mnutoolMultiSelectFind") {
 			var multiSelectText = ($('#mnutoolMultiSelectFind h6').text().indexOf('Off') > -1 ? "Multi-Select <br/>On" : "Multi-Select <br/>Off");
 			$('#mnutoolMultiSelectFind h6').html(multiSelectText);
+
+			// Reload the find page
+			menu_reloadFindPage("RELOAD", "");
+
 			return false;
 		}
 
@@ -2713,7 +2717,7 @@ function menu_loadPage(psPage) {
 	var frmFindForm;
 	var frmData;
 	var iIndex;
-		
+
 	menu_ShowWait("Loading find records...");
 	//disableMenu();
 
@@ -2735,6 +2739,9 @@ function menu_loadPage(psPage) {
 	frmWorkArea.txtGotoRecordID.value = 0;
 	frmWorkArea.txtGotoFirstRecPos.value = 1;
 	frmWorkArea.txtGotoCurrentRecCount.value = 0;
+
+	// Sets multi select mode off
+	SetMultiSelectModeOff();
 
 	if (psToolName.substr(0, 3) == "HT_") {
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
@@ -4979,7 +4986,7 @@ function GetPromptMessage() {
 /******* End Changes related to to user stories : 18362, 18363, 18628 & 18629  *********/
 
 
-/******* Begin Changes related to to uer story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
+/******* Begin Changes for the user story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
 
 // Enable Multi Select ribbon button if the multifind param is false and find grid has non editable grid
 function EnableMultiSelectButton(enable) {
@@ -4994,4 +5001,70 @@ function EnableMultiSelectButton(enable) {
  }
 }
 
-/******* End Changes related to user story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
+// Refresh the find window ribbon buttons
+function RefreshFindWindowRibbonButtons()
+{
+	var canRunCustomReports = false;
+	var canRunCalendarReports = false;
+	var canRunMailMerge = false;
+	var canRunDataTransfer = false;
+	var isMultiSelectOn = IsMultiSelectionModeOn();
+	var frmFind = document.getElementById("frmFindForm");
+	var isDmiUser = ($("#txtIsDMIUser")[0].value == "True");
+
+	if (isMultiSelectOn) {
+		if (window.txtSysPerm_MAILMERGE_RUN != null && window.txtSysPerm_MAILMERGE_RUN.value == 1 && isDmiUser) {
+			canRunMailMerge = true;
+		}
+
+		if (window.txtSysPerm_CALENDARREPORTS_RUN != null && window.txtSysPerm_CALENDARREPORTS_RUN.value == 1 && isDmiUser) {
+			canRunCalendarReports = true;
+		}
+
+		if (window.txtSysPerm_CUSTOMREPORTS_RUN != null && window.txtSysPerm_CUSTOMREPORTS_RUN.value == 1 && isDmiUser) {
+			canRunCustomReports = true;
+		}
+
+		if (window.txtSysPerm_DATATRANSFER_RUN != null && window.txtSysPerm_DATATRANSFER_RUN.value == 1 && isDmiUser) {
+			canRunDataTransfer = true;
+		}
+	}
+
+	menu_toolbarEnableItem("mnutoolCustomReportsFind", canRunCustomReports && frmFind.txtCustomReportGrantedForFindWindow.value.toUpperCase() == "TRUE");
+	menu_toolbarEnableItem("mnutoolMailMergeFind", canRunMailMerge && frmFind.txtMailMergeGrantedForFindWindow.value.toUpperCase() == "TRUE");
+	menu_toolbarEnableItem("mnutoolCalendarReportsFind", canRunCalendarReports && frmFind.txtCalendarReportGrantedForFindWindow.value.toUpperCase() == "TRUE");
+	menu_toolbarEnableItem("mnutoolDataTransferFind", canRunDataTransfer);
+
+	if (isMultiSelectOn) {
+		menu_toolbarEnableItem("mnutoolNewRecordFind", false);
+		menu_toolbarEnableItem("mnutoolCopyRecordFind", false);
+		menu_toolbarEnableItem("mnutoolEditRecordFind", false);
+		menu_toolbarEnableItem("mnutoolDeleteRecordFind", false);
+	}
+	else {
+		var selectedRecordId = selectedRecordID();
+		if (selectedRecordId == "" | selectedRecordId == null) {
+			selectedRecordId = 0;
+		}
+
+		var fMnutoolNewRecordFind = (frmFind.txtInsertGranted.value.toUpperCase() == "TRUE" && isDmiUser);
+		menu_toolbarEnableItem("mnutoolNewRecordFind", fMnutoolNewRecordFind);
+		menu_toolbarEnableItem("mnutoolCopyRecordFind", (fMnutoolNewRecordFind && selectedRecordId > 0));
+		menu_toolbarEnableItem("mnutoolEditRecordFind", (selectedRecordId > 0));
+		menu_toolbarEnableItem("mnutoolDeleteRecordFind", frmFind.txtDeleteGranted.value.toUpperCase() == "TRUE" && selectedRecordId > 0 && isDmiUser);
+	}
+}
+
+// Returns true if multi select is on, False otherwise
+function IsMultiSelectionModeOn() {
+	var isMultiSelectOn = false;
+	if ($('#mnutoolMultiSelectFind h6').text().indexOf('On') > -1) { isMultiSelectOn = true; }
+	return isMultiSelectOn;
+}
+
+// Sets multi select off
+function SetMultiSelectModeOff() {
+	$('#mnutoolMultiSelectFind h6').html("Multi-Select <br/>Off");
+}
+
+/******* End Changes for the user story 19436: As a user, I want to run reports and utilities from the Find Window  *********/

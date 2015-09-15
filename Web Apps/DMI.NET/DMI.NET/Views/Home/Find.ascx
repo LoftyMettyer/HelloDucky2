@@ -20,8 +20,8 @@
 
 <script type="text/javascript">
 	$(document).ready(function () {
-
 		if ('<%=session("linktype")%>' == 'multifind') {
+			
 			//for multifind (SSI views) show relevant buttons with applicable functions
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindEdit", false);
 			menu_setVisibleMenuItem("mnutoolAccessLinksFind", true);
@@ -52,8 +52,8 @@
 		}
 	}
 
-
 	function gridBindKeys(multifind) {
+
 		if (multifind) {
 			$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function(rowID) { doEdit(); } });
 			$('#findGridTable').jqGrid('bindKeys', { "onEnter": function() { doEdit(); } });
@@ -64,7 +64,7 @@
 				}
 			});
 			$('#findGridTable').jqGrid('bindKeys', {
-				"onEnter": function (rowid) {
+				"onEnter": function(rowid) {
 					//If we are in "Inline-edit" mode and "Enter" was pressed then don't go into "Edit record" mode
 					if ($("#findGridTable_iledit").hasClass('ui-state-disabled')) {
 						return;
@@ -73,10 +73,15 @@
 					menu_editRecord();
 				}
 			});
-			//Enable Multi Select ribbon button if the multifind param is false and find grid has non editable grid
+
+			// Enable Multi Select ribbon button if the multifind param is false and find grid is non editable grid
 			EnableMultiSelectButton(!multifind && !thereIsAtLeastOneEditableColumn);
+
+			// Refresh the find window ribbon buttons
+		  RefreshFindWindowRibbonButtons();
 		}
 	}
+	
 </script>
 
 <div id="divFindForm" <%=session("BodyTag")%>>
@@ -477,6 +482,55 @@
 
 							Response.Write("</script>" & vbCrLf)
 							
+							'/******* Task 19439: Begin Changes for the user story 19436: As a user, I want to run reports and utilities from the Find Window *********/
+								
+							Dim rstDefSelRecords As DataTable
+							Dim baseTableId = CleanNumeric(Session("tableID"))
+							
+							' Sets the txtCustomReportGrantedForFindWindow value
+							Dim prmType = New SqlParameter("intType", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = 2}
+							Dim prmOnlyMine = New SqlParameter("blnOnlyMine", SqlDbType.Bit) With {.Direction = ParameterDirection.Input, .Value = False}
+							Dim prmTableId = New SqlParameter("intTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = baseTableId}
+							
+							rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure, prmType, prmOnlyMine, prmTableId)
+							
+							' If atleast one custom report available for the current base table then set to True, False otherwise.
+							If (rstDefSelRecords.Rows.Count > 0) Then
+								Response.Write("<input type='hidden' id=txtCustomReportGrantedForFindWindow name=txtCustomReportGrantedForFindWindow value=" & True & ">" & vbCrLf)
+							Else
+								Response.Write("<input type='hidden' id=txtCustomReportGrantedForFindWindow name=txtCustomReportGrantedForFindWindow value=" & False & ">" & vbCrLf)
+							End If
+							
+							' Sets the txtCalendarReportGrantedForFindWindow value
+							prmType = New SqlParameter("intType", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = 17}
+							prmOnlyMine = New SqlParameter("blnOnlyMine", SqlDbType.Bit) With {.Direction = ParameterDirection.Input, .Value = False}
+							prmTableId = New SqlParameter("intTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = baseTableId}
+							
+							rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure, prmType, prmOnlyMine, prmTableId)
+							
+							' If atleast one calendar report available for the current base table then set to True, False otherwise.
+							If (rstDefSelRecords.Rows.Count > 0) Then
+								Response.Write("<input type='hidden' id=txtCalendarReportGrantedForFindWindow name=txtCalendarReportGrantedForFindWindow value=" & True & ">" & vbCrLf)
+							Else
+								Response.Write("<input type='hidden' id=txtCalendarReportGrantedForFindWindow name=txtCalendarReportGrantedForFindWindow value=" & False & ">" & vbCrLf)
+							End If
+							
+							' Sets the txtMailMergeGrantedForFindWindow value
+							prmType = New SqlParameter("intType", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = 9}
+							prmOnlyMine = New SqlParameter("blnOnlyMine", SqlDbType.Bit) With {.Direction = ParameterDirection.Input, .Value = False}
+							prmTableId = New SqlParameter("intTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = baseTableId}
+							
+							rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure, prmType, prmOnlyMine, prmTableId)
+							
+							' If atleast one mail merge available for the current base table then set to True, False otherwise.
+							If (rstDefSelRecords.Rows.Count > 0) Then
+								Response.Write("<input type='hidden' id=txtMailMergeGrantedForFindWindow name=txtMailMergeGrantedForFindWindow value=" & 1 & ">" & vbCrLf)
+							Else
+								Response.Write("<input type='hidden' id=txtMailMergeGrantedForFindWindow name=txtMailMergeGrantedForFindWindow value=" & False & ">" & vbCrLf)
+							End If
+							
+							'/******* Task 19439: End Changes for the user story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
+
 							Response.Write("<input type='hidden' id=txtInsertGranted name=txtInsertGranted value=" & prmInsertGranted.Value & ">" & vbCrLf)
 							Response.Write("<input type='hidden' id=txtDeleteGranted name=txtDeleteGranted value=" & prmDeleteGranted.Value & ">" & vbCrLf)
 							Response.Write("<input type='hidden' id=txtIsFirstPage name=txtIsFirstPage value=" & prmIsFirstPage.Value & ">" & vbCrLf)
