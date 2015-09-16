@@ -96,7 +96,7 @@ namespace Nexus.WebAPI.Controllers
         [Authorize(Roles = "OpenHRUser")]
         //[Route("process/{processId:int, stepId:guid}")] //TODO: For Routing using multiple parameters; this syntax doesn't work at the moment, investigage
         [Route("process/{processId:int}")]
-        public IEnumerable<WebFormModel> GetProcessStep([FromUri] int processId, [FromUri] Guid? stepId)
+        public IEnumerable<WebFormModel> GetProcessStep([FromUri] int processId)
         {
 
             // if not step id, start the process, else get an existing step
