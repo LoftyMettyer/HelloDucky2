@@ -25,6 +25,7 @@ namespace Nexus.WebAPI.Tests.Controllers
         [TestInitialize]
         public void TestInitialize()
         {
+            _mockService.CallingURL = "http://nexus-advanced.azurewebsites.net/";
             _claims = new ClaimsIdentity();
             _claims.AddClaim(new Claim(ClaimTypes.Name, "testUser"));
             _claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, "088C6A78-E14A-41B0-AD93-4FB7D3ADE96C"));

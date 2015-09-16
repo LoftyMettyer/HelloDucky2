@@ -14,8 +14,16 @@ namespace Nexus.Service.Services {
 	public class DataService : IDataService {
 		private IProcessRepository _dataRepository;
         private IDictionary _dictionary;
+        private string _callingURL;
 
-		public DataService(IProcessRepository dataRepository, IDictionary dictionary) {
+        public string CallingURL
+        {
+            get
+            { return _callingURL; }
+            set { _callingURL = value; }
+        }
+
+        public DataService(IProcessRepository dataRepository, IDictionary dictionary) {
 			_dataRepository = dataRepository;
             _dictionary = dictionary;
         }
@@ -59,7 +67,7 @@ namespace Nexus.Service.Services {
 
             var populatedForm = _dataRepository.PopulateFormWithData(webForm, userId);
             populatedForm.Translate(_dictionary);
-            populatedForm.SetButtonEndpoints(stepId);
+            populatedForm.SetButtonEndpoints(_callingURL, stepId);
 
 
             // Tempry hack to convert internal to external webform models

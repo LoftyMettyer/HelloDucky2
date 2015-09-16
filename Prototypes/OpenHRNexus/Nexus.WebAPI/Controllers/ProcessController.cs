@@ -24,6 +24,14 @@ namespace Nexus.WebAPI.Controllers
         private ClaimsIdentity _identity;
         private string _language;
 
+        private string GetApplicationSchemeName()
+        {
+            return HttpContext.Current.Request.Url.Scheme + "://" +
+                  HttpContext.Current.Request.Url.Authority +
+                  HttpContext.Current.Request.ApplicationPath.TrimEnd(Convert.ToChar("/")) + "/";
+
+        }
+
         /// <summary>
         /// Controller constructor for use with Ninject
         /// </summary>
@@ -31,6 +39,7 @@ namespace Nexus.WebAPI.Controllers
         public ProcessController(IDataService dataService)
         {
             _dataService = dataService;
+            _dataService.CallingURL = GetApplicationSchemeName();
             _identity = User.Identity as ClaimsIdentity;
             _language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
         }

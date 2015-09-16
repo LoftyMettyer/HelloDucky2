@@ -23,11 +23,18 @@ namespace Nexus.Common.Classes
         public List<WebFormField> Fields { get; set; }
         public List<WebFormButton> Buttons { get; set; }
 
-        public void SetButtonEndpoints(Guid stepId)
+        /// <summary>
+        /// Converts the targetURL with the following string conditions
+        /// {0} - Convert URL
+        /// {1} = Add StepId
+        /// </summary>
+        /// <param name="URL"></param>
+        /// <param name="stepId"></param>
+        public void SetButtonEndpoints(string URL, Guid stepId)
         {
             foreach (var button in Buttons)
             {
-                button.TargetUrl = string.Format("{0}/stepId={1}", button.TargetUrl, stepId);
+                button.TargetUrl = string.Format(button.TargetUrl, URL, stepId);
             }
         }
 
