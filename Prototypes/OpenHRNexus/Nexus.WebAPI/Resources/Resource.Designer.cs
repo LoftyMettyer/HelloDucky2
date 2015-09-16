@@ -70,6 +70,51 @@ namespace Nexus.WebAPI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Application Demo.
+        /// </summary>
+        internal static string Label_ButtonApplicationDemo {
+            get {
+                return ResourceManager.GetString("Label_ButtonApplicationDemo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Calendar.
+        /// </summary>
+        internal static string Label_ButtonCalendar {
+            get {
+                return ResourceManager.GetString("Label_ButtonCalendar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request Holiday.
+        /// </summary>
+        internal static string Label_ButtonRequestHoliday {
+            get {
+                return ResourceManager.GetString("Label_ButtonRequestHoliday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View My Team.
+        /// </summary>
+        internal static string Label_ButtonViewMyTeam {
+            get {
+                return ResourceManager.GetString("Label_ButtonViewMyTeam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Personnel Record.
+        /// </summary>
+        internal static string Label_ButtonViewPersonnelRecord {
+            get {
+                return ResourceManager.GetString("Label_ButtonViewPersonnelRecord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm Password.
         /// </summary>
         internal static string Label_ConfirmPassword {
@@ -169,6 +214,15 @@ namespace Nexus.WebAPI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to My Team.
+        /// </summary>
+        internal static string Label_MyTeam {
+            get {
+                return ResourceManager.GetString("Label_MyTeam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
         internal static string Label_Password {
@@ -241,7 +295,7 @@ namespace Nexus.WebAPI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to the Advanced portal.
+        ///   Looks up a localized string similar to Welcome to your dashboard, #UserName#.
         /// </summary>
         internal static string Text_DashboardWelcome {
             get {
@@ -250,7 +304,7 @@ namespace Nexus.WebAPI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you have a Username and Password, you can use the button below to access Nexus.
+        ///   Looks up a localized string similar to If you have a Username and Password, you can use the button below to access Nexus..
         /// </summary>
         internal static string Text_LoginDescription {
             get {
@@ -259,7 +313,7 @@ namespace Nexus.WebAPI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use the button below to create Username and Password to access Nexus.
+        ///   Looks up a localized string similar to Use the button below to create Username and Password to access Nexus..
         /// </summary>
         internal static string Text_SignUpDescription {
             get {
