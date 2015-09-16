@@ -538,7 +538,7 @@
             <param name="processId"></param>
             <returns>Success flag</returns>
         </member>
-        <member name="M:Nexus.WebAPI.Controllers.ProcessController.GetProcessStep(System.Int32,System.Nullable{System.Guid})">
+        <member name="M:Nexus.WebAPI.Controllers.ProcessController.GetProcessStep(System.Int32)">
             <summary>
             Instantiates a business process.Returns a pre-populated, translated WebFormModel
             </summary>

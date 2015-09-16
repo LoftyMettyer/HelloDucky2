@@ -52,7 +52,7 @@ namespace Nexus.WebAPI.Tests.Controllers
         [TestMethod]
         public void GetProcessStep_ConstructorReturnsNotNull()
         {
-            var result = _mockController.GetProcessStep(1);
+            var result = _mockController.GetProcessStep(2);
             Assert.IsNotNull(result);
         }
 

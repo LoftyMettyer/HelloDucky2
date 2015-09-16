@@ -15,9 +15,28 @@ namespace Nexus.Sql_Repository.Tests
         [TestCategory("Translation")]
         public void Dictionary_GetLookupReturnsList()
         {
+            _dictionary.Language = "fr-fr";
             var result = _dictionary.GetLookupValues(25);
             Assert.IsNotNull(result);
         }
+
+        [TestMethod]
+        [TestCategory("Translation")]
+        public void Dictionary_GetLookupReturnsListForUnicodeLanguage()
+        {
+            _dictionary.Language = "hi";
+            var result = _dictionary.GetLookupValues(25);
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        [TestCategory("Translation")]
+        public void Dictionary_GetLookupReturnsEnglishAsDefault()
+        {
+            var result = _dictionary.GetLookupValues(25);
+            Assert.IsNotNull(result);
+        }
+
 
         [TestMethod]
         [TestCategory("Translation")]
