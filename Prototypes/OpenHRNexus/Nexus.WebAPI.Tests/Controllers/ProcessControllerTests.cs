@@ -45,14 +45,14 @@ namespace Nexus.WebAPI.Tests.Controllers
         [TestMethod]
         public void GetProcessStep_StartsNewProcessIfNoStepIdGiven()
         {
-            var result = (List<WebFormModel>)_mockController.GetProcessStep(2, null);
+            var result = (List<WebFormModel>)_mockController.GetProcessStep(2);
             Assert.IsTrue(result.Count == 1);
         }
 
         [TestMethod]
         public void GetProcessStep_ConstructorReturnsNotNull()
         {
-            var result = _mockController.GetProcessStep(1, null);
+            var result = _mockController.GetProcessStep(1);
             Assert.IsNotNull(result);
         }
 
@@ -65,7 +65,7 @@ namespace Nexus.WebAPI.Tests.Controllers
 
             _mockController = new ProcessController(_mockService, _claims, "en-GB");
 
-            var result = (List<WebFormModel>)_mockController.GetProcessStep(2, null);
+            var result = (List<WebFormModel>)_mockController.GetProcessStep(2);
 
             Assert.IsTrue(result is IEnumerable<WebFormModel>);
             Assert.IsTrue(result.Count == 0);
@@ -76,7 +76,7 @@ namespace Nexus.WebAPI.Tests.Controllers
         public void GetProcessStep_ContainsWebformModels()
         {
             var getID = 1;
-            var result = (List<WebFormModel>)_mockController.GetProcessStep(getID, null);
+            var result = (List<WebFormModel>)_mockController.GetProcessStep(getID);
 
             Assert.IsTrue(result is IEnumerable<WebFormModel>);
             Assert.IsTrue(result[0].id == getID);
