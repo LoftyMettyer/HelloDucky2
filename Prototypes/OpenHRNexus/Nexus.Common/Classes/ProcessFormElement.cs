@@ -26,7 +26,7 @@ namespace Nexus.Common.Classes
         {
             foreach (var button in Buttons)
             {
-                button.targeturl = string.Format("{0}/stepId={1}", button.targeturl, stepId);
+                button.TargetUrl = string.Format("{0}/stepId={1}", button.TargetUrl, stepId);
             }
         }
 
