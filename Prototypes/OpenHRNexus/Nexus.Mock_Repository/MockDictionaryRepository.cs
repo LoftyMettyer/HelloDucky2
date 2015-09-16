@@ -1,19 +1,22 @@
-﻿using Nexus.Common.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using Nexus.Common.Interfaces;
+using Nexus.Common.Models;
 
 namespace Nexus.Mock_Repository
 {
     public class MockDictionaryRepository : IDictionary
     {
-        private string _language = "en-GB";
+        public string Language { get; set; }
 
-        public void SetLanguage(string language)
+        public List<WebFormFieldOption> GetLookupValues(int columnId)
         {
-            _language = language;
+            return new List<WebFormFieldOption>();
         }
 
         public string GetTranslation(string key)
         {
-            return string.Format("{0}{1}", key, _language);
+            return string.Format("{0}{1}", key, Language);
         }
 
     }

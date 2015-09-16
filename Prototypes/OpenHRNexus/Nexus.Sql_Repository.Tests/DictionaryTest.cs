@@ -13,26 +13,26 @@ namespace Nexus.Sql_Repository.Tests
 
         [TestMethod]
         [TestCategory("Translation")]
-        public void Dictionary_WebFormField_ConvertsToLanguage()
+        public void Dictionary_GetLookupReturnsList()
         {
-
-            _dictionary.SetLanguage("en-GB");
-            var webForm = new WebFormField(_dictionary);
-
-            var keyValue = "untranslated";
-
-            webForm.title = keyValue;
-            Assert.AreNotEqual(webForm.title, keyValue);
-
+            var result = _dictionary.GetLookupValues(25);
+            Assert.IsNotNull(result);
         }
 
-        public void Dictionary_WebFormField_EmptyDictionaryReturnsOriginalValue()
+        [TestMethod]
+        [TestCategory("Translation")]
+        public void Dictionary_TranslationReturnsValidResponse()
         {
-            var webForm = new WebFormField();
-            var keyValue = "untranslated";
+            var text = "First Name";
 
-            webForm.title = keyValue;
-            Assert.AreEqual(webForm.title, keyValue);
+            _dictionary.Language = "fr-fr";
+            var resultFrench = _dictionary.GetTranslation(text);
+
+            _dictionary.Language = "de-de";
+            var resultGerman = _dictionary.GetTranslation(text);
+
+            Assert.AreNotEqual(text, resultFrench);
+            Assert.AreNotEqual(text, resultGerman);
 
         }
 

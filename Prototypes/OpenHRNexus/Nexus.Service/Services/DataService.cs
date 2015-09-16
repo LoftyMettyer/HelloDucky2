@@ -13,10 +13,12 @@ using System.Linq;
 namespace Nexus.Service.Services {
 	public class DataService : IDataService {
 		private IProcessRepository _dataRepository;
+        private IDictionary _dictionary;
 
-		public DataService(IProcessRepository dataRepository) {
+		public DataService(IProcessRepository dataRepository, IDictionary dictionary) {
 			_dataRepository = dataRepository;
-		}
+            _dictionary = dictionary;
+        }
 
         /// <summary>
         /// TODO - This function will return all entities types. At present all it returns is processes in flow.
@@ -43,26 +45,22 @@ namespace Nexus.Service.Services {
 
             var process = _dataRepository.GetProcess(ProcessId);
 
-            var firstStep = process.GetEntryPoint();
+            var webForm = process.GetEntryPoint();
 
 
             // Yes , we could use the webform above (and very soon we will), but for the moment the translation isn't
             // quite hooked in properly.
-            ProcessFormElement webForm = _dataRepository.GetWebForm(firstStep.id, language);
-            //     webForm.Translate("en-GB");
+           // ProcessFormElement webForm = _dataRepository.GetWebForm(firstStep.id);
 
             var stepId = _dataRepository.RecordProcessStepForUser(webForm, userId);
 
+
+            _dictionary.Language = language;
+
             var populatedForm = _dataRepository.PopulateFormWithData(webForm, userId);
-
-
+            populatedForm.Translate(_dictionary);
             populatedForm.SetButtonEndpoints(stepId);
 
-
-
-
-            // Implement translation as a design pattern (a template one? - I can't remember - need to review training notes)
-            //result.translate(language)
 
             // Tempry hack to convert internal to external webform models
             return PrepareWebFormModelFromInternalClass(populatedForm);

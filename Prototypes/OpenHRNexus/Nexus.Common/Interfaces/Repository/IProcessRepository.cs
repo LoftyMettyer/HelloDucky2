@@ -7,7 +7,7 @@ using Nexus.Sql_Repository.DatabaseClasses.Data;
 namespace Nexus.Common.Interfaces.Repository {
 	public interface IProcessRepository {
 
-		ProcessFormElement GetWebForm(int id, string language);
+		//ProcessFormElement GetWebForm(int id);
         ProcessFormElement PopulateFormWithData(ProcessFormElement webForm, Guid userId);
 
         

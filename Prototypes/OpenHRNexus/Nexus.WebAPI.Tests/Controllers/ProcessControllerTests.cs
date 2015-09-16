@@ -17,7 +17,8 @@ namespace Nexus.WebAPI.Tests.Controllers
     {
 
         static IProcessRepository _mockRepository = new SqlProcessRepository();
-        DataService _mockService = new DataService(_mockRepository);
+        static SqlDictionaryRepository _mockDictionary = new SqlDictionaryRepository();
+        DataService _mockService = new DataService(_mockRepository, _mockDictionary);
         ProcessController _mockController;
         ClaimsIdentity _claims;
 

@@ -29,7 +29,7 @@ namespace Nexus.WebAPI.Tests.Controllers
             _claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, "088C6A78-E14A-41B0-AD93-4FB7D3ADE96C"));
 
             _mockRepository = new SqlProcessRepository();
-            _mockService = new DataService(_mockRepository);
+            _mockService = new DataService(_mockRepository, null);
             _mockController = new DataController(_mockService, _claims, "fr-fr");
 
         }

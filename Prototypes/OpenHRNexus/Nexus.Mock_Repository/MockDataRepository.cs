@@ -9,7 +9,7 @@ using Nexus.Sql_Repository.DatabaseClasses.Data;
 namespace Nexus.Mock_Repository {
 	public class MockProcessRepository : IProcessRepository {
 
-		public ProcessFormElement GetWebForm(int id, string language) {
+		public ProcessFormElement GetWebForm(int id) {
 			throw new NotImplementedException();
 		}
 
