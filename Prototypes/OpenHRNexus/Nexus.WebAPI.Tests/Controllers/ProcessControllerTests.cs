@@ -57,6 +57,21 @@ namespace Nexus.WebAPI.Tests.Controllers
         }
 
         [TestMethod]
+        public void GetProcessStep_FormFieldsAreInCorrectSequence()
+        {
+            var result = (List<WebFormModel>)_mockController.GetProcessStep(2);
+            Assert.IsNotNull(result);
+
+            int sequence = 0;
+            foreach (var field in result[0].fields)
+            {
+                Assert.IsTrue(field.sequence > sequence, "Form fields are not in correct sequence");
+                sequence = field.sequence;
+            }
+        }
+
+
+        [TestMethod]
         public void GetProcessStep_HandlesInvalidUser()
         {
             _claims = new ClaimsIdentity();

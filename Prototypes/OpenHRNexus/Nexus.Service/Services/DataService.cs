@@ -83,11 +83,12 @@ namespace Nexus.Service.Services {
                 id = form.id,
                 stepid = Guid.NewGuid(),
                 name = form.Name,
-                fields = form.Fields,
+                fields = form.Fields.OrderBy(s => s.sequence).ToList(),
                 buttons = form.Buttons.Select(b => new WebFormButtonModel
                 {
                     title = b.Title,
-                    targeturl = b.TargetUrl
+                    targeturl = b.TargetUrl,
+                    action = b.Action
                 }).ToList()
             };
 
