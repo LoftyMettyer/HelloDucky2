@@ -23,8 +23,10 @@ namespace Nexus.WebAPI.Controllers {
 		}
 
 		[HttpGet]
-		public IEnumerable<KeyValuePair<string, string>> GetResourceValues([FromUri] List<string> parameter) {
-			return parameter.ToDictionary(s => s, s => Resource.ResourceManager.GetString(s));
+		public IEnumerable<KeyValuePair<string, string>> GetResourceValues([FromUri] List<string> parameter)
+		{
+			string userName = string.IsNullOrEmpty(User.Identity.Name) ? "" : User.Identity.Name;
+      return parameter.ToDictionary(s => s, s => Resource.ResourceManager.GetString(s).Replace("#UserName#", userName));
 		}
 
 		[HttpGet]
@@ -52,6 +54,7 @@ namespace Nexus.WebAPI.Controllers {
 																.Replace("#FullName#", welcomeMessage.Message)
 																.Replace("#LastLoginDate#", welcomeMessage.LastLoggedOn.ToString(CultureInfo.CurrentCulture))
 																.Replace("#SecurityGroup#", welcomeMessage.SecurityGroup)
+																.Replace("#UserName#", User.Identity.Name)
 												};
 			}
 
