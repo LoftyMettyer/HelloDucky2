@@ -139,7 +139,7 @@
     <value>Conectarse con Facebook</value>
   </data>
 	<data name="Label_ConnectWithGoogle" xml:space="preserve">
-    <value>Conectar con Google+</value>
+    <value>Conectarse con Google+</value>
   </data>
 	<data name="Label_EmailAddress" xml:space="preserve">
     <value>Dirección De Correo Electrónico</value>
@@ -175,7 +175,7 @@
     <value>Usa el botón de abajo para crear nombre de usuario y contraseña para acceder a Nexus</value>
   </data>
 	<data name="Text_DashboardWelcome" xml:space="preserve">
-    <value>Bienvenidos al portal de Advanced</value>
+    <value>Bienvenido al portal de Advanced, #UserName#</value>
   </data>
 	<data name="Label_Welcome" xml:space="preserve">
 		<value>Bienvenido</value>
@@ -185,5 +185,26 @@
 	</data>
 	<data name="Label_RefreshToken" xml:space="preserve">
 		<value>Token de actualización</value>
+	</data>
+	<data name="Label_Logout">
+		<value>Salir</value>
+	</data>
+	<data name="Label_ButtonApplicationDemo" xml:space="preserve">
+		<value>Demostrar la aplicación</value>
+	</data>
+	<data name="Label_ButtonCalendar" xml:space="preserve">
+		<value>Calendario</value>
+	</data>
+	<data name="Label_ButtonRequestHoliday" xml:space="preserve">
+		<value>Pedir vacación</value>
+	</data>
+	<data name="Label_ButtonViewMyTeam" xml:space="preserve">
+		<value>Ver Mi Equipo</value>
+	</data>
+	<data name="Label_ButtonViewPersonnelRecord" xml:space="preserve">
+		<value>Ver mis datos personales</value>
+	</data>
+	<data name="Label_MyTeam" xml:space="preserve">
+		<value>Mi Equipo</value>
 	</data>
 </root>

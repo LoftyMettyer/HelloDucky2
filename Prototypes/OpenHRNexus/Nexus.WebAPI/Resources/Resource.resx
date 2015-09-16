@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+	<!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,158 +59,158 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="Label_AlternateLogins" xml:space="preserve">
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="Label_AlternateLogins" xml:space="preserve">
     <value>Or you can login using one of the social logins below</value>
   </data>
-  <data name="Label_ConfirmPassword" xml:space="preserve">
+	<data name="Label_ConfirmPassword" xml:space="preserve">
     <value>Confirm Password</value>
   </data>
-  <data name="Label_ConnectWithFacebook" xml:space="preserve">
+	<data name="Label_ConnectWithFacebook" xml:space="preserve">
     <value>Connect with Facebook</value>
   </data>
-  <data name="Label_ConnectWithGoogle" xml:space="preserve">
+	<data name="Label_ConnectWithGoogle" xml:space="preserve">
     <value>Connect with Google+</value>
   </data>
-  <data name="Label_EmailAddress" xml:space="preserve">
+	<data name="Label_EmailAddress" xml:space="preserve">
     <value>Email Address</value>
   </data>
-  <data name="Label_FirstName" xml:space="preserve">
+	<data name="Label_FirstName" xml:space="preserve">
     <value>First Name</value>
   </data>
-  <data name="Label_Home" xml:space="preserve">
+	<data name="Label_Home" xml:space="preserve">
     <value>Home</value>
   </data>
-  <data name="Label_LastName" xml:space="preserve">
+	<data name="Label_LastName" xml:space="preserve">
     <value>Last Name</value>
   </data>
-  <data name="Label_Login" xml:space="preserve">
+	<data name="Label_Login" xml:space="preserve">
     <value>Login</value>
   </data>
-  <data name="Label_LoginButton" xml:space="preserve">
+	<data name="Label_LoginButton" xml:space="preserve">
     <value>Login</value>
   </data>
-  <data name="Label_Password" xml:space="preserve">
+	<data name="Label_Password" xml:space="preserve">
     <value>Password</value>
   </data>
-  <data name="Label_SignUp" xml:space="preserve">
+	<data name="Label_SignUp" xml:space="preserve">
     <value>Sign Up</value>
   </data>
-  <data name="Label_SocialLogins" xml:space="preserve">
+	<data name="Label_SocialLogins" xml:space="preserve">
     <value>Social Logins</value>
   </data>
-  <data name="Label_SubmitButton" xml:space="preserve">
+	<data name="Label_SubmitButton" xml:space="preserve">
     <value>Submit</value>
   </data>
-  <data name="Label_UseRefreshTokens" xml:space="preserve">
+	<data name="Label_UseRefreshTokens" xml:space="preserve">
     <value>Use Refresh Tokens</value>
   </data>
-  <data name="Label_Username" xml:space="preserve">
+	<data name="Label_Username" xml:space="preserve">
     <value>Username</value>
   </data>
-  <data name="Text_DashboardWelcome" xml:space="preserve">
+	<data name="Text_DashboardWelcome" xml:space="preserve">
     <value>Welcome to your dashboard, #UserName#</value>
     <comment>Changed</comment>
   </data>
-  <data name="Text_LoginDescription" xml:space="preserve">
+	<data name="Text_LoginDescription" xml:space="preserve">
     <value>If you have a Username and Password, you can use the button below to access Nexus.</value>
   </data>
-  <data name="Text_SignUpDescription" xml:space="preserve">
+	<data name="Text_SignUpDescription" xml:space="preserve">
     <value>Use the button below to create Username and Password to access Nexus.</value>
   </data>
-  <data name="Text_WelcomeMessage" xml:space="preserve">
+	<data name="Text_WelcomeMessage" xml:space="preserve">
     <value>Welcome #FullName#, you last logged in on #LastLoginDate#; you Security Group is "#SecurityGroup#"</value>
   </data>
-  <data name="Label_Welcome" xml:space="preserve">
+	<data name="Label_Welcome" xml:space="preserve">
     <value>Welcome</value>
   </data>
-  <data name="Label_MyDashboard" xml:space="preserve">
+	<data name="Label_MyDashboard" xml:space="preserve">
     <value>My Dashboard</value>
   </data>
-  <data name="Label_RefreshToken" xml:space="preserve">
+	<data name="Label_RefreshToken" xml:space="preserve">
     <value>Refresh Token</value>
   </data>
-  <data name="Label_Logout" xml:space="preserve">
+	<data name="Label_Logout" xml:space="preserve">
     <value>Logout</value>
   </data>
-  <data name="Label_ButtonApplicationDemo" xml:space="preserve">
+	<data name="Label_ButtonApplicationDemo" xml:space="preserve">
     <value>Application Demo</value>
     <comment>temporary</comment>
   </data>
-  <data name="Label_ButtonCalendar" xml:space="preserve">
+	<data name="Label_ButtonCalendar" xml:space="preserve">
     <value>Calendar</value>
     <comment>temporary</comment>
   </data>
-  <data name="Label_ButtonRequestHoliday" xml:space="preserve">
+	<data name="Label_ButtonRequestHoliday" xml:space="preserve">
     <value>Request Holiday</value>
     <comment>temporary</comment>
   </data>
-  <data name="Label_ButtonViewMyTeam" xml:space="preserve">
+	<data name="Label_ButtonViewMyTeam" xml:space="preserve">
     <value>View My Team</value>
     <comment>temporary</comment>
   </data>
-  <data name="Label_ButtonViewPersonnelRecord" xml:space="preserve">
+	<data name="Label_ButtonViewPersonnelRecord" xml:space="preserve">
     <value>View Personnel Record</value>
     <comment>temporary</comment>
   </data>
-  <data name="Label_MyTeam" xml:space="preserve">
+	<data name="Label_MyTeam" xml:space="preserve">
     <value>My Team</value>
     <comment>new</comment>
   </data>

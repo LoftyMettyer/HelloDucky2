@@ -124,10 +124,10 @@
     <value>Confirmez Le Mot De Passe</value>
   </data>
 	<data name="Label_ConnectWithFacebook" xml:space="preserve">
-    <value>connecter avec Facebook</value>
+    <value>Connecter avec Facebook</value>
   </data>
 	<data name="Label_ConnectWithGoogle" xml:space="preserve">
-    <value>connecter avec Google+</value>
+    <value>Connecter avec Google+</value>
   </data>
 	<data name="Label_EmailAddress" xml:space="preserve">
     <value>Adresse E-Mail</value>
@@ -166,7 +166,7 @@
     <value>Nom d'utilisateur</value>
   </data>
 	<data name="Text_DashboardWelcome" xml:space="preserve">
-    <value>Bienvenue sur le portail Advanced</value>
+    <value>Bienvenue à votre tableau de bord, #UserName#</value>
   </data>
 	<data name="Text_LoginDescription" xml:space="preserve">
     <value>Si vous avez un nom d'utilisateur et mot de passe , vous pouvez utiliser le bouton ci-dessous pour accéder Nexus.</value>
@@ -188,5 +188,23 @@
 	</data>
 	<data name="Label_Logout" xml:space="preserve">
 		<value>Se déconnecter</value>
+	</data>
+	<data name="Label_ButtonApplicationDemo" xml:space="preserve">
+		<value>Démo de l'application</value>
+	</data>
+	<data name="Label_ButtonCalendar" xml:space="preserve">
+		<value>Calendrier</value>
+	</data>
+	<data name="Label_ButtonRequestHoliday" xml:space="preserve">
+		<value>Demande vacances</value>
+	</data>
+	<data name="Label_ButtonViewMyTeam" xml:space="preserve">
+		<value>Voir Mon équipe</value>
+	</data>
+	<data name="Label_ButtonViewPersonnelRecord" xml:space="preserve">
+		<value>Voir le dossier personnel</value>
+	</data>
+	<data name="Label_MyTeam" xml:space="preserve">
+		<value>Mon équipe</value>
 	</data>
 </root>
