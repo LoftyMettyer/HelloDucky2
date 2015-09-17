@@ -574,6 +574,31 @@
               Looks up a localized string similar to Or you can login using one of the social logins below.
             </summary>
         </member>
+        <member name="P:Nexus.WebAPI.Resources.Resource.Label_ButtonApplicationDemo">
+            <summary>
+              Looks up a localized string similar to Application Demo.
+            </summary>
+        </member>
+        <member name="P:Nexus.WebAPI.Resources.Resource.Label_ButtonCalendar">
+            <summary>
+              Looks up a localized string similar to Calendar.
+            </summary>
+        </member>
+        <member name="P:Nexus.WebAPI.Resources.Resource.Label_ButtonRequestHoliday">
+            <summary>
+              Looks up a localized string similar to Request Holiday.
+            </summary>
+        </member>
+        <member name="P:Nexus.WebAPI.Resources.Resource.Label_ButtonViewMyTeam">
+            <summary>
+              Looks up a localized string similar to View My Team.
+            </summary>
+        </member>
+        <member name="P:Nexus.WebAPI.Resources.Resource.Label_ButtonViewPersonnelRecord">
+            <summary>
+              Looks up a localized string similar to View Personnel Record.
+            </summary>
+        </member>
         <member name="P:Nexus.WebAPI.Resources.Resource.Label_ConfirmPassword">
             <summary>
               Looks up a localized string similar to Confirm Password.
@@ -629,6 +654,11 @@
               Looks up a localized string similar to My Dashboard.
             </summary>
         </member>
+        <member name="P:Nexus.WebAPI.Resources.Resource.Label_MyTeam">
+            <summary>
+              Looks up a localized string similar to My Team.
+            </summary>
+        </member>
         <member name="P:Nexus.WebAPI.Resources.Resource.Label_Password">
             <summary>
               Looks up a localized string similar to Password.
@@ -671,17 +701,17 @@
         </member>
         <member name="P:Nexus.WebAPI.Resources.Resource.Text_DashboardWelcome">
             <summary>
-              Looks up a localized string similar to Welcome to the Advanced portal.
+              Looks up a localized string similar to Welcome to your dashboard, #UserName#.
             </summary>
         </member>
         <member name="P:Nexus.WebAPI.Resources.Resource.Text_LoginDescription">
             <summary>
-              Looks up a localized string similar to If you have a Username and Password, you can use the button below to access Nexus.
+              Looks up a localized string similar to If you have a Username and Password, you can use the button below to access Nexus..
             </summary>
         </member>
         <member name="P:Nexus.WebAPI.Resources.Resource.Text_SignUpDescription">
             <summary>
-              Looks up a localized string similar to Use the button below to create Username and Password to access Nexus.
+              Looks up a localized string similar to Use the button below to create Username and Password to access Nexus..
             </summary>
         </member>
         <member name="P:Nexus.WebAPI.Resources.Resource.Text_WelcomeMessage">
