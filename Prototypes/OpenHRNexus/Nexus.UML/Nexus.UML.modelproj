@@ -47,6 +47,13 @@
       <SubType>Content</SubType>
       <DependentUpon>UMLRetrieveScreen.sequencediagram</DependentUpon>
     </Content>
+    <Content Include="UMLPendingProcesses.sequencediagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UMLPendingProcesses.sequencediagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>UMLPendingProcesses.sequencediagram</DependentUpon>
+    </Content>
     <Folder Include="ModelDefinition\" />
     <Content Include="ModelDefinition\UML.uml">
       <SubType>Content</SubType>
