@@ -6,9 +6,14 @@ using Nexus.Common.Models;
 using Nexus.Sql_Repository.DatabaseClasses.Data;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using Nexus.WebAPI.Handlers;
 
 namespace Nexus.WebAPI.Controllers
 {
@@ -63,7 +68,7 @@ namespace Nexus.WebAPI.Controllers
         /// Request a list of processes currently in mid-flow
         /// </summary>
         /// <returns>A JSON object containing all in-flow processes</returns>
-        [Authorize(Roles="OpenHRUser")]
+        [Authorize(Roles = "OpenHRUser")]
         [Route("pendingprocesses")]
         public IEnumerable<ProcessInFlow> GetPendingProcesses()
         {
@@ -103,7 +108,6 @@ namespace Nexus.WebAPI.Controllers
         /// <param name="stepId"></param>
         /// <returns></returns>
         [Authorize(Roles = "OpenHRUser")]
-        //[Route("process/{processId:int, stepId:guid}")] //TODO: For Routing using multiple parameters; this syntax doesn't work at the moment, investigage
         [Route("{processId:int}")]
         public IEnumerable<WebFormModel> GetProcessStep([FromUri] int processId)
         {
@@ -146,6 +150,31 @@ namespace Nexus.WebAPI.Controllers
 
             return _dataService.SubmitStepForUser(form.stepid, userId, form);
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="form">From Body (application/json)</param>
+        /// <param name="userId"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [Route("")]
+        public async Task<string> PostProcessStep([FromBody]WebFormModel form, string userId, string code)
+        {
+            bool isValidToken = await AuthenticationServiceHandler.PostProcessStep(userId, code);
+
+            if (isValidToken)
+            {
+                //todo: Lofty to pass request on now that we're authenticated....
+                
+            }
+
+            return isValidToken ? "OK" : "Not OK";
+
+        }
+
 
 
     }

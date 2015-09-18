@@ -553,6 +553,28 @@
             <param name="form"></param>
             <returns></returns>
         </member>
+        <member name="M:Nexus.WebAPI.Controllers.ProcessController.PostProcessStep(Nexus.Common.Models.WebFormModel,System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="form">From Body (application/json)</param>
+            <param name="userId"></param>
+            <param name="code"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Nexus.WebAPI.Handlers.AuthenticationServiceHandler">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Nexus.WebAPI.Handlers.AuthenticationServiceHandler.PostProcessStep(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="userId"></param>
+            <param name="code"></param>
+            <returns></returns>
+        </member>
         <member name="T:Nexus.WebAPI.Resources.Resource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

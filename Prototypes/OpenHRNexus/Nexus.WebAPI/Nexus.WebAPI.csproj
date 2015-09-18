@@ -251,6 +251,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Globals\Global.cs" />
+    <Compile Include="Handlers\AuthenticationServiceHandler.cs" />
     <Compile Include="Handlers\MessageHandler.cs" />
     <Compile Include="Handlers\MessageLoggingHandler.cs" />
     <Compile Include="Localization\LanguageMessageHandler.cs" />
