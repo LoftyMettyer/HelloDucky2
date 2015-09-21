@@ -45,5 +45,42 @@ namespace Nexus.WebAPI.Handlers
 
             }
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="purpose"></param>
+        /// <returns></returns>
+        public static async Task<string> GetUserToken(string userId, string purpose)
+        {
+            using (var client = new HttpClient())
+            {
+                var issuer = ConfigurationManager.AppSettings["as:Issuer"];
+                string baseUrl = issuer.TrimEnd(Convert.ToChar("/")) + "/";
+
+                client.BaseAddress = new Uri(baseUrl);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage response = await client.GetAsync("api/accounts/getusertoken?userId=" + userId + "&purpose=LOFTYTODO");
+
+                string responseString;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    responseString = await response.Content.ReadAsAsync<string>();
+                }
+                else
+                {
+                    responseString = "false";
+                }
+
+                return responseString;
+
+            }
+        }
+
+
     }
 }
