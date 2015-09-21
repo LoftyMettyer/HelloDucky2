@@ -56,6 +56,7 @@
     <Compile Include="Classes\BaseEntity.cs" />
     <Compile Include="Classes\Process.cs" />
     <Compile Include="Classes\ProcessElement.cs" />
+    <Compile Include="Classes\ProcessFormData.cs" />
     <Compile Include="Classes\ProcessInFlow.cs" />
     <Compile Include="Classes\ProcessStepEmail.cs" />
     <Compile Include="Classes\ProcessStepResponse.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Classes\WebFormButton.cs" />
     <Compile Include="Models\WebFormButtonModel.cs" />
     <Compile Include="Models\WebFormControl.cs" />
+    <Compile Include="Models\WebFormDataModel.cs" />
     <Compile Include="Models\WebFormFieldOption.cs" />
     <Compile Include="Models\WebFormFields.cs" />
     <Compile Include="Models\WebFormModel.cs" />

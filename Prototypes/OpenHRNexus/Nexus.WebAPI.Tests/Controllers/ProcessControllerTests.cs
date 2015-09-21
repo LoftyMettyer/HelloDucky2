@@ -103,17 +103,14 @@ namespace Nexus.WebAPI.Tests.Controllers
         public void PostProcessStep_ResponseReceived()
         {
 
-            var field = new WebFormField { sequence = 1, columnid = 2, value = "Smith" };
-
-            var form = new WebFormModel
+            var form = new WebFormDataModel
             {
                 stepid = Guid.NewGuid(),
-                fields = new List<WebFormField>() {
-                    new WebFormField { id=1, sequence = 1, columnid = 1, value = "John" },
-                    new WebFormField { id=1, sequence = 2, columnid = 2, value = "Smith" },
+                data = new List<KeyValuePair<string, object>>() {
+                    new KeyValuePair<string, object> ("we_1_1", "John"),
+                    new KeyValuePair<string, object>  ("we_2_2", "Smith")
                 }
             };
-
 
             var result = _mockController.PostProcessStep(form);
             Assert.IsTrue(result is ProcessStepResponse);

@@ -5,14 +5,17 @@ namespace Nexus.Common.Models
 {
     public class WebFormField : WebFormControl
     {
+        private string _elementId;
 
         public int sequence { get; set; }
+
         public int columnid { get; set; }
-        public string elementid { get
-            {
-                return string.Format("we_{0}_{1}", id.ToString(), sequence.ToString());
-            }
-        }
+
+        /// <summary>
+        /// Todo the elementId needs to be properly defined. Temporary while end finalise the endpoint constructs
+        /// </summary>
+        public string elementid { get; set; }
+
         public string title { get; set; }
         public string type { get; set; }
         public string value { get; set; }

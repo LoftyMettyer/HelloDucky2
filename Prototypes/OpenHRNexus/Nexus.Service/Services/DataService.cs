@@ -121,11 +121,20 @@ namespace Nexus.Service.Services {
         }
 
 
-        ProcessStepResponse IDataService.SubmitStepForUser(Guid stepId, Guid userID, WebFormModel form)
+        ProcessStepResponse IDataService.SubmitStepForUser(Guid stepId, Guid userID, WebFormDataModel formData)
         {
             var result = new ProcessStepResponse();
 
 
+            WebFormModel form = new WebFormModel();
+
+            // Conversion to internal data mappings, to be reworked once endpoints are finalised.
+            form.stepid = formData.stepid;
+            form.fields = new List<WebFormField>();
+            foreach (var field in formData.data)
+            {
+                form.fields.Add(new WebFormField() { elementid = field.Key, value = field.Value.ToString() });
+            }
 
 
             // Find out what our next steps are.

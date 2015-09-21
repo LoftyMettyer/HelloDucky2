@@ -546,18 +546,18 @@
             <param name="stepId"></param>
             <returns></returns>
         </member>
-        <member name="M:Nexus.WebAPI.Controllers.ProcessController.PostProcessStep(Nexus.Common.Models.WebFormModel)">
+        <member name="M:Nexus.WebAPI.Controllers.ProcessController.PostProcessStep(Nexus.Common.Models.WebFormDataModel)">
             <summary>
             
             </summary>
             <param name="form"></param>
             <returns></returns>
         </member>
-        <member name="M:Nexus.WebAPI.Controllers.ProcessController.PostProcessStep(Nexus.Common.Models.WebFormModel,System.String,System.String)">
+        <member name="M:Nexus.WebAPI.Controllers.ProcessController.PostProcessStep(Nexus.Common.Models.WebFormDataModel,System.String,System.String)">
             <summary>
             
             </summary>
-            <param name="form">From Body (application/json)</param>
+            <param name="formData">From Body (application/json)</param>
             <param name="userId"></param>
             <param name="code"></param>
             <returns></returns>

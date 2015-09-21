@@ -137,38 +137,42 @@ namespace Nexus.WebAPI.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="form"></param>
+        /// <param name="formData"></param>
         /// <returns></returns>
         [Authorize(Roles = "OpenHRUser")]
         [Route("")]
-        public ProcessStepResponse PostProcessStep(WebFormModel form)
+        public ProcessStepResponse PostProcessStep(WebFormDataModel formData)
         {
 
             // Put some clever code in an attribute extension to validate that there is a identity getuserguid?
             // Maybe this is already covered by the authorize roles = OpenHRUser?
             var userId = new Guid(_identity.GetUserId());
 
-            return _dataService.SubmitStepForUser(form.stepid, userId, form);
+            return  _dataService.SubmitStepForUser(formData.stepid, userId, formData);
+
         }
 
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="form">From Body (application/json)</param>
+        /// <param name="formData">From Body (application/json)</param>
         /// <param name="userId"></param>
         /// <param name="code"></param>
         /// <returns></returns>
         [AllowAnonymous]
         [Route("")]
-        public async Task<string> PostProcessStep([FromBody]WebFormModel form, string userId, string code)
+        public async Task<string> PostProcessStep([FromBody]WebFormDataModel formData, string userId, string code)
         {
             bool isValidToken = await AuthenticationServiceHandler.PostProcessStep(userId, code);
 
             if (isValidToken)
             {
-                //todo: Lofty to pass request on now that we're authenticated....
-                
+                // Owasp data cleansing
+                formData.DataCleanse();
+
+                var result =  _dataService.SubmitStepForUser(formData.stepid, new Guid(userId), formData);
+
             }
 
             return isValidToken ? "OK" : "Not OK";

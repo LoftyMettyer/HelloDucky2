@@ -128,7 +128,7 @@ namespace Nexus.Sql_Repository
         }
 
         public virtual DbSet<ProcessFormElement> WebForms { get; set; }
-//        public virtual DbSet<WebFormField> WebFormFields { get; set; }
+        public virtual DbSet<WebFormField> WebFormFields { get; set; }
         //public virtual DbSet<WebFormButton> WebFormButtons { get; set; }
         //public virtual DbSet<WebFormFieldOption> WebFormFieldOptions { get; set; }
 
@@ -256,22 +256,14 @@ namespace Nexus.Sql_Repository
             var storedType = StoredDataType.Insert;
 
 
-
-
             // Get form field values in table/column enumerator
-//            List<KeyValuePair<DynamicColumn, string>> dataValues;
-     //       var BLAH = data.fields.Select(f => f.columnid).Contains(1);
+            var elementIds = data.fields.Select(f => f.elementid).ToList();
 
-            var columnIds = data.fields.Select(f => f.columnid).ToList();
+            var columns = (from fields in WebFormFields
+                             where elementIds.Contains(fields.elementid)
+                             join cols in Columns on fields.columnid equals cols.Id
+                             select cols).ToList();
 
-            //var vals = (from cols in Columns
-            //              where columnIds.Contains(cols.Id)
-            //              select cols, "hello").ToList();
-
-
-            var columns = (from cols in Columns
-                               where columnIds.Contains(cols.Id)
-                               select cols).ToList();
 
             var tableId = columns.FirstOrDefault().TableId;
             var table = DynamicTables.Where(t => t.Id == tableId).FirstOrDefault();
