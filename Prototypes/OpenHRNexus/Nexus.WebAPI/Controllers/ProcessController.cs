@@ -162,9 +162,9 @@ namespace Nexus.WebAPI.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [Route("")]
-        public async Task<string> PostProcessStep([FromBody]WebFormDataModel formData, string userId, string code)
+        public async Task<string> PostProcessStep([FromBody]WebFormDataModel formData, string userId, string code, string purpose)
         {
-            bool isValidToken = await AuthenticationServiceHandler.PostProcessStep(userId, code);
+            bool isValidToken = await AuthenticationServiceHandler.PostProcessStep(userId, code, purpose);
 
             if (isValidToken)
             {

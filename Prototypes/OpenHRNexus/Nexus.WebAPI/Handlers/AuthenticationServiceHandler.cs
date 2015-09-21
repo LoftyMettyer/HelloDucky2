@@ -18,7 +18,7 @@ namespace Nexus.WebAPI.Handlers
         /// <param name="userId"></param>
         /// <param name="code"></param>
         /// <returns></returns>
-        public static async Task<Boolean> PostProcessStep(string userId, string code)
+        public static async Task<Boolean> PostProcessStep(string userId, string code, string purpose)
         {
             using (var client = new HttpClient())
             {
@@ -28,7 +28,7 @@ namespace Nexus.WebAPI.Handlers
                 client.BaseAddress = new Uri(baseUrl);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = await client.GetAsync("api/accounts/verifyusertoken?userId=" + userId + "&code=" + HttpUtility.UrlEncode(code));
+                HttpResponseMessage response = await client.GetAsync("api/accounts/verifyusertoken?userId=" + userId + "&code=" + HttpUtility.UrlEncode(code) + "&purpose=" + purpose);
 
                 string responseString;
 

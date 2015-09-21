@@ -200,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\UI\Models\" />
     <Folder Include="Views\Data\" />
     <Folder Include="Views\Designer\" />
     <Folder Include="Views\Entity\" />
@@ -239,6 +240,8 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Areas\UI\Controllers\HomeController.cs" />
+    <Compile Include="Areas\UI\UIAreaRegistration.cs" />
     <Compile Include="Configuration\EnterpriseServicesConfiguration.cs" />
     <Compile Include="Controllers\AuthenticateController.cs" />
     <Compile Include="Controllers\DataController.cs" />
@@ -292,6 +295,10 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <Content Include="Areas\UI\Views\web.config" />
+    <Content Include="Areas\UI\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\UI\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\UI\Views\Home\Index.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

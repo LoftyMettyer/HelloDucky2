@@ -481,6 +481,27 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
+        <member name="T:Nexus.WebAPI.Areas.UI.Controllers.HomeController">
+            <summary>
+            Controller for User Interaction only
+            </summary>
+        </member>
+        <member name="M:Nexus.WebAPI.Areas.UI.Controllers.HomeController.Index">
+            <summary>
+            The home page for user interaction
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Nexus.WebAPI.Areas.UI.Controllers.HomeController.PostProcessStep(Nexus.Common.Models.WebFormDataModel,System.String,System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="formData"></param>
+            <param name="userId"></param>
+            <param name="code"></param>
+            <param name="purpose"></param>
+            <returns></returns>
+        </member>
         <member name="T:Nexus.WebAPI.Controllers.DesignerController">
             <summary>
             This controller is used for accessing the nexus metadata design services
@@ -553,7 +574,7 @@
             <param name="formData"></param>
             <returns></returns>
         </member>
-        <member name="M:Nexus.WebAPI.Controllers.ProcessController.PostProcessStep(Nexus.Common.Models.WebFormDataModel,System.String,System.String)">
+        <member name="M:Nexus.WebAPI.Controllers.ProcessController.PostProcessStep(Nexus.Common.Models.WebFormDataModel,System.String,System.String,System.String)">
             <summary>
             
             </summary>
@@ -567,12 +588,20 @@
             
             </summary>
         </member>
-        <member name="M:Nexus.WebAPI.Handlers.AuthenticationServiceHandler.PostProcessStep(System.String,System.String)">
+        <member name="M:Nexus.WebAPI.Handlers.AuthenticationServiceHandler.PostProcessStep(System.String,System.String,System.String)">
             <summary>
             
             </summary>
             <param name="userId"></param>
             <param name="code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Nexus.WebAPI.Handlers.AuthenticationServiceHandler.GetUserToken(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="userId"></param>
+            <param name="purpose"></param>
             <returns></returns>
         </member>
         <member name="T:Nexus.WebAPI.Resources.Resource">
