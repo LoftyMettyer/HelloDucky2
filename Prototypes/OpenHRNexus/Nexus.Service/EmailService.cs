@@ -13,30 +13,33 @@ using PostmarkDotNet.Legacy;
 namespace Nexus.Service {
 	public class EmailService {
 		public ProcessStepResponse Send(string to, string subject, string body) {
-			//var message = new PostmarkMessage {
-			//	From = "roberto.caballero@advancedcomputersoftware.com",
-			//	To = to,
-			//	Subject = subject,
-			//	HtmlBody = body,
-			//	TextBody = body,
-			//	ReplyTo = "nexus-reply@advancedcomputersoftware.com"
-			//};
+            //var message = new PostmarkMessage
+            //{
+            //    From = "nick.gibson@advancedcomputersoftware.com",
+            //    To = to,
+            //    Subject = subject,
+            //    HtmlBody = body,
+            //    TextBody = body,
+            //    ReplyTo = "nexus-reply@advancedcomputersoftware.com"
+            //};
 
-			//var client = new PostmarkClient("4984ad83-2881-46ee-998c-97b0523822df");
+            //var client = new PostmarkClient("4984ad83-2881-46ee-998c-97b0523822df");
 
-			//var response = client.SendMessage(message);
+            //var response = client.SendMessage(message);
 
-			//if (response.Status != PostmarkStatus.Success) {
-			//	return new BusinessProcessStepResponse() {
-			//		Status = BusinessProcessStepStatus.EmailFailedToSend,
-			//		Message = "Email failed to send",
-			//		FollowOnUrl = String.Empty
-			//	};
-			//}
+            //if (response.Status != PostmarkStatus.Success)
+            //{
+            //    return new ProcessStepResponse()
+            //    {
+            //        Status = ProcessStepStatus.EmailFailedToSend,
+            //        Message = "Email failed to send",
+            //        FollowOnUrl = String.Empty
+            //    };
+            //}
 
-			//Uncoment the lines above to restore email-sending functionality//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //Uncoment the lines above to restore email-sending functionality//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			return new ProcessStepResponse() {
+            return new ProcessStepResponse() {
 				Status = ProcessStepStatus.EmailSuccessfullySent,
 				Message = "Email successfully sent",
 				FollowOnUrl = String.Empty
