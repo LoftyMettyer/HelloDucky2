@@ -7,7 +7,7 @@ namespace Nexus.Common.Models
     public class WebFormDataModel
     {
         public Guid stepid {get; set;}
-        public IEnumerable<KeyValuePair<string, object>> data { get; set; }
+        public Dictionary<string, object> data { get; set; }
 
         public void DataCleanse()
         {

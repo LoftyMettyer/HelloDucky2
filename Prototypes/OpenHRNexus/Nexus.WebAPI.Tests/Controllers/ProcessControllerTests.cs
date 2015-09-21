@@ -9,6 +9,7 @@ using Nexus.WebAPI.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Web.Script.Serialization;
 
 namespace Nexus.WebAPI.Tests.Controllers
 {
@@ -106,9 +107,10 @@ namespace Nexus.WebAPI.Tests.Controllers
             var form = new WebFormDataModel
             {
                 stepid = Guid.NewGuid(),
-                data = new List<KeyValuePair<string, object>>() {
-                    new KeyValuePair<string, object> ("we_1_1", "John"),
-                    new KeyValuePair<string, object>  ("we_2_2", "Smith")
+                data = new Dictionary<string, object>()
+                {
+                    {"we_1_1", "John" },
+                    { "we_2_2", "Smith" }
                 }
             };
 
@@ -118,6 +120,30 @@ namespace Nexus.WebAPI.Tests.Controllers
         }
 
 
+        [TestMethod]
+        public void PostProcessStep_JsonIsSerialized()
+        {
+
+            var originalform = new WebFormDataModel
+            {
+                stepid = Guid.NewGuid(),
+                data = new Dictionary<string, object>()
+                {
+                    {"we_1_1", "John" },
+                    { "we_2_2", "Smith" }
+                }
+            };
+
+            var serializedForm = new JavaScriptSerializer().Serialize(originalform);
+            Assert.IsInstanceOfType(serializedForm, typeof(string));
+
+            var reSerializedform = new JavaScriptSerializer().Deserialize<WebFormDataModel>(serializedForm);
+            Assert.IsInstanceOfType(reSerializedform, typeof(WebFormDataModel));
+
+            var result = _mockController.PostProcessStep(reSerializedform);
+            Assert.IsTrue(result is ProcessStepResponse, "Serialized object cannot be processed");
+
+        }
 
 
     }
