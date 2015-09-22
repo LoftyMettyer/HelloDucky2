@@ -47,7 +47,7 @@ namespace Nexus.Common.Classes
             "<style type='text/css'>" +
             ".bold {{font-weight: bold}}" +
             "</style>" +
-            "  <v:roundrect xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' href='http://www.EXAMPLE.com/' style='height:33px;v-text-anchor:middle;width:77px;margin-right: 5px;' arcsize='10%' stroke='f' fillcolor='#5CB85C'>" +
+            "  <v:roundrect xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' href='{6}' style='height:33px;v-text-anchor:middle;width:77px;margin-right: 5px;' arcsize='10%' stroke='f' fillcolor='#5CB85C'>" +
             "    <w:anchorlock/>" +
             "    <center style='color:#ffffff;font-family:sans-serif;font-size:14px;font-weight:normal;'>" +
             "      Approve" +
