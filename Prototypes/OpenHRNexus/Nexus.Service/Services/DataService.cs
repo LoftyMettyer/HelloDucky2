@@ -9,18 +9,27 @@ using Nexus.Common.Interfaces.Services;
 using Nexus.Common.Enums;
 using Nexus.Sql_Repository.DatabaseClasses.Data;
 using System.Linq;
+using Nexus.WebAPI.Handlers;
 
 namespace Nexus.Service.Services {
 	public class DataService : IDataService {
 		private IProcessRepository _dataRepository;
         private IDictionary _dictionary;
         private string _callingURL;
+        private string _authenticationServiceURL;
 
         public string CallingURL
         {
             get
             { return _callingURL; }
             set { _callingURL = value; }
+        }
+
+        public string AuthenticationServiceURL
+        {
+            get
+            { return _authenticationServiceURL; }
+            set { _authenticationServiceURL = value; }
         }
 
         public DataService(IProcessRepository dataRepository, IDictionary dictionary) {
@@ -101,8 +110,6 @@ namespace Nexus.Service.Services {
             };
 
 
-
-
             // TODO - Fettle to get rid of recursive webform references. Ultimate solution is to return a different webform item to the internal
             // service and repository objects.
 
@@ -172,8 +179,20 @@ namespace Nexus.Service.Services {
 
                     //Todo: Determine what type of email template we are using so we can do some extra processing on the template, such as replacing certain placeholders, etc.
 
+                    //todoget the the email message template from the database
+                    var buttonCode = string.Format("{0}api/process?userid={1}&stepid={2}&code={3}"
+                        , _callingURL, userID, stepId
+                        , AuthenticationServiceHandler.GetUserToken(_authenticationServiceURL, userID, stepId));
+
                     result = emailService.Send(processStepEmail.To, processStepEmail.Subject,
-												string.Format(processStepEmail.Message, "Debbie Avery", "two day", "19/09/2015", "25/09/2015", "Holiday","Sorry it's short notice!", "http://www.bbc.co.uk", "http://www.bbc.co.uk", "http://www.bbc.co.uk", "http://www.bbc.co.uk"));
+												string.Format(processStepEmail.Message
+                                                , "Debbie Avery", "two day", "19/09/2015", "25/09/2015", "Holiday"
+                                                ,"Sorry it's short notice!"
+                                                , buttonCode
+                                                , "http://www.bbc.co.uk"
+                                                , "http://www.bbc.co.uk"
+                                                , "http://www.bbc.co.uk"));
+
                     break;
 
                 case ProcessElementType.StoredData:

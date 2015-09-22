@@ -10,7 +10,9 @@ namespace Nexus.Common.Interfaces.Services
 	public interface IDataService {
 
         string CallingURL { get; set; }
-		WebFormModel InstantiateProcess(int processId, Guid userId, string language);
+        string AuthenticationServiceURL { get; set; }
+
+        WebFormModel InstantiateProcess(int processId, Guid userId, string language);
 
         ProcessStepResponse SubmitStepForUser(Guid stepId, Guid userId, WebFormDataModel formData);
         IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters);

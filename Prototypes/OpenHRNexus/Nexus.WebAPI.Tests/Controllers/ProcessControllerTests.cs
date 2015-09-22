@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nexus.Common.Classes;
+using Nexus.Common.Enums;
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
 using Nexus.Service.Services;
@@ -27,6 +28,7 @@ namespace Nexus.WebAPI.Tests.Controllers
         public void TestInitialize()
         {
             _mockService.CallingURL = "http://nexus-advanced.azurewebsites.net/";
+            _mockService.AuthenticationServiceURL = "http://localhost:25261/";
             _claims = new ClaimsIdentity();
             _claims.AddClaim(new Claim(ClaimTypes.Name, "testUser"));
             _claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, "088C6A78-E14A-41B0-AD93-4FB7D3ADE96C"));
@@ -142,6 +144,33 @@ namespace Nexus.WebAPI.Tests.Controllers
 
             var result = _mockController.PostProcessStep(reSerializedform);
             Assert.IsTrue(result is ProcessStepResponse, "Serialized object cannot be processed");
+
+        }
+
+
+        [TestMethod]
+        public void PostProcessStep_EmailIsTriggered()
+        {
+
+            var form = new WebFormDataModel
+            {
+                stepid = Guid.NewGuid(),
+                data = new Dictionary<string, object>()
+                {
+                    { "we_18_9", DateTime.Now },
+                    { "we_19_11", DateTime.Now.AddDays(3) },
+                    { "we_20_13", 2 },
+                    { "we_21_14", "some notes" },
+                    { "we_22_8", 3 },
+                    { "we_23_10", "AM" },
+                    { "we_24_12", "PM" },
+                    { "we_25_15", false }
+
+                }
+            };
+
+            var result = _mockController.PostProcessStep(form);
+            Assert.IsTrue(result.Status == ProcessStepStatus.EmailSuccessfullySent);
 
         }
 
