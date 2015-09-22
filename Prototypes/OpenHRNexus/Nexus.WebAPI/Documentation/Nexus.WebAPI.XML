@@ -496,10 +496,10 @@
             <summary>
             
             </summary>
-            <param name="formData"></param>
-            <param name="userId"></param>
-            <param name="code"></param>
-            <param name="purpose"></param>
+            <param name="formData">Optional form body</param>
+            <param name="userId">user GUID for this request</param>
+            <param name="code">code provided to authenticate this request</param>
+            <param name="purpose">purpose of this request</param>
             <returns></returns>
         </member>
         <member name="T:Nexus.WebAPI.Controllers.DesignerController">
@@ -581,6 +581,7 @@
             <param name="formData">From Body (application/json)</param>
             <param name="userId"></param>
             <param name="code"></param>
+            <param name="purpose"></param>
             <returns></returns>
         </member>
         <member name="T:Nexus.WebAPI.Handlers.AuthenticationServiceHandler">

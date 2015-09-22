@@ -174,6 +174,5 @@ namespace Nexus.WebAPI.Tests.Controllers
 
         }
 
-
+      }
     }
-}

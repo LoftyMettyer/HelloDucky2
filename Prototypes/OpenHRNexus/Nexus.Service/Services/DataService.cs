@@ -180,7 +180,7 @@ namespace Nexus.Service.Services {
                     //Todo: Determine what type of email template we are using so we can do some extra processing on the template, such as replacing certain placeholders, etc.
 
                     //todoget the the email message template from the database
-                    var buttonCode = string.Format("{0}api/process?userid={1}&stepid={2}&code={3}"
+                    var buttonCode = string.Format("{0}api/process?userid={1}&code={3}&purpose={2}"
                         , _callingURL, userID, stepId
                         , AuthenticationServiceHandler.GetUserToken(_authenticationServiceURL, userID, stepId));
 

@@ -159,6 +159,7 @@ namespace Nexus.WebAPI.Controllers
         /// <param name="formData">From Body (application/json)</param>
         /// <param name="userId"></param>
         /// <param name="code"></param>
+        /// <param name="purpose"></param>
         /// <returns></returns>
         [AllowAnonymous]
         [Route("")]
