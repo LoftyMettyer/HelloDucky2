@@ -45,6 +45,7 @@ namespace Nexus.WebAPI.Controllers
         {
             _dataService = dataService;
             _dataService.CallingURL = GetApplicationSchemeName();
+            _dataService.AuthenticationServiceURL = ConfigurationManager.AppSettings["as:Issuer"];
             _identity = User.Identity as ClaimsIdentity;
             _language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
         }
