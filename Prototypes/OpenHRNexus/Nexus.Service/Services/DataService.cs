@@ -189,6 +189,7 @@ namespace Nexus.Service.Services
                         {
                             MailMessage message = _dataRepository.PopulateEmailWithData(processStepEmail, userID
                                 , _callingURL, tokenResponse.Result, emailDestinations);
+                            result = emailService.Send(message);
                         }
                     );
 
