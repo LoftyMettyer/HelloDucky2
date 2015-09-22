@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Mail;
 using Nexus.Common.Classes;
 using Nexus.Common.Interfaces;
 using Nexus.Common.Interfaces.Repository;
@@ -53,6 +54,11 @@ namespace Nexus.Mock_Repository {
         }
 
         public IEnumerable<ProcessInFlow> GetProcesses(Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public MailMessage PopulateEmailWithData(IProcessStep step, Guid userId, string targetURL, string authenticationToken, EmailAddressCollection destinations)
         {
             throw new NotImplementedException();
         }

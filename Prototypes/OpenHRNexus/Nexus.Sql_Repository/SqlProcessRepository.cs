@@ -12,6 +12,8 @@ using System.Data.Entity.Validation;
 using Nexus.Common.Interfaces;
 using Nexus.Sql_Repository.Enums;
 using System.Data.Entity.Infrastructure;
+using System.Net.Mail;
+using Nexus.Sql_Repository.DatabaseClasses;
 
 namespace Nexus.Sql_Repository
 {
@@ -113,6 +115,113 @@ namespace Nexus.Sql_Repository
 
         }
 
+        [Obsolete("Will pull from database and calculate where in the process chain?")]
+        private string GetBodyTemplateForEmail(IProcessStep step)
+        {
+            // only one template exists at the moment
+            //            var bodyTemplate = ProcessEmailTemplates.Where(t => t.Id == 1).First().BodyTemplate;
+            return "< !DOCTYPE html > " +
+            "<html lang='en'>" +
+            "    <head>" +
+            "        <meta charset='utf-8' />" +
+            "    </head>" +
+            "    <body>" +
+            "        <p>" +
+            "            <span style='color: #0094ff'>{0}</span> has requested a <span style='color:#0094ff'>{1}</span> holiday absence from <span style='color:#0094ff'>{2}</span> to <span style='color:#0094ff'>{3}.</span>" +
+            "        </p>" +
+            "        <p>" +
+            "            Reason for absence: <span style='color: #0094ff'>{4}</span>" +
+            "        </p>" +
+            "        <p>" +
+            "            Employee notes: <span style='color: #0094ff'>{5}</span>" +
+            "        </p>" +
+            "        <p>" +
+            "            You can quickly approve or decline this absence request using the buttons below." +
+            "        </p>" +
+            "<div>" +
+            "<!--[if mso]>" +
+            "<style type='text/css'>" +
+            ".bold {{font-weight: bold}}" +
+            "</style>" +
+            "  <v:roundrect xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' href='{6}' style='height:33px;v-text-anchor:middle;width:77px;margin-right: 5px;' arcsize='10%' stroke='f' fillcolor='#5CB85C'>" +
+            "    <w:anchorlock/>" +
+            "    <center style='color:#ffffff;font-family:sans-serif;font-size:14px;font-weight:normal;'>" +
+            "      Approve" +
+            "    </center>" +
+            "  </v:roundrect>" +
+            "  <v:roundrect xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' href='http://www.EXAMPLE.com/' style='height:33px;v-text-anchor:middle;width:77px;margin-right: 5px;' arcsize='10%' stroke='f' fillcolor='#D9534F'>" +
+            "    <w:anchorlock/>" +
+            "    <center style='color:#ffffff;font-family:sans-serif;font-size:14px;font-weight:normal;'>" +
+            "      Decline" +
+            "    </center>" +
+            "  </v:roundrect>" +
+            "  <v:roundrect xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' href='http://www.EXAMPLE.com/' style='height:33px;v-text-anchor:middle;width:130px;margin-right: 5px;' arcsize='10%' stroke='f' fillcolor='#5BC0DE'>" +
+            "    <w:anchorlock/>" +
+            "    <center style='color:#ffffff;font-family:sans-serif;font-size:14px;font-weight:normal;'>" +
+            "      View the request" +
+            "    </center>" +
+            "  </v:roundrect>" +
+            "  <v:roundrect xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' href='http://www.EXAMPLE.com/' style='height:33px;v-text-anchor:middle;width:149px;margin-right: 5px;' arcsize='10%' stroke='f' fillcolor='#337AB7'>" +
+            "    <w:anchorlock/>" +
+            "    <center style='color:#ffffff;font-family:sans-serif;font-size:14px;font-weight:normal;'>" +
+            "      View team calendar" +
+            "    </center>" +
+            "  </v:roundrect>" +
+            "  <![endif]-->" +
+            //"  <![if !mso]>" +
+            //"  <table cellspacing='0' cellpadding='0'> <tr> " +
+            //"  <td align='center' width='300' height='40' bgcolor='#d62828' style='-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;'>" +
+            //"    <a href='http://www.EXAMPLE.com/' style='font-size:16px; font-weight: bold; font-family:sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block'>" +
+            //"    <span style='color: #ffffff;'>" +
+            //"      Button Text Here!" +
+            //"    </span>" +
+            //"    </a>" +
+            //"  </td> " +
+            //"  </tr> </table> " +
+            //"  <![endif]>" +
+            "  <!--[if !mso]>" +
+            "        <span style='background: green; padding: 5px'><a style='text-decoration: none; color: white' href='{6}'>Approve</a></span>" +
+            "        <span style='background: red; padding: 5px'><a style='text-decoration: none; color: white' href='{7}'>Decline</a></span>" +
+            "        <span style='background: lightblue; padding: 5px'><a style='text-decoration: none; color: white' href='{7}'>View the request</a></span>" +
+            "        <span style='background: blue; padding: 5px'><a style='text-decoration: none; color: white' href='{9}'>View team calendar</a></span>" +
+            "  <![endif]-->" +
+            "</div>" +
+            "    </body>" +
+            "</html>";
+        }
+
+        public MailMessage PopulateEmailWithData(IProcessStep step, Guid userId, string targetURL, string authenticationToken, EmailAddressCollection destinations)
+        {
+            var emailStep = (ProcessStepEmail)step;
+
+            var bodyTemplate = GetBodyTemplateForEmail(step);
+
+            var buttonCode = string.Format("{0}api/process?userid={1}&code={3}&purpose={2}"
+                , targetURL, userId, step.Id
+                , authenticationToken);
+
+            object[] dataBlob = { "Debbie Avery"
+                            , "two day"
+                            , "19/09/2015"
+                            , DateTime.Now.AddDays(3)
+                            , "Holiday"
+                            , "Sorry it's short notice!"
+                            , buttonCode
+                            , "http://www.bbc.co.uk"
+                            , "http://www.bbc.co.uk"
+                            , "http://www.bbc.co.uk"
+                    };
+
+            var body = EmailFunctions.FormatBody(bodyTemplate, dataBlob, "en-GB");
+
+            var result = new MailMessage(destinations.From, destinations.To)
+            {
+                Body = body
+            };
+            return result;
+
+        }
+
         public Process GetProcess(int Id)
         {
             return Processes
@@ -129,6 +238,9 @@ namespace Nexus.Sql_Repository
 
         public virtual DbSet<ProcessFormElement> WebForms { get; set; }
         public virtual DbSet<WebFormField> WebFormFields { get; set; }
+
+        public virtual DbSet<ProcessEmailTemplate> ProcessEmailTemplates { get; set; }
+
         //public virtual DbSet<WebFormButton> WebFormButtons { get; set; }
         //public virtual DbSet<WebFormFieldOption> WebFormFieldOptions { get; set; }
 

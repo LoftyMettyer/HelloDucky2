@@ -1,12 +1,15 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nexus.Common.Classes;
-using Nexus.Common.Enums;
+using Nexus.Service.Services;
 
 namespace Nexus.Service.Tests {
 	[TestClass]
 	public class EmailServiceTests {
-		[TestMethod]
+
+        private EmailService _mockEmailService = new EmailService();
+
+
+        [TestMethod]
 		public void SendEmailSuccessfully() {
 			//Commented this test out because sending email costs credits, since we are Postmark (https://postmarkapp.com), an email-sending free(ish) service
 
@@ -15,5 +18,6 @@ namespace Nexus.Service.Tests {
 
 			//Assert.AreEqual(result.Status, BusinessProcessStepStatus.EmailSuccessfullySent);
 		}
+
 	}
 }

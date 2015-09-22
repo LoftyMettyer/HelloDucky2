@@ -72,6 +72,7 @@
     <Compile Include="Process\ProcessStepTests.cs" />
     <Compile Include="Data\ProcessTests.cs" />
     <Compile Include="DictionaryTest.cs" />
+    <Compile Include="ProcessRepositoryTests.cs" />
     <Compile Include="Users\ConnectUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Users\RegisterUser.cs" />

@@ -10,12 +10,13 @@ using Nexus.Common.Enums;
 using Nexus.Sql_Repository.DatabaseClasses.Data;
 using System.Linq;
 using Nexus.WebAPI.Handlers;
+using System.Net.Mail;
 
 namespace Nexus.Service.Services
 {
     public class DataService : IDataService
     {
-        private IProcessRepository _dataRepository;
+		private IProcessRepository _dataRepository;
         private IDictionary _dictionary;
         private string _callingURL;
         private string _authenticationServiceURL;
@@ -36,7 +37,7 @@ namespace Nexus.Service.Services
 
         public DataService(IProcessRepository dataRepository, IDictionary dictionary)
         {
-            _dataRepository = dataRepository;
+			_dataRepository = dataRepository;
             _dictionary = dictionary;
         }
 
@@ -59,7 +60,7 @@ namespace Nexus.Service.Services
             return _dataRepository.GetReportData(reportID, filters);
 
         }
-
+ 
         WebFormModel IDataService.InstantiateProcess(int ProcessId, Guid userId, string language)
         {
 
@@ -70,7 +71,7 @@ namespace Nexus.Service.Services
 
             // Yes , we could use the webform above (and very soon we will), but for the moment the translation isn't
             // quite hooked in properly.
-            // ProcessFormElement webForm = _dataRepository.GetWebForm(firstStep.id);
+           // ProcessFormElement webForm = _dataRepository.GetWebForm(firstStep.id);
 
             var stepId = _dataRepository.RecordProcessStepForUser(webForm, userId);
 
@@ -165,6 +166,7 @@ namespace Nexus.Service.Services
             // if its a save for later, well just do it!
             // Find out what the next step is.
 
+            // currently hardcoded to always return an email as the next step
             var nextStep = _dataRepository.GetProcessNextStep(currentStep);
 
             // Oooh they decided to save for later.
@@ -180,25 +182,13 @@ namespace Nexus.Service.Services
                     var emailService = new EmailService();
                     var processStepEmail = (ProcessStepEmail)nextStep;
 
-                    //Todo: Determine what type of email template we are using so we can do some extra processing on the template, such as replacing certain placeholders, etc.
+                    var emailDestinations =  processStepEmail.GetEmailDestinations();
 
                     AuthenticationServiceHandler.GetUserToken(_authenticationServiceURL, userID, stepId).ContinueWith(
                         tokenResponse =>
                         {
-                            //todoget the the email message template from the database
-                            var buttonCode = string.Format("{0}UI/home/postprocessstep?userid={1}&code={3}&purpose={2}"
-                                , _callingURL, userID, stepId
-                                , tokenResponse.Result);
-
-                            result = emailService.Send(processStepEmail.To, processStepEmail.Subject,
-                                                        string.Format(processStepEmail.Message
-                                                        , "Debbie Avery", "two day", "19/09/2015", "25/09/2015", "Holiday"
-                                                        , "Sorry it's short notice!"
-                                                        , buttonCode
-                                                        , "http://www.bbc.co.uk"
-                                                        , "http://www.bbc.co.uk"
-                                                        , "http://www.bbc.co.uk"));
-
+                            MailMessage message = _dataRepository.PopulateEmailWithData(processStepEmail, userID
+                                , _callingURL, tokenResponse.Result, emailDestinations);
                         }
                     );
 
@@ -213,7 +203,7 @@ namespace Nexus.Service.Services
                     Console.WriteLine("Default case");
                     break;
             }
-
+        
 
             return result;
 

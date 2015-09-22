@@ -54,8 +54,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BaseEntity.cs" />
+    <Compile Include="Classes\EmailAddressCollection.cs" />
     <Compile Include="Classes\Process.cs" />
     <Compile Include="Classes\ProcessElement.cs" />
+    <Compile Include="Classes\ProcessEmailTemplate.cs" />
     <Compile Include="Classes\ProcessFormData.cs" />
     <Compile Include="Classes\ProcessInFlow.cs" />
     <Compile Include="Classes\ProcessStepEmail.cs" />

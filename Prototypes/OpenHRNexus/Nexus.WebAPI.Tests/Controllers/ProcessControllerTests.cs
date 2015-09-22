@@ -9,6 +9,7 @@ using Nexus.Sql_Repository.DatabaseClasses.Data;
 using Nexus.WebAPI.Controllers;
 using System;
 using System.Collections.Generic;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Web.Script.Serialization;
 
@@ -174,5 +175,5 @@ namespace Nexus.WebAPI.Tests.Controllers
 
         }
 
-      }
     }
+  }
