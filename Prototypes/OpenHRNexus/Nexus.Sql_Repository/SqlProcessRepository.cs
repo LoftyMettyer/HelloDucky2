@@ -120,7 +120,7 @@ namespace Nexus.Sql_Repository
         {
             // only one template exists at the moment
             //            var bodyTemplate = ProcessEmailTemplates.Where(t => t.Id == 1).First().BodyTemplate;
-            return "< !DOCTYPE html > " +
+            return "<!DOCTYPE html> " +
             "<html lang='en'>" +
             "    <head>" +
             "        <meta charset='utf-8' />" +
@@ -196,7 +196,7 @@ namespace Nexus.Sql_Repository
 
             var bodyTemplate = GetBodyTemplateForEmail(step);
 
-            var buttonCode = string.Format("{0}api/process?userid={1}&code={3}&purpose={2}"
+            var buttonCode = string.Format("{0}UI/home/postprocessstep?userid={1}&code={3}&purpose={2}"
                 , targetURL, userId, step.Id
                 , authenticationToken);
 
