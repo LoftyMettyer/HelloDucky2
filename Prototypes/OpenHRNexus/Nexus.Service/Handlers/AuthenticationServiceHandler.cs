@@ -49,13 +49,13 @@ namespace Nexus.WebAPI.Handlers
             }
         }
 
-        public static string GetUserToken(string issuer, Guid userId, Guid purpose)
+        public static async Task<string> GetUserToken(string issuer, Guid userId, Guid purpose)
         {
             string result;
 
             try
             {
-                result = GetServiceResult(issuer, "api/accounts/getusertoken", userId, purpose).Result;
+                result = await GetServiceResult(issuer, "api/accounts/getusertoken", userId, purpose);
             }
 
             catch
