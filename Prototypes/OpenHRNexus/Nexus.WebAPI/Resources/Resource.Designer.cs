@@ -88,6 +88,15 @@ namespace Nexus.WebAPI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        internal static string Label_ButtonRefresh {
+            get {
+                return ResourceManager.GetString("Label_ButtonRefresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request Holiday.
         /// </summary>
         internal static string Label_ButtonRequestHoliday {

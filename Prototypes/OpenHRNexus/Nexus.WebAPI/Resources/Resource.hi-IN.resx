@@ -1,152 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="Label_AlternateLogins">
-		<value>या आप नीचे के सामाजिक लॉगइन  में से एक का उपयोग कर लॉगइन कर सकते हैं</value>
-	</data>
-	<data name="Label_ConnectWithGoogle">
-		<value>गूगल + के साथ कनेक्ट करें</value>
-	</data>
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="metadata">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" />
-							</xsd:sequence>
-							<xsd:attribute name="name" use="required" type="xsd:string" />
-							<xsd:attribute name="type" type="xsd:string" />
-							<xsd:attribute name="mimetype" type="xsd:string" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="assembly">
-						<xsd:complexType>
-							<xsd:attribute name="alias" type="xsd:string" />
-							<xsd:attribute name="name" type="xsd:string" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>2.0</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<data name="Label_ConfirmPassword" xml:space="preserve">
-		<value>पासवर्ड की पुष्टि कीजिये</value>
-	</data>
-	<data name="Label_ConnectWithFacebook" xml:space="preserve">
-		<value>फेसबुक के साथ कनेक्ट करें</value>
-	</data>
-	<data name="Label_EmailAddress" xml:space="preserve">
-		<value>ईमेल पता</value>
-	</data>
-	<data name="Label_FirstName" xml:space="preserve">
-		<value>पहला नाम</value>
-	</data>
-	<data name="Label_Home" xml:space="preserve">
-		<value>घर</value>
-	</data>
-	<data name="Label_LastName" xml:space="preserve">
-		<value>अंतिम नाम</value>
-	</data>
-	<data name="Label_Login" xml:space="preserve">
-		<value>लॉगइन</value>
-	</data>
-	<data name="Label_LoginButton" xml:space="preserve">
-		<value>लॉगइन</value>
-	</data>
-	<data name="Label_Password" xml:space="preserve">
-		<value>पासवर्ड</value>
-	</data>
-	<data name="Label_SignUp" xml:space="preserve">
-		<value>साइन अप करें</value>
-	</data>
-	<data name="Label_SocialLogins" xml:space="preserve">
-		<value>सामाजिक लॉगिन</value>
-	</data>
-	<data name="Label_SubmitButton" xml:space="preserve">
-		<value>प्रस्तुत करना</value>
-	</data>
-	<data name="Label_UseRefreshTokens" xml:space="preserve">
-		<value>ताज़ा टोकन इस्तेमाल करें</value>
-	</data>
-	<data name="Label_Username" xml:space="preserve">
-		<value>यूजरनाम</value>
-	</data>
-	<data name="Text_DashboardWelcome" xml:space="preserve">
-		<value>‘एडवांस्ड’ पोर्टल में आपका स्वागत है #UserName#</value>
-	</data>
-	<data name="Text_LoginDescription" xml:space="preserve">
-		<value>यदि आप के पास यूजरनाम और पासवर्ड है, तो आप नेक्सस का उपयोग करने के लिए नीचे दिए गए बटन का उपयोग कर सकते हैं।</value>
-	</data>
-	<data name="Text_SignUpDescription" xml:space="preserve">
-		<value>नेक्सस का उपयोग करने के लिए यूजरनाम और पासवर्ड बनाने के लिए नीचे दिए गए बटन का प्रयोग करें</value>
-	</data>
-	<data name="Text_WelcomeMessage" xml:space="preserve">
-		<value>आपका स्वागत है #FullName#, आप ने पिछली बार #LastLoginDate# पर लॉगइन किया था; आपका सुरक्षा समूह "#SecurityGroup#" है
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Label_AlternateLogins" xml:space="preserve">
+    <value>या आप नीचे के सामाजिक लॉगइन  में से एक का उपयोग कर लॉगइन कर सकते हैं</value>
+  </data>
+  <data name="Label_ConnectWithGoogle" xml:space="preserve">
+    <value>गूगल + के साथ कनेक्ट करें</value>
+  </data>
+  <data name="Label_ConfirmPassword" xml:space="preserve">
+    <value>पासवर्ड की पुष्टि कीजिये</value>
+  </data>
+  <data name="Label_ConnectWithFacebook" xml:space="preserve">
+    <value>फेसबुक के साथ कनेक्ट करें</value>
+  </data>
+  <data name="Label_EmailAddress" xml:space="preserve">
+    <value>ईमेल पता</value>
+  </data>
+  <data name="Label_FirstName" xml:space="preserve">
+    <value>पहला नाम</value>
+  </data>
+  <data name="Label_Home" xml:space="preserve">
+    <value>घर</value>
+  </data>
+  <data name="Label_LastName" xml:space="preserve">
+    <value>अंतिम नाम</value>
+  </data>
+  <data name="Label_Login" xml:space="preserve">
+    <value>लॉगइन</value>
+  </data>
+  <data name="Label_LoginButton" xml:space="preserve">
+    <value>लॉगइन</value>
+  </data>
+  <data name="Label_Password" xml:space="preserve">
+    <value>पासवर्ड</value>
+  </data>
+  <data name="Label_SignUp" xml:space="preserve">
+    <value>साइन अप करें</value>
+  </data>
+  <data name="Label_SocialLogins" xml:space="preserve">
+    <value>सामाजिक लॉगिन</value>
+  </data>
+  <data name="Label_SubmitButton" xml:space="preserve">
+    <value>प्रस्तुत करना</value>
+  </data>
+  <data name="Label_UseRefreshTokens" xml:space="preserve">
+    <value>ताज़ा टोकन इस्तेमाल करें</value>
+  </data>
+  <data name="Label_Username" xml:space="preserve">
+    <value>यूजरनाम</value>
+  </data>
+  <data name="Text_DashboardWelcome" xml:space="preserve">
+    <value>‘एडवांस्ड’ पोर्टल में आपका स्वागत है #UserName#</value>
+  </data>
+  <data name="Text_LoginDescription" xml:space="preserve">
+    <value>यदि आप के पास यूजरनाम और पासवर्ड है, तो आप नेक्सस का उपयोग करने के लिए नीचे दिए गए बटन का उपयोग कर सकते हैं।</value>
+  </data>
+  <data name="Text_SignUpDescription" xml:space="preserve">
+    <value>नेक्सस का उपयोग करने के लिए यूजरनाम और पासवर्ड बनाने के लिए नीचे दिए गए बटन का प्रयोग करें</value>
+  </data>
+  <data name="Text_WelcomeMessage" xml:space="preserve">
+    <value>आपका स्वागत है #FullName#, आप ने पिछली बार #LastLoginDate# पर लॉगइन किया था; आपका सुरक्षा समूह "#SecurityGroup#" है
 </value>
-	</data>
-	<data name="Label_Welcome" xml:space="preserve">
-		<value>सुस्वागत </value>
-	</data>
-	<data name="Label_MyDashboard" xml:space="preserve">
-		<value>मेरा नियंत्रण-पट्ट - डैशबोर्ड</value>
-	</data>
-	<data name="Label_RefreshToken" xml:space="preserve">
-		<value>ताज़ा टोकन</value>
-	</data>
-	<data name="Label_Logout" xml:space="preserve">
-		<value>लॉगआउट</value>
-	</data>
-	<data name="Label_ButtonApplicationDemo" xml:space="preserve">
-		<value>आवेदन डेमो</value>
-	</data>
-	<data name="Label_ButtonCalendar" xml:space="preserve">
-		<value>कैलेंडर</value>
-	</data>
-	<data name="Label_ButtonRequestHoliday" xml:space="preserve">
-		<value>अनुरोध छुट्टी</value>
-	</data>
-	<data name="Label_ButtonViewMyTeam" xml:space="preserve">
-		<value>मेरी टीम देखें</value>
-	</data>
-	<data name="Label_ButtonViewPersonnelRecord" xml:space="preserve">
-		<value>देखें कार्मिक रिकार्ड</value>
-	</data>
-	<data name="Label_MyTeam" xml:space="preserve">
-		<value>मेरी टीम</value>
-	</data>
+  </data>
+  <data name="Label_Welcome" xml:space="preserve">
+    <value>सुस्वागत </value>
+  </data>
+  <data name="Label_MyDashboard" xml:space="preserve">
+    <value>मेरा नियंत्रण-पट्ट - डैशबोर्ड</value>
+  </data>
+  <data name="Label_RefreshToken" xml:space="preserve">
+    <value>ताज़ा टोकन</value>
+  </data>
+  <data name="Label_Logout" xml:space="preserve">
+    <value>लॉगआउट</value>
+  </data>
+  <data name="Label_ButtonApplicationDemo" xml:space="preserve">
+    <value>आवेदन डेमो</value>
+  </data>
+  <data name="Label_ButtonCalendar" xml:space="preserve">
+    <value>कैलेंडर</value>
+  </data>
+  <data name="Label_ButtonRequestHoliday" xml:space="preserve">
+    <value>अनुरोध छुट्टी</value>
+  </data>
+  <data name="Label_ButtonViewMyTeam" xml:space="preserve">
+    <value>मेरी टीम देखें</value>
+  </data>
+  <data name="Label_ButtonViewPersonnelRecord" xml:space="preserve">
+    <value>देखें कार्मिक रिकार्ड</value>
+  </data>
+  <data name="Label_MyTeam" xml:space="preserve">
+    <value>मेरी टीम</value>
+  </data>
+  <data name="Label_ButtonRefresh" xml:space="preserve">
+    <value>ताज़ा करना</value>
+  </data>
 </root>
