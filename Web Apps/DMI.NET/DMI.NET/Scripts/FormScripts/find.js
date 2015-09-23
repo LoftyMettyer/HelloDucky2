@@ -515,7 +515,7 @@ function find_window_onload() {
 									});
 								}
 							}
-						}
+						} 
 					}
 				}
 			}
@@ -561,12 +561,14 @@ function find_window_onload() {
 					pager: $('#pager-coldata'),
 					editurl: 'clientArray',
 					ignoreCase: true,
-					shrinkToFit: shrinkToFit,					
+					shrinkToFit: shrinkToFit,
+					multiselect: IsMultiSelectionModeOn(),
 					loadComplete: function () {
-						moveFirst();
+						if (IsMultiSelectionModeOn()) { $("#findGridTable").setGridParam({ multiselect: true }).showCol('cb'); }
+						else { moveFirst(); }
 					},
 					afterSearch: function () {
-						moveFirst();
+						if (!IsMultiSelectionModeOn()) { moveFirst(); }
 					},
 					onSortCol: function (index, columnIndex, sortOrder) {
 						$('#gview_findGridTable .s-ico span').css('visibility', 'visible');
@@ -574,8 +576,8 @@ function find_window_onload() {
 					localReader: {
 						page: function (obj) {
 							if (obj.rows <= 0) {
-								return obj.page !== undefined ? obj.page : "0";	
-							}							
+								return obj.page !== undefined ? obj.page : "0";
+							}
 						}
 					}
 				});
@@ -585,13 +587,15 @@ function find_window_onload() {
 				$("#findGridTable").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });  //instantiate toolbar so we can use toggle.
 				$("#findGridTable")[0].toggleToolbar();  // Toggle it off at start up.
 
+			
 				$("#findGridTable").jqGrid('navButtonAdd', "#pager-coldata", {
 					caption: '',
 					buttonicon: 'icon-search',
 					onClickButton: function () {
+			
 						$("#findGridTable")[0].toggleToolbar(); // Toggle toolbar on & off when Search button is pressed.
 						$("#findGridTable")[0].clearToolbar(); // clear menu
-
+						
 						var isSearching = $('#frmFindForm .ui-search-toolbar').is(':visible');
 
 						$("#findGridTable_iledit").toggleClass('ui-state-disabled', isSearching);
@@ -733,6 +737,9 @@ function find_window_onload() {
 						if ($(this).parent().hasClass("ui-state-disabled")) return false;
 
 						if (rowIsEditedOrNew == "") {
+
+							ToggleMultiSelectionButton(false);
+
 							//Not editing, no need to save, just scroll to end of grid before adding new row.
 							//New row is added by jqGrid's default action of clicking the add button.
 							var lastPage = $("#findGridTable").jqGrid('getGridParam', 'lastpage');
@@ -847,7 +854,8 @@ function find_window_onload() {
 						// Try to select the current record.
 						locateRecord(frmFindForm.txtCurrentRecordID.value, true);
 					} else {
-						moveFirst();
+						// Select the first row only if editable grid
+						if (thereIsAtLeastOneEditableColumn) { moveFirst(); }
 					}
 				}
 				// Get menu.asp to refresh the menu.	    		
@@ -886,6 +894,11 @@ function saveRowToDatabase(rowid) {
 /* Return the ID of the record selected in the find form. */
 function selectedRecordID() {
 	return $("#findGridTable").getGridParam('selrow');
+}
+
+/* Return the list of id's of the records selected in the find form. */
+function selectedRecordIDs() {
+	return $("#findGridTable").getGridParam('selarrrow');
 }
 
 
@@ -1524,6 +1537,7 @@ function editFindGridRow(rowid) {
 		//re-enable add button and highlight new row.
 		setTimeout(function () {
 			$('#findGridTable_iladd').removeClass('ui-state-disabled');
+			ToggleMultiSelectionButton(false);
 		}, 100);
 
 	}
@@ -1589,7 +1603,7 @@ function cancelFindGridRow(rowid) {
 		refreshInlineNavIcons();
 	}
 
-	
+	ToggleMultiSelectionButton(true);
 }
 
 function beforeSelectFindGridRow(newRowid) {
@@ -1630,6 +1644,7 @@ function afterSaveFindGridRow(rowid) {
 	$("#pager-coldata_center").show();
 	//Enable navigation buttons on the jqgrid toolbar
 	$('#pager-coldata_center input').prop('disabled', false); //Remove read only attribute from Page textbox
+	ToggleMultiSelectionButton(true);
 	
 	return true;
 }
@@ -1683,6 +1698,7 @@ function refreshInlineNavIcons() {
 		var isSearching = $('#frmFindForm .ui-search-toolbar').is(':visible');
 		$("#findGridTable_iledit").toggleClass('ui-state-disabled', (isSearching || !selectionMade));
 		$("#findGridTable_iladd").toggleClass('ui-state-disabled', (isSearching));
+		RefreshFindGridToolbar();
 	}, 100);
 }
 
@@ -1900,4 +1916,19 @@ function refreshImgDeleteIcon(uniqueID, fDisabled) {
 	//disable icon if file is empty.
 	if(fDisabled)	$("[id='IMG_" + uniqueID + "']").prop("disabled", true).attr("src", window.ROOT + "Content/images/OLEIcons/delete-iconDIS.png");
 	else $("[id='IMG_" + uniqueID + "']").prop("disabled", false).attr("src", window.ROOT + "Content/images/OLEIcons/delete-icon.png");
+}
+
+// Refresh find grid toolbar.
+// If the Find Window is defined as an Editable Grid and editing is enabled (either New or Edit on the grid has been clicked), then the Multi-Select button should be disabled. 
+// Conversely, if Multi-Select is in operation then the Editable Grid icons at the bottom of the Find Window should be disabled.
+function RefreshFindGridToolbar() {
+	if (thereIsAtLeastOneEditableColumn) {
+		var isMultiSelectModeOn = IsMultiSelectionModeOn();
+		if (isMultiSelectModeOn) {
+			$("#findGridTable_iladd").toggleClass('ui-state-disabled', isMultiSelectModeOn);
+			$("#findGridTable_iledit").toggleClass('ui-state-disabled', isMultiSelectModeOn);
+		} else {
+			$("#findGridTable_iladd").toggleClass('ui-state-disabled', false);
+		}
+	}
 }

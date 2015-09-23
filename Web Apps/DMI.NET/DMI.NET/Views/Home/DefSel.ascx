@@ -170,11 +170,11 @@
 		refreshControls();
 
 		// Navbar options = i.e. search, edit, save etc 
-		$("#DefSelRecords").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false, refresh: false }); // setup the buttons we want
+		$("#DefSelRecords").jqGrid('navGrid', '#pager-coldata-defsel', { del: false, add: false, edit: false, search: false, refresh: false }); // setup the buttons we want
 		$("#DefSelRecords").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });  //instantiate toolbar so we can use toggle.
 
-		if ($('#pager-coldata :has(".ui-icon-search")').length == 0) {
-			$("#DefSelRecords").jqGrid('navButtonAdd', "#pager-coldata", {
+		if ($('#pager-coldata-defsel :has(".ui-icon-search")').length == 0) {
+			$("#DefSelRecords").jqGrid('navButtonAdd', "#pager-coldata-defsel", {
 				caption: '',
 				buttonicon: 'ui-icon-search',
 				position: 'first',
@@ -190,12 +190,13 @@
 				title: 'Search',
 				cursor: 'pointer'
 			});
+
 			$('.ui-search-toolbar').hide(); // Hide it on setting up the grid - NB Remove this line to have it open on setup
 		}
 
-		$("#findGridRow").height("60%");
+		$("#findGridRowDefsel").height("60%");
 		$(window).bind('resize', function () {
-			$("#DefSelRecords").setGridWidth($('#findGridRow').width(), true);
+			$("#DefSelRecords").setGridWidth($('#findGridRowDefsel').width(), true);
 		}).trigger('resize');
 
 		$("#DefSelRecords").closest('.ui-jqgrid-bdiv').width($("#DefSelRecords").closest('.ui-jqgrid-bdiv').width() + 1);
@@ -486,8 +487,8 @@
 		}
 	}
 
-	function setcancel() {				
-		
+	function setcancel() {
+
 		if (parseInt($("#txtSingleRecordID").val()) > 0) {			
 			refreshData();
 			menu_disableMenu();
@@ -534,7 +535,7 @@
 <div id="defsel" data-framesource="defsel" style="display: block; height: 100%; width: 99.9%">
 
 	<form name="frmDefSel" class="absolutefull" action="defsel_submit" method="post" id="frmDefSel">
-		<div id="findGridRow" style="height: 70%; margin-right: 20px; margin-left: 20px;">
+		<div id="findGridRowDefsel" style="height: 70%; margin-right: 20px; margin-left: 20px;">
 
 			<table width="100%" height="100%" class="invisible">
 				<tr>
@@ -630,7 +631,7 @@
 							<tr>
 								<td width="100%">
 									<table id="DefSelRecords"></table>
-									<div id='pager-coldata'></div>
+									<div id='pager-coldata-defsel'></div>
 								</td>
 							</tr>
 
@@ -711,7 +712,7 @@
 		var onlyMine = $("#OnlyMine").prop('checked');
 
 		//resize grid		
-		var gridWidth = $("#findGridRow").width();
+		var gridWidth = $("#findGridRowDefsel").width();
 		var gridHeight = $("#workframeset").height() * 0.6;	//findGridRow is hardcoded to 60% of workframeset.
 
 		$("#DefSelRecords").jqGrid({
@@ -752,7 +753,7 @@
 			},
 			rowTotal: 50,
 			rowList: [],
-			pager: $('#pager-coldata'),
+			pager: $('#pager-coldata-defsel'),
 			pgbuttons: false,
 			pgtext: null,
 			loadonce: true,

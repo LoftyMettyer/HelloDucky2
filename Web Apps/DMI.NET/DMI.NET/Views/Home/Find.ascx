@@ -59,8 +59,8 @@
 			$('#findGridTable').jqGrid('bindKeys', { "onEnter": function() { doEdit(); } });
 		} else {
 			$("#findGridTable").jqGrid("setGridParam", {
-				ondblClickRow: function(rowID) {
-					menu_editRecord();
+				ondblClickRow: function (rowID) {
+					if (!IsMultiSelectionModeOn()) { menu_editRecord(); }
 				}
 			});
 			$('#findGridTable').jqGrid('bindKeys', {
@@ -74,14 +74,67 @@
 				}
 			});
 
-			// Enable Multi Select ribbon button if the multifind param is false and find grid is non editable grid
-			EnableMultiSelectButton(!multifind && !thereIsAtLeastOneEditableColumn);
-
-			// Refresh the find window ribbon buttons
-		  RefreshFindWindowRibbonButtons();
+			// Refresh find grid
+			RefreshFindGrid(!multifind, !thereIsAtLeastOneEditableColumn);
 		}
 	}
-	
+
+	/******* Begin Changes for the user story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
+
+	//Refresh find grid
+	function RefreshFindGrid(isNonMultiFindLinkType, isNonEditableGrid) {
+
+		// Refresh the find window ribbon buttons
+		RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGrid);
+
+		// Bind events for multi select grid
+		BindEventsForMultiSelectFindGrid(isNonMultiFindLinkType, isNonEditableGrid);
+
+		// Refresh find grid toolbar
+		RefreshFindGridToolbar();
+	}
+
+	// Binds the events for the multi select find grid
+	function BindEventsForMultiSelectFindGrid(isNonMultiFindLinkType, isNonEditableGrid) {
+
+		var grid = $("#findGridTable");
+
+		if (IsMultiSelectionModeOn() && isNonMultiFindLinkType && grid.getGridParam("reccount") > 0) {
+
+			//Reset row selection (E.g. after applied filter, or turn multislect on for editable grid). 
+			//If not doing so, the first record will come as selected because of previously bind load complete (movefirst).
+			grid.jqGrid('resetSelection');
+			$("#mnutoolPositionRecordFind span.selectedRecordsCount").html("Selected : 0");
+
+			// Bind the grid events
+			grid.jqGrid("setGridParam", {
+				onSelectRow: function () {
+					SetsSelectedRowsCount();
+				},
+				onSelectAll: function () {
+					SetsSelectedRowsCount();
+				},
+				loadComplete: function () {
+					SetsSelectedRowsCount();
+				}
+			});
+		}
+		else {
+			grid.setGridParam({ multiselect: false }).hideCol('cb');
+		}
+	}
+
+	// Sets count for the selected number of rows when multi selection of grid rows allowed.
+	function SetsSelectedRowsCount() {
+		var selectedRecordCount = selectedRecordIDs().length;
+		$("#mnutoolPositionRecordFind span.selectedRecordsCount").html("Selected : " + selectedRecordCount);
+	}
+
+	// Provide empty function. Called when clicking close from the report/utility whilst loaded from find window.
+	function refreshData() { }
+
+	/******* End Changes for the user story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
+
 </script>
 
 <div id="divFindForm" <%=session("BodyTag")%>>
@@ -524,7 +577,7 @@
 							
 							' If atleast one mail merge available for the current base table then set to True, False otherwise.
 							If (rstDefSelRecords.Rows.Count > 0) Then
-								Response.Write("<input type='hidden' id=txtMailMergeGrantedForFindWindow name=txtMailMergeGrantedForFindWindow value=" & 1 & ">" & vbCrLf)
+								Response.Write("<input type='hidden' id=txtMailMergeGrantedForFindWindow name=txtMailMergeGrantedForFindWindow value=" & True & ">" & vbCrLf)
 							Else
 								Response.Write("<input type='hidden' id=txtMailMergeGrantedForFindWindow name=txtMailMergeGrantedForFindWindow value=" & False & ">" & vbCrLf)
 							End If

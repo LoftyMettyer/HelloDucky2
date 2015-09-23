@@ -383,7 +383,10 @@
 							<div id="mnutoolPositionRecordFind" class="textboxlist">
 								<ul>
 									<li>
-										<span>Record(s) : x [(filtered)]</span>
+										<span class="totalRecordsCount">Record(s) : x [(filtered)]</span>
+									</li>
+									<li>
+										<span class="selectedRecordsCount">Selected : 0</span>
 									</li>
 								</ul>
 							</div>

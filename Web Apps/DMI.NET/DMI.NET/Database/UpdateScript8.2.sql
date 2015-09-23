@@ -39575,6 +39575,10 @@ BEGIN
 		SET @strIDName = 'ID';
 		SET @fNewAccess = 1;
 		SET @sAccessTableName= 'ASRSysCustomReportAccess';
+		IF (@intTableID > 0)
+		BEGIN
+			SET @sExtraWhereSQL = 'ASRSysCustomReportsName.BaseTable = ' + convert(varchar(255), @intTableID);
+		END
 	END
 
 	IF @intType = 9 /*'mailmerge'*/
