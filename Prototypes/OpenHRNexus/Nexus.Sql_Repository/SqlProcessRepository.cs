@@ -374,6 +374,7 @@ namespace Nexus.Sql_Repository
             var columns = (from fields in WebFormFields
                              where elementIds.Contains(fields.elementid)
                              join cols in Columns on fields.columnid equals cols.Id
+                             orderby fields.elementid
                              select cols).ToList();
 
 
@@ -383,7 +384,9 @@ namespace Nexus.Sql_Repository
             var dynamicSQL = string.Format("INSERT [{0}] ({1}) VALUES ({2});",
                 table.PhysicalName,
                 string.Join(", ", columns.Select(c => "[" + c.PhysicalName + "]")),
-                string.Join(", ", data.fields.OrderBy(c => c.columnid).Select(c => "'" + c.value + "'")));
+                string.Join(", ", data.fields.OrderBy(c => c.elementid).Select(c => "'" + c.value + "'")));
+
+
 
             var response = ExecuteStatemenForUser(dynamicSQL, userId, _ExecuteImmediate);
 
