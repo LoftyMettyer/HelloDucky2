@@ -397,16 +397,24 @@ namespace Nexus.Sql_Repository
 
         public IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters)
         {
-            var results = new List<CalendarEventModel>();
 
-            results.Add(new CalendarEventModel()
-            {
-                start = DateTime.Now,
-                end = DateTime.Now.AddDays(2)
-            });
+            //var lookupTable = (from cols in Columns
+            //                   where cols.Id == columnId
+            //                   select cols).First();
 
-            return  results;
+            //var formFields = (from cols in Columns
+            //                  where cols.TableId == lookupTable.Id
+            //                  select cols).ToList();
+            //var factory = new DynamicClassFactory();
+            //            var dynamicType = CreateType(factory, string.Format("Lookup{0}", lookupTable.Id), formFields);
 
+            var dynamicSQL = string.Format("SELECT * FROM GetCalendarData"); //  WHERE Language = '{0}' AND WebFormField_id = {1}", _language, columnId);
+
+            var data = Database.SqlQuery<CalendarEventModel>(dynamicSQL);
+
+            return data.ToList();
+
+      
         }
 
         public Guid RecordProcessStepForUser(ProcessFormElement form, Guid userID)

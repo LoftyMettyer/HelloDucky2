@@ -636,6 +636,11 @@
               Looks up a localized string similar to Calendar.
             </summary>
         </member>
+        <member name="P:Nexus.WebAPI.Resources.Resource.Label_ButtonRefresh">
+            <summary>
+              Looks up a localized string similar to Refresh.
+            </summary>
+        </member>
         <member name="P:Nexus.WebAPI.Resources.Resource.Label_ButtonRequestHoliday">
             <summary>
               Looks up a localized string similar to Request Holiday.

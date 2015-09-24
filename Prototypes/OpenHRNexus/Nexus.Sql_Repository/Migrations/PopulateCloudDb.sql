@@ -121,6 +121,10 @@ INSERT DynamicColumn (TableID, Name, DataType) VALUES (5, 'KeyId', 1);
 INSERT DynamicColumn (TableID, Name, DataType) VALUES (5, 'LanguageId', 1);
 INSERT DynamicColumn (TableID, Name, DataType) VALUES (5, 'Value', 5);
 
+INSERT DynamicColumn (TableID, Name, DataType) VALUES (2, 'Category', 1);
+INSERT DynamicColumn (TableID, Name, DataType) VALUES (2, 'SubCategory', 1);
+
+
 
 -- Workflow processes
 DELETE FROM [WebFormButton]
