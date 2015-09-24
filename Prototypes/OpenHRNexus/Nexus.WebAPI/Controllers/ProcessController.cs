@@ -47,8 +47,11 @@ namespace Nexus.WebAPI.Controllers
             _dataService.CallingURL = GetApplicationSchemeName();
             _dataService.AuthenticationServiceURL = ConfigurationManager.AppSettings["as:Issuer"];
             _identity = User.Identity as ClaimsIdentity;
-            _language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
-        }
+			_language = "en-gb";
+			if (HttpContext.Current.Request.UserLanguages != null) {
+				_language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
+			}
+		}
 
         /// <summary>
         /// Controller constructor with injection from Unit Test projects

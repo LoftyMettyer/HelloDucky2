@@ -25,8 +25,11 @@ namespace Nexus.WebAPI.Controllers {
 		{
 			_dataService = dataService;
             _identity = User.Identity as ClaimsIdentity;
-            _language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
-        }
+			_language = "en-gb";
+			if (HttpContext.Current.Request.UserLanguages != null) {
+				_language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
+			}
+		}
 
         public DataController(IDataService dataService, ClaimsIdentity claims, string language)
         {

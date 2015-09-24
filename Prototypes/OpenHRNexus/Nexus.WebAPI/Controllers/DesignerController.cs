@@ -24,8 +24,11 @@ namespace Nexus.WebAPI.Controllers
         {
             _designerService = designerService;
             _identity = User.Identity as ClaimsIdentity;
-            _language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
-        }
+			_language = "en-gb";
+			if (HttpContext.Current.Request.UserLanguages != null) {
+				_language = HttpContext.Current.Request.UserLanguages[0].ToLowerInvariant().Trim();
+			}
+		}
 
         /// <summary>
         /// Loads the design controller with parameters from the unit test projects
