@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Mail;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 namespace Nexus.WebAPI.Tests.Controllers
@@ -171,7 +172,7 @@ namespace Nexus.WebAPI.Tests.Controllers
             };
 
             var result = _mockController.PostProcessStep(form);
-            Assert.IsTrue(result.Status == ProcessStepStatus.EmailSuccessfullySent);
+            Assert.IsTrue(result.Status == (TaskStatus) ProcessStepStatus.EmailSuccessfullySent);
 
         }
 

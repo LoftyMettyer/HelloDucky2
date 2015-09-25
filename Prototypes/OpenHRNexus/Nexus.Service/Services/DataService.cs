@@ -11,6 +11,7 @@ using System.Linq;
 using Nexus.WebAPI.Handlers;
 using System.Net.Mail;
 using System.Collections;
+using System.Threading.Tasks;
 using Nexus.Common.Interfaces;
 
 
@@ -141,7 +142,7 @@ namespace Nexus.Service.Services
         }
 
 
-        ProcessStepResponse IDataService.SubmitStepForUser(Guid stepId, Guid userID, WebFormDataModel formData)
+        async Task<ProcessStepResponse> IDataService.SubmitStepForUser(Guid stepId, Guid userID, WebFormDataModel formData)
         {
             var result = new ProcessStepResponse();
 
@@ -193,7 +194,7 @@ namespace Nexus.Service.Services
 
                     var emailDestinations =  processStepEmail.GetEmailDestinations();
 
-                    AuthenticationServiceHandler.GetUserToken(_authenticationServiceURL, userID, stepId).ContinueWith(
+                    await AuthenticationServiceHandler.GetUserToken(_authenticationServiceURL, userID, stepId).ContinueWith(
                         tokenResponse =>
                         {
                             MailMessage message = _dataRepository.PopulateEmailWithData(processStepEmail, userID

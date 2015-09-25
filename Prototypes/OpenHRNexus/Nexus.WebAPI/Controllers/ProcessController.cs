@@ -145,14 +145,14 @@ namespace Nexus.WebAPI.Controllers
         /// <returns></returns>
         [Authorize(Roles = "OpenHRUser")]
         [Route("")]
-        public ProcessStepResponse PostProcessStep(WebFormDataModel formData)
+        public async Task<ProcessStepResponse> PostProcessStep(WebFormDataModel formData)
         {
 
             // Put some clever code in an attribute extension to validate that there is a identity getuserguid?
             // Maybe this is already covered by the authorize roles = OpenHRUser?
             var userId = new Guid(_identity.GetUserId());
 
-            return  _dataService.SubmitStepForUser(formData.stepid, userId, formData);
+            return await _dataService.SubmitStepForUser(formData.stepid, userId, formData);
 
         }
 

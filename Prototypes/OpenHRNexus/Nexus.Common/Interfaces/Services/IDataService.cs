@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Nexus.Sql_Repository.DatabaseClasses.Data;
 using Nexus.Common.Enums;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace Nexus.Common.Interfaces.Services
 {
@@ -15,7 +16,7 @@ namespace Nexus.Common.Interfaces.Services
 
         WebFormModel InstantiateProcess(int processId, Guid userId, string language);
 
-        ProcessStepResponse SubmitStepForUser(Guid stepId, Guid userId, WebFormDataModel formData);
+        Task<ProcessStepResponse> SubmitStepForUser(Guid stepId, Guid userId, WebFormDataModel formData);
         IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters);
         IEnumerable GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters);
         IEnumerable<ProcessInFlow> GetEntitiesForUser(EntityType type, Guid userId);
