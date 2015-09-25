@@ -64,9 +64,9 @@ namespace Nexus.Service.Services
 
         }
 
-        public IEnumerable GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters)
+        public async Task<IEnumerable> GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters)
         {
-            var data = _dataRepository.GetData(dataSourceId, filters);
+            var data = await _dataRepository.GetData(dataSourceId, filters);
             return data;
         }
 

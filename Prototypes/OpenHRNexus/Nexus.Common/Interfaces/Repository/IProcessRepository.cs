@@ -6,6 +6,7 @@ using Nexus.Sql_Repository.DatabaseClasses.Data;
 using System.Net.Mail;
 using System.Linq;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace Nexus.Common.Interfaces.Repository {
 	public interface IProcessRepository {
@@ -24,7 +25,7 @@ namespace Nexus.Common.Interfaces.Repository {
         IEnumerable<ProcessInFlow> GetProcesses(Guid userId);
 
         IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters);
-        IEnumerable GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters);
+        Task<IEnumerable> GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters);
 
 
     }

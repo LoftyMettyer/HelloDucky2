@@ -431,7 +431,7 @@ namespace Nexus.Sql_Repository
 
         }
 
-        public IEnumerable GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters)
+        public async Task<IEnumerable> GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters)
         {
 
             // Build column list
@@ -483,7 +483,7 @@ namespace Nexus.Sql_Repository
             //         var data2 = Database.SqlQuery<CalendarEventModel>(dynamicSQL);
             //         Task[] tasks;
 
-            var var1 = GetDynamicData(dynamicType, dynamicSQL).Result;
+            var var1 = await GetDynamicData(dynamicType, dynamicSQL);
 
             //         var1.Wait();
 

@@ -8,6 +8,7 @@ using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
 using Nexus.Sql_Repository.DatabaseClasses.Data;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace Nexus.Mock_Repository {
 	public class MockProcessRepository : IProcessRepository {
@@ -65,7 +66,7 @@ namespace Nexus.Mock_Repository {
             throw new NotImplementedException();
         }
 
-        public IEnumerable GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters)
+        public async Task<IEnumerable> GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters)
         {
             throw new NotImplementedException();
         }

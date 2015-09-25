@@ -85,7 +85,7 @@ namespace Nexus.WebAPI.Tests.Controllers
                     }
             };
 
-            var result = _mockController.GetData(1, filters);
+            var result = _mockController.GetData(1);
 
             var serialized = new JavaScriptSerializer().Serialize(result);
             var deserialized = new JavaScriptSerializer().Deserialize<object>(serialized);
