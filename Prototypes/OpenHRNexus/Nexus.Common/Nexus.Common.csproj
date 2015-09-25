@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BaseEntity.cs" />
+    <Compile Include="Classes\DataFilters\WhereFilter.cs" />
     <Compile Include="Classes\EmailAddressCollection.cs" />
     <Compile Include="Classes\Process.cs" />
     <Compile Include="Classes\ProcessElement.cs" />
@@ -62,7 +63,7 @@
     <Compile Include="Classes\ProcessInFlow.cs" />
     <Compile Include="Classes\ProcessStepEmail.cs" />
     <Compile Include="Classes\ProcessStepResponse.cs" />
-    <Compile Include="Classes\DataFilters\CalendarFilter.cs" />
+    <Compile Include="Classes\DataFilters\DateRangeFilter.cs" />
     <Compile Include="Enums\DesignStatus.cs" />
     <Compile Include="Enums\ProcessStepStatus.cs" />
     <Compile Include="Enums\ProcessElementType.cs" />
@@ -72,7 +73,8 @@
     <Compile Include="Enums\NewUserStatus.cs" />
     <Compile Include="Enums\TableType.cs" />
     <Compile Include="Interfaces\IBusinessProcessStep.cs" />
-    <Compile Include="Interfaces\IDictionary.cs" />
+    <Compile Include="Interfaces\ITranslation.cs" />
+    <Compile Include="Interfaces\IDynamicData.cs" />
     <Compile Include="Interfaces\IJsonSerialize.cs" />
     <Compile Include="Interfaces\INexusUser.cs" />
     <Compile Include="Interfaces\IReportDataFilter.cs" />

@@ -8,6 +8,8 @@ using Nexus.Common.Classes;
 using Nexus.Common.Classes.DataFilters;
 using System.Web;
 using Nexus.Common.Interfaces.Services;
+using System.Collections;
+using Nexus.Common.Interfaces;
 
 namespace Nexus.WebAPI.Controllers {
 //	[Authorize(Roles = "OpenHRUser")]
@@ -46,10 +48,26 @@ namespace Nexus.WebAPI.Controllers {
 
             var userId = new Guid(_identity.GetUserId());
 
-            var filters = new List<CalendarFilter>();
-            filters.Add(new CalendarFilter() { StartRange = from, EndRange = to });
+            var filters = new List<DateRangeFilter>();
+            filters.Add(new DateRangeFilter() { StartRange = from, EndRange = to });
 
             return _dataService.GetReportData(1, filters);
+
+        }
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="dataSourceId"></param>
+/// <param name="filters"></param>
+/// <returns></returns>
+        [HttpGet]
+        [Authorize(Roles = "OpenHRUser")]
+        public IEnumerable GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters)
+        {
+
+            var userId = new Guid(_identity.GetUserId());
+            return _dataService.GetData(dataSourceId, filters);
 
         }
 

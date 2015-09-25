@@ -1,22 +1,20 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nexus.Common.Interfaces;
-using Nexus.Common.Models;
-using Nexus.Mock_Repository;
 
 namespace Nexus.Sql_Repository.Tests
 {
     [TestClass]
-    public class DictionaryTest
+    public class TranslationTest
     {
-//        IDictionary _dictionary = new MockDictionaryRepository();
-        IDictionary _dictionary = new SqlDictionaryRepository();
+
+        ITranslation _translation = new SqlDictionaryRepository();
 
         [TestMethod]
         [TestCategory("Translation")]
         public void Dictionary_GetLookupReturnsList()
         {
-            _dictionary.Language = "fr-fr";
-            var result = _dictionary.GetLookupValues(25);
+            _translation.Language = "fr-fr";
+            var result = _translation.GetLookupValues(25);
             Assert.IsNotNull(result);
         }
 
@@ -24,8 +22,8 @@ namespace Nexus.Sql_Repository.Tests
         [TestCategory("Translation")]
         public void Dictionary_GetLookupReturnsListForUnicodeLanguage()
         {
-            _dictionary.Language = "hi";
-            var result = _dictionary.GetLookupValues(25);
+            _translation.Language = "hi";
+            var result = _translation.GetLookupValues(25);
             Assert.IsNotNull(result);
         }
 
@@ -33,7 +31,7 @@ namespace Nexus.Sql_Repository.Tests
         [TestCategory("Translation")]
         public void Dictionary_GetLookupReturnsEnglishAsDefault()
         {
-            var result = _dictionary.GetLookupValues(25);
+            var result = _translation.GetLookupValues(25);
             Assert.IsNotNull(result);
         }
 
@@ -44,11 +42,11 @@ namespace Nexus.Sql_Repository.Tests
         {
             var text = "First Name";
 
-            _dictionary.Language = "fr-fr";
-            var resultFrench = _dictionary.GetTranslation(text);
+            _translation.Language = "fr-fr";
+            var resultFrench = _translation.GetTranslation(text);
 
-            _dictionary.Language = "de-de";
-            var resultGerman = _dictionary.GetTranslation(text);
+            _translation.Language = "de-de";
+            var resultGerman = _translation.GetTranslation(text);
 
             Assert.AreNotEqual(text, resultFrench);
             Assert.AreNotEqual(text, resultGerman);

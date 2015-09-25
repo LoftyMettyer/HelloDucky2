@@ -44,7 +44,7 @@ namespace Nexus.Common.Classes
         /// caching stuff, however some load testing and profiling will find out for sure. This function may need refractoring.
         /// </summary>
         /// <param name="dictionary"></param>
-        public void Translate(IDictionary dictionary)
+        public void Translate(ITranslation dictionary)
         {
 
             Name = dictionary.GetTranslation(Name);

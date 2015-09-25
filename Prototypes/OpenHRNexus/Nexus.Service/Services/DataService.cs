@@ -4,20 +4,22 @@ using Nexus.Common.Models;
 using Nexus.Common.Classes;
 using System.Collections.Generic;
 using OpenHRNexus.Common.Enums;
-using Nexus.Common.Interfaces;
 using Nexus.Common.Interfaces.Services;
 using Nexus.Common.Enums;
 using Nexus.Sql_Repository.DatabaseClasses.Data;
 using System.Linq;
 using Nexus.WebAPI.Handlers;
 using System.Net.Mail;
+using System.Collections;
+using Nexus.Common.Interfaces;
+
 
 namespace Nexus.Service.Services
 {
     public class DataService : IDataService
     {
 		private IProcessRepository _dataRepository;
-        private IDictionary _dictionary;
+        private ITranslation _translation;
         private string _callingURL;
         private string _authenticationServiceURL;
 
@@ -35,10 +37,10 @@ namespace Nexus.Service.Services
             set { _authenticationServiceURL = value; }
         }
 
-        public DataService(IProcessRepository dataRepository, IDictionary dictionary)
+        public DataService(IProcessRepository dataRepository, ITranslation translation)
         {
 			_dataRepository = dataRepository;
-            _dictionary = dictionary;
+            _translation = translation;
         }
 
         /// <summary>
@@ -60,7 +62,14 @@ namespace Nexus.Service.Services
             return _dataRepository.GetReportData(reportID, filters);
 
         }
- 
+
+        public IEnumerable GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters)
+        {
+            var data = _dataRepository.GetData(dataSourceId, filters);
+            return data;
+        }
+
+
         WebFormModel IDataService.InstantiateProcess(int ProcessId, Guid userId, string language)
         {
 
@@ -76,10 +85,10 @@ namespace Nexus.Service.Services
             var stepId = _dataRepository.RecordProcessStepForUser(webForm, userId);
 
 
-            _dictionary.Language = language;
+            _translation.Language = language;
 
             var populatedForm = _dataRepository.PopulateFormWithData(webForm, userId);
-            populatedForm.Translate(_dictionary);
+            populatedForm.Translate(_translation);
             populatedForm.SetButtonEndpoints(_callingURL, stepId);
 
 
@@ -209,7 +218,6 @@ namespace Nexus.Service.Services
             return result;
 
         }
-
 
     }
 }

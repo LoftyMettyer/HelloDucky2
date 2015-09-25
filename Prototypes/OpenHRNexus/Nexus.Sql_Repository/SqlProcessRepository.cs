@@ -14,6 +14,9 @@ using Nexus.Sql_Repository.Enums;
 using System.Data.Entity.Infrastructure;
 using System.Net.Mail;
 using Nexus.Sql_Repository.DatabaseClasses;
+using System.Collections;
+using System.Threading.Tasks;
+using Nexus.Common.Classes.DataFilters;
 
 namespace Nexus.Sql_Repository
 {
@@ -96,7 +99,7 @@ namespace Nexus.Sql_Repository
 
 
             var factory = new DynamicClassFactory();
-            var dynamicType = CreateType(factory, "webForm", formFields);
+            var dynamicType = CreateType(factory, "webForm", formFields, null);
             var data = Database.SqlQuery(dynamicType, dynamicSQL);
 
             
@@ -261,14 +264,14 @@ namespace Nexus.Sql_Repository
         public virtual DbSet<TransactionStatement> Statements { get; set; }
 
 
-        private Type CreateType(DynamicClassFactory dcf, string name, ICollection<DynamicColumn> dynamicAttributes)
+        private Type CreateType(DynamicClassFactory dcf, string name, ICollection<DynamicColumn> dynamicAttributes, List<Type> interfaces)
         {
 
             // Original that creates the column as a name
             //            var props = dynamicAttributes.ToDictionary(da => da.DynamicAttribute.Name, da => typeof(string));
             var props = dynamicAttributes.ToDictionary(da => "column" + da.Id, da => da.DynamicDataType);
 
-            var t = dcf.CreateDynamicType<BaseDynamicEntity>(name, props);
+            var t = dcf.CreateDynamicType<BaseDynamicEntity>(name, props, interfaces);
             return t;
         }
 
@@ -395,28 +398,6 @@ namespace Nexus.Sql_Repository
 
         }
 
-        public IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters)
-        {
-
-            //var lookupTable = (from cols in Columns
-            //                   where cols.Id == columnId
-            //                   select cols).First();
-
-            //var formFields = (from cols in Columns
-            //                  where cols.TableId == lookupTable.Id
-            //                  select cols).ToList();
-            //var factory = new DynamicClassFactory();
-            //            var dynamicType = CreateType(factory, string.Format("Lookup{0}", lookupTable.Id), formFields);
-
-            var dynamicSQL = string.Format("SELECT * FROM GetCalendarData"); //  WHERE Language = '{0}' AND WebFormField_id = {1}", _language, columnId);
-
-            var data = Database.SqlQuery<CalendarEventModel>(dynamicSQL);
-
-            return data.ToList();
-
-      
-        }
-
         public Guid RecordProcessStepForUser(ProcessFormElement form, Guid userID)
         {
             if (form == null) return Guid.Empty;
@@ -438,6 +419,89 @@ namespace Nexus.Sql_Repository
                 .Where(u => u.UserId == userId);
             return result;
 
+        }
+
+        public IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters)
+        {
+
+            var dynamicSQL = string.Format("SELECT * FROM GetCalendarData"); //  WHERE Language = '{0}' AND WebFormField_id = {1}", _language, columnId);
+
+            var data = Database.SqlQuery<CalendarEventModel>(dynamicSQL);
+            return data.ToList();
+
+        }
+
+        public IEnumerable GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters)
+        {
+
+            // Build column list
+            var formFields = (from col in Columns
+                              where col.TableId == dataSourceId
+                              select col).ToList();
+
+            var baseTable = DynamicTables.Where(t => t.Id == dataSourceId).First().PhysicalName;
+
+            // filter in security here???
+
+
+            // TODO - The Dynamic type builder is not handling nulls and so we are forcing not nulls at this point
+            // This causes an error below when we loop around the datarow.
+            // Modify the class type builder to handle better.
+
+            var dynamicTop = "";
+            foreach (var filter in filters)
+            {
+                if (filter.GetType() == typeof(RangeFilter))
+                {
+                    dynamicTop = " TOP " + filter.RecordRange.ToString() + " ";
+                }
+               
+
+            }
+
+
+            // Build select string
+            var dynamicSQL = string.Format("SELECT {0} id, {1} FROM {2} base ",
+                             dynamicTop,
+                             string.Join(", ", formFields.Select(c => c.PhysicalNameWithNullCheck)), baseTable);
+
+            // Append security filter
+//            dynamicSQL += string.Format("INNER JOIN [User] u ON u.RecordId = base.Id WHERE u.UserID = '{0}'", userId);
+
+
+            var factory = new DynamicClassFactory();
+            var interfaces = new List<Type>() { typeof(IDynamicData) };
+            var dynamicType = CreateType(factory, string.Format("dynamicData{0}", dataSourceId), formFields, interfaces);
+            var data = Database.SqlQuery(dynamicType, dynamicSQL);
+
+            //            var bah = data.ToListAsync
+
+            //            var blah44 = data.GetEnumerator();
+
+
+
+            //         var data2 = Database.SqlQuery<CalendarEventModel>(dynamicSQL);
+            //         Task[] tasks;
+
+            var var1 = GetDynamicData(dynamicType, dynamicSQL).Result;
+
+            //         var1.Wait();
+
+            //         var blah = var1.
+
+            ////         await blah4 = Database.SqlQuery(CalendarEventModel, dynamicSQL);
+
+            return var1;        
+        }
+
+        private async Task<IEnumerable> GetDynamicData(Type type, string sql)
+        {
+            var data = Database.SqlQuery(type, sql);
+
+  //          Task query = data.ToListAsync();
+//            query.Wait();
+
+            return await Database.SqlQuery(type, sql).ToListAsync();
         }
 
     }

@@ -9,7 +9,7 @@ using Nexus.Sql_Repository.DatabaseClasses.Structure;
 
 namespace Nexus.Sql_Repository
 {
-    public class SqlDictionaryRepository : SqlRepositoryContext, IDictionary
+    public class SqlDictionaryRepository : SqlRepositoryContext, ITranslation
     {
         private string _language = "en-GB";
 
@@ -39,7 +39,7 @@ namespace Nexus.Sql_Repository
         public virtual DbSet<DictionaryItem> Dictionary { get; set; }
         public virtual DbSet<DynamicColumn> Columns { get; set; }
 
-        List<WebFormFieldOption> IDictionary.GetLookupValues(int columnId)
+        List<WebFormFieldOption> ITranslation.GetLookupValues(int columnId)
         {
             var lookupTable = (from cols in Columns
                                where cols.Id == columnId

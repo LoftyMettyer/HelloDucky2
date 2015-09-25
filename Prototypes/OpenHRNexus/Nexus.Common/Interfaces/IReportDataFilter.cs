@@ -7,5 +7,6 @@ namespace Nexus.Common.Interfaces
         string Condition { get; set; }
         DateTime? StartRange { get; set; }
         DateTime? EndRange { get; set; }
+        int RecordRange { get; set; }
     }
 }

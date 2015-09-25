@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mail;
 using Nexus.Common.Classes;
 using Nexus.Common.Interfaces;
 using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Models;
 using Nexus.Sql_Repository.DatabaseClasses.Data;
+using System.Collections;
 
 namespace Nexus.Mock_Repository {
 	public class MockProcessRepository : IProcessRepository {
@@ -59,6 +61,11 @@ namespace Nexus.Mock_Repository {
         }
 
         public MailMessage PopulateEmailWithData(IProcessStep step, Guid userId, string targetURL, string authenticationToken, EmailAddressCollection destinations)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters)
         {
             throw new NotImplementedException();
         }

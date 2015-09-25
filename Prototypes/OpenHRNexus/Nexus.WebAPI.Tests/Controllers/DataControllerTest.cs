@@ -9,6 +9,8 @@ using System;
 using Nexus.Common.Classes;
 using System.Web.Mvc;
 using Nexus.Common.Enums;
+using System.Web.Script.Serialization;
+using Nexus.Common.Classes.DataFilters;
 
 namespace Nexus.WebAPI.Tests.Controllers
 {
@@ -64,11 +66,32 @@ namespace Nexus.WebAPI.Tests.Controllers
         //}
 
         [TestMethod]
-        public void GetCalendarData_GetsDataForTodaysRange()
+        public void DataController_GetCalendarData_TodaysRange()
         {
 
             var result = (List<CalendarEventModel>)_mockController.GetCalendarData("absence", DateTime.Now, DateTime.Now);
             Assert.IsTrue(result is IEnumerable<CalendarEventModel>);
+
+        }
+
+
+        [TestMethod]
+        public void DataController_GetData_ReturnTypeIsSerializable()
+        {
+            var filters = new List<RangeFilter>()
+            {
+                new RangeFilter() {
+                    RecordRange = 100
+                    }
+            };
+
+            var result = _mockController.GetData(1, filters);
+
+            var serialized = new JavaScriptSerializer().Serialize(result);
+            var deserialized = new JavaScriptSerializer().Deserialize<object>(serialized);
+
+            Assert.IsInstanceOfType(serialized, typeof(string));
+       //     Assert.AreEqual(result, deserialized);
 
         }
 

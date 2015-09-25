@@ -14,7 +14,7 @@ namespace Nexus.Sql_Repository.DatabaseClasses
 
             // Translate dictionary text
 
-            IDictionary dictionary;
+            ITranslation dictionary;
 
             try
             {

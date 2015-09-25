@@ -5,7 +5,7 @@ using Nexus.Common.Models;
 
 namespace Nexus.Mock_Repository
 {
-    public class MockDictionaryRepository : IDictionary
+    public class MockDictionaryRepository : ITranslation
     {
         public string Language { get; set; }
 

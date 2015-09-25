@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Nexus.Common.Interfaces
 {
-    public interface IDictionary
+    public interface ITranslation
     {
         string GetTranslation(string key);
         List<WebFormFieldOption> GetLookupValues(int columnId);

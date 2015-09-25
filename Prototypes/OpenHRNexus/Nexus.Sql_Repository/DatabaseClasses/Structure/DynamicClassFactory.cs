@@ -33,9 +33,9 @@ public class DynamicClassFactory
     /// <param name="name"></param>
     /// <param name="properties"></param>
     /// <returns></returns>
-    public Type CreateDynamicType<T>(string name, Dictionary<string, Type> properties) where T : DynamicEntity
+    public Type CreateDynamicType<T>(string name, Dictionary<string, Type> properties, List<Type> interfaces) where T : DynamicEntity
     {
-        var tb = CreateDynamicTypeBuilder<T>(name, properties);
+        var tb = CreateDynamicTypeBuilder<T>(name, properties, interfaces);
         return tb.CreateType();
     }
 
@@ -46,7 +46,7 @@ public class DynamicClassFactory
     /// <param name="name"></param>
     /// <param name="properties"></param>
     /// <returns></returns>
-    public TypeBuilder CreateDynamicTypeBuilder<T>(string name, Dictionary<string, Type> properties)
+    public TypeBuilder CreateDynamicTypeBuilder<T>(string name, Dictionary<string, Type> properties, List<Type> interfaces)
         where T : DynamicEntity
     {
         if (_assemblyBuilder == null)
@@ -63,6 +63,13 @@ public class DynamicClassFactory
                                                         | TypeAttributes.AnsiClass
                                                         | TypeAttributes.Serializable
                                                         | TypeAttributes.BeforeFieldInit, typeof(T));
+        if (interfaces != null)
+        { 
+            foreach (var type in interfaces)
+            {
+                _typeBuilder.AddInterfaceImplementation(type);
+            }
+        };
 
         //various class based attributes for WCF and EF
         AddDataContractAttribute();
