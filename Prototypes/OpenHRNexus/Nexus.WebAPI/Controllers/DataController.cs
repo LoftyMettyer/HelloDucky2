@@ -11,6 +11,8 @@ using Nexus.Common.Interfaces.Services;
 using System.Collections;
 using System.Threading.Tasks;
 using Nexus.Common.Interfaces;
+using Nexus.WebAPI.Formatters;
+using System.Reflection;
 
 namespace Nexus.WebAPI.Controllers
 {
@@ -68,8 +70,9 @@ namespace Nexus.WebAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Authorize(Roles = "OpenHRUser")]
-        public async Task<IEnumerable> GetData(int dataSourceId)
+        public async Task<GridRequestFormat> GetData(int dataSourceId)
         {
+
             var filters = new List<RangeFilter>()
             {
                 new RangeFilter() {
@@ -78,11 +81,36 @@ namespace Nexus.WebAPI.Controllers
             };
 
             var userId = new Guid(_identity.GetUserId());
-            return await _dataService.GetData(dataSourceId, filters);
+
+            var dataDescription = new List<ColumnDefinitionFormat>();
+
+            var definitionType = _dataService.GetDataDefinition(dataSourceId);
+
+            var typeAsColModel = ConvertTypeToColModel(definitionType);
+
+            var data = await _dataService.GetData(dataSourceId, filters);
+
+            return new GridRequestFormat()
+            {
+                total = 1, page = 1, records = 0, rows = data, colModel = typeAsColModel
+            };
 
         }
 
+        private List<ColumnDefinitionFormat> ConvertTypeToColModel(Type description)
+        {
+            var colModel = new List<ColumnDefinitionFormat>();
+            var fieldCount = 0;
 
+            foreach (var field in description.GetRuntimeFields())
+            {
+                fieldCount += 1;
+                colModel.Add(new ColumnDefinitionFormat() { sortable = true, name = field.Name, index = field.Name});                   
+            }
+
+            return colModel;
+
+        }
 
     }
 }

@@ -71,6 +71,11 @@ namespace Nexus.Service.Services
         }
 
 
+        public Type GetDataDefinition(int dataSourceId)
+        {
+            return _dataRepository.GetDataDefinition(dataSourceId);
+        }
+
         WebFormModel IDataService.InstantiateProcess(int ProcessId, Guid userId, string language)
         {
 

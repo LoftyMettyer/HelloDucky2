@@ -26,7 +26,7 @@ namespace Nexus.Common.Interfaces.Repository {
 
         IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters);
         Task<IEnumerable> GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters);
-
+        Type GetDataDefinition(int dataSourceId);
 
     }
 }

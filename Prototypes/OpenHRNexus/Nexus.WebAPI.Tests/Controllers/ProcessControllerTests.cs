@@ -144,7 +144,7 @@ namespace Nexus.WebAPI.Tests.Controllers
             var reSerializedform = new JavaScriptSerializer().Deserialize<WebFormDataModel>(serializedForm);
             Assert.IsInstanceOfType(reSerializedform, typeof(WebFormDataModel));
 
-            var result = _mockController.PostProcessStep(reSerializedform);
+            var result =  _mockController.PostProcessStep(reSerializedform);
             Assert.IsTrue(result is ProcessStepResponse, "Serialized object cannot be processed");
 
         }

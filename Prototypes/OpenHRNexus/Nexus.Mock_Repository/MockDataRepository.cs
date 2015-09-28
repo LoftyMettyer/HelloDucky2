@@ -70,5 +70,10 @@ namespace Nexus.Mock_Repository {
         {
             throw new NotImplementedException();
         }
+
+        public Type GetDataDefinition(int dataSourceId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

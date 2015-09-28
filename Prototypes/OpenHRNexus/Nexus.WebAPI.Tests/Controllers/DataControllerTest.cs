@@ -11,6 +11,7 @@ using System.Web.Mvc;
 using Nexus.Common.Enums;
 using System.Web.Script.Serialization;
 using Nexus.Common.Classes.DataFilters;
+using Nexus.WebAPI.Formatters;
 
 namespace Nexus.WebAPI.Tests.Controllers
 {
@@ -88,10 +89,10 @@ namespace Nexus.WebAPI.Tests.Controllers
             var result = _mockController.GetData(1);
 
             var serialized = new JavaScriptSerializer().Serialize(result);
-            var deserialized = new JavaScriptSerializer().Deserialize<object>(serialized);
+            var deserialized = new JavaScriptSerializer().Deserialize<GridRequestFormat>(serialized);
 
             Assert.IsInstanceOfType(serialized, typeof(string));
-       //     Assert.AreEqual(result, deserialized);
+            //Assert.AreEqual(result, deserialized);
 
         }
 

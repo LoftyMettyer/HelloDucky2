@@ -431,6 +431,21 @@ namespace Nexus.Sql_Repository
 
         }
 
+
+        public Type GetDataDefinition(int dataSourceId)
+        {
+
+            var factory = new DynamicClassFactory();
+            var interfaces = new List<Type>() { typeof(IDynamicData) };
+            var formFields = (from col in Columns
+                              where col.TableId == dataSourceId
+                              select col).ToList();
+
+            return CreateType(factory, string.Format("dynamicData{0}", dataSourceId), formFields, interfaces);
+
+        }
+
+
         public async Task<IEnumerable> GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters)
         {
 
@@ -442,7 +457,6 @@ namespace Nexus.Sql_Repository
             var baseTable = DynamicTables.Where(t => t.Id == dataSourceId).First().PhysicalName;
 
             // filter in security here???
-
 
             // TODO - The Dynamic type builder is not handling nulls and so we are forcing not nulls at this point
             // This causes an error below when we loop around the datarow.
@@ -472,26 +486,12 @@ namespace Nexus.Sql_Repository
             var factory = new DynamicClassFactory();
             var interfaces = new List<Type>() { typeof(IDynamicData) };
             var dynamicType = CreateType(factory, string.Format("dynamicData{0}", dataSourceId), formFields, interfaces);
+
             var data = Database.SqlQuery(dynamicType, dynamicSQL);
 
-            //            var bah = data.ToListAsync
+            var dynamicData = await GetDynamicData(dynamicType, dynamicSQL);
 
-            //            var blah44 = data.GetEnumerator();
-
-
-
-            //         var data2 = Database.SqlQuery<CalendarEventModel>(dynamicSQL);
-            //         Task[] tasks;
-
-            var var1 = await GetDynamicData(dynamicType, dynamicSQL);
-
-            //         var1.Wait();
-
-            //         var blah = var1.
-
-            ////         await blah4 = Database.SqlQuery(CalendarEventModel, dynamicSQL);
-
-            return var1;        
+            return dynamicData;        
         }
 
         private async Task<IEnumerable> GetDynamicData(Type type, string sql)

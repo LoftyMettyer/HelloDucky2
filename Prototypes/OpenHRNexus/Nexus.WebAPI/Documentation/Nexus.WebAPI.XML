@@ -592,6 +592,11 @@
             <param name="purpose"></param>
             <returns></returns>
         </member>
+        <member name="T:Nexus.WebAPI.Formatters.GridRequestFormat">
+            <summary>
+            Serialization class for outputting dynamic data to a response
+            </summary>
+        </member>
         <member name="T:Nexus.WebAPI.Handlers.AuthenticationServiceHandler">
             <summary>
             

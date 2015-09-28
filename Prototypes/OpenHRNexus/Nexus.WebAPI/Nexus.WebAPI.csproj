@@ -250,6 +250,8 @@
     <Compile Include="Controllers\ProcessController.cs" />
     <Compile Include="Controllers\ResourceController.cs" />
     <Compile Include="Extensions\ToJsonResultExtension.cs" />
+    <Compile Include="Formatters\ColumnDefinitionFormat.cs" />
+    <Compile Include="Formatters\GridRequestFormat.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
