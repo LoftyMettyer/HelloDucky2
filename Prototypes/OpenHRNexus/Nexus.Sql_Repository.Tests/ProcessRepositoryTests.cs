@@ -18,11 +18,11 @@ namespace Nexus.Sql_Repository.Tests
         {
             var processStepEmail = new ProcessStepEmail();
 
-            var destinations = processStepEmail.GetEmailDestinations();
+            var template = _mockRepository.GetEmailTemplate(1);
 
-            Assert.IsNotNull(destinations, "Email destinations is null");
-            Assert.IsNotNull(destinations.To, "Email To is null");
-            Assert.IsNotNull(destinations.From, "Email From is null");
+            Assert.IsNotNull(template.Destinations, "Email destinations is null");
+            Assert.IsNotNull(template.Destinations.To, "Email To is null");
+            Assert.IsNotNull(template.Destinations.From, "Email From is null");
         }
 
         [TestMethod]
@@ -33,9 +33,9 @@ namespace Nexus.Sql_Repository.Tests
             var stepId = Guid.NewGuid();
             var processStepEmail = new ProcessStepEmail();
 
-            var destinations = processStepEmail.GetEmailDestinations();
+            var template = _mockRepository.GetEmailTemplate(1);
 
-            var message = _mockRepository.PopulateEmailWithData(processStepEmail, userId, "<<TARGETURL>>", "<<AUTHENTICATIONCODE>>", destinations);
+            var message = _mockRepository.PopulateEmailWithData(processStepEmail, userId, template);
             Assert.IsNotNull(message, "Populated email is returning null data");
 
         }

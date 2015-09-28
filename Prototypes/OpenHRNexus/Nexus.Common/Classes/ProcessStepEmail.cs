@@ -1,6 +1,8 @@
 ﻿using Nexus.Common.Interfaces;
 using OpenHRNexus.Common.Enums;
 using Nexus.Common.Enums;
+using System.Collections.Generic;
+using Nexus.Common.Models;
 
 namespace Nexus.Common.Classes
 {
@@ -21,21 +23,9 @@ namespace Nexus.Common.Classes
             return ProcessStepStatus.Success;
         }
 
-//        public string To { get; set; }
-
         public string BodyTemplate { get; set; }
 
         public string Subject { get; set; }
-
-        public EmailAddressCollection GetEmailDestinations()
-        {
-            return new EmailAddressCollection()
-            {
-                From = "nick.gibson@advancedcomputersoftware.com",
-                To = "nick.gibson@advancedcomputersoftware.com"
-            };
-
-        }
 
     }
 

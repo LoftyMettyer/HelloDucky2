@@ -104,8 +104,16 @@ namespace Nexus.WebAPI.Tests.Controllers
 
         }
 
+
         [TestMethod]
         public void PostProcessStep_ResponseReceived()
+        {
+            async_PostProcessStep_ResponseReceived();
+        }
+
+
+        [TestMethod]
+        public async void async_PostProcessStep_ResponseReceived()
         {
 
             var form = new WebFormDataModel
@@ -118,7 +126,7 @@ namespace Nexus.WebAPI.Tests.Controllers
                 }
             };
 
-            var result = _mockController.PostProcessStep(form);
+            var result = await _mockController.PostProcessStep(form);
             Assert.IsTrue(result is ProcessStepResponse);
 
         }

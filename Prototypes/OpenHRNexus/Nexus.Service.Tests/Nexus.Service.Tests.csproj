@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="EmailServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SubmitStepTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nexus.Common\Nexus.Common.csproj">

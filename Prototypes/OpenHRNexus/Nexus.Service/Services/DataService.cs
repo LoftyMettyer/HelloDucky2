@@ -123,7 +123,7 @@ namespace Nexus.Service.Services
                 buttons = form.Buttons.Select(b => new WebFormButtonModel
                 {
                     title = b.Title,
-                    targeturl = b.TargetUrl,
+                    TargetUrl = b.TargetUrl,
                     action = b.Action
                 }).ToList()
             };
@@ -197,16 +197,23 @@ namespace Nexus.Service.Services
                     var emailService = new EmailService();
                     var processStepEmail = (ProcessStepEmail)nextStep;
 
-                    var emailDestinations =  processStepEmail.GetEmailDestinations();
+                    // Get process step body
 
-                    await AuthenticationServiceHandler.GetUserToken(_authenticationServiceURL, userID, stepId).ContinueWith(
-                        tokenResponse =>
-                        {
-                            MailMessage message = _dataRepository.PopulateEmailWithData(processStepEmail, userID
-                                , _callingURL, tokenResponse.Result, emailDestinations);
-                            result = emailService.Send(message);
-                        }
-                    );
+                    // build code for activies.
+
+                    var emailTemplate = _dataRepository.GetEmailTemplate(1);
+
+                    // Add authenication to each follow on action
+                    foreach (var button in emailTemplate.FollowOnActions)
+                    {
+                        var authenticationCode = await AuthenticationServiceHandler.GetUserToken(_authenticationServiceURL, userID, button.TargetStep);
+                        button.TargetUrl = string.Format("{0}UI/home/postprocessstep?userid={1}&code={3}&purpose={2}"
+                            , _callingURL, userID, button.TargetStep
+                            , authenticationCode);
+                    }
+
+                    MailMessage message = _dataRepository.PopulateEmailWithData(processStepEmail, userID, emailTemplate);
+                    result = emailService.Send(message);
 
                     break;
 

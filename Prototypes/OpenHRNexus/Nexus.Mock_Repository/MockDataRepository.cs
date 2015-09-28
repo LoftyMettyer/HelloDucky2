@@ -61,17 +61,22 @@ namespace Nexus.Mock_Repository {
             throw new NotImplementedException();
         }
 
-        public MailMessage PopulateEmailWithData(IProcessStep step, Guid userId, string targetURL, string authenticationToken, EmailAddressCollection destinations)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable> GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters)
         {
             throw new NotImplementedException();
         }
 
         public Type GetDataDefinition(int dataSourceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ProcessEmailTemplate GetEmailTemplate(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public MailMessage PopulateEmailWithData(IProcessStep step, Guid userId, ProcessEmailTemplate template)
         {
             throw new NotImplementedException();
         }

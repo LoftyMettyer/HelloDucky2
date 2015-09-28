@@ -13,8 +13,8 @@ namespace Nexus.Common.Interfaces.Repository {
 
 		//ProcessFormElement GetWebForm(int id);
         ProcessFormElement PopulateFormWithData(ProcessFormElement webForm, Guid userId);
-        MailMessage PopulateEmailWithData(IProcessStep step, Guid userId, string targetURL, string authenticationToken, EmailAddressCollection destinations);
-
+        MailMessage PopulateEmailWithData(IProcessStep step, Guid userId, ProcessEmailTemplate template);
+        ProcessEmailTemplate GetEmailTemplate(int id);
         Process GetProcess(int Id);
         ProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form);
         ProcessStepResponse CommitStep(Guid stepId, Guid userID, WebFormModel form);

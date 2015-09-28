@@ -117,12 +117,12 @@ namespace Nexus.Sql_Repository
             return webForm;
 
         }
+        
 
         [Obsolete("Will pull from database and calculate where in the process chain?")]
         private string GetBodyTemplateForEmail(IProcessStep step)
         {
-            // only one template exists at the moment
-            //            var bodyTemplate = ProcessEmailTemplates.Where(t => t.Id == 1).First().BodyTemplate;
+
             return "<!DOCTYPE html> " +
             "<html lang='en'>" +
             "    <head>" +
@@ -171,37 +171,26 @@ namespace Nexus.Sql_Repository
             "    </center>" +
             "  </v:roundrect>" +
             "  <![endif]-->" +
-            //"  <![if !mso]>" +
-            //"  <table cellspacing='0' cellpadding='0'> <tr> " +
-            //"  <td align='center' width='300' height='40' bgcolor='#d62828' style='-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;'>" +
-            //"    <a href='http://www.EXAMPLE.com/' style='font-size:16px; font-weight: bold; font-family:sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block'>" +
-            //"    <span style='color: #ffffff;'>" +
-            //"      Button Text Here!" +
-            //"    </span>" +
-            //"    </a>" +
-            //"  </td> " +
-            //"  </tr> </table> " +
-            //"  <![endif]>" +
             "  <!--[if !mso]>" +
-            "        <span style='background: green; padding: 5px'><a style='text-decoration: none; color: white' href='{6}'>Approve</a></span>" +
-            "        <span style='background: red; padding: 5px'><a style='text-decoration: none; color: white' href='{7}'>Decline</a></span>" +
-            "        <span style='background: lightblue; padding: 5px'><a style='text-decoration: none; color: white' href='{7}'>View the request</a></span>" +
-            "        <span style='background: blue; padding: 5px'><a style='text-decoration: none; color: white' href='{9}'>View team calendar</a></span>" +
+            "{6}" +
             "  <![endif]-->" +
             "</div>" +
             "    </body>" +
             "</html>";
         }
 
-        public MailMessage PopulateEmailWithData(IProcessStep step, Guid userId, string targetURL, string authenticationToken, EmailAddressCollection destinations)
+        public MailMessage PopulateEmailWithData(IProcessStep step, Guid userId, ProcessEmailTemplate template)
         {
+            //string targetURL,
+
             var emailStep = (ProcessStepEmail)step;
 
-            var bodyTemplate = GetBodyTemplateForEmail(step);
+            //  var bodyTemplate = GetBodyTemplateForEmail(step);
 
-            var buttonCode = string.Format("{0}UI/home/postprocessstep?userid={1}&code={3}&purpose={2}"
-                , targetURL, userId, step.Id
-                , authenticationToken);
+            var buttonCode1 = template.FollowOnActions[0].TargetUrl;
+            var buttonCode2 = template.FollowOnActions[1].TargetUrl;
+            var buttonCode3 = template.FollowOnActions[2].TargetUrl;
+            var buttonCode4 = template.FollowOnActions[3].TargetUrl;
 
             object[] dataBlob = { "Debbie Avery"
                             , "two day"
@@ -209,20 +198,29 @@ namespace Nexus.Sql_Repository
                             , DateTime.Now.AddDays(3)
                             , "Holiday"
                             , "Sorry it's short notice!"
-                            , buttonCode
-                            , "http://www.bbc.co.uk"
-                            , "http://www.bbc.co.uk"
-                            , "http://www.bbc.co.uk"
+                            , buttonCode1
+                            , buttonCode2
+                            , buttonCode3
+                            , buttonCode4
                     };
 
-            var body = EmailFunctions.FormatBody(bodyTemplate, dataBlob, "en-GB");
+            var body = EmailFunctions.FormatBody(template.Body, dataBlob, "en-GB");
 
-            var result = new MailMessage(destinations.From, destinations.To)
+            var result = new MailMessage(template.Destinations.From, template.Destinations.To)
             {
                 Body = body
             };
             return result;
 
+        }
+
+        public ProcessEmailTemplate GetEmailTemplate(int id)
+        {
+            return ProcessEmailTemplates
+                .Include("FollowOnActions")
+                .AsNoTracking()
+                .Where(t => t.Id == id)
+                .First();
         }
 
         public Process GetProcess(int Id)
