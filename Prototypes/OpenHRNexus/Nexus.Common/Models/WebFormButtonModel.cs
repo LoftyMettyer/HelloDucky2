@@ -11,7 +11,7 @@ namespace Nexus.Common.Models
         public string TargetUrl { get; set; }
         public ButtonAction action { get; set; }
 //        public string Html { get; set; }
-        [NotMapped]
+//        [NotMapped]
 //        public string AuthenticationCode { get; set; }
         public Guid TargetStep { get; set; }
     }

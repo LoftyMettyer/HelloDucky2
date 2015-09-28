@@ -30,7 +30,7 @@ namespace Nexus.WebAPI.Tests.Controllers
         public void TestInitialize()
         {
             _mockService.CallingURL = "http://nexus-advanced.azurewebsites.net/";
-            _mockService.AuthenticationServiceURL = "http://localhost:25261/";
+            _mockService.AuthenticationServiceURL = "http://abs16091/authenticationservice/";
             _claims = new ClaimsIdentity();
             _claims.AddClaim(new Claim(ClaimTypes.Name, "testUser"));
             _claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, "088C6A78-E14A-41B0-AD93-4FB7D3ADE96C"));
