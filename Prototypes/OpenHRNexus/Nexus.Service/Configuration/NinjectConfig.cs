@@ -6,8 +6,8 @@ using Nexus.Common.Interfaces;
 namespace Nexus.Service.Configuration {
 	public class NinjectConfig {
 		public static void Config(IKernel kernel) {
-			kernel.Bind<IAuthenticateRepository>().To<SqlAuthenticateRepository>();
-			kernel.Bind<IWelcomeMessageDataRepository>().To<SqlAuthenticateRepository>();
+			kernel.Bind<IWelcomeRepository>().To<SqlWelcomeRepository>();
+			kernel.Bind<IWelcomeMessageDataRepository>().To<SqlWelcomeRepository>();
 			kernel.Bind<IProcessRepository>().To<SqlProcessRepository>();
 			kernel.Bind<IEntityRepository>().To<SqlProcessRepository>();
 			kernel.Bind<ITranslation>().To<SqlDictionaryRepository>();

@@ -78,12 +78,12 @@
     <Compile Include="Interfaces\IJsonSerialize.cs" />
     <Compile Include="Interfaces\INexusUser.cs" />
     <Compile Include="Interfaces\IReportDataFilter.cs" />
-    <Compile Include="Interfaces\Repository\IAuthenticateRepository.cs" />
+    <Compile Include="Interfaces\Repository\IWelcomeRepository.cs" />
     <Compile Include="Interfaces\Repository\IProcessRepository.cs" />
     <Compile Include="Interfaces\Repository\IDesignRepository.cs" />
     <Compile Include="Interfaces\Repository\IEntityRepository.cs" />
     <Compile Include="Interfaces\Repository\IWelcomeMessageDataRepository.cs" />
-    <Compile Include="Interfaces\Services\IAuthenticateService.cs" />
+    <Compile Include="Interfaces\Services\IWelcomeService.cs" />
     <Compile Include="Interfaces\Services\IDataService.cs" />
     <Compile Include="Interfaces\Services\IDesignerService.cs" />
     <Compile Include="Interfaces\Services\IEntityService.cs" />

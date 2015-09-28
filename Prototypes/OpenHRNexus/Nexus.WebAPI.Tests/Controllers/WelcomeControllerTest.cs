@@ -7,14 +7,14 @@ using Nexus.Common.Interfaces.Services;
 
 namespace Nexus.WebAPI.Tests.Controllers {
 	[TestClass]
-	public class AuthenticateControllerTest {
+	public class WelcomeControllerTest {
 		[TestMethod]
-		public void Authenticate() {
+		public void WelcomeController_Authenticate() {
 			// Arrange
-			var mockService = new Mock<IAuthenticateService>();
+			var mockService = new Mock<IWelcomeService>();
 			mockService.Setup(x => x.RequestAccount("SomeEmail", new System.Guid().ToString()));
 
-			AuthenticateController controller = new AuthenticateController(mockService.Object);
+			WelcomeController controller = new WelcomeController(mockService.Object);
 
 			// Act
 			RegisterNewUserMessage result = controller.Authenticate("UserName", new System.Guid().ToString());
@@ -25,12 +25,12 @@ namespace Nexus.WebAPI.Tests.Controllers {
 		}
 
 		[TestMethod]
-		public void GetRoles() {
+		public void WelcomeController_GetRoles() {
 			// Arrange
-			var mockService = new Mock<IAuthenticateService>();
+			var mockService = new Mock<IWelcomeService>();
 			mockService.Setup(x => x.GetClaims(Guid.NewGuid()));
 
-			AuthenticateController controller = new AuthenticateController(mockService.Object);
+			WelcomeController controller = new WelcomeController(mockService.Object);
 
 			var userId = Guid.NewGuid().ToString();
 			var result = controller.GetClaims(userId);

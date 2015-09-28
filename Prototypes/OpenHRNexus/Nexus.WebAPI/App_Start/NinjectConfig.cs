@@ -12,7 +12,7 @@ namespace Nexus.WebAPI {
 		public NinjectConfig() {
 			_kernel = new StandardKernel();
 			//Add bindings
-			_kernel.Bind<IAuthenticateService>().To<AuthenticateService>();
+			_kernel.Bind<IWelcomeService>().To<WelcomeService>();
 			_kernel.Bind<IWelcomeMessageDataService>().To<WelcomeMessageDataService>();
 			_kernel.Bind<IDataService>().To<DataService>();
 			_kernel.Bind<IEntityService>().To<EntityService>();

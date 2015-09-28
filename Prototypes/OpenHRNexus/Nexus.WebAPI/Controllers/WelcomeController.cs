@@ -5,26 +5,26 @@ using Nexus.Common.Messages;
 using Nexus.Common.Interfaces.Services;
 
 namespace Nexus.WebAPI.Controllers {
-	public class AuthenticateController : ApiController {
-		private readonly IAuthenticateService _authenticateService;
+	public class WelcomeController : ApiController {
+		private readonly IWelcomeService _welcomeService;
 
-		public AuthenticateController() {
+		public WelcomeController() {
 		}
 
-		public AuthenticateController(IAuthenticateService authenticateService) {
-			_authenticateService = authenticateService;
+		public WelcomeController(IWelcomeService welcomeService) {
+			_welcomeService = welcomeService;
 		}
 
 		// GET api/authenticate/authenticate?parameter=email
 		//todo: secure this controller actions so only authservice can access it.
 		[HttpGet]
 		public RegisterNewUserMessage Authenticate(string email, string userId) {
-			return _authenticateService.RequestAccount(email, userId);
+			return _welcomeService.RequestAccount(email, userId);
 		}
 
 		[HttpGet]
 		public IEnumerable<string> GetClaims(string userId) {
-			return _authenticateService.GetClaims(new Guid(userId));
+			return _welcomeService.GetClaims(new Guid(userId));
 		}
 
 	}

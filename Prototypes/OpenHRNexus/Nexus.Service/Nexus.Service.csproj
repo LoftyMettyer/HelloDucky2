@@ -96,7 +96,7 @@
     <Compile Include="Handlers\AuthenticationServiceHandler.cs" />
     <Compile Include="Interfaces\IAuthenticateEmail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\AuthenticateService.cs" />
+    <Compile Include="Services\WelcomeService.cs" />
     <Compile Include="Services\DataService.cs" />
     <Compile Include="Services\DesignerService.cs" />
     <Compile Include="Services\EntityService.cs" />

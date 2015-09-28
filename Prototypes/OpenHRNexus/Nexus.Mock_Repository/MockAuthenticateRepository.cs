@@ -5,7 +5,7 @@ using Nexus.Common.Interfaces.Repository;
 using Nexus.Common.Messages;
 
 namespace Nexus.Mock_Repository {
-	public class MockAuthenticateRepository : IAuthenticateRepository {
+	public class MockWelcomeRepository : IWelcomeRepository {
 		public RegisterNewUserMessage RequestAccount(string email, string userId) {
 			return new RegisterNewUserMessage {
 				Status = NewUserStatus.Success

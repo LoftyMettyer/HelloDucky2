@@ -4,7 +4,7 @@ using Nexus.Common.Messages;
 
 namespace Nexus.Common.Interfaces.Services
 {
-	public interface IAuthenticateService {
+	public interface IWelcomeService {
 		RegisterNewUserMessage RequestAccount(string email, string userId);
 		IEnumerable<string> GetClaims(Guid userId);
 	}

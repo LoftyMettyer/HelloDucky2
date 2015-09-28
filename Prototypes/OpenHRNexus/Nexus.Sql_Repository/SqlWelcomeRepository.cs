@@ -9,10 +9,10 @@ using Nexus.Common.Messages;
 using Nexus.Sql_Repository.DatabaseClasses.Security;
 
 namespace Nexus.Sql_Repository {
-	public class SqlAuthenticateRepository : DbContext, IWelcomeMessageDataRepository, IAuthenticateRepository {
+	public class SqlWelcomeRepository : DbContext, IWelcomeMessageDataRepository, IWelcomeRepository {
 
-		public SqlAuthenticateRepository()
-			: base("name=SqlAuthenticateRepository") {
+		public SqlWelcomeRepository()
+			: base("name=SqlWelcomeRepository") {
 		}
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder) {
