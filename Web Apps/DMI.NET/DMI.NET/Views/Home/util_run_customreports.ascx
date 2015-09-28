@@ -66,6 +66,8 @@
 	objReport.CustomReportID = Session("utilid")
 	objReport.ClientDateFormat = Session("LocaleDateFormat")
 	objReport.LocalDecimalSeparator = Session("LocaleDecimalSeparator")
+	objReport.MultipleRecordIDs = Session("multipleRecordIDs")
+	
 
 	If fok Then
 		fok = objReport.GetCustomReportDefinition

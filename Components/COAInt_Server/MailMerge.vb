@@ -68,6 +68,9 @@ Public Class MailMerge
 
 	Private mlngSingleRecordID As Integer
 
+	'Runnning report for selected multiple record ids only
+	Private mlngMultipleRecordIDs As String
+
 	' Modify this after we convert the actual SQL code to pull a datatable back directly
 	Public ReadOnly Property MergeData As DataTable
 		Get
@@ -273,6 +276,12 @@ Public Class MailMerge
 		End Set
 	End Property
 
+	Public WriteOnly Property MultipleRecordIDs() As String
+		Set(ByVal Value As String)
+			mlngMultipleRecordIDs = Value
+		End Set
+	End Property
+
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
 
@@ -427,7 +436,8 @@ Public Class MailMerge
 
 			If mlngSingleRecordID > 0 Then
 				GetPicklistFilterSelect = CStr(mlngSingleRecordID)
-
+			ElseIf ((Not IsNothing(mlngMultipleRecordIDs)) And CInt(mlngMultipleRecordIDs.Length) > 0) Then
+				GetPicklistFilterSelect = CStr(mlngMultipleRecordIDs)
 			ElseIf mlngDefPickListID > 0 Then
 
 				mstrStatusMessage = IsPicklistValid(mlngDefPickListID)

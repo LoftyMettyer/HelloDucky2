@@ -23,6 +23,7 @@
 	objMailMerge.MailMergeID = CInt(Session("utilid"))
 	objMailMerge.ClientDateFormat = Session("localedateformat")
 	objMailMerge.SingleRecordID = Session("singleRecordID")
+	objMailMerge.MultipleRecordIDs = Session("multipleRecordIDs")
 	
 	If fok Then
 		fok = objMailMerge.SQLGetMergeDefinition

@@ -26,5 +26,7 @@ Namespace Models.ObjectRequests
 		Public Property Usage As Collection(Of DefinitionPropertiesViewModel)
 		Public Property Status As String
 
+		Public Property MultipleRecordIDs As String
+
 	End Class
 End Namespace

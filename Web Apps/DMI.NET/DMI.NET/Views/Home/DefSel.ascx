@@ -142,7 +142,7 @@
 		var frmDefSel = document.getElementById('frmDefSel');
 
 		// Expand the option frame and hide the work frame.
-		if (parseInt($("#txtSingleRecordID").val()) > 0) {
+		if ( (parseInt($("#txtSingleRecordID").val()) > 0) || (parseInt($("#txtMultipleRecordIDs").val().length) > 0 ) )  {
 			$("#optionframe").attr("data-framesource", "DEFSEL");
 			$("#workframe").hide();
 			$("#ToolsFrame").hide();
@@ -250,9 +250,8 @@
 	function refreshControls() {
 
 		//show the Defsel-Find menu block.
-		disableNonDefselTabs();
-		
-		var fFromMenu = (parseInt($("#txtSingleRecordID").val()) <= 0);		
+		disableNonDefselTabs();		
+		var fFromMenu = !((parseInt($("#txtSingleRecordID").val()) > 0) || (parseInt($("#txtMultipleRecordIDs").val()) > 0));				
 		var fHasRows = (rowCount() > 0);
 		var isWorkflow = (defSelType === "utlWorkflow");
 
@@ -489,7 +488,7 @@
 
 	function setcancel() {
 
-		if (parseInt($("#txtSingleRecordID").val()) > 0) {			
+		if ( (parseInt($("#txtSingleRecordID").val()) > 0) || (parseInt($("#txtMultipleRecordIDs").val()) > 0) ) {			
 			refreshData();
 			menu_disableMenu();
 
@@ -688,6 +687,7 @@
 
 
 	<input type="hidden" id="txtSingleRecordID" name="txtSingleRecordID" value='<%:session("singleRecordID")%>'>
+	<input type="hidden" id="txtMultipleRecordIDs" name="txtMultipleRecordIDs" value='<%:session("multipleRecordIDs")%>'>
 	<input type="hidden" id="txtTicker" name="txtTicker" value="0">
 	<input type="hidden" id="txtLastKeyFind" name="txtLastKeyFind" value="">
 

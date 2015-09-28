@@ -1084,6 +1084,7 @@ Namespace Controllers
 			Session("utilTableID") = IIf(value.txtTableID = 0, SettingsConfig.Personnel_EmpTableID, value.txtTableID)
 			Session("fromMenu") = IIf(value.txtGotoFromMenu, "1", "0") ' No idea what this is doing, just placed for backward compatability. Candidate for removal!
 			Session("singleRecordID") = value.RecordID
+			Session("multipleRecordIDs") = value.MultipleRecordIDs
 
 			If value.txtGotoFromMenu Then
 				Session("OnlyMine") = CBool(objSession.GetUserSetting("defsel", "onlymine " + value.utiltype.ToSecurityPrefix, False))

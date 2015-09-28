@@ -245,7 +245,8 @@ Namespace Code
 				' Verify template integrity
 				Dim doc As New Document(objTemplate)
 				Dim templateFields = doc.MailMerge.GetFieldNames().Distinct().ToList()
-
+				'Dim templateFields = {"Vacancy_Records_Division", "Vacancy_Records_Department", "Vacancy_Records_Manager", "Vacancy_Records_Job_Title", "Vacancy_Records_Vacancy_Costs", "Vacancy_Records_Grade"}.ToList()
+				'Dim templateFields = {"Course_Records_Course_Title"}.ToList()
 				' If no template fields no point running the merge (Also stops corrupt files being used (e.g pdf))
 				If templateFields.Count = 0 Then
 					Errors.Add(String.Format("The uploaded template has no merge fields defined or is an invalid template.{0}" _
@@ -255,6 +256,7 @@ Namespace Code
 
 				For Each objColumn In Columns
 					templateFields.Remove(objColumn.MergeName)
+					'templateFields.Remove(objColumn.Name)
 				Next
 
 				If templateFields.Count > 0 Then

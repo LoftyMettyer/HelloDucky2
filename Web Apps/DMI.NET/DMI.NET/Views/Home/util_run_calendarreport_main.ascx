@@ -23,6 +23,7 @@
 		objCalendar.ClientDateFormat = Session("LocaleDateFormat")
 		objCalendar.LocalDecimalSeparator = Session("LocaleDecimalSeparator")
 		objCalendar.SingleRecordID = Session("singleRecordID")
+		objCalendar.MultipleRecordIDs = Session("multipleRecordIDs")
 		
 		aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("UtilID"))
 		If fok Then

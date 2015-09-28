@@ -1695,7 +1695,7 @@ function menu_refreshMenu() {
 			(frmFind.txtCurrentParentTableID.value > 0) ||
 			(frmFind.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) ||
 			(frmFind.txtQuickEntry.value.toUpperCase() == "TRUE")));
-
+			
 			if (IsMultiSelectionModeOn()) {
 				menu_toolbarEnableItem("mnutoolNewRecordFind", false);
 				menu_toolbarEnableItem("mnutoolCopyRecordFind", false);
@@ -4031,7 +4031,7 @@ function menu_loadSelectOrderFilter(psType) {
 	var frmFindArea;
 	var sSaveChangesTag;
 	var sOptionPage;
-	
+
 	function orderfilter_RecordEdit() {
 		frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 		frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
@@ -5080,8 +5080,8 @@ function RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGri
 
 	// Enable multiselect button is multi find is false
 	EnableMultiSelectRibbonButton(isNonMultiFindLinkType, isNonEditableGrid);
-
-	if (isMultiSelectOn) {
+	
+	if (isMultiSelectOn) {		
 		menu_toolbarEnableItem("mnutoolNewRecordFind", false);
 		menu_toolbarEnableItem("mnutoolCopyRecordFind", false);
 		menu_toolbarEnableItem("mnutoolEditRecordFind", false);
@@ -5123,8 +5123,8 @@ function LoadReportOrUtilityScreen(utilityType) {
 			txtTableID: $('#txtCurrentTableID').val(),
 			utiltype: utilityType,
 			utilID: 0,
-			RecordID: selectedRecordID(),
-			SelectedRecordIDs: "",
+			RecordID:0,
+			MultipleRecordIDs: selectedRecordIDs().join(),
 			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
 

@@ -146,6 +146,9 @@ Public Class Report
 
 	Public ReportDataTable As DataTable
 
+	'Runnning report for selected multiple record ids only
+	Private mlngMultipleRecordIDs As String
+
 	Private Sub datCustomReportOutput_Start()
 
 		ReportDataTable = New DataTable()
@@ -398,6 +401,12 @@ Public Class Report
 		End Get
 		Set(ByVal Value As Integer)
 			Logs.EventLogID = Value
+		End Set
+	End Property
+
+	Public WriteOnly Property MultipleRecordIDs() As String
+		Set(ByVal Value As String)
+			mlngMultipleRecordIDs = Value
 		End Set
 	End Property
 
@@ -2172,7 +2181,8 @@ Public Class Report
 
 			If mlngSingleRecordID > 0 Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & CStr(mlngSingleRecordID) & ")"
-
+			ElseIf ((Not IsNothing(mlngMultipleRecordIDs)) And CInt(mlngMultipleRecordIDs.Length) > 0) Then
+				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & CStr(mlngMultipleRecordIDs) & ")"
 			ElseIf mlngCustomReportsPickListID > 0 Then
 				' Now if we are using a picklist, add a where clause for that
 				'Get List of IDs from Picklist

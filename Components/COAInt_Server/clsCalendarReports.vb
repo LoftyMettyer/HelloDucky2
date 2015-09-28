@@ -209,6 +209,9 @@ Public Class CalendarReport
 
 	Private mblnCheckingDescColumn As Boolean
 
+	'Runnning report for selected multiple record ids only
+	Private mlngMultipleRecordIDs As String
+
 	Private Function SQLDateConvertToLocale(ByRef pstrTableColumn As String) As String
 
 		'Takes the Column value and Returns a string with the SQL Code to format the
@@ -692,6 +695,12 @@ Public Class CalendarReport
 			OutputArray_Data = VB6.CopyArray(mvarOutputArray_Data)
 
 		End Get
+	End Property
+
+	Public WriteOnly Property MultipleRecordIDs() As String
+		Set(ByVal Value As String)
+			mlngMultipleRecordIDs = Value
+		End Set
 	End Property
 
 	Public Sub OutputArray_Clear()
@@ -1928,7 +1937,8 @@ TidyUpAndExit:
 				If mlngSingleRecordID > 0 Then
 					'DebugMSG "Single Record ID = " & CStr(mlngSingleRecordID), True
 					mstrSQLIDs = CStr(mlngSingleRecordID)
-
+				ElseIf ((Not IsNothing(mlngMultipleRecordIDs)) And CInt(mlngMultipleRecordIDs.Length) > 0) Then
+					mstrSQLIDs = CStr(mlngMultipleRecordIDs)
 				ElseIf mlngCalendarReportsPickListID > 0 Then
 					rsIDs = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngCalendarReportsPickListID)
 
@@ -4064,10 +4074,12 @@ DisableWPs:
 			'*******************************************************************************
 			If mlngSingleRecordID > 0 Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID IN (" & mstrSQLIDs & ") "
-
+			ElseIf ((Not IsNothing(mlngMultipleRecordIDs)) And CInt(mlngMultipleRecordIDs.Length) > 0) Then
+				'Multi select Record Ids
+				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID IN (" & mstrSQLIDs & ") "
+			ElseIf mlngCalendarReportsPickListID > 0 Then
 				' Now if we are using a picklist, add a where clause for that
 				'Get List of IDs from Picklist
-			ElseIf mlngCalendarReportsPickListID > 0 Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID IN (" & mstrSQLIDs & ")"
 
 			ElseIf mlngCalendarReportsFilterID > 0 Then
