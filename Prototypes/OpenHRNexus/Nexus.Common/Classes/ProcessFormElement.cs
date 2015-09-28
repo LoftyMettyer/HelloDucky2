@@ -61,7 +61,7 @@ namespace Nexus.Common.Classes
          
             foreach (var lookup in Fields.Where(f => f.IsLookupValue))
             {
-                lookup.options = dictionary.GetLookupValues(lookup.columnid);
+                lookup.options = dictionary.GetLookupValues(lookup.id);
             }
 
 
