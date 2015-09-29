@@ -9,6 +9,7 @@ using Nexus.Common.Models;
 using Nexus.Sql_Repository.DatabaseClasses.Data;
 using System.Collections;
 using System.Threading.Tasks;
+using Nexus.Common.Enums;
 
 namespace Nexus.Mock_Repository {
 	public class MockProcessRepository : IProcessRepository {
@@ -77,6 +78,21 @@ namespace Nexus.Mock_Repository {
         }
 
         public MailMessage PopulateEmailWithData(IProcessStep step, Guid userId, ProcessEmailTemplate template)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ProcessStepStatus RecordProcessStepForUser(WebFormDataModel formData, Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ProcessStepStatus RecordProcessStepForUser(Process process, WebFormDataModel formData, Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public WebFormDataModel UpdateProcessWithUserVariables(Process process, WebFormDataModel formData, Guid userId)
         {
             throw new NotImplementedException();
         }

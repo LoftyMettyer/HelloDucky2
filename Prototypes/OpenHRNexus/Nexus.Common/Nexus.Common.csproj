@@ -61,7 +61,7 @@
     <Compile Include="Classes\ProcessEmailTemplate.cs" />
     <Compile Include="Classes\ProcessFormData.cs" />
     <Compile Include="Classes\ProcessInFlow.cs" />
-    <Compile Include="Classes\ProcessStepEmail.cs" />
+    <Compile Include="Classes\ProcessInFlowData.cs" />
     <Compile Include="Classes\ProcessStepResponse.cs" />
     <Compile Include="Classes\DataFilters\DateRangeFilter.cs" />
     <Compile Include="Enums\DesignStatus.cs" />
@@ -72,6 +72,7 @@
     <Compile Include="Enums\EntityType.cs" />
     <Compile Include="Enums\NewUserStatus.cs" />
     <Compile Include="Enums\TableType.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Interfaces\IBusinessProcessStep.cs" />
     <Compile Include="Interfaces\ITranslation.cs" />
     <Compile Include="Interfaces\IDynamicData.cs" />
@@ -103,10 +104,9 @@
     <Compile Include="Models\WebFormFields.cs" />
     <Compile Include="Models\WebFormModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Structures\ProcessVariable.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Structures\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />

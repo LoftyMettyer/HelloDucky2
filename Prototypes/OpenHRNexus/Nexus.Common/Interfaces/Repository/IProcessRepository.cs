@@ -7,20 +7,20 @@ using System.Net.Mail;
 using System.Linq;
 using System.Collections;
 using System.Threading.Tasks;
+using Nexus.Common.Enums;
 
 namespace Nexus.Common.Interfaces.Repository {
 	public interface IProcessRepository {
 
 		//ProcessFormElement GetWebForm(int id);
         ProcessFormElement PopulateFormWithData(ProcessFormElement webForm, Guid userId);
-        MailMessage PopulateEmailWithData(IProcessStep step, Guid userId, ProcessEmailTemplate template);
         ProcessEmailTemplate GetEmailTemplate(int id);
         Process GetProcess(int Id);
         ProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form);
         ProcessStepResponse CommitStep(Guid stepId, Guid userID, WebFormModel form);
         IProcessStep GetProcessStep(Guid stepId);
         IProcessStep GetProcessNextStep(IProcessStep currentStep);
-        Guid RecordProcessStepForUser(ProcessFormElement form, Guid userId);
+        WebFormDataModel UpdateProcessWithUserVariables(Process process, WebFormDataModel formData, Guid userId);
 
         IEnumerable<ProcessInFlow> GetProcesses(Guid userId);
 

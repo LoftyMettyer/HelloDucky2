@@ -86,16 +86,18 @@ namespace Nexus.Service.Services
 
             // Yes , we could use the webform above (and very soon we will), but for the moment the translation isn't
             // quite hooked in properly.
-           // ProcessFormElement webForm = _dataRepository.GetWebForm(firstStep.id);
+            // ProcessFormElement webForm = _dataRepository.GetWebForm(firstStep.id);
 
-            var stepId = _dataRepository.RecordProcessStepForUser(webForm, userId);
+            //var stepId = _dataRepository.RecordProcessStepForUser(webForm, userId);
+
+
 
 
             _translation.Language = language;
 
             var populatedForm = _dataRepository.PopulateFormWithData(webForm, userId);
             populatedForm.Translate(_translation);
-            populatedForm.SetButtonEndpoints(_callingURL, stepId);
+            populatedForm.SetButtonEndpoints(_callingURL, Guid.NewGuid());
 
 
             // Tempry hack to convert internal to external webform models
@@ -162,6 +164,15 @@ namespace Nexus.Service.Services
                 form.fields.Add(new WebFormField() { elementid = field.Key, value = field.Value.ToString() });
             }
 
+            // Calculate which process we're running.
+            var process = new Process();
+
+            var currentProcessVariables = _dataRepository.UpdateProcessWithUserVariables(process, formData, userID);
+
+            // Merge variable list with default values (For demo only - requires move to instaniate process and merge with above!)
+            currentProcessVariables.data.Add("we_1_1", "Nick");
+            currentProcessVariables.data.Add("we_2_2", "Gibson");
+
 
             // Find out what our next steps are.
             var currentStep = _dataRepository.GetProcessStep(stepId);
@@ -194,16 +205,17 @@ namespace Nexus.Service.Services
             switch (nextStep.Type)
             {
                 case ProcessElementType.Email:
-                    var emailService = new EmailService();
-                    var processStepEmail = (ProcessStepEmail)nextStep;
-
-                    // Get process step body
-
-                    // build code for activies.
 
                     var emailTemplate = _dataRepository.GetEmailTemplate(1);
+                    emailTemplate.Destinations = emailTemplate.Destinations;        // May be calculated later?
+                    emailTemplate.Variables = currentProcessVariables.data;
 
                     // Add authenication to each follow on action
+                    foreach (var button in emailTemplate.FollowOnActions)
+                    {
+                        button.TargetUrl = "";
+                    }
+
                     foreach (var button in emailTemplate.FollowOnActions)
                     {
                         var authenticationCode = await AuthenticationServiceHandler.GetUserToken(_authenticationServiceURL, userID, button.TargetStep);
@@ -212,7 +224,8 @@ namespace Nexus.Service.Services
                             , authenticationCode);
                     }
 
-                    MailMessage message = _dataRepository.PopulateEmailWithData(processStepEmail, userID, emailTemplate);
+                    var emailService = new EmailService();
+                    MailMessage message = emailTemplate.GenerateMailMessage();
                     result = emailService.Send(message);
 
                     break;

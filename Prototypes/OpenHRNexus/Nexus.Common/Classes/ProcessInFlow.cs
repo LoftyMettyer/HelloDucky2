@@ -1,6 +1,6 @@
 ﻿using Nexus.Common.Classes;
-using Nexus.Common.Models;
 using System;
+using System.Collections.Generic;
 
 namespace Nexus.Sql_Repository.DatabaseClasses.Data
 {
@@ -8,8 +8,10 @@ namespace Nexus.Sql_Repository.DatabaseClasses.Data
     public class ProcessInFlow
     {
         public Guid Id { get; set; }
-        public Guid UserId { get; set; }
         public Process Process { get; set; }
-        public int WebFormId { get; set; }
+        public Guid InitiationUserId { get; set; }
+        public DateTime? InitiationDateTime { get; set; }
+        public DateTime? CompletionDateTime { get; set; }
+        public List<ProcessInFlowData> StepData { get; set; } = new List<ProcessInFlowData>();
     }
 }

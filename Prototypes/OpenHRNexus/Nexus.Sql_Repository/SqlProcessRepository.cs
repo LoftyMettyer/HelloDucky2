@@ -17,6 +17,7 @@ using Nexus.Sql_Repository.DatabaseClasses;
 using System.Collections;
 using System.Threading.Tasks;
 using Nexus.Common.Classes.DataFilters;
+using System.Web.Script.Serialization;
 
 namespace Nexus.Sql_Repository
 {
@@ -179,41 +180,6 @@ namespace Nexus.Sql_Repository
             "</html>";
         }
 
-        public MailMessage PopulateEmailWithData(IProcessStep step, Guid userId, ProcessEmailTemplate template)
-        {
-            //string targetURL,
-
-            var emailStep = (ProcessStepEmail)step;
-
-            //  var bodyTemplate = GetBodyTemplateForEmail(step);
-
-            var buttonCode1 = template.FollowOnActions[0].TargetUrl;
-            var buttonCode2 = template.FollowOnActions[1].TargetUrl;
-            var buttonCode3 = template.FollowOnActions[2].TargetUrl;
-            var buttonCode4 = template.FollowOnActions[3].TargetUrl;
-
-            object[] dataBlob = { "Debbie Avery"
-                            , "two day"
-                            , "19/09/2015"
-                            , DateTime.Now.AddDays(3)
-                            , "Holiday"
-                            , "Sorry it's short notice!"
-                            , buttonCode1
-                            , buttonCode2
-                            , buttonCode3
-                            , buttonCode4
-                    };
-
-            var body = EmailFunctions.FormatBody(template.Body, dataBlob, "en-GB");
-
-            var result = new MailMessage(template.Destinations.From, template.Destinations.To)
-            {
-                Body = body
-            };
-            return result;
-
-        }
-
         public ProcessEmailTemplate GetEmailTemplate(int id)
         {
             return ProcessEmailTemplates
@@ -257,6 +223,7 @@ namespace Nexus.Sql_Repository
 
 
         public virtual DbSet<ProcessInFlow> ProcessInFlow { get; set; }
+     //   public virtual DbSet<ProcessInFlowData> ProcessInFlowData { get; set; }
 
 
         public virtual DbSet<TransactionStatement> Statements { get; set; }
@@ -316,12 +283,12 @@ namespace Nexus.Sql_Repository
 
         public IProcessStep GetProcessStep(Guid stepId)
         {
-            return new ProcessStepEmail();
+            return new ProcessEmailTemplate();
         }
 
         public IProcessStep GetProcessNextStep(IProcessStep currentStep)
         {
-            return new ProcessStepEmail();
+            return new ProcessEmailTemplate();
         }
 
         private ProcessStepResponse ExecuteStatemenForUser(string dynamicSQL, Guid UserId, bool Immediate)
@@ -396,25 +363,34 @@ namespace Nexus.Sql_Repository
 
         }
 
-        public Guid RecordProcessStepForUser(ProcessFormElement form, Guid userID)
+        public WebFormDataModel UpdateProcessWithUserVariables(Process process, WebFormDataModel formData, Guid userId)
         {
-            if (form == null) return Guid.Empty;
+            if (formData == null) return null;
 
-            var stepId = Guid.NewGuid();
+            var instance = new ProcessInFlow() { Id = Guid.NewGuid(), InitiationDateTime = DateTime.Now, Process = process};
 
-            var process = new ProcessInFlow() { Id = stepId, UserId = userID, WebFormId = form .id};
+            instance.StepData.Add (new ProcessInFlowData()
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                StepDateTime = DateTime.Now,
+                StepData = new JavaScriptSerializer().Serialize(formData)
+            });
 
-            ProcessInFlow.Add(process);
-          //  SaveChanges();
+            ProcessInFlow.Add(instance);
+            SaveChanges();
 
-            return stepId;
+            // Merge all the latest variables
+
+            return formData;
 
         }
 
         public IEnumerable<ProcessInFlow> GetProcesses(Guid userId)
         {
             var result = ProcessInFlow
-                .Where(u => u.UserId == userId);
+                .Where(u => u.InitiationUserId == userId)
+                .Include("StepData");
             return result;
 
         }
