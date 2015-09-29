@@ -2181,7 +2181,7 @@ Public Class Report
 
 			If mlngSingleRecordID > 0 Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & CStr(mlngSingleRecordID) & ")"
-			ElseIf ((Not IsNothing(mlngMultipleRecordIDs)) And CInt(mlngMultipleRecordIDs.Length) > 0) Then
+			ElseIf ((Not IsNothing(mlngMultipleRecordIDs)) AndAlso CInt(mlngMultipleRecordIDs.Length) > 0) Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & CStr(mlngMultipleRecordIDs) & ")"
 			ElseIf mlngCustomReportsPickListID > 0 Then
 				' Now if we are using a picklist, add a where clause for that

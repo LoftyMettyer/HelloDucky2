@@ -1937,7 +1937,7 @@ TidyUpAndExit:
 				If mlngSingleRecordID > 0 Then
 					'DebugMSG "Single Record ID = " & CStr(mlngSingleRecordID), True
 					mstrSQLIDs = CStr(mlngSingleRecordID)
-				ElseIf ((Not IsNothing(mlngMultipleRecordIDs)) And CInt(mlngMultipleRecordIDs.Length) > 0) Then
+				ElseIf ((Not IsNothing(mlngMultipleRecordIDs)) AndAlso CInt(mlngMultipleRecordIDs.Length) > 0) Then
 					mstrSQLIDs = CStr(mlngMultipleRecordIDs)
 				ElseIf mlngCalendarReportsPickListID > 0 Then
 					rsIDs = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngCalendarReportsPickListID)
@@ -4074,7 +4074,7 @@ DisableWPs:
 			'*******************************************************************************
 			If mlngSingleRecordID > 0 Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID IN (" & mstrSQLIDs & ") "
-			ElseIf ((Not IsNothing(mlngMultipleRecordIDs)) And CInt(mlngMultipleRecordIDs.Length) > 0) Then
+			ElseIf ((Not IsNothing(mlngMultipleRecordIDs)) AndAlso CInt(mlngMultipleRecordIDs.Length) > 0) Then
 				'Multi select Record Ids
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID IN (" & mstrSQLIDs & ") "
 			ElseIf mlngCalendarReportsPickListID > 0 Then

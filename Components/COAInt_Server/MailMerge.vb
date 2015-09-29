@@ -436,7 +436,7 @@ Public Class MailMerge
 
 			If mlngSingleRecordID > 0 Then
 				GetPicklistFilterSelect = CStr(mlngSingleRecordID)
-			ElseIf ((Not IsNothing(mlngMultipleRecordIDs)) And CInt(mlngMultipleRecordIDs.Length) > 0) Then
+			ElseIf ((Not IsNothing(mlngMultipleRecordIDs)) AndAlso CInt(mlngMultipleRecordIDs.Length) > 0) Then
 				GetPicklistFilterSelect = CStr(mlngMultipleRecordIDs)
 			ElseIf mlngDefPickListID > 0 Then
 
