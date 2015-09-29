@@ -203,6 +203,11 @@ namespace Nexus.Sql_Repository
                 
         }
 
+        public Process GetProcessForStep(Guid step)
+        {
+            return GetProcess(2);
+        }
+
         public virtual DbSet<ProcessFormElement> WebForms { get; set; }
         public virtual DbSet<WebFormField> WebFormFields { get; set; }
 
@@ -368,7 +373,8 @@ namespace Nexus.Sql_Repository
                 Id = Guid.NewGuid(),
                 InitiationUserId = userId,
                 InitiationDateTime = DateTime.Now,
-                ProcessName = process.Name
+                ProcessName = process.Name,
+                Caption = process.Name
             };
 
             instance.StepData.Add (new ProcessInFlowData()

@@ -96,5 +96,10 @@ namespace Nexus.Mock_Repository {
         {
             throw new NotImplementedException();
         }
+
+        public Process GetProcessForStep(Guid stepId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -165,7 +165,8 @@ namespace Nexus.Service.Services
             }
 
             // Calculate which process we're running.
-            var process = new Process();
+
+            var process = _dataRepository.GetProcessForStep(stepId);
 
             var currentProcessVariables = _dataRepository.UpdateProcessWithUserVariables(process, formData, userID);
 

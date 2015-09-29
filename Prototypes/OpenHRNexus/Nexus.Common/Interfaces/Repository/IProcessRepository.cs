@@ -16,6 +16,7 @@ namespace Nexus.Common.Interfaces.Repository {
         ProcessFormElement PopulateFormWithData(ProcessFormElement webForm, Guid userId);
         ProcessEmailTemplate GetEmailTemplate(int id);
         Process GetProcess(int Id);
+        Process GetProcessForStep(Guid stepId);
         ProcessStepResponse SaveStepForLater(Guid stepId, Guid userID, WebFormModel form);
         ProcessStepResponse CommitStep(Guid stepId, Guid userID, WebFormModel form);
         IProcessStep GetProcessStep(Guid stepId);
