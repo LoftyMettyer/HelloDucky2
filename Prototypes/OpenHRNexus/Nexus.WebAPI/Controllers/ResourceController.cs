@@ -26,7 +26,9 @@ namespace Nexus.WebAPI.Controllers {
 		public IEnumerable<KeyValuePair<string, string>> GetResourceValues([FromUri] List<string> parameter)
 		{
 			string userName = string.IsNullOrEmpty(User.Identity.Name) ? "" : User.Identity.Name;
-      return parameter.ToDictionary(s => s, s => Resource.ResourceManager.GetString(s).Replace("#UserName#", userName));
+
+      TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
+      return parameter.ToDictionary(s => s, s => Resource.ResourceManager.GetString(s).Replace("#UserName#", myTI.ToTitleCase(userName)));
 		}
 
 		[HttpGet]
