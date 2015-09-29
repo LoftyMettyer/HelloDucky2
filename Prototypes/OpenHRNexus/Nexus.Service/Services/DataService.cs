@@ -207,6 +207,8 @@ namespace Nexus.Service.Services
                 case ProcessElementType.Email:
 
                     var emailTemplate = _dataRepository.GetEmailTemplate(1);
+
+                    emailTemplate._translation = _translation;
                     emailTemplate.Destinations = emailTemplate.Destinations;        // May be calculated later?
                     emailTemplate.Variables = currentProcessVariables.data;
 
