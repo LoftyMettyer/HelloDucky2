@@ -34,9 +34,7 @@ namespace Nexus.Common.Classes
             //// Lookup values need translating to values for display purposes
             //foreach (var lookupValue in Variables)
             //{
-
             //}
-
             //// translate lookup values (replace later to use ProcessVariable struct)
             //// Fettle request type
 
@@ -44,7 +42,8 @@ namespace Nexus.Common.Classes
 
             if (_translation != null)
             {
-                var translated = _translation.GetLookupValues(22).Where(v => v.value == (int)lookupValue.Value);
+                var asInt = Int32.Parse(lookupValue.Value.ToString());
+                var translated = _translation.GetLookupValues(22).Where(v => v.value == asInt);
                 Variables["we_22_8"] = translated.First().title;
             }
         }

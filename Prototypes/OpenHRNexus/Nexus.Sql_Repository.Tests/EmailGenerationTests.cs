@@ -19,7 +19,7 @@ namespace Nexus.Sql_Repository.Tests
                 {
                     {"we_1_1", "John" },
                     { "we_2_2", "Smith" },
-                    {"we_22_8", 4 }
+                    {"we_22_8", "4" }
                 };
 
             var template = _mockRepository.GetEmailTemplate(1);

@@ -171,7 +171,7 @@ namespace Nexus.WebAPI.Tests.Controllers
                     { "we_19_11", DateTime.Now.AddDays(3) },
                     { "we_20_13", 2 },
                     { "we_21_14", "some notes" },
-                    { "we_22_8", 3 },
+                    { "we_22_8", "3" },
                     { "we_23_10", "AM" },
                     { "we_24_12", "PM" },
                     { "we_25_15", false }
