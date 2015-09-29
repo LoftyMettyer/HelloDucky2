@@ -354,20 +354,22 @@ namespace Nexus.Sql_Repository
                 string.Join(", ", columns.Select(c => "[" + c.PhysicalName + "]")),
                 string.Join(", ", data.fields.OrderBy(c => c.elementid).Select(c => "'" + c.value + "'")));
 
-
-
             var response = ExecuteStatemenForUser(dynamicSQL, userId, _ExecuteImmediate);
 
             return response;
-         
-
+        
         }
 
         public WebFormDataModel UpdateProcessWithUserVariables(Process process, WebFormDataModel formData, Guid userId)
         {
             if (formData == null) return null;
 
-            var instance = new ProcessInFlow() { Id = Guid.NewGuid(), InitiationDateTime = DateTime.Now, Process = process};
+            var instance = new ProcessInFlow() {
+                Id = Guid.NewGuid(),
+                InitiationUserId = userId,
+                InitiationDateTime = DateTime.Now,
+                ProcessName = process.Name
+            };
 
             instance.StepData.Add (new ProcessInFlowData()
             {
