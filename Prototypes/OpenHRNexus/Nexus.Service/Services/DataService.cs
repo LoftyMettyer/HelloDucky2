@@ -64,6 +64,18 @@ namespace Nexus.Service.Services
 
         }
 
+
+        public IEnumerable<SummaryDataModel> GetSummaryData(Guid userId, int reportID, IEnumerable<IReportDataFilter> filters)
+        {
+            var rawData = _dataRepository.GetProcesses(userId);
+
+            return rawData
+                .GroupBy(c => c.ProcessName)
+                .Select(grp => new SummaryDataModel() { category = grp.Key, value = (int)grp.Count() })
+                .ToList();
+
+        }
+
         public async Task<IEnumerable> GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters)
         {
             var data = await _dataRepository.GetData(dataSourceId, filters);

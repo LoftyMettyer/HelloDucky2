@@ -77,6 +77,14 @@ namespace Nexus.WebAPI.Tests.Controllers
 
 
         [TestMethod]
+        public void DataController_GetSummaryData_ReturnsSerializableObject()
+        {
+            var result = (List<SummaryDataModel>)_mockController.GetSummaryData();
+            Assert.IsTrue(result is IEnumerable<SummaryDataModel>);
+        }
+
+
+        [TestMethod]
         public void DataController_GetData_ReturnTypeIsSerializable()
         {
             var filters = new List<RangeFilter>()

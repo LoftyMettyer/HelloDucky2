@@ -502,6 +502,12 @@
             <param name="purpose">purpose of this request</param>
             <returns></returns>
         </member>
+        <member name="M:Nexus.WebAPI.Controllers.DataController.GetSummaryData">
+            <summary>
+            Maybe a temporary stub for the Angular donut control to work.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Nexus.WebAPI.Controllers.DataController.GetData(System.Int32)">
             <summary>
             

@@ -18,9 +18,11 @@ namespace Nexus.Common.Interfaces.Services
 
         Task<ProcessStepResponse> SubmitStepForUser(Guid stepId, Guid userId, WebFormDataModel formData);
         IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters);
+
         Task<IEnumerable> GetData(int dataSourceId, IEnumerable<IReportDataFilter> filters);
         Type GetDataDefinition(int dataSourceId);
         IEnumerable<ProcessInFlow> GetEntitiesForUser(EntityType type, Guid userId);
+        IEnumerable<SummaryDataModel> GetSummaryData(Guid userId, int reportID, IEnumerable<IReportDataFilter> filters);
 
     }
 }

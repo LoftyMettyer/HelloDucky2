@@ -63,6 +63,19 @@ namespace Nexus.WebAPI.Controllers
         }
 
         /// <summary>
+        /// Maybe a temporary stub for the Angular donut control to work.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize(Roles = "OpenHRUser")]
+        public IEnumerable<SummaryDataModel> GetSummaryData()
+        {
+            var userId = new Guid(_identity.GetUserId());
+            return _dataService.GetSummaryData(userId, 1, null);
+        }
+
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="dataSourceId"></param>
