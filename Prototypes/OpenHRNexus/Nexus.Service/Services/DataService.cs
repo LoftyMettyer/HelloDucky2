@@ -52,7 +52,9 @@ namespace Nexus.Service.Services
         /// <returns></returns>
         public IEnumerable<ProcessInFlow> GetEntitiesForUser(EntityType type, Guid userId)
         {
-            return _dataRepository.GetProcesses(userId).ToList();
+            return _dataRepository.GetProcesses(userId)
+                .OrderByDescending(o => o.InitiationDateTime)
+                .ToList();
         }
 
         public IEnumerable<CalendarEventModel> GetReportData(int reportID, IEnumerable<IReportDataFilter> filters)

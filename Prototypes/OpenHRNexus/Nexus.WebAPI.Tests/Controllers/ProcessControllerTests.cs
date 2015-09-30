@@ -42,10 +42,8 @@ namespace Nexus.WebAPI.Tests.Controllers
         [TestMethod]
         public void GetPendingProcesses_ReturnsValidList()
         {
-
             var result = _mockController.GetPendingProcesses();
             Assert.IsInstanceOfType(result, typeof(IEnumerable<ProcessInFlow>));
-
         }
 
 
