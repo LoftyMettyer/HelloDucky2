@@ -4,13 +4,11 @@ using System.Web.Http;
 using Nexus.Common.Models;
 using System.Security.Claims;
 using Microsoft.AspNet.Identity;
-using Nexus.Common.Classes;
 using Nexus.Common.Classes.DataFilters;
 using System.Web;
 using Nexus.Common.Interfaces.Services;
-using System.Collections;
+using System.IO;
 using System.Threading.Tasks;
-using Nexus.Common.Interfaces;
 using Nexus.WebAPI.Formatters;
 using System.Reflection;
 
@@ -47,6 +45,21 @@ namespace Nexus.WebAPI.Controllers
             _language = language;
         }
 
+		/// <summary>
+		/// Get information about the system, such as version number, build date, etc.
+		/// </summary>
+		/// <returns></returns>
+		[HttpGet]
+		public Dictionary<string,string> GetSystemInfo()
+		{
+			var apiVersion = Assembly.GetExecutingAssembly().GetName().Version;
+			var systemInfo = new Dictionary<string, string>();
+
+			systemInfo.Add("API Version", String.Format("{0}.{1:0}.{2}", apiVersion.Major, apiVersion.Minor, apiVersion.Build));
+			systemInfo.Add("API build timestamp", RetrieveLinkerTimestamp().ToString());
+
+			return systemInfo;
+		}
 
         [HttpGet]
         [Authorize(Roles = "OpenHRUser")]
@@ -125,5 +138,33 @@ namespace Nexus.WebAPI.Controllers
 
         }
 
-    }
+	#region Private methods
+	//Get compilation datetime from assembly; as you can see from the code below, it's not a trivial thing to do!
+	private DateTime RetrieveLinkerTimestamp()
+	{
+	  string filePath = Assembly.GetCallingAssembly().Location;
+	  const int PEHeaderOffset = 60;
+	  const int LinkerTimestampOffset = 8;
+	  byte[] b = new byte[2047];
+	  Stream s = null;
+
+	  try
+	  {
+		s = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+		s.Read(b, 0, 2047);
+	  }
+	  finally
+	  {
+		  s?.Close();
+	  }
+
+		int i = BitConverter.ToInt32(b, PEHeaderOffset);
+	  int secondsSince1970 = BitConverter.ToInt32(b, i + LinkerTimestampOffset);
+	  var dt = new DateTime(1970, 1, 1, 1, 0, 0);
+	  dt = dt.AddSeconds(secondsSince1970);
+
+	  return dt;
+	}
+	#endregion
+  }
 }
