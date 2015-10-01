@@ -584,7 +584,11 @@ function find_window_onload() {
 
 				// Navbar options = i.e. search, edit, save etc 
 				$("#findGridTable").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false, refresh: false }); // setup the buttons we want
-				$("#findGridTable").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });  //instantiate toolbar so we can use toggle.
+				$("#findGridTable").jqGrid('filterToolbar', {
+					stringResult: true,
+					searchOnEnter: false,
+					afterSearch: function () { RefreshFindGridToolbar(); }
+				});  //instantiate toolbar so we can use toggle.
 				$("#findGridTable")[0].toggleToolbar();  // Toggle it off at start up.
 
 			
@@ -592,7 +596,7 @@ function find_window_onload() {
 					caption: '',
 					buttonicon: 'icon-search',
 					onClickButton: function () {
-			
+
 						$("#findGridTable")[0].toggleToolbar(); // Toggle toolbar on & off when Search button is pressed.
 						$("#findGridTable")[0].clearToolbar(); // clear menu
 						
@@ -605,6 +609,7 @@ function find_window_onload() {
 							var currentHeight = $('#findGridRow div.ui-jqgrid-bdiv').outerHeight();
 							$("#findGridTable").jqGrid('setGridHeight', currentHeight - 31);
 						} else {
+							RefreshFindGridToolbar();
 							$("#findGridTable").jqGrid('setGridHeight', gridDefaultHeight);
 						}
 					},
@@ -901,6 +906,23 @@ function selectedRecordIDs() {
 	return $("#findGridTable").getGridParam('selarrrow');
 }
 
+
+/* Return the selected records list of id's in find window. */
+function GetMultiSelectRecordIDs() {
+	var selectedRecords = [];
+	var p = $("#findGridTable")[0].p;
+	var data = p.data, item, index = p._index, rowid;
+
+	for (rowid in index) {
+		if (index.hasOwnProperty(rowid)) {
+			item = data[index[rowid]];
+			if (typeof (item) != typeof (undefined) && typeof (item.cb) === 'boolean' && item.cb) {
+				selectedRecords.push(item.ID);
+			}
+		}
+	}
+	return selectedRecords;
+}
 
 /* Sequential search the grid for the required ID. */
 function locateRecord(psSearchFor, pfIdMatch) {
@@ -1923,12 +1945,9 @@ function refreshImgDeleteIcon(uniqueID, fDisabled) {
 // Conversely, if Multi-Select is in operation then the Editable Grid icons at the bottom of the Find Window should be disabled.
 function RefreshFindGridToolbar() {
 	if (thereIsAtLeastOneEditableColumn) {
-		var isMultiSelectModeOn = IsMultiSelectionModeOn();
-		if (isMultiSelectModeOn) {
-			$("#findGridTable_iladd").toggleClass('ui-state-disabled', isMultiSelectModeOn);
-			$("#findGridTable_iledit").toggleClass('ui-state-disabled', isMultiSelectModeOn);
-		} else {
-			$("#findGridTable_iladd").toggleClass('ui-state-disabled', false);
+		if (IsMultiSelectionModeOn()) {
+			$("#findGridTable_iladd").toggleClass('ui-state-disabled', true);
+			$("#findGridTable_iledit").toggleClass('ui-state-disabled', true);
 		}
 	}
 }

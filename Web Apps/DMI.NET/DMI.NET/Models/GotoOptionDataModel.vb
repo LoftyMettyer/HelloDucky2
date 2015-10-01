@@ -76,5 +76,14 @@ Namespace Models
 		Public Property txtGotoOptionOLEReadOnly As Boolean
 		Public Property txtGotoOptionIsPhoto As Boolean
 
+		''' <summary>
+		''' Sets the selected record ids of find grid
+		''' </summary>
+		''' <value></value>
+		''' <returns></returns>
+		''' <remarks></remarks>
+		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
+		Public Property txtGotoLocateSelectedRecordsInFindGrid As String
+
 	End Class
 End Namespace

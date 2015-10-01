@@ -893,11 +893,11 @@ function menu_MenuClick(sTool) {
 			var multiSelectText = ($('#mnutoolMultiSelectFind h6').text().indexOf('Off') > -1 ? "Multi-Select <br/>On" : "Multi-Select <br/>Off");
 			var tooltipText = ($('#mnutoolMultiSelectFind h6').text().indexOf('Off') > -1 ? "Multi-Select On" : "Multi-Select Off");
 
-			$('#mnutoolMultiSelectFind h6').html(multiSelectText);		
-			$('#mnutoolMultiSelectFind a').prop("title", tooltipText)
+			$('#mnutoolMultiSelectFind h6').html(multiSelectText);
+			$('#mnutoolMultiSelectFind a').prop("title", tooltipText);
 
 			// Show selected label is multiselect mode is on, hide otherwise
-			if (IsMultiSelectionModeOn) {
+			if (IsMultiSelectionModeOn()) {
 				$("#mnutoolPositionRecordFind span.selectedRecordsCount").html("Selected : 0").show();
 			}
 			else {
@@ -1758,6 +1758,7 @@ function menu_refreshMenu() {
 					(frmFind.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value)));
 					menu_setVisibleMenuItem("mnutoolClearFilterRecordFind", true);
 					menu_toolbarEnableItem("mnutoolClearFilterRecordFind", (frmFind.txtFilterDef.value.length > 0));
+					menu_setVisibletoolbarGroupById('mnuSectionReportsAndUtility', true);
 			}
 
 
@@ -2132,10 +2133,6 @@ function menu_refreshMenu() {
 
 	menu_setVisibletoolbarGroupById("mnuSectionRecordFindTrainingBooking", (fBulkBookingVisible || fAddFromWaitingListVisible || fTransferBookingVisible || fCancelBookingVisible) && (!fCurrentlyInBookingAction));
 	
-	// Hide the reports and utility run toolbar when booking in action (e.g. Training Booking, Cancel booking). (E.g. On bulk booking edit a record..) on delegate bookings page
-	menu_setVisibletoolbarGroupById("mnuSectionReportsAndUtility", (sCurrentWorkPage != "BULKBOOKING" && !fCurrentlyInBookingAction));
-	
-
 	fCanSeeLookupTableMenu = true;
 	try {
 		if ($("#txtSysPerm_MENU_VIEWLOOKUPTABLES").val() == 0) {
@@ -2335,8 +2332,8 @@ function menu_disableFindMenu() {
 		menu_toolbarEnableItem('mnutoolTransferBookingRecordFind', false);
 		menu_toolbarEnableItem('mnutoolCancelBookingRecordFind', false);
 
-		// Disabled the multiselect button
-		//menu_toolbarEnableItem('mnutoolMultiSelectFind', false);
+		// Hide the reports and utility run toolbar when booking in action (e.g. Training Booking, Cancel booking). (E.g. On bulk booking edit a record..) on delegate bookings page
+		menu_setVisibletoolbarGroupById('mnuSectionReportsAndUtility', false);
 	}
 }
 
@@ -4052,7 +4049,7 @@ function menu_loadSelectOrderFilter(psType) {
 		frmOptionArea.txtGotoOptionValue.value = "";
 		frmOptionArea.txtGotoOptionPage.value = sOptionPage;
 		frmOptionArea.txtGotoOptionAction.value = "";
-
+		
 		OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "orderfilter_RecordEdit");
 
 	}
@@ -4107,6 +4104,9 @@ function menu_loadSelectOrderFilter(psType) {
 			frmOptionArea.txtGotoOptionValue.value = "";
 			frmOptionArea.txtGotoOptionPage.value = sOptionPage;
 			frmOptionArea.txtGotoOptionAction.value = "";
+
+			//Sets the selected row ids. It will be empty when multiselection is off.
+			frmOptionArea.txtGotoLocateSelectedRecordsInFindGrid.value = frmFindArea.txtGotoLocateSelectedRecordsInFindGrid.value;
 
 			OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "menu_loadSelectOrderFilter");
 
@@ -5030,8 +5030,9 @@ function EnableMultiSelectRibbonButton(enableMultiSelectButton) {
 		$("#mnutoolPositionRecordFind span.selectedRecordsCount").hide();
 	}
 	else {
+		var frmFind = document.getElementById("frmFindForm");
 		menu_setVisibleMenuItem("mnutoolMultiSelectFind", true);
-		menu_toolbarEnableItem("mnutoolMultiSelectFind", enableMultiSelectButton);
+		menu_toolbarEnableItem("mnutoolMultiSelectFind", enableMultiSelectButton && frmFind.txtTotalRecordCount.value > 0);
 		ToggleSelectedRecordOption(enableMultiSelectButton);
 	}
 }
@@ -5118,9 +5119,14 @@ function SetMultiSelectionModeOff() {
 	$('#mnutoolMultiSelectFind a').prop("title", "Multi-Select Off");
 }
 
+// Load report or utility screeen from the find window
 function LoadReportOrUtilityScreen(utilityType) {
-	if (selectedRecordIDs().length < 1) {
-		OpenHR.modalMessage("Please select atleast one record to run the report");
+
+	var frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
+	var multiSelectedRecords = frmFindArea.txtGotoLocateSelectedRecordsInFindGrid.value;
+
+	if (multiSelectedRecords === "" || multiSelectedRecords.split(",").length < 1) {
+		OpenHR.modalMessage("Please select at least one record to run the report or utility");
 	} else {
 		// Load the required definition selection screen
 		var postData = {
@@ -5128,7 +5134,7 @@ function LoadReportOrUtilityScreen(utilityType) {
 			utiltype: utilityType,
 			utilID: 0,
 			RecordID:0,
-			MultipleRecordIDs: selectedRecordIDs().join(),
+			MultipleRecordIDs: multiSelectedRecords,
 			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
 

@@ -33,3 +33,4 @@
 	<input type="hidden" id="txtGotoOptionOLEMaxEmbedSize" name="txtGotoOptionOLEMaxEmbedSize">
 	<input type="hidden" id="txtGotoOptionOLEReadOnly" name="txtGotoOptionOLEReadOnly">
 	<input type="hidden" id="txtGotoOptionIsPhoto" name="txtGotoOptionIsPhoto">
+	<input type="hidden" id="txtGotoLocateSelectedRecordsInFindGrid" name="txtGotoLocateSelectedRecordsInFindGrid">

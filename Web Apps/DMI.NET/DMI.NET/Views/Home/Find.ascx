@@ -68,7 +68,7 @@
 					//If we are in "Inline-edit" mode and "Enter" was pressed then don't go into "Edit record" mode
 					if ($("#findGridTable_iledit").hasClass('ui-state-disabled')) {
 						return;
-				}
+					}
 
 					menu_editRecord();
 				}
@@ -88,36 +88,57 @@
 		RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGrid);
 
 		// Bind events for multi select grid
-		BindEventsForMultiSelectFindGrid(isNonMultiFindLinkType, isNonEditableGrid);
+		BindEventsForMultiSelectFindGrid(isNonMultiFindLinkType);
 
 		// Refresh find grid toolbar
 		RefreshFindGridToolbar();
 	}
 
 	// Binds the events for the multi select find grid
-	function BindEventsForMultiSelectFindGrid(isNonMultiFindLinkType, isNonEditableGrid) {
+	function BindEventsForMultiSelectFindGrid(isNonMultiFindLinkType) {
 
 		var grid = $("#findGridTable");
 
 		if (IsMultiSelectionModeOn() && isNonMultiFindLinkType && grid.getGridParam("reccount") > 0) {
 
-			//Reset row selection (E.g. after applied filter, or turn multislect on for editable grid). 
+			//Reset row selection (E.g. after applied filter, or turn multiselect on for editable grid). 
 			//If not doing so, the first record will come as selected because of previously bind load complete (movefirst).
 			grid.jqGrid('resetSelection');
 			$("#mnutoolPositionRecordFind span.selectedRecordsCount").html("Selected : 0");
 
 			// Bind the grid events
 			grid.jqGrid("setGridParam", {
-				onSelectRow: function () {
+				onSelectRow: function (id) {
+					var p = this.p, item = p.data[p._index[id]];
+					if (typeof (item.cb) === 'undefined') {
+						item.cb = true;
+					} else {
+						item.cb = !item.cb;
+					}
 					SetsSelectedRowsCount();
 				},
-				onSelectAll: function () {
+				onSelectAll: function (ids, selected) {
+					var p = this.p;
+					$.each(ids, function (id, value) { p.data[p._index[value]].cb = selected; });
 					SetsSelectedRowsCount();
 				},
 				loadComplete: function () {
+
+					var p = this.p, data = p.data, item, index = p._index, rowid;
+					for (rowid in index) {
+						if (index.hasOwnProperty(rowid)) {
+							item = data[index[rowid]];
+							if (typeof (item.cb) === 'boolean' && item.cb) {
+								$(this).jqGrid('setSelection', rowid, false);
+							}
+						}
+					}
 					SetsSelectedRowsCount();
 				}
 			});
+
+			// If filter is applied, then sets the previously selected records if they match the filterd criteria
+			SelectRecordsWhenFilterApplied();
 		}
 		else {
 			grid.setGridParam({ multiselect: false }).hideCol('cb');
@@ -126,9 +147,40 @@
 
 	// Sets count for the selected number of rows when multi selection of grid rows allowed.
 	function SetsSelectedRowsCount() {
-		var selectedRecordCount = selectedRecordIDs().length;
-		$("#mnutoolPositionRecordFind span.selectedRecordsCount").html("Selected : " + selectedRecordCount);
+
+		var selectedRecords = GetMultiSelectRecordIDs();
+
+		//Sets the selected ids as string. This will be used when user does apply the filter.
+		$("#txtGotoLocateSelectedRecordsInFindGrid")[0].value = selectedRecords;
+		$("#mnutoolPositionRecordFind span.selectedRecordsCount").html("Selected : " + selectedRecords.length);
 	}
+
+	// Sets the previous selection if exist after applying filter
+	function SelectRecordsWhenFilterApplied() {
+
+		var count = 0;
+		var previouslySelectedRecordIds = "<%=Session("OptionSelectedRecordIds")%>";
+
+		if (IsMultiSelectionModeOn() && previouslySelectedRecordIds != "" && $("#txtFilterSQL").val().length > 0) {
+			var selectedRecords = [];
+			var p = $("#findGridTable")[0].p;
+			var item;
+			$.each(previouslySelectedRecordIds.split(','), function (id, value) {
+				item = p.data[p._index[value]];
+				if (typeof (item) != typeof (undefined)) {
+					item.cb = true;
+					selectedRecords.push(item.ID);
+					$("#findGridTable").jqGrid('setSelection', value, false);
+					count++;
+				}
+			});
+
+			//Sets the selected ids as string. This will be used when user does apply the filter.
+			$("#txtGotoLocateSelectedRecordsInFindGrid")[0].value = selectedRecords;
+			$("#mnutoolPositionRecordFind span.selectedRecordsCount").html("Selected : " + count);
+		}
+	}
+
 
 	// Provide empty function. Called when clicking close from the report/utility whilst loaded from find window.
 	function refreshData() { }
@@ -822,6 +874,8 @@ Response.Write("				<input type='hidden' id=txtFilterDef name=txtFilterDef value
 Response.Write("				<input type='hidden' id=txtFilterSQL name=txtFilterSQL value=""" & Replace(Session("filterSQL_" & Session("tableID")), """", "&quot;") & """>" & vbCrLf)
 Response.Write("				<input type='hidden' id='txtThousSepSummary' name='txtThousSepSummary' value='" & sThousSepSummaryFields & "'>" & vbCrLf)
 Response.Write("				<input type='hidden' id='txtMaxRequestLength' name='txtMaxRequestLength' value='" & Session("maxRequestLength") & "'>" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtGotoLocateSelectedRecordsInFindGrid name=txtGotoLocateSelectedRecordsInFindGrid>" & vbCrLf)
+			
 End If
 
 Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")

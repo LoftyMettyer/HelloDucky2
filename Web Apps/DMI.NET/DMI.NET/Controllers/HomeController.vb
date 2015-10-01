@@ -886,6 +886,8 @@ Namespace Controllers
 			Session("optionCurrentRecCount") = form.txtGotoOptionCurrentRecCount
 			Session("OptionRealsource") = form.txtGotoOptionRealsource
 
+			Session("OptionSelectedRecordIds") = form.txtGotoLocateSelectedRecordsInFindGrid
+
 		End Sub
 
 		<HttpPost()>
