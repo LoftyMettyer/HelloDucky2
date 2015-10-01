@@ -339,10 +339,10 @@
 						</li>
 						<li id="mnuSectionReportsAndUtility"><span>Run</span>
 							<div id="mnutoolMultiSelectFind" class="button">
-								<a href="#" rel="table" title="Multi Select">
+								<a href="#" rel="table" title="Multi-Select Off">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Niche64HOVER.png")%>"
 										alt="" />
-									<h6>Multi Select<br />
+									<h6>Multi-Select<br />
 										Off</h6>
 								</a>
 							</div>

@@ -889,9 +889,12 @@ function menu_MenuClick(sTool) {
 
 	/******* Begin Changes related to to uer story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
 
-		if (sToolName == "mnutoolMultiSelectFind") {
+		if (sToolName == "mnutoolMultiSelectFind") {			
 			var multiSelectText = ($('#mnutoolMultiSelectFind h6').text().indexOf('Off') > -1 ? "Multi-Select <br/>On" : "Multi-Select <br/>Off");
-			$('#mnutoolMultiSelectFind h6').html(multiSelectText);
+			var tooltipText = ($('#mnutoolMultiSelectFind h6').text().indexOf('Off') > -1 ? "Multi-Select On" : "Multi-Select Off");
+
+			$('#mnutoolMultiSelectFind h6').html(multiSelectText);		
+			$('#mnutoolMultiSelectFind a').prop("title", tooltipText)
 
 			// Show selected label is multiselect mode is on, hide otherwise
 			if (IsMultiSelectionModeOn) {
@@ -4068,9 +4071,9 @@ function menu_loadSelectOrderFilter(psType) {
 	else {
 		sSaveChangesTag = "SELECTFILTER";
 		sOptionPage = "filterselect";
-		menu_disableFindMenu();
+		menu_disableFindMenu();		
 	}
-	
+
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
 	if (sCurrentWorkPage == "RECORDEDIT") {
@@ -5109,9 +5112,10 @@ function IsMultiSelectionModeOn() {
 	return isMultiSelectOn;
 }
 
-// Sets multi select mode off
+// Sets multi select mode off and multi select tooltip text
 function SetMultiSelectionModeOff() {
 	$('#mnutoolMultiSelectFind h6').html("Multi-Select <br/>Off");
+	$('#mnutoolMultiSelectFind a').prop("title", "Multi-Select Off");
 }
 
 function LoadReportOrUtilityScreen(utilityType) {
