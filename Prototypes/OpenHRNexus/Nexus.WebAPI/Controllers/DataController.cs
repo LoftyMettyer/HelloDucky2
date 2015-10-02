@@ -55,8 +55,7 @@ namespace Nexus.WebAPI.Controllers
 			var apiVersion = Assembly.GetExecutingAssembly().GetName().Version;
 			var systemInfo = new Dictionary<string, string>();
 
-			systemInfo.Add("API Version", String.Format("{0}.{1:0}.{2}", apiVersion.Major, apiVersion.Minor, apiVersion.Build));
-			systemInfo.Add("API build timestamp", RetrieveLinkerTimestamp().ToString());
+			systemInfo.Add("API Version", String.Format("{0}.{1:0}.{2} (built on {3})", apiVersion.Major, apiVersion.Minor, apiVersion.Build, RetrieveLinkerTimestamp().ToString()));
 
 			return systemInfo;
 		}
