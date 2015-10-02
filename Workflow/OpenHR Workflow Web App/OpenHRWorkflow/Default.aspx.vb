@@ -580,7 +580,7 @@ Public Class [Default]
 						End If
 					End If
 
-					html &= String.Format(" style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4} ", top, left, width, height, GetFontCss(formItem))
+					html &= String.Format(" style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4}; z-index: 0;", top, left, width, height, GetFontCss(formItem))
 
 					If HotSpotID > 0 Then
 
