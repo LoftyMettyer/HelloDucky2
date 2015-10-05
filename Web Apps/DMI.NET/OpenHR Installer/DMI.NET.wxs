@@ -3928,6 +3928,15 @@
                         <Component Id="cmpB6BC5F8B3101E36FED2A2D1BAF3E7A43" Guid="*">
                             <File Id="fil478C667613BD2CCBC752ACCDAAA9E2F3" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\cross64NORM.png" />
                         </Component>
+                        <Component Id="cmpE59E2E2A8E6AE06E913C71CA8D5EA3EA" Guid="*">
+                            <File Id="filD65780E4BD5EB55A51E65936A3C42C10" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\DataTransfer64DIS.png" />
+                        </Component>
+                        <Component Id="cmp796997CFAE038A7980FFE5B2AB094366" Guid="*">
+                            <File Id="fil92709434AE7B43BAB4FB55FD696533D5" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\DataTransfer64HOVER.png" />
+                        </Component>
+                        <Component Id="cmp57648B69ECBF8EFDACB4C3C7994B8C5E" Guid="*">
+                            <File Id="fil47DC3281B1444A004DB2FC9DF1B0B11C" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\DataTransfer64NORM.png" />
+                        </Component>
                         <Component Id="cmpD177D17E5765EF94AA035ADF6C35B75A" Guid="*">
                             <File Id="filF131146B73E0FEE7A3C7CE44F71EEB97" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\delete64DIS.png" />
                         </Component>
@@ -3963,6 +3972,15 @@
                         </Component>
                         <Component Id="cmp0504EF6CFB61E695226A94727E8BB4C2" Guid="*">
                             <File Id="filDDA6DF229BDF2FF217EAEFC461529B75" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\Email64NORM.png" />
+                        </Component>
+                        <Component Id="cmpB6884168B263B2ACC06377C32E367985" Guid="*">
+                            <File Id="fil221119C0760F774DB359AF8DDA1FE133" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\EntityRelationshipModel64DIS.png" />
+                        </Component>
+                        <Component Id="cmpB37FC45D50BCE9852D7CE486F9F496FF" Guid="*">
+                            <File Id="fil34DAD1DA14B46211CA6E7FC5F2020922" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\EntityRelationshipModel64HOVER.png" />
+                        </Component>
+                        <Component Id="cmp07BDDB7974872B39A3503BA05BA97D69" Guid="*">
+                            <File Id="fil1AF35CA5D41A13B28560657A4202A5D8" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\EntityRelationshipModel64NORM.png" />
                         </Component>
                         <Component Id="cmpBFC571C2BED38437315708340696FAA6" Guid="*">
                             <File Id="fil2BBBD3A594994B0CB055397C9D355CE0" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\Filtering64DIS.png" />
@@ -5817,6 +5835,9 @@
             <ComponentRef Id="cmpDE6F1743F9A94DA1383DB1A9B8FBA86B" />
             <ComponentRef Id="cmp28FE6A18F0A76D5029242C7D55A41455" />
             <ComponentRef Id="cmpB6BC5F8B3101E36FED2A2D1BAF3E7A43" />
+            <ComponentRef Id="cmpE59E2E2A8E6AE06E913C71CA8D5EA3EA" />
+            <ComponentRef Id="cmp796997CFAE038A7980FFE5B2AB094366" />
+            <ComponentRef Id="cmp57648B69ECBF8EFDACB4C3C7994B8C5E" />
             <ComponentRef Id="cmpD177D17E5765EF94AA035ADF6C35B75A" />
             <ComponentRef Id="cmpE6E137EBCE14356489A53B7CF33D71D1" />
             <ComponentRef Id="cmp673FF8D1C9ED31B4A98D2DA8BAF083AA" />
@@ -5829,6 +5850,9 @@
             <ComponentRef Id="cmp695DAC07D280A4F67CF8FD3A81CC962C" />
             <ComponentRef Id="cmp41D5CD2F60DADC5F1F83A31ADAA9D848" />
             <ComponentRef Id="cmp0504EF6CFB61E695226A94727E8BB4C2" />
+            <ComponentRef Id="cmpB6884168B263B2ACC06377C32E367985" />
+            <ComponentRef Id="cmpB37FC45D50BCE9852D7CE486F9F496FF" />
+            <ComponentRef Id="cmp07BDDB7974872B39A3503BA05BA97D69" />
             <ComponentRef Id="cmpBFC571C2BED38437315708340696FAA6" />
             <ComponentRef Id="cmpB119C1EBD21BDA44CF328367A30DB615" />
             <ComponentRef Id="cmp87792199B0D98558DC7A63E97FD74821" />
