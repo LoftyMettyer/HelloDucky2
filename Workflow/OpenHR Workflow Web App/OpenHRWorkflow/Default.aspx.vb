@@ -1225,6 +1225,7 @@ Public Class [Default]
 						.Style("position") = "absolute"
 						.Style("top") = Unit.Pixel(radioTop + formItem.Top).ToString
 						.Style("left") = Unit.Pixel(9 + formItem.Left).ToString
+						.Style.Add("color", General.GetHtmlColour(formItem.ForeColor).ToString)
 						.Width() = formItem.Width - 12
 					End With
 
