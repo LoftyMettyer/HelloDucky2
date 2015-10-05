@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.4#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmAccordViewTransfers 
    Caption         =   "Payroll Transfers"
@@ -281,7 +281,6 @@ Begin VB.Form frmAccordViewTransfers
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   21696
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -349,19 +348,25 @@ End Property
 Private Sub grdTransferDetails_UnboundPositionData(StartLocation As Variant, ByVal NumberOfRowsToMove As Long, NewLocation As Variant)
 
   If IsNull(StartLocation) Then
-    If NumberOfRowsToMove = 0 Then
-      Exit Sub
-    ElseIf NumberOfRowsToMove < 0 Then
-      mrsRecords.MoveLast
-    Else
-      mrsRecords.MoveFirst
-    End If
-  Else
-    mrsRecords.Bookmark = StartLocation
+    StartLocation = 0
   End If
+  NewLocation = CLng(StartLocation) + NumberOfRowsToMove
   
-  mrsRecords.Move NumberOfRowsToMove
-  NewLocation = mrsRecords.Bookmark
+'  If IsNull(StartLocation) Then
+'    If NumberOfRowsToMove = 0 Then
+'      Exit Sub
+'    ElseIf NumberOfRowsToMove < 0 Then
+'      mrsRecords.MoveLast
+'    Else
+'      mrsRecords.MoveFirst
+'    End If
+'  Else
+'    mrsRecords.Bookmark = StartLocation
+'    NewLocation = mrsRecords.Bookmark
+'  End If
+'
+'  mrsRecords.Move NumberOfRowsToMove
+'  NewLocation = mrsRecords.Bookmark
   
 End Sub
 
@@ -410,26 +415,26 @@ Private Sub grdTransferDetails_UnboundReadData(ByVal RowBuf As SSDataWidgets_B.s
         For iFieldIndex = 0 To (mrsRecords.Fields.Count - 1)
           Select Case mrsRecords.Fields(iFieldIndex).Name
             Case "ID"
-              RowBuf.Value(iRowIndex, iFieldIndex) = CStr(mrsRecords.Fields("ID"))
+              RowBuf.value(iRowIndex, iFieldIndex) = CStr(mrsRecords.Fields("ID"))
             Case "TransferType"
-              RowBuf.Value(iRowIndex, iFieldIndex) = GetComboText(cboTransfer, mrsRecords.Fields("TransferType").Value)
+              RowBuf.value(iRowIndex, iFieldIndex) = GetComboText(cboTransfer, mrsRecords.Fields("TransferType").value)
             Case "Status"
-              RowBuf.Value(iRowIndex, iFieldIndex) = GetComboText(cboStatus, mrsRecords.Fields("Status").Value)
+              RowBuf.value(iRowIndex, iFieldIndex) = GetComboText(cboStatus, mrsRecords.Fields("Status").value)
             Case "TransActionType"
-              Select Case mrsRecords.Fields("TransActionType").Value
+              Select Case mrsRecords.Fields("TransActionType").value
               Case 0
-                RowBuf.Value(iRowIndex, iFieldIndex) = "New"
+                RowBuf.value(iRowIndex, iFieldIndex) = "New"
               Case 1
-                RowBuf.Value(iRowIndex, iFieldIndex) = "Update"
+                RowBuf.value(iRowIndex, iFieldIndex) = "Update"
               Case 2
-                RowBuf.Value(iRowIndex, iFieldIndex) = "Delete"
+                RowBuf.value(iRowIndex, iFieldIndex) = "Delete"
               End Select
             Case "CreatedDateTime"
-              RowBuf.Value(iRowIndex, iFieldIndex) = Format(mrsRecords.Fields("CreatedDateTime").Value, msDateFormat)
+              RowBuf.value(iRowIndex, iFieldIndex) = Format(mrsRecords.Fields("CreatedDateTime").value, msDateFormat)
             Case "Archived"
-              RowBuf.Value(iRowIndex, iFieldIndex) = IIf(mrsRecords.Fields("Archived").Value = True, "Yes", "No")
+              RowBuf.value(iRowIndex, iFieldIndex) = IIf(mrsRecords.Fields("Archived").value = True, "Yes", "No")
             Case Else
-              RowBuf.Value(iRowIndex, iFieldIndex) = mrsRecords(iFieldIndex)
+              RowBuf.value(iRowIndex, iFieldIndex) = mrsRecords(iFieldIndex)
           End Select
         Next iFieldIndex
         RowBuf.Bookmark(iRowIndex) = mrsRecords.Bookmark
@@ -534,7 +539,7 @@ Private Sub RefreshGrid()
   If mrsRecords.RecordCount = MaxTop Then
     Screen.MousePointer = vbDefault
     gobjProgress.CloseProgress
-    MsgBox "The search results have been limited to " & Format$(MaxTop, "#,###") & " records.", vbInformation, App.Title
+    MsgBox "The search results have been limited to " & Format$(MaxTop, "#,###") & " records.", vbInformation, app.Title
   End If
 
   Screen.MousePointer = mp
@@ -752,7 +757,7 @@ Public Sub PopulateFilters()
     .AddItem "<All>"
     Set rstData = OpenAccordRecordset(ACCORD_LOCAL, "SELECT Distinct CreatedUser FROM ASRSysAccordTransactions ORDER BY CreatedUser", adOpenForwardOnly, adLockReadOnly)
     Do Until rstData.EOF
-      .AddItem rstData.Fields("CreatedUser").Value
+      .AddItem rstData.Fields("CreatedUser").value
       rstData.MoveNext
     Loop
     .ListIndex = 0
