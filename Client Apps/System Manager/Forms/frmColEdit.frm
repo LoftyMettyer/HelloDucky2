@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "TIMASK6.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -28,7 +28,6 @@ Begin VB.Form frmColEdit
    Icon            =   "frmColEdit.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   6525
@@ -1917,10 +1916,11 @@ Begin VB.Form frmColEdit
             Width           =   7815
             Begin VB.CheckBox chkAutoUpdateRecords 
                Caption         =   "Auto U&pdate Records"
-               Height          =   255
-               Left            =   180
+               Height          =   195
+               Left            =   5100
                TabIndex        =   11
-               Top             =   1100
+               Top             =   1305
+               Visible         =   0   'False
                Width           =   2715
             End
             Begin VB.ComboBox cboLookupFilterOperator 
@@ -1941,10 +1941,10 @@ Begin VB.Form frmColEdit
             End
             Begin VB.CheckBox chkLookupFilter 
                Caption         =   "Filter &Lookup Values"
-               Height          =   255
+               Height          =   195
                Left            =   180
                TabIndex        =   12
-               Top             =   1425
+               Top             =   1305
                Width           =   3555
             End
             Begin VB.ComboBox cboLookupFilterColumn 
