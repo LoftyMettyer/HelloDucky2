@@ -16,7 +16,7 @@
 			 Language="1033"
 			 Version="$(var.FullProductVersion)"
 			 Manufacturer="Advanced Computer Software"
-			 UpgradeCode="{5C692BB6-944A-478F-9DFB-F6991A9ADD21}" >
+			 UpgradeCode="{A94E455C-83D9-4AFF-B75F-C6BCC280601E}" >
 
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
