@@ -39552,7 +39552,7 @@ BEGIN
 	SET @fDoneWhere = 0;
 	SET @strExplicitSQL = '';
 	
-	IF ((@intTableID <=0) OR (@intTableID IS null)) AND (@intType <> 17) AND (@intType <> 9)
+	IF ((@intTableID <=0) OR (@intTableID IS null)) AND (@intType <> 17) AND (@intType <> 9) AND (@intType <> 2)
 	BEGIN
 		/* No table ID passed in, so use the first table alphabetically. */
 		SELECT TOP 1 @intTableID = tableID
