@@ -62631,7 +62631,6 @@ GO
 		
 DECLARE @sVersion varchar(10) = '8.2.3'
 
-EXEC spsys_setsystemsetting 'database', 'version', '8.2';
 EXEC spsys_setsystemsetting 'intranet', 'version', @sVersion;
 EXEC spsys_setsystemsetting 'ssintranet', 'version', @sVersion;
 
