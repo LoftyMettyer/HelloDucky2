@@ -10,785 +10,868 @@ Imports DMI.NET.ViewModels.Reports
 Imports DMI.NET.Code
 Imports DMI.NET.Code.Extensions
 Imports DMI.NET.Models.ObjectRequests
+Imports HR.Intranet.Server
+Imports System.Data.SqlClient
+Imports System.IO
 
 Namespace Controllers
 
-	Public Class ReportsController
-		Inherits Controller
+    Public Class ReportsController
+        Inherits Controller
 
-		Private objReportRepository As ReportRepository
+        Private objReportRepository As ReportRepository
 
-		Public Sub New()
-			objReportRepository = New ReportRepository
-		End Sub
+        Public Sub New()
+            objReportRepository = New ReportRepository
+        End Sub
 
-		Protected Overrides Sub Initialize(requestContext As RequestContext)
-			MyBase.Initialize(requestContext)
+        Protected Overrides Sub Initialize(requestContext As RequestContext)
+            MyBase.Initialize(requestContext)
 
-			If requestContext.HttpContext.Session("reportrepository") Is Nothing Then
-				requestContext.HttpContext.Session("reportrepository") = objReportRepository
-			Else
-				objReportRepository = CType(requestContext.HttpContext.Session("reportrepository"), ReportRepository)
-			End If
+            If requestContext.HttpContext.Session("reportrepository") Is Nothing Then
+                requestContext.HttpContext.Session("reportrepository") = objReportRepository
+            Else
+                objReportRepository = CType(requestContext.HttpContext.Session("reportrepository"), ReportRepository)
+            End If
 
-		End Sub
+        End Sub
 
-		<HttpGet>
-		Function util_def_customreport() As ActionResult
+        <HttpGet>
+        Function util_def_customreport() As ActionResult
 
-			Dim iReportID As Integer = CInt(Session("utilid"))
-			Dim iAction = ActionToUtilityAction(Session("action").ToString)
-			Dim objModel = objReportRepository.LoadCustomReport(iReportID, iAction)
+            Dim iReportID As Integer = CInt(Session("utilid"))
+            Dim iAction = ActionToUtilityAction(Session("action").ToString)
+            Dim objModel = objReportRepository.LoadCustomReport(iReportID, iAction)
 
-			Return View(objModel)
+            Return View(objModel)
 
-		End Function
+        End Function
 
-		<HttpGet>
-		Function util_def_mailmerge() As ActionResult
+        <HttpGet>
+        Function util_def_mailmerge() As ActionResult
 
-			Dim iReportID As Integer = CInt(Session("utilid"))
-			Dim iAction = ActionToUtilityAction(Session("action").ToString)
+            Dim iReportID As Integer = CInt(Session("utilid"))
+            Dim iAction = ActionToUtilityAction(Session("action").ToString)
 
-			Dim objModel = objReportRepository.LoadMailMerge(iReportID, iAction)
+            Dim objModel = objReportRepository.LoadMailMerge(iReportID, iAction)
 
-			Return View(objModel)
+            Return View(objModel)
 
-		End Function
+        End Function
 
-		<HttpGet>
-		Function util_def_crosstab() As ActionResult
+        <HttpGet>
+        Function util_def_crosstab() As ActionResult
 
-			Dim iReportID As Integer = CInt(Session("utilid"))
-			Dim iAction = ActionToUtilityAction(Session("action").ToString)
-			Dim objModel = objReportRepository.LoadCrossTab(iReportID, iAction)
+            Dim iReportID As Integer = CInt(Session("utilid"))
+            Dim iAction = ActionToUtilityAction(Session("action").ToString)
+            Dim objModel = objReportRepository.LoadCrossTab(iReportID, iAction)
 
-			Return View(objModel)
+            Return View(objModel)
 
-		End Function
+        End Function
 
-		<HttpGet>
-		Function util_def_9boxgrid() As ActionResult
+        <HttpGet>
+        Function util_def_9boxgrid() As ActionResult
 
-			Dim iReportID As Integer = CInt(Session("utilid"))
-			Dim iAction = ActionToUtilityAction(Session("action").ToString)
-			Dim objModel = objReportRepository.LoadNineBoxGrid(iReportID, iAction)
+            Dim iReportID As Integer = CInt(Session("utilid"))
+            Dim iAction = ActionToUtilityAction(Session("action").ToString)
+            Dim objModel = objReportRepository.LoadNineBoxGrid(iReportID, iAction)
 
-			Return View(objModel)
+            Return View(objModel)
 
-		End Function
+        End Function
 
-		<HttpGet>
-		Function util_def_calendarreport() As ActionResult
+        <HttpGet>
+        Function util_def_calendarreport() As ActionResult
 
-			Dim iReportID As Integer = CInt(Session("utilid"))
-			Dim iAction = ActionToUtilityAction(Session("action").ToString)
-			Dim objModel = objReportRepository.LoadCalendarReport(iReportID, iAction)
+            Dim iReportID As Integer = CInt(Session("utilid"))
+            Dim iAction = ActionToUtilityAction(Session("action").ToString)
+            Dim objModel = objReportRepository.LoadCalendarReport(iReportID, iAction)
 
-			Return View(objModel)
+            Return View(objModel)
 
-		End Function
+        End Function
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-	 Function util_def_customreport(objModel As CustomReportModel) As ActionResult
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function util_def_customreport(objModel As CustomReportModel) As ActionResult
 
-			Dim objSaveWarning As SaveWarningModel
-			Dim deserializer = New JavaScriptSerializer()
-			Dim hiddenColumnsCount As Integer
+            Dim objSaveWarning As SaveWarningModel
+            Dim deserializer = New JavaScriptSerializer()
+            Dim hiddenColumnsCount As Integer
 
-			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCustomReport)
+            objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCustomReport)
 
-			If objModel.ColumnsAsString IsNot Nothing Then
-				If objModel.ColumnsAsString.Length > 0 Then
-					objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
-				End If
+            If objModel.ColumnsAsString IsNot Nothing Then
+                If objModel.ColumnsAsString.Length > 0 Then
+                    objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
+                End If
 
-				' Check the column heading has value.
-				For Each columnItem As ReportColumnItem In objModel.Columns
-					If String.IsNullOrEmpty(columnItem.Heading.Trim()) And columnItem.IsHidden = False Then
-						ModelState.AddModelError("IsColumnHeaderEmpty", "The '" & columnItem.Name & "' column has a blank heading.")
-						Exit For
-					End If
+                ' Check the column heading has value.
+                For Each columnItem As ReportColumnItem In objModel.Columns
+                    If String.IsNullOrEmpty(columnItem.Heading.Trim()) And columnItem.IsHidden = False Then
+                        ModelState.AddModelError("IsColumnHeaderEmpty", "The '" & columnItem.Name & "' column has a blank heading.")
+                        Exit For
+                    End If
 
-					' Count the hidden columns to validate if all columns are hidden or not
-					If (columnItem.IsHidden) Then
-						hiddenColumnsCount += 1
-					End If
-				Next
-
-				' Check the column headings are unique.
-				Dim breakNestedLoop As Boolean
-				For Each columnItem As ReportColumnItem In objModel.Columns
-					For Each columnItemHeaderToCheck As ReportColumnItem In objModel.Columns
-
-						If columnItem.ID <> columnItemHeaderToCheck.ID AndAlso UCase(columnItem.Heading.Trim()) = UCase(columnItemHeaderToCheck.Heading.Trim()) AndAlso columnItemHeaderToCheck.IsHidden = False Then
-							ModelState.AddModelError("IsColumnHeaderUnique", "One or more columns / calculations in your report have a heading of '" & columnItemHeaderToCheck.Heading & "'. " & "Column headings must be unique.")
-							breakNestedLoop = True
-							Exit For
-						End If
-					Next
-					If breakNestedLoop Then
-						Exit For
-					End If
-				Next
-
-				If objModel.IsSummary AndAlso objModel.Columns.Where(Function(m) m.IsAverage OrElse m.IsCount OrElse m.IsTotal).LongCount() = 0 Then
-					ModelState.AddModelError("IsSummaryOK", "There are no columns defined as aggregates for this summary report.")
-				End If
-
-				' Validate Value On Change and Suppress Repeated Values checkboxes i.e. not checked if column is Hidden.
-				If objModel.SortOrdersString IsNot Nothing Then
-					If objModel.SortOrdersString.Length > 0 Then
-						objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
-					End If
-
-					For Each columnItem As ReportColumnItem In objModel.Columns
-						If columnItem.IsHidden = True Then
-							For Each sortorderitem In objModel.SortOrders
-								If sortorderitem.SuppressRepeated = True And columnItem.Name = sortorderitem.Name Then
-									ModelState.AddModelError("IsHidddenParmCorrect", "The column '" & columnItem.Name & "' has 'Suppress Repeated Values' ticked on the Sort Order tab. <br/><br/>Hidden columns can not have 'Suppress Repeated Values' or 'Value On Change' ticked.")
-									breakNestedLoop = True
-									Exit For
-								End If
-
-								If sortorderitem.ValueOnChange = True And columnItem.Name = sortorderitem.Name Then
-									ModelState.AddModelError("IsHidddenParmCorrect", "The column '" & columnItem.Name & "' has 'Value On Change' ticked on the Sort Order tab.   <br/><br/>Hidden columns can not have 'Suppress Repeated Values' or 'Value On Change' ticked.")
-									breakNestedLoop = True
-									Exit For
-								End If
-							Next
-						End If
-						If breakNestedLoop Then
-							Exit For
-						End If
-					Next
-				End If
-
-				If objModel.IgnoreZerosForAggregates AndAlso objModel.Columns.Where( _
-					Function(m) (m.DataType = ColumnDataType.sqlInteger OrElse m.DataType = ColumnDataType.sqlNumeric) AndAlso (m.IsAverage OrElse m.IsCount OrElse m.IsTotal) _
-						).LongCount() = 0 Then
-					ModelState.AddModelError("IsIgnoreZerosOK", "You have chosen to ignore zeros when calculating aggregates, but have not selected to show aggregates for any numeric columns.")
-				End If
-
-			End If
-
-			If objModel.ChildTablesString IsNot Nothing Then
-				If objModel.ChildTablesString.Length > 0 Then
-					objModel.ChildTables = deserializer.Deserialize(Of List(Of ChildTableViewModel))(objModel.ChildTablesString)
-				End If
-			End If
-
-
-			If objModel.SortOrdersString IsNot Nothing Then
-				If objModel.SortOrdersString.Length > 0 Then
-					objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
-				End If
-
-				If objModel.IsSummary AndAlso objModel.SortOrders.Where(Function(m) m.ValueOnChange).LongCount() = 0 Then
-					ModelState.AddModelError("IsValueOnChangeOK", "There are no columns defined as 'value on change' for this summary report.")
-				End If
-
-			End If
-
-			' If above all validation passed then check if all selected columns are hidden, if yes then save of defination is not allowed
-			If ModelState.IsValid Then
-				If (hiddenColumnsCount = objModel.Columns.Count) Then
-					ModelState.AddModelError("AreAllColumnsHidden", "This definition cannot be saved as all columns / calculations selected are defined as hidden.")
-				End If
-			End If
-
-			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
-				objReportRepository.SaveReportDefinition(objModel)
-
-				Session("utilid") = objModel.ID
-				Return RedirectToAction("Defsel", "Home")
-
-
-			Else
-				If ModelState.IsValid Then
-					objSaveWarning = objReportRepository.ServerValidate(objModel)
-				Else
-					objSaveWarning = ModelState.ToWebMessage
-				End If
+                    ' Count the hidden columns to validate if all columns are hidden or not
+                    If (columnItem.IsHidden) Then
+                        hiddenColumnsCount += 1
+                    End If
+                Next
+
+                ' Check the column headings are unique.
+                Dim breakNestedLoop As Boolean
+                For Each columnItem As ReportColumnItem In objModel.Columns
+                    For Each columnItemHeaderToCheck As ReportColumnItem In objModel.Columns
+
+                        If columnItem.ID <> columnItemHeaderToCheck.ID AndAlso UCase(columnItem.Heading.Trim()) = UCase(columnItemHeaderToCheck.Heading.Trim()) AndAlso columnItemHeaderToCheck.IsHidden = False Then
+                            ModelState.AddModelError("IsColumnHeaderUnique", "One or more columns / calculations in your report have a heading of '" & columnItemHeaderToCheck.Heading & "'. " & "Column headings must be unique.")
+                            breakNestedLoop = True
+                            Exit For
+                        End If
+                    Next
+                    If breakNestedLoop Then
+                        Exit For
+                    End If
+                Next
+
+                If objModel.IsSummary AndAlso objModel.Columns.Where(Function(m) m.IsAverage OrElse m.IsCount OrElse m.IsTotal).LongCount() = 0 Then
+                    ModelState.AddModelError("IsSummaryOK", "There are no columns defined as aggregates for this summary report.")
+                End If
+
+                ' Validate Value On Change and Suppress Repeated Values checkboxes i.e. not checked if column is Hidden.
+                If objModel.SortOrdersString IsNot Nothing Then
+                    If objModel.SortOrdersString.Length > 0 Then
+                        objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
+                    End If
+
+                    For Each columnItem As ReportColumnItem In objModel.Columns
+                        If columnItem.IsHidden = True Then
+                            For Each sortorderitem In objModel.SortOrders
+                                If sortorderitem.SuppressRepeated = True And columnItem.Name = sortorderitem.Name Then
+                                    ModelState.AddModelError("IsHidddenParmCorrect", "The column '" & columnItem.Name & "' has 'Suppress Repeated Values' ticked on the Sort Order tab. <br/><br/>Hidden columns can not have 'Suppress Repeated Values' or 'Value On Change' ticked.")
+                                    breakNestedLoop = True
+                                    Exit For
+                                End If
+
+                                If sortorderitem.ValueOnChange = True And columnItem.Name = sortorderitem.Name Then
+                                    ModelState.AddModelError("IsHidddenParmCorrect", "The column '" & columnItem.Name & "' has 'Value On Change' ticked on the Sort Order tab.   <br/><br/>Hidden columns can not have 'Suppress Repeated Values' or 'Value On Change' ticked.")
+                                    breakNestedLoop = True
+                                    Exit For
+                                End If
+                            Next
+                        End If
+                        If breakNestedLoop Then
+                            Exit For
+                        End If
+                    Next
+                End If
+
+                If objModel.IgnoreZerosForAggregates AndAlso objModel.Columns.Where(
+                    Function(m) (m.DataType = ColumnDataType.sqlInteger OrElse m.DataType = ColumnDataType.sqlNumeric) AndAlso (m.IsAverage OrElse m.IsCount OrElse m.IsTotal)
+                        ).LongCount() = 0 Then
+                    ModelState.AddModelError("IsIgnoreZerosOK", "You have chosen to ignore zeros when calculating aggregates, but have not selected to show aggregates for any numeric columns.")
+                End If
+
+            End If
+
+            If objModel.ChildTablesString IsNot Nothing Then
+                If objModel.ChildTablesString.Length > 0 Then
+                    objModel.ChildTables = deserializer.Deserialize(Of List(Of ChildTableViewModel))(objModel.ChildTablesString)
+                End If
+            End If
+
+
+            If objModel.SortOrdersString IsNot Nothing Then
+                If objModel.SortOrdersString.Length > 0 Then
+                    objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
+                End If
+
+                If objModel.IsSummary AndAlso objModel.SortOrders.Where(Function(m) m.ValueOnChange).LongCount() = 0 Then
+                    ModelState.AddModelError("IsValueOnChangeOK", "There are no columns defined as 'value on change' for this summary report.")
+                End If
+
+            End If
+
+            ' If above all validation passed then check if all selected columns are hidden, if yes then save of defination is not allowed
+            If ModelState.IsValid Then
+                If (hiddenColumnsCount = objModel.Columns.Count) Then
+                    ModelState.AddModelError("AreAllColumnsHidden", "This definition cannot be saved as all columns / calculations selected are defined as hidden.")
+                End If
+            End If
+
+            If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
+                objReportRepository.SaveReportDefinition(objModel)
+
+                Session("utilid") = objModel.ID
+                Return RedirectToAction("Defsel", "Home")
+
+
+            Else
+                If ModelState.IsValid Then
+                    objSaveWarning = objReportRepository.ServerValidate(objModel)
+                Else
+                    objSaveWarning = ModelState.ToWebMessage
+                End If
 
-				Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
+                Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
 
-			End If
+            End If
 
-		End Function
+        End Function
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-	 Function util_def_mailmerge(objModel As MailMergeModel) As ActionResult
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function util_def_mailmerge(objModel As MailMergeModel) As ActionResult
 
-			Dim objSaveWarning As SaveWarningModel
-			Dim deserializer = New JavaScriptSerializer()
+            Dim objSaveWarning As SaveWarningModel
+            Dim deserializer = New JavaScriptSerializer()
 
-			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlMailMerge)
+            objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlMailMerge)
 
-			If objModel.ColumnsAsString IsNot Nothing Then
-				If objModel.ColumnsAsString.Length > 0 Then
-					objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
-				End If
-			End If
+            If objModel.ColumnsAsString IsNot Nothing Then
+                If objModel.ColumnsAsString.Length > 0 Then
+                    objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
+                End If
+            End If
 
-			If objModel.SortOrdersString IsNot Nothing Then
-				If objModel.SortOrdersString.Length > 0 Then
-					objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
-				End If
-			End If
-
-			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
-				objReportRepository.SaveReportDefinition(objModel)
-				Session("utilid") = objModel.ID
-				Return RedirectToAction("Defsel", "Home")
-
-			Else
-
-				If ModelState.IsValid Then
-					objSaveWarning = objReportRepository.ServerValidate(objModel)
-				Else
-					objSaveWarning = ModelState.ToWebMessage
-				End If
+            If objModel.SortOrdersString IsNot Nothing Then
+                If objModel.SortOrdersString.Length > 0 Then
+                    objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
+                End If
+            End If
+
+            If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
+                objReportRepository.SaveReportDefinition(objModel)
+                Session("utilid") = objModel.ID
+                Return RedirectToAction("Defsel", "Home")
+
+            Else
+
+                If ModelState.IsValid Then
+                    objSaveWarning = objReportRepository.ServerValidate(objModel)
+                Else
+                    objSaveWarning = ModelState.ToWebMessage
+                End If
 
-				Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
+                Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
 
-			End If
-
-		End Function
-
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Function util_def_crosstab(objModel As CrossTabModel) As ActionResult
+            End If
 
-			Dim objSaveWarning As SaveWarningModel
-			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCrossTab)
+        End Function
 
-			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
-				objReportRepository.SaveReportDefinition(objModel)
-				Session("utilid") = objModel.ID
-				Return RedirectToAction("DefSel", "Home")
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function util_def_crosstab(objModel As CrossTabModel) As ActionResult
 
-			Else
+            Dim objSaveWarning As SaveWarningModel
+            objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCrossTab)
 
-				If ModelState.IsValid Then
-					objSaveWarning = objReportRepository.ServerValidate(objModel)
-				Else
-					objSaveWarning = ModelState.ToWebMessage
-				End If
+            If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
+                objReportRepository.SaveReportDefinition(objModel)
+                Session("utilid") = objModel.ID
+                Return RedirectToAction("DefSel", "Home")
 
-				Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
+            Else
 
-			End If
+                If ModelState.IsValid Then
+                    objSaveWarning = objReportRepository.ServerValidate(objModel)
+                Else
+                    objSaveWarning = ModelState.ToWebMessage
+                End If
 
-		End Function
+                Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Function util_def_9boxgrid(objModel As NineBoxGridModel) As ActionResult
+            End If
 
-			Dim objSaveWarning As SaveWarningModel
-			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlNineBoxGrid)
+        End Function
 
-			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
-				objReportRepository.SaveReportDefinition(objModel)
-				Session("utilid") = objModel.ID
-				Return RedirectToAction("DefSel", "Home")
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function util_def_9boxgrid(objModel As NineBoxGridModel) As ActionResult
 
+            Dim objSaveWarning As SaveWarningModel
+            objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlNineBoxGrid)
 
-			Else
+            If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
+                objReportRepository.SaveReportDefinition(objModel)
+                Session("utilid") = objModel.ID
+                Return RedirectToAction("DefSel", "Home")
 
-				If ModelState.IsValid Then
-					objSaveWarning = objReportRepository.ServerValidate(objModel)
-				Else
-					objSaveWarning = ModelState.ToWebMessage
-				End If
 
-				Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
+            Else
 
-			End If
+                If ModelState.IsValid Then
+                    objSaveWarning = objReportRepository.ServerValidate(objModel)
+                Else
+                    objSaveWarning = ModelState.ToWebMessage
+                End If
 
-		End Function
+                Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Function util_def_calendarreport(objModel As CalendarReportModel) As ActionResult
+            End If
 
-			Dim objSaveWarning As SaveWarningModel
-			Dim deserializer = New JavaScriptSerializer()
+        End Function
 
-			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCalendarReport)
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function util_def_calendarreport(objModel As CalendarReportModel) As ActionResult
 
-			If objModel.EventsString IsNot Nothing Then
-				If objModel.EventsString.Length > 0 Then
-					objModel.Events = deserializer.Deserialize(Of Collection(Of CalendarEventDetailViewModel))(objModel.EventsString)
-				End If
-			End If
+            Dim objSaveWarning As SaveWarningModel
+            Dim deserializer = New JavaScriptSerializer()
 
-			If objModel.SortOrdersString IsNot Nothing Then
-				If objModel.SortOrdersString.Length > 0 Then
-					objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
-				End If
-			End If
+            objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCalendarReport)
 
-			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
-				objReportRepository.SaveReportDefinition(objModel)
-				Session("utilid") = objModel.ID
-				Return RedirectToAction("DefSel", "Home")
+            If objModel.EventsString IsNot Nothing Then
+                If objModel.EventsString.Length > 0 Then
+                    objModel.Events = deserializer.Deserialize(Of Collection(Of CalendarEventDetailViewModel))(objModel.EventsString)
+                End If
+            End If
 
-			Else
+            If objModel.SortOrdersString IsNot Nothing Then
+                If objModel.SortOrdersString.Length > 0 Then
+                    objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
+                End If
+            End If
 
-				If ModelState.IsValid Then
-					objSaveWarning = objReportRepository.ServerValidate(objModel)
-					DoesSortColumnsMatchToReflectGroupByDescription(objModel, objSaveWarning)
-				Else
-					objSaveWarning = ModelState.ToWebMessage
-				End If
+            If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
+                objReportRepository.SaveReportDefinition(objModel)
+                Session("utilid") = objModel.ID
+                Return RedirectToAction("DefSel", "Home")
 
-				Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
-			End If
+            Else
 
-		End Function
+                If ModelState.IsValid Then
+                    objSaveWarning = objReportRepository.ServerValidate(objModel)
+                    DoesSortColumnsMatchToReflectGroupByDescription(objModel, objSaveWarning)
+                Else
+                    objSaveWarning = ModelState.ToWebMessage
+                End If
 
-		<HttpGet>
-		Function GetAvailableColumnsForTable(TableID As Integer) As JsonResult
-			Dim objResults = objReportRepository.GetColumnsForTable(TableID)
-			
-			objResults.RemoveAll(Function(m) m.IsExpression OrElse (m.DataType = ColumnDataType.sqlOle Or m.DataType = ColumnDataType.sqlVarBinary))
-			Return Json(objResults, JsonRequestBehavior.AllowGet)
+                Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
+            End If
 
-		End Function
+        End Function
 
-		<HttpGet>
-		Function GetAvailableCharacterLookupsForTable(TableID As Integer) As JsonResult
+        <HttpGet>
+        Function GetAvailableColumnsForTable(TableID As Integer) As JsonResult
+            Dim objResults = objReportRepository.GetColumnsForTable(TableID)
 
-			Dim objResults = objReportRepository.GetAvailableCharacterLookupsForTable(TableID)
-			Return Json(objResults, JsonRequestBehavior.AllowGet)
+            objResults.RemoveAll(Function(m) m.IsExpression OrElse (m.DataType = ColumnDataType.sqlOle Or m.DataType = ColumnDataType.sqlVarBinary))
+            Return Json(objResults, JsonRequestBehavior.AllowGet)
 
-		End Function
+        End Function
 
-		<HttpGet>
-		Function GetAvailableItemsForTable(TableID As Integer, reportID As Integer, reportType As UtilityType, selectionType As String) As JsonResult
+        <HttpGet>
+        Function GetAvailableCharacterLookupsForTable(TableID As Integer) As JsonResult
 
-			Dim objReport = objReportRepository.RetrieveParent(reportID, reportType)
-			Dim objAvailable As List(Of ReportColumnItem)
+            Dim objResults = objReportRepository.GetAvailableCharacterLookupsForTable(TableID)
+            Return Json(objResults, JsonRequestBehavior.AllowGet)
 
-			If selectionType = "C" Then
-				objAvailable = objReportRepository.GetColumnsForTable(TableID)
-				objAvailable.RemoveAll(Function(m) m.IsExpression OrElse (m.DataType = ColumnDataType.sqlOle Or m.DataType = ColumnDataType.sqlVarBinary))
-			Else
-				objAvailable = objReportRepository.GetCalculationsForTable(TableID)
-				objAvailable.RemoveAll(Function(m) Not m.IsExpression)
-			End If
+        End Function
 
-			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objAvailable}
-			Return Json(results, JsonRequestBehavior.AllowGet)
+        <HttpGet>
+        Function GetAvailableItemsForTable(TableID As Integer, reportID As Integer, reportType As UtilityType, selectionType As String) As JsonResult
 
-		End Function
+            Dim objReport = objReportRepository.RetrieveParent(reportID, reportType)
+            Dim objAvailable As List(Of ReportColumnItem)
 
-		<HttpGet>
-		Function GetBaseTables(reportType As UtilityType) As JsonResult
+            If selectionType = "C" Then
+                objAvailable = objReportRepository.GetColumnsForTable(TableID)
+                objAvailable.RemoveAll(Function(m) m.IsExpression OrElse (m.DataType = ColumnDataType.sqlOle Or m.DataType = ColumnDataType.sqlVarBinary))
+            Else
+                objAvailable = objReportRepository.GetCalculationsForTable(TableID)
+                objAvailable.RemoveAll(Function(m) Not m.IsExpression)
+            End If
 
-			Dim objTables = objReportRepository.GetTables(reportType)
-			Return Json(objTables, JsonRequestBehavior.AllowGet)
+            Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objAvailable}
+            Return Json(results, JsonRequestBehavior.AllowGet)
 
-		End Function
+        End Function
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Function AddChildTable(ReportID As Integer) As ActionResult
+        <HttpGet>
+        Function GetBaseTables(reportType As UtilityType) As JsonResult
 
-			Dim objModel As New ChildTableViewModel With {.ReportID = ReportID, .ReportType = UtilityType.utlCustomReport}
-			Dim objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
+            Dim objTables = objReportRepository.GetTables(reportType)
+            Return Json(objTables, JsonRequestBehavior.AllowGet)
 
-			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, False)
+        End Function
 
-			For Each objTable In objReport.ChildTables
-				objModel.AvailableTables.RemoveAll(Function(m) m.id = objTable.TableID)
-			Next
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function AddChildTable(ReportID As Integer) As ActionResult
 
-			If objReport.ChildTables.Any() Then
-				objModel.ID = objReport.ChildTables.Max(Function(m) m.ID) + 1
-			Else
-				objModel.ID = 1
-			End If
+            Dim objModel As New ChildTableViewModel With {.ReportID = ReportID, .ReportType = UtilityType.utlCustomReport}
+            Dim objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
 
-			objModel.IsAdd = True
+            objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, False)
 
-			Return PartialView("EditorTemplates\ReportChildTable", objModel)
+            For Each objTable In objReport.ChildTables
+                objModel.AvailableTables.RemoveAll(Function(m) m.id = objTable.TableID)
+            Next
 
+            If objReport.ChildTables.Any() Then
+                objModel.ID = objReport.ChildTables.Max(Function(m) m.ID) + 1
+            Else
+                objModel.ID = 1
+            End If
 
-		End Function
+            objModel.IsAdd = True
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Function EditChildTable(objModel As ChildTableViewModel) As ActionResult
+            Return PartialView("EditorTemplates\ReportChildTable", objModel)
 
-			Dim objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
-			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, False)
 
-			For Each objTable In objReport.ChildTables
-				objModel.AvailableTables.RemoveAll(Function(m) m.id = objTable.TableID AndAlso objModel.TableID <> m.id)
-			Next
+        End Function
 
-			objModel.IsAdd = False
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function EditChildTable(objModel As ChildTableViewModel) As ActionResult
 
-			Return PartialView("EditorTemplates\ReportChildTable", objModel)
-		End Function
+            Dim objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
+            objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, False)
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Sub PostChildTable(objModel As ChildTableViewModel)
-			Try
+            For Each objTable In objReport.ChildTables
+                objModel.AvailableTables.RemoveAll(Function(m) m.id = objTable.TableID AndAlso objModel.TableID <> m.id)
+            Next
 
-				Dim objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
+            objModel.IsAdd = False
 
-				' Remove original
-				objReport.ChildTables.RemoveAll(Function(m) m.TableID = objModel.TableID)
-				objReport.ChildTables.Add(objModel)
+            Return PartialView("EditorTemplates\ReportChildTable", objModel)
+        End Function
 
-			Catch ex As Exception
-				Throw
-			End Try
-		End Sub
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Sub PostChildTable(objModel As ChildTableViewModel)
+            Try
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Function AddCalendarEvent(ReportID As Integer) As ActionResult
+                Dim objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
 
-			Dim objReport = objReportRepository.RetrieveCalendarReport(ReportID)
+                ' Remove original
+                objReport.ChildTables.RemoveAll(Function(m) m.TableID = objModel.TableID)
+                objReport.ChildTables.Add(objModel)
 
-			Dim objModel As New CalendarEventDetailViewModel
+            Catch ex As Exception
+                Throw
+            End Try
+        End Sub
 
-			objModel.ID = 0
-			objModel.TableID = objReport.BaseTableID
-			objModel.ReportID = ReportID
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function AddCalendarEvent(ReportID As Integer) As ActionResult
 
-			If objReport.Events.Any() Then
-				objModel.EventKey = objReport.Events.Max(Function(m) m.EventKey) + 1
-			Else
-				objModel.EventKey = 0
-			End If
+            Dim objReport = objReportRepository.RetrieveCalendarReport(ReportID)
 
-			objModel.AvailableTables = objReportRepository.GetTablesWithEvents(objReport.BaseTableID)
+            Dim objModel As New CalendarEventDetailViewModel
 
-			ModelState.Clear()
-			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
+            objModel.ID = 0
+            objModel.TableID = objReport.BaseTableID
+            objModel.ReportID = ReportID
 
+            If objReport.Events.Any() Then
+                objModel.EventKey = objReport.Events.Max(Function(m) m.EventKey) + 1
+            Else
+                objModel.EventKey = 0
+            End If
 
-		End Function
+            objModel.AvailableTables = objReportRepository.GetTablesWithEvents(objReport.BaseTableID)
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Function EditCalendarEvent(objModel As CalendarEventDetailViewModel) As ActionResult
+            ModelState.Clear()
+            Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
 
-			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
-			objModel.AvailableTables = objReportRepository.GetTablesWithEvents(objReport.BaseTableID)
 
-			ModelState.Clear()
-			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
-		End Function
+        End Function
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Sub PostCalendarEvent(objModel As CalendarEventDetailViewModel)
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function EditCalendarEvent(objModel As CalendarEventDetailViewModel) As ActionResult
 
-			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
-			Dim original = objReport.Events.Where(Function(m) m.EventKey = objModel.EventKey).FirstOrDefault
+            Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
+            objModel.AvailableTables = objReportRepository.GetTablesWithEvents(objReport.BaseTableID)
 
-			If original IsNot Nothing Then
-				objReport.Events.Remove(original)
-			End If
+            ModelState.Clear()
+            Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
+        End Function
 
-			objReport.Events.Add(objModel)
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Sub PostCalendarEvent(objModel As CalendarEventDetailViewModel)
 
-		End Sub
+            Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
+            Dim original = objReport.Events.Where(Function(m) m.EventKey = objModel.EventKey).FirstOrDefault
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Function ChangeEventBaseTable(objModel As CalendarEventDetailViewModel) As ActionResult
+            If original IsNot Nothing Then
+                objReport.Events.Remove(original)
+            End If
 
-			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
+            objReport.Events.Add(objModel)
 
-			objModel.ChangeBaseTable()
-			objModel.AvailableTables = objReportRepository.GetTablesWithEvents(objReport.BaseTableID)
+        End Sub
 
-			ModelState.Clear()
-			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function ChangeEventBaseTable(objModel As CalendarEventDetailViewModel) As ActionResult
 
-		End Function
+            Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
 
-		<HttpPost>
-	 Function ChangeEventLookupTable(objModel As CalendarEventDetailViewModel) As ActionResult 'No ValidateAntiForgeryToken necessary for this method: it's never invoked!
+            objModel.ChangeBaseTable()
+            objModel.AvailableTables = objReportRepository.GetTablesWithEvents(objReport.BaseTableID)
 
-			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
-			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)
-			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
+            ModelState.Clear()
+            Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
 
-		End Function
+        End Function
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Sub RemoveCalendarEvent(objModel As CalendarEventDetailViewModel)
+        <HttpPost>
+        Function ChangeEventLookupTable(objModel As CalendarEventDetailViewModel) As ActionResult 'No ValidateAntiForgeryToken necessary for this method: it's never invoked!
 
-			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
-			Dim original = objReport.Events.Where(Function(m) m.EventKey = objModel.EventKey).FirstOrDefault
+            Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
+            objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)
+            Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
 
-			If original IsNot Nothing Then
-				objReport.Events.Remove(original)
-			End If
+        End Function
 
-		End Sub
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Sub RemoveCalendarEvent(objModel As CalendarEventDetailViewModel)
 
-		<HttpGet>
-		Function GetAllTablesInReport(reportID As Integer, reportType As UtilityType) As JsonResult
+            Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
+            Dim original = objReport.Events.Where(Function(m) m.EventKey = objModel.EventKey).FirstOrDefault
 
-			Dim objReport = objReportRepository.RetrieveParent(reportID, reportType)
-			Return Json(objReport.GetAvailableTables(), JsonRequestBehavior.AllowGet)
+            If original IsNot Nothing Then
+                objReport.Events.Remove(original)
+            End If
 
-		End Function
+        End Sub
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Function ChangeBaseTable(ReportID As Integer, ReportType As UtilityType, BaseTableID As Integer) As JsonResult
+        <HttpGet>
+        Function GetAllTablesInReport(reportID As Integer, reportType As UtilityType) As JsonResult
 
-			Dim iChildTablesAvailable As Integer
+            Dim objReport = objReportRepository.RetrieveParent(reportID, reportType)
+            Return Json(objReport.GetAvailableTables(), JsonRequestBehavior.AllowGet)
 
-			Dim objReport = objReportRepository.RetrieveParent(New ReportColumnItem With {.ReportID = ReportID, .ReportType = ReportType})
+        End Function
 
-			objReport.BaseTableID = BaseTableID
-			objReport.SetBaseTable(BaseTableID)
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function ChangeBaseTable(ReportID As Integer, ReportType As UtilityType, BaseTableID As Integer) As JsonResult
 
-			If ReportType = UtilityType.utlCustomReport Then
-				iChildTablesAvailable = CType(objReport, CustomReportModel).ChildTablesAvailable
-			End If
+            Dim iChildTablesAvailable As Integer
 
-			Dim result = New With {.childTablesAvailable = iChildTablesAvailable, .sortOrdersAvailable = objReport.SortOrdersAvailable}
-			Return Json(result, JsonRequestBehavior.AllowGet)
+            Dim objReport = objReportRepository.RetrieveParent(New ReportColumnItem With {.ReportID = ReportID, .ReportType = ReportType})
 
-		End Function
+            objReport.BaseTableID = BaseTableID
+            objReport.SetBaseTable(BaseTableID)
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Function AddSortOrder(ReportID As Integer, ReportType As UtilityType) As ActionResult
+            If ReportType = UtilityType.utlCustomReport Then
+                iChildTablesAvailable = CType(objReport, CustomReportModel).ChildTablesAvailable
+            End If
 
-			Dim objModel As New SortOrderViewModel
+            Dim result = New With {.childTablesAvailable = iChildTablesAvailable, .sortOrdersAvailable = objReport.SortOrdersAvailable}
+            Return Json(result, JsonRequestBehavior.AllowGet)
 
-			objModel.ReportID = ReportID
-			objModel.ReportType = ReportType
-			objModel.IsNew = True
+        End Function
 
-			Dim objReport = objReportRepository.RetrieveParent(objModel)
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function AddSortOrder(ReportID As Integer, ReportType As UtilityType) As ActionResult
 
-			If objReport.SortOrders.Count = 0 Then
-				objModel.ID = 1
-				objModel.Sequence = 1
-			Else
-				objModel.ID = objReport.SortOrders.Max(Function(m) m.ID) + 1
-				objModel.Sequence = objReport.SortOrders.Max(Function(m) m.Sequence) + 1
-			End If
+            Dim objModel As New SortOrderViewModel
 
-			objModel.AvailableColumns = objReport.GetAvailableSortColumns(objModel)
+            objModel.ReportID = ReportID
+            objModel.ReportType = ReportType
+            objModel.IsNew = True
 
-			ModelState.Clear()
-			Return PartialView("EditorTemplates\SortOrder", objModel)
+            Dim objReport = objReportRepository.RetrieveParent(objModel)
 
-		End Function
+            If objReport.SortOrders.Count = 0 Then
+                objModel.ID = 1
+                objModel.Sequence = 1
+            Else
+                objModel.ID = objReport.SortOrders.Max(Function(m) m.ID) + 1
+                objModel.Sequence = objReport.SortOrders.Max(Function(m) m.Sequence) + 1
+            End If
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Function EditSortOrder(objModel As SortOrderViewModel) As ActionResult
+            objModel.AvailableColumns = objReport.GetAvailableSortColumns(objModel)
 
-			Dim objReport = objReportRepository.RetrieveParent(objModel)
-			objModel.AvailableColumns = objReport.GetAvailableSortColumns(objModel)
+            ModelState.Clear()
+            Return PartialView("EditorTemplates\SortOrder", objModel)
 
-			ModelState.Clear()
-			Return PartialView("EditorTemplates\SortOrder", objModel)
-		End Function
+        End Function
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Sub PostSortOrder(objModel As SortOrderViewModel)
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function EditSortOrder(objModel As SortOrderViewModel) As ActionResult
 
-			Dim objReport As IReport
-			objReport = objReportRepository.RetrieveParent(objModel)
+            Dim objReport = objReportRepository.RetrieveParent(objModel)
+            objModel.AvailableColumns = objReport.GetAvailableSortColumns(objModel)
 
-			Dim original = objReport.SortOrders.Where(Function(m) m.ID = objModel.ID).FirstOrDefault
+            ModelState.Clear()
+            Return PartialView("EditorTemplates\SortOrder", objModel)
+        End Function
 
-			If original IsNot Nothing Then
-				objReport.SortOrders.Remove(original)
-			End If
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Sub PostSortOrder(objModel As SortOrderViewModel)
 
-			objReport.SortOrders.Add(objModel)
+            Dim objReport As IReport
+            objReport = objReportRepository.RetrieveParent(objModel)
 
-		End Sub
+            Dim original = objReport.SortOrders.Where(Function(m) m.ID = objModel.ID).FirstOrDefault
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Sub RemoveSortOrder(objModel As SortOrderViewModel)
+            If original IsNot Nothing Then
+                objReport.SortOrders.Remove(original)
+            End If
 
-			Dim objReport As IReport
-			objReport = objReportRepository.RetrieveParent(objModel)
+            objReport.SortOrders.Add(objModel)
 
-			Dim original = objReport.SortOrders.Where(Function(m) m.ID = objModel.ID).FirstOrDefault
+        End Sub
 
-			If original IsNot Nothing Then
-				objReport.SortOrders.Remove(original)
-			End If
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Sub RemoveSortOrder(objModel As SortOrderViewModel)
 
-		End Sub
+            Dim objReport As IReport
+            objReport = objReportRepository.RetrieveParent(objModel)
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Sub AddAllReportColumns(objModel As ReportColumnCollection)
+            Dim original = objReport.SortOrders.Where(Function(m) m.ID = objModel.ID).FirstOrDefault
 
-			Dim objReport As ReportBaseModel
-			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
-			Dim objAllObjects As List(Of ReportColumnItem)
+            If original IsNot Nothing Then
+                objReport.SortOrders.Remove(original)
+            End If
 
-			If objModel.SelectionType = "C" Then
-				objAllObjects = objReportRepository.GetColumnsForTable(objModel.ColumnsTableID)
-			Else
-				objAllObjects = objReportRepository.GetCalculationsForTable(objModel.ColumnsTableID)
-			End If
+        End Sub
 
-			For Each ObjectID In objModel.Columns
-				Dim objColumn = objAllObjects.First(Function(m) m.ID = ObjectID)
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Sub AddAllReportColumns(objModel As ReportColumnCollection)
 
-				'Concatenate table name and column name, if the column is not the calculated column
-				If objColumn.IsExpression = False Then
-					objColumn.Name = objModel.TableName + "." + objColumn.Name
-				End If
+            Dim objReport As ReportBaseModel
+            objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+            Dim objAllObjects As List(Of ReportColumnItem)
 
-				objReport.Columns.Add(objColumn)
-			Next
+            If objModel.SelectionType = "C" Then
+                objAllObjects = objReportRepository.GetColumnsForTable(objModel.ColumnsTableID)
+            Else
+                objAllObjects = objReportRepository.GetCalculationsForTable(objModel.ColumnsTableID)
+            End If
 
-		End Sub
+            For Each ObjectID In objModel.Columns
+                Dim objColumn = objAllObjects.First(Function(m) m.ID = ObjectID)
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Sub AddReportColumn(objModel As ReportColumnItem)
+                'Concatenate table name and column name, if the column is not the calculated column
+                If objColumn.IsExpression = False Then
+                    objColumn.Name = objModel.TableName + "." + objColumn.Name
+                End If
 
-			Dim objReport As ReportBaseModel
-			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+                objReport.Columns.Add(objColumn)
+            Next
 
-			objReport.Columns.Add(objModel)
+        End Sub
 
-		End Sub
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Sub AddReportColumn(objModel As ReportColumnItem)
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Sub RemoveAllChildTables(objModel As ReportColumnItem)
+            Dim objReport As ReportBaseModel
+            objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
 
-			Dim objReport As CustomReportModel
-			objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
+            objReport.Columns.Add(objModel)
 
-			For Each objChildTable In objReport.ChildTables
+        End Sub
 
-				'Remove sort columns
-				For Each iColumnID In objReport.Columns.Where(Function(m) m.TableID = objChildTable.TableID)
-					objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID.ID)
-				Next
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Sub RemoveAllChildTables(objModel As ReportColumnItem)
 
-				objReport.Columns.RemoveAll(Function(m) m.TableID = objChildTable.TableID)
-			Next
+            Dim objReport As CustomReportModel
+            objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
 
-			objReport.ChildTables.Clear()
+            For Each objChildTable In objReport.ChildTables
 
-		End Sub
+                'Remove sort columns
+                For Each iColumnID In objReport.Columns.Where(Function(m) m.TableID = objChildTable.TableID)
+                    objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID.ID)
+                Next
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Sub RemoveChildTable(objModel As ReportColumnItem)
+                objReport.Columns.RemoveAll(Function(m) m.TableID = objChildTable.TableID)
+            Next
 
-			Dim objReport As CustomReportModel
-			objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
+            objReport.ChildTables.Clear()
 
-			objReport.ChildTables.RemoveAll(Function(m) m.ID = objModel.ID)
+        End Sub
 
-			'Remove sort columns
-			For Each iColumnID In objReport.Columns.Where(Function(m) m.TableID = objModel.TableID)
-				objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID.ID)
-			Next
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Sub RemoveChildTable(objModel As ReportColumnItem)
 
-			objReport.Columns.RemoveAll(Function(m) m.TableID = objModel.TableID)
+            Dim objReport As CustomReportModel
+            objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
 
-		End Sub
+            objReport.ChildTables.RemoveAll(Function(m) m.ID = objModel.ID)
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Sub RemoveReportColumn(objModel As ReportColumnCollection)
+            'Remove sort columns
+            For Each iColumnID In objReport.Columns.Where(Function(m) m.TableID = objModel.TableID)
+                objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID.ID)
+            Next
 
-			Dim objReport As ReportBaseModel
-			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+            objReport.Columns.RemoveAll(Function(m) m.TableID = objModel.TableID)
 
-			For Each iColumnID In objModel.Columns
-				objReport.Columns.RemoveAll(Function(m) m.ID = iColumnID)
-				objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID)
-			Next
+        End Sub
 
-		End Sub
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Sub RemoveReportColumn(objModel As ReportColumnCollection)
 
-		<HttpPost>
-		<ValidateAntiForgeryToken>
-		Sub RemoveAllReportColumns(objModel As ReportColumnItem)
+            Dim objReport As ReportBaseModel
+            objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
 
-			Dim objReport As ReportBaseModel
-			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+            For Each iColumnID In objModel.Columns
+                objReport.Columns.RemoveAll(Function(m) m.ID = iColumnID)
+                objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID)
+            Next
 
-			objReport.Columns.Clear()
-			objReport.SortOrders.Clear()
+        End Sub
 
-		End Sub
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Sub RemoveAllReportColumns(objModel As ReportColumnItem)
 
+            Dim objReport As ReportBaseModel
+            objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
 
-		<HttpGet>
-		Function GetExpressionsForTable(TableID As Integer, SelectionType As String) As JsonResult
+            objReport.Columns.Clear()
+            objReport.SortOrders.Clear()
 
-			Dim objAvailable As List(Of ExpressionSelectionItem)
+        End Sub
 
-			objAvailable = objReportRepository.GetExpressionListForTable(SelectionType, TableID)
 
-			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objAvailable}
-			Return Json(results, JsonRequestBehavior.AllowGet)
+        <HttpGet>
+        Function GetExpressionsForTable(TableID As Integer, SelectionType As String) As JsonResult
 
-		End Function
+            Dim objAvailable As List(Of ExpressionSelectionItem)
 
-		''' <summary>
-		''' Validates that the description columns and sort order columns does match when Group by Description is ticked.
-		''' </summary>
-		''' <param name="objModel">The Model</param>
-		''' <param name="objSaveWarning">The save warning object</param>
-		Private Sub DoesSortColumnsMatchToReflectGroupByDescription(objModel As CalendarReportModel, objSaveWarning As SaveWarningModel)
+            objAvailable = objReportRepository.GetExpressionListForTable(SelectionType, TableID)
 
-			' Validate only if group by description is checked and calculation description is not selected
-			If (objModel.GroupByDescription = True AndAlso objModel.Description3ID = 0) Then
-				Dim descriptionColumnsCount As Integer = 0
+            Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objAvailable}
+            Return Json(results, JsonRequestBehavior.AllowGet)
 
-				If objModel.Description1ID > 0 Then
-					'check if description column1 with id exist into sort order, if yes increment the count
-					If objModel.SortOrders.Exists(Function(f) f.ColumnID = objModel.Description1ID) Then
-						descriptionColumnsCount += 1
-					End If
-				End If
+        End Function
 
-				If objModel.Description2ID > 0 Then
-					'check if description column2 with id exist into sort order, if yes increment the count
-					If objModel.SortOrders.Exists(Function(f) f.ColumnID = objModel.Description2ID) Then
-						descriptionColumnsCount += 1
-					End If
-				End If
+        ''' <summary>
+        ''' Validates that the description columns and sort order columns does match when Group by Description is ticked.
+        ''' </summary>
+        ''' <param name="objModel">The Model</param>
+        ''' <param name="objSaveWarning">The save warning object</param>
+        Private Sub DoesSortColumnsMatchToReflectGroupByDescription(objModel As CalendarReportModel, objSaveWarning As SaveWarningModel)
 
-				' Validates sort order columns count does match with the selected descriptions
-				If objModel.SortOrders.Count() <> descriptionColumnsCount Then
-					objSaveWarning.ErrorCode = ReportValidationStatus.Overwrite
-					objSaveWarning.ErrorMessage = "The sort order does not reflect the selected Group By Description columns.<BR/><BR/> Are you sure you wish to continue ?"
-				End If
+            ' Validate only if group by description is checked and calculation description is not selected
+            If (objModel.GroupByDescription = True AndAlso objModel.Description3ID = 0) Then
+                Dim descriptionColumnsCount As Integer = 0
 
-			End If
-		End Sub
+                If objModel.Description1ID > 0 Then
+                    'check if description column1 with id exist into sort order, if yes increment the count
+                    If objModel.SortOrders.Exists(Function(f) f.ColumnID = objModel.Description1ID) Then
+                        descriptionColumnsCount += 1
+                    End If
+                End If
 
-	End Class
+                If objModel.Description2ID > 0 Then
+                    'check if description column2 with id exist into sort order, if yes increment the count
+                    If objModel.SortOrders.Exists(Function(f) f.ColumnID = objModel.Description2ID) Then
+                        descriptionColumnsCount += 1
+                    End If
+                End If
+
+                ' Validates sort order columns count does match with the selected descriptions
+                If objModel.SortOrders.Count() <> descriptionColumnsCount Then
+                    objSaveWarning.ErrorCode = ReportValidationStatus.Overwrite
+                    objSaveWarning.ErrorMessage = "The sort order does not reflect the selected Group By Description columns.<BR/><BR/> Are you sure you wish to continue ?"
+                End If
+
+            End If
+        End Sub
+
+        Private Shared Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
+            target = value
+            Return value
+        End Function
+
+        <HttpPost()>
+        <ValidateAntiForgeryToken>
+        Function util_def_mailmerge_submittemplate(TemplateFile As HttpPostedFileBase, MailMergeId As Integer) As ActionResult
+            Try
+
+                Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
+                If Not TemplateFile Is Nothing Then
+
+                    Try
+
+                        ' Read input stream from request
+                        Dim Buffer = New Byte(CInt(TemplateFile.InputStream.Length - 1)) {}
+                        Dim offset As Integer = 0
+                        Dim cnt As Integer = 0
+                        While (InlineAssignHelper(cnt, TemplateFile.InputStream.Read(Buffer, offset, 10))) > 0
+                            offset += cnt
+                        End While
+
+                        Dim fileName = Path.GetFileName(TemplateFile.FileName)
+
+                        objDataAccess.ExecuteSP("spASRIntMailMergeUploadTemplate" _
+                            , New SqlParameter("MailMergeId", SqlDbType.Int) With {.Value = MailMergeId} _
+                            , New SqlParameter("Template", SqlDbType.Image, -1) With {.Value = Buffer} _
+                            , New SqlParameter("TemplateName", SqlDbType.NVarChar, 255) With {.Value = fileName})
+
+                    Catch ex As Exception
+
+                    End Try
+
+
+                End If
+
+            Catch ex As Exception
+                Session("ErrorTitle") = "File upload"
+                Session("ErrorText") = "You could not upload the template file because of the following error:<p>" & FormatError(ex.Message)
+            End Try
+
+            Return Content("")
+
+        End Function
+
+        <HttpPost>
+        <ValidateAntiForgeryToken>
+        Public Function util_def_mailmerge_downloadtemplate(MailMergeId As Integer) As FilePathResult
+
+            Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
+            Dim downloadTokenValue As String = Request("download_token_value_id")
+
+            Dim dsDefinition As DataSet = objDataAccess.GetDataSet("spASRIntMailMergeDownloadTemplate" _
+                    , New SqlParameter("MailMergeId", SqlDbType.Int) With {.Value = MailMergeId})
+
+            Dim objRow = dsDefinition.Tables(0).Rows(0)
+
+            Try
+                Dim template = CType(objRow.Item(0), Byte())
+                Dim fileName = objRow.Item("TemplateName").ToString
+
+                ' Download the file
+                Response.ContentType = "application/octet-stream"
+                Response.Clear()
+                Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
+                Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", fileName))
+                Response.OutputStream.Write(template, 0, template.Length)
+                Response.End()
+                Response.Flush()
+
+            Catch ex As Exception
+
+            End Try
+
+        End Function
+
+
+    End Class
 
 End Namespace

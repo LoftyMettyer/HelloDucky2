@@ -2494,34 +2494,7 @@ Namespace Controllers
 			Return View(value)
 		End Function
 
-		<HttpPost()>
-		<ValidateAntiForgeryToken>
-		Function util_run_uploadtemplate(TemplateFile As HttpPostedFileBase) As ActionResult
-			Try
-
-				If Not TemplateFile Is Nothing Then
-					' Read input stream from request
-					Dim Buffer = New Byte(TemplateFile.InputStream.Length - 1) {}
-					Dim offset As Integer = 0
-					Dim cnt As Integer = 0
-					While (InlineAssignHelper(cnt, TemplateFile.InputStream.Read(Buffer, offset, 10))) > 0
-						offset += cnt
-					End While
-
-					Session("MailMerge_Template") = New MemoryStream(Buffer)
-
-				End If
-
-			Catch ex As Exception
-				Session("ErrorTitle") = "File upload"
-				Session("ErrorText") = "You could not upload the template file because of the following error:<p>" & FormatError(ex.Message)
-			End Try
-
-			Return Content("hello ducky")
-
-		End Function
-
-		<HttpPost()>
+        <HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function util_run_promptedvalues_submit(value As PromptedValuesModel) As ActionResult
 

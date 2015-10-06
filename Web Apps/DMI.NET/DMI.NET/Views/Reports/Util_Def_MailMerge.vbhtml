@@ -7,6 +7,20 @@
 End Code
 
 <div>
+
+<form action="reports\util_def_mailmerge_submittemplate" style="display: none" name="frmTemplateFile" id="frmTemplateFile" method="post" enctype="multipart/form-data" target="submit-iframe">
+    <input type="file" id="TemplateFile" name="TemplateFile" onchange="SubmitTemplate();" />
+    <input type="hidden" id="MailMergeId" name="MailMergeId" value="@Model.ID" />
+    @Html.AntiForgeryToken()
+</form>
+
+<form action="reports\util_def_mailmerge_downloadtemplate" style="display: none" method="post" id="frmDownloadTemplate" name="frmDownloadTemplate" target="submit-iframe">
+    <input type="hidden" id="MailMergeId" name="MailMergeId" value="@Model.ID" />
+    <input type="hidden" id="download_token_value_id" name="download_token_value_id" />
+    @Html.AntiForgeryToken()
+</form>
+
+
   @Using (Html.BeginForm("util_def_mailmerge", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
 
     @Html.HiddenFor(Function(m) m.ID)
@@ -48,48 +62,48 @@ End Code
 
 </div>
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
-  $(function () {
-  	$("#tabs").tabs({
-  		activate: function (event, ui) {
-  			//Tab click event fired
-  			if (ui.newTab.text() == "Columns") {
-  				resizeColumnGrids();
-  			}
-  			if (ui.newTab.text() == "Sort Order") {
-  				//resize the Event Details grid to fit
-  				var workPageHeight = $('#workframeset').height();
-  				var gridTopPos = $('#divSortOrderDiv').position().top;
-  				var tabHeight = $('#tabs>.ui-tabs-nav').outerHeight();
-  				var marginHeight = 40;
-  				var gridHeight = workPageHeight - gridTopPos - tabHeight - marginHeight;
-  				$("#SortOrders").jqGrid('setGridHeight', gridHeight);
+        $(function () {
+            $("#tabs").tabs({
+                activate: function (event, ui) {
+                    //Tab click event fired
+                    if (ui.newTab.text() == "Columns") {
+                        resizeColumnGrids();
+                    }
+                    if (ui.newTab.text() == "Sort Order") {
+                        //resize the Event Details grid to fit
+                        var workPageHeight = $('#workframeset').height();
+                        var gridTopPos = $('#divSortOrderDiv').position().top;
+                        var tabHeight = $('#tabs>.ui-tabs-nav').outerHeight();
+                        var marginHeight = 40;
+                        var gridHeight = workPageHeight - gridTopPos - tabHeight - marginHeight;
+                        $("#SortOrders").jqGrid('setGridHeight', gridHeight);
 
-  				var gridWidth = $('#divSortOrderDiv').width();
-  				$("#SortOrders").jqGrid('setGridWidth', gridWidth);
-  			}
-  		}
-  	});
-  	$('input[type=number]').numeric();
-  	$('#description, #Name').css('width', $('#BaseTableID').width());  	
-  });
-  function resizeColumnGrids() {
-  	var gridWidth = $('#columnsAvailable').width() - 10;
-  	$("#AvailableColumns").jqGrid('setGridWidth', gridWidth);
-  	$('#SelectedTableID').width(gridWidth);
+                        var gridWidth = $('#divSortOrderDiv').width();
+                        $("#SortOrders").jqGrid('setGridWidth', gridWidth);
+                    }
+                }
+            });
+            $('input[type=number]').numeric();
+            $('#description, #Name').css('width', $('#BaseTableID').width());
+        });
+        function resizeColumnGrids() {
+            var gridWidth = $('#columnsAvailable').width() - 10;
+            $("#AvailableColumns").jqGrid('setGridWidth', gridWidth);
+            $('#SelectedTableID').width(gridWidth);
 
-  	gridWidth = $('#columnsSelected').width() - 10;
-  	$("#SelectedColumns").jqGrid('setGridWidth', gridWidth);
+            gridWidth = $('#columnsSelected').width() - 10;
+            $("#SelectedColumns").jqGrid('setGridWidth', gridWidth);
 
-  	//var gridHeight = $('#columnsAvailable').parent().height() - 20;
-  	var gridHeight = screen.height / 3;
-  	$("#SelectedColumns").jqGrid('setGridHeight', gridHeight);
-  	$("#AvailableColumns").jqGrid('setGridHeight', gridHeight);
+            //var gridHeight = $('#columnsAvailable').parent().height() - 20;
+            var gridHeight = screen.height / 3;
+            $("#SelectedColumns").jqGrid('setGridHeight', gridHeight);
+            $("#AvailableColumns").jqGrid('setGridHeight', gridHeight);
 
-  	//column aggregate widths
-  	$('.colAggregates').find('.tablecell').css('width', gridWidth / 3);
-  }
+            //column aggregate widths
+            $('.colAggregates').find('.tablecell').css('width', gridWidth / 3);
+        }
 
-  $("#workframe").attr("data-framesource", "UTIL_DEF_MAILMERGE");
-</script>
+        $("#workframe").attr("data-framesource", "UTIL_DEF_MAILMERGE");
+    </script>

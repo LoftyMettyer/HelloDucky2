@@ -88,33 +88,34 @@ BEGIN
 	END
 
 	-- Definition
-	SELECT @psReportName AS [Name], [description], @psReportOwner AS [owner],		
-		tableID AS BaseTableID,		
-		selection AS SelectionType,
-		picklistID,	
+	SELECT @psReportName AS [Name], m.[description], @psReportOwner AS [owner],		
+		m.tableID AS BaseTableID,		
+		m.selection AS SelectionType,
+		m.picklistID,	
 		@psPicklistName AS PicklistName,
-		FilterID,
+		m.FilterID,
 		@psFilterName AS FilterName,
-		outputformat AS [Format],		
-		outputsave AS [SaveToFile],		
-		outputfilename AS [Filename],		
-		emailAddrID AS [EmailGroupID],		
-		emailSubject,		
-		templateFileName,		
-		outputscreen AS [DisplayOutputOnScreen],		
-		emailasattachment AS [EmailAsAttachment],		
-		ISNULL(emailattachmentname,'') AS [EmailAttachmentName],		
-		suppressblanks AS SuppressBlankLines,		
-		PauseBeforeMerge,		
-		outputprinter AS [SendToPrinter],		
-		outputprintername AS [PrinterName],		
-		documentmapid,		
-		manualdocmanheader,
-		PromptStart AS PauseBeforeMerge,
-		CONVERT(integer, timestamp) AS [Timestamp],
+		m.outputformat AS [Format],		
+		m.outputsave AS [SaveToFile],		
+		m.outputfilename AS [Filename],		
+		m.emailAddrID AS [EmailGroupID],		
+		m.emailSubject,		
+		ISNULL(t.TemplateName, '') AS [templateFile],
+		m.outputscreen AS [DisplayOutputOnScreen],		
+		m.emailasattachment AS [EmailAsAttachment],		
+		ISNULL(m.emailattachmentname,'') AS [EmailAttachmentName],		
+		m.suppressblanks AS SuppressBlankLines,		
+		m.PauseBeforeMerge,		
+		m.outputprinter AS [SendToPrinter],		
+		m.outputprintername AS [PrinterName],		
+		m.documentmapid,		
+		m.manualdocmanheader,
+		m.PromptStart AS PauseBeforeMerge,
+		CONVERT(integer, m.[timestamp]) AS [Timestamp],
 		CASE WHEN @pfPicklistHidden = 1 OR @pfFilterHidden = 1 THEN 'HD' ELSE '' END AS [BaseViewAccess]
-	FROM [dbo].[ASRSysMailMergeName]		
-	WHERE MailMergeID = @piReportID;		
+	FROM [dbo].[ASRSysMailMergeName] m
+		LEFT JOIN [dbo].[ASRSysMailMergeTemplate] t ON t.MailMergeId = m.MailMergeID
+	WHERE m.MailMergeID = @piReportID;		
 
 	-- Columns
 	SELECT ASRSysMailMergeColumns.ColumnID AS [ID],

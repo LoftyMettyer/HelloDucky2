@@ -24,13 +24,10 @@ Namespace Models
 		<MinLength(3, ErrorMessage:="You must select at least one column for your mail merge.")> _
 		Public Overrides Property ColumnsAsString As String
 
-		<DisplayName("Template :"), DisplayFormat(ConvertEmptyStringToNull:=False)>
-		<Required(ErrorMessage:="No template name entered.")>
-		<ExcludeChar("/?""<>|*@~[]{{}}#+'¬")>
-		<AllowHtml>
-		Public Property TemplateFileName As String
+        <DisplayName("Template :")>
+        Public Property TemplateFile As String
 
-		<DisplayName("Pause before merge")>
+        <DisplayName("Pause before merge")>
 		Public Property PauseBeforeMerge As Boolean
 
 		<DisplayName("Suppress blank lines")>

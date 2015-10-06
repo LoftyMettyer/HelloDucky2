@@ -3,30 +3,34 @@
 @Inherits System.Web.Mvc.WebViewPage(Of Models.MailMergeModel)
 @Html.HiddenFor(Function(m) m.ActionType)
 
-<fieldset class="width100">
-	<legend class="fontsmalltitle">Options:</legend>
-	<fieldset class="">
-		<div class="formField">
-			<input type="hidden" id="txtEventFilterID" name="FilterID" value="@Model.FilterID" />
-			<div class="floatleft"> 
-				@Html.LabelFor(Function(m) m.TemplateFileName)
-			</div>
+<input type="hidden" id="txtEventFilterID" name="FilterID" value="@Model.FilterID" />
 
-			@Html.TextBoxFor(Function(m) m.TemplateFileName, New With {.id = "TemplateFileName", .class = "floatleft"})
-	
-		</div>
-	</fieldset>
-	
-	<fieldset class="clearboth" style="padding-left:126px">
-		@Html.CheckBoxFor(Function(m) m.PauseBeforeMerge)
-		@Html.LabelFor(Function(m) m.PauseBeforeMerge)
-		<br />
-		@Html.CheckBoxFor(Function(m) m.SuppressBlankLines)
-		@Html.LabelFor(Function(m) m.SuppressBlankLines)
-	</fieldset>
-</fieldset>
+<div>
+    <fieldset>
+        <legend class="fontsmalltitle">Template:</legend>
+        <div class="floatleft">
+            <div class="upload">
+                @Html.TextBoxFor(Function(m) m.TemplateFile, New With {.id = "txtTemplateFileName"})
 
-<fieldset class="width25 floatleft" style="">
+                <label for="TemplateFile">Upload</label>
+                <input type="button" value="Download Template" onclick="DownloadTemplate();" />
+            </div>
+        </div>
+    </fieldset>
+    <br />
+
+    <fieldset class="floatleft">
+        <legend class="fontsmalltitle">Options:</legend>
+        @Html.CheckBoxFor(Function(m) m.PauseBeforeMerge)
+        @Html.LabelFor(Function(m) m.PauseBeforeMerge)
+        <br />
+        @Html.CheckBoxFor(Function(m) m.SuppressBlankLines)
+        @Html.LabelFor(Function(m) m.SuppressBlankLines)
+        <br /><br /><br />
+    </fieldset>
+</div>
+
+<fieldset class="width25 floatleft clearboth" style="">
 	<legend class="fontsmalltitle">Output Format:</legend>
 	<fieldset class="">
 		<div class="margebot10">
@@ -125,8 +129,20 @@
 	Note: Options marked in red are unavailable in OpenHR Web.
 </fieldset>
 
-
 <script type="text/javascript">
+
+    function SubmitTemplate() {
+        var filename = $("#TemplateFile").val().replace(/^.*[\\\/]/, '');
+        $("#txtTemplateFileName").val(filename);
+
+        var frmTemplateFile = $("#frmTemplateFile")[0];
+        frmTemplateFile.submit();
+    }
+
+    function DownloadTemplate() {
+        var frmDownloadTemplate = $("#frmDownloadTemplate")[0];
+        frmDownloadTemplate.submit();
+    }
 
 	function setOutputToFile() {
 		var bSelected = $("#SaveToFile").prop("checked");
@@ -214,6 +230,9 @@
 			$('#PauseBeforeMerge').prop('checked', true);
 			$('#SuppressBlankLines').prop('checked', true);
 		}
+
+
+	    $('.upload label').button();
 
 	});
 

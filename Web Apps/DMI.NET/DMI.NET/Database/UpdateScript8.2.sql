@@ -40072,33 +40072,34 @@ BEGIN
 	END
 
 	-- Definition
-	SELECT @psReportName AS [Name], [description], @psReportOwner AS [owner],		
-		tableID AS BaseTableID,		
-		selection AS SelectionType,
-		picklistID,	
+	SELECT @psReportName AS [Name], m.[description], @psReportOwner AS [owner],		
+		m.tableID AS BaseTableID,		
+		m.selection AS SelectionType,
+		m.picklistID,	
 		@psPicklistName AS PicklistName,
-		FilterID,
+		m.FilterID,
 		@psFilterName AS FilterName,
-		outputformat AS [Format],		
-		outputsave AS [SaveToFile],		
-		outputfilename AS [Filename],		
-		emailAddrID AS [EmailGroupID],		
-		emailSubject,		
-		templateFileName,		
-		outputscreen AS [DisplayOutputOnScreen],		
-		emailasattachment AS [EmailAsAttachment],		
-		ISNULL(emailattachmentname,'') AS [EmailAttachmentName],		
-		suppressblanks AS SuppressBlankLines,		
-		PauseBeforeMerge,		
-		outputprinter AS [SendToPrinter],		
-		outputprintername AS [PrinterName],		
-		documentmapid,		
-		manualdocmanheader,
-		PromptStart AS PauseBeforeMerge,
-		CONVERT(integer, timestamp) AS [Timestamp],
+		m.outputformat AS [Format],		
+		m.outputsave AS [SaveToFile],		
+		m.outputfilename AS [Filename],		
+		m.emailAddrID AS [EmailGroupID],		
+		m.emailSubject,		
+		ISNULL(t.TemplateName, '') AS [templateFile],
+		m.outputscreen AS [DisplayOutputOnScreen],		
+		m.emailasattachment AS [EmailAsAttachment],		
+		ISNULL(m.emailattachmentname,'') AS [EmailAttachmentName],		
+		m.suppressblanks AS SuppressBlankLines,		
+		m.PauseBeforeMerge,		
+		m.outputprinter AS [SendToPrinter],		
+		m.outputprintername AS [PrinterName],		
+		m.documentmapid,		
+		m.manualdocmanheader,
+		m.PromptStart AS PauseBeforeMerge,
+		CONVERT(integer, m.[timestamp]) AS [Timestamp],
 		CASE WHEN @pfPicklistHidden = 1 OR @pfFilterHidden = 1 THEN 'HD' ELSE '' END AS [BaseViewAccess]
-	FROM [dbo].[ASRSysMailMergeName]		
-	WHERE MailMergeID = @piReportID;		
+	FROM [dbo].[ASRSysMailMergeName] m
+		LEFT JOIN [dbo].[ASRSysMailMergeTemplate] t ON t.MailMergeId = m.MailMergeID
+	WHERE m.MailMergeID = @piReportID;		
 
 	-- Columns
 	SELECT ASRSysMailMergeColumns.ColumnID AS [ID],
@@ -44380,7 +44381,6 @@ CREATE PROCEDURE [dbo].[spASRIntSaveMailMerge] (
 	@psOutputFilename		varchar(MAX),
 	@piEmailAddrID		integer,
 	@psEmailSubject		varchar(MAX),
-	@psTemplateFileName	varchar(MAX),
 	@pfOutputScreen			bit,
 	@psUserName			varchar(255),
 	@pfEmailAsAttachment	bit,
@@ -44473,7 +44473,7 @@ BEGIN
 			@psOutputFilename,
 			@piEmailAddrID,
 			@psEmailSubject,
-			@psTemplateFileName,
+			'',
 			@pfOutputScreen,
 			@psUserName,
 			@pfEmailAsAttachment,
@@ -44506,7 +44506,6 @@ BEGIN
 			OutputFilename = @psOutputFilename,
 			EmailAddrID = @piEmailAddrID,
 			EmailSubject = @psEmailSubject,
-			TemplateFileName = @psTemplateFileName,
 			OutputScreen = @pfOutputScreen,
 			EMailAsAttachment = @pfEmailAsAttachment,
 			EmailAttachmentName = @psEmailAttachmentName,
@@ -62584,6 +62583,52 @@ BEGIN
 
 END
 GO
+
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRIntMailMergeUploadTemplate]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[spASRIntMailMergeUploadTemplate]
+GO
+CREATE PROCEDURE [dbo].[spASRIntMailMergeUploadTemplate]
+(
+	@MailMergeId	int = 0,
+	@Template		image = null,
+	@TemplateName	nvarchar(255) = ''
+)
+AS
+BEGIN
+
+	DELETE FROM ASRSysMailMergeTemplate WHERE MailMergeID = @MailMergeId;
+
+	INSERT dbo.ASRSysMailMergeTemplate (MailMergeID, Template, TemplateName, UploadDate, UploadedUser)
+		VALUES (@MailMergeId, @Template, @TemplateName, GETDATE(), SYSTEM_USER);
+END
+GO
+
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRIntMailMergeDownloadTemplate]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[spASRIntMailMergeDownloadTemplate]
+GO
+CREATE PROCEDURE [dbo].[spASRIntMailMergeDownloadTemplate]
+(
+	@MailMergeId int = 0
+)
+AS
+BEGIN
+	SELECT TOP 1 Template, TemplateName FROM dbo.ASRSysMailMergeTemplate
+		WHERE MailMergeID = @MailMergeId
+		ORDER BY id DESC;
+END
+
+
+
+
+
+
+
+
+
 
 
 

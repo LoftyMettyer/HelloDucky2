@@ -178,8 +178,8 @@ Namespace Repository
 
 						Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
 
-						objModel.TemplateFileName = row("TemplateFileName").ToString()
-						objModel.OutputFormat = CType(row("Format"), MailMergeOutputTypes)
+                        objModel.TemplateFile = row("TemplateFile").ToString()
+                        objModel.OutputFormat = CType(row("Format"), MailMergeOutputTypes)
 						If (objModel.OutputFormat = MailMergeOutputTypes.WordDocument) Then
 							objModel.WordDocumentPrinter = row("PrinterName").ToString()
 						ElseIf (objModel.OutputFormat = MailMergeOutputTypes.DocumentManagement) Then
@@ -574,42 +574,40 @@ Namespace Repository
 
 				objModel.EmailAttachmentName = If(objModel.EmailAttachmentName Is Nothing, "", objModel.EmailAttachmentName)
 				objModel.EmailSubject = If(objModel.EmailSubject Is Nothing, "", objModel.EmailSubject)
-				objModel.TemplateFileName = If(objModel.TemplateFileName Is Nothing, "", objModel.TemplateFileName)
-				objModel.PrinterName = If(objModel.PrinterName Is Nothing, "", objModel.PrinterName)
-				objModel.Filename = If(objModel.Filename Is Nothing, "", objModel.Filename)
+                objModel.PrinterName = If(objModel.PrinterName Is Nothing, "", objModel.PrinterName)
+                objModel.Filename = If(objModel.Filename Is Nothing, "", objModel.Filename)
 
 
-				_objDataAccess.ExecuteSP("spASRIntSaveMailMerge" _
-					, New SqlParameter("@psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
-					, New SqlParameter("@psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description} _
-					, New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID} _
-					, New SqlParameter("@piSelection", SqlDbType.Int) With {.Value = objModel.SelectionType} _
-					, New SqlParameter("@piPicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID} _
-					, New SqlParameter("@piFilterID", SqlDbType.Int) With {.Value = objModel.FilterID} _
-					, New SqlParameter("@piOutputFormat", SqlDbType.Int) With {.Value = objModel.OutputFormat} _
-					, New SqlParameter("@pfOutputSave", SqlDbType.Bit) With {.Value = objModel.SaveToFile} _
-					, New SqlParameter("@psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Filename} _
-					, New SqlParameter("@piEmailAddrID", SqlDbType.Int) With {.Value = objModel.EmailGroupID} _
-					, New SqlParameter("@psEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.EmailSubject} _
-					, New SqlParameter("@psTemplateFileName", SqlDbType.VarChar, -1) With {.Value = objModel.TemplateFileName} _
-					, New SqlParameter("@pfOutputScreen", SqlDbType.Bit) With {.Value = objModel.DisplayOutputOnScreen} _
-					, New SqlParameter("@psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner} _
-					, New SqlParameter("@pfEmailAsAttachment", SqlDbType.Bit) With {.Value = objModel.EmailAsAttachment} _
-					, New SqlParameter("@psEmailAttachmentName", SqlDbType.VarChar, -1) With {.Value = objModel.EmailAttachmentName} _
-					, New SqlParameter("@pfSuppressBlanks", SqlDbType.Bit) With {.Value = objModel.SuppressBlankLines} _
-					, New SqlParameter("@pfPauseBeforeMerge", SqlDbType.Bit) With {.Value = objModel.PauseBeforeMerge} _
-					, New SqlParameter("@pfOutputPrinter", SqlDbType.Bit) With {.Value = objModel.SendToPrinter} _
-					, New SqlParameter("@psOutputPrinterName", SqlDbType.VarChar, 255) With {.Value = objModel.PrinterName} _
-					, New SqlParameter("@piDocumentMapID", SqlDbType.Int) With {.Value = 0} _
-					, New SqlParameter("@pfManualDocManHeader", SqlDbType.Bit) With {.Value = False} _
-					, New SqlParameter("@psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess} _
-					, New SqlParameter("@psJobsToHide", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.JobIDsToHide} _
-					, New SqlParameter("@psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()} _
-					, New SqlParameter("@psColumns", SqlDbType.VarChar, -1) With {.Value = sColumns} _
-					, New SqlParameter("@psColumns2", SqlDbType.VarChar, -1) With {.Value = ""} _
-				, prmID)
+                _objDataAccess.ExecuteSP("spASRIntSaveMailMerge" _
+                    , New SqlParameter("@psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
+                    , New SqlParameter("@psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description} _
+                    , New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID} _
+                    , New SqlParameter("@piSelection", SqlDbType.Int) With {.Value = objModel.SelectionType} _
+                    , New SqlParameter("@piPicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID} _
+                    , New SqlParameter("@piFilterID", SqlDbType.Int) With {.Value = objModel.FilterID} _
+                    , New SqlParameter("@piOutputFormat", SqlDbType.Int) With {.Value = objModel.OutputFormat} _
+                    , New SqlParameter("@pfOutputSave", SqlDbType.Bit) With {.Value = objModel.SaveToFile} _
+                    , New SqlParameter("@psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Filename} _
+                    , New SqlParameter("@piEmailAddrID", SqlDbType.Int) With {.Value = objModel.EmailGroupID} _
+                    , New SqlParameter("@psEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.EmailSubject} _
+                    , New SqlParameter("@pfOutputScreen", SqlDbType.Bit) With {.Value = objModel.DisplayOutputOnScreen} _
+                    , New SqlParameter("@psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner} _
+                    , New SqlParameter("@pfEmailAsAttachment", SqlDbType.Bit) With {.Value = objModel.EmailAsAttachment} _
+                    , New SqlParameter("@psEmailAttachmentName", SqlDbType.VarChar, -1) With {.Value = objModel.EmailAttachmentName} _
+                    , New SqlParameter("@pfSuppressBlanks", SqlDbType.Bit) With {.Value = objModel.SuppressBlankLines} _
+                    , New SqlParameter("@pfPauseBeforeMerge", SqlDbType.Bit) With {.Value = objModel.PauseBeforeMerge} _
+                    , New SqlParameter("@pfOutputPrinter", SqlDbType.Bit) With {.Value = objModel.SendToPrinter} _
+                    , New SqlParameter("@psOutputPrinterName", SqlDbType.VarChar, 255) With {.Value = objModel.PrinterName} _
+                    , New SqlParameter("@piDocumentMapID", SqlDbType.Int) With {.Value = 0} _
+                    , New SqlParameter("@pfManualDocManHeader", SqlDbType.Bit) With {.Value = False} _
+                    , New SqlParameter("@psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess} _
+                    , New SqlParameter("@psJobsToHide", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.JobIDsToHide} _
+                    , New SqlParameter("@psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()} _
+                    , New SqlParameter("@psColumns", SqlDbType.VarChar, -1) With {.Value = sColumns} _
+                    , New SqlParameter("@psColumns2", SqlDbType.VarChar, -1) With {.Value = ""} _
+                , prmID)
 
-				_mailmerges.Remove(objModel)
+                _mailmerges.Remove(objModel)
 				objModel.ID = CInt(prmID.Value)
 
 			Catch ex As Exception
