@@ -103,6 +103,7 @@ Namespace Code
                     Template.Position = 0
 
                     doc = New Document(Template)
+                    doc.MailMerge.CleanupOptions = MailMergeCleanupOptions.RemoveEmptyParagraphs
                     doc.MailMerge.Execute(objRow)
 					objStream = New MemoryStream()
 					message = New MailMessage
@@ -182,8 +183,10 @@ Namespace Code
                 Template.Position = 0
 
                 Dim doc As New Document(Template)
+
+                doc.MailMerge.CleanupOptions = MailMergeCleanupOptions.RemoveEmptyParagraphs
                 doc.MailMerge.FieldMergingCallback = Me
-				doc.MailMerge.Execute(MergeData)
+                doc.MailMerge.Execute(MergeData)
 				MergeDocument = New MemoryStream
 
 				If DirectToPrinter And PrinterName.Length > 0 Then
