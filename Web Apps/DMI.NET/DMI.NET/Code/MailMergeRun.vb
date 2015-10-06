@@ -13,8 +13,8 @@ Namespace Code
 	Public Class MailMergeRun
 		Implements IFieldMergingCallback
 
-		Public TemplateName As String
-		Private _outputFileName As String
+        Public Template As Stream
+        Private _outputFileName As String
 		Public EmailSubject As String
 		Public EmailCalculationID As Integer
 		Public IsAttachment As Boolean
@@ -79,15 +79,13 @@ Namespace Code
 				Dim objWordLicense As New License
 				objWordLicense.SetLicense("Aspose.Words.lic")
 
-				Dim objTemplate = CType(HttpContext.Current.Session("MailMerge_Template"), Stream)
+                If Template Is Nothing Then
+                    Errors.Add("The definition has no uploaded mail merge template")
+                    Return False
+                End If
 
-				If objTemplate Is Nothing Then
-					Errors.Add("No template file selected")
-					Return False
-				End If
-
-				'Check that we have a From field defined in IIS
-				message = New MailMessage
+                'Check that we have a From field defined in IIS
+                message = New MailMessage
 				If message.From Is Nothing Then
 					Errors.Add("No 'From' Email address has been defined in your configuration file.")
 					Return False
@@ -102,10 +100,10 @@ Namespace Code
 				mailClient = New SmtpClient	'Take SMTP settings from Web.config (i.e. SMTP settings defined for the website in IIS)
 
 				For Each objRow As DataRow In MergeData.Rows
-					objTemplate.Position = 0
+                    Template.Position = 0
 
-					doc = New Document(objTemplate)
-					doc.MailMerge.Execute(objRow)
+                    doc = New Document(Template)
+                    doc.MailMerge.Execute(objRow)
 					objStream = New MemoryStream()
 					message = New MailMessage
 
@@ -176,17 +174,15 @@ Namespace Code
 				Dim objWordLicense As New License
 				objWordLicense.SetLicense("Aspose.Words.lic")
 
-				Dim objTemplate = CType(HttpContext.Current.Session("MailMerge_Template"), Stream)
+                If Template Is Nothing Then
+                    Errors.Add("The definition has no uploaded mail merge template")
+                    Return False
+                End If
 
-				If objTemplate Is Nothing Then
-					Errors.Add("No template file selected")
-					Return False
-				End If
+                Template.Position = 0
 
-				objTemplate.Position = 0
-
-				Dim doc As New Document(objTemplate)
-				doc.MailMerge.FieldMergingCallback = Me
+                Dim doc As New Document(Template)
+                doc.MailMerge.FieldMergingCallback = Me
 				doc.MailMerge.Execute(MergeData)
 				MergeDocument = New MemoryStream
 
@@ -236,15 +232,14 @@ Namespace Code
 			'End If
 			Try
 
-				Dim objTemplate = CType(HttpContext.Current.Session("MailMerge_Template"), Stream)
-				If objTemplate Is Nothing Then
-					Errors.Add("No template file selected")
-					Return False
-				End If
+                If Template Is Nothing Then
+                    Errors.Add("The definition has no uploaded mail merge template")
+                    Return False
+                End If
 
-				' Verify template integrity
-				Dim doc As New Document(objTemplate)
-				Dim templateFields = doc.MailMerge.GetFieldNames().Distinct().ToList()
+                ' Verify template integrity
+                Dim doc As New Document(Template)
+                Dim templateFields = doc.MailMerge.GetFieldNames().Distinct().ToList()
 				
 				' If no template fields no point running the merge (Also stops corrupt files being used (e.g pdf))
 				If templateFields.Count = 0 Then

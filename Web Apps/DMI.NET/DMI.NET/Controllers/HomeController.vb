@@ -2466,9 +2466,8 @@ Namespace Controllers
 				Session("utilid") = value.ID
 				Session("utilname") = value.Name
 				Session("action") = "run"
-				Session("MailMerge_Template") = Nothing
 
-			Catch ex As Exception
+            Catch ex As Exception
 				Throw
 
 			End Try
@@ -2484,9 +2483,8 @@ Namespace Controllers
 				Session("utilid") = value.ID
 				Session("utilname") = value.Name
 				Session("action") = "run"
-				Session("MailMerge_Template") = Nothing
 
-			Catch ex As Exception
+            Catch ex As Exception
 				Throw
 
 			End Try

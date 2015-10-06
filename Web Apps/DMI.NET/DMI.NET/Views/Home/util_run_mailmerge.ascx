@@ -6,112 +6,112 @@
 <script src="<%:Url.Content("~/Scripts/jquery/jquery.cookie.js")%>"></script>
 
 <%
-	Dim fok As Boolean = True
-	Dim blnSuccess As Boolean
-	Dim bDownloadFile As Boolean
-	Dim objMailMerge As MailMerge
-	Dim objMailMergeOutput As New Code.MailMergeRun
-	Dim fNotCancelled As Boolean
-	Dim lngEventLogID As Long
-	Dim aPrompts
+    Dim fok As Boolean = True
+    Dim blnSuccess As Boolean
+    Dim bDownloadFile As Boolean
+    Dim objMailMerge As MailMerge
+    Dim objMailMergeOutput As New Code.MailMergeRun
+    Dim fNotCancelled As Boolean
+    Dim lngEventLogID As Long
+    Dim aPrompts
 
-	' Create the reference to the DLL (Report Class)
-	objMailMerge = New HR.Intranet.Server.MailMerge
-	objMailMerge.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+    ' Create the reference to the DLL (Report Class)
+    objMailMerge = New HR.Intranet.Server.MailMerge
+    objMailMerge.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-	' Pass required info to the DLL
-	objMailMerge.MailMergeID = CInt(Session("utilid"))
-	objMailMerge.ClientDateFormat = Session("localedateformat")
-	objMailMerge.SingleRecordID = Session("singleRecordID")
-	objMailMerge.MultipleRecordIDs = Session("multipleRecordIDs")
-	
-	If fok Then
-		fok = objMailMerge.SQLGetMergeDefinition
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
+    ' Pass required info to the DLL
+    objMailMerge.MailMergeID = CInt(Session("utilid"))
+    objMailMerge.ClientDateFormat = Session("localedateformat")
+    objMailMerge.SingleRecordID = Session("singleRecordID")
+    objMailMerge.MultipleRecordIDs = Session("multipleRecordIDs")
 
-	If fok Then
-		lngEventLogID = objMailMerge.EventLogAddHeader
-		fok = (lngEventLogID > 0)
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
+    If fok Then
+        fok = objMailMerge.SQLGetMergeDefinition
+        fNotCancelled = Response.IsClientConnected
+        If fok Then fok = fNotCancelled
+    End If
 
-	aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("utilid"))
-	If fok Then
-		fok = objMailMerge.SetPromptedValues(aPrompts)
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
+    If fok Then
+        lngEventLogID = objMailMerge.EventLogAddHeader
+        fok = (lngEventLogID > 0)
+        fNotCancelled = Response.IsClientConnected
+        If fok Then fok = fNotCancelled
+    End If
 
-	objMailMergeOutput.Name = objMailMerge.DefName
-	objMailMergeOutput.TemplateName = objMailMerge.DefTemplateFile
-	objMailMergeOutput.OutputFileName = objMailMerge.DefOutputFileName
-	objMailMergeOutput.PrinterName = objMailMerge.DefOutputPrinterName
-	objMailMergeOutput.EmailSubject = objMailMerge.DefEMailSubject
-	objMailMergeOutput.EmailCalculationID = objMailMerge.DefEmailAddrCalc
-	objMailMergeOutput.IsAttachment = objMailMerge.DefEMailAttachment
-	objMailMergeOutput.AttachmentName = objMailMerge.DefAttachmentName
-	objMailMergeOutput.Columns = objMailMerge.Columns
-	
-	If fok Then
-		fok = objMailMergeOutput.ValidateTemplate()
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
+    aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("utilid"))
+    If fok Then
+        fok = objMailMerge.SetPromptedValues(aPrompts)
+        fNotCancelled = Response.IsClientConnected
+        If fok Then fok = fNotCancelled
+    End If
 
-	If fok Then
-		fok = objMailMergeOutput.ValidateDefinition()
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
-	
-	If fok Then
-		fok = objMailMerge.SQLCodeCreate
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
+    objMailMergeOutput.Name = objMailMerge.DefName
+    objMailMergeOutput.Template = objMailMerge.Template
+    objMailMergeOutput.OutputFileName = objMailMerge.DefOutputFileName
+    objMailMergeOutput.PrinterName = objMailMerge.DefOutputPrinterName
+    objMailMergeOutput.EmailSubject = objMailMerge.DefEMailSubject
+    objMailMergeOutput.EmailCalculationID = objMailMerge.DefEmailAddrCalc
+    objMailMergeOutput.IsAttachment = objMailMerge.DefEMailAttachment
+    objMailMergeOutput.AttachmentName = objMailMerge.DefAttachmentName
+    objMailMergeOutput.Columns = objMailMerge.Columns
 
-	If fok Then
-		fok = objMailMerge.UDFFunctions(True)
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
+    If fok Then
+        fok = objMailMergeOutput.ValidateTemplate()
+        fNotCancelled = Response.IsClientConnected
+        If fok Then fok = fNotCancelled
+    End If
 
-	If fok Then
-		fok = objMailMerge.SQLGetMergeData
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
+    If fok Then
+        fok = objMailMergeOutput.ValidateDefinition()
+        fNotCancelled = Response.IsClientConnected
+        If fok Then fok = fNotCancelled
+    End If
 
-	If fok Then
-		fok = objMailMerge.UDFFunctions(False)
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
+    If fok Then
+        fok = objMailMerge.SQLCodeCreate
+        fNotCancelled = Response.IsClientConnected
+        If fok Then fok = fNotCancelled
+    End If
 
-		objMailMergeOutput.MergeData = objMailMerge.MergeData
+    If fok Then
+        fok = objMailMerge.UDFFunctions(True)
+        fNotCancelled = Response.IsClientConnected
+        If fok Then fok = fNotCancelled
+    End If
 
-		Select Case objMailMerge.DefOutputFormat
-			Case MailMergeOutputTypes.WordDocument
-				blnSuccess = objMailMergeOutput.ExecuteMailMerge(False)
-				bDownloadFile = True
-			
-			Case MailMergeOutputTypes.IndividualEmail
-				blnSuccess = objMailMergeOutput.ExecuteToEmail()
-				bDownloadFile = False
+    If fok Then
+        fok = objMailMerge.SQLGetMergeData
+        fNotCancelled = Response.IsClientConnected
+        If fok Then fok = fNotCancelled
+    End If
 
-			Case Else
-				blnSuccess = objMailMergeOutput.ExecuteMailMerge(True)
-				bDownloadFile = False			
-				
-		End Select
-		
-		
-		Session("MailMerge_CompletedDocument") = objMailMergeOutput
+    If fok Then
+        fok = objMailMerge.UDFFunctions(False)
+        fNotCancelled = Response.IsClientConnected
+        If fok Then fok = fNotCancelled
 
-	End If
-	
+        objMailMergeOutput.MergeData = objMailMerge.MergeData
+
+        Select Case objMailMerge.DefOutputFormat
+            Case MailMergeOutputTypes.WordDocument
+                blnSuccess = objMailMergeOutput.ExecuteMailMerge(False)
+                bDownloadFile = True
+
+            Case MailMergeOutputTypes.IndividualEmail
+                blnSuccess = objMailMergeOutput.ExecuteToEmail()
+                bDownloadFile = False
+
+            Case Else
+                blnSuccess = objMailMergeOutput.ExecuteMailMerge(True)
+                bDownloadFile = False
+
+        End Select
+
+
+        Session("MailMerge_CompletedDocument") = objMailMergeOutput
+
+    End If
+
 	%>
 
 <form action="util_run_mailmerge_completed" method="post" id="frmMailMergeOutput" name="frmMailMergeOutput">
