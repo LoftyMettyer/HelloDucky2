@@ -7,7 +7,7 @@ using SystemManagerService.Enums;
 namespace SystemManager.Tests
 {
     [TestClass]
-    public class RoleTests //: TransactionTest
+    public class PermissionTests //: TransactionTest
     {
         protected SecurityManager context;
         protected DbContextTransaction transaction;
@@ -51,6 +51,7 @@ namespace SystemManager.Tests
 
         }
 
+        [TestMethod]
         public void AddPermissionGroup_NameUniqueCheck()
         {
             Assert.Fail("Group Name unique check not yet implemented");
@@ -62,8 +63,10 @@ namespace SystemManager.Tests
         {
 
             var groupID = context.PermissionGroups.FirstOrDefault().Id;
+            var categoryId = 2;
+            var facetId = 1;
 
-            var message = context.AddPermissionToGroup(groupID, "CustomReport", "Run");
+            var message = context.AddPermissionToGroup(groupID, categoryId, facetId);
             Assert.AreEqual(message.status, SaveStatusEnum.Success, "Permission added failure");
 
         }

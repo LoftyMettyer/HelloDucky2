@@ -31,7 +31,7 @@ namespace SystemManagerService
             return result;
         }
 
-        public IModifyMessage AddPermissionToGroup(int groupId, string category, string facet)
+        public IModifyMessage AddPermissionToGroup(int groupId, int categoryId, int facetId)
         {
             var result = new PermissionChangeMessage();
 
@@ -40,6 +40,14 @@ namespace SystemManagerService
                 var group = PermissionGroups
                  .Where(g => g.Id == groupId)
                  .First();
+
+                var category = PermissionCategories
+                    .Where(p => p.Id == categoryId)
+                    .First();
+
+                var facet = PermissionFacets
+                    .Where(f => f.Id == facetId)
+                    .First();
 
                 var newPermission = new PermissionItem() { Category = category, Facet = facet };
                 group.PermissionItems.Add(newPermission);

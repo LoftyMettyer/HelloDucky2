@@ -18,9 +18,9 @@ namespace SystemManagerService.Entities
         //[Column("PermissionFacetId")]
         //public int FacetId { get; set; }
 
-        public string Category { get; set; }
+        public PermissionCategory Category { get; set; }
 
-        public string Facet { get; set; }
+        public PermissionFacet Facet { get; set; }
 
     }
 

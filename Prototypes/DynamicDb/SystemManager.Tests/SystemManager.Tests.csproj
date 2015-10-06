@@ -64,7 +64,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="InitialiseDbTests.cs" />
-    <Compile Include="RoleTests.cs" />
+    <Compile Include="PermissionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
