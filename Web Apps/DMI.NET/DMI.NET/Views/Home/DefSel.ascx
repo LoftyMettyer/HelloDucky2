@@ -366,36 +366,52 @@
 
 	}
 
-	function ToggleCheck() {
-
-		var piTableID = 0;
+	function ToggleCheck() {	
+	
+		var piTableid = 0;
 		var frmDefSel = document.getElementById('frmDefSel');
 
 		if ((frmDefSel.utiltype.value == 10) || (frmDefSel.utiltype.value == 11) || (frmDefSel.utiltype.value == 12)) {
-			piTableID = frmDefSel.selectTable.options[frmDefSel.selectTable.selectedIndex].value;
+		 piTableid = frmDefSel.selectTable.options[frmDefSel.selectTable.selectedIndex].value;
 		}
 
 		// Load the required definition selection screen
 		var displayDiv = (parseInt($("#txtSingleRecordID").val()) === 0 ? "workframe" : "optionframe");
+		var singleRecordId = parseInt($("#txtSingleRecordID").val());
+		var multipleRecordIds = 0;
+
+		var currentPage = defsel_currentWorkFramePage();
+		if (currentPage === "FIND") {
+		 if ((parseInt($("#txtMultipleRecordIDs").val().length) > 0)) 
+		 {
+			displayDiv = "optionframe";
+			singleRecordId = 0;
+			multipleRecordIds = $("#txtMultipleRecordIDs").val();
+
+			var frmFind = OpenHR.getForm("workframe", "frmFindForm");
+			piTableid = frmFind.txtCurrentTableID.value;
+		 }
+		}
 
 		// If definition is of tools type and loaded from the report definition then set load it inside the Tools frame
 		if ((defSelType === "utlPicklist") || (defSelType === "utlFilter") || (defSelType === "utlCalculation")) {
-			if (isLoadedFromReportDefiniton) {
-				displayDiv = "ToolsFrame";
-			}
+		 if (isLoadedFromReportDefiniton) {
+			displayDiv = "ToolsFrame";
+		 }
 		}
 
 		var postData = {
-			txtTableID: piTableID,
-			utiltype: frmDefSel.utiltype.value,
-			OnlyMine: $("#OnlyMine").prop('checked'),
-			RecordID: parseInt($("#txtSingleRecordID").val()),
-			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		 txtTableID: piTableid,
+		 utiltype: frmDefSel.utiltype.value,
+		 OnlyMine: $("#OnlyMine").prop('checked'),
+		 RecordID: singleRecordId,
+		 MultipleRecordIDs: multipleRecordIds,
+		 __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
 
 		OpenHR.submitForm(null, displayDiv, null, postData, "DefSel");
 
-	}
+ }
 
 	function setdelete() {
 		if (!$("#mnutoolDeleteUtil").hasClass("disabled")) {
