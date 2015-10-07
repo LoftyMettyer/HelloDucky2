@@ -1879,7 +1879,10 @@ function getSummaryColumns() {
 		data: {"parentTableID": $('#txtCurrentParentTableID').val(), "parentRecordID": $("#txtCurrentParentRecordID").val() },
 		cache: false,
 		async: true,
-		success: function (jsonstring) {		
+		success: function (jsonstring) {
+			if (jsonstring.length <= 2) //Sometimes the summary columns come back empty, in which case just return
+				return;
+
 			var aThousSepSummary = $("#txtThousSepSummary").val().split(",");
 
 			$.each(JSON.parse(jsonstring), function (key, value) {
