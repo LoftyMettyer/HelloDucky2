@@ -378,7 +378,7 @@
 		// Load the required definition selection screen
 		var displayDiv = (parseInt($("#txtSingleRecordID").val()) === 0 ? "workframe" : "optionframe");
 		var singleRecordId = parseInt($("#txtSingleRecordID").val());
-		var multipleRecordIds = 0;
+		var multipleRecordIds = "";
 
 		var currentPage = defsel_currentWorkFramePage();
 		if (currentPage === "FIND") {
