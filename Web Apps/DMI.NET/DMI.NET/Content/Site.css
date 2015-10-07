@@ -595,6 +595,12 @@ select.readonly {
 	padding: 2px 11px;
 }
 
+
+#btnGoLinkOrder, #btnGoLinkView {
+  width:100%;
+}
+
+
 #cmdDescription3 {
 	float: right;
 	padding: 1px 11px;

@@ -383,6 +383,12 @@
 						<%--</div>--%>
 					</td>
 				</tr>
+        <tr>
+          <td id="divLinkFindButtons">
+            <input class="btn" id="cmdSelectLink" name="cmdSelectLink" onclick="SelectLink()" type="button" value="Select" />
+            <input class="btn" id="cmdCancel" name="cmdCancel" onclick="CancelLink()" type="button" value="Cancel" />
+          </td>
+        </tr>
 			</table>
 
 			<%
@@ -394,10 +400,6 @@
 				Response.Write("<INPUT type='hidden' id=txtOptionLinkOrderID name=txtOptionLinkOrderID value=" & Session("optionLinkOrderID") & ">" & vbCrLf)
 				Response.Write("<INPUT type='hidden' id=txtOptionLinkRecordID name=txtOptionLinkRecordID value=" & Session("optionLinkRecordID") & ">" & vbCrLf)
 			%>
-			<div id="divLinkFindButtons">
-				<input class="btn" id="cmdSelectLink" name="cmdSelectLink" onclick="SelectLink()" type="button" value="Select" />
-				<input class="btn" id="cmdCancel" name="cmdCancel" onclick="CancelLink()" type="button" value="Cancel" />
-			</div>
 		</div>
 	</form>
 	<input type="hidden" id="txtTicker" name="txtTicker" value="0">
@@ -407,5 +409,5 @@
 
 <script type="text/javascript">
 	linkFind_window_onload();
-	$('table').attr('border', '0');
+	//$('table').attr('border', '1');
 </script>

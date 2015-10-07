@@ -153,6 +153,7 @@ function refreshGrid(jsonData) {
 		});
 
 		resetSelection();
+		$("#BulkBookingSelection #ssOleDBGridSelRecords").jqGrid('setGridWidth', $('#BulkBookingSelection.optiondatagridpage>.pageTitleDiv').width());
 	}
 
 }
