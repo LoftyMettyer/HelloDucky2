@@ -3,7 +3,7 @@
 	[DateTimeStamp] [datetime] NOT NULL,
 	[UserGroup] [varchar](50) NOT NULL,
 	[UserName] [varchar](50) NOT NULL,
-	[ComputerName] [varchar](30) NOT NULL,
+	[ComputerName] [varchar](255) NOT NULL,
 	[HRProModule] [varchar](8) NOT NULL,
 	[Action] [varchar](20) NOT NULL,
  CONSTRAINT [PK_ASRSysAuditAccess] PRIMARY KEY CLUSTERED 

@@ -60,6 +60,12 @@ PRINT 'Step - Mail Merge additions'
 		EXEC sp_executesql N'ALTER TABLE ASRSysMailMergeName ADD UploadTemplateName nvarchar(255) NULL;';
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - Audit Changes'
+/* ------------------------------------------------------- */
+
+ALTER TABLE [ASRSysAuditAccess] ALTER COLUMN [ComputerName] varchar(255);
+
 
 
 /* ------------------------------------------------------- */
