@@ -476,8 +476,14 @@ Namespace Controllers
 								Buffer.BlockCopy(abtImage, 400, binaryData, 0, abtImage.Length - 400)
 								'Create an image based on the embeded (Base64) image and resize it to 48x48
 								Dim img As Image = Base64StringToImage(Convert.ToBase64String(binaryData, 0, binaryData.Length))
-								img = img.GetThumbnailImage(48, 48, Nothing, IntPtr.Zero)
-								Session("SelfServicePhotograph_Src") = "data:image/jpeg;base64," & ImageToBase64String(img)
+
+								'Resize Version 1: Throws out of memory exceptions sometimes
+								'img = img.GetThumbnailImage(48, 48, Nothing, IntPtr.Zero)
+
+								'Resize Version 2: Taken from http://stackoverflow.com/questions/27528057/c-sharp-out-of-memory-exception-in-getthumbnailimage-on-a-server
+								Dim iimg = New Bitmap(img, New Size(48, 48))
+
+								Session("SelfServicePhotograph_Src") = "data:image/jpeg;base64," & ImageToBase64String(iimg)
 							Catch exp As ArgumentNullException
 
 							End Try
