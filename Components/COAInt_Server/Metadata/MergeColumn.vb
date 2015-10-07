@@ -19,9 +19,9 @@ Namespace Metadata
 					returnName = String.Format("{0}_{1}", TableName, Name.Replace(" ", "_"))
 				End If
 
-				Return If(returnName.Length <= 40, returnName, returnName.Substring(0, 40))
+                Return returnName
 
-			End Get
+            End Get
 
 		End Property
 
