@@ -49,17 +49,17 @@ BEGIN
 END
 
 
-IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysMailMergeTemplate]') AND xtype in (N'U'))
-BEGIN
-	EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysMailMergeTemplate](
-		[Id] [int] IDENTITY(1,1) NOT NULL,
-		[MailMergeID] [int] NOT NULL,
-		[Template] [varbinary](max) NOT NULL,
-		[TemplateName] nvarchar(255) NOT NULL,
-		[UploadDate] [datetime] NOT NULL,
-		[UploadedUser] [nvarchar](255) NOT NULL,
-	CONSTRAINT [PK_ASRSysMailMergeTemplate] PRIMARY KEY CLUSTERED ([Id] ASC))';
-END
+/* ------------------------------------------------------- */
+PRINT 'Step - Mail Merge additions'
+/* ------------------------------------------------------- */
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysMailMergeName', 'U') AND name = 'UploadTemplate')
+		EXEC sp_executesql N'ALTER TABLE ASRSysMailMergeName ADD UploadTemplate varbinary(MAX) NULL;';
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysMailMergeName', 'U') AND name = 'UploadTemplateName')
+		EXEC sp_executesql N'ALTER TABLE ASRSysMailMergeName ADD UploadTemplateName nvarchar(255) NULL;';
+
+
 
 
 /* ------------------------------------------------------- */
