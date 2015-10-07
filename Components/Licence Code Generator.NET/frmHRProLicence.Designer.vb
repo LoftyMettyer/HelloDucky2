@@ -179,11 +179,11 @@
         Me.cmdClipboard.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdClipboard.ForeColor = System.Drawing.SystemColors.ControlText
         Me.cmdClipboard.Image = CType(resources.GetObject("cmdClipboard.Image"), System.Drawing.Image)
-        Me.cmdClipboard.Location = New System.Drawing.Point(208, 51)
+        Me.cmdClipboard.Location = New System.Drawing.Point(218, 53)
         Me.cmdClipboard.Name = "cmdClipboard"
         Me.cmdClipboard.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdClipboard.Size = New System.Drawing.Size(24, 27)
-        Me.cmdClipboard.TabIndex = 10
+        Me.cmdClipboard.TabIndex = 14
         Me.cmdClipboard.TextAlign = System.Drawing.ContentAlignment.BottomCenter
         Me.cmdClipboard.UseVisualStyleBackColor = False
         '
@@ -194,7 +194,7 @@
         Me.cmdSuppClipboard.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdSuppClipboard.ForeColor = System.Drawing.SystemColors.ControlText
         Me.cmdSuppClipboard.Image = CType(resources.GetObject("cmdSuppClipboard.Image"), System.Drawing.Image)
-        Me.cmdSuppClipboard.Location = New System.Drawing.Point(136, 64)
+        Me.cmdSuppClipboard.Location = New System.Drawing.Point(163, 64)
         Me.cmdSuppClipboard.Name = "cmdSuppClipboard"
         Me.cmdSuppClipboard.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdSuppClipboard.Size = New System.Drawing.Size(24, 27)
@@ -212,7 +212,7 @@
         Me.SSTab1.Location = New System.Drawing.Point(5, 4)
         Me.SSTab1.Name = "SSTab1"
         Me.SSTab1.SelectedIndex = 0
-        Me.SSTab1.Size = New System.Drawing.Size(461, 506)
+        Me.SSTab1.Size = New System.Drawing.Size(490, 506)
         Me.SSTab1.TabIndex = 46
         '
         '_SSTab1_TabPage0
@@ -222,9 +222,9 @@
         Me._SSTab1_TabPage0.Controls.Add(Me.fraLicenceType)
         Me._SSTab1_TabPage0.Location = New System.Drawing.Point(4, 22)
         Me._SSTab1_TabPage0.Name = "_SSTab1_TabPage0"
-        Me._SSTab1_TabPage0.Size = New System.Drawing.Size(453, 480)
+        Me._SSTab1_TabPage0.Size = New System.Drawing.Size(482, 480)
         Me._SSTab1_TabPage0.TabIndex = 0
-        Me._SSTab1_TabPage0.Text = "Ge&nerate Licence"
+        Me._SSTab1_TabPage0.Text = "Generate Licence"
         '
         '_fraCustomerDetails_0
         '
@@ -240,11 +240,11 @@
         Me._fraCustomerDetails_0.Controls.Add(Me._lblNoUsers_2)
         Me._fraCustomerDetails_0.ForeColor = System.Drawing.SystemColors.ControlText
         Me.fraCustomerDetails.SetIndex(Me._fraCustomerDetails_0, CType(0, Short))
-        Me._fraCustomerDetails_0.Location = New System.Drawing.Point(9, 151)
+        Me._fraCustomerDetails_0.Location = New System.Drawing.Point(9, 126)
         Me._fraCustomerDetails_0.Name = "_fraCustomerDetails_0"
         Me._fraCustomerDetails_0.Padding = New System.Windows.Forms.Padding(0)
         Me._fraCustomerDetails_0.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._fraCustomerDetails_0.Size = New System.Drawing.Size(439, 248)
+        Me._fraCustomerDetails_0.Size = New System.Drawing.Size(465, 248)
         Me._fraCustomerDetails_0.TabIndex = 0
         Me._fraCustomerDetails_0.TabStop = False
         Me._fraCustomerDetails_0.Text = "Details :"
@@ -252,43 +252,40 @@
         'txtHeadcount
         '
         Me.txtHeadcount.AcceptsReturn = True
-        Me.txtHeadcount.BackColor = System.Drawing.SystemColors.Window
         Me.txtHeadcount.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtHeadcount.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtHeadcount.Location = New System.Drawing.Point(99, 155)
+        Me.txtHeadcount.Location = New System.Drawing.Point(148, 155)
         Me.txtHeadcount.MaxLength = 6
         Me.txtHeadcount.Name = "txtHeadcount"
         Me.txtHeadcount.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtHeadcount.Size = New System.Drawing.Size(54, 21)
-        Me.txtHeadcount.TabIndex = 7
+        Me.txtHeadcount.TabIndex = 10
         Me.txtHeadcount.Text = "0"
         '
         'txtSSIUsers
         '
         Me.txtSSIUsers.AcceptsReturn = True
-        Me.txtSSIUsers.BackColor = System.Drawing.SystemColors.Window
         Me.txtSSIUsers.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtSSIUsers.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtSSIUsers.Location = New System.Drawing.Point(100, 74)
+        Me.txtSSIUsers.Location = New System.Drawing.Point(149, 74)
         Me.txtSSIUsers.MaxLength = 6
         Me.txtSSIUsers.Name = "txtSSIUsers"
         Me.txtSSIUsers.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtSSIUsers.Size = New System.Drawing.Size(54, 21)
-        Me.txtSSIUsers.TabIndex = 6
+        Me.txtSSIUsers.TabIndex = 9
         Me.txtSSIUsers.Text = "0"
         '
         'txtDatUsers
         '
         Me.txtDatUsers.AcceptsReturn = True
-        Me.txtDatUsers.BackColor = System.Drawing.SystemColors.Window
         Me.txtDatUsers.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDatUsers.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDatUsers.Location = New System.Drawing.Point(100, 21)
+        Me.txtDatUsers.Location = New System.Drawing.Point(149, 21)
         Me.txtDatUsers.MaxLength = 3
         Me.txtDatUsers.Name = "txtDatUsers"
         Me.txtDatUsers.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtDatUsers.Size = New System.Drawing.Size(54, 21)
-        Me.txtDatUsers.TabIndex = 4
+        Me.txtDatUsers.TabIndex = 0
         Me.txtDatUsers.Text = "0"
         '
         'lstModules
@@ -296,35 +293,33 @@
         Me.lstModules.BackColor = System.Drawing.SystemColors.Window
         Me.lstModules.Cursor = System.Windows.Forms.Cursors.Default
         Me.lstModules.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.lstModules.Location = New System.Drawing.Point(172, 21)
+        Me.lstModules.Location = New System.Drawing.Point(209, 21)
         Me.lstModules.Name = "lstModules"
         Me.lstModules.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lstModules.Size = New System.Drawing.Size(249, 212)
-        Me.lstModules.TabIndex = 8
+        Me.lstModules.TabIndex = 11
         '
         'txtIntUsers
         '
         Me.txtIntUsers.AcceptsReturn = True
-        Me.txtIntUsers.BackColor = System.Drawing.SystemColors.Window
         Me.txtIntUsers.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIntUsers.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIntUsers.Location = New System.Drawing.Point(100, 47)
+        Me.txtIntUsers.Location = New System.Drawing.Point(149, 47)
         Me.txtIntUsers.MaxLength = 3
         Me.txtIntUsers.Name = "txtIntUsers"
         Me.txtIntUsers.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtIntUsers.Size = New System.Drawing.Size(54, 21)
-        Me.txtIntUsers.TabIndex = 5
+        Me.txtIntUsers.TabIndex = 8
         Me.txtIntUsers.Text = "0"
         '
         'lblHeadcount
         '
-        Me.lblHeadcount.BackColor = System.Drawing.SystemColors.Control
         Me.lblHeadcount.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblHeadcount.ForeColor = System.Drawing.SystemColors.ControlText
         Me.lblHeadcount.Location = New System.Drawing.Point(7, 159)
         Me.lblHeadcount.Name = "lblHeadcount"
         Me.lblHeadcount.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblHeadcount.Size = New System.Drawing.Size(71, 28)
+        Me.lblHeadcount.Size = New System.Drawing.Size(84, 17)
         Me.lblHeadcount.TabIndex = 53
         Me.lblHeadcount.Text = "Headcount :"
         '
@@ -338,9 +333,9 @@
         Me._lblNoUsers_1.Location = New System.Drawing.Point(8, 77)
         Me._lblNoUsers_1.Name = "_lblNoUsers_1"
         Me._lblNoUsers_1.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._lblNoUsers_1.Size = New System.Drawing.Size(73, 13)
+        Me._lblNoUsers_1.Size = New System.Drawing.Size(120, 13)
         Me._lblNoUsers_1.TabIndex = 47
-        Me._lblNoUsers_1.Text = "SSI Users :"
+        Me._lblNoUsers_1.Text = "Self-service Users :"
         '
         '_lblNoUsers_0
         '
@@ -352,9 +347,9 @@
         Me._lblNoUsers_0.Location = New System.Drawing.Point(8, 24)
         Me._lblNoUsers_0.Name = "_lblNoUsers_0"
         Me._lblNoUsers_0.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._lblNoUsers_0.Size = New System.Drawing.Size(72, 13)
+        Me._lblNoUsers_0.Size = New System.Drawing.Size(132, 13)
         Me._lblNoUsers_0.TabIndex = 12
-        Me._lblNoUsers_0.Text = "Dat Users :"
+        Me._lblNoUsers_0.Text = "Data Manager Users :"
         '
         '_lblNoUsers_2
         '
@@ -366,9 +361,9 @@
         Me._lblNoUsers_2.Location = New System.Drawing.Point(8, 50)
         Me._lblNoUsers_2.Name = "_lblNoUsers_2"
         Me._lblNoUsers_2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me._lblNoUsers_2.Size = New System.Drawing.Size(75, 13)
+        Me._lblNoUsers_2.Size = New System.Drawing.Size(127, 13)
         Me._lblNoUsers_2.TabIndex = 13
-        Me._lblNoUsers_2.Text = "DMI Users :"
+        Me._lblNoUsers_2.Text = "OpenHR Web Users :"
         '
         'fraLicenceGenerate
         '
@@ -378,11 +373,11 @@
         Me.fraLicenceGenerate.Controls.Add(Me.cmdRead)
         Me.fraLicenceGenerate.Controls.Add(Me.Frame3)
         Me.fraLicenceGenerate.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.fraLicenceGenerate.Location = New System.Drawing.Point(8, 404)
+        Me.fraLicenceGenerate.Location = New System.Drawing.Point(8, 382)
         Me.fraLicenceGenerate.Name = "fraLicenceGenerate"
         Me.fraLicenceGenerate.Padding = New System.Windows.Forms.Padding(0)
         Me.fraLicenceGenerate.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.fraLicenceGenerate.Size = New System.Drawing.Size(439, 89)
+        Me.fraLicenceGenerate.Size = New System.Drawing.Size(465, 89)
         Me.fraLicenceGenerate.TabIndex = 14
         Me.fraLicenceGenerate.TabStop = False
         Me.fraLicenceGenerate.Text = "Licence Key :"
@@ -392,11 +387,11 @@
         Me.cmdGenerate.BackColor = System.Drawing.SystemColors.Control
         Me.cmdGenerate.Cursor = System.Windows.Forms.Cursors.Default
         Me.cmdGenerate.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdGenerate.Location = New System.Drawing.Point(244, 51)
+        Me.cmdGenerate.Location = New System.Drawing.Point(254, 53)
         Me.cmdGenerate.Name = "cmdGenerate"
         Me.cmdGenerate.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdGenerate.Size = New System.Drawing.Size(112, 27)
-        Me.cmdGenerate.TabIndex = 11
+        Me.cmdGenerate.TabIndex = 15
         Me.cmdGenerate.Text = "&Generate"
         Me.cmdGenerate.UseVisualStyleBackColor = False
         '
@@ -405,11 +400,11 @@
         Me.cmdRead.BackColor = System.Drawing.SystemColors.Control
         Me.cmdRead.Cursor = System.Windows.Forms.Cursors.Default
         Me.cmdRead.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdRead.Location = New System.Drawing.Point(84, 51)
+        Me.cmdRead.Location = New System.Drawing.Point(94, 53)
         Me.cmdRead.Name = "cmdRead"
         Me.cmdRead.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdRead.Size = New System.Drawing.Size(112, 27)
-        Me.cmdRead.TabIndex = 9
+        Me.cmdRead.TabIndex = 13
         Me.cmdRead.Text = "&Read"
         Me.cmdRead.UseVisualStyleBackColor = False
         '
@@ -430,7 +425,7 @@
         Me.Frame3.Cursor = System.Windows.Forms.Cursors.Default
         Me.Frame3.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Frame3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Frame3.Location = New System.Drawing.Point(16, 16)
+        Me.Frame3.Location = New System.Drawing.Point(26, 18)
         Me.Frame3.Name = "Frame3"
         Me.Frame3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Frame3.Size = New System.Drawing.Size(417, 25)
@@ -482,7 +477,7 @@
         Me._txtLicence_0.Name = "_txtLicence_0"
         Me._txtLicence_0.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._txtLicence_0.Size = New System.Drawing.Size(55, 21)
-        Me._txtLicence_0.TabIndex = 16
+        Me._txtLicence_0.TabIndex = 12
         Me._txtLicence_0.TabStop = False
         '
         '_txtLicence_1
@@ -618,11 +613,11 @@
         Me.fraLicenceType.Controls.Add(Me.lblExpiryDate)
         Me.fraLicenceType.Controls.Add(Me._lblCustomerNo_0)
         Me.fraLicenceType.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.fraLicenceType.Location = New System.Drawing.Point(10, 28)
+        Me.fraLicenceType.Location = New System.Drawing.Point(10, 6)
         Me.fraLicenceType.Name = "fraLicenceType"
         Me.fraLicenceType.Padding = New System.Windows.Forms.Padding(0)
         Me.fraLicenceType.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.fraLicenceType.Size = New System.Drawing.Size(439, 111)
+        Me.fraLicenceType.Size = New System.Drawing.Size(465, 111)
         Me.fraLicenceType.TabIndex = 50
         Me.fraLicenceType.TabStop = False
         Me.fraLicenceType.Text = "Licence Details :"
@@ -630,10 +625,10 @@
         'txtExpiryDate
         '
         Me.txtExpiryDate.CustomFormat = " "
-        Me.txtExpiryDate.Location = New System.Drawing.Point(99, 75)
+        Me.txtExpiryDate.Location = New System.Drawing.Point(134, 75)
         Me.txtExpiryDate.Name = "txtExpiryDate"
-        Me.txtExpiryDate.Size = New System.Drawing.Size(200, 21)
-        Me.txtExpiryDate.TabIndex = 55
+        Me.txtExpiryDate.Size = New System.Drawing.Size(324, 21)
+        Me.txtExpiryDate.TabIndex = 3
         '
         'cboType
         '
@@ -642,10 +637,10 @@
         Me.cboType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboType.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboType.Items.AddRange(New Object() {"Concurrency", "P14 Headcount", "Current Employee Headcount", "Concurrency + P14 Headcount", "Concurrency + Headcount"})
-        Me.cboType.Location = New System.Drawing.Point(99, 47)
+        Me.cboType.Location = New System.Drawing.Point(134, 47)
         Me.cboType.Name = "cboType"
         Me.cboType.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboType.Size = New System.Drawing.Size(190, 21)
+        Me.cboType.Size = New System.Drawing.Size(324, 21)
         Me.cboType.TabIndex = 2
         '
         'txtCustomerNo
@@ -654,12 +649,12 @@
         Me.txtCustomerNo.BackColor = System.Drawing.SystemColors.Window
         Me.txtCustomerNo.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtCustomerNo.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtCustomerNo.Location = New System.Drawing.Point(99, 19)
+        Me.txtCustomerNo.Location = New System.Drawing.Point(134, 19)
         Me.txtCustomerNo.MaxLength = 4
         Me.txtCustomerNo.Name = "txtCustomerNo"
         Me.txtCustomerNo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtCustomerNo.Size = New System.Drawing.Size(190, 21)
-        Me.txtCustomerNo.TabIndex = 1
+        Me.txtCustomerNo.Size = New System.Drawing.Size(324, 21)
+        Me.txtCustomerNo.TabIndex = 0
         '
         'lblModel
         '
@@ -670,7 +665,7 @@
         Me.lblModel.Name = "lblModel"
         Me.lblModel.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblModel.Size = New System.Drawing.Size(53, 16)
-        Me.lblModel.TabIndex = 54
+        Me.lblModel.TabIndex = 5
         Me.lblModel.Text = "Model :"
         '
         'lblExpiryDate
@@ -682,7 +677,7 @@
         Me.lblExpiryDate.Name = "lblExpiryDate"
         Me.lblExpiryDate.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblExpiryDate.Size = New System.Drawing.Size(79, 15)
-        Me.lblExpiryDate.TabIndex = 52
+        Me.lblExpiryDate.TabIndex = 6
         Me.lblExpiryDate.Text = "Expiry Date :"
         '
         '_lblCustomerNo_0
@@ -696,7 +691,7 @@
         Me._lblCustomerNo_0.Name = "_lblCustomerNo_0"
         Me._lblCustomerNo_0.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblCustomerNo_0.Size = New System.Drawing.Size(95, 13)
-        Me._lblCustomerNo_0.TabIndex = 51
+        Me._lblCustomerNo_0.TabIndex = 4
         Me._lblCustomerNo_0.Text = "Customer No. :"
         '
         '_SSTab1_TabPage1
@@ -704,9 +699,9 @@
         Me._SSTab1_TabPage1.Controls.Add(Me.Frame1)
         Me._SSTab1_TabPage1.Location = New System.Drawing.Point(4, 22)
         Me._SSTab1_TabPage1.Name = "_SSTab1_TabPage1"
-        Me._SSTab1_TabPage1.Size = New System.Drawing.Size(453, 480)
+        Me._SSTab1_TabPage1.Size = New System.Drawing.Size(482, 480)
         Me._SSTab1_TabPage1.TabIndex = 1
-        Me._SSTab1_TabPage1.Text = "&Support"
+        Me._SSTab1_TabPage1.Text = "Support"
         '
         'Frame1
         '
@@ -717,11 +712,11 @@
         Me.Frame1.Controls.Add(Me.Frame2)
         Me.Frame1.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Frame1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Frame1.Location = New System.Drawing.Point(8, 32)
+        Me.Frame1.Location = New System.Drawing.Point(10, 6)
         Me.Frame1.Name = "Frame1"
         Me.Frame1.Padding = New System.Windows.Forms.Padding(0)
         Me.Frame1.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Frame1.Size = New System.Drawing.Size(299, 145)
+        Me.Frame1.Size = New System.Drawing.Size(465, 145)
         Me.Frame1.TabIndex = 23
         Me.Frame1.TabStop = False
         '
@@ -731,7 +726,7 @@
         Me.cmdSuppGenerate.Cursor = System.Windows.Forms.Cursors.Default
         Me.cmdSuppGenerate.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdSuppGenerate.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdSuppGenerate.Location = New System.Drawing.Point(172, 64)
+        Me.cmdSuppGenerate.Location = New System.Drawing.Point(199, 64)
         Me.cmdSuppGenerate.Name = "cmdSuppGenerate"
         Me.cmdSuppGenerate.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdSuppGenerate.Size = New System.Drawing.Size(112, 27)
@@ -754,7 +749,7 @@
         Me.Frame4.Cursor = System.Windows.Forms.Cursors.Default
         Me.Frame4.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Frame4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Frame4.Location = New System.Drawing.Point(15, 104)
+        Me.Frame4.Location = New System.Drawing.Point(92, 104)
         Me.Frame4.Name = "Frame4"
         Me.Frame4.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Frame4.Size = New System.Drawing.Size(273, 25)
@@ -916,7 +911,7 @@
         Me.Frame2.Cursor = System.Windows.Forms.Cursors.Default
         Me.Frame2.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Frame2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Frame2.Location = New System.Drawing.Point(15, 24)
+        Me.Frame2.Location = New System.Drawing.Point(92, 24)
         Me.Frame2.Name = "Frame2"
         Me.Frame2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Frame2.Size = New System.Drawing.Size(273, 25)
@@ -1072,7 +1067,7 @@
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(472, 520)
+        Me.ClientSize = New System.Drawing.Size(501, 513)
         Me.Controls.Add(Me.SSTab1)
         Me.Cursor = System.Windows.Forms.Cursors.Default
         Me.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))

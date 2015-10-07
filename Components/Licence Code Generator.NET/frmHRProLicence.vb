@@ -37,17 +37,20 @@ Friend Class frmHRProLicence
 	
 	'UPGRADE_WARNING: Event cboType.SelectedIndexChanged may fire when form is initialized. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="88B12AE1-6DE0-48A0-86F1-60C0686C026A"'
 	Private Sub cboType_SelectedIndexChanged(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles cboType.SelectedIndexChanged
-		
-		If cboType.SelectedIndex = 0 Then
-			txtHeadcount.Text = CStr(0)
-		Else
-			txtSSIUsers.Text = CStr(0)
-		End If
-		
-		txtSSIUsers.Enabled = IIf(cboType.SelectedIndex = 0, True, False)
-		txtHeadcount.Enabled = Not txtSSIUsers.Enabled
-		
-	End Sub
+
+        Dim enableUsers As Boolean = (cboType.SelectedIndex = 0)
+        'reset controls to 0
+        txtDatUsers.Text = 0
+        txtIntUsers.Text = 0
+        txtSSIUsers.Text = 0
+        If enableUsers Then txtHeadcount.Text = 0
+
+        txtDatUsers.Enabled = enableUsers
+        txtIntUsers.Enabled = enableUsers
+        txtSSIUsers.Enabled = enableUsers
+        txtHeadcount.Enabled = Not enableUsers
+
+    End Sub
 	
 	Private Sub cmdClipboard_Click(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles cmdClipboard.Click
 		My.Computer.Clipboard.Clear()
