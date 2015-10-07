@@ -10,7 +10,8 @@
         <legend class="fontsmalltitle">Template:</legend>
         <div class="floatleft width100">
             <div class="upload">
-                @Html.TextBoxFor(Function(m) m.UploadTemplateName, New With {.id = "txtTemplateFileName", .class = "width25", .ReadOnly = "readonly"})
+                @Html.Hidden("txtMaxRequestLength", Session("maxRequestLength"))
+                @Html.TextBoxFor(Function(m) m.UploadTemplateName, New With {.id = "txtTemplateFileName", .class = "width25", .ReadOnly = "ReadOnly"})
                 <label for="TemplateFile">Upload</label>
                 <input type="button" value="Download" onclick="DownloadTemplate();" />
             </div>
@@ -34,13 +35,13 @@
 	<fieldset class="">
 		<div class="margebot10">
 			@Html.RadioButton("OutputFormat", 0, Model.OutputFormat = MailMergeOutputTypes.WordDocument, New With {.onclick = "selectMergeOutputType('WordDocument')"})
-			Word Document
+                    Word Document
 			<br />
 		</div>
-		<div class="margebot10">
+        <div class="margebot10">
 			@Html.RadioButton("OutputFormat", 1, Model.OutputFormat = MailMergeOutputTypes.IndividualEmail, New With {.onclick = "selectMergeOutputType('IndividualEmail')"})
 			Individual Emails
-			<br />
+                    <br />
 		</div>
 		@Html.RadioButton("OutputFormat", 2, Model.OutputFormat = MailMergeOutputTypes.DocumentManagement, New With {.onclick = "selectMergeOutputType('DocumentManagement')"})
 		<span class="DataManagerOnly">Document Management</span>
@@ -50,7 +51,7 @@
 <fieldset class="outputmerge_WordDocument width60 floatleft" style="">
 	<legend class="fontsmalltitle">Word Document:</legend>
 	<fieldset>
-		<div class="padbot10">
+        <div class="padbot10">
 			@Html.CheckBoxFor(Function(m) m.DisplayOutputOnScreen, New With {.id = "WordDisplayOutputOnScreen"})
 			@Html.LabelFor(Function(m) m.DisplayOutputOnScreen)
 			<br />
@@ -106,7 +107,7 @@
 <fieldset class="outputmerge_DocumentManagement width60 floatleft" style="">
 	<legend class="fontsmalltitle">	Document Management :</legend>
 	<fieldset>
-		<div class="padbot5">
+        <div class="padbot5">
 			<div class="width30 floatleft">
 				@Html.LabelFor(Function(m) m.PrinterName)
 			</div>
@@ -131,6 +132,17 @@
 <script type="text/javascript">
 
     function SubmitTemplate() {
+
+        var maxRequestLength = Number($("#txtMaxRequestLength").val());
+        maxRequestLength = Math.min(maxRequestLength, (4096 * 1024));
+
+        var lngFileSize = $("#TemplateFile")[0].files[0].size;
+
+        if (lngFileSize > maxRequestLength) {
+            OpenHR.modalMessage("Template is too large to upload. \nMaximum file upload size for this is " + (maxRequestLength / 1024) + "KB", 48);
+            return false;
+        }
+
         var filename = $("#TemplateFile").val().replace(/^.*[\\\/]/, '');
         $("#txtTemplateFileName").val(filename);
 
@@ -145,7 +157,7 @@
         frmDownloadTemplate.submit();
     }
 
-	function setOutputToFile() {
+    function setOutputToFile() {
 		var bSelected = $("#SaveToFile").prop("checked");
 		$(".outputfile").children().attr("readonly", !bSelected);
 		if (!bSelected) {
@@ -155,7 +167,7 @@
 		$('#Filename').prop('disabled', !bSelected);
 	}
 
-	function setOutputSendAsAttachment() {
+    function setOutputSendAsAttachment() {
 		var bSelected = $("#EmailAsAttachment").prop("checked");
 		$("#EmailAttachmentName").attr("readonly", !bSelected);
 
@@ -164,12 +176,12 @@
 		}
 	}
 
-	function selectMergeOutput(outputType) {
+    function selectMergeOutput(outputType) {
 		$("[class^=outputmerge_]").hide();
 		$(".outputmerge_" + outputType).show(500);
 	}
 
-	function selectMergeOutputType(outputType) {		
+    function selectMergeOutputType(outputType) {		
 		if (outputType == 'DocumentManagement') {
 			$('#DocumentDisplayOutputOnScreen').prop('checked', true);
 			$('#WordDocumentPrinter').prop('disabled', true);
@@ -192,7 +204,7 @@
 		$(".outputmerge_" + outputType).show(500);
 	}
 
-	function setSendToPrinter()
+    function setSendToPrinter()
 	{
 		var bSelected = $("#SendToPrinter").prop("checked");
 		if (bSelected) {
@@ -207,27 +219,27 @@
 	$(function () {
 
 		selectMergeOutput('@Model.OutputFormat');
-		setOutputSendAsAttachment();
+        setOutputSendAsAttachment();
 		//styling for email address under Individual Emails section
 		$('#fieldsetsubjectemail select').css({
 			width: '69%',
-			marginBottom: '10px',
-			float: 'left'
+marginBottom: '10px',
+float: 'left'
 		});
 
 		$('#EmailSubject, #EmailAttachmentName').css({
 			width: '68.3%',
-			float: 'left'
+float: 'left'
 		});		
 
 		$('fieldset').css("border", "1");
 		$('#WordDisplayOutputOnScreen').prop('checked', true);
 		$('#WordDocumentPrinter').prop('disabled', true);
 		if ('@Model.Filename' == '')
-		{
+        {
 			$('#Filename').prop('disabled', true);
 		}
-		if ($("#ActionType").val() == '@UtilityActionType.New') {
+        if ($("#ActionType").val() == '@UtilityActionType.New') {
 			$('#PauseBeforeMerge').prop('checked', true);
 			$('#SuppressBlankLines').prop('checked', true);
 		}
