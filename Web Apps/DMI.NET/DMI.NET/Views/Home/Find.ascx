@@ -297,34 +297,34 @@
 						
 						Dim filterDefForCurrentTable As String = IIf(IsNothing(Session("filterDef_" & Session("tableID"))), "", Session("filterDef_" & Session("tableID")))
 
-				        SPParameters = New SqlParameter() { _
-				            prmError, _
-				            prmSomeSelectable, _
-				            prmSomeNotSelectable, _
-				            prmRealSource, _
-				            prmInsertGranted, _
-				            prmDeleteGranted, _
-				            New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))}, _
-				            New SqlParameter("@piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}, _
-				            New SqlParameter("@piOrderID ", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))}, _
-				            New SqlParameter("@piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}, _
-				            New SqlParameter("@piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}, _
-				            New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = filterDefForCurrentTable}, _
-				            New SqlParameter("@piRecordsRequired", SqlDbType.Int) With {.Value = iNumberOfRecords}, _
-				            prmIsFirstPage, _
-				            prmIsLastPage, _
-				            New SqlParameter("@psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("locateValue")}, _
-				            prmColumnType, _
-				            prmColumnSize, _
-				            prmColumnDecimals, _
-				            New SqlParameter("@psAction", SqlDbType.VarChar) With {.Value = Session("action"), .Size = 255}, _
-				            prmTotalRecCount, _
-				            prmFirstRecPos, _
-				            New SqlParameter("@piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))}, _
-				            New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")}, _
-				            New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Platform.LocaleDateFormatForSQL()}, _
-				            New SqlParameter("@RecordID", SqlDbType.Int) With {.Value = -1} _
-				        }
+						SPParameters = New SqlParameter() { _
+								prmError, _
+								prmSomeSelectable, _
+								prmSomeNotSelectable, _
+								prmRealSource, _
+								prmInsertGranted, _
+								prmDeleteGranted, _
+								New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))}, _
+								New SqlParameter("@piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}, _
+								New SqlParameter("@piOrderID ", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))}, _
+								New SqlParameter("@piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}, _
+								New SqlParameter("@piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}, _
+								New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = filterDefForCurrentTable}, _
+								New SqlParameter("@piRecordsRequired", SqlDbType.Int) With {.Value = iNumberOfRecords}, _
+								prmIsFirstPage, _
+								prmIsLastPage, _
+								New SqlParameter("@psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("locateValue")}, _
+								prmColumnType, _
+								prmColumnSize, _
+								prmColumnDecimals, _
+								New SqlParameter("@psAction", SqlDbType.VarChar) With {.Value = Session("action"), .Size = 255}, _
+								prmTotalRecCount, _
+								prmFirstRecPos, _
+								New SqlParameter("@piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))}, _
+								New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")}, _
+								New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Platform.LocaleDateFormatForSQL()}, _
+								New SqlParameter("@RecordID", SqlDbType.Int) With {.Value = -1} _
+						}
 						'Parameter @RecordID = -1 above means "Return all records"
 
 						Try
@@ -583,7 +583,7 @@
 							Response.Write(String.Concat(vbCrLf, "var tableId = ", Session("tableID"), ";", vbCrLf))
 							Response.Write(String.Concat(vbCrLf, "var orderId = ", Session("orderID"), ";", vbCrLf))
 							Response.Write(String.Concat(vbCrLf, "var rowWasModified = false;", vbCrLf))
- 							Response.Write(String.Concat(vbCrLf, "var linktype = '", Session("linktype"), "';", vbCr))
+							Response.Write(String.Concat(vbCrLf, "var linktype = '", Session("linktype"), "';", vbCr))
 
 							Response.Write("</script>" & vbCrLf)
 							
