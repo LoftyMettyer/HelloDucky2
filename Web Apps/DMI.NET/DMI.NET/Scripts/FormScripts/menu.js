@@ -2490,7 +2490,7 @@ function menu_WorkflowOutOfOffice() {
 function menu_OutOfOfficeToggle(status) {
 
 	if (status.error.length > 0) {
-		OpenHR.modalPrompt(status.error, 0, "Out of Office Error", "");
+	    OpenHR.modalPrompt(status.error, 0, "Out of Office Error", "");
 		return;
 	}
 
@@ -2533,7 +2533,9 @@ function menu_OutOfOfficeToggle(status) {
 function menu_OutOfOfficeTurnOff(status) {
 
 	if (status.outOfOfficeOn) {
-		menu_OutOfOfficeToggle(status);
+	    setTimeout(function () {
+	        menu_OutOfOfficeToggle(status);
+	    }, 100);
 	}
 
 	if (!menu_isSSIMode()) {
