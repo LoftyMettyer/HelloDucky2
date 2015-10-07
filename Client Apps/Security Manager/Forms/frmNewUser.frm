@@ -376,51 +376,18 @@ Private Sub Form_Load()
   
   'ReDim mastrWindowsGroups(0)
   ReDim astrDomainList(0)
-        
-  ' Fill the combo box with available logins
-  ' excluding system logins
-  ' JPD 2/7/01 - Changed SQL method for getting the list of logins.
-  ' This is to avaoid collation conflicts.
-  'sSQL = "SELECT name" & _
-    " FROM master.dbo.syslogins" & _
-    " WHERE name NOT IN ('sa', 'probe','SQLExec','repl_publisher','repl_subscriber')" & _
-    " AND isntname = 0"
-    
-  'TM20011113 Fault 3125 - retrieve loginname not just name.
-  sSQL = "SELECT master.dbo.syslogins.loginname " & _
-    " FROM master.dbo.syslogins" & _
-    " WHERE master.dbo.syslogins.sysadmin = 0 " & _
-    " AND len(master.dbo.syslogins.loginname) <= 50 " & _
-    " AND master.dbo.syslogins.IsNTName = 0" & _
-    " AND master.dbo.syslogins.loginname <> 'openhr2iis'" & _
-    " AND (loginname not like '##MS_%') ORDER BY LoginName"
+            
+' Retrieve all logins that do not have any principles in this database
+  sSQL = "SELECT l.loginname" & _
+    " FROM sys.syslogins l" & _
+    " WHERE l.loginname NOT IN (SELECT name COLLATE DATABASE_DEFAULT FROM sys.database_principals WHERE type = 'S')" & _
+    " AND l.sysadmin = 0" & _
+    " AND LEN(l.loginname) <= 50" & _
+    " AND l.IsNTName = 0" & _
+    " AND l.loginname NOT LIKE '##MS_%'" & _
+    " ORDER BY l.loginname"
     
   FillCombo cboUserLogin, sSQL
-
-  ' Remove any logins already assigned to users.
-  For Each objGroup In gObjGroups
-
-    ' Initialise the user group if necessary.
-    If Not objGroup.Users_Initialised Then
-      InitialiseUsersCollection objGroup
-    End If
-
-    For Each objUser In objGroup.Users
-    
-      If Not objUser.DeleteUser Then
-        For iLoop = 0 To cboUserLogin.ListCount - 1
-          If cboUserLogin.List(iLoop) = objUser.Login Then
-            cboUserLogin.RemoveItem iLoop
-            Exit For
-          End If
-        Next iLoop
-      End If
-      
-    Next objUser
-    Set objUser = Nothing
-
-  Next objGroup
-  Set objGroup = Nothing
 
   ' Select the first combo item, or disable the control if no items exist.
   If cboUserLogin.ListCount > 0 Then
