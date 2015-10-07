@@ -229,6 +229,7 @@ Namespace Controllers
             Dim deserializer = New JavaScriptSerializer()
 
             objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlMailMerge)
+            objModel.UploadTemplate = CType(objReportRepository.RetrieveParent(objModel.ID, UtilityType.utlMailMerge), MailMergeModel).UploadTemplate
 
             If objModel.ColumnsAsString IsNot Nothing Then
                 If objModel.ColumnsAsString.Length > 0 Then
@@ -243,6 +244,7 @@ Namespace Controllers
             End If
 
             If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
+
                 objReportRepository.SaveReportDefinition(objModel)
                 Session("utilid") = objModel.ID
                 Return RedirectToAction("Defsel", "Home")
@@ -802,31 +804,23 @@ Namespace Controllers
         Function util_def_mailmerge_submittemplate(TemplateFile As HttpPostedFileBase, MailMergeId As Integer) As ActionResult
             Try
 
-                Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+                Dim objReport As MailMergeModel
+                objReport = CType(objReportRepository.RetrieveParent(MailMergeId, UtilityType.utlMailMerge), MailMergeModel)
 
                 If Not TemplateFile Is Nothing Then
 
-                    Try
+                    ' Read input stream from request
+                    objReport.UploadTemplate = New Byte(CInt(TemplateFile.InputStream.Length - 1)) {}
+                    Dim offset As Integer = 0
+                    Dim cnt As Integer = 0
+                    While (InlineAssignHelper(cnt, TemplateFile.InputStream.Read(objReport.UploadTemplate, offset, 10))) > 0
+                        offset += cnt
+                    End While
 
-                        ' Read input stream from request
-                        Dim Buffer = New Byte(CInt(TemplateFile.InputStream.Length - 1)) {}
-                        Dim offset As Integer = 0
-                        Dim cnt As Integer = 0
-                        While (InlineAssignHelper(cnt, TemplateFile.InputStream.Read(Buffer, offset, 10))) > 0
-                            offset += cnt
-                        End While
+                    objReport.UploadTemplateName = Path.GetFileName(TemplateFile.FileName)
+                    '  objReport.UploadTemplate = Buffer
 
-                        Dim fileName = Path.GetFileName(TemplateFile.FileName)
-
-                        objDataAccess.ExecuteSP("spASRIntMailMergeUploadTemplate" _
-                            , New SqlParameter("MailMergeId", SqlDbType.Int) With {.Value = MailMergeId} _
-                            , New SqlParameter("Template", SqlDbType.Image, -1) With {.Value = Buffer} _
-                            , New SqlParameter("TemplateName", SqlDbType.NVarChar, 255) With {.Value = fileName})
-
-                    Catch ex As Exception
-
-                    End Try
-
+                    'Dim haga As String = Array.Copy(Buffer,)
 
                 End If
 
@@ -843,25 +837,21 @@ Namespace Controllers
         <ValidateAntiForgeryToken>
         Public Function util_def_mailmerge_downloadtemplate(MailMergeId As Integer) As FilePathResult
 
-            Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+            Dim objReport As MailMergeModel
+            objReport = CType(objReportRepository.RetrieveParent(MailMergeId, UtilityType.utlMailMerge), MailMergeModel)
 
             Dim downloadTokenValue As String = Request("download_token_value_id")
 
-            Dim dsDefinition As DataSet = objDataAccess.GetDataSet("spASRIntMailMergeDownloadTemplate" _
-                    , New SqlParameter("MailMergeId", SqlDbType.Int) With {.Value = MailMergeId})
-
-            Dim objRow = dsDefinition.Tables(0).Rows(0)
-
             Try
-                Dim template = CType(objRow.Item(0), Byte())
-                Dim fileName = objRow.Item("TemplateName").ToString
+                '  Dim template = CType(objRow.Item(0), Byte())
+                '     Dim fileName = objRow.Item("TemplateName").ToString
 
                 ' Download the file
                 Response.ContentType = "application/octet-stream"
                 Response.Clear()
                 Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
-                Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", fileName))
-                Response.OutputStream.Write(template, 0, template.Length)
+                Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", objReport.UploadTemplateName))
+                Response.OutputStream.Write(objReport.UploadTemplate, 0, objReport.UploadTemplate.Length)
                 Response.End()
                 Response.Flush()
 

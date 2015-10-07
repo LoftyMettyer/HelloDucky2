@@ -25,7 +25,9 @@
 	[OutputSave] [bit] NULL,
 	[OutputFilename] [varchar](255) NULL,
 	[DocumentMapID] [int] NULL,
-	[ManualDocManHeader] [bit] NULL
+	[ManualDocManHeader] [bit] NULL, 
+    [UploadTemplate] VARBINARY(MAX) NULL, 
+    [UploadTemplateName] NVARCHAR(255) NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[ASRSysMailMergeName] ADD  DEFAULT ('') FOR [Name]

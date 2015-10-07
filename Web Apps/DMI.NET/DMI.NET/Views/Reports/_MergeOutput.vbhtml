@@ -8,12 +8,11 @@
 <div>
     <fieldset>
         <legend class="fontsmalltitle">Template:</legend>
-        <div class="floatleft">
+        <div class="floatleft width100">
             <div class="upload">
-                @Html.TextBoxFor(Function(m) m.TemplateFile, New With {.id = "txtTemplateFileName"})
-
+                @Html.TextBoxFor(Function(m) m.UploadTemplateName, New With {.id = "txtTemplateFileName", .class = "width25", .ReadOnly = "readonly"})
                 <label for="TemplateFile">Upload</label>
-                <input type="button" value="Download Template" onclick="DownloadTemplate();" />
+                <input type="button" value="Download" onclick="DownloadTemplate();" />
             </div>
         </div>
     </fieldset>
@@ -137,6 +136,8 @@
 
         var frmTemplateFile = $("#frmTemplateFile")[0];
         frmTemplateFile.submit();
+
+        menu_toolbarEnableItem('mnutoolSaveReport', true);
     }
 
     function DownloadTemplate() {

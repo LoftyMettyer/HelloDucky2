@@ -359,12 +359,8 @@ Public Class MailMerge
             mblnDefPauseBeforeMerge = CBool(objRow("PauseBeforeMerge"))
 
             Try
-                Dim dsTemplate As DataSet = DB.GetDataSet("spASRIntMailMergeDownloadTemplate" _
-                    , New SqlParameter("MailMergeId", SqlDbType.Int) With {.Value = mlngMailMergeID})
-
-                Dim templateBytes = CType(dsTemplate.Tables(0).Rows(0).Item(0), Byte())
+                Dim templateBytes = CType(objRow("UploadTemplate"), Byte())
                 Template = New MemoryStream(templateBytes)
-
 
             Catch ex As Exception
                 mstrStatusMessage = "The definition has no uploaded mail merge template"
@@ -372,7 +368,6 @@ Public Class MailMerge
                 Return fOK
 
             End Try
-
 
             mlngDefEmailAddrCalc = 0
 

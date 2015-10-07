@@ -100,7 +100,8 @@ BEGIN
 		m.outputfilename AS [Filename],		
 		m.emailAddrID AS [EmailGroupID],		
 		m.emailSubject,		
-		ISNULL(t.TemplateName, '') AS [templateFile],
+		ISNULL(m.UploadTemplateName, '') AS [UploadTemplateName],
+		m.UploadTemplate,
 		m.outputscreen AS [DisplayOutputOnScreen],		
 		m.emailasattachment AS [EmailAsAttachment],		
 		ISNULL(m.emailattachmentname,'') AS [EmailAttachmentName],		
@@ -114,7 +115,6 @@ BEGIN
 		CONVERT(integer, m.[timestamp]) AS [Timestamp],
 		CASE WHEN @pfPicklistHidden = 1 OR @pfFilterHidden = 1 THEN 'HD' ELSE '' END AS [BaseViewAccess]
 	FROM [dbo].[ASRSysMailMergeName] m
-		LEFT JOIN [dbo].[ASRSysMailMergeTemplate] t ON t.MailMergeId = m.MailMergeID
 	WHERE m.MailMergeID = @piReportID;		
 
 	-- Columns

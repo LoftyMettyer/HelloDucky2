@@ -178,9 +178,8 @@ Namespace Repository
 
 						Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
 
-                        objModel.TemplateFile = row("TemplateFile").ToString()
                         objModel.OutputFormat = CType(row("Format"), MailMergeOutputTypes)
-						If (objModel.OutputFormat = MailMergeOutputTypes.WordDocument) Then
+                        If (objModel.OutputFormat = MailMergeOutputTypes.WordDocument) Then
 							objModel.WordDocumentPrinter = row("PrinterName").ToString()
 						ElseIf (objModel.OutputFormat = MailMergeOutputTypes.DocumentManagement) Then
 							objModel.DocumentManagementPrinter = row("PrinterName").ToString()
@@ -197,7 +196,12 @@ Namespace Repository
 						objModel.SuppressBlankLines = CBool(row("SuppressBlankLines"))
 						objModel.PauseBeforeMerge = CBool(row("PauseBeforeMerge"))
 
-					End If
+                        If Not (TypeOf row.Item("UploadTemplate") Is DBNull) Then
+                            objModel.UploadTemplate = CType(row.Item("UploadTemplate"), Byte())
+                            objModel.UploadTemplateName = row.Item("UploadTemplateName").ToString
+                        End If
+
+                    End If
 
 				End If
 
@@ -563,10 +567,8 @@ Namespace Repository
 				Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
 				Dim sColumns = MailMergeColumnsAsString(objModel.Columns, objModel.SortOrders)
 
-
-
-				'objModel.SendToPrinter
-				If (objModel.OutputFormat = MailMergeOutputTypes.WordDocument) Then
+                'objModel.SendToPrinter
+                If (objModel.OutputFormat = MailMergeOutputTypes.WordDocument) Then
 					objModel.PrinterName = objModel.WordDocumentPrinter
 				ElseIf (objModel.OutputFormat = MailMergeOutputTypes.DocumentManagement) Then
 					objModel.PrinterName = objModel.DocumentManagementPrinter
@@ -576,6 +578,7 @@ Namespace Repository
 				objModel.EmailSubject = If(objModel.EmailSubject Is Nothing, "", objModel.EmailSubject)
                 objModel.PrinterName = If(objModel.PrinterName Is Nothing, "", objModel.PrinterName)
                 objModel.Filename = If(objModel.Filename Is Nothing, "", objModel.Filename)
+                objModel.UploadTemplateName = If(objModel.UploadTemplateName Is Nothing, "", objModel.UploadTemplateName)
 
 
                 _objDataAccess.ExecuteSP("spASRIntSaveMailMerge" _
@@ -585,6 +588,8 @@ Namespace Repository
                     , New SqlParameter("@piSelection", SqlDbType.Int) With {.Value = objModel.SelectionType} _
                     , New SqlParameter("@piPicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID} _
                     , New SqlParameter("@piFilterID", SqlDbType.Int) With {.Value = objModel.FilterID} _
+                    , New SqlParameter("@UploadTemplate", SqlDbType.Image) With {.Value = objModel.UploadTemplate} _
+                    , New SqlParameter("@UploadTemplateName", SqlDbType.VarChar, 255) With {.Value = objModel.UploadTemplateName} _
                     , New SqlParameter("@piOutputFormat", SqlDbType.Int) With {.Value = objModel.OutputFormat} _
                     , New SqlParameter("@pfOutputSave", SqlDbType.Bit) With {.Value = objModel.SaveToFile} _
                     , New SqlParameter("@psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Filename} _
