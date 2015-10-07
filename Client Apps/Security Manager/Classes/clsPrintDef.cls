@@ -131,9 +131,7 @@ Public Sub PrintEnd()
   Dim objDefPrinter As cSetDfltPrinter
 
   Set objDefPrinter = New cSetDfltPrinter
-  Do
-    objDefPrinter.SetPrinterAsDefault gstrDefaultPrinterName
-  Loop While Printer.DeviceName <> gstrDefaultPrinterName
+  objDefPrinter.SetPrinterAsDefault gstrDefaultPrinterName
   Set objDefPrinter = Nothing
 
 End Sub
