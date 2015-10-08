@@ -101,6 +101,7 @@ function griditup(objectID, mode) {
 		var gridster = $("#" + objectID + " > ul").gridster().data('gridster');
 		gridster.disable();
 
+		$("#" + objectID + " > ul").css("width", "auto");
 	}
 }
 

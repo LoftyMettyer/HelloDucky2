@@ -681,9 +681,7 @@
 									<%
 								End If
 							Else
-									If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then	'Put and icon in tile mode
-										Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size: smaller; text-align: center'>(No records)</p>")
-									Else
+									If Session("CurrentLayout").ToString() <> Layout.tiles.ToString() Then	 'Put and icon in tile mode
 									%>
 									<tr>
 										<td class="bordered" style="text-align: center;" rowspan="3">No matching records found</td>
