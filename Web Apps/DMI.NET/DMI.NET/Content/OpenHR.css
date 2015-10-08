@@ -932,6 +932,7 @@ input[type=button].Embedded, input[type=button].Linked {
 .formField label {
 	display: inline-block;
 	width: 120px;
+  white-space: nowrap;
 }
 
 .formField input, .formField select {
