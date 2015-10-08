@@ -650,6 +650,7 @@
 			ViewID: <%:Session("optionViewID")%>,
 			FilterSQL: sFilterSQL,
 			FilterDef: sFilterDef,
+			SelectedRecordsInFindGrid: "<%:Session("OptionSelectedRecordIds")%>",
 			<%:Html.AntiForgeryTokenForAjaxPost() %> };
 		OpenHR.submitForm(null, "optionframe", null, postData, "filterselect_Submit");
 

@@ -110,11 +110,7 @@
 			grid.jqGrid("setGridParam", {
 				onSelectRow: function (id) {
 					var p = this.p, item = p.data[p._index[id]];
-					if (typeof (item.cb) === 'undefined') {
-						item.cb = true;
-					} else {
-						item.cb = !item.cb;
-					}
+					if (typeof (item.cb) === 'undefined') { item.cb = true; } else { item.cb = !item.cb; }
 					SetsSelectedRowsCount();
 				},
 				onSelectAll: function (ids, selected) {
@@ -128,9 +124,7 @@
 					for (rowid in index) {
 						if (index.hasOwnProperty(rowid)) {
 							item = data[index[rowid]];
-							if (typeof (item.cb) === 'boolean' && item.cb) {
-								$(this).jqGrid('setSelection', rowid, false);
-							}
+							if (typeof (item.cb) === 'boolean' && item.cb) { $(this).jqGrid('setSelection', rowid, false); }
 						}
 					}
 					SetsSelectedRowsCount();
@@ -151,7 +145,7 @@
 		var selectedRecords = GetMultiSelectRecordIDs();
 
 		//Sets the selected ids as string. This will be used when user does apply the filter.
-		$("#txtGotoLocateSelectedRecordsInFindGrid")[0].value = selectedRecords;
+		$("#txtSelectedRecordsInFindGrid")[0].value = selectedRecords;
 		$("#mnutoolPositionRecordFind span.selectedRecordsCount").html("Selected : " + selectedRecords.length);
 	}
 
@@ -161,7 +155,7 @@
 		var count = 0;
 		var previouslySelectedRecordIds = "<%=Session("OptionSelectedRecordIds")%>";
 
-		if (IsMultiSelectionModeOn() && previouslySelectedRecordIds != "" && $("#txtFilterSQL").val().length > 0) {
+		if (IsMultiSelectionModeOn() && previouslySelectedRecordIds != "") {
 			var selectedRecords = [];
 			var p = $("#findGridTable")[0].p;
 			var item;
@@ -176,7 +170,7 @@
 			});
 
 			//Sets the selected ids as string. This will be used when user does apply the filter.
-			$("#txtGotoLocateSelectedRecordsInFindGrid")[0].value = selectedRecords;
+			$("#txtSelectedRecordsInFindGrid")[0].value = selectedRecords;
 			$("#mnutoolPositionRecordFind span.selectedRecordsCount").html("Selected : " + count);
 		}
 	}
@@ -874,7 +868,7 @@ Response.Write("				<input type='hidden' id=txtFilterDef name=txtFilterDef value
 Response.Write("				<input type='hidden' id=txtFilterSQL name=txtFilterSQL value=""" & Replace(Session("filterSQL_" & Session("tableID")), """", "&quot;") & """>" & vbCrLf)
 Response.Write("				<input type='hidden' id='txtThousSepSummary' name='txtThousSepSummary' value='" & sThousSepSummaryFields & "'>" & vbCrLf)
 Response.Write("				<input type='hidden' id='txtMaxRequestLength' name='txtMaxRequestLength' value='" & Session("maxRequestLength") & "'>" & vbCrLf)
-Response.Write("				<input type='hidden' id=txtGotoLocateSelectedRecordsInFindGrid name=txtGotoLocateSelectedRecordsInFindGrid>" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtSelectedRecordsInFindGrid name=txtSelectedRecordsInFindGrid value=" & Session("OptionSelectedRecordIds") & ">" & vbCrLf)
 			
 End If
 

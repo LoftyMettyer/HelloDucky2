@@ -838,6 +838,8 @@ Namespace Controllers
 			Session("optionRecordID") = 0
 			Session("optionAction") = OptionActionType.Empty
 
+			Session("OptionSelectedRecordIds") = Request.Form("txtSelectedRecordsInFindGrid")
+
 			Dim currentTableID As String = Session("tableID")
 
 			If Not String.IsNullOrEmpty(previousTableID) AndAlso Not String.IsNullOrEmpty(currentTableID) AndAlso currentTableID <> "0" Then 'If we have a tableID in session
@@ -2467,7 +2469,7 @@ Namespace Controllers
 				Session("utilname") = value.Name
 				Session("action") = "run"
 
-            Catch ex As Exception
+			Catch ex As Exception
 				Throw
 
 			End Try
@@ -2484,7 +2486,7 @@ Namespace Controllers
 				Session("utilname") = value.Name
 				Session("action") = "run"
 
-            Catch ex As Exception
+			Catch ex As Exception
 				Throw
 
 			End Try
@@ -2492,9 +2494,9 @@ Namespace Controllers
 			Return View(value)
 		End Function
 
-        <HttpPost()>
-		<ValidateAntiForgeryToken>
-		Function util_run_promptedvalues_submit(value As PromptedValuesModel) As ActionResult
+		<HttpPost()>
+<ValidateAntiForgeryToken>
+			Function util_run_promptedvalues_submit(value As PromptedValuesModel) As ActionResult
 
 			Try
 
@@ -4038,6 +4040,12 @@ Namespace Controllers
 			Session("filterDef_" & postData.TableID) = postData.FilterDef
 			Session("filterSQL_" & postData.TableID) = postData.FilterSQL
 
+			Session("OptionSelectedRecordIds") = postData.SelectedRecordsInFindGrid
+
+			'If (postData.FilterDef = "" AndAlso postData.FilterSQL = "") Then
+			'	Session("OptionSelectedRecordIds") = postData.SelectedRecordsInFindGrid
+			'End If
+
 			Return RedirectToAction("emptyoption")
 		End Function
 
@@ -4046,6 +4054,7 @@ Namespace Controllers
 		Sub filter_clear(tableID As Integer)
 			Session("filterDef_" & tableID) = ""
 			Session("filterSQL_" & tableID) = ""
+			Session("OptionSelectedRecordIds") = ""
 		End Sub
 
 		<HttpPost()>

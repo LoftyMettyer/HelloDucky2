@@ -22,4 +22,5 @@
 <input type="hidden" id="txtGotoFromMenu" name="txtGotoFromMenu" value="0">
 <input type="hidden" id="txtStandardReportType" name="txtStandardReportType" value="">
 <input type="hidden" id="txtReset" name="txtReset" value="0">
+<input type="hidden" id="txtSelectedRecordsInFindGrid" name="txtSelectedRecordsInFindGrid">
 

@@ -20,6 +20,7 @@
 				var txtOrderID = div.querySelector("#txtOrderID");
 				var txtFilterSQL = div.querySelector("#txtFilterSQL");
 				var txtFilterDef = div.querySelector("#txtFilterDef");
+				var txtSelectedRecordsInFindGrid = div.querySelector("#txtSelectedRecordsInFindGrid");
 				var txtRecordID = div.querySelector("#txtRecordID");
 				var txtColumnID = div.querySelector("#txtColumnID");
 				var txtValue = div.querySelector("#txtValue");
@@ -66,6 +67,7 @@
 							frmFind = OpenHR.getForm("workframe","frmFindForm");
 							frmFind.txtFilterSQL.value = txtFilterSQL.value;
 							frmFind.txtFilterDef.value = txtFilterDef.value;
+							frmFind.txtSelectedRecordsInFindGrid.value = txtSelectedRecordsInFindGrid.value;
 							menu_reloadFindPage("RELOAD", "");
 						}
 					}
@@ -524,6 +526,8 @@
 	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtUnAvailFails)%>
 	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtOverlapFails)%>
 	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtOverBooked)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtSelectedRecordsInFindGrid)%>
+
 </div>
 
 

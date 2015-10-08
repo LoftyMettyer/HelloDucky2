@@ -44,6 +44,10 @@ Namespace ViewModels.Home
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Property txtOverBooked As String
 
+		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
+		Property txtSelectedRecordsInFindGrid As String
+
+
 		Public Sub New()
 
 			txtAction = NullSafeString(HttpContext.Current.Session("optionAction"))
@@ -52,6 +56,7 @@ Namespace ViewModels.Home
 			txtOrderID = NullSafeString(HttpContext.Current.Session("orderID"))
 			txtFilterSQL = NullSafeString(HttpContext.Current.Session("optionFilterSQL"))
 			txtFilterDef = NullSafeString(HttpContext.Current.Session("optionFilterDef"))
+			txtSelectedRecordsInFindGrid = NullSafeString(HttpContext.Current.Session("OptionSelectedRecordIds"))
 			txtRecordID = NullSafeString(HttpContext.Current.Session("optionRecordID"))
 			txtLinkRecordID = NullSafeString(HttpContext.Current.Session("optionLinkRecordID"))
 			txtLookupColumnID = NullSafeString(HttpContext.Current.Session("optionLookupColumnID"))

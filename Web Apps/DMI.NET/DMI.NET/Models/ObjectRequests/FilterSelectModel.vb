@@ -18,5 +18,8 @@ Namespace Models.ObjectRequests
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Public Property FilterDef As String
 
+		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
+		Public Property SelectedRecordsInFindGrid As String
+
 	End Class
 End Namespace

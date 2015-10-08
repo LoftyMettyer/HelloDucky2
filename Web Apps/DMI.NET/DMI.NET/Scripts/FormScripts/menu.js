@@ -2773,6 +2773,7 @@ function menu_loadPage(psPage) {
 
 	// Sets multi select mode off when loading find window from clicking tree menu item.
 	SetMultiSelectionModeOff();
+	frmWorkArea.txtSelectedRecordsInFindGrid.value = "";
 
 	if (psToolName.substr(0, 3) == "HT_") {
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
@@ -3171,6 +3172,13 @@ function menu_loadPage(psPage) {
 	frmWorkArea.txtGotoLineage.value = frmFindForm.txtLineage.value;
 	frmWorkArea.txtGotoFilterDef.value = frmFindForm.txtFilterDef.value;
 	frmWorkArea.txtGotoFilterSQL.value = frmFindForm.txtFilterSQL.value;
+
+	if (psAction == "RELOAD") {
+		if (IsMultiSelectionModeOn() == false) { frmWorkArea.txtSelectedRecordsInFindGrid.value = ""; }
+		else { frmWorkArea.txtSelectedRecordsInFindGrid.value = $("#txtSelectedRecordsInFindGrid").val(); }
+	} else {
+		frmWorkArea.txtSelectedRecordsInFindGrid.value = "";
+	}
 
 	frmWorkArea.txtGotoPage.value = "find";
 
@@ -4108,7 +4116,7 @@ function menu_loadSelectOrderFilter(psType) {
 			frmOptionArea.txtGotoOptionAction.value = "";
 
 			//Sets the selected row ids. It will be empty when multiselection is off.
-			frmOptionArea.txtGotoLocateSelectedRecordsInFindGrid.value = frmFindArea.txtGotoLocateSelectedRecordsInFindGrid.value;
+			frmOptionArea.txtGotoLocateSelectedRecordsInFindGrid.value = $("#txtSelectedRecordsInFindGrid").val();
 
 			OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "menu_loadSelectOrderFilter");
 
@@ -4134,6 +4142,9 @@ function menu_clearFilter() {
 	}
 	else {
 		if (sCurrentWorkPage == "FIND") {
+
+			frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
+
 			var postData = {
 				Action: optionActionType.SELECTFILTER,
 				ScreenID: $("#frmWorkAreaRefresh #txtGotoScreenID").val(),
@@ -4141,6 +4152,8 @@ function menu_clearFilter() {
 				ViewID: $("#frmWorkAreaRefresh #txtGotoViewID").val(),
 				FilterSQL: "",
 				FilterDef: "",
+				SelectedRecordsInFindGrid: $("#txtSelectedRecordsInFindGrid").val(),
+				//SelectedRecordsInFindGrid: frmFindArea.txtSelectedRecordsInFindGrid.value,
 				__RequestVerificationToken: $("[name=__RequestVerificationToken]")[0].value
 			}
 			OpenHR.submitForm(null, "optionframe", null, postData, "filterselect_Submit");
@@ -5124,18 +5137,19 @@ function SetMultiSelectionModeOff() {
 // Load report or utility screeen from the find window
 function LoadReportOrUtilityScreen(utilityType) {
 
-	var frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
-	var multiSelectedRecords = frmFindArea.txtGotoLocateSelectedRecordsInFindGrid.value;
+	var multiSelectedRecords = $("#txtSelectedRecordsInFindGrid").val();
 
 	if (multiSelectedRecords === "" || multiSelectedRecords.split(",").length < 1) {
 		OpenHR.modalMessage("Please select at least one record to run the report or utility");
 	} else {
+
+		var frmFind = OpenHR.getForm("workframe", "frmFindForm");
 		// Load the required definition selection screen
 		var postData = {
-			txtTableID: $('#txtCurrentTableID').val(),
+			txtTableID: frmFind.txtCurrentTableID.value,
 			utiltype: utilityType,
 			utilID: 0,
-			RecordID:0,
+			RecordID: 0,
 			MultipleRecordIDs: multiSelectedRecords,
 			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
