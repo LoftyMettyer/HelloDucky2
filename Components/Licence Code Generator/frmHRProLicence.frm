@@ -1012,14 +1012,46 @@ End Sub
 
 Private Sub cboType_Click()
 
-  If cboType.ListIndex = 0 Then
-    txtHeadcount.Text = 0
-  Else
-    txtSSIUsers.Text = 0
-  End If
+'  If cboType.ListIndex = 0 Then
+'    txtHeadcount.Text = 0
+'  Else
+'    txtSSIUsers.Text = 0
+'  End If
+'
+'  txtSSIUsers.Enabled = IIf(cboType.ListIndex = 0, True, False)
+'  txtHeadcount.Enabled = Not txtSSIUsers.Enabled
+  
+'Dim enableUsers As Boolean
+'enableUsers = (cboType.ListIndex = 0)
 
-  txtSSIUsers.Enabled = IIf(cboType.ListIndex = 0, True, False)
-  txtHeadcount.Enabled = Not txtSSIUsers.Enabled
+'reset controls to 0
+txtDatUsers.Text = 0
+txtIntUsers.Text = 0
+txtSSIUsers.Text = 0
+
+If cboType.ListIndex = 0 Then
+  txtDatUsers.Enabled = True
+  txtIntUsers.Enabled = True
+  txtSSIUsers.Enabled = True
+  txtHeadcount.Enabled = False
+  
+  txtHeadcount.Text = 0
+  
+  txtDatUsers.BackColor = vbWhite
+  txtIntUsers.BackColor = vbWhite
+  txtSSIUsers.BackColor = vbWhite
+  txtHeadcount.BackColor = Me.BackColor
+Else
+  txtDatUsers.Enabled = False
+  txtIntUsers.Enabled = False
+  txtSSIUsers.Enabled = False
+  txtHeadcount.Enabled = True
+  
+  txtDatUsers.BackColor = Me.BackColor
+  txtIntUsers.BackColor = Me.BackColor
+  txtSSIUsers.BackColor = Me.BackColor
+  txtHeadcount.BackColor = vbWhite
+End If
 
 End Sub
 
