@@ -382,7 +382,7 @@ End Sub
 
 Private Sub txtLicence_Change(Index As Integer)
 
-  If Len(txtLicence(Index).Text) >= 4 And txtLicence(Index).SelStart = 5 Then
+  If Len(txtLicence(Index).Text) >= 5 And txtLicence(Index).SelStart = 6 Then
     If Index < txtLicence.UBound Then
       txtLicence(Index + 1).SetFocus
     End If
