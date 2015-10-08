@@ -1334,7 +1334,7 @@ div.displaytable {
 }
 
 	#tblNineBox .yaxisminor, #tblNineBox .yaxismajor {
-		width: 30px;
+		width: 100px;
 	}
 
 	#tblNineBox .xaxis, #tblNineBox_def .xaxis, #tblNineBox_def .yaxisminor, #tblNineBox_def .yaxismajor, #tblNineBox_def .xaxisminor, #tblNineBox_def .xaxismajor {
