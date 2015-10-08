@@ -85,7 +85,7 @@ PRINT 'Step - Calculation Changes'
 			DECLARE @result integer;
 
 			SELECT @result = CASE 
-				WHEN DATEDIFF (day, @datefrom, @dateto) <= 0 THEN 0
+				WHEN DATEDIFF (day, @datefrom, @dateto) < 0 THEN 0
 				ELSE (DATEDIFF(dd, @datefrom, @dateto) + 1)
 					- (DATEDIFF(wk, @datefrom, @dateto) * 2)
 					- (CASE WHEN DATEPART(dw, @datefrom) = 1 THEN 1 ELSE 0 END)
