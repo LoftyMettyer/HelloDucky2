@@ -97,6 +97,7 @@
     <Import Include="SystemFramework.Things" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\AuditColumnCode.vb" />
     <Compile Include="Database Scripting\UpdateLicence.vb" />
     <Compile Include="Enums\Connection\LoginType.vb" />
     <Compile Include="Enums\Connection\DbType.vb" />
@@ -276,9 +277,7 @@
     <None Include="Resources\mobsync.15.ico" />
     <None Include="Resources\Error48.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Classes\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
