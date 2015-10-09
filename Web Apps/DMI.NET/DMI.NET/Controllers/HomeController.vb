@@ -4402,23 +4402,29 @@ Namespace Controllers
 				Dim objMergeDocument As Code.MailMergeRun = Session("MailMerge_CompletedDocument")
 
 				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
-				Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Mail merge completed successfully."))	' Send completion message	
+        Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Mail merge completed successfully.")) ' Send completion message
 
-				Return File(objMergeDocument.MergeDocument, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
-					, Path.GetFileName(objMergeDocument.OutputFileName))
+        Dim filename As String = objMergeDocument.OutputFileName
+        For Each c In IO.Path.GetInvalidFileNameChars
+          filename = filename.Replace(c, "")
+        Next
 
-			Catch ex As Exception
-				' error generated - return error
-				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
-				Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
-			Finally
+        Return File(objMergeDocument.MergeDocument, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
+          , Path.GetFileName(filename))
+
+      Catch ex As Exception
+        ' error generated - return error
+        Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message)) ' marks the download as complete on the client		
+        Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+
+      Finally
 				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client	
 			End Try
 
-		End Function
+    End Function
 
-		<HttpPost()>
-		<ValidateAntiForgeryToken>
+    <HttpPost()>
+    <ValidateAntiForgeryToken>
 		Function tbTransferBookingFind_Submit(form As DelegateBookingModel)
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
