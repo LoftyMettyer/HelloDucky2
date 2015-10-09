@@ -287,11 +287,8 @@
 					populateEventDetails();
 					setGridCaption();
 				}
-
-				$('#EventLogViewDetails').dialog(
-				{
-					position: ['center']
-				});
+				
+				$('#EventLogViewDetails').dialog({ position: { my: "center", at: "center", of: window }	});
 			}
 
 			function okClick() {

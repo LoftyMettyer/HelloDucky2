@@ -250,8 +250,7 @@
 				autoOpen: false,
 				modal: true,
 				width: 1000,
-				height: 'auto',
-				position: ['center'],
+				height: 'auto',				
 				resizable: false,
 				open: function() {
 					$(this).load($(this).data('sURLData'), function () {
@@ -272,8 +271,7 @@
 				autoOpen: false,
 				modal: true,
 				width: 550,
-				height: 'auto',
-				position: ['center'],
+				height: 'auto',				
 				resizable: false,
 				open: function (event, ui) {
 					$(this).load($(this).data('sURLData'), function() {
@@ -333,8 +331,7 @@
 				autoOpen: false,
 				modal: true,
 				width: 550,
-				height: 'auto',
-				position: ['center'],
+				height: 'auto',				
 				resizable: false,
 				open: function (event, ui) {
 					$(this).load($(this).data('sURLData'), function () {
