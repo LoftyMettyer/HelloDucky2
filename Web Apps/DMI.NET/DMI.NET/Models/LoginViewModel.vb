@@ -39,8 +39,8 @@ Namespace Models
 
 		Public ReadOnly Property DeviceBrowser As String
 			Get
-				Return String.Format("{0} ({1})", Device, Browser)
-			End Get
+                Return String.Format("{0}", Device)
+            End Get
 		End Property
 
 		Public WebArea As WebArea = WebArea.None
