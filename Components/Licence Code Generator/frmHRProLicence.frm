@@ -71,21 +71,21 @@ Begin VB.Form frmHRProLicence
          Begin VB.ComboBox cboType 
             Height          =   315
             ItemData        =   "frmHRProLicence.frx":0044
-            Left            =   1485
+            Left            =   1725
             List            =   "frmHRProLicence.frx":0057
             Style           =   2  'Dropdown List
             TabIndex        =   2
             Top             =   705
-            Width           =   2850
+            Width           =   3570
          End
          Begin GTMaskDate.GTMaskDate txtExpiryDate 
             Height          =   300
-            Left            =   1485
+            Left            =   1725
             TabIndex        =   3
             Top             =   1170
-            Width           =   2850
+            Width           =   3570
             _Version        =   65537
-            _ExtentX        =   5027
+            _ExtentX        =   6297
             _ExtentY        =   529
             _StockProps     =   77
             BackColor       =   -2147483643
@@ -137,11 +137,11 @@ Begin VB.Form frmHRProLicence
          End
          Begin VB.TextBox txtCustomerNo 
             Height          =   315
-            Left            =   1485
+            Left            =   1725
             MaxLength       =   4
             TabIndex        =   1
             Top             =   285
-            Width           =   2850
+            Width           =   3570
          End
          Begin VB.Label lblModel 
             Caption         =   "Model :"
@@ -892,7 +892,7 @@ Begin VB.Form frmHRProLicence
          End
          Begin VB.TextBox txtSSIUsers 
             Height          =   315
-            Left            =   1500
+            Left            =   2100
             MaxLength       =   6
             TabIndex        =   6
             Text            =   "0"
@@ -901,7 +901,7 @@ Begin VB.Form frmHRProLicence
          End
          Begin VB.TextBox txtDatUsers 
             Height          =   315
-            Left            =   1500
+            Left            =   2100
             MaxLength       =   3
             TabIndex        =   4
             Text            =   "0"
@@ -911,16 +911,16 @@ Begin VB.Form frmHRProLicence
          Begin VB.ListBox lstModules 
             Height          =   3210
             ItemData        =   "frmHRProLicence.frx":11CD
-            Left            =   2580
+            Left            =   3060
             List            =   "frmHRProLicence.frx":11CF
             Style           =   1  'Checkbox
             TabIndex        =   8
             Top             =   315
-            Width           =   3735
+            Width           =   3375
          End
          Begin VB.TextBox txtIntUsers 
             Height          =   315
-            Left            =   1500
+            Left            =   2100
             MaxLength       =   3
             TabIndex        =   5
             Text            =   "0"
@@ -937,33 +937,33 @@ Begin VB.Form frmHRProLicence
          End
          Begin VB.Label lblNoUsers 
             AutoSize        =   -1  'True
-            Caption         =   "SSI Users :"
+            Caption         =   "Self-service Users :"
             Height          =   195
             Index           =   1
             Left            =   120
             TabIndex        =   47
             Top             =   1155
-            Width           =   1065
+            Width           =   1695
          End
          Begin VB.Label lblNoUsers 
             AutoSize        =   -1  'True
-            Caption         =   "Dat Users :"
+            Caption         =   "Data Manager Users :"
             Height          =   195
             Index           =   0
             Left            =   120
             TabIndex        =   12
             Top             =   360
-            Width           =   1050
+            Width           =   1875
          End
          Begin VB.Label lblNoUsers 
             AutoSize        =   -1  'True
-            Caption         =   "DMI Users :"
+            Caption         =   "OpenHR Web Users :"
             Height          =   195
             Index           =   2
             Left            =   120
             TabIndex        =   13
             Top             =   750
-            Width           =   1020
+            Width           =   1800
          End
       End
    End
@@ -1011,47 +1011,92 @@ Private Sub PopulateModules(lstTemp As ListBox)
 End Sub
 
 Private Sub cboType_Click()
-
-'  If cboType.ListIndex = 0 Then
-'    txtHeadcount.Text = 0
-'  Else
-'    txtSSIUsers.Text = 0
-'  End If
-'
-'  txtSSIUsers.Enabled = IIf(cboType.ListIndex = 0, True, False)
-'  txtHeadcount.Enabled = Not txtSSIUsers.Enabled
-  
-'Dim enableUsers As Boolean
-'enableUsers = (cboType.ListIndex = 0)
-
-'reset controls to 0
+'reset Counts to 0
 txtDatUsers.Text = 0
 txtIntUsers.Text = 0
 txtSSIUsers.Text = 0
+txtHeadcount.Text = 0
 
-If cboType.ListIndex = 0 Then
-  txtDatUsers.Enabled = True
-  txtIntUsers.Enabled = True
-  txtSSIUsers.Enabled = True
-  txtHeadcount.Enabled = False
-  
-  txtHeadcount.Text = 0
-  
-  txtDatUsers.BackColor = vbWhite
-  txtIntUsers.BackColor = vbWhite
-  txtSSIUsers.BackColor = vbWhite
-  txtHeadcount.BackColor = Me.BackColor
-Else
-  txtDatUsers.Enabled = False
-  txtIntUsers.Enabled = False
-  txtSSIUsers.Enabled = False
-  txtHeadcount.Enabled = True
-  
-  txtDatUsers.BackColor = Me.BackColor
-  txtIntUsers.BackColor = Me.BackColor
-  txtSSIUsers.BackColor = Me.BackColor
-  txtHeadcount.BackColor = vbWhite
-End If
+Select Case cboType.ListIndex
+    Case 0:
+      txtDatUsers.Enabled = True
+      txtIntUsers.Enabled = True
+      txtSSIUsers.Enabled = True
+      txtHeadcount.Enabled = False
+      
+      txtDatUsers.BackColor = vbWhite
+      txtIntUsers.BackColor = vbWhite
+      txtSSIUsers.BackColor = vbWhite
+      txtHeadcount.BackColor = Me.BackColor
+    Case 1:
+      txtDatUsers.Enabled = False
+      txtIntUsers.Enabled = False
+      txtSSIUsers.Enabled = False
+      txtHeadcount.Enabled = True
+      
+      txtDatUsers.BackColor = Me.BackColor
+      txtIntUsers.BackColor = Me.BackColor
+      txtSSIUsers.BackColor = Me.BackColor
+      txtHeadcount.BackColor = vbWhite
+    Case 2:
+      txtDatUsers.Enabled = False
+      txtIntUsers.Enabled = False
+      txtSSIUsers.Enabled = False
+      txtHeadcount.Enabled = True
+
+      txtDatUsers.BackColor = Me.BackColor
+      txtIntUsers.BackColor = Me.BackColor
+      txtSSIUsers.BackColor = Me.BackColor
+      txtHeadcount.BackColor = vbWhite
+    Case 3:
+      txtDatUsers.Enabled = True
+      txtIntUsers.Enabled = True
+      txtSSIUsers.Enabled = True
+      txtHeadcount.Enabled = True
+      
+      txtDatUsers.BackColor = vbWhite
+      txtIntUsers.BackColor = vbWhite
+      txtSSIUsers.BackColor = vbWhite
+      txtHeadcount.BackColor = vbWhite
+    Case 4:
+      txtDatUsers.Enabled = True
+      txtIntUsers.Enabled = True
+      txtSSIUsers.Enabled = True
+      txtHeadcount.Enabled = True
+      
+      txtDatUsers.BackColor = vbWhite
+      txtIntUsers.BackColor = vbWhite
+      txtSSIUsers.BackColor = vbWhite
+      txtHeadcount.BackColor = vbWhite
+End Select
+
+
+
+
+
+'If cboType.ListIndex = 0 Then
+'  txtDatUsers.Enabled = True
+'  txtIntUsers.Enabled = True
+'  txtSSIUsers.Enabled = True
+'  txtHeadcount.Enabled = False
+'
+'  txtHeadcount.Text = 0
+'
+'  txtDatUsers.BackColor = vbWhite
+'  txtIntUsers.BackColor = vbWhite
+'  txtSSIUsers.BackColor = vbWhite
+'  txtHeadcount.BackColor = Me.BackColor
+'Else
+'  txtDatUsers.Enabled = False
+'  txtIntUsers.Enabled = False
+'  txtSSIUsers.Enabled = False
+'  txtHeadcount.Enabled = True
+'
+'  txtDatUsers.BackColor = Me.BackColor
+'  txtIntUsers.BackColor = Me.BackColor
+'  txtSSIUsers.BackColor = Me.BackColor
+'  txtHeadcount.BackColor = vbWhite
+'End If
 
 End Sub
 

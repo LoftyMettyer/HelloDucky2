@@ -38,17 +38,58 @@ Friend Class frmHRProLicence
 	'UPGRADE_WARNING: Event cboType.SelectedIndexChanged may fire when form is initialized. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="88B12AE1-6DE0-48A0-86F1-60C0686C026A"'
 	Private Sub cboType_SelectedIndexChanged(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles cboType.SelectedIndexChanged
 
-        Dim enableUsers As Boolean = (cboType.SelectedIndex = 0)
-        'reset controls to 0
-        txtDatUsers.Text = 0
-        txtIntUsers.Text = 0
-        txtSSIUsers.Text = 0
-        If enableUsers Then txtHeadcount.Text = 0
+        Select Case cboType.SelectedIndex
+            Case 0
+                txtDatUsers.Enabled = True
+                txtIntUsers.Enabled = True
+                txtSSIUsers.Enabled = True
+                txtHeadcount.Enabled = False
 
-        txtDatUsers.Enabled = enableUsers
-        txtIntUsers.Enabled = enableUsers
-        txtSSIUsers.Enabled = enableUsers
-        txtHeadcount.Enabled = Not enableUsers
+                txtDatUsers.BackColor = Color.White
+                txtIntUsers.BackColor = Color.White
+                txtSSIUsers.BackColor = Color.White
+                txtHeadcount.BackColor = Me.BackColor
+            Case 1
+                txtDatUsers.Enabled = False
+                txtIntUsers.Enabled = False
+                txtSSIUsers.Enabled = False
+                txtHeadcount.Enabled = True
+
+                txtDatUsers.BackColor = Me.BackColor
+                txtIntUsers.BackColor = Me.BackColor
+                txtSSIUsers.BackColor = Me.BackColor
+                txtHeadcount.BackColor = Color.White
+            Case 2
+                txtDatUsers.Enabled = False
+                txtIntUsers.Enabled = False
+                txtSSIUsers.Enabled = False
+                txtHeadcount.Enabled = True
+
+                txtDatUsers.BackColor = Me.BackColor
+                txtIntUsers.BackColor = Me.BackColor
+                txtSSIUsers.BackColor = Me.BackColor
+                txtHeadcount.BackColor = Color.White
+            Case 3
+                txtDatUsers.Enabled = True
+                txtIntUsers.Enabled = True
+                txtSSIUsers.Enabled = True
+                txtHeadcount.Enabled = True
+
+                txtDatUsers.BackColor = Color.White
+                txtIntUsers.BackColor = Color.White
+                txtSSIUsers.BackColor = Color.White
+                txtHeadcount.BackColor = Color.White
+            Case 4
+                txtDatUsers.Enabled = True
+                txtIntUsers.Enabled = True
+                txtSSIUsers.Enabled = True
+                txtHeadcount.Enabled = True
+
+                txtDatUsers.BackColor = Color.White
+                txtIntUsers.BackColor = Color.White
+                txtSSIUsers.BackColor = Color.White
+                txtHeadcount.BackColor = Color.White
+        End Select
 
     End Sub
 	
