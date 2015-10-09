@@ -888,12 +888,9 @@ Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDes
 
 	<script type="text/javascript">
 		find_window_onload();
-		
-		if (menu_isSSIMode()) {
-			$('.ViewDescription p').text('');		
-		} else {
+
+		if (!menu_isSSIMode()) {
 			$('div#workframeset').animate({ scrollTop: 0 }, 0);
-			$('.ViewDescription p').text('');			
 		}
 
 	</script>

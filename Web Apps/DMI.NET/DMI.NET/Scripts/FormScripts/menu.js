@@ -228,6 +228,8 @@ function menu_MenuClick(sTool) {
 
 	hasChanged = -1;
 	
+	$('.ViewDescription p').text('');
+
 	//added for non-IE compatibility
 	var frmMenuInfo = $("#frmMenuInfo")[0].children;
 
