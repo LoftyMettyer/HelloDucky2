@@ -3,31 +3,33 @@ Imports System.DirectoryServices
 
 Public Class Security
 
-   Public Shared Function ValidateUser(userName As String, password As String) As String
+    Public Shared Function ValidateUser(userName As String, password As String, authenticateOnly As Boolean) As String
 
-      Const invalidLoginDetails As String = "The system could not log you on. Make sure your details are correct, then retype your password."
+        Const invalidLoginDetails As String = "The system could not log you on. Make sure your details are correct, then retype your password."
 
-      If userName.IndexOf("\") > 0 Then
-         If Not ValidateActiveDirectoryUser(userName.Split("\"c)(0), userName.Split("\"c)(1), password) Then Return invalidLoginDetails
-      Else
-         If Not ValidateSqlServerUser(userName, password) Then Return invalidLoginDetails
-      End If
+        If userName.IndexOf("\") > 0 Then
+            If Not ValidateActiveDirectoryUser(userName.Split("\"c)(0), userName.Split("\"c)(1), password) Then Return invalidLoginDetails
+        Else
+            If Not ValidateSqlServerUser(userName, password) Then Return invalidLoginDetails
+        End If
 
-      Dim db As New Database(App.Config.ConnectionString)
-      Dim result As CheckLoginResult = db.CheckLoginDetails(userName)
-      If Not result.Valid Then
-         If result.InvalidReason.ToLower() Like "*incorrect*e-mail*password*" Then Return invalidLoginDetails
-         Return result.InvalidReason
-      End If
+        If Not authenticateOnly Then
+            Dim db As New Database(App.Config.ConnectionString)
+            Dim result As CheckLoginResult = db.CheckLoginDetails(userName)
+            If Not result.Valid Then
+                If result.InvalidReason.ToLower() Like "*incorrect*e-mail*password*" Then Return invalidLoginDetails
+                Return result.InvalidReason
+            End If
+        End If
 
-      Return String.Empty
+        Return String.Empty
 
-   End Function
+    End Function
 
-   ''' <summary>
-   ''' code from http://msdn.microsoft.com/en-us/library/ms180890%28v=vs.90%29.aspx
-   ''' </summary>
-   Public Shared Function ValidateActiveDirectoryUser(domainName As String, userName As String, password As String) As Boolean
+    ''' <summary>
+    ''' code from http://msdn.microsoft.com/en-us/library/ms180890%28v=vs.90%29.aspx
+    ''' </summary>
+    Public Shared Function ValidateActiveDirectoryUser(domainName As String, userName As String, password As String) As Boolean
 
       Dim path As String = "LDAP://" & App.Config.DefaultActiveDirectoryServer
 

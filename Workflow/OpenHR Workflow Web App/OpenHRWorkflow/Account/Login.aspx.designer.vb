@@ -40,14 +40,14 @@ Partial Public Class Login
    '''</remarks>
    Protected WithEvents txtUserName As Global.System.Web.UI.WebControls.TextBox
 
-   '''<summary>
-   '''lblPassword control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents lblPassword As Global.System.Web.UI.WebControls.Label
+    '''<summary>
+    '''lblPassword control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblPassword As Global.System.Web.UI.WebControls.Label
 
    '''<summary>
    '''txtPassword control.

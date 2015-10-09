@@ -18,48 +18,53 @@ Public Class [Default]
 	Private Const TabStripHeight As Integer = 21
 	Private Const FormInputPrefix As String = "FI_"
 
-	Protected Sub Page_PreInit(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.PreInit
+    Protected Sub Page_PreInit(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.PreInit
 
-		Dim message As String = Nothing
+        Dim message As String = Nothing
 
-		'The script manager calls this page to get it combined js files, if the calls is from there ignore it
-		If Request.QueryString.Count > 1 Then
-			Return
-		End If
+        'The script manager calls this page to get it combined js files, if the calls is from there ignore it
+        If Request.QueryString.Count > 1 Then
+            Return
+        End If
 
-		'Page requested with no workflow details, just redirect to the login page
-		If Request.QueryString.Count = 0 Then
-			Response.Redirect("~/Account/Login.aspx")
-		End If
+        'Page requested with no workflow details, just redirect to the login page
+        If Request.QueryString.Count = 0 Then
+            Response.Redirect("~/Account/Login.aspx")
+        End If
 
-		'Extract the workflow details from the url (use the rawUrl rather than queryString) as some characters are ignored in the queryString
-		Dim query = Server.UrlDecode(Request.RawUrl)
-		query = query.Substring(query.IndexOf("?") + 1)
-		Try
-			_url = WorkflowUrl.Decrypt(query)
-		Catch ex As Exception
-			message = ex.Message
-		End Try
+        Dim requireAuthentication = Config.GetSetting("AlwaysRequireAuthentication", False)
+        If requireAuthentication And Not HttpContext.Current.User.Identity.IsAuthenticated Then
+            FormsAuthentication.RedirectToLoginPage()
+        End If
 
-		_db = New Database(App.Config.ConnectionString)
+        'Extract the workflow details from the url (use the rawUrl rather than queryString) as some characters are ignored in the queryString
+        Dim query = Server.UrlDecode(Request.RawUrl)
+        query = query.Substring(query.IndexOf("?") + 1)
+        Try
+            _url = WorkflowUrl.Decrypt(query)
+        Catch ex As Exception
+            message = ex.Message
+        End Try
 
-		' Validate the connection string
-		If Not _db.CanConnect() Then
-			message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE001)."
-		End If
+        _db = New Database(App.Config.ConnectionString)
 
-		' check that the stored username is allowed
-		If message.IsNullOrEmpty() AndAlso _db.IsUserProhibited() And Not IsPostBack Then
-			message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE002)."
-		End If
+        ' Validate the connection string
+        If Not _db.CanConnect() Then
+            message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE001)."
+        End If
 
-		'check to see if the database is locked
-		If message.IsNullOrEmpty And Not IsPostBack Then
+        ' check that the stored username is allowed
+        If message.IsNullOrEmpty() AndAlso _db.IsUserProhibited() And Not IsPostBack Then
+            message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE002)."
+        End If
 
-			If _db.IsSystemLocked() Then
-				message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE003)."
-			End If
-		End If
+        'check to see if the database is locked
+        If message.IsNullOrEmpty And Not IsPostBack Then
+
+            If _db.IsSystemLocked() Then
+                message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE003)."
+            End If
+        End If
 
 #If DEBUG Then
 #Else
@@ -78,52 +83,52 @@ Public Class [Default]
 		End If
 #End If
 
-		'Activating mobile security. I've hijacked the InstanceID and populated it with the User ID that is to be activated.
-		If message.IsNullOrEmpty() AndAlso Not IsPostBack AndAlso _url.ElementId = -2 AndAlso _url.InstanceId > 0 Then
+        'Activating mobile security. I've hijacked the InstanceID and populated it with the User ID that is to be activated.
+        If message.IsNullOrEmpty() AndAlso Not IsPostBack AndAlso _url.ElementId = -2 AndAlso _url.InstanceId > 0 Then
 
-			message = _db.ActivateUser(_url.InstanceId)
+            message = _db.ActivateUser(_url.InstanceId)
 
-			If message.IsNullOrEmpty() Then
-				message = "You have been successfully activated."
-			End If
-		End If
+            If message.IsNullOrEmpty() Then
+                message = "You have been successfully activated."
+            End If
+        End If
 
-		'Initiate the workflow if thats whats required
-		If message.IsNullOrEmpty() And Not IsPostBack And _url.InstanceId < 0 And _url.ElementId = -1 Then
+        'Initiate the workflow if thats whats required
+        If message.IsNullOrEmpty() And Not IsPostBack And _url.InstanceId < 0 And _url.ElementId = -1 Then
 
-			Dim result As InstantiateWorkflowResult = _db.InstantiateWorkflow(-_url.InstanceId, _url.UserName)
+            Dim result As InstantiateWorkflowResult = _db.InstantiateWorkflow(-_url.InstanceId, _url.UserName)
 
-			If Not result.Message.IsNullOrEmpty() Then
-				message = "Error:<BR><BR>" & result.Message
-			Else
-				If result.FormElements.IsNullOrEmpty() Then
-					message = "Workflow initiated successfully."
-				Else
-					'The first form element is this workflow and any others are sibling forms (that need to be opened at the same time)
-					Dim forms = result.FormElements.Split(New String() {vbTab}, StringSplitOptions.RemoveEmptyEntries).ToList
+            If Not result.Message.IsNullOrEmpty() Then
+                message = "Error:<BR><BR>" & result.Message
+            Else
+                If result.FormElements.IsNullOrEmpty() Then
+                    message = "Workflow initiated successfully."
+                Else
+                    'The first form element is this workflow and any others are sibling forms (that need to be opened at the same time)
+                    Dim forms = result.FormElements.Split(New String() {vbTab}, StringSplitOptions.RemoveEmptyEntries).ToList
 
-					_url.InstanceId = result.InstanceId
-					_url.ElementId = CInt(forms(0))
-					forms.RemoveAt(0)
+                    _url.InstanceId = result.InstanceId
+                    _url.ElementId = CInt(forms(0))
+                    forms.RemoveAt(0)
 
-					Dim siblingForms = String.Join(vbTab, forms.Select(Function(f) _db.GetWorkflowQueryString(_url.InstanceId, CInt(f))))
+                    Dim siblingForms = String.Join(vbTab, forms.Select(Function(f) _db.GetWorkflowQueryString(_url.InstanceId, CInt(f))))
 
-					Dim crypt As New Crypt
-					Dim newUrl = crypt.EncryptQueryString(_url.InstanceId, _url.ElementId, _url.User, _url.Password, _url.Server, _url.Database, "", "")
+                    Dim crypt As New Crypt
+                    Dim newUrl = crypt.EncryptQueryString(_url.InstanceId, _url.ElementId, _url.User, _url.Password, _url.Server, _url.Database, "", "")
 
-					Session("FireSiblings_" & newUrl) = siblingForms
-					Response.Redirect("~/Default.aspx?" & newUrl, True)
-				End If
-			End If
-		End If
+                    Session("FireSiblings_" & newUrl) = siblingForms
+                    Response.Redirect("~/Default.aspx?" & newUrl, True)
+                End If
+            End If
+        End If
 
-		If Not message.IsNullOrEmpty() Then
-			Session("message") = message
-			Server.Transfer("Message.aspx")
-		End If
-	End Sub
+        If Not message.IsNullOrEmpty() Then
+            Session("message") = message
+            Server.Transfer("Message.aspx")
+        End If
+    End Sub
 
-	Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
 
 		Dim message As String = Nothing
 

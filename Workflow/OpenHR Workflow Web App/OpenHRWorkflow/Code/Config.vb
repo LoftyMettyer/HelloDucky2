@@ -105,17 +105,17 @@ Public Class Config
 
 	End Sub
 
-	Private Function GetSetting(Of T)(name As String, defaultValue As T) As T
+    Public Shared Function GetSetting(Of T)(name As String, defaultValue As T) As T
 
-		Dim value As String = ConfigurationManager.AppSettings(name)
-		If value Is Nothing Then
-			Return defaultValue
-		End If
-		Try
-			Return CType(Convert.ChangeType(value, GetType(T)), T)
-		Catch ex As Exception
-			Return defaultValue
-		End Try
-	End Function
+        Dim value As String = ConfigurationManager.AppSettings(name)
+        If value Is Nothing Then
+            Return defaultValue
+        End If
+        Try
+            Return CType(Convert.ChangeType(value, GetType(T)), T)
+        Catch ex As Exception
+            Return defaultValue
+        End Try
+    End Function
 
 End Class
