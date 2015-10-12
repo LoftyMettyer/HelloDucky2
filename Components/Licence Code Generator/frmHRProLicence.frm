@@ -1125,6 +1125,10 @@ Private Sub cmdRead_Click()
     If (.CustomerNo < 1000 Or .CustomerNo > 9999) And vbCompiled Then
       MsgBox "Invalid Licence Key", vbExclamation
     Else
+    
+    cboType.ListIndex = .LicenceType
+    
+    
       txtCustomerNo.Text = CStr(.CustomerNo)
       txtDatUsers.Text = CStr(.DATUsers)
       txtIntUsers.Text = CStr(.DMIMUsers)
@@ -1136,7 +1140,7 @@ Private Sub cmdRead_Click()
       Else
         txtExpiryDate.Text = ""
       End If
-      cboType.ListIndex = .LicenceType
+      
 
       For lngCount = 0 To lstModules.ListCount - 1
         lstModules.Selected(lngCount) = (.Modules And lstModules.ItemData(lngCount))

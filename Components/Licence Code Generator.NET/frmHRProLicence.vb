@@ -109,7 +109,8 @@ Friend Class frmHRProLicence
 		With objLicence
 			.ValidateCreationDate = False
 			.LicenceKey = Me.LicenceKey
-			
+            cboType.SelectedIndex = .LicenceType
+
 			If Not .IsValid Then
 				MsgBox("Invalid Key")
 				Exit Sub
@@ -131,7 +132,6 @@ Friend Class frmHRProLicence
                     'UPGRADE_NOTE: Text was upgraded to CtlText. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
                     txtExpiryDate.Text = ""
                 End If
-                cboType.SelectedIndex = .LicenceType
 
                 For lngCount = 0 To lstModules.Items.Count - 1
                     lstModules.SetItemChecked(lngCount, (.Modules And VB6.GetItemData(lstModules, lngCount)))
