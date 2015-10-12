@@ -1383,6 +1383,9 @@
     <Content Include="Scripts\officebar\winkit\Packet_Filtering64DIS.png" />
     <Content Include="Scripts\officebar\winkit\Packet_Filtering64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\Packet_Filtering64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\Packet_Picklist64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\Packet_Picklist64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\Packet_Picklist64NORM.png" />
     <Content Include="Scripts\officebar\winkit\registry64DIS.png" />
     <Content Include="Scripts\officebar\winkit\registry64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\registry64NORM.png" />

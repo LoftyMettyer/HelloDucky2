@@ -859,7 +859,7 @@
 							</div>
 							<div id="mnutoolPicklistReportFind" class="button">
 								<a href="#" rel="table" title="Picklists">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/niche64HOVER.png")%>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Packet_Picklist64HOVER.png")%>" alt="" />
 									<i class="icon-PicklistRecord"></i>
 									<h6>Picklists</h6>
 								</a>
@@ -895,7 +895,7 @@
 							</div>
 							<div id="mnutoolPicklistReport" class="button">
 								<a href="#" rel="table" title="Picklists">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/niche64HOVER.png")%>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Packet_Picklist64HOVER.png")%>" alt="" />
 									<i class="icon-PicklistRecord"></i>
 									<h6>Picklists</h6>
 								</a>
