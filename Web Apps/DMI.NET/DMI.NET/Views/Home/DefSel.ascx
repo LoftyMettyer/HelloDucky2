@@ -367,7 +367,7 @@
 	}
 
 	function ToggleCheck() {	
-	
+		
 		var piTableid = 0;
 		var frmDefSel = document.getElementById('frmDefSel');
 
@@ -783,8 +783,7 @@
 
 		attachDefSelGrid();
 
-		$("#selectTable").change(function () {
-			$('#SelectedTableID').val(($('#selectTable').val()));
+		$("#selectTable").change(function () {			
 			ToggleCheck();
 		});
 	});
