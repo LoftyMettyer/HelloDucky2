@@ -1,4 +1,4 @@
-VERSION 5.00
+VERSION 5.0
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
 Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
 Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "coasd_selectionbox.ocx"
@@ -7837,6 +7837,9 @@ Private Sub PrintElementDetails_StoredData(pwfElement As VB.Control)
     ' Identifier
     .PrintNormal "Identifier : " & pwfElement.Identifier
 
+    ' Use as workflow traget identifier
+    .PrintNormal "Use As Target Identifier : " & pwfElement.UseAsTargetIdentifier
+
     ' Data Action
     .PrintNormal "Data Action : " & IIf(pwfElement.DataAction = DATAACTION_DELETE, "Delete", IIf(pwfElement.DataAction = DATAACTION_INSERT, "Insert", "Update"))
 
@@ -8262,6 +8265,7 @@ Private Sub PrintElementDetails_WebForm(pwfElement As VB.Control)
             .PrintNormal "     Record Selector : " & asItems(9, iLoop)
             .PrintNormal "          Type : Record Selector"
             .PrintNormal "          Identifier : " & asItems(9, iLoop)
+            .PrintNormal "          Use As Target Identifier : " & IIf(CBool(asItems(82, iLoop)), "True", "False")
             .PrintNormal "          Table : " & GetTableName(CLng(asItems(44, iLoop)))
             .PrintNormal "          Record : " & GetRecordSelectionDescription(CInt(asItems(5, iLoop)))
 
@@ -11453,9 +11457,9 @@ Private Sub Form_Load()
       miSelectionOrder(UBound(miSelectionOrder)) = miControlIndex
     End If
   End If
-  
+
   cmdOK.Enabled = IsNew
-  
+
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
   
@@ -13744,7 +13748,7 @@ End Property
 Public Property Let IsChanged(pfNewValue As Boolean)
   mfChanged = pfNewValue
   mfPerge = pfNewValue
-  cmdOK.Enabled = mfChanged
+cmdOK.Enabled = mfChanged
 End Property
 
 Public Sub SetChanged(pfPerge As Boolean)
