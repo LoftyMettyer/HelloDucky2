@@ -1286,7 +1286,7 @@
 	</div>
 	<!-- User dropdown menu -->
 	<div id="userDropdownmenu">
-		<a href="#"><%=Session("welcomeName")%> ▼</a>
+		<a href="#"><%=Server.HtmlEncode(Session("welcomeName"))%> ▼</a>
 		<ul>
 			<li class="active has-sub last">
 				<ul id="userDropdownmenu_Items" class="ui-widget-header">
