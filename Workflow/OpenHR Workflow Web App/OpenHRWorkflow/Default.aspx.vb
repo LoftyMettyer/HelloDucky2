@@ -32,11 +32,6 @@ Public Class [Default]
             Response.Redirect("~/Account/Login.aspx")
         End If
 
-        Dim requireAuthentication = Config.GetSetting("AlwaysRequireAuthentication", False)
-        If requireAuthentication And Not HttpContext.Current.User.Identity.IsAuthenticated Then
-            FormsAuthentication.RedirectToLoginPage()
-        End If
-
         'Extract the workflow details from the url (use the rawUrl rather than queryString) as some characters are ignored in the queryString
         Dim query = Server.UrlDecode(Request.RawUrl)
         query = query.Substring(query.IndexOf("?") + 1)
@@ -65,6 +60,16 @@ Public Class [Default]
                 message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE003)."
             End If
         End If
+
+        ' Authentication options
+        Dim stepRequiresAuthentication As Boolean
+        stepRequiresAuthentication = _db.StepRequiresAuthorisation(_url.InstanceId, _url.ElementId)
+
+        Dim requireAuthentication = Config.GetSetting("AlwaysRequireAuthentication", False)
+        If Not HttpContext.Current.User.Identity.IsAuthenticated AndAlso (requireAuthentication Or stepRequiresAuthentication) Then
+            FormsAuthentication.RedirectToLoginPage()
+        End If
+
 
 #If DEBUG Then
 #Else

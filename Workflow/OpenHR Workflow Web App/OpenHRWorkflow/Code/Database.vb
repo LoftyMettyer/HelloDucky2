@@ -796,6 +796,10 @@ Public Class Database
 
 	End Function
 
+    Public Function StepRequiresAuthorisation(instanceId As Integer, elementId As Integer) As Boolean
+        Return False
+    End Function
+
 End Class
 
 Public Structure CheckLoginResult
