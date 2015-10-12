@@ -820,7 +820,11 @@ If fCanSelect Then
 	Try
 		resultsDataTable = objDataAccess.GetDataTable("spASRIntGetSummaryValues", CommandType.StoredProcedure, SPParameters)
 		Dim sTempValue As String
-					
+			
+		If resultsDataTable.Rows.Count = 0 Then
+			sErrorDescription = "The screen cannot be loaded because you do not have access to its associated parent record"
+		End If
+
 		If Len(sErrorDescription) = 0 Then
 			For iLoop = 0 To (resultsDataTable.Columns.Count - 1)
 				If GeneralUtilities.IsDataColumnDecimal(resultsDataTable.Columns(iLoop)) Then
