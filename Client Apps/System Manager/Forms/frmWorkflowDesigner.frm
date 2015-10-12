@@ -8038,6 +8038,7 @@ Private Sub PrintElementDetails_WebForm(pwfElement As VB.Control)
       sTemp = "<system default>"
     End If
     .PrintNormal "Follow On Forms Message : " & sTemp
+    .PrintNormal "Form requires authenticating before proceeding : " & IIf(pwfElement.RequiresAuthentication, "True", "False")
     
     ' WebForm items
     asItems = pwfElement.Items
