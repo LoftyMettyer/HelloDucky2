@@ -124,6 +124,23 @@ PRINT 'Step - Calculation Changes'
 
 		END'
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsysStringToTable]') AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsysStringToTable];
+
+	EXEC sp_executesql N'CREATE FUNCTION dbo.[udfsysStringToTable] (           
+		  @String nvarchar(MAX),
+		  @delimiter nvarchar(2))
+	RETURNS @Table TABLE( Splitcolumn nvarchar(MAX)) 
+	BEGIN
+
+		DECLARE @Xml AS XML;
+		SET @Xml = cast((''<A>''+replace(@String,@delimiter,''</A><A>'')+''</A>'') AS XML);
+
+		INSERT INTO @Table SELECT LTRIM(RTRIM(A.value(''.'', ''nvarchar(max)''))) AS [Column] FROM @Xml.nodes(''A'') AS FN(A);
+		RETURN;
+
+	END'
+
 
 /* ------------------------------------------------------- */
 PRINT 'Step - Export additions'
@@ -158,6 +175,7 @@ PRINT 'Step - Export additions'
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'SplitFileSize')
 		EXEC sp_executesql N'ALTER TABLE ASRSysExportName ADD SplitFileSize int;';
+
 
 
 

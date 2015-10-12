@@ -5,46 +5,51 @@ Public Function SaveWorkflows() As Boolean
   ' Save the new or modified workflows definitions.
   On Error GoTo ErrorTrap
 
-  Dim fOK As Boolean
+  Dim fOk As Boolean
 
-  fOK = True
+  fOk = True
 
   With recWorkflowEdit
     If Not (.BOF And .EOF) Then
       .MoveFirst
     End If
-    Do While fOK And Not .EOF
+    Do While fOk And Not .EOF
       If !Deleted Then
-        fOK = WorkflowDelete
+        fOk = WorkflowDelete
       ElseIf !New Then
-        fOK = WorkflowNew
+        fOk = WorkflowNew
       ElseIf !Changed Then
-          fOK = WorkflowSave
+          fOk = WorkflowSave
       End If
 
       .MoveNext
     Loop
   End With
 
-  If fOK Then
-    fOK = CreateSP_WorkflowCalculation
+  If fOk Then
+    fOk = CreateSP_WorkflowCalculation
   End If
   
-  If fOK Then
-    fOK = CreateSP_WorkflowParentRecord
+  If fOk Then
+    fOk = CreateSP_WorkflowParentRecord
   End If
   
-  If fOK Then
-    fOK = CreateSP_WorkflowWebFormValidation
+  If fOk Then
+    fOk = CreateSP_WorkflowWebFormValidation
   End If
+  
+  If fOk Then
+    fOk = CreateSP_WorkflowGetValidLoginsForStep
+  End If
+ 
   
 TidyUpAndExit:
-  SaveWorkflows = fOK
+  SaveWorkflows = fOk
   Exit Function
 
 ErrorTrap:
   OutputError "Error saving workflow definitions"
-  fOK = False
+  fOk = False
   Resume TidyUpAndExit
 
 End Function
@@ -53,20 +58,20 @@ Private Function WorkflowSave() As Boolean
   ' Save the current Workflow record to the server database.
   On Error GoTo ErrorTrap
 
-  Dim fOK As Boolean
+  Dim fOk As Boolean
 
-  fOK = WorkflowDelete
-  If fOK Then
-    fOK = WorkflowNew
+  fOk = WorkflowDelete
+  If fOk Then
+    fOk = WorkflowNew
   End If
 
 TidyUpAndExit:
-  WorkflowSave = fOK
+  WorkflowSave = fOk
   Exit Function
 
 ErrorTrap:
   OutputError "Error updating workflow"
-  fOK = False
+  fOk = False
   Resume TidyUpAndExit
   
 End Function
@@ -75,7 +80,7 @@ End Function
 Private Function WorkflowDelete() As Boolean
   On Error GoTo ErrorTrap
 
-  Dim fOK As Boolean
+  Dim fOk As Boolean
   Dim lngWorkflowID As Long
 
   lngWorkflowID = recWorkflowEdit!ID
@@ -115,15 +120,15 @@ Private Function WorkflowDelete() As Boolean
       End If
   End If
   
-  fOK = True
+  fOk = True
 
 TidyUpAndExit:
-  WorkflowDelete = fOK
+  WorkflowDelete = fOk
   Exit Function
 
 ErrorTrap:
   OutputError "Error deleting workflow"
-  fOK = False
+  fOk = False
   Resume TidyUpAndExit
   
 End Function
@@ -133,7 +138,7 @@ Private Function WorkflowNew() As Boolean
   ' Save the current workflow definition to the server database.
   On Error GoTo ErrorTrap
 
-  Dim fOK As Boolean
+  Dim fOk As Boolean
   Dim iLoop As Integer
   Dim sName As String
   Dim rsWorkflows As New ADODB.Recordset
@@ -145,7 +150,7 @@ Private Function WorkflowNew() As Boolean
   Dim rsElementValidations As New ADODB.Recordset
   Dim rsLinks As New ADODB.Recordset
 
-  fOK = True
+  fOk = True
 
   ' Open the Workflows table on the server.
   rsWorkflows.Open "ASRSysWorkflows", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTable
@@ -198,7 +203,7 @@ Private Function WorkflowNew() As Boolean
         If Not recWorkflowElementItemEdit.NoMatch Then
           Do While Not recWorkflowElementItemEdit.EOF
             'If no more items for this element exit loop
-            If recWorkflowElementItemEdit!elementID <> recWorkflowElementEdit!ID Then
+            If recWorkflowElementItemEdit!elementid <> recWorkflowElementEdit!ID Then
               Exit Do
             End If
 
@@ -257,7 +262,7 @@ Private Function WorkflowNew() As Boolean
         If Not recWorkflowElementColumnEdit.NoMatch Then
           Do While Not recWorkflowElementColumnEdit.EOF
             'If no more columns for this element exit loop
-            If recWorkflowElementColumnEdit!elementID <> recWorkflowElementEdit!ID Then
+            If recWorkflowElementColumnEdit!elementid <> recWorkflowElementEdit!ID Then
               Exit Do
             End If
 
@@ -286,7 +291,7 @@ Private Function WorkflowNew() As Boolean
         If Not recWorkflowElementValidationEdit.NoMatch Then
           Do While Not recWorkflowElementValidationEdit.EOF
             'If no more Validations for this element exit loop
-            If recWorkflowElementValidationEdit!elementID <> recWorkflowElementEdit!ID Then
+            If recWorkflowElementValidationEdit!elementid <> recWorkflowElementEdit!ID Then
               Exit Do
             End If
 
@@ -352,12 +357,12 @@ TidyUpAndExit:
   Set rsElementColumns = Nothing
   Set rsElementValidations = Nothing
   Set rsElements = Nothing
-  WorkflowNew = fOK
+  WorkflowNew = fOk
   Exit Function
 
 ErrorTrap:
   OutputError "Error creating workflow"
-  fOK = False
+  fOk = False
   Resume TidyUpAndExit
 
 End Function

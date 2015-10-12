@@ -22,6 +22,7 @@ Private mvar_sLoginColumn As String
 Private mvar_sSecondLoginColumn As String
 Private mvar_sLoginTable As String
 Private mvar_lngActivateDelegationColumn As Long
+
 Private mvar_sActivateDelegationColumn As String
 Private mvar_lngDelegationEmail As Long
 Private malngEmailColumns() As Long
@@ -1430,7 +1431,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
 
         For iLoop = 1 To UBound(alngElementIDs, 2)
           If alngElementIDs(0, iLoop) = .Fields("ElementID") Then
-            recWorkflowElementItemEdit!elementID = alngElementIDs(1, iLoop)
+            recWorkflowElementItemEdit!elementid = alngElementIDs(1, iLoop)
             Exit For
           End If
         Next iLoop
@@ -1626,7 +1627,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
 
         For iLoop = 1 To UBound(alngElementIDs, 2)
           If alngElementIDs(0, iLoop) = .Fields("ElementID") Then
-            recWorkflowElementColumnEdit!elementID = alngElementIDs(1, iLoop)
+            recWorkflowElementColumnEdit!elementid = alngElementIDs(1, iLoop)
             Exit For
           End If
         Next iLoop
@@ -1702,7 +1703,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
 
         For iLoop = 1 To UBound(alngElementIDs, 2)
           If alngElementIDs(0, iLoop) = .Fields("ElementID") Then
-            recWorkflowElementValidationEdit!elementID = alngElementIDs(1, iLoop)
+            recWorkflowElementValidationEdit!elementid = alngElementIDs(1, iLoop)
             Exit For
           End If
         Next iLoop
@@ -3406,7 +3407,7 @@ Private Function ReadWorkflowParameters() As Boolean
   Dim lngLoginColumn As Long
   Dim lngSecondLoginColumn As Long
   Dim lngLoginTable As Long
-  Dim lngColumnID As Long
+  Dim lngColumnId As Long
   Dim lngTableID As Long
   Dim sUser As String
   Dim sPassword As String
@@ -3468,14 +3469,14 @@ Private Function ReadWorkflowParameters() As Boolean
             Exit Do
           End If
 
-          lngColumnID = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, CLng(!parametervalue))
+          lngColumnId = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, CLng(!parametervalue))
 
-          If lngColumnID > 0 Then
-            lngTableID = GetTableIDFromColumnID(lngColumnID)
+          If lngColumnId > 0 Then
+            lngTableID = GetTableIDFromColumnID(lngColumnId)
             
             If lngTableID = lngLoginTable Then
               ReDim Preserve malngEmailColumns(UBound(malngEmailColumns) + 1)
-              malngEmailColumns(UBound(malngEmailColumns)) = lngColumnID
+              malngEmailColumns(UBound(malngEmailColumns)) = lngColumnId
             End If
           End If
           
@@ -3499,6 +3500,7 @@ Private Function ReadWorkflowParameters() As Boolean
       Else
         mvar_lngDelegationEmail = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       End If
+      
     End If
     
   End With
@@ -4007,7 +4009,7 @@ Public Function WorkflowTableTriggerCode(plngTableID As Long, _
   Dim alngEmailsUsed() As Long
   Dim lngLoop As Long
   Dim lngEmailID As Long
-  Dim lngColumnID As Long
+  Dim lngColumnId As Long
   Dim strColumnName As String
   Dim iDataType As Integer
   Dim iSize As Long
@@ -4084,13 +4086,13 @@ Public Function WorkflowTableTriggerCode(plngTableID As Long, _
             If pfAction = WFRELATEDRECORD_DELETE Then
               alngColumnsUsed = BaseTableColumnsUsedInDeleteTriggeredWorkflow(!WorkflowID)
               For lngLoop = 1 To UBound(alngColumnsUsed)
-                lngColumnID = alngColumnsUsed(lngLoop)
+                lngColumnId = alngColumnsUsed(lngLoop)
                 strColumnName = GetColumnName(alngColumnsUsed(lngLoop), True)
                 iDataType = GetColumnDataType(alngColumnsUsed(lngLoop))
                 iSize = GetColumnSize(alngColumnsUsed(lngLoop), False)
                 iDecimals = GetColumnSize(alngColumnsUsed(lngLoop), True)
             
-                strVariableName = "@sWFTemp_" & CStr(!LinkID) & "_" & CStr(lngColumnID)
+                strVariableName = "@sWFTemp_" & CStr(!LinkID) & "_" & CStr(lngColumnId)
             
                 sSubCode = sSubCode & vbNewLine & _
                   String(iIndent, vbTab) & "DECLARE " & strVariableName & " varchar(MAX)" & vbNewLine
@@ -4132,7 +4134,7 @@ Public Function WorkflowTableTriggerCode(plngTableID As Long, _
                 sDeleteTriggerInsertCode = sDeleteTriggerInsertCode & vbNewLine & _
                   String(iIndent, vbTab) & "INSERT INTO dbo.[ASRSysWorkflowQueueColumns]" & vbNewLine & _
                   String(iIndent + 1, vbTab) & "(queueID, columnID, columnValue, emailID)" & vbNewLine & _
-                  String(iIndent + 1, vbTab) & "SELECT max(queueID), " & CStr(lngColumnID) & ", " & strVariableName & ", 0 FROM dbo.[ASRSysWorkflowQueue]" & vbNewLine
+                  String(iIndent + 1, vbTab) & "SELECT max(queueID), " & CStr(lngColumnId) & ", " & strVariableName & ", 0 FROM dbo.[ASRSysWorkflowQueue]" & vbNewLine
               Next lngLoop
             
               alngEmailsUsed = BaseTableEmailAddressesUsedInDeleteTriggeredWorkflow(!WorkflowID)
@@ -4281,7 +4283,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
   Dim iDataType As Integer
   Dim lngSize As Long
   Dim iDecimals As Integer
-  Dim lngColumnID As Long
+  Dim lngColumnId As Long
   Dim iLinkType As WorkflowTriggerLinkType
   Dim avarColumns() As Variant
   Dim strCheckCode As String
@@ -4360,7 +4362,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
   
   If UBound(avarColumns, 2) > 0 Then
     For iColumnLoop = 1 To UBound(avarColumns, 2)
-      lngColumnID = CLng(avarColumns(0, iColumnLoop))
+      lngColumnId = CLng(avarColumns(0, iColumnLoop))
       strColumnName = CStr(avarColumns(1, iColumnLoop))
       iDataType = CInt(avarColumns(2, iColumnLoop))
       lngSize = avarColumns(3, iColumnLoop)
@@ -4372,7 +4374,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
 
       ' Check if the column has already been declared and added to the select and fetch strings
       For iLoop = 1 To UBound(alngAuditColumns)
-        If alngAuditColumns(iLoop) = lngColumnID Then
+        If alngAuditColumns(iLoop) = lngColumnId Then
           fColFound = True
           Exit For
         End If
@@ -4380,15 +4382,15 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
 
       If Not fColFound Then
         ReDim Preserve alngAuditColumns(UBound(alngAuditColumns) + 1)
-        alngAuditColumns(UBound(alngAuditColumns)) = lngColumnID
+        alngAuditColumns(UBound(alngAuditColumns)) = lngColumnId
 
         sSelectInsCols.Append ", inserted." & strColumnName
         sSelectDelCols.Append ", deleted." & strColumnName
-        sFetchInsCols.Append ", @insCol_" & Trim$(Str$(lngColumnID))
-        sFetchDelCols.Append ", @delCol_" & Trim$(Str$(lngColumnID))
+        sFetchInsCols.Append ", @insCol_" & Trim$(Str$(lngColumnId))
+        sFetchDelCols.Append ", @delCol_" & Trim$(Str$(lngColumnId))
   
-        sDeclareInsCols.Append "," & vbNewLine & "        @insCol_" & Trim$(Str$(lngColumnID))
-        sDeclareDelCols.Append "," & vbNewLine & "        @delCol_" & Trim$(Str$(lngColumnID))
+        sDeclareInsCols.Append "," & vbNewLine & "        @insCol_" & Trim$(Str$(lngColumnId))
+        sDeclareDelCols.Append "," & vbNewLine & "        @delCol_" & Trim$(Str$(lngColumnId))
       End If
 
       Select Case iDataType
@@ -4397,28 +4399,28 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
             sDeclareInsCols.Append " varchar(MAX)"
             sDeclareDelCols.Append " varchar(MAX)"
           End If
-          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnID)) & "), '')"
+          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnId)) & "), '')"
 
         Case dtLONGVARCHAR
           If Not fColFound Then
             sDeclareInsCols.Append " varchar(14)"
             sDeclareDelCols.Append " varchar(14)"
           End If
-          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnID)) & "), '')"
+          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnId)) & "), '')"
 
         Case dtINTEGER
           If Not fColFound Then
             sDeclareInsCols.Append " integer"
             sDeclareDelCols.Append " integer"
           End If
-          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnID)) & "), '')"
+          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnId)) & "), '')"
 
         Case dtNUMERIC
           If Not fColFound Then
             sDeclareInsCols.Append " numeric(" & Trim$(Str$(lngSize)) & ", " & Trim$(Str$(iDecimals)) & ")"
             sDeclareDelCols.Append " numeric(" & Trim$(Str$(lngSize)) & ", " & Trim$(Str$(iDecimals)) & ")"
           End If
-          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnID)) & "), '')"
+          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnId)) & "), '')"
 
         Case dtTIMESTAMP
           If Not fColFound Then
@@ -4426,7 +4428,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
             sDeclareDelCols.Append " datetime"
           End If
           'sConvertInsCols = "ISNULL(CONVERT(varchar(3000), LEFT(DATENAME(month, @insCol_" & Trim$(Str$(lngColumnID)) & "),3) + ' ' + CONVERT(varchar(3000),DATEPART(day, @insCol_" & Trim$(Str$(lngColumnID)) & ")) + ' ' + CONVERT(varchar(3000),DATEPART(year, @insCol_" & Trim$(Str$(lngColumnID)) & "))), '')"
-          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnID)) & ", 101), '')"
+          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnId)) & ", 101), '')"
 
         Case dtBIT
           If Not fColFound Then
@@ -4434,24 +4436,24 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
             sDeclareDelCols.Append " bit"
           End If
           'sConvertInsCols = "ISNULL(CONVERT(varchar(3000), CASE @insCol_" & Trim$(Str$(lngColumnID)) & " WHEN 1 THEN 'True' WHEN 0 THEN 'False' END), '')"
-          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnID)) & "), '')"
+          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnId)) & "), '')"
 
         Case dtVARBINARY, dtLONGVARBINARY
           If Not fColFound Then
             sDeclareInsCols.Append " varchar(3000)"
             sDeclareDelCols.Append " varchar(3000)"
           End If
-          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnID)) & "), '')"
+          sConvertInsCols = "ISNULL(CONVERT(varchar(3000), @insCol_" & Trim$(Str$(lngColumnId)) & "), '')"
 
         Case Else
           If Not fColFound Then
             sDeclareInsCols.Append " varchar(MAX)"
             sDeclareDelCols.Append " varchar(MAX)"
           End If
-          sConvertInsCols = "ISNULL(CONVERT(varchar(MAX), @insCol_" & Trim$(Str$(lngColumnID)) & "), '')"
+          sConvertInsCols = "ISNULL(CONVERT(varchar(MAX), @insCol_" & Trim$(Str$(lngColumnId)) & "), '')"
       End Select
   
-      strVariableName = "@sWFTemp_" & CStr(lngLinkID) & "_" & CStr(lngColumnID)
+      strVariableName = "@sWFTemp_" & CStr(lngLinkID) & "_" & CStr(lngColumnId)
       strRebuildDeclare = strRebuildDeclare & vbNewLine & _
         vbTab & vbTab & "DECLARE " & strVariableName & " varchar(MAX)" & vbNewLine
 
@@ -4474,10 +4476,10 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
       Select Case iDataType
       Case dtNUMERIC, dtINTEGER, dtBIT
         strCheckCode = strCheckCode & vbNewLine & _
-          vbTab & vbTab & "IF (isnull(@insCol_" & CStr(lngColumnID) & ",0) <> isnull(@delCol_" & CStr(lngColumnID) & ",0))" & vbNewLine
+          vbTab & vbTab & "IF (isnull(@insCol_" & CStr(lngColumnId) & ",0) <> isnull(@delCol_" & CStr(lngColumnId) & ",0))" & vbNewLine
       Case Else
         strCheckCode = strCheckCode & vbNewLine & _
-          vbTab & vbTab & "IF (isnull(@insCol_" & CStr(lngColumnID) & ",'') <> isnull(@delCol_" & CStr(lngColumnID) & ",''))" & vbNewLine
+          vbTab & vbTab & "IF (isnull(@insCol_" & CStr(lngColumnId) & ",'') <> isnull(@delCol_" & CStr(lngColumnId) & ",''))" & vbNewLine
       End Select
         
       strCheckCode = strCheckCode & vbNewLine & _
@@ -4491,7 +4493,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
       strColumnValuesInsert = strColumnValuesInsert & vbNewLine & _
         vbTab & vbTab & "INSERT INTO dbo.[ASRSysWorkflowQueueColumns]" & vbNewLine & _
         vbTab & vbTab & vbTab & "(queueID, columnID, columnValue, emailID)" & vbNewLine & _
-        vbTab & vbTab & vbTab & "SELECT max(queueID), " & CStr(lngColumnID) & ", " & strVariableName & ", 0 FROM dbo.[ASRSysWorkflowQueue]" & vbNewLine
+        vbTab & vbTab & vbTab & "SELECT max(queueID), " & CStr(lngColumnId) & ", " & strVariableName & ", 0 FROM dbo.[ASRSysWorkflowQueue]" & vbNewLine
     Next iColumnLoop
   
     If Not IsNull(recWorkflowTriggeredLinks!EffectiveDate) Then
@@ -4574,7 +4576,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
           String(iIndent + 1, vbTab) & "INNER JOIN ASRSysWorkflowQueue ON ASRSysWorkflowQueueColumns.queueID = ASRSysWorkflowQueue.queueID" & vbNewLine & _
           String(iIndent + 1, vbTab) & "WHERE ASRSysWorkflowQueue.recordID = @recordid" & vbNewLine & _
           String(iIndent + 2, vbTab) & "AND ASRSysWorkflowQueue.linkID = " & CStr(lngLinkID) & vbNewLine & _
-          String(iIndent + 2, vbTab) & "AND ASRSysWorkflowQueueColumns.columnID = " & CStr(lngColumnID) & vbNewLine & vbNewLine & _
+          String(iIndent + 2, vbTab) & "AND ASRSysWorkflowQueueColumns.columnID = " & CStr(lngColumnId) & vbNewLine & vbNewLine & _
           String(iIndent + 1, vbTab) & "ORDER BY ASRSysWorkflowQueue.dateInitiated DESC" & vbNewLine & vbNewLine & _
           String(iIndent + 1, vbTab) & "IF ((DateDiff(day, @dtWFPurgeDate, @dtWFLinkDate) >= 0 OR @dtWFPurgeDate IS NULL)" & vbNewLine
         
@@ -4639,9 +4641,9 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
         End If
 
       strTriggerCode = _
-        String(iIndent, vbTab) & "IF NOT @insCol_" & CStr(lngColumnID) & " IS null" & vbNewLine & _
+        String(iIndent, vbTab) & "IF NOT @insCol_" & CStr(lngColumnId) & " IS null" & vbNewLine & _
         String(iIndent, vbTab) & "BEGIN" & vbNewLine & _
-        String(iIndent + 1, vbTab) & "SET @dtWFLinkDate = IsNull(convert(datetime,@insCol_" & CStr(lngColumnID) & "),getdate())" & vbNewLine & vbNewLine & _
+        String(iIndent + 1, vbTab) & "SET @dtWFLinkDate = IsNull(convert(datetime,@insCol_" & CStr(lngColumnId) & "),getdate())" & vbNewLine & vbNewLine & _
         strTriggerCode & _
         String(iIndent, vbTab) & "END" & vbNewLine
 
@@ -5152,7 +5154,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                 If Not recWorkflowElementValidationEdit.NoMatch Then
                   Do While Not recWorkflowElementValidationEdit.EOF
                     'If no more Validations for this element exit loop
-                    If recWorkflowElementValidationEdit!elementID <> recWorkflowElementEdit!ID Then
+                    If recWorkflowElementValidationEdit!elementid <> recWorkflowElementEdit!ID Then
                       Exit Do
                     End If
 
@@ -5188,7 +5190,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                 If Not recWorkflowElementItemEdit.NoMatch Then
                   Do While Not recWorkflowElementItemEdit.EOF
                     'If no more items for this element exit loop
-                    If recWorkflowElementItemEdit!elementID <> recWorkflowElementEdit!ID Then
+                    If recWorkflowElementItemEdit!elementid <> recWorkflowElementEdit!ID Then
                       Exit Do
                     End If
           
@@ -5421,6 +5423,73 @@ ErrorTrap:
   Resume TidyUpAndExit
 
 End Function
+
+Public Function CreateSP_WorkflowGetValidLoginsForStep() As Boolean
+
+  Dim strSPName As String
+  Dim strSPSQL As String
+  Dim fOK As Boolean
+  Dim lngModuleRefId As Long
+  
+  Dim sPersonnelTableName As String
+  Dim sWorkEmailColumnName As String
+  Dim sSelfServiceLoginColumnName As String
+ 
+  On Error GoTo ErrorTrap
+  
+  strSPName = "spASRWorkflowGetValidLoginsForStep"
+
+  fOK = DropProcedure(strSPName)
+
+  If fOK Then
+    lngModuleRefId = GetModuleSetting(gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_PERSONNELTABLE, 0)
+    sPersonnelTableName = GetTableName(lngModuleRefId)
+       
+    lngModuleRefId = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LOGINNAME, 0)
+    sSelfServiceLoginColumnName = GetColumnName(lngModuleRefId, True)
+              
+    lngModuleRefId = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_WORKEMAIL, 0)
+    sWorkEmailColumnName = GetColumnName(lngModuleRefId, True)
+  
+    strSPSQL = _
+      "------------------------------------------------------" & vbNewLine & _
+      "-- Workflow Web Form validation stored procedure." & vbNewLine & _
+      "-- Automatically generated by the System Manager." & vbNewLine & _
+      "------------------------------------------------------" & vbNewLine & _
+      "CREATE PROCEDURE [dbo].[" & strSPName & "]" & vbNewLine & _
+      "(" & vbNewLine & _
+      "    @instanceId integer," & vbNewLine & _
+      "    @elementId integer" & vbNewLine & _
+      ")" & vbNewLine & _
+      "AS" & vbNewLine & _
+      "BEGIN" & vbNewLine
+               
+    strSPSQL = strSPSQL & _
+      "    DECLARE @Email nvarchar(MAX);" & vbNewLine & _
+      "    SELECT @Email = s.UserEmail + ';' + ISNULL(s.EmailCC, '')" & vbNewLine & _
+      "        FROM ASRSysWorkflowInstanceSteps s" & vbNewLine & _
+      "        INNER JOIN ASRSysWorkflowElements e ON e.ID = s.ElementID" & vbNewLine & _
+      "        WHERE s.elementid = @elementId AND s.instanceId = @instanceID;" & vbNewLine & vbNewLine & _
+      "    SELECT l.SplitColumn AS [Email], p.[" & sSelfServiceLoginColumnName & "] AS [Login] FROM dbo.[udfsysStringToTable](@Email, ';') l" & vbNewLine & _
+      "       INNER JOIN [" & sPersonnelTableName & "] p ON p.[" & sWorkEmailColumnName & "] = l.SplitColumn" & vbNewLine & _
+      "       WHERE l.SplitColumn <> '' AND p.[" & sSelfServiceLoginColumnName & "] <> '';" & vbNewLine & vbNewLine & _
+      " END"
+    
+     gADOCon.Execute strSPSQL, , adExecuteNoRecords
+    
+  End If
+
+TidyUpAndExit:
+  CreateSP_WorkflowGetValidLoginsForStep = fOK
+  Exit Function
+
+ErrorTrap:
+  OutputError "Error creating Workflow Web Form valid logins for step stored procedure"
+  fOK = False
+  Resume TidyUpAndExit
+
+End Function
+
 
 Private Function GetSQLFilter(lngFilterID As Long, sCurrentTable As String) As String
   Dim fOK As Boolean
