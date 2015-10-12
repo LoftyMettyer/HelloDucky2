@@ -67,12 +67,12 @@ BEGIN
 				FROM ASRSysAuditAccess WHERE [UserName] = @psUserName
 				AND [HRProModule] in ('OpenHR Web', 'Intranet', 'Self-service')
 				AND [Action] = 'log in'
-							AND ID NOT IN (                  
-															SELECT top 1 ID
-															FROM ASRSysAuditAccess WHERE [UserName] = @psUserName															
-															AND [HRProModule] in ('OpenHR Web', 'Intranet', 'Self-service')
-															AND [Action] = 'log in'
-															ORDER BY DateTimeStamp DESC)                  
+							--AND ID NOT IN (                  
+							--								SELECT top 1 ID
+							--								FROM ASRSysAuditAccess WHERE [UserName] = @psUserName															
+							--								AND [HRProModule] in ('OpenHR Web', 'Intranet', 'Self-service')
+							--								AND [Action] = 'log in'
+							--								ORDER BY DateTimeStamp DESC)                  
 	ORDER BY DateTimeStamp DESC
 			
 
