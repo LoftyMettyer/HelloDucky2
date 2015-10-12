@@ -1,13 +1,13 @@
-VERSION 5.0
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
+VERSION 5.00
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
-Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "coasd_selectionbox.ocx"
-Object = "{F3C5146D-8FDA-4D29-8E41-0C27C803C808}#1.0#0"; "coawf_beginend.ocx"
-Object = "{08EDC6C1-0A62-485F-8917-8D9FB93DB156}#1.0#0"; "coawf_decision.ocx"
-Object = "{FA64823C-ABCB-45AC-ADF2-640EA91D7B88}#1.0#0"; "coawf_email.ocx"
-Object = "{9833D366-F890-48E4-BB54-43ACC99E8E7C}#1.0#0"; "coawf_junction.ocx"
+Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
+Object = "{F3C5146D-8FDA-4D29-8E41-0C27C803C808}#1.0#0"; "COAWF_BeginEnd.ocx"
+Object = "{08EDC6C1-0A62-485F-8917-8D9FB93DB156}#1.0#0"; "COAWF_Decision.ocx"
+Object = "{FA64823C-ABCB-45AC-ADF2-640EA91D7B88}#1.0#0"; "COAWF_Email.ocx"
+Object = "{9833D366-F890-48E4-BB54-43ACC99E8E7C}#1.0#0"; "COAWF_Junction.ocx"
 Object = "{853234F9-0AB0-42A6-8030-F601CCDCEDBB}#1.0#0"; "COAWF_Link.ocx"
-Object = "{63212438-5384-4CC0-B836-A2C015CCBF9B}#1.0#0"; "coawf_webform.ocx"
+Object = "{63212438-5384-4CC0-B836-A2C015CCBF9B}#1.1#0"; "COAWF_WebForm.ocx"
 Begin VB.Form frmWorkflowDesigner 
    AutoRedraw      =   -1  'True
    Caption         =   "Workflow Designer"
@@ -1512,6 +1512,7 @@ Private Sub CopyElementProperties(pwfSourceElement As VB.Control, pwfDestElement
       .WFSavedForLaterMessage = pwfSourceElement.WFSavedForLaterMessage
       .WFFollowOnFormsMessageType = pwfSourceElement.WFFollowOnFormsMessageType
       .WFFollowOnFormsMessage = pwfSourceElement.WFFollowOnFormsMessage
+      .RequiresAuthentication = pwfSourceElement.RequiresAuthentication
 
     Case elem_Email
       .Identifier = pwfSourceElement.Identifier
@@ -12125,6 +12126,7 @@ Private Function SaveElementsAndLinks(ByRef bHasTargetIdentifier As Boolean) As 
           .Fields("SavedForLaterMessage") = wfElement.WFSavedForLaterMessage
           .Fields("FollowOnFormsMessageType") = wfElement.WFFollowOnFormsMessageType
           .Fields("FollowOnFormsMessage") = wfElement.WFFollowOnFormsMessage
+          .Fields("RequiresAuthentication") = wfElement.RequiresAuthentication
         
         Case elem_Email
           .Fields("identifier") = wfElement.Identifier
@@ -13136,6 +13138,7 @@ Public Function LoadElementsAndLinks() As Boolean
             wfElement.WFSavedForLaterMessage = IIf(IsNull(.Fields("SavedForLaterMessage")), "", .Fields("SavedForLaterMessage"))
             wfElement.WFFollowOnFormsMessageType = IIf(IsNull(.Fields("FollowOnFormsMessageType")), MESSAGE_SYSTEMDEFAULT, .Fields("FollowOnFormsMessageType"))
             wfElement.WFFollowOnFormsMessage = IIf(IsNull(.Fields("FollowOnFormsMessage")), "", .Fields("FollowOnFormsMessage"))
+            wfElement.RequiresAuthentication = IIf(IsNull(.Fields("RequiresAuthentication")), False, .Fields("RequiresAuthentication"))
             
           Case elem_Email
             wfElement.Identifier = IIf(IsNull(.Fields("identifier")), "", .Fields("identifier"))

@@ -1,17 +1,17 @@
 VERSION 5.00
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
-Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "coa_label.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
-Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "coasd_checkbox.ocx"
-Object = "{3EBC9263-7DE3-4E87-8721-81ACE59CD84E}#1.2#0"; "coasd_combo.ocx"
-Object = "{3CCEDCBE-4766-494F-84C9-95993D77BD56}#1.0#0"; "coasd_command.ocx"
-Object = "{FFAE31F9-C18D-4C20-AAF7-74C1356185D9}#1.1#0"; "coasd_frame.ocx"
-Object = "{5F165695-EDF2-40E1-BD8E-8D2E6325BDCF}#1.0#0"; "coasd_image.ocx"
-Object = "{CE18FF03-F3BF-4C4F-81DC-192ED1E1B91F}#1.0#0"; "coasd_optiongroup.ocx"
-Object = "{58F88252-94BB-43CE-9EF9-C971F73B93D4}#1.0#0"; "coasd_selection.ocx"
-Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "coasd_selectionbox.ocx"
-Object = "{63212438-5384-4CC0-B836-A2C015CCBF9B}#1.0#0"; "coawf_webform.ocx"
-Object = "{66DD2720-DB90-4D94-963B-369CC9DC8BF8}#5.6#0"; "coawf_tabpage.ocx"
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
+Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "COASD_Checkbox.ocx"
+Object = "{3EBC9263-7DE3-4E87-8721-81ACE59CD84E}#1.2#0"; "COASD_Combo.ocx"
+Object = "{3CCEDCBE-4766-494F-84C9-95993D77BD56}#1.0#0"; "COASD_Command.ocx"
+Object = "{FFAE31F9-C18D-4C20-AAF7-74C1356185D9}#1.1#0"; "COASD_Frame.ocx"
+Object = "{5F165695-EDF2-40E1-BD8E-8D2E6325BDCF}#1.0#0"; "COASD_Image.ocx"
+Object = "{CE18FF03-F3BF-4C4F-81DC-192ED1E1B91F}#1.0#0"; "COASD_OptionGroup.ocx"
+Object = "{58F88252-94BB-43CE-9EF9-C971F73B93D4}#1.0#0"; "COASD_Selection.ocx"
+Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
+Object = "{63212438-5384-4CC0-B836-A2C015CCBF9B}#1.1#0"; "COAWF_WebForm.ocx"
+Object = "{66DD2720-DB90-4D94-963B-369CC9DC8BF8}#5.6#0"; "COAWF_TabPage.ocx"
 Begin VB.Form frmWorkflowWFDesigner 
    AutoRedraw      =   -1  'True
    BackColor       =   &H80000005&
@@ -345,6 +345,7 @@ Private mfReadOnly As Boolean
 Private mlngTimeoutFrequency As Long
 Private miTimeoutPeriod As TimeoutPeriod
 Private mfTimeoutExcludeWeekend As Boolean
+Private mfRequiresAuthentication As Boolean
 Private mlngDescriptionExprID As Long
 Private mfDescriptionHasWorkflowName As Boolean
 Private mfDescriptionHasElementCaption As Boolean
@@ -1753,9 +1754,9 @@ Private Sub ASRDummyFileUpload_DblClick(Index As Integer)
 
 End Sub
 
-Private Sub ASRDummyFileUpload_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub ASRDummyFileUpload_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  WebFormControl_DragDrop ASRDummyFileUpload(Index), Source, X, Y
+  WebFormControl_DragDrop ASRDummyFileUpload(Index), Source, x, y
 
 End Sub
 
@@ -1765,21 +1766,21 @@ Private Sub ASRDummyFileUpload_KeyDown(Index As Integer, KeyCode As Integer, Shi
 
 End Sub
 
-Private Sub ASRDummyFileUpload_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyFileUpload_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  WebFormControl_MouseDown ASRDummyFileUpload(Index), Button, Shift, X, Y
+  WebFormControl_MouseDown ASRDummyFileUpload(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub ASRDummyFileUpload_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyFileUpload_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  WebFormControl_MouseMove ASRDummyFileUpload(Index), Button, X, Y
+  WebFormControl_MouseMove ASRDummyFileUpload(Index), Button, x, y
 
 End Sub
 
-Private Sub ASRDummyFileUpload_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyFileUpload_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  WebFormControl_MouseUp ASRDummyFileUpload(Index), Button, Shift, X, Y
+  WebFormControl_MouseUp ASRDummyFileUpload(Index), Button, Shift, x, y
 
 End Sub
 
@@ -1797,79 +1798,79 @@ Private Sub ASRDummyGrid_DblClick(Index As Integer)
 
 End Sub
 
-Private Sub ASRDummyGrid_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub ASRDummyGrid_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  WebFormControl_DragDrop ASRDummyGrid(Index), Source, X, Y
+  WebFormControl_DragDrop ASRDummyGrid(Index), Source, x, y
 End Sub
 
-Private Sub ASRDummyGrid_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyGrid_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  WebFormControl_MouseDown ASRDummyGrid(Index), Button, Shift, X, Y
+  WebFormControl_MouseDown ASRDummyGrid(Index), Button, Shift, x, y
 End Sub
 
-Private Sub ASRDummyGrid_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyGrid_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  WebFormControl_MouseMove ASRDummyGrid(Index), Button, X, Y
+  WebFormControl_MouseMove ASRDummyGrid(Index), Button, x, y
 End Sub
 
-Private Sub ASRDummyGrid_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyGrid_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  WebFormControl_MouseUp ASRDummyGrid(Index), Button, Shift, X, Y
+  WebFormControl_MouseUp ASRDummyGrid(Index), Button, Shift, x, y
 End Sub
 
-Private Sub asrDummyCheckBox_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyCheckBox_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  WebFormControl_DragDrop asrDummyCheckBox(Index), Source, X, Y
+  WebFormControl_DragDrop asrDummyCheckBox(Index), Source, x, y
 End Sub
 
-Private Sub asrDummyCheckBox_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyCheckBox_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  WebFormControl_MouseDown asrDummyCheckBox(Index), Button, Shift, X, Y
+  WebFormControl_MouseDown asrDummyCheckBox(Index), Button, Shift, x, y
 End Sub
 
-Private Sub asrDummyCheckBox_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyCheckBox_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  WebFormControl_MouseMove asrDummyCheckBox(Index), Button, X, Y
+  WebFormControl_MouseMove asrDummyCheckBox(Index), Button, x, y
 End Sub
 
-Private Sub asrDummyCheckBox_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyCheckBox_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  WebFormControl_MouseUp asrDummyCheckBox(Index), Button, Shift, X, Y
+  WebFormControl_MouseUp asrDummyCheckBox(Index), Button, Shift, x, y
 End Sub
 
-Private Sub asrDummyCombo_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyCombo_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  WebFormControl_DragDrop asrDummyCombo(Index), Source, X, Y
+  WebFormControl_DragDrop asrDummyCombo(Index), Source, x, y
 End Sub
 
-Private Sub asrDummyCombo_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyCombo_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  WebFormControl_MouseDown asrDummyCombo(Index), Button, Shift, X, Y
+  WebFormControl_MouseDown asrDummyCombo(Index), Button, Shift, x, y
 End Sub
 
-Private Sub asrDummyCombo_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyCombo_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  WebFormControl_MouseMove asrDummyCombo(Index), Button, X, Y
+  WebFormControl_MouseMove asrDummyCombo(Index), Button, x, y
 End Sub
 
-Private Sub asrDummyCombo_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyCombo_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  WebFormControl_MouseUp asrDummyCombo(Index), Button, Shift, X, Y
+  WebFormControl_MouseUp asrDummyCombo(Index), Button, Shift, x, y
 End Sub
 
-Private Sub asrDummyFrame_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyFrame_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  WebFormControl_MouseDown asrDummyFrame(Index), Button, Shift, X, Y
+  WebFormControl_MouseDown asrDummyFrame(Index), Button, Shift, x, y
 End Sub
 
-Private Sub asrDummyFrame_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyFrame_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  WebFormControl_MouseMove asrDummyFrame(Index), Button, X, Y
+  WebFormControl_MouseMove asrDummyFrame(Index), Button, x, y
 End Sub
 
-Private Sub asrDummyFrame_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyFrame_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  WebFormControl_MouseUp asrDummyFrame(Index), Button, Shift, X, Y
+  WebFormControl_MouseUp asrDummyFrame(Index), Button, Shift, x, y
 End Sub
 
 Private Sub asrDummyImage_DblClick(Index As Integer)
@@ -1877,19 +1878,19 @@ Private Sub asrDummyImage_DblClick(Index As Integer)
 
 End Sub
 
-Private Sub asrDummyImage_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyImage_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  WebFormControl_MouseDown asrDummyImage(Index), Button, Shift, X, Y
+  WebFormControl_MouseDown asrDummyImage(Index), Button, Shift, x, y
 End Sub
 
-Private Sub asrDummyImage_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyImage_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  WebFormControl_MouseMove asrDummyImage(Index), Button, X, Y
+  WebFormControl_MouseMove asrDummyImage(Index), Button, x, y
 End Sub
 
-Private Sub asrDummyImage_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyImage_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  WebFormControl_MouseUp asrDummyImage(Index), Button, Shift, X, Y
+  WebFormControl_MouseUp asrDummyImage(Index), Button, Shift, x, y
 End Sub
 
 Private Sub asrDummyLabel_DblClick(Index As Integer)
@@ -1897,24 +1898,24 @@ Private Sub asrDummyLabel_DblClick(Index As Integer)
 
 End Sub
 
-Private Sub asrDummyLabel_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyLabel_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  WebFormControl_DragDrop asrDummyLabel(Index), Source, X, Y
+  WebFormControl_DragDrop asrDummyLabel(Index), Source, x, y
 End Sub
 
-Private Sub asrDummyLabel_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyLabel_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  WebFormControl_MouseDown asrDummyLabel(Index), Button, Shift, X, Y
+  WebFormControl_MouseDown asrDummyLabel(Index), Button, Shift, x, y
 End Sub
 
-Private Sub asrDummyLabel_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyLabel_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  WebFormControl_MouseMove asrDummyLabel(Index), Button, X, Y
+  WebFormControl_MouseMove asrDummyLabel(Index), Button, x, y
 End Sub
 
-Private Sub asrDummyLabel_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyLabel_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  WebFormControl_MouseUp asrDummyLabel(Index), Button, Shift, X, Y
+  WebFormControl_MouseUp asrDummyLabel(Index), Button, Shift, x, y
 End Sub
 
 Private Sub ASRDummyLine_DblClick(Index As Integer)
@@ -1927,28 +1928,28 @@ Private Sub ASRDummyOptions_DblClick(Index As Integer)
 
 End Sub
 
-Private Sub ASRDummyOptions_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub ASRDummyOptions_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  WebFormControl_DragDrop ASRDummyOptions(Index), Source, X, Y
+  WebFormControl_DragDrop ASRDummyOptions(Index), Source, x, y
 End Sub
 
 Private Sub ASRDummyOptions_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer)
   Form_KeyDown KeyCode, Shift
 End Sub
 
-Private Sub ASRDummyOptions_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyOptions_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  WebFormControl_MouseDown ASRDummyOptions(Index), Button, Shift, X, Y
+  WebFormControl_MouseDown ASRDummyOptions(Index), Button, Shift, x, y
 End Sub
 
-Private Sub ASRDummyOptions_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyOptions_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  WebFormControl_MouseMove ASRDummyOptions(Index), Button, X, Y
+  WebFormControl_MouseMove ASRDummyOptions(Index), Button, x, y
 End Sub
 
-Private Sub ASRDummyOptions_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyOptions_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  WebFormControl_MouseUp ASRDummyOptions(Index), Button, Shift, X, Y
+  WebFormControl_MouseUp ASRDummyOptions(Index), Button, Shift, x, y
 End Sub
 
 Private Sub asrDummyTextBox_DblClick(Index As Integer)
@@ -1961,47 +1962,47 @@ Private Sub btnWorkflow_DblClick(Index As Integer)
 
 End Sub
 
-Private Sub btnWorkflow_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub btnWorkflow_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  WebFormControl_DragDrop btnWorkflow(Index), Source, X, Y
+  WebFormControl_DragDrop btnWorkflow(Index), Source, x, y
 End Sub
 
-Private Sub btnWorkflow_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub btnWorkflow_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  WebFormControl_MouseDown btnWorkflow(Index), Button, Shift, X, Y
+  WebFormControl_MouseDown btnWorkflow(Index), Button, Shift, x, y
 End Sub
 
-Private Sub btnWorkflow_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub btnWorkflow_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  WebFormControl_MouseMove btnWorkflow(Index), Button, X, Y
+  WebFormControl_MouseMove btnWorkflow(Index), Button, x, y
 End Sub
 
-Private Sub btnWorkflow_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub btnWorkflow_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  WebFormControl_MouseUp btnWorkflow(Index), Button, Shift, X, Y
+  WebFormControl_MouseUp btnWorkflow(Index), Button, Shift, x, y
 End Sub
 
-Private Sub asrDummyTextBox_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyTextBox_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  WebFormControl_DragDrop asrDummyTextBox(Index), Source, X, Y
+  WebFormControl_DragDrop asrDummyTextBox(Index), Source, x, y
 End Sub
 
-Private Sub asrDummyTextBox_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyTextBox_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  WebFormControl_MouseDown asrDummyTextBox(Index), Button, Shift, X, Y
+  WebFormControl_MouseDown asrDummyTextBox(Index), Button, Shift, x, y
 End Sub
 
-Private Sub asrDummyTextBox_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyTextBox_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  WebFormControl_MouseMove asrDummyTextBox(Index), Button, X, Y
+  WebFormControl_MouseMove asrDummyTextBox(Index), Button, x, y
 End Sub
 
-Private Sub asrDummyTextBox_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyTextBox_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  WebFormControl_MouseUp asrDummyTextBox(Index), Button, Shift, X, Y
+  WebFormControl_MouseUp asrDummyTextBox(Index), Button, Shift, x, y
 End Sub
 
-Private Sub ASRSelectionMarkers_Stretch(Index As Integer, Direction As String, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRSelectionMarkers_Stretch(Index As Integer, Direction As String, Button As Integer, Shift As Integer, x As Single, y As Single)
 
   Dim iCount As Integer
   Dim lngHeight As Long
@@ -2035,54 +2036,54 @@ Private Sub ASRSelectionMarkers_Stretch(Index As Integer, Direction As String, B
             Case "TopLeft"
               bCanStretch = (Not .HasLockedHeight) Or (Not .HasLockedWidth)
               
-              lngTop = IIf(Not .HasLockedHeight And (.Original_Height - Y > .AttachedObject.MinimumHeight), .Original_Top + Y, lngTop)
-              lngLeft = IIf(Not .HasLockedWidth And (.Original_Width - X > .AttachedObject.MinimumWidth), .Original_Left + X, lngLeft)
-              lngWidth = IIf(Not .HasLockedWidth And (.Original_Width - X > .AttachedObject.MinimumWidth), .Original_Width - X, lngWidth)
-              lngHeight = IIf(Not .HasLockedHeight And (.Original_Height - Y > .AttachedObject.MinimumHeight), .Original_Height - Y, lngHeight)
+              lngTop = IIf(Not .HasLockedHeight And (.Original_Height - y > .AttachedObject.MinimumHeight), .Original_Top + y, lngTop)
+              lngLeft = IIf(Not .HasLockedWidth And (.Original_Width - x > .AttachedObject.MinimumWidth), .Original_Left + x, lngLeft)
+              lngWidth = IIf(Not .HasLockedWidth And (.Original_Width - x > .AttachedObject.MinimumWidth), .Original_Width - x, lngWidth)
+              lngHeight = IIf(Not .HasLockedHeight And (.Original_Height - y > .AttachedObject.MinimumHeight), .Original_Height - y, lngHeight)
                 
             ' Stretch North
             Case "TopCentre"
-              bCanStretch = (.Original_Height - Y > .AttachedObject.MinimumHeight) And (Not .HasLockedHeight)
+              bCanStretch = (.Original_Height - y > .AttachedObject.MinimumHeight) And (Not .HasLockedHeight)
               
-              lngTop = .Original_Top + Y
-              lngHeight = .Original_Height - Y
+              lngTop = .Original_Top + y
+              lngHeight = .Original_Height - y
   
             ' Stretch North East
             Case "TopRight"
               bCanStretch = (Not .HasLockedHeight) Or (Not .HasLockedWidth)
 
-              lngTop = IIf(Not .HasLockedHeight And (.Original_Height - Y > .AttachedObject.MinimumHeight), .Original_Top + Y, lngTop)
-              lngWidth = IIf(Not .HasLockedWidth And (.Original_Width + X > .AttachedObject.MinimumWidth), .Original_Width + X, lngWidth)
-              lngHeight = IIf(Not .HasLockedHeight And (.Original_Height - Y > .AttachedObject.MinimumHeight), .Original_Height - Y, lngHeight)
+              lngTop = IIf(Not .HasLockedHeight And (.Original_Height - y > .AttachedObject.MinimumHeight), .Original_Top + y, lngTop)
+              lngWidth = IIf(Not .HasLockedWidth And (.Original_Width + x > .AttachedObject.MinimumWidth), .Original_Width + x, lngWidth)
+              lngHeight = IIf(Not .HasLockedHeight And (.Original_Height - y > .AttachedObject.MinimumHeight), .Original_Height - y, lngHeight)
               
             Case "CentreLeft"
-              bCanStretch = (.Original_Width - X > .AttachedObject.MinimumWidth And Not .HasLockedWidth)
+              bCanStretch = (.Original_Width - x > .AttachedObject.MinimumWidth And Not .HasLockedWidth)
 
-              lngLeft = .Original_Left + X
-              lngWidth = .Original_Width - X
+              lngLeft = .Original_Left + x
+              lngWidth = .Original_Width - x
             
             Case "CentreRight"
-              bCanStretch = (.Original_Width + X > .AttachedObject.MinimumWidth) And (Not .HasLockedWidth)
+              bCanStretch = (.Original_Width + x > .AttachedObject.MinimumWidth) And (Not .HasLockedWidth)
               
-              lngWidth = .Original_Width + X
+              lngWidth = .Original_Width + x
 
             Case "BottomLeft"
               bCanStretch = IIf(IsWithin(lngWidth, .AttachedObject.Width, iGridSize) And IsWithin(lngHeight, .AttachedObject.Height, iGridSize), False, True)
 
-              lngLeft = IIf(Not .HasLockedWidth And (.Original_Width - X > .AttachedObject.MinimumWidth), .Original_Left + X, lngLeft)
-              lngWidth = IIf(Not .HasLockedWidth And (.Original_Width - X > .AttachedObject.MinimumWidth), .Original_Width - X, lngWidth)
-              lngHeight = IIf(Not .HasLockedHeight And (.Original_Height + Y > .AttachedObject.MinimumHeight), .Original_Height + Y, lngHeight)
+              lngLeft = IIf(Not .HasLockedWidth And (.Original_Width - x > .AttachedObject.MinimumWidth), .Original_Left + x, lngLeft)
+              lngWidth = IIf(Not .HasLockedWidth And (.Original_Width - x > .AttachedObject.MinimumWidth), .Original_Width - x, lngWidth)
+              lngHeight = IIf(Not .HasLockedHeight And (.Original_Height + y > .AttachedObject.MinimumHeight), .Original_Height + y, lngHeight)
               
             Case "BottomCentre"
               bCanStretch = IIf(IsWithin(lngHeight, .AttachedObject.Height, iGridSize), True, Not .HasLockedHeight)
               
-              lngHeight = .Original_Height + Y
+              lngHeight = .Original_Height + y
   
             Case "BottomRight"
               bCanStretch = IIf(IsWithin(lngWidth, .AttachedObject.Width, iGridSize) And IsWithin(lngHeight, .AttachedObject.Height, iGridSize), False, True)
         
-              lngWidth = .Original_Width + X
-              lngHeight = .Original_Height + Y
+              lngWidth = .Original_Width + x
+              lngHeight = .Original_Height + y
 
           End Select
                   
@@ -2117,7 +2118,7 @@ CannotStretch:
 
 End Sub
 
-Private Sub ASRSelectionMarkers_StretchEnd(Index As Integer, Direction As String, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRSelectionMarkers_StretchEnd(Index As Integer, Direction As String, Button As Integer, Shift As Integer, x As Single, y As Single)
 
   Dim iCount As Integer
   
@@ -2146,7 +2147,7 @@ Private Sub ASRSelectionMarkers_StretchEnd(Index As Integer, Direction As String
   
 End Sub
 
-Private Sub ASRSelectionMarkers_StretchStart(Index As Integer, Direction As String, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRSelectionMarkers_StretchStart(Index As Integer, Direction As String, Button As Integer, Shift As Integer, x As Single, y As Single)
 
   Dim iCount As Integer
   
@@ -2161,8 +2162,8 @@ Private Sub ASRSelectionMarkers_StretchStart(Index As Integer, Direction As Stri
     Next iCount
   
     ' Store original x,y coordinates
-    mlngXOffset = X
-    mlngYOffset = Y
+    mlngXOffset = x
+    mlngYOffset = y
   End If
   
 End Sub
@@ -2828,13 +2829,13 @@ Private Sub Form_DblClick()
   
 End Sub
 
-Private Sub Form_DragDrop(Source As Control, X As Single, Y As Single)
+Private Sub Form_DragDrop(Source As Control, x As Single, y As Single)
 
   ' Drop a control onto the screen.
   On Error GoTo ErrorTrap
   
-  If CurrentPageContainer(X, Y) Is Me Then
-    If Not DropControl(Me, Source, X, Y, Source) Then
+  If CurrentPageContainer(x, y) Is Me Then
+    If Not DropControl(Me, Source, x, y, Source) Then
       MsgBox "Unable to drop the control." & vbCr & vbCr & _
         Err.Description, vbExclamation + vbOKOnly, App.ProductName
     End If
@@ -2920,7 +2921,7 @@ Private Sub Form_Initialize()
   End With
   
   ' Clear the tab strip.
-  TabPages.Tabs.Clear
+  tabPages.Tabs.Clear
   
   ' Disable the 'undo' menu option until we have somethig to undo.
   giLastActionFlag = giACTION_NOACTION
@@ -2964,7 +2965,7 @@ Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
   End If
 
   ' Ensure that the container controls are docked correctly
-  If TabPages.Selected Then
+  If tabPages.Selected Then
     DockPagesToTabStrip
   End If
 
@@ -3077,16 +3078,16 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
       If KeyCode = vbKeyDelete Then
       
         If SelectedControlsCount > 0 Then
-          If TabPages.Selected Then
-            DeleteTabPage TabPages.SelectedItem.Index, True
+          If tabPages.Selected Then
+            DeleteTabPage tabPages.SelectedItem.Index, True
             bHandled = True
           ElseIf Not DeleteSelectedControls Then
             MsgBox "Unable to delete controls." & vbCr & vbCr & _
               Err.Description, vbExclamation + vbOKOnly, App.ProductName
           End If
         Else
-          If TabPages.Tabs.Count > 0 Then
-            If Not DeleteTabPage(TabPages.SelectedItem.Index, True) Then
+          If tabPages.Tabs.Count > 0 Then
+            If Not DeleteTabPage(tabPages.SelectedItem.Index, True) Then
               MsgBox "Unable to delete the tab." & vbCr & vbCr & _
                 Err.Description, vbExclamation + vbOKOnly, App.ProductName
             Else
@@ -3253,15 +3254,15 @@ Public Sub EditMenu(ByVal psMenuOption As String)
       ' If there are no selected controls then the current tab page is deleted.
       ' If there are no selected controls and no tab pages then nothing happens.
       If SelectedControlsCount > 0 Then
-        If TabPages.Selected Then
-          DeleteTabPage TabPages.SelectedItem.Index, True
+        If tabPages.Selected Then
+          DeleteTabPage tabPages.SelectedItem.Index, True
         ElseIf Not DeleteSelectedControls Then
           MsgBox "Unable to delete controls." & vbCr & vbCr & _
             Err.Description, vbExclamation + vbOKOnly, App.ProductName
         End If
       Else
-        If TabPages.Tabs.Count > 0 Then
-          If Not DeleteTabPage(TabPages.SelectedItem.Index, True) Then
+        If tabPages.Tabs.Count > 0 Then
+          If Not DeleteTabPage(tabPages.SelectedItem.Index, True) Then
             MsgBox "Unable to delete the tab." & vbCr & vbCr & _
               Err.Description, vbExclamation + vbOKOnly, App.ProductName
           End If
@@ -3366,15 +3367,15 @@ ErrorTrap:
 
 End Sub
 
-Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   On Error GoTo ErrorTrap
   
   Dim fOK As Boolean
   Dim VarPageContainer As Variant
 
   ' Used to work out where to paste controls
-  mlngMouseX = X
-  mlngMouseY = Y
+  mlngMouseX = x
+  mlngMouseY = y
 
   ' Only handle left button presses here.
   If Button <> vbLeftButton Then
@@ -3388,8 +3389,8 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
     fOK = True
   End If
   
-  gLngMultiSelectionXStart = X
-  gLngMultiSelectionYStart = Y
+  gLngMultiSelectionXStart = x
+  gLngMultiSelectionYStart = y
       
   mlngLastX = gLngMultiSelectionXStart
   mlngLastY = gLngMultiSelectionYStart
@@ -3399,7 +3400,7 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
       
     gfMultiSelecting = True
       
-    Set VarPageContainer = CurrentPageContainer(X, Y)
+    Set VarPageContainer = CurrentPageContainer(x, y)
     
     ' Position and display the multi-selection box.
     With asrboxMultiSelection
@@ -3425,7 +3426,7 @@ ErrorTrap:
   
 End Sub
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
 
   ' Position and size the multi-selection lines as required.
   On Error GoTo ErrorTrap
@@ -3440,20 +3441,20 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
   If gfMultiSelecting Then
 
     ' Calculate the cordinates of the multi-selection area.
-    If X < gLngMultiSelectionXStart Then
-      lngLeft = X
+    If x < gLngMultiSelectionXStart Then
+      lngLeft = x
       lngRight = gLngMultiSelectionXStart
     Else
       lngLeft = gLngMultiSelectionXStart
-      lngRight = X
+      lngRight = x
     End If
       
-    If Y < gLngMultiSelectionYStart Then
-      lngTop = Y
+    If y < gLngMultiSelectionYStart Then
+      lngTop = y
       lngBottom = gLngMultiSelectionYStart
     Else
       lngTop = gLngMultiSelectionYStart
-      lngBottom = Y
+      lngBottom = y
     End If
 
     lngRightLimit = Me.Width - (2 * XFrame) - XBorder
@@ -3526,7 +3527,7 @@ ErrorTrap:
 
 End Sub
 
-Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select control that lie within the multi-selection area.
   On Error GoTo ErrorTrap
   
@@ -3635,8 +3636,8 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As 
       
       ' If no controls selected, try and select the tab page
       If iControlsSelected = 0 And bOnTagePage Then
-        TabPages.Selected = True
-        SelectControl TabPages
+        tabPages.Selected = True
+        SelectControl tabPages
       End If
       
       ' Disassociate object variables.
@@ -3824,14 +3825,14 @@ ErrorTrap:
 
 End Sub
 
-Private Sub asrDummyFrame_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyFrame_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  WebFormControl_DragDrop asrDummyFrame(Index), Source, X, Y
+  WebFormControl_DragDrop asrDummyFrame(Index), Source, x, y
 End Sub
 
-Private Sub asrDummyImage_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyImage_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  WebFormControl_DragDrop asrDummyImage(Index), Source, X, Y
+  WebFormControl_DragDrop asrDummyImage(Index), Source, x, y
 End Sub
 
 Private Function DeleteTabPage(piTabIndex As Integer, pfPromptUser As Boolean) As Boolean
@@ -3855,8 +3856,8 @@ Private Function DeleteTabPage(piTabIndex As Integer, pfPromptUser As Boolean) A
   objContainer.SetFocus
   
   ' Get the given tab page's container control.
-  Set ctlPageContainer = objTabContainer(TabPages.SelectedItem.Tag)
-  strCaption = TabPages.TabPage(TabPages.SelectedItem.Index).Caption
+  Set ctlPageContainer = objTabContainer(tabPages.SelectedItem.Tag)
+  strCaption = tabPages.TabPage(tabPages.SelectedItem.Index).Caption
     
   ' Construct an array of the given tab page's screen controls.
   ReDim actlScreenControls(0)
@@ -3928,22 +3929,22 @@ Private Function DeleteTabPage(piTabIndex As Integer, pfPromptUser As Boolean) A
       objTabContainer(piTabIndex).Visible = False
   
       ' Remember the tabpage caption.
-      gsUndo_TabPageCaption = TabPages.TabPage(piTabIndex).Caption
+      gsUndo_TabPageCaption = tabPages.TabPage(piTabIndex).Caption
       
       ' Remove the tab from the tabstrip.
-      TabPages.RemoveTab piTabIndex
+      tabPages.RemoveTab piTabIndex
   
       ' Hide the tabstrip if we now have no tabs left.
       ' Otherwise select the first tab page.
-      If TabPages.Tabs.Count = 0 Then
+      If tabPages.Tabs.Count = 0 Then
       
         For Each objContainer In objTabContainer
           objContainer.Visible = False
         Next
       
-        TabPages.Visible = False
+        tabPages.Visible = False
       Else
-        TabPages.TabPage(1).Selected = True
+        tabPages.TabPage(1).Selected = True
         tabPages_Click
       End If
           
@@ -4279,14 +4280,14 @@ Public Property Let PageNo(piPageNumber As Integer)
   Dim ctlPictureBox As PictureBox
   
   ' Do nothing if there are no tabpages.
-  If TabPages.Tabs.Count > 0 Then
+  If tabPages.Tabs.Count > 0 Then
     
     ' If the given page number is not valid, just select the first page.
-    If piPageNumber > TabPages.Tabs.Count Then
+    If piPageNumber > tabPages.Tabs.Count Then
       piPageNumber = 1
     End If
     
-    iPageTag = TabPages.SelectedItem.Index
+    iPageTag = tabPages.SelectedItem.Index
     
     ' Position and size the picture box containers of the tabstrip.
     For Each ctlPictureBox In objTabContainer
@@ -4303,7 +4304,7 @@ Public Property Let PageNo(piPageNumber As Integer)
     Next ctlPictureBox
     
     'tabPages.Tabs(piPageNumber).Selected = True
-    TabPages.Tabs.Item(piPageNumber).Selected = True
+    tabPages.Tabs.Item(piPageNumber).Selected = True
       
     ' If the page has changed then ensure that the old page
     ' controls are deselected.
@@ -4338,10 +4339,10 @@ Public Property Get PageNo() As Integer
   
   Dim iPageNo As Integer
   
-  If TabPages.Tabs.Count = 0 Then
+  If tabPages.Tabs.Count = 0 Then
     iPageNo = 0
   Else
-    iPageNo = TabPages.SelectedItem.Index
+    iPageNo = tabPages.SelectedItem.Index
   End If
   
 TidyUpAndExit:
@@ -4843,8 +4844,8 @@ Private Function PasteControls() As Boolean
   UI.LockWindow Me.hWnd
   
   ' Get the current page container.
-  If TabPages.Selected Then
-    Set VarPageContainer = objTabContainer(TabPages.SelectedItem.Tag)
+  If tabPages.Selected Then
+    Set VarPageContainer = objTabContainer(tabPages.SelectedItem.Tag)
   Else
     Set VarPageContainer = CurrentPageContainer(0, 0)
   End If
@@ -5021,9 +5022,9 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
     Exit Function
   End If
  
-  If TabPages.Tabs.Count > 0 Then
+  If tabPages.Tabs.Count > 0 Then
     'iOriginalPageNumber = tabPages.Tabs(piPageNumber).Tag
-    iOriginalPageNumber = TabPages.TabPage(piPageNumber).Tag
+    iOriginalPageNumber = tabPages.TabPage(piPageNumber).Tag
   Else
     iOriginalPageNumber = 0
   End If
@@ -5274,23 +5275,23 @@ Private Function AddTabPage(ByVal Captions As String) As VB.Control
   aryCaptions = Split(Captions, ";")
   lngCount = 0
   For lngCount = LBound(aryCaptions) To UBound(aryCaptions) - 1
-    TabPages.AddTabPage aryCaptions(lngCount)
-    TabPages.TabPage(lngCount + 1).Tag = lngCount + 1
+    tabPages.AddTabPage aryCaptions(lngCount)
+    tabPages.TabPage(lngCount + 1).Tag = lngCount + 1
     
-    Load objTabContainer(TabPages.Tabs.Count)
-    With objTabContainer(TabPages.Tabs.Count)
+    Load objTabContainer(tabPages.Tabs.Count)
+    With objTabContainer(tabPages.Tabs.Count)
       .BorderStyle = 0
-      .Left = TabPages.Left + 50
-      .Top = TabPages.Top + 100
-      .Width = TabPages.Width - 100
-      .Height = TabPages.Height - 100
+      .Left = tabPages.Left + 50
+      .Top = tabPages.Top + 100
+      .Width = tabPages.Width - 100
+      .Height = tabPages.Height - 100
       .BackColor = mwfElement.WebFormBGColor
     End With
     
   Next
 
-  Set AddTabPage = TabPages
-  TabPages.Visible = True
+  Set AddTabPage = tabPages
+  tabPages.Visible = True
 
 TidyUpAndExit:
   Exit Function
@@ -5602,6 +5603,7 @@ Private Function SaveWebFormProperties(pwfElement As COAWF_Webform) As Boolean
   pwfElement.WFSavedForLaterMessage = Me.WFSavedForLaterMessage
   pwfElement.WFFollowOnFormsMessageType = Me.WFFollowOnFormsMessageType
   pwfElement.WFFollowOnFormsMessage = Me.WFFollowOnFormsMessage
+  pwfElement.RequiresAuthentication = Me.RequiresAuthentication
   
   pwfElement.Validations = Me.Validations
 
@@ -7088,7 +7090,7 @@ ErrorTrap:
   
 End Function
 
-Private Function WebFormControl_MouseUp(pctlControl As VB.Control, piButton As Integer, piShift As Integer, X As Single, Y As Single) As Boolean
+Private Function WebFormControl_MouseUp(pctlControl As VB.Control, piButton As Integer, piShift As Integer, x As Single, y As Single) As Boolean
   
   ' Actually move the selected controls to the positions of their movement frames.
   On Error GoTo ErrorTrap
@@ -7323,24 +7325,24 @@ ErrorTrap:
   
 End Function
 
-Private Sub ASRDummyLine_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub ASRDummyLine_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  WebFormControl_DragDrop ASRDummyLine(Index), Source, X, Y
+  WebFormControl_DragDrop ASRDummyLine(Index), Source, x, y
 End Sub
 
-Private Sub ASRDummyLine_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyLine_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  WebFormControl_MouseDown ASRDummyLine(Index), Button, Shift, X, Y
+  WebFormControl_MouseDown ASRDummyLine(Index), Button, Shift, x, y
 End Sub
 
-Private Sub ASRDummyLine_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyLine_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  WebFormControl_MouseMove ASRDummyLine(Index), Button, X, Y
+  WebFormControl_MouseMove ASRDummyLine(Index), Button, x, y
 End Sub
 
-Private Sub ASRDummyLine_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyLine_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  WebFormControl_MouseUp ASRDummyLine(Index), Button, Shift, X, Y
+  WebFormControl_MouseUp ASRDummyLine(Index), Button, Shift, x, y
 End Sub
 
 Private Sub ASRDummyGrid_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer)
@@ -7509,7 +7511,7 @@ Public Function LoadWebFormItems() As Boolean
   
       ' Create the new control.
       If iWFItemType = giWFFORMITEM_PAGETAB Then
-        Set ctlControl = TabPages
+        Set ctlControl = tabPages
       Else
         Set ctlControl = AddControl(iWFItemType)
       End If
@@ -7699,8 +7701,8 @@ Public Function LoadWebFormItems() As Boolean
           For Each objPageTab In objTabContainer
             objPageTab.Top = 400 'PixelsToTwips(CLng(tabPages.ClientTop))
             objPageTab.Left = 100 'PixelsToTwips(CLng(tabPages.ClientLeft))
-            objPageTab.Width = TabPages.Width - 200
-            objPageTab.Height = TabPages.Height - 500
+            objPageTab.Width = tabPages.Width - 200
+            objPageTab.Height = tabPages.Height - 500
           Next
         End If
        
@@ -8054,6 +8056,7 @@ Private Function LoadWebForm() As Boolean
     Me.WFSavedForLaterMessage = mwfElement.WFSavedForLaterMessage
     Me.WFFollowOnFormsMessageType = mwfElement.WFFollowOnFormsMessageType
     Me.WFFollowOnFormsMessage = mwfElement.WFFollowOnFormsMessage
+    Me.RequiresAuthentication = mwfElement.RequiresAuthentication
   
     Me.Validations = mwfElement.Validations
   End If
@@ -8189,7 +8192,7 @@ Private Function BringSelectedControlsToFront()
   Next iCount
 
   ' Tab container should be topped
-  If TabPages.Tabs.Count > 0 Then
+  If tabPages.Tabs.Count > 0 Then
     tabPages_Click
   End If
 
@@ -8209,7 +8212,7 @@ Private Function RestoreAllControls()
   Next iCount
 
   ' Tab container should be topped
-  If TabPages.Tabs.Count > 0 Then
+  If tabPages.Tabs.Count > 0 Then
     tabPages_Click
   End If
 
@@ -8732,28 +8735,36 @@ Public Property Let TimeoutExcludeWeekend(ByVal pfNewValue As Boolean)
   mfTimeoutExcludeWeekend = pfNewValue
 End Property
 
+Public Property Get RequiresAuthentication() As Boolean
+  RequiresAuthentication = mfRequiresAuthentication
+End Property
+
+Public Property Let RequiresAuthentication(ByVal pfNewValue As Boolean)
+  mfRequiresAuthentication = pfNewValue
+End Property
+
 Private Sub lblBlankDesigner_DblClick()
   Form_DblClick
   
 End Sub
 
-Private Sub lblBlankDesigner_DragDrop(Source As Control, X As Single, Y As Single)
-  Form_DragDrop Source, X + lblBlankDesigner.Left, Y + lblBlankDesigner.Top
+Private Sub lblBlankDesigner_DragDrop(Source As Control, x As Single, y As Single)
+  Form_DragDrop Source, x + lblBlankDesigner.Left, y + lblBlankDesigner.Top
 End Sub
 
-Private Sub lblBlankDesigner_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-  Form_MouseDown Button, Shift, X + lblBlankDesigner.Left, Y + lblBlankDesigner.Top
+Private Sub lblBlankDesigner_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+  Form_MouseDown Button, Shift, x + lblBlankDesigner.Left, y + lblBlankDesigner.Top
   
 End Sub
 
-Private Sub lblBlankDesigner_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-  Form_MouseMove Button, Shift, X + lblBlankDesigner.Left, Y + lblBlankDesigner.Top
+Private Sub lblBlankDesigner_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+  Form_MouseMove Button, Shift, x + lblBlankDesigner.Left, y + lblBlankDesigner.Top
 
 End Sub
 
 
-Private Sub lblBlankDesigner_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
-  Form_MouseUp Button, Shift, X + lblBlankDesigner.Left, Y + lblBlankDesigner.Top
+Private Sub lblBlankDesigner_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+  Form_MouseUp Button, Shift, x + lblBlankDesigner.Left, y + lblBlankDesigner.Top
 
 End Sub
 
@@ -8788,7 +8799,7 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
   Dim iContainerIndex As Integer
   
   ' Do not exceed the maximum number of pages.
-  If TabPages.Tabs.Count = giMAXTABS Then
+  If tabPages.Tabs.Count = giMAXTABS Then
     ' Flag the error to the user if we are not just loading the screen.
     MsgBox "Unable to add more than " & Trim(Str(giMAXTABS)) & " page tabs."
     
@@ -8798,18 +8809,18 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
   
   ' Get the index of the new tab page.
   If (IsMissing(piTabPageIndex)) Or (piTabPageIndex = 0) Then
-    piTabPageIndex = TabPages.Tabs.Count + 1
-  ElseIf (piTabPageIndex > TabPages.Tabs.Count + 1) Then
-    piTabPageIndex = TabPages.Tabs.Count + 1
+    piTabPageIndex = tabPages.Tabs.Count + 1
+  ElseIf (piTabPageIndex > tabPages.Tabs.Count + 1) Then
+    piTabPageIndex = tabPages.Tabs.Count + 1
   End If
    
   iContainerIndex = objTabContainer.UBound + 1
    
   ' If we are adding the first tab page then move all existing controls onto this page
-  If TabPages.Tabs.Count = 0 Then
+  If tabPages.Tabs.Count = 0 Then
   
     ' Add the new tab, and initialise its caption.
-    TabPages.AddTabPage "Page 1"
+    tabPages.AddTabPage "Page 1"
        
     ' Move all screen controls onto the new tab page's picture container.
     GetControlLevel (Me.hWnd)
@@ -8819,8 +8830,8 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
       .BorderStyle = 0
       .Left = 50
       .Top = 50
-      .Width = TabPages.Width - 100
-      .Height = TabPages.Height - 100
+      .Width = tabPages.Width - 100
+      .Height = tabPages.Height - 100
       .Visible = True
       .BackColor = mwfElement.WebFormBGColor
       .ZOrder vbSendToBack
@@ -8846,7 +8857,7 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
     ' form dimensions to allow for the tabs.
     If fControlsMoved Then
       With Me
-        .Height = .Height + (TabPages.Height - TabPages.ClientHeight) + (2 * YFrame)
+        .Height = .Height + (tabPages.Height - tabPages.ClientHeight) + (2 * YFrame)
         .Width = .Width + (4 * XFrame)
       End With
     
@@ -8861,7 +8872,7 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
     
   Else
     ' Add the new tab.
-    TabPages.AddTabPage "Page " & TabPages.Tabs.Count + 1
+    tabPages.AddTabPage "Page " & tabPages.Tabs.Count + 1
        
     Load objTabContainer(iContainerIndex)
     With objTabContainer(iContainerIndex)
@@ -8878,7 +8889,7 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
   End If
   
   ' Set the 'tag' property of the tab page. We use to relate a tab page with its associated picture container control.
-  TabPages.TabPage(piTabPageIndex).Tag = iContainerIndex
+  tabPages.TabPage(piTabPageIndex).Tag = iContainerIndex
 
   ' Resize the tab strip only the first time
   If piTabPageIndex = 1 Then
@@ -8887,10 +8898,10 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
     fOK = True
   End If
   
-  TabPages.Visible = True
+  tabPages.Visible = True
   
   ' Select the new page if we are not just loading the screen.
-  TabPages.TabPage(piTabPageIndex).Selected = True
+  tabPages.TabPage(piTabPageIndex).Selected = True
   tabPages_Click
   
 TidyUpAndExit:
@@ -8915,8 +8926,8 @@ Public Sub DockPagesToTabStrip()
     
     ' Position and size the picture box containers of the tabstrip.
     If ctlPictureBox.Index > 0 Then
-      ctlPictureBox.Move TabPages.Left + TabPages.ClientLeft, TabPages.Top + TabPages.ClientTop, _
-        TabPages.ClientWidth, TabPages.ClientHeight
+      ctlPictureBox.Move tabPages.Left + tabPages.ClientLeft, tabPages.Top + tabPages.ClientTop, _
+        tabPages.ClientWidth, tabPages.ClientHeight
     End If
   
   Next ctlPictureBox
@@ -8932,7 +8943,7 @@ Private Function TabPages_Resize() As Boolean
   Dim fOK As Boolean
   
   ' Position and size the tabstrip to fill the form's client area.
-  TabPages.Move XFrame, YFrame, Me.ScaleWidth - (XFrame * 2), Me.ScaleHeight - (YFrame * 2)
+  tabPages.Move XFrame, YFrame, Me.ScaleWidth - (XFrame * 2), Me.ScaleHeight - (YFrame * 2)
 
   DockPagesToTabStrip
   fOK = True
@@ -8955,7 +8966,7 @@ Private Function tabPages_ResizeSmall() As Boolean
   Dim fOK As Boolean
   
   ' Position and size the tabstrip to fill the form's client area.
-  TabPages.Move XFrame, YFrame, Me.ScaleWidth - (XFrame * 2), Me.ScaleHeight - (YFrame * 2)
+  tabPages.Move XFrame, YFrame, Me.ScaleWidth - (XFrame * 2), Me.ScaleHeight - (YFrame * 2)
   'tabPages.Move XFrame, YFrame, 1000, 1000
   
   DockPagesToTabStrip
@@ -8983,12 +8994,12 @@ Private Sub objTabContainer_DblClick(Index As Integer)
     tabPages_Click
 End Sub
 
-Private Sub objTabContainer_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub objTabContainer_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
 
   ' Drop a control onto the screen.
   On Error GoTo ErrorTrap
   
-  If Not DropControl(objTabContainer(Index), Source, X, Y, Nothing) Then
+  If Not DropControl(objTabContainer(Index), Source, x, y, Nothing) Then
     MsgBox "Unable to drop the control." & vbCr & vbCr & _
       Err.Description, vbExclamation + vbOKOnly, App.ProductName
   End If
@@ -9002,20 +9013,20 @@ ErrorTrap:
 
 End Sub
 
-Private Sub objTabContainer_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub objTabContainer_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Pass the MouseDown event to the parent form.
   mbFromTabPage = True
-  Form_MouseDown Button, Shift, TabPages.Left + X + TabPages.ClientLeft, TabPages.Top + Y + TabPages.ClientTop
+  Form_MouseDown Button, Shift, tabPages.Left + x + tabPages.ClientLeft, tabPages.Top + y + tabPages.ClientTop
 End Sub
 
-Private Sub objTabContainer_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub objTabContainer_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Pass the MouseMove event to the parent form.
-  Form_MouseMove Button, Shift, TabPages.Left + X + TabPages.ClientLeft, TabPages.Top + Y + TabPages.ClientTop
+  Form_MouseMove Button, Shift, tabPages.Left + x + tabPages.ClientLeft, tabPages.Top + y + tabPages.ClientTop
 End Sub
 
-Private Sub objTabContainer_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub objTabContainer_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Pass the MouseUp event to the parent form.
-  Form_MouseUp Button, Shift, TabPages.Left + X + TabPages.ClientLeft, TabPages.Top + Y + TabPages.ClientTop
+  Form_MouseUp Button, Shift, tabPages.Left + x + tabPages.ClientLeft, tabPages.Top + y + tabPages.ClientTop
   mbFromTabPage = False
 End Sub
 
@@ -9025,12 +9036,12 @@ Public Sub tabPages_Click()
   Dim iOldPage As Integer
   Dim ctlPictureBox As PictureBox
 
-  TabPages.Enabled = False
+  tabPages.Enabled = False
   Screen.MousePointer = vbHourglass
 
   ' Set the active page.
-  If TabPages.Tabs.Count > 0 Then
-    mlngCurrentPageNo = TabPages.SelectedItem.Tag
+  If tabPages.Tabs.Count > 0 Then
+    mlngCurrentPageNo = tabPages.SelectedItem.Tag
 
     For Each ctlPictureBox In objTabContainer
     With ctlPictureBox
@@ -9049,13 +9060,13 @@ Public Sub tabPages_Click()
     mlngCurrentPageNo = 0
   End If
 
-  TabPages.Enabled = True
+  tabPages.Enabled = True
   Screen.MousePointer = vbDefault
 
 End Sub
 
-Private Sub tabPages_DragDrop(Source As Control, X As Single, Y As Single)
-  WebFormControl_DragDrop TabPages, Source, X, Y
+Private Sub tabPages_DragDrop(Source As Control, x As Single, y As Single)
+  WebFormControl_DragDrop tabPages, Source, x, y
 End Sub
 
 Private Sub tabPages_GotFocus()
@@ -9067,7 +9078,7 @@ Private Sub tabPages_GotFocus()
   End If
 
   ' Deselect all controls.
-  If TabPages.Tabs.Count > 0 Then
+  If tabPages.Tabs.Count > 0 Then
 
     DeselectAllControls
       
@@ -9093,8 +9104,8 @@ Public Function GetControlPageNo(pctlControl As VB.Control) As Integer
   
   iPageNo = 0
         
-  If (TabPages.Tabs.Count > 0) And (Not pctlControl.Container Is Me) Then
-    For Each objTabPage In TabPages.Tabs
+  If (tabPages.Tabs.Count > 0) And (Not pctlControl.Container Is Me) Then
+    For Each objTabPage In tabPages.Tabs
       If objTabPage.Tag = pctlControl.Container.Index Then
         iPageNo = objTabPage.Index
       End If
@@ -9114,21 +9125,21 @@ ErrorTrap:
   
 End Function
 
-Private Function CurrentPageContainer(X As Single, Y As Single) As Variant
+Private Function CurrentPageContainer(x As Single, y As Single) As Variant
   ' Return the current page container.
   Dim bSelectTab As Boolean
   
   bSelectTab = False
   
-  If TabPages.Tabs.Count > 0 And TabPages.Selected Then
-    If X > TabPages.ClientLeft And X < TabPages.ClientLeft + TabPages.ClientWidth _
-      And Y > TabPages.ClientTop And Y < TabPages.ClientTop + TabPages.ClientHeight Then
+  If tabPages.Tabs.Count > 0 And tabPages.Selected Then
+    If x > tabPages.ClientLeft And x < tabPages.ClientLeft + tabPages.ClientWidth _
+      And y > tabPages.ClientTop And y < tabPages.ClientTop + tabPages.ClientHeight Then
         bSelectTab = True
     End If
   End If
   
   If bSelectTab Then
-    Set CurrentPageContainer = objTabContainer(TabPages.SelectedItem.Tag)
+    Set CurrentPageContainer = objTabContainer(tabPages.SelectedItem.Tag)
   Else
     Set CurrentPageContainer = Me
   End If
@@ -9210,9 +9221,9 @@ Private Sub AutoDockInTabControl(ByRef pObjControl As Control)
   Y1 = pObjControl.Top
   Y2 = pObjControl.Top + pObjControl.Height
 
-  If TabPages.Tabs.Count > 0 And pObjControl.Container Is Me Then
-    If X1 > TabPages.ClientLeft + TabPages.Left And X2 < TabPages.ClientLeft + TabPages.Left + TabPages.ClientWidth _
-      And Y1 > TabPages.ClientTop + TabPages.Top And Y2 < TabPages.ClientTop + TabPages.Top + TabPages.ClientHeight Then
+  If tabPages.Tabs.Count > 0 And pObjControl.Container Is Me Then
+    If X1 > tabPages.ClientLeft + tabPages.Left And X2 < tabPages.ClientLeft + tabPages.Left + tabPages.ClientWidth _
+      And Y1 > tabPages.ClientTop + tabPages.Top And Y2 < tabPages.ClientTop + tabPages.Top + tabPages.ClientHeight Then
         bIsContained = True
     End If
   End If
@@ -9220,10 +9231,10 @@ Private Sub AutoDockInTabControl(ByRef pObjControl As Control)
   
   ' Yup - autodock it!
   If bIsContained Then
-    Set pObjControl.Container = objTabContainer(TabPages.SelectedItem.Tag)
+    Set pObjControl.Container = objTabContainer(tabPages.SelectedItem.Tag)
     
-    pObjControl.Top = pObjControl.Top - TabPages.ClientTop - TabPages.Top
-    pObjControl.Left = pObjControl.Left - TabPages.ClientLeft - TabPages.Left
+    pObjControl.Top = pObjControl.Top - tabPages.ClientTop - tabPages.Top
+    pObjControl.Left = pObjControl.Left - tabPages.ClientLeft - tabPages.Left
         
     For Each ctlMarker In ASRSelectionMarkers
       With ctlMarker
@@ -9277,6 +9288,6 @@ Public Function WebformControl_HasNavigation(piControlType As Long) As Boolean
   WebformControl_HasNavigation = (piControlType = giCTRL_NAVIGATION)
 End Function
 
-Private Sub TabPages_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub TabPages_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   tabPages_Click
 End Sub

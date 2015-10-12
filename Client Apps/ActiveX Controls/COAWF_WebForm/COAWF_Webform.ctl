@@ -227,6 +227,7 @@ Private miSavedForLaterMessageType As MessageType
 Private msSavedForLaterMessage As String
 Private miFollowOnFormsMessageType As MessageType
 Private msFollowOnFormsMessage As String
+Private mbRequiresAuthentication As Boolean
 
 ' WebForm/Email specific properties
 Private masItems() As String
@@ -915,3 +916,12 @@ Public Property Let WFFollowOnFormsMessage(ByVal psNewValue As String)
   msFollowOnFormsMessage = psNewValue
 
 End Property
+
+Public Property Get RequiresAuthentication() As Boolean
+  RequiresAuthentication = mbRequiresAuthentication
+End Property
+
+Public Property Let RequiresAuthentication(ByVal pbNewValue As Boolean)
+  mbRequiresAuthentication = pbNewValue
+End Property
+

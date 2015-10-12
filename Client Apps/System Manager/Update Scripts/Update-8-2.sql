@@ -177,6 +177,13 @@ PRINT 'Step - Export additions'
 		EXEC sp_executesql N'ALTER TABLE ASRSysExportName ADD SplitFileSize int;';
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - Workflow additions'
+/* ------------------------------------------------------- */
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElements', 'U') AND name = 'RequiresAuthentication')
+		EXEC sp_executesql N'ALTER TABLE ASRSysWorkflowElements ADD RequiresAuthentication bit NULL;';
+
 
 
 PRINT 'Final Step - Updating Versions'

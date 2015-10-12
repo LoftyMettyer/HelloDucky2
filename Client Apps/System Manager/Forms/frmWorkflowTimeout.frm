@@ -4,13 +4,13 @@ Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
-Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "coa_workingpattern.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
 Begin VB.Form frmWorkflowTimeout 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Web Form Item Properties"
-   ClientHeight    =   10590
+   ClientHeight    =   10905
    ClientLeft      =   45
    ClientTop       =   435
    ClientWidth     =   8880
@@ -30,12 +30,12 @@ Begin VB.Form frmWorkflowTimeout
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   10590
+   ScaleHeight     =   10905
    ScaleWidth      =   8880
    ShowInTaskbar   =   0   'False
    Begin COAColourPicker.COA_ColourPicker colPickDlg 
       Left            =   2280
-      Top             =   10000
+      Top             =   10320
       _ExtentX        =   820
       _ExtentY        =   820
    End
@@ -44,7 +44,7 @@ Begin VB.Form frmWorkflowTimeout
       Height          =   400
       Left            =   6195
       TabIndex        =   62
-      Top             =   10005
+      Top             =   10320
       Width           =   2600
       Begin VB.CommandButton cmdOk 
          Caption         =   "&OK"
@@ -66,13 +66,13 @@ Begin VB.Form frmWorkflowTimeout
       End
    End
    Begin TabDlg.SSTab ssTabStrip 
-      Height          =   9795
+      Height          =   10140
       Left            =   90
       TabIndex        =   65
       Top             =   105
       Width           =   8700
       _ExtentX        =   15346
-      _ExtentY        =   17277
+      _ExtentY        =   17886
       _Version        =   393216
       Style           =   1
       TabHeight       =   520
@@ -926,10 +926,10 @@ Begin VB.Form frmWorkflowTimeout
       Begin VB.PictureBox picTabContainer 
          BackColor       =   &H80000010&
          BorderStyle     =   0  'None
-         Height          =   9300
+         Height          =   9690
          Index           =   0
          Left            =   150
-         ScaleHeight     =   9300
+         ScaleHeight     =   9690
          ScaleWidth      =   8400
          TabIndex        =   0
          TabStop         =   0   'False
@@ -937,11 +937,19 @@ Begin VB.Form frmWorkflowTimeout
          Width           =   8400
          Begin VB.Frame fraBehaviour 
             Caption         =   "Behaviour : "
-            Height          =   2300
+            Height          =   2670
             Left            =   0
             TabIndex        =   41
             Top             =   6960
             Width           =   8000
+            Begin VB.CheckBox chkRequireAuthentication 
+               Caption         =   "Form requires authenticating before proceeding"
+               Height          =   300
+               Left            =   180
+               TabIndex        =   188
+               Top             =   2235
+               Width           =   4650
+            End
             Begin VB.ComboBox cboFollowOnFormsMessageType 
                Height          =   315
                ItemData        =   "frmWorkflowTimeout.frx":0088
@@ -2114,7 +2122,7 @@ Begin VB.Form frmWorkflowTimeout
    End
    Begin MSComDlg.CommonDialog comDlgBox 
       Left            =   240
-      Top             =   10000
+      Top             =   10320
       _ExtentX        =   847
       _ExtentY        =   847
       _Version        =   393216
@@ -2126,7 +2134,7 @@ Begin VB.Form frmWorkflowTimeout
       Height          =   255
       Left            =   840
       TabIndex        =   185
-      Top             =   10005
+      Top             =   10320
       Visible         =   0   'False
       Width           =   1305
       WordWrap        =   -1  'True
@@ -4893,7 +4901,7 @@ Private Sub RefreshScreen()
   
   fOKToSave = mfChanged And (Not mfReadOnly)
   
-  cmdOk.Enabled = fOKToSave
+  cmdOK.Enabled = fOKToSave
 
 End Sub
 
@@ -5219,6 +5227,11 @@ Private Sub SaveProperties()
     
     varControl.WFFollowOnFormsMessage = IIf(fMessageOK, msFollowOnFormsMessage, "")
   End If
+  
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_REQUIRESAUTHENTICATION) Then
+    varControl.RequiresAuthentication = chkRequireAuthentication
+  End If
+  
   
   '--------------------------------------------------
   ' HotSpot frame
@@ -6180,6 +6193,10 @@ End Sub
 Private Sub chkPasswordType_Click()
   Changed = True
 
+End Sub
+
+Private Sub chkRequireAuthentication_Click()
+  Changed = True
 End Sub
 
 Private Sub chkUseAsTargetIdentifier_Click()
@@ -9376,6 +9393,26 @@ Private Function FormatScreen_Frame_Behaviour() As Boolean
     sngCurrentControlTop = sngCurrentControlTop _
       + YGAP_CONTROL_CONTROL
   End If
+    
+    
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_REQUIRESAUTHENTICATION) Then
+  
+    With chkRequireAuthentication
+      .Top = sngCurrentControlTop + YGAP_CONTROL_LABEL
+      .Left = X_COLUMN1
+      .Visible = True
+      
+      If miItemType = giWFFORMITEM_FORM Then
+        .value = IIf(mfrmCallingForm.RequiresAuthentication, vbChecked, vbUnchecked)
+      Else
+        .value = vbUnchecked
+      End If
+    End With
+    
+    sngCurrentControlTop = sngCurrentControlTop _
+      + YGAP_CONTROL_CONTROL
+  
+  End If
   
   ' Format the frame
   With fraBehaviour
@@ -10854,13 +10891,13 @@ End Sub
 Private Sub txtControlValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 Private Sub txtControlValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -11008,14 +11045,14 @@ End Sub
 Private Sub txtFileExtensions_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 
 Private Sub txtFileExtensions_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
