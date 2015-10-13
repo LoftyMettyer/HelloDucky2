@@ -57,5 +57,6 @@
 	[Attachment_DBRecord] [int] NULL,
 	[Attachment_DBElement] [varchar](200) NULL,
 	[Attachment_DBValue] [varchar](200) NULL, 
-    [UseAsTargetIdentifier] BIT NULL
+    [UseAsTargetIdentifier] BIT NULL, 
+    [RequiresAuthentication] BIT NULL
 ) ON [PRIMARY]
