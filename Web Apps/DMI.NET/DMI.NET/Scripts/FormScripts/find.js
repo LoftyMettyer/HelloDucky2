@@ -582,12 +582,17 @@ function find_window_onload() {
 					}
 				});
 
+				var selectAllHeaderCheckbox = false;
+	
 				// Navbar options = i.e. search, edit, save etc 
 				$("#findGridTable").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false, refresh: false }); // setup the buttons we want
 				$("#findGridTable").jqGrid('filterToolbar', {
 					stringResult: true,
 					searchOnEnter: false,
-					afterSearch: function () { RefreshFindGridToolbar(); }
+					beforeSearch: function () { if (IsMultiSelectionModeOn()) { selectAllHeaderCheckbox = $("#cb_findGridTable")[0].checked; } },
+					afterSearch: function () { RefreshFindGridToolbar(); if (selectAllHeaderCheckbox) { ResetSelectALLCheckboxAfterSearch(); } },
+					beforeClear: function () { if (IsMultiSelectionModeOn()) { selectAllHeaderCheckbox = $("#cb_findGridTable")[0].checked; } },
+					afterClear: function () { if (selectAllHeaderCheckbox) { ResetSelectALLCheckboxAfterSearch(); } },
 				});  //instantiate toolbar so we can use toggle.
 				$("#findGridTable")[0].toggleToolbar();  // Toggle it off at start up.
 
@@ -596,7 +601,7 @@ function find_window_onload() {
 					caption: '',
 					buttonicon: 'icon-search',
 					onClickButton: function () {
-
+				
 						$("#findGridTable")[0].toggleToolbar(); // Toggle toolbar on & off when Search button is pressed.
 						$("#findGridTable")[0].clearToolbar(); // clear menu
 						
@@ -904,6 +909,17 @@ function selectedRecordID() {
 /* Return the list of id's of the records selected in the find form. */
 function selectedRecordIDs() {
 	return $("#findGridTable").getGridParam('selarrrow');
+}
+
+/* Reset the select all checkbox if previously selected after applying the search on the find grid */
+function ResetSelectALLCheckboxAfterSearch() {
+	if (IsMultiSelectionModeOn()) {
+		var totalRecords = $("#findGridTable").getGridParam("reccount");
+		var totalSelectedRecords = selectedRecordIDs().length;
+		if (totalRecords > 0 && totalRecords == totalSelectedRecords) {
+			$("#cb_findGridTable")[0].checked = true;
+		}
+	}
 }
 
 
