@@ -1177,19 +1177,14 @@ Namespace Controllers
 
 		<ValidateAntiForgeryToken()>
 		<HttpPost>
-		Function DefinitionProperties(ID As Integer, Type As UtilityType, Name As String) As ActionResult
-
-			Dim objModel As New DefinitionPropertiesViewModel
-
-			Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
-			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+		Function DefinitionProperties(objModel As DefinitionPropertiesViewModel, type As UtilityType) As ActionResult
+			Dim objDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim dsDefProp = objDataAccess.GetDataSet("spASRIntDefProperties" _
-				, New SqlParameter("intType", SqlDbType.Int) With {.Value = CInt(Type)} _
-				, New SqlParameter("intID", SqlDbType.Int) With {.Value = ID})
+				, New SqlParameter("intType", SqlDbType.Int) With {.Value = CInt(type)} _
+				, New SqlParameter("intID", SqlDbType.Int) With {.Value = objModel.ID})
 
-			objModel.Name = Name
-			objModel.Type = Type
+			objModel.Type = type
 
 			If dsDefProp.Tables(0).Rows.Count > 0 Then
 				Dim rowAccess = dsDefProp.Tables(0).Rows(0)
@@ -1275,7 +1270,7 @@ Namespace Controllers
 											, New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = value.utiltype} _
 											, New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = value.utilID})
 
-					value.Status = value.utilName & " " & sUtilTypeName & " has been deleted."
+					value.Status = "'" & value.utilName & "' " & sUtilTypeName & " has been deleted."
 					Return View("CheckForUsage", value)
 
 				End If

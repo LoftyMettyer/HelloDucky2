@@ -39,8 +39,11 @@ Namespace ViewModels
 			End Get
 		End Property
 
-
-
+		Public ReadOnly Property NameUrlDecoded As String
+			Get
+				Return HttpUtility.UrlDecode(Name)
+			End Get
+		End Property
 	End Class
 
 End Namespace

@@ -323,8 +323,7 @@
 			var id = $("#DefSelRecords").getGridParam('selrow');
 			var type = document.getElementById('frmDefSel').utiltype.value;
 			var name = $("#utilname").val();
-			OpenHR.OpenDialog("DefinitionProperties", "divPopupReportDefinition", { ID: id, Type: type, Name: name, __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val() }, '900px');
-
+			OpenHR.OpenDialog("DefinitionProperties?type=" + type, "divPopupReportDefinition", { ID: id, Name: encodeURIComponent(name), __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val() }, '900px');
 		}
 	}
 
@@ -417,7 +416,7 @@
 		if (!$("#mnutoolDeleteUtil").hasClass("disabled")) {
 			var frmDefSel = document.getElementById('frmDefSel');
 
-			OpenHR.modalPrompt("Delete '" + $("#utilname").val() + "'. Are you sure ?", 4, "Confirm").then(function (answer) {
+			OpenHR.modalPrompt("Delete '" + escapeHTML($("#utilname").val()) + "'. Are you sure ?", 4, "Confirm").then(function (answer) {
 				if (answer === 6) {
 
 					var postData = {

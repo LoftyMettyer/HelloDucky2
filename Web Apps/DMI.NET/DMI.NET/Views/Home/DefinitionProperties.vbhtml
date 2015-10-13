@@ -9,7 +9,7 @@
 
 <fieldset id="definitionPropertiesFields">
 	@Html.LabelFor(Function(m) m.Name, New With {.class = "labelProperty"})
-	@Html.TextBoxFor(Function(m) m.Name, New With {.disabled = True, .class = "inputProperty"})
+	@Html.TextBoxFor(Function(m) m.NameUrlDecoded, New With {.disabled = True, .class = "inputProperty"})
 	<br />
 	@Html.LabelFor(Function(m) m.CreatedDate, New With {.class = "labelProperty"})
 	@Html.TextBoxFor(Function(m) m.CreatedDate, New With {.disabled = True, .class = "inputProperty"})
