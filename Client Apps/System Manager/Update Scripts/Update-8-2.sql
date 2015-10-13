@@ -185,6 +185,14 @@ PRINT 'Step - Workflow additions'
 		EXEC sp_executesql N'ALTER TABLE ASRSysWorkflowElements ADD RequiresAuthentication bit NULL;';
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - Branding'
+/* ------------------------------------------------------- */
+
+	EXEC sp_executesql N'UPDATE ASRSysPermissionCategories SET [description] = ''OpenHR Web'' WHERE categoryID = 19';
+	EXEC sp_executesql N'UPDATE ASRSysPermissionItems SET [description] = ''OpenHR Web'' WHERE itemID = 4';
+
+
 
 PRINT 'Final Step - Updating Versions'
 
