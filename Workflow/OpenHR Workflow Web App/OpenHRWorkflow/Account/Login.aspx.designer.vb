@@ -12,34 +12,34 @@ Option Explicit On
 
 
 Partial Public Class Login
-
-   '''<summary>
-   '''lblWelcome control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents lblWelcome As Global.System.Web.UI.WebControls.Label
-
-   '''<summary>
-   '''lblUserName control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents lblUserName As Global.System.Web.UI.WebControls.Label
-
-   '''<summary>
-   '''txtUserName control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents txtUserName As Global.System.Web.UI.WebControls.TextBox
-
+    
+    '''<summary>
+    '''lblWelcome control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblWelcome As Global.System.Web.UI.WebControls.Label
+    
+    '''<summary>
+    '''lblUserName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblUserName As Global.System.Web.UI.WebControls.Label
+    
+    '''<summary>
+    '''txtUserName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtUserName As Global.System.Web.UI.WebControls.TextBox
+    
     '''<summary>
     '''lblPassword control.
     '''</summary>
@@ -48,67 +48,67 @@ Partial Public Class Login
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblPassword As Global.System.Web.UI.WebControls.Label
-
-   '''<summary>
-   '''txtPassword control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents txtPassword As Global.System.Web.UI.WebControls.TextBox
-
-   '''<summary>
-   '''lblRememberPwd control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents lblRememberPwd As Global.System.Web.UI.WebControls.Label
-
-   '''<summary>
-   '''chkRememberPwd control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents chkRememberPwd As Global.System.Web.UI.WebControls.CheckBox
-
-   '''<summary>
-   '''btnLogin2 control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents btnLogin2 As Global.System.Web.UI.WebControls.Button
-
-   '''<summary>
-   '''btnLogin control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents btnLogin As Global.System.Web.UI.WebControls.LinkButton
-
-   '''<summary>
-   '''btnForgotPwd control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents btnForgotPwd As Global.System.Web.UI.WebControls.HyperLink
-
-   '''<summary>
-   '''btnRegister control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents btnRegister As Global.System.Web.UI.WebControls.HyperLink
+    
+    '''<summary>
+    '''txtPassword control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtPassword As Global.System.Web.UI.WebControls.TextBox
+    
+    '''<summary>
+    '''lblRememberPwd control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRememberPwd As Global.System.Web.UI.WebControls.Label
+    
+    '''<summary>
+    '''chkRememberPwd control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkRememberPwd As Global.System.Web.UI.WebControls.CheckBox
+    
+    '''<summary>
+    '''btnLogin2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnLogin2 As Global.System.Web.UI.WebControls.Button
+    
+    '''<summary>
+    '''btnLogin control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnLogin As Global.System.Web.UI.WebControls.LinkButton
+    
+    '''<summary>
+    '''btnForgotPwd control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnForgotPwd As Global.System.Web.UI.WebControls.HyperLink
+    
+    '''<summary>
+    '''btnRegister control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnRegister As Global.System.Web.UI.WebControls.HyperLink
 End Class
