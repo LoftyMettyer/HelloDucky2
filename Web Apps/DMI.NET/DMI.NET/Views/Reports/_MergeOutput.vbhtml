@@ -146,8 +146,27 @@
         var filename = $("#TemplateFile").val().replace(/^.*[\\\/]/, '');
         $("#txtTemplateFileName").val(filename);
 
-        var frmTemplateFile = $("#frmTemplateFile")[0];
-        frmTemplateFile.submit();
+        var form = document.getElementById("frmTemplateFile");
+        var data = new FormData(form);
+
+        $.ajax({
+            type: "POST",
+            url: "reports\\util_def_mailmerge_submittemplate",
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+                OpenHR.modalMessage("Template uploaded successfully");
+            },
+            error: function (xhr, status, p3, p4) {
+                var err = p3;
+                if (xhr.responseText && xhr.responseText[0] == "{")
+                    err = JSON.parse(xhr.responseText).Message;
+                $("#txtTemplateFileName").val("");
+                OpenHR.modalMessage(err);
+            }
+        });
+
 
         menu_toolbarEnableItem('mnutoolSaveReport', true);
     }

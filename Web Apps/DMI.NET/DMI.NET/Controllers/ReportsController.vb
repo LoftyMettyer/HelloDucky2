@@ -809,18 +809,27 @@ Namespace Controllers
 
                 If Not TemplateFile Is Nothing Then
 
-                    ' Read input stream from request
-                    objReport.UploadTemplate = New Byte(CInt(TemplateFile.InputStream.Length - 1)) {}
-                    Dim offset As Integer = 0
-                    Dim cnt As Integer = 0
-                    While (InlineAssignHelper(cnt, TemplateFile.InputStream.Read(objReport.UploadTemplate, offset, 10))) > 0
-                        offset += cnt
-                    End While
+                    Dim acceptedTypes As New List(Of String)(New String() {
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+                        "application/msword"})
 
-                    objReport.UploadTemplateName = Path.GetFileName(TemplateFile.FileName)
-                    '  objReport.UploadTemplate = Buffer
+                    If acceptedTypes.Contains(TemplateFile.ContentType) Then
 
-                    'Dim haga As String = Array.Copy(Buffer,)
+                        ' Read input stream from request
+                        objReport.UploadTemplate = New Byte(CInt(TemplateFile.InputStream.Length - 1)) {}
+                        Dim offset As Integer = 0
+                        Dim cnt As Integer = 0
+                        While (InlineAssignHelper(cnt, TemplateFile.InputStream.Read(objReport.UploadTemplate, offset, 10))) > 0
+                            offset += cnt
+                        End While
+
+                        objReport.UploadTemplateName = Path.GetFileName(TemplateFile.FileName)
+
+                    Else
+                        Return New HttpStatusCodeResult(400, "OpenHR Web cannot upload this type of template.")
+
+                    End If
 
                 End If
 
@@ -828,8 +837,6 @@ Namespace Controllers
                 Session("ErrorTitle") = "File upload"
                 Session("ErrorText") = "You could not upload the template file because of the following error:<p>" & FormatError(ex.Message)
             End Try
-
-            Return Content("")
 
         End Function
 

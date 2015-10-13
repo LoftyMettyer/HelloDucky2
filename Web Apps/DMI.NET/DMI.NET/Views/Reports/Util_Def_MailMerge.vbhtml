@@ -8,7 +8,7 @@ End Code
 
 <div>
 
-<form action="reports\util_def_mailmerge_submittemplate" style="display: none" name="frmTemplateFile" id="frmTemplateFile" method="post" enctype="multipart/form-data" target="submit-iframe">
+<form style="display: none" name="frmTemplateFile" id="frmTemplateFile" method="post" enctype="multipart/form-data" target="submit-iframe">
     <input type="file" id="TemplateFile" name="TemplateFile" onchange="SubmitTemplate();" />
     <input type="hidden" id="MailMergeId" name="MailMergeId" value="@Model.ID" />
     @Html.AntiForgeryToken()
