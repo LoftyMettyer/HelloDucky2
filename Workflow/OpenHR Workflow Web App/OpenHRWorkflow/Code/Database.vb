@@ -796,8 +796,30 @@ Public Class Database
 
 	End Function
 
-    Public Function StepRequiresAuthorisation(instanceId As Integer, elementId As Integer) As Boolean
-        Return False
+    Public Function LoginsThatCanAuthenticateThisStep(instanceId As Integer, elementId As Integer) As List(Of String)
+
+        Dim userList As New List(Of String)
+
+        ' Who are valid users to authenticate this step
+        Using conn As New SqlConnection(_connectionString)
+
+            conn.Open()
+
+            Dim cmd As New SqlCommand("spASRWorkflowGetValidLoginsForStep", conn)
+            cmd.CommandType = CommandType.StoredProcedure
+            cmd.CommandTimeout = _timeout
+
+            cmd.Parameters.Add(New SqlParameter("instanceId", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = instanceId})
+            cmd.Parameters.Add(New SqlParameter("elementId", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = elementId})
+
+            Dim dr As SqlDataReader = cmd.ExecuteReader
+
+            While dr.Read()
+                userList.Add(dr("Login").ToString())
+            End While
+        End Using
+
+        Return userList
     End Function
 
 End Class

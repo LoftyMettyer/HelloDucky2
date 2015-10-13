@@ -12,18 +12,24 @@ Partial Class Login
     Form.DefaultFocus = txtUserName.ClientID
   End Sub
 
-  Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLogin.Click, btnLogin2.Click
+    Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLogin.Click, btnLogin2.Click
 
         Dim authenticateOnly As Boolean = (Request.QueryString.Count > 0)
+        Dim validLogins = CType(Session("ValidLogins"), List(Of String))
+        Dim message As String
 
-        Dim message As String = Security.ValidateUser(txtUserName.Text.Trim, txtPassword.Text, authenticateOnly)
+        If validLogins IsNot Nothing AndAlso validLogins.Count > 0 AndAlso Not validLogins.Contains(txtUserName.Text.Trim) Then
+            message = "You are not authorised for this step"
+        Else
+            message = Security.ValidateUser(txtUserName.Text.Trim, txtPassword.Text, authenticateOnly)
+        End If
 
         If message.Length > 0 Then
-      CType(Master, Site).ShowDialog("Login Failed", message)
-    Else
-      FormsAuthentication.RedirectFromLoginPage(txtUserName.Text.Trim, chkRememberPwd.Checked)
-    End If
+            CType(Master, Site).ShowDialog("Login Failed", message)
+        Else
+            FormsAuthentication.RedirectFromLoginPage(txtUserName.Text.Trim, chkRememberPwd.Checked)
+        End If
 
-  End Sub
+    End Sub
 
 End Class

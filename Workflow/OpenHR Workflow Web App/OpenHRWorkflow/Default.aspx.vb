@@ -62,14 +62,17 @@ Public Class [Default]
         End If
 
         ' Authentication options
+        Dim loginsThatCanAuthenticateThisStep As List(Of String)
         Dim stepRequiresAuthentication As Boolean
-        stepRequiresAuthentication = _db.StepRequiresAuthorisation(_url.InstanceId, _url.ElementId)
+        loginsThatCanAuthenticateThisStep = _db.LoginsThatCanAuthenticateThisStep(_url.InstanceId, _url.ElementId)
+
+        stepRequiresAuthentication = (loginsThatCanAuthenticateThisStep.Count > 0)
 
         Dim requireAuthentication = Config.GetSetting("AlwaysRequireAuthentication", False)
         If Not HttpContext.Current.User.Identity.IsAuthenticated AndAlso (requireAuthentication Or stepRequiresAuthentication) Then
+            Session("ValidLogins") = loginsThatCanAuthenticateThisStep
             FormsAuthentication.RedirectToLoginPage()
         End If
-
 
 #If DEBUG Then
 #Else
