@@ -716,14 +716,15 @@ Namespace ReportOutput
 			End If
 			ApplyCellOptions(_mxlWorkSheet, colStyles, True)
 
-			With _mxlWorkSheet.Cells(1, 2) 'Increase the size of the title
-				stlGeneral = .GetStyle
-				stlGeneral.Font.Size = 14
-				.SetStyle(stlGeneral)
-			End With
-			_mxlWorkSheet.Cells.Merge(1, 2, 1, 5)	'Merge the title into 5 columns
+      With _mxlWorkSheet.Cells(1, 2) 'Increase the size of the title
+        stlGeneral = .GetStyle
+        stlGeneral.Font.Size = 14
+        .SetStyle(stlGeneral)
+      End With
+      ' TFS 12329 - commented out the following line to avoid long names being truncated
+      ' _mxlWorkSheet.Cells.Merge(1, 2, 1, 10)  'Merge the title into 5 columns
 
-			_mxlWorkSheet.AutoFitColumns()
+      _mxlWorkSheet.AutoFitColumns()
 			_mxlWorkSheet.AutoFitRows()
 
 			'Set the cells' height and width
