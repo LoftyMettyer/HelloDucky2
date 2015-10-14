@@ -91,6 +91,7 @@
         If fok Then fok = fNotCancelled
 
         objMailMergeOutput.MergeData = objMailMerge.MergeData
+        objMailMerge.SuccessCount = objMailMerge.MergeData.Rows.Count
 
         Select Case objMailMerge.DefOutputFormat
             Case MailMergeOutputTypes.WordDocument
