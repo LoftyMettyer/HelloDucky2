@@ -827,7 +827,7 @@ Namespace Controllers
                         objReport.UploadTemplateName = Path.GetFileName(TemplateFile.FileName)
 
                     Else
-                        Return New HttpStatusCodeResult(400, "OpenHR Web cannot upload this type of template.")
+                        Return New HttpStatusCodeResult(400, "Please select a Microsoft Word document or template file")
 
                     End If
 
