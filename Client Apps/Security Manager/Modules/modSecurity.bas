@@ -5503,66 +5503,29 @@ Private Function ApplyChanges_ApplyRolesToLogins() As Boolean
   ' Create the new User Logins in the SQL Server database.
   On Error GoTo ErrorTrap
   
-  Dim bHasSecurityAccess As Boolean
+  Dim bIsSysManager As Boolean
   Dim fOK As Boolean
   Dim sSQL As String
   Dim objGroup As SecurityGroup
-  Dim objUser As SecurityUser
-  Dim strSQLLoginName As String
-  Dim strPassword As String
   
   fOK = True
 
-'  For Each objGroup In gObjGroups
-'    ' If the Users have been initialised then go through them.
-'    If objGroup.Users_Initialised Then
-'      For Each objUser In objGroup.Users
-'        With objUser
-'
-'          strSQLLoginName = Replace(.Login, "'", "''")
-'
-'          bHasSecurityAccess = objGroup.SystemPermission("MODULEACCESS", "SECURITYMANAGER") _
-'              Or objGroup.SystemPermission("MODULEACCESS", "SECURITYMANAGERRO")
-'
-'          ' Apply the security fixed role
-'          If (.Changed Or .NewUser) And bHasSecurityAccess Then
-'
-'            ' See if the login already exists in the SQL Server database.
-'            sSQL = "SELECT loginname " & _
-'              "FROM master.dbo.syslogins " & _
-'              "WHERE loginname = '" & strSQLLoginName & "'"
-'            Set rsLogins = rdoCon.OpenResultset(sSQL, rdOpenForwardOnly)
-'
-'            If (rsLogins.EOF And rsLogins.BOF) Then
-'              ' The login does not exist in the SQL Server database, so create it.
-'
-'              ' Type of login to create
-'              If .LoginType = iUSERTYPE_TRUSTEDUSER Or .LoginType = iUSERTYPE_TRUSTEDGROUP Then
-'                sSQL = "sp_grantlogin N'" & strSQLLoginName & "'"
-'              Else
-'                ' JDM - Fault 6709 - SQL 7 doesn't like blank passwords - needs to be passed as null.
-'                strPassword = IIf(Len(.Password) = 0, "null", "'" & Replace(LCase(.Password), "'", "''") & "'")
-'                sSQL = "sp_addlogin '" & strSQLLoginName & "'," & strPassword & ", '" & Database.DatabaseName & "', default"
-'              End If
-'
-'              rdoCon.OpenResultset sSQL
-'            End If
-'
-'            rsLogins.Close
-'            Set rsLogins = Nothing
-'
-'          End If
-'        End With
-'      Next
-'      Set objUser = Nothing
-'
-'    End If
-'  Next objGroup
-
+  For Each objGroup In gObjGroups
+    
+    If objGroup.Initialised Then
+      If objGroup.SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGER").Allowed Then
+        sSQL = "EXEC sp_addrolemember @rolename = [ASRSysAdmin], @membername = [" & objGroup.Name & "]"
+      Else
+        sSQL = "EXEC sp_droprolemember @rolename = [ASRSysAdmin], @membername = [" & objGroup.Name & "]"
+      End If
+    
+    gADOCon.Execute sSQL, , adExecuteNoRecords
+    
+    End If
+    
+  Next
 
 TidyUpAndExit:
-  Set objGroup = Nothing
-  Set objUser = Nothing
   ApplyChanges_ApplyRolesToLogins = fOK
   Exit Function
 

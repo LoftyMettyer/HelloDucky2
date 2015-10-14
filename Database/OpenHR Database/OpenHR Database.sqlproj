@@ -555,7 +555,7 @@
     <Build Include="Stored Procedures\System Manager\spsys_setsystemsetting.sql" />
     <Build Include="Stored Procedures\System Manager\spsys_getmodulesetting.sql" />
     <Build Include="Roles\ASRSysGroup.sql" />
-    <Build Include="Roles\ASRSysAdmins.sql" />
+    <Build Include="Roles\ASRSysAdmin.sql" />
     <Build Include="Stored Procedures\System Manager\spASRApplyScripts.sql" />
     <Build Include="Views\ASRSysGroups.sql" />
     <Build Include="Triggers\DEL_ASRSysTables.sql" />

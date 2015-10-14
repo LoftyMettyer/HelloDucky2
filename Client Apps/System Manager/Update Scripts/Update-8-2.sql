@@ -193,6 +193,40 @@ PRINT 'Step - Branding'
 	EXEC sp_executesql N'UPDATE ASRSysPermissionItems SET [description] = ''OpenHR Web'' WHERE itemID = 4';
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - Database Hardening'
+/* ------------------------------------------------------- */
+
+
+	IF EXISTS (SELECT * FROM sys.database_principals WHERE name = N'ASRSysAdmins' AND type = 'R')
+	BEGIN
+		SET @NVarCommand = '';
+		SELECT @NVarCommand = @NVarCommand +  'ALTER ROLE [ASRsysAdmins] DROP MEMBER ['+ members.[name]+ '];'
+			FROM sys.database_role_members AS rolemembers
+				JOIN sys.database_principals AS roles ON roles.[principal_id] = rolemembers.[role_principal_id]
+				JOIN sys.database_principals AS members ON members.[principal_id] = rolemembers.[member_principal_id]
+			WHERE roles.[name]='ASRsysAdmins';
+
+		EXEC sp_executeSQL @NVarCommand;
+		EXEC sp_executeSQL N'DROP ROLE [ASRSysAdmins];'
+	END
+
+	IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = N'ASRSysAdmin' AND type = 'R')
+	BEGIN
+		EXECUTE sp_executesql N'CREATE ROLE [ASRSysAdmin] AUTHORIZATION [dbo];';
+
+		SET @NVarCommand = '';
+		SELECT DISTINCT @NVarCommand = @NVarCommand + 'ALTER ROLE [ASRSysAdmin] ADD MEMBER ' + gp.groupName + ';'
+			FROM ASRSysGroupPermissions gp
+			INNER JOIN ASRSysPermissionItems pi ON pi.itemID = gp.itemID
+			WHERE pi.itemID IN (1) AND gp.permitted = 1;
+		
+		EXECUTE sp_executesql @NVarCommand;
+
+	END
+
+
+
 
 PRINT 'Final Step - Updating Versions'
 
