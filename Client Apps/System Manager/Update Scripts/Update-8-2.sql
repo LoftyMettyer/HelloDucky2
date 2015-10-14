@@ -197,6 +197,27 @@ PRINT 'Step - Branding'
 PRINT 'Step - Database Hardening'
 /* ------------------------------------------------------- */
 
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE #spASRTempHardenTables(@tablename nvarchar(MAX))
+	AS
+	BEGIN
+
+		DECLARE @NVarCommand nvarchar(MAX) = '''';
+
+		SELECT @NVarCommand = @NVarCommand + ''REVOKE SELECT, UPDATE, INSERT, DELETE ON ['' + @tablename + ''] TO ['' + U.name + ''];''
+			FROM sys.database_permissions P 
+			JOIN sys.tables T ON P.major_id = T.object_id 
+			JOIN sysusers U ON U.uid = P.grantee_principal_id
+			WHERE t.name = @tablename;			
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		SET @NVarCommand = ''GRANT SELECT, INSERT, UPDATE, DELETE ON ['' + @tablename + ''] TO [ASRSysAdmin];''
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		SET @NVarCommand = ''GRANT SELECT ON ['' + @tablename + ''] TO [ASRSysGroup];''
+		EXECUTE sp_executeSQL @NVarCommand;
+
+	END';
+
 
 	IF EXISTS (SELECT * FROM sys.database_principals WHERE name = N'ASRSysAdmins' AND type = 'R')
 	BEGIN
@@ -223,9 +244,53 @@ PRINT 'Step - Database Hardening'
 		
 		EXECUTE sp_executesql @NVarCommand;
 
+		EXEC #spASRTempHardenTables 'ASRSysColours';
+		EXEC #spASRTempHardenTables 'ASRSysColumnControlValues';
+		EXEC #spASRTempHardenTables 'ASRSysColumns';
+		EXEC #spASRTempHardenTables 'ASRSysConfig';
+		EXEC #spASRTempHardenTables 'ASRSysControls';
+		EXEC #spASRTempHardenTables 'ASRSysDiaryLinks';
+		EXEC #spASRTempHardenTables 'ASRSysEmailLinks';
+		EXEC #spASRTempHardenTables 'ASRSysEmailLinksColumns';
+		EXEC #spASRTempHardenTables 'ASRSysEmailLinksRecipients';
+		EXEC #spASRTempHardenTables 'ASRSysFunctionParameters';
+		EXEC #spASRTempHardenTables 'ASRSysFunctions';
+		EXEC #spASRTempHardenTables 'ASRSysGroups';
+		EXEC #spASRTempHardenTables 'ASRSysHistoryScreens';
+		EXEC #spASRTempHardenTables 'ASRSysKeywords';
+		EXEC #spASRTempHardenTables 'ASRSysLinkContent';
+		EXEC #spASRTempHardenTables 'ASRSysModuleRelatedColumns';
+		EXEC #spASRTempHardenTables 'ASRSysModuleSetup';
+		EXEC #spASRTempHardenTables 'ASRSysOperatorParameters';
+		EXEC #spASRTempHardenTables 'ASRSysOperators';
+		EXEC #spASRTempHardenTables 'ASRSysOutlookEvents';
+		EXEC #spASRTempHardenTables 'ASRSysOutlookFolders';
+		EXEC #spASRTempHardenTables 'ASRSysOutlookLinks';
+		EXEC #spASRTempHardenTables 'ASRSysOutlookLinksColumns';
+		EXEC #spASRTempHardenTables 'ASRSysOutlookLinksDestinations';
+		EXEC #spASRTempHardenTables 'ASRSysPermissionCategories';
+		EXEC #spASRTempHardenTables 'ASRSysPictures';
+		EXEC #spASRTempHardenTables 'ASRSysRelations';
+		EXEC #spASRTempHardenTables 'ASRSysScreens';
+		EXEC #spASRTempHardenTables 'ASRSysSSIHiddenGroups';
+		EXEC #spASRTempHardenTables 'ASRSysSSIntranetLinks';
+		EXEC #spASRTempHardenTables 'ASRSysSSIViews';
+		EXEC #spASRTempHardenTables 'ASRSysSummaryFields';
+		EXEC #spASRTempHardenTables 'ASRSysTables';
+		EXEC #spASRTempHardenTables 'ASRSysTableTriggers';
+		EXEC #spASRTempHardenTables 'ASRSysTableValidations';
+		EXEC #spASRTempHardenTables 'ASRSysViewColumns';
+		EXEC #spASRTempHardenTables 'ASRSysViewScreens';
+		EXEC #spASRTempHardenTables 'ASRSysViews';
+		EXEC #spASRTempHardenTables 'tbsys_MobileFormElements';
+		EXEC #spASRTempHardenTables 'tbsys_MobileFormLayout';
+		EXEC #spASRTempHardenTables 'tbsys_MobileGroupWorkflows';
+
+
+
 	END
 
-
+	DROP PROCEDURE #spASRTempHardenTables
 
 
 PRINT 'Final Step - Updating Versions'
