@@ -163,10 +163,6 @@ Select Case KeyCode
 End Select
 End Sub
 
-Private Sub Form_Load()
-
-End Sub
-
 Private Sub spnMaxSize_Change()
   If Not mbLoading Then
     mblnUserChanged = True

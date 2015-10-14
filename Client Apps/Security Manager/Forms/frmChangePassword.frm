@@ -623,10 +623,6 @@ Private Sub Form_Resize()
 
 End Sub
 
-Private Sub fraPassword_DragDrop(Source As Control, X As Single, Y As Single)
-
-End Sub
-
 Private Sub txtNewPW_GotFocus()
 
   UI.txtSelText
