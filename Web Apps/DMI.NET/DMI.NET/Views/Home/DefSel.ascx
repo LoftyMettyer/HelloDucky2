@@ -655,7 +655,7 @@
 
 							<tr>
 								<td height="70">
-									<textarea cols="20" class="disabled" style="width: 100%;" name="txtDescription" id="txtDescription" rows="4" tabindex="-1" disabled="disabled">
+									<textarea cols="20" class="disabled" style="width: 100%; overflow: auto" name="txtDescription" id="txtDescription" rows="4" tabindex="-1" disabled="disabled">
 									</textarea>
 								</td>
 							</tr>
