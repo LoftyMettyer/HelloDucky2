@@ -50348,7 +50348,8 @@ GO
 CREATE PROCEDURE [dbo].[spASRIntGetUtilityPromptedValues] (
 	@piUtilType 	integer,
 	@piUtilID 		integer,
-	@piRecordID 	integer
+	@piRecordID 	integer,
+	@piMultipleRecords integer = 0
 )
 AS
 BEGIN
@@ -50437,7 +50438,7 @@ BEGIN
 			FROM [dbo].[ASRSysCustomReportsName]
 			WHERE ID = @piUtilID
 
-			IF @piRecordID <> 0
+			IF (@piRecordID <> 0) OR (@piMultipleRecords <> 0)
 			BEGIN
 				SET @iBaseFilter = 0
 			END
@@ -50515,7 +50516,7 @@ BEGIN
 			FROM [dbo].[ASRSysMailMergeName]
 			WHERE MailMergeID = @piUtilID
 
-			IF @piRecordID <> 0
+			IF (@piRecordID <> 0) OR (@piMultipleRecords <> 0)
 			BEGIN
 				SET @iFilterID = 0
 			END
@@ -50567,7 +50568,7 @@ BEGIN
 			FROM ASRSysCalendarReports
 			WHERE ID = @piUtilID
 				
-			IF @piRecordID = 0
+			IF (@piRecordID = 0) OR (@piMultipleRecords = 0)
 			BEGIN
 				/* Get the prompted values used in the Base table filter. */
 				SET @iFilterID = @iBaseFilter

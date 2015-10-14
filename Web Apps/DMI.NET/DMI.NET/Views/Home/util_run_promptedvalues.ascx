@@ -142,10 +142,18 @@
                     iPromptUtilID = Model.ID
                 End If
 
-                rstPromptedValue = objDatabaseAccess.GetDataTable("spASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
-                    New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = Model.UtilType}, _
-                    New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = iPromptUtilID}, _
-                    New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = CInt(Session("singleRecordID"))})
+				'Check if the prompted values invoked from the Find window - multiselect, then set the flag isMultipleRecordsSelected to true, false otherwise
+				Dim isMultipleRecordsSelected As Integer = 0
+				Dim multipleRecordIds As String = Session("multipleRecordIDs")
+				If (Not IsNothing(multipleRecordIds)) AndAlso CInt(multipleRecordIds.Length) > 0 Then
+					isMultipleRecordsSelected = 1
+				End If
+			
+				rstPromptedValue = objDatabaseAccess.GetDataTable("spASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
+						New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = Model.UtilType}, _
+						New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = iPromptUtilID}, _
+						New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = CInt(Session("singleRecordID"))}, _
+						New SqlParameter("piMultipleRecords", SqlDbType.Int) With {.Value = isMultipleRecordsSelected})
 
                 If rstPromptedValue.Rows.Count > 0 Then
 
