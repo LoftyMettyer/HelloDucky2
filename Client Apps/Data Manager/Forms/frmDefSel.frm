@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   7800
@@ -306,7 +306,7 @@ Private msIDField As String
 Private msType As String
 Private msTypeCode As String
 Private msRecordSource As String
-Private mutlUtilityType As utilityType
+Private mutlUtilityType As UtilityType
 Private msTableIDColumnName As String
 Private msAccessTableName As String
 
@@ -333,7 +333,7 @@ Private malngSelectedIDs()
 Private mstrExtraWhereClause As String
 
 Public AllowFavourites As Boolean
-Public SelectedUtilityType As utilityType
+Public SelectedUtilityType As UtilityType
 Public EnableNew As Boolean
 
 Private msSearchForText As String
@@ -497,7 +497,7 @@ Private Sub Favourites(ByVal bAdd As Boolean)
 
   Dim sSQL As String
   Dim lngSelectedID As Integer
-  Dim lngUtilityType As utilityType
+  Dim lngUtilityType As UtilityType
 
   lngSelectedID = GetIDFromTag(List1.SelectedItem.Tag)
   lngUtilityType = GetTypeFromTag(List1.SelectedItem.Tag)
@@ -581,7 +581,7 @@ Private Sub cmdDelete_Click()
   Dim rsTemp As ADODB.Recordset
   Dim objExpression As clsExprExpression
   Dim sType As String
-  Dim lngUtilityType As utilityType
+  Dim lngUtilityType As UtilityType
   
   lngHighLightIndex = List1.SelectedItem.Index
   lngSelectedID = GetIDFromTag(List1.SelectedItem.Tag)
@@ -809,7 +809,7 @@ End Sub
 
 Private Sub cmdProperties_Click()
 
-  Dim lngUtilityType As utilityType
+  Dim lngUtilityType As UtilityType
   
   On Error GoTo Prop_ERROR
   
@@ -1066,7 +1066,7 @@ Public Sub Refresh_Controls()
   Dim iCount As Integer
   Dim lngTempIndex As Long
   Dim sType As String
-  Dim lngTYPE As utilityType
+  Dim lngTYPE As UtilityType
   Dim bSystemMgrDefined As Boolean
   
   If mblnLoading Then
@@ -1141,20 +1141,20 @@ Public Sub Refresh_Controls()
             txtDesc.Text = sType & vbNewLine & String(Len(sType) * 2, "-") & vbNewLine
           End If
           
-          txtDesc.Text = txtDesc.Text & IIf(IsNull(.Fields("Description").Value), vbNullString, .Fields("Description").Value)
+          txtDesc.Text = txtDesc.Text & IIf(IsNull(.Fields("Description").value), vbNullString, .Fields("Description").value)
           
         End If
   
         If mblnApplyDefAccess Then
           If OldAccessUtility(mutlUtilityType) Then
-            sCurrentUserAccess = .Fields("Access").Value
+            sCurrentUserAccess = .Fields("Access").value
           Else
             sCurrentUserAccess = CurrentUserAccess(mutlUtilityType, lngSelected)
           End If
             
           mblnHiddenDef = (sCurrentUserAccess = ACCESS_HIDDEN)
           mblnReadOnlyAccess = (sCurrentUserAccess = ACCESS_READONLY And _
-            LCase(Trim$(.Fields("Username").Value)) <> LCase(gsUserName)) And _
+            LCase(Trim$(.Fields("Username").value)) <> LCase(gsUserName)) And _
             (Not gfCurrentUserIsSysSecMgr)
         End If
       End If
@@ -1298,7 +1298,7 @@ Private Function CheckForUseage(sDefType As String, lItemID As Long) As Boolean
   ' Check if the given record is used.
   Dim sMsg As String
   Dim intCount As Integer
-  Dim lngUtilityType As utilityType
+  Dim lngUtilityType As UtilityType
 
   Load frmDefProp
   
@@ -1440,14 +1440,14 @@ Dim fAllColumns As Boolean
           'List2.Clear
           Do While Not .EOF
             If objBatchJob.DoesUserHavePermissionForAllJobs(.Fields(msIDField)) Then
-              If objBatchJob.CheckBatchNeedsRunning2(.Fields(msIDField), .Fields(msFieldName).Value) = vbNullString Then
-                List2.AddItem .Fields(msFieldName).Value
-                List2.ItemData(List2.NewIndex) = .Fields(msIDField).Value
+              If objBatchJob.CheckBatchNeedsRunning2(.Fields(msIDField), .Fields(msFieldName).value) = vbNullString Then
+                List2.AddItem .Fields(msFieldName).value
+                List2.ItemData(List2.NewIndex) = .Fields(msIDField).value
                 List2.Selected(List2.NewIndex) = True
-                List2.Tag = .Fields("objecttype").Value & "-" & .Fields(msIDField).Value
+                List2.Tag = .Fields("objecttype").value & "-" & .Fields(msIDField).value
               
-                If lngList2Max < TextWidth(.Fields(msFieldName).Value) Then
-                  lngList2Max = TextWidth(.Fields(msFieldName).Value)
+                If lngList2Max < TextWidth(.Fields(msFieldName).value) Then
+                  lngList2Max = TextWidth(.Fields(msFieldName).value)
                 End If
               End If
             End If
@@ -1467,7 +1467,7 @@ Dim fAllColumns As Boolean
 
               Set pmADO = .CreateParameter("InstanceStepID", adInteger, adParamInput)
               .Parameters.Append pmADO
-              pmADO.Value = mrsRecords.Fields(msIDField).Value
+              pmADO.value = mrsRecords.Fields(msIDField).value
 
               Set pmADO = .CreateParameter("Description", adVarChar, adParamOutput, VARCHAR_MAX_Size)
               .Parameters.Append pmADO
@@ -1476,15 +1476,15 @@ Dim fAllColumns As Boolean
             
               .Execute
   
-              sDescription = .Parameters("Description").Value
+              sDescription = .Parameters("Description").value
             End With
             Set cmADO = Nothing
 
             If Len(Trim(sDescription)) = 0 Then
-              sDescription = .Fields(msFieldName).Value
+              sDescription = .Fields(msFieldName).value
             End If
             List2.AddItem sDescription
-            List2.ItemData(List2.NewIndex) = .Fields(msIDField).Value
+            List2.ItemData(List2.NewIndex) = .Fields(msIDField).value
             List2.Selected(List2.NewIndex) = True
             
             If lngList2Max < TextWidth(sDescription) Then
@@ -1498,8 +1498,8 @@ Dim fAllColumns As Boolean
         'List1.ListItems.Clear
         Do While Not .EOF
                
-          Set objListItem = List1.ListItems.Add(, , RemoveUnderScores(.Fields(msFieldName).Value))
-          sTag = .Fields("objecttype").Value & "-" & .Fields(msIDField).Value
+          Set objListItem = List1.ListItems.Add(, , RemoveUnderScores(.Fields(msFieldName).value))
+          sTag = .Fields("objecttype").value & "-" & .Fields(msIDField).value
           objListItem.Tag = sTag
           
           lngLen = Me.TextWidth(objListItem.Text)
@@ -1507,7 +1507,7 @@ Dim fAllColumns As Boolean
             lngMax = lngLen
           End If
 
-          If .Fields(msIDField).Value = mlngSelectedID And .Fields("objecttype").Value = SelectedUtilityType Then
+          If .Fields(msIDField).value = mlngSelectedID And .Fields("objecttype").value = SelectedUtilityType Then
             Set List1.SelectedItem = objListItem
           End If
 
@@ -1673,11 +1673,11 @@ Private Function CanStillSeeDefinition(lngDefID As Long) As Boolean
     
     ElseIf mblnApplyDefAccess Then
     
-      If LCase(Trim$(.Fields("Username").Value)) <> LCase(gsUserName) Then
+      If LCase(Trim$(.Fields("Username").value)) <> LCase(gsUserName) Then
       
         If Not gfCurrentUserIsSysSecMgr Then
           If OldAccessUtility(mutlUtilityType) Then
-            sCurrentUserAccess = .Fields("Access").Value
+            sCurrentUserAccess = .Fields("Access").value
           Else
             sCurrentUserAccess = CurrentUserAccess(mutlUtilityType, lngDefID)
           End If
@@ -2070,7 +2070,7 @@ Public Property Let EventLogIDs(ByVal strNewValue As String)
   mstrEventLogIDs = strNewValue
 End Property
 
-Public Sub GetSQL(lngUtilType As utilityType, Optional psRecordSourceWhere As String, Optional blnScheduledJobs As Boolean)
+Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As String, Optional blnScheduledJobs As Boolean)
 
   Dim strExtraWhereClause As String
   Dim sCategoryFilter As String
@@ -2104,7 +2104,7 @@ Public Sub GetSQL(lngUtilType As utilityType, Optional psRecordSourceWhere As St
     Me.HelpContextID = 5200
   
   Case utlOrder
-    msTypeCode = "ORDER"
+    msTypeCode = "ORDERS"
     msType = "Order"
     msGeneralCaption = "Orders"
     msSingularCaption = "Order"
@@ -2188,7 +2188,7 @@ Public Sub GetSQL(lngUtilType As utilityType, Optional psRecordSourceWhere As St
   Case utlCrossTab
     msTypeCode = "CROSSTABS"
     msType = "Cross Tab"
-	strExtraWhereClause = "CrossTabType = 0"
+        strExtraWhereClause = "CrossTabType = 0"
     msGeneralCaption = "Cross Tabs"
     msSingularCaption = "Cross Tab"
     msTableName = "ASRSysCrossTab"
@@ -2514,7 +2514,7 @@ Public Sub GetSQL(lngUtilType As utilityType, Optional psRecordSourceWhere As St
 
 End Sub
 
-Public Function ShowList(lngUtilType As utilityType, Optional psRecordSourceWhere As String, Optional blnScheduledJobs As Boolean) As Boolean
+Public Function ShowList(lngUtilType As UtilityType, Optional psRecordSourceWhere As String, Optional blnScheduledJobs As Boolean) As Boolean
 
   mstrExtraWhereClause = psRecordSourceWhere
   mblnScheduledJobs = blnScheduledJobs
@@ -2676,7 +2676,7 @@ Private Function GetIDFromTag(ByVal Tag As String) As Long
 
 End Function
 
-Private Function GetTypeFromTag(ByVal Tag As String) As utilityType
+Private Function GetTypeFromTag(ByVal Tag As String) As UtilityType
 
   Dim sValue As Long
   
@@ -2685,9 +2685,9 @@ Private Function GetTypeFromTag(ByVal Tag As String) As utilityType
 
 End Function
 
-Private Function GetTypeCode(ByVal utilityType As utilityType) As String
+Private Function GetTypeCode(ByVal UtilityType As UtilityType) As String
 
-  Select Case utilityType
+  Select Case UtilityType
     
     Case utlAll
       GetTypeCode = "ALL"
