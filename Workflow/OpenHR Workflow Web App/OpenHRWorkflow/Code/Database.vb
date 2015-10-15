@@ -43,7 +43,26 @@ Public Class Database
 		End If
 	End Function
 
-	Public Function IsMobileModuleInstalled() As Boolean
+    Public Function ServiceLoginIsValid() As Boolean
+
+        ' Is the service account valid
+        Using conn As New SqlConnection(_connectionString)
+            conn.Open()
+
+            Dim cmd As New SqlCommand("spASRWorkflowValidateService", conn)
+            cmd.CommandType = CommandType.StoredProcedure
+            cmd.CommandTimeout = _timeout
+
+            cmd.Parameters.Add("@allow", SqlDbType.Bit).Direction = ParameterDirection.Output
+
+            cmd.ExecuteNonQuery()
+
+            Return CBool(cmd.Parameters("@allow").Value)
+
+        End Using
+    End Function
+
+    Public Function IsMobileModuleInstalled() As Boolean
 
 		Using conn As New SqlConnection(_connectionString)
 			conn.Open()

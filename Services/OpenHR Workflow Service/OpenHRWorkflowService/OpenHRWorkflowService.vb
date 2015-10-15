@@ -1448,6 +1448,62 @@ Public Class OpenHRWorkflowService
 
   End Function
 
+  Private Function IsServiceAccountValid(ByRef piDBServerIndex As Integer, ByVal pConn As SqlClient.SqlConnection) As Boolean
+
+    ' Check if the workflow service has sufficient privileges
+    Dim cmdServiceCheck As SqlClient.SqlCommand
+    Dim sMessage As String
+    Dim bIsValid As Boolean = False
+
+    Dim sEventLogEntry As String
+    Dim sLastEventLogEntry As String
+
+    sMessage = "Database (" & databasesAndServers(0, piDBServerIndex) & "." & databasesAndServers(1, piDBServerIndex) & ") CE004 - Unable to connect."
+    sLastEventLogEntry = databasesAndServers(2, piDBServerIndex)
+    cmdServiceCheck = New SqlClient.SqlCommand
+
+    Try
+      cmdServiceCheck.CommandText = "spASRWorkflowValidateService"
+      cmdServiceCheck.Connection = pConn
+      cmdServiceCheck.CommandType = CommandType.StoredProcedure
+      cmdServiceCheck.CommandTimeout = IIf((miCommandTimeout < 200) And (miCommandTimeout <> 0), 200, miCommandTimeout)
+
+      cmdServiceCheck.Parameters.Add("@allow", SqlDbType.Bit).Direction = ParameterDirection.Output
+
+      cmdServiceCheck.ExecuteNonQuery()
+
+      bIsValid = CBool(cmdServiceCheck.Parameters("@allow").Value)
+      If Not bIsValid Then
+        sEventLogEntry = sMessage
+
+        mobjEventLog.WriteEntry(sEventLogEntry,
+         EventLogEntryType.Information,
+         databasesAndServers(2, piDBServerIndex))
+
+        databasesAndServers(2, piDBServerIndex) = sEventLogEntry.PadRight(MAXLOGENTRYLENGTH).Substring(0, MAXLOGENTRYLENGTH).Trim
+
+      End If
+
+      cmdServiceCheck.Dispose()
+
+    Catch ex As Exception
+      sEventLogEntry = "Service Check (" & databasesAndServers(0, piDBServerIndex) & "." & databasesAndServers(1, piDBServerIndex) & ") - " & ex.Message
+
+      mobjEventLog.WriteEntry(sEventLogEntry,
+       EventLogEntryType.Error,
+       databasesAndServers(2, piDBServerIndex))
+
+      databasesAndServers(2, piDBServerIndex) = sEventLogEntry.PadRight(MAXLOGENTRYLENGTH).Substring(0, MAXLOGENTRYLENGTH).Trim
+      databasesAndServers(4, piDBServerIndex) = "Y"
+
+    Finally
+      If Not IsNothing(cmdServiceCheck) Then cmdServiceCheck.Dispose()
+    End Try
+
+    Return bIsValid
+
+  End Function
+
   Private Function DatabaseIsBeingServiced(ByRef piDBServerIndex As Integer, ByVal conn As SqlClient.SqlConnection) As Boolean
     Dim returnBool As Boolean = False
     Dim running As Boolean = False
@@ -1632,6 +1688,11 @@ Public Class OpenHRWorkflowService
     If blnOK Then
       ' Check if the given database is in the middle of the overnight job update.
       blnOK = Not DatabaseIsInOvernightJob(piDBServerIndex, pConn)
+    End If
+
+    If blnOK Then
+      ' Check if the service account is valid.
+      blnOK = Not IsServiceAccountValid(piDBServerIndex, pConn)
     End If
 
     If blnOK Then
