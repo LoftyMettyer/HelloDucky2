@@ -1692,7 +1692,7 @@ Public Class OpenHRWorkflowService
 
     If blnOK Then
       ' Check if the service account is valid.
-      blnOK = Not IsServiceAccountValid(piDBServerIndex, pConn)
+			blnOK = IsServiceAccountValid(piDBServerIndex, pConn)
     End If
 
     If blnOK Then
