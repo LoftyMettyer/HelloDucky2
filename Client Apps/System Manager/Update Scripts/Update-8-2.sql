@@ -222,7 +222,7 @@ PRINT 'Step - Database Hardening'
 	IF EXISTS (SELECT * FROM sys.database_principals WHERE name = N'ASRSysAdmins' AND type = 'R')
 	BEGIN
 		SET @NVarCommand = '';
-		SELECT @NVarCommand = @NVarCommand +  'ALTER ROLE [ASRsysAdmins] DROP MEMBER ['+ members.[name]+ '];'
+		SELECT @NVarCommand = @NVarCommand +  'EXEC sp_droprolemember @rolename = [ASRsysAdmins], @membername = [' + members.[name] + '];'
 			FROM sys.database_role_members AS rolemembers
 				JOIN sys.database_principals AS roles ON roles.[principal_id] = rolemembers.[role_principal_id]
 				JOIN sys.database_principals AS members ON members.[principal_id] = rolemembers.[member_principal_id]
