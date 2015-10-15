@@ -1025,10 +1025,10 @@ Private Function RefreshGrid() As Boolean
   ' Put the mode filter in...
   If cboMode.Text <> "<All>" Then
     Select Case cboMode.Text
-      Case "Batch": pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[Mode] = " & 1 & " AND [ASRSysEventLog].[ReportPack] = " & 0
+			Case "Batch" : pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[Mode] = " & 1 & " AND ([ASRSysEventLog].[ReportPack] = " & 0 & " OR [ASRSysEventLog].[ReportPack] IS NULL)"
       Case "Pack": pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[ReportPack] = " & 1
-      Case "Manual": pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[Mode] = " & 0 & " AND [ASRSysEventLog].[ReportPack] = " & 0
-    End Select
+			Case "Manual" : pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[Mode] = " & 0 & " AND ([ASRSysEventLog].[ReportPack] = " & 0 & " OR [ASRSysEventLog].[ReportPack] IS NULL)"
+		End Select
   End If
   
   'MH20030422
