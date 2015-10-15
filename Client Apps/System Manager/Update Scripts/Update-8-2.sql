@@ -225,7 +225,7 @@ PRINT 'Step - Database Hardening'
 		END'
 
 
-	EXECUTE sp_executeSQL N'CREATE PROCEDURE #spASRTempHardenTables(@tablename nvarchar(MAX))
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE #spASRTempHardenTables(@tablename nvarchar(MAX), @adminrole nvarchar(MAX), @allusersHaveSelect bit)
 	AS
 	BEGIN
 
@@ -238,23 +238,25 @@ PRINT 'Step - Database Hardening'
 			WHERE t.name = @tablename;			
 		EXECUTE sp_executeSQL @NVarCommand;
 
-		SET @NVarCommand = ''GRANT SELECT, INSERT, UPDATE, DELETE ON ['' + @tablename + ''] TO [ASRSysAdmin];''
-		EXECUTE sp_executeSQL @NVarCommand;
+		SET @NVarCommand = ''GRANT SELECT, INSERT, UPDATE, DELETE ON ['' + @tablename + ''] TO ['' + @adminrole + ''];'';
+		EXECUTE sp_executeSQL @NVarCommand;	
 
-		SET @NVarCommand = ''GRANT SELECT ON ['' + @tablename + ''] TO [ASRSysGroup];''
-		EXECUTE sp_executeSQL @NVarCommand;
-
+		IF @allusersHaveSelect = 1
+		BEGIN
+			SET @NVarCommand = ''GRANT SELECT ON ['' + @tablename + ''] TO [ASRSysGroup];'';
+			EXECUTE sp_executeSQL @NVarCommand;
+		END
 	END';
 
 
 	IF EXISTS (SELECT * FROM sys.database_principals WHERE name = N'ASRSysAdmins' AND type = 'R')
 	BEGIN
 		SET @NVarCommand = '';
-		SELECT @NVarCommand = @NVarCommand +  'EXEC sp_droprolemember @rolename = [ASRsysAdmins], @membername = [' + members.[name] + '];'
+		SELECT @NVarCommand = @NVarCommand +  'EXEC sp_droprolemember @rolename = [ASRSysAdmins], @membername = [' + members.[name] + '];'
 			FROM sys.database_role_members AS rolemembers
 				JOIN sys.database_principals AS roles ON roles.[principal_id] = rolemembers.[role_principal_id]
 				JOIN sys.database_principals AS members ON members.[principal_id] = rolemembers.[member_principal_id]
-			WHERE roles.[name]='ASRsysAdmins';
+			WHERE roles.[name]='ASRSysAdmins';
 
 		EXEC sp_executeSQL @NVarCommand;
 		EXEC sp_executeSQL N'DROP ROLE [ASRSysAdmins];'
@@ -265,58 +267,86 @@ PRINT 'Step - Database Hardening'
 		EXECUTE sp_executesql N'CREATE ROLE [ASRSysAdmin] AUTHORIZATION [dbo];';
 
 		SET @NVarCommand = '';
-		SELECT DISTINCT @NVarCommand = @NVarCommand + 'ALTER ROLE [ASRSysAdmin] ADD MEMBER ' + gp.groupName + ';'
+		SELECT @NVarCommand = @NVarCommand +  'EXEC sp_addrolemember @rolename = [ASRSysAdmin], @membername = [' + gp.groupName + '];'
 			FROM ASRSysGroupPermissions gp
 			INNER JOIN ASRSysPermissionItems pi ON pi.itemID = gp.itemID
 			WHERE pi.itemID IN (1) AND gp.permitted = 1;
 		
 		EXECUTE sp_executesql @NVarCommand;
 
-		EXEC #spASRTempHardenTables 'ASRSysColours';
-		EXEC #spASRTempHardenTables 'ASRSysColumnControlValues';
-		EXEC #spASRTempHardenTables 'ASRSysColumns';
-		EXEC #spASRTempHardenTables 'ASRSysConfig';
-		EXEC #spASRTempHardenTables 'ASRSysControls';
-		EXEC #spASRTempHardenTables 'ASRSysDiaryLinks';
-		EXEC #spASRTempHardenTables 'ASRSysEmailLinks';
-		EXEC #spASRTempHardenTables 'ASRSysEmailLinksColumns';
-		EXEC #spASRTempHardenTables 'ASRSysEmailLinksRecipients';
-		EXEC #spASRTempHardenTables 'ASRSysFunctionParameters';
-		EXEC #spASRTempHardenTables 'ASRSysFunctions';
-		EXEC #spASRTempHardenTables 'ASRSysGroups';
-		EXEC #spASRTempHardenTables 'ASRSysHistoryScreens';
-		EXEC #spASRTempHardenTables 'ASRSysKeywords';
-		EXEC #spASRTempHardenTables 'ASRSysLinkContent';
-		EXEC #spASRTempHardenTables 'ASRSysModuleRelatedColumns';
-		EXEC #spASRTempHardenTables 'ASRSysModuleSetup';
-		EXEC #spASRTempHardenTables 'ASRSysOperatorParameters';
-		EXEC #spASRTempHardenTables 'ASRSysOperators';
-		EXEC #spASRTempHardenTables 'ASRSysOutlookEvents';
-		EXEC #spASRTempHardenTables 'ASRSysOutlookFolders';
-		EXEC #spASRTempHardenTables 'ASRSysOutlookLinks';
-		EXEC #spASRTempHardenTables 'ASRSysOutlookLinksColumns';
-		EXEC #spASRTempHardenTables 'ASRSysOutlookLinksDestinations';
-		EXEC #spASRTempHardenTables 'ASRSysPermissionCategories';
-		EXEC #spASRTempHardenTables 'ASRSysPictures';
-		EXEC #spASRTempHardenTables 'ASRSysRelations';
-		EXEC #spASRTempHardenTables 'ASRSysScreens';
-		EXEC #spASRTempHardenTables 'ASRSysSSIHiddenGroups';
-		EXEC #spASRTempHardenTables 'ASRSysSSIntranetLinks';
-		EXEC #spASRTempHardenTables 'ASRSysSSIViews';
-		EXEC #spASRTempHardenTables 'ASRSysSummaryFields';
-		EXEC #spASRTempHardenTables 'ASRSysTables';
-		EXEC #spASRTempHardenTables 'ASRSysTableTriggers';
-		EXEC #spASRTempHardenTables 'ASRSysTableValidations';
-		EXEC #spASRTempHardenTables 'ASRSysViewColumns';
-		EXEC #spASRTempHardenTables 'ASRSysViewScreens';
-		EXEC #spASRTempHardenTables 'ASRSysViews';
-		EXEC #spASRTempHardenTables 'tbsys_MobileFormElements';
-		EXEC #spASRTempHardenTables 'tbsys_MobileFormLayout';
-		EXEC #spASRTempHardenTables 'tbsys_MobileGroupWorkflows';
-
-
+		EXEC #spASRTempHardenTables 'ASRSysColours', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysColumnControlValues', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysColumns', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysConfig', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysControls', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysDiaryLinks', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysEmailLinks', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysEmailLinksColumns', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysEmailLinksRecipients', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysFunctionParameters', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysFunctions', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysGroups', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysHistoryScreens', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysKeywords', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysLinkContent', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysModuleRelatedColumns', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysModuleSetup', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysOperatorParameters', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysOperators', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysOutlookEvents', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysOutlookFolders', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysOutlookLinks', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysOutlookLinksColumns', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysOutlookLinksDestinations', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysPermissionCategories', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysPictures', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysRelations', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysScreens', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysSSIHiddenGroups', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysSSIntranetLinks', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysSSIViews', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysSummaryFields', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysTables', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysTableTriggers', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysTableValidations', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysViewColumns', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysViewScreens', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'ASRSysViews', 'ASRSysAdmin', 1;
+		EXEC #spASRTempHardenTables 'tbsys_MobileFormElements', 'ASRSysAdmin', 0;
+		EXEC #spASRTempHardenTables 'tbsys_MobileFormLayout', 'ASRSysAdmin', 0;
+		EXEC #spASRTempHardenTables 'tbsys_MobileGroupWorkflows', 'ASRSysAdmin', 0;
 
 	END
+	
+	IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = N'ASRSysWorkflowAdmin' AND type = 'R')
+	BEGIN
+		EXECUTE sp_executesql N'CREATE ROLE [ASRSysWorkflowAdmin] AUTHORIZATION [dbo];';
+
+		SET @NVarCommand = '';
+		SELECT @NVarCommand = @NVarCommand +  'EXEC sp_addrolemember @rolename = [ASRSysWorkflowAdmin], @membername = [' + gp.groupName + '];'
+			FROM ASRSysGroupPermissions gp
+			INNER JOIN ASRSysPermissionItems pi ON pi.itemID = gp.itemID
+			WHERE pi.itemID IN (1, 151, 152) AND gp.permitted = 1;
+		EXECUTE sp_executesql @NVarCommand;
+
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowElementColumns', 'ASRSysWorkflowAdmin', 0;
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowElementItems', 'ASRSysWorkflowAdmin', 0;
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowElementItemValues', 'ASRSysWorkflowAdmin', 0;
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowElements', 'ASRSysWorkflowAdmin', 0;
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowElementValidations', 'ASRSysWorkflowAdmin', 0;
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowInstances', 'ASRSysWorkflowAdmin', 0;
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowInstanceSteps', 'ASRSysWorkflowAdmin', 0;
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowInstanceValues', 'ASRSysWorkflowAdmin', 0;
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowLinks', 'ASRSysWorkflowAdmin', 0;
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowQueue', 'ASRSysWorkflowAdmin', 0;
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowQueueColumns', 'ASRSysWorkflowAdmin', 0;
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowStepDelegation', 'ASRSysWorkflowAdmin', 0;
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowTriggeredLinkColumns', 'ASRSysWorkflowAdmin', 0;
+		EXEC #spASRTempHardenTables 'ASRSysWorkflowTriggeredLinks', 'ASRSysWorkflowAdmin', 0;
+
+	END
+
+
 
 	DROP PROCEDURE #spASRTempHardenTables
 

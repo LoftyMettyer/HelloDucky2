@@ -4081,7 +4081,6 @@ Private Function ApplyChanges_DatabaseOwnership() As Boolean
   Dim bAccordModuleEnabled As Boolean
   Dim bWorkflowModuleEnabled As Boolean
   Dim strAccordTables As String
-  Dim strWorkflowTables As String
   Dim strAuditTables As String
   Dim bGranted As Boolean
   Dim lngCount As Long
@@ -4095,16 +4094,6 @@ Private Function ApplyChanges_DatabaseOwnership() As Boolean
   astrAccordTables(1) = "ASRSysAccordTransactions"
   astrAccordTables(2) = "ASRSysAccordTransactionWarnings"
 
-  ' Groups are only given write access to the tables in this array unless they have Workflow Run Permission
-  Dim astrWorkflowTables(7) As String
-  astrWorkflowTables(0) = "ASRSysWorkflows"
-  astrWorkflowTables(1) = "ASRSysWorkflowElements"
-  astrWorkflowTables(2) = "ASRSysWorkflowLinks"
-  astrWorkflowTables(3) = "ASRSysWorkflowElementItems"
-  astrWorkflowTables(4) = "ASRSysWorkflowElementColumns"
-  astrWorkflowTables(5) = "ASRSysWorkflowInstances"
-  astrWorkflowTables(6) = "ASRSysWorkflowInstanceSteps"
-  astrWorkflowTables(7) = "ASRSysWorkflowInstanceValues"
 
   Dim astrAuditTables(4) As String
   astrAuditTables(0) = "ASRSysAuditAccess"
@@ -4114,7 +4103,6 @@ Private Function ApplyChanges_DatabaseOwnership() As Boolean
   astrAuditTables(4) = "ASRSysAuditTrail"
 
   strAccordTables = Join(astrAccordTables, ",")
-  strWorkflowTables = Join(astrWorkflowTables, ",")
   strAuditTables = Join(astrAuditTables, ",")
 
   fOK = True
@@ -4196,24 +4184,7 @@ Private Function ApplyChanges_DatabaseOwnership() As Boolean
             sSQLCommand.Append "REVOKE SELECT, INSERT, UPDATE, DELETE ON [" & astrAccordTables(lngCount) & "] TO [" & objGroup.Name & "]" & vbNewLine
           End If
         Next lngCount
-
-
-        ' Assign permissions on system workflow tables
-        If bWorkflowModuleEnabled Then
-          bGranted = objGroup.SystemPermissions.Item("P_WORKFLOW_RUN").Allowed
-        Else
-          bGranted = False
-        End If
-        
-        For lngCount = LBound(astrWorkflowTables) To UBound(astrWorkflowTables)
-          If bGranted Then
-            sSQLCommand.Append "GRANT SELECT, INSERT, UPDATE, DELETE ON [" & astrWorkflowTables(lngCount) & "] TO [" & objGroup.Name & "]" & vbNewLine
-          Else
-            sSQLCommand.Append "REVOKE SELECT, INSERT, UPDATE, DELETE ON [" & astrWorkflowTables(lngCount) & "] TO [" & objGroup.Name & "]" & vbNewLine
-          End If
-        Next lngCount
-      
-      
+            
         ' Run all the statements
         gADOCon.Execute sSQLCommand.ToString, , adExecuteNoRecords
         
@@ -5513,14 +5484,23 @@ Private Function ApplyChanges_ApplyRolesToLogins() As Boolean
   For Each objGroup In gObjGroups
     
     If objGroup.Initialised Then
+      
+      ' System metadata role
       If objGroup.SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGER").Allowed Then
         sSQL = "EXEC sp_addrolemember @rolename = [ASRSysAdmin], @membername = [" & objGroup.Name & "]"
       Else
         sSQL = "EXEC sp_droprolemember @rolename = [ASRSysAdmin], @membername = [" & objGroup.Name & "]"
       End If
-    
-    gADOCon.Execute sSQL, , adExecuteNoRecords
-    
+      gADOCon.Execute sSQL, , adExecuteNoRecords
+      
+      ' Workflow administer/view log role
+      If objGroup.SystemPermissions.Item("P_WORKFLOW_ADMINISTER").Allowed Or objGroup.SystemPermissions.Item("P_WORKFLOW_VIEWLOG").Allowed Then
+        sSQL = "EXEC sp_addrolemember @rolename = [ASRSysWorkflowAdmin], @membername = [" & objGroup.Name & "]"
+      Else
+        sSQL = "EXEC sp_droprolemember @rolename = [ASRSysWorkflowAdmin], @membername = [" & objGroup.Name & "]"
+      End If
+      gADOCon.Execute sSQL, , adExecuteNoRecords
+               
     End If
     
   Next
