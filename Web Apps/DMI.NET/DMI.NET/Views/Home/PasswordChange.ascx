@@ -8,6 +8,10 @@
 
 		var fOK = true;
 
+		if (!menu_isSSIMode()) {
+		    $("#btnPasswordCancel").hide();
+		} 
+
 		showDefaultRibbon();
 		
 		var sErrMsg = document.getElementById("txtErrorDescription").value;
@@ -75,10 +79,8 @@
 
 	/* Return to the default page. */
 	function cancelClick() {
-		if (menu_isSSIMode()) {
-			window.location = "MainSSI";
-		} else {
-			window.location = "mainDMI";
+	    if (menu_isSSIMode()) {
+	        loadPartialView("linksMain", "Home", "workframe", null);
 		}
 	}
 </script>
@@ -145,20 +147,12 @@
 								<table class="invisible" cellspacing="0" cellpadding="0" align="center">
 									<td align="center">
 										<input id="submitPasswordDetails" name="submitPasswordDetails" type="button" class="btn" value="OK" style="WIDTH: 75px" width="75"
-											onclick="SubmitPasswordDetails()"
-											onmouseover="try{button_onMouseOver(this);}catch(e){}"
-											onmouseout="try{button_onMouseOut(this);}catch(e){}"
-											onfocus="try{button_onFocus(this);}catch(e){}"
-											onblur="try{button_onBlur(this);}catch(e){}" />
+											onclick="SubmitPasswordDetails()" />
 									</td>
 									<td width="20"></td>
 									<td align="center">
-										<input id="btnCancel" name="btnCancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75"
-											onclick="cancelClick()"
-											onmouseover="try{button_onMouseOver(this);}catch(e){}"
-											onmouseout="try{button_onMouseOut(this);}catch(e){}"
-											onfocus="try{button_onFocus(this);}catch(e){}"
-											onblur="try{button_onBlur(this);}catch(e){}" />
+										<input id="btnPasswordCancel" name="btnPasswordCancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75"
+											onclick="cancelClick()" />
 									</td>
 								</table>
 							</td>
@@ -197,12 +191,8 @@
 
 			<tr>
 				<td colspan="5" style="height: 10px; text-align: center">
-					<input type="button" value="Cancel" name="btnCancel" class="btn" style="WIDTH: 80px" width="80" id="Button1"
-						onclick="cancelClick()"
-						onmouseover="try{button_onMouseOver(this);}catch(e){}"
-						onmouseout="try{button_onMouseOut(this);}catch(e){}"
-						onfocus="try{button_onFocus(this);}catch(e){}"
-						onblur="try{button_onBlur(this);}catch(e){}" />
+					<input type="button" value="Cancel" name="btnPasswordCancel" class="btn" style="WIDTH: 80px" width="80" id="btnPasswordCancel"
+						onclick="cancelClick()" />
 				</td>
 			</tr>
 			<tr>
