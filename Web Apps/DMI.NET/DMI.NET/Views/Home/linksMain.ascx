@@ -610,9 +610,9 @@
 									If mrstChartData.Rows.Count > 0 AndAlso (TryCast(mrstChartData.Rows(0)(0), String) <> "No Access" And TryCast(mrstChartData.Rows(0)(0), String) <> "No Data") Then
 										Dim popupChartCall As String = "popoutchart('" & fMultiAxis & "', '" & navlink.Chart_ShowLegend & "', '" & navlink.Chart_ShowGrid & "', '" & navlink.Chart_ShowValues & "', '" & navlink.Chart_StackSeries & "', '" & navlink.Chart_ShowPercentages & "', '" & iChart_Type & "', '" & iChart_TableID & "', '" & iChart_ColumnID & "', '" & iChart_FilterID & "', '" & iChart_AggregateType & "', '" & CInt(iChart_ElementType) & "', '" & iChart_TableID_2 & "', '" & iChart_ColumnID_2 & "', '" & iChart_TableID_3 & "', '" & iChart_ColumnID_3 & "', '" & iChart_SortOrderID & "', '" & iChart_SortDirection & "', '" & iChart_ColourID & "',encodeURI('" & navlink.Text & "').replace(/&/g,'%26'),'" & Session("ui-admin-theme").ToString() & "')"
 										Dim popuChartCallOnclick = "onclick=" & Chr(34) & popupChartCall & Chr(34)
-										Response.Write("<p " & popuChartCallOnclick & " title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p " & popupChartCall & " style='text-align: center'>" & navlink.Text & "</p>")
+										Response.Write("<p " & popuChartCallOnclick & " title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p " & popupChartCall & " style='text-align: center; margin-top: 0'>" & navlink.Text & "</p>")
 									Else
-										Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size: smaller; text-align: center'>(No records)</p>")
+										Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size: smaller; text-align: center; margin: 0;'>(No records)</p>")
 									End If
 								End If
 								%>
@@ -681,7 +681,9 @@
 									<%
 								End If
 							Else
-									If Session("CurrentLayout").ToString() <> Layout.tiles.ToString() Then	 'Put and icon in tile mode
+									If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then	'Put and icon in tile mode
+										Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size: smaller; text-align: center'>(No records4)</p>")
+									Else
 									%>
 									<tr>
 										<td class="bordered" style="text-align: center;" rowspan="3">No matching records found</td>
