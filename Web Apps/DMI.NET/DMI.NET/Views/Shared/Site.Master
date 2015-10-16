@@ -139,7 +139,7 @@
 			$("#About").dialog({
 				autoOpen: false,
 				modal: true,
-				width: 500,
+				width: 600,
 				resizable: false,
 				buttons: [
 					{

@@ -35,6 +35,7 @@
 		<%Else%>
 		<a href="mailto://<%:session("SupportEmail") %>?subject=OpenHR Support Query - Web Login" class="hypertext"><%:session("SupportEmail") %></a>
 		<%End If%>
+		<br/>
 		<label>Web site :</label>
 		<%If Session("SupportWebpage") = "" Then%>
 		<a target="AdvancedSupportWebsite" href="http://webfirst.advancedcomputersoftware.com" class="hypertext">http://webfirst.advancedcomputersoftware.com</a>
