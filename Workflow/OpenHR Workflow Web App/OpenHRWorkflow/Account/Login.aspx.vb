@@ -24,7 +24,7 @@ Partial Class Login
         Dim validLogins = CType(Session("ValidLogins"), List(Of String))
         Dim message As String
 
-        If validLogins IsNot Nothing AndAlso validLogins.Count > 0 AndAlso Not validLogins.Contains(txtUserName.Text.Trim) Then
+        If validLogins IsNot Nothing AndAlso validLogins.Count > 0 AndAlso Not validLogins.Contains(txtUserName.Text.Trim.ToLower) Then
             message = "You are not authorised for this step"
         Else
             message = Security.ValidateUser(txtUserName.Text.Trim, txtPassword.Text, authenticateOnly)

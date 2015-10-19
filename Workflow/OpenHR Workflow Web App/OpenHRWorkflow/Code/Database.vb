@@ -834,7 +834,7 @@ Public Class Database
             Dim dr As SqlDataReader = cmd.ExecuteReader
 
             While dr.Read()
-                userList.Add(dr("Login").ToString())
+                userList.Add(dr("Login").ToString().ToLower)
             End While
         End Using
 
