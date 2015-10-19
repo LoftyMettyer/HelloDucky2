@@ -1998,10 +1998,10 @@ Namespace Controllers
 								Dim seriesNames As String = ""
 								'See Color Palette details here:http://blogs.msdn.com/b/alexgor/archive/2009/10/06/setting-chart-series-colors.aspx
 								Dim brightPastelColorPalette As Integer() = {15764545, 4306172, 671968, 9593861, 12566463, 6896410, 8578047, 14523410, 4942794, 14375936, 8966899, 8479568, 11057649, 689120, 12489592}
-								Dim pointNum As Integer
+                                Dim pointNum As Integer
 
-								'Fill missing data
-								Dim i As Integer
+                                'Fill missing data
+                                Dim i As Integer
 								Dim j As Integer
 								Dim r As DataRow
 
@@ -2058,17 +2058,20 @@ Namespace Controllers
 										Dim columnName As String = objRow("HORIZONTAL").ToString()
 										Dim yVal As Integer = CInt(objRow("Aggregate"))
 										Dim pointBackColor As Color
-										If objRow("COLOUR") = 16777215 Then
-											pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
-										Else
-											Try
+
+                                        pointNum = CInt(objRow("HORIZONTAL_ID"))
+
+                                        If objRow("COLOUR") = 16777215 Then
+                                            pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
+                                        Else
+                                            Try
 												pointBackColor = ColorTranslator.FromWin32(objRow("COLOUR"))
 											Catch ex As Exception
 												pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
 											End Try
 										End If
 
-										If Not seriesNames.Contains("<" & seriesName & ">") Then
+                                        If Not seriesNames.Contains("<" & seriesName & ">") Then
 											' Add the series - ONLY if not already added.
 											MultiAxisChart.Series.Add(seriesName)
 
@@ -2108,21 +2111,21 @@ Namespace Controllers
 											End Select
 										End If
 
-										If showLabels Then
-											MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
-																																												 .AxisLabel = columnName,
-																																												 .YValues = New Double() {yVal},
-																																												 .Color = pointBackColor,
-																																												 .IsEmpty = (yVal = 0)
-																																												 })
-										Else
-											MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
-																																											 .Label = " ",
-																																											 .YValues = New Double() {yVal},
-																																											 .Color = pointBackColor,
-																																											 .IsEmpty = (yVal = 0)
-																																											 })
-										End If
+                                        If showLabels Then
+                                            MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
+                                                .YValues = New Double() {yVal},
+                                                .AxisLabel = columnName,
+                                                .Color = pointBackColor,
+                                                .IsEmpty = (yVal = 0)
+                             })
+                                        Else
+                                            MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
+                                                .Label = " ",
+                                                .YValues = New Double() {yVal},
+                                                .Color = pointBackColor,
+                                                .IsEmpty = (yVal = 0)
+                                                                                                                                                                             })
+                                        End If
 
 										If showLegend = True Then
 											Dim legendAdded As Boolean = False
@@ -2136,11 +2139,11 @@ Namespace Controllers
 										End If
 
 									End If
-									pointNum += 1
-								Next
 
-								'For 2D pie charts with more than one series we need to add a chart area for each series
-								Dim thisSeries As String
+                                Next
+
+                                'For 2D pie charts with more than one series we need to add a chart area for each series
+                                Dim thisSeries As String
 								For Each s As Series In MultiAxisChart.Series
 									'Add a chart area for the series and set its properties
 									thisSeries = s.Name
