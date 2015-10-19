@@ -4142,7 +4142,6 @@ Private Function ApplyChanges_DatabaseOwnership() As Boolean
           " FROM sysobjects" & _
           " INNER JOIN sysusers ON sysobjects.uid = sysusers.uid" & _
           " WHERE (((sysobjects.xtype = 'p') AND (sysobjects.name LIKE 'sp_asr%' OR sysobjects.name LIKE 'spasr%'))" & _
-          "    OR ((sysobjects.xtype = 'u') AND (sysobjects.name LIKE 'asrsys%'))" & _
           "    OR ((sysobjects.xtype = 'fn') AND (sysobjects.name LIKE 'udf_ASRFn%')))" & _
           "    AND (sysusers.name = 'dbo')" & _
           "    AND sysobjects.id NOT IN (SELECT id FROM #tmpProtects)"
