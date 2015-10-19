@@ -94,9 +94,21 @@ Public Class Forms
 					Case 0 ' Button
 
 						CType(control.Controls(0), Image).ImageUrl = "~/Image.ashx?id=" & NullSafeInteger(dr("PictureID"))
-						CType(control.Controls(1), Label).Text = NullSafeString(dr("caption"))
 
-					Case 2 ' Label
+                        With CType(control.Controls(1), Label)
+                            .Text = NullSafeString(dr("caption"))
+                            .Font.Name = NullSafeString(dr("FontName"))
+                            .Font.Size = New FontUnit(NullSafeSingle(dr("FontSize")))
+                            .Font.Bold = NullSafeBoolean(dr("FontBold"))
+                            .Font.Italic = NullSafeBoolean(dr("FontItalic"))
+                            .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                            .Font.Strikeout = NullSafeBoolean(dr("FontStrikeout"))
+
+                            .Style.Add("color", General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))))
+                            .Style("word-wrap") = "break-word"
+                        End With
+
+                    Case 2 ' Label
 
 						With CType(control, Label)
 							.Text = NullSafeString(dr("caption"))
