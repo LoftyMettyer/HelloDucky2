@@ -1498,8 +1498,7 @@
 		refreshPendingWorkflowTiles();
 
 		//set up window variable for ismobilebrowser.
-		window.isMobileBrowser = '<%=Session("isMobileDevice").ToString().ToLower()%>';
-
+		window.isMobileBrowser = <%=Session("isMobileDevice").ToString().ToLower()%>; //window.isMobileBrowser is boolean, so use it as such (don't compare it with 'true' or 'false' !!!)
 		if (window.currentLayout == "tiles") {
 			setupTiles();
 

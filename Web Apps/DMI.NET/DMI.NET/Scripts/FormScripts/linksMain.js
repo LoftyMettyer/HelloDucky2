@@ -234,7 +234,7 @@ function goScreen(psScreenInfo) {
 function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {	
 	if (!dragged) {
 
-		if ((window.isMobileBrowser == "true") && (sUtilityType === utilityType.MailMerge)) {
+		if (window.isMobileBrowser && sUtilityType === utilityType.MailMerge) {
 			//No mailmerges for mobiles - see JIRA 3969
 			return false;
 		}
