@@ -452,6 +452,7 @@ Namespace Controllers
 				Try
 
 					Dim prmWelcomeMessage = New SqlParameter("psWelcomeMessage", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+					Dim prmWelcomeMessageShort = New SqlParameter("psWelcomeMessageShort", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
 					Dim prmSelfServiceWelcomeColumn = New SqlParameter("psSelfServiceWelcomeColumn", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
 					Dim prmSelfServicePhotograph = New SqlParameter("psSelfServicePhotograph", SqlDbType.VarBinary, -1) With {.Direction = ParameterDirection.Output}
 
@@ -462,10 +463,12 @@ Namespace Controllers
 							, New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = objLogin.Username} _
 							, prmWelcomeMessage _
 							, prmSelfServiceWelcomeColumn _
-							, prmSelfServicePhotograph)
+							, prmSelfServicePhotograph _
+							, prmWelcomeMessageShort)
 
 
 					Session("welcomemessage") = prmWelcomeMessage.Value.ToString()
+					Session("welcomeMessageShort") = prmWelcomeMessageShort.Value.ToString()
 					Session("welcomeName") = prmSelfServiceWelcomeColumn.Value.ToString()
 					If Not IsDBNull(prmSelfServicePhotograph.Value) Then
 						Dim OLEType As Short = Val(Encoding.UTF8.GetString(prmSelfServicePhotograph.Value, 8, 2))

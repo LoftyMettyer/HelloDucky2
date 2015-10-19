@@ -6,7 +6,8 @@ CREATE PROCEDURE [dbo].[spASRIntGetSSIWelcomeDetails]
 		@psUserName varchar(255),	
 		@psWelcomeMessage varchar(255) OUTPUT,
 		@psSelfServiceWelcomeColumn varchar(255) OUTPUT,
-		@psSelfServicePhotograph varbinary(max) OUTPUT
+		@psSelfServicePhotograph varbinary(max) OUTPUT,
+		@psWelcomeMessageShort varchar(255) OUTPUT
 )
 AS
 BEGIN
@@ -86,10 +87,12 @@ BEGIN
 			ELSE 'on ' + CAST(DAY(@dtLastLogon) AS VARCHAR(2)) + ' ' + DATENAME(MM, @dtLastLogon) + ' ' + CAST(YEAR(@dtLastLogon) AS VARCHAR(4))
 		END
 		SET @psWelcomeMessage = 'Welcome back' + @psWelcomeName + ', you last logged in at ' + @psLogonTime + ' ' + @psLogonDay
+		SET @psWelcomeMessageShort = 'Welcome back' + @psWelcomeName
 	END
 	ELSE
 	BEGIN
-		SET @psWelcomeMessage = 'Welcome ' + @psWelcomeName
+		SET @psWelcomeMessage = 'Welcome' + @psWelcomeName
+		SET @psWelcomeMessageShort = 'Welcome' + @psWelcomeName
 	END
 
 	SET @psSelfServiceWelcomeColumn = @psWelcomeName;

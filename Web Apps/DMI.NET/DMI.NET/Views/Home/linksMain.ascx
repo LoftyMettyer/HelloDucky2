@@ -1497,6 +1497,9 @@
 
 		refreshPendingWorkflowTiles();
 
+		//set up window variable for ismobilebrowser.
+		window.isMobileBrowser = '<%=Session("isMobileDevice").ToString().ToLower()%>';
+
 		if (window.currentLayout == "tiles") {
 			setupTiles();
 
@@ -1604,11 +1607,15 @@
 
 		//display view details
 		//font-size is reduced for the welcome message as it is deemed too big.
-		var viewDescription = '<%=Html.Encode(Session("ViewDescription").ToString())%>';
+		var viewDescription = window.isMobileBrowser ? '<%=Html.Encode(Session("welcomeMessageShort").ToString())%>' : '<%=Html.Encode(Session("ViewDescription").ToString())%>';
 		if (viewDescription.substring(0, 7) == "Welcome") {
 			$('.ViewDescription p').css("font-size", "medium");
 		} else {
 			$('.ViewDescription p').css("font-size", "xx-large");
+		}
+
+		if (window.isMobileBrowser) {
+			$('.ViewDescription').css('left', '180px');
 		}
 
 		$('.ViewDescription p').html(viewDescription);
@@ -1685,8 +1692,4 @@
 			minWidth: 300
 		});		
 	}
-	//set up window variable for ismobilebrowser.
-	window.isMobileBrowser = '<%=Session("isMobileDevice").ToString().ToLower()%>';
-	
 </script>
-
