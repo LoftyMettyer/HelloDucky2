@@ -294,6 +294,7 @@
 			if (menuSection !== "Tools") menu_toolbarEnableItem("mnutoolClose" + menuSection + "Find", !fFromMenu);
 			if (defSelType === "17") menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && isRunPermitted); //Calendar Reports
 		} else {
+		    menu_toolbarEnableItem("mnutoolRun" + menuSection + "Find", fHasRows && isRunPermitted);
 			menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fFromMenu);
 		}
 
