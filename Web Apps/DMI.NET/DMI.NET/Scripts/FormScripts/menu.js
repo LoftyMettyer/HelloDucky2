@@ -774,6 +774,11 @@ function menu_MenuClick(sTool) {
 		return false;		
 	}
 
+    // Data Transfer (from record menu)
+	if (sToolName == "mnutoolDataTransferRecord") {
+	    saveChangesPrompt("DATATRANSFER", 'menu_loadRecordDefSelPage(3, 0, 0, true)');
+	    return false;
+	}
 
 		// Course Booking
 	if (sToolName == "mnutoolCancelCourseRecord") {
@@ -841,6 +846,12 @@ function menu_MenuClick(sTool) {
 			saveChangesPrompt("WORKFLOW", 'menu_loadDefSelPage(25, 0, 0, true)');
 			return false;
 		}
+
+		if (sToolName == "mnutoolDataTransfer") {
+		    saveChangesPrompt("DATATRANSFER", 'menu_loadDefSelPage(3, 0, 0, true)');
+		    return false;
+		}
+
 
 		// Utilities Menu -------------------------------------------------------------------------------------------------------------------
 		
@@ -928,6 +939,7 @@ function menu_MenuClick(sTool) {
 		}
 
 		if (sToolName == "mnutoolDataTransferFind") {
+		    LoadReportOrUtilityScreen(3);
 			return false;
 		}
 
@@ -2156,7 +2168,8 @@ function menu_refreshMenu() {
 	menu_enableMenuItem("mnutoolNineBox", $("#txtNineBoxGridGranted").val());
 	menu_enableMenuItem("mnutoolCalendarReports", $("#txtCalendarReportsGranted").val());
 	menu_enableMenuItem("mnutoolMailMerge", $("#txtMailMergeGranted").val());
-		
+	menu_enableMenuItem("mnutoolDataTransfer", $("#txtDataTransferGranted").val());
+
 	menu_setVisibleMenuItem("mnutoolTableScreens", fCanSeeLookupTableMenu);
 
 	menu_setVisibleMenuItem("mnutoolWorkflow", frmMenuInfo.txtWFEnabled.value);

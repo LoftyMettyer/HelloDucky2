@@ -29,7 +29,7 @@ BEGIN
 	SET @fDoneWhere = 0;
 	SET @strExplicitSQL = '';
 	
-	IF ((@intTableID <=0) OR (@intTableID IS null)) AND (@intType <> 17) AND (@intType <> 9) AND (@intType <> 2)
+	IF ((@intTableID <=0) OR (@intTableID IS null)) AND @intType <> 17 AND @intType <> 9 AND @intType <> 2 AND @intType <> 3
 	BEGIN
 		/* No table ID passed in, so use the first table alphabetically. */
 		SELECT TOP 1 @intTableID = tableID
@@ -57,6 +57,19 @@ BEGIN
 			SET @sExtraWhereSQL = 'ASRSysCustomReportsName.BaseTable = ' + convert(varchar(255), @intTableID);
 		END
 	END
+
+	IF @intType = 3 /*'datatransfer'*/
+	BEGIN
+		SET @strTableName = 'ASRSysDataTransferName';
+		SET @strIDName = 'DataTransferID';
+		SET @fNewAccess = 1;
+		SET @sAccessTableName= 'ASRSysDataTransferAccess';
+		if (@intTableID > 0)
+		BEGIN
+			SET @sExtraWhereSQL = 'ASRSysDataTransferName.FromTableID = ' + convert(varchar(255), @intTableID);
+		END
+	END
+
 
 	IF @intType = 9 /*'mailmerge'*/
 	BEGIN

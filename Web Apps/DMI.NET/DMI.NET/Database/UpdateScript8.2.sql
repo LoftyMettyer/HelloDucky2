@@ -39555,7 +39555,7 @@ BEGIN
 	SET @fDoneWhere = 0;
 	SET @strExplicitSQL = '';
 	
-	IF ((@intTableID <=0) OR (@intTableID IS null)) AND (@intType <> 17) AND (@intType <> 9) AND (@intType <> 2)
+	IF ((@intTableID <=0) OR (@intTableID IS null)) AND @intType <> 17 AND @intType <> 9 AND @intType <> 2 AND @intType <> 3
 	BEGIN
 		/* No table ID passed in, so use the first table alphabetically. */
 		SELECT TOP 1 @intTableID = tableID
@@ -39583,6 +39583,19 @@ BEGIN
 			SET @sExtraWhereSQL = 'ASRSysCustomReportsName.BaseTable = ' + convert(varchar(255), @intTableID);
 		END
 	END
+
+	IF @intType = 3 /*'datatransfer'*/
+	BEGIN
+		SET @strTableName = 'ASRSysDataTransferName';
+		SET @strIDName = 'DataTransferID';
+		SET @fNewAccess = 1;
+		SET @sAccessTableName= 'ASRSysDataTransferAccess';
+		if (@intTableID > 0)
+		BEGIN
+			SET @sExtraWhereSQL = 'ASRSysDataTransferName.FromTableID = ' + convert(varchar(255), @intTableID);
+		END
+	END
+
 
 	IF @intType = 9 /*'mailmerge'*/
 	BEGIN
@@ -39823,162 +39836,6 @@ BEGIN
 	-- Return the resultset.
 	EXECUTE sp_executeSQL @strSQL;
 	
-END
-
-GO
-
--- modified (chr(9) to be , AS [xxxx] so that columns come back in non string delimated format, also return types are noiw rw/ro/hd instead of readable text
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetUtilityAccessRecords]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[spASRIntGetUtilityAccessRecords];
-GO
-CREATE PROCEDURE [dbo].[spASRIntGetUtilityAccessRecords] (
-	@piUtilityType		integer,
-	@piID				integer,
-	@piFromCopy			integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE
-		@sDefaultAccess	varchar(2),
-		@sAccessTable	sysname,
-		@sKey			varchar(255),
-		@sSQL			nvarchar(MAX);
-
-	SET @sAccessTable = '';
-
-	IF @piUtilityType = 17
-	BEGIN
-		/* Calendar Reports */
-		SET @sAccessTable = 'ASRSysCalendarReportAccess';
-		SET @sKey = 'dfltaccess CalendarReports';
-	END
-
-	IF @piUtilityType = 1
-	BEGIN
-		/* Cross Tabs */
-		SET @sAccessTable = 'ASRSysCrossTabAccess';
-		SET @sKey = 'dfltaccess CrossTabs';
-	END
-
-	IF @piUtilityType = 2
-	BEGIN
-		/* Custom Reports */
-		SET @sAccessTable = 'ASRSysCustomReportAccess';
-		SET @sKey = 'dfltaccess CustomReports';
-	END
-
-	IF @piUtilityType = 9
-	BEGIN
-		/* Mail Merge */
-		SET @sAccessTable = 'ASRSysMailMergeAccess';
-		SET @sKey = 'dfltaccess MailMerge';
-	END
-
-	IF LEN(@sAccessTable) > 0
-	BEGIN
-		IF (@piID = 0) OR (@piFromCopy = 1)
-		BEGIN
-			SELECT @sDefaultAccess = SettingValue 
-			FROM ASRSysUserSettings
-			WHERE UserName = system_user
-				AND Section = 'utils&reports'
-				AND SettingKey = @sKey;
-	
-			IF (@sDefaultAccess IS null)
-			BEGIN
-				SET @sDefaultAccess = 'RW';
-			END
-		END
-		ELSE
-		BEGIN
-			SET @sDefaultAccess = 'HD';
-		END
-		
-		SET @sSQL = 'SELECT sysusers.name ,
-				CASE WHEN	
-					CASE
-						WHEN (SELECT count(*)
-							FROM ASRSysGroupPermissions
-							INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-								AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
-								OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
-							INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-								AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
-							WHERE sysusers.Name = ASRSysGroupPermissions.groupname
-								AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''RW''
-						ELSE ';
-  
-		IF (@piID = 0) OR (@piFromCopy = 1)
-		BEGIN
-			SET @sSQL = @sSQL + ' ''' + @sDefaultAccess + '''';
-		END
-		ELSE
-		BEGIN
-			SET @sSQL = @sSQL + 
-				' CASE
-					WHEN ' + @sAccessTable + '.access IS null THEN ''' + @sDefaultAccess + '''
-					ELSE ' + @sAccessTable + '.access
-				END';
-		END
-
-		SET @sSQL = @sSQL + 
-			' END = ''RW'' THEN ''RW''
-			 WHEN	CASE
-				WHEN (SELECT count(*)
-					FROM ASRSysGroupPermissions
-					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-						AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
-						OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
-					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-						AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
-					WHERE sysusers.Name = ASRSysGroupPermissions.groupname
-						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''RW''
-			ELSE '
-  
-		IF (@piID = 0) OR (@piFromCopy = 1)
-		BEGIN
-			SET @sSQL = @sSQL + ' ''' + @sDefaultAccess + '''';
-		END
-		ELSE
-		BEGIN
-			SET @sSQL = @sSQL + 
-				' CASE
-					WHEN ' + @sAccessTable + '.access IS null THEN ''' + @sDefaultAccess + '''
-					ELSE ' + @sAccessTable + '.access
-				END';
-		END
-
-		SET @sSQL = @sSQL + 
-			' END = ''RO'' THEN ''RO''
-			ELSE ''HD'' 
-			END AS [access] ,
-			CASE
-				WHEN (SELECT count(*)
-					FROM ASRSysGroupPermissions
-					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-						AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
- 						OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
-					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-						AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
-					WHERE sysusers.Name = ASRSysGroupPermissions.groupName
-						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''1''
-				ELSE
-					''0''
-			END AS [isOwner]
-			FROM sysusers
-			LEFT OUTER JOIN ' + @sAccessTable + ' ON (sysusers.name = ' + @sAccessTable + '.groupName
-				AND ' + @sAccessTable + '.id = ' + convert(nvarchar(100), @piID) + ')
-			WHERE sysusers.uid = sysusers.gid
-				AND sysusers.uid <> 0 AND NOT (sysusers.name LIKE ''ASRSys%'') AND NOT (sysusers.name LIKE ''db_%'')
-			ORDER BY sysusers.name';
-
-			EXEC sp_executesql @sSQL;
-
-	END
-
 END
 GO
 

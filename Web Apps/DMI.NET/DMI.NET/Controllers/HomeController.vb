@@ -2544,9 +2544,13 @@ Namespace Controllers
 
 			End Try
 
-			Return View("util_run", value)
+            If value.UtilType = UtilityType.utlDataTransfer Then
+                Return Content("Feature not yet implemented!")
+            Else
+                Return View("util_run", value)
+            End If
 
-		End Function
+        End Function
 
 		<HttpPost>
 		<ValidateAntiForgeryToken>

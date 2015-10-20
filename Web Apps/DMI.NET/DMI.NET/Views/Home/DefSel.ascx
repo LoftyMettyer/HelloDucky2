@@ -108,6 +108,9 @@
 			if (frmDefSel.utiltype.value == 35) {
 				sCaption = "9-Box Grid Report";
 			}
+			if (frmDefSel.utiltype.value == 3) {
+			    sCaption = "Data Transfer";
+			}
 
 			var sMessage = "Are you sure you want to run " + $("#utilname").val() + " ?";
 			OpenHR.modalPrompt(sMessage, 4, sCaption, setrun);
@@ -253,7 +256,7 @@
 		disableNonDefselTabs();		
 		var fFromMenu = !((parseInt($("#txtSingleRecordID").val()) > 0) || (parseInt($("#txtMultipleRecordIDs").val()) > 0));				
 		var fHasRows = (rowCount() > 0);
-		var isWorkflow = (defSelType === "utlWorkflow");
+		var isRunOnly = (defSelType === "utlWorkflow" || defSelType === "utlDataTransfer");
 
 		try {
 			if (!fFromMenu) resetSession();	//reset session timeout for record edit. Well, try to.
@@ -266,11 +269,11 @@
 		$("#toolbarWFPendingStepsFind").parent().hide();
 		$("#toolbarReportFind").parent().hide();
 		
-		menu_setVisibleMenuItem("mnutoolNew" + menuSection + "Find", !isWorkflow && fFromMenu);
-		menu_setVisibleMenuItem("mnutoolCopy" + menuSection + "Find", !isWorkflow && fFromMenu);
-		menu_setVisibleMenuItem("mnutoolEdit" + menuSection + "Find", !isWorkflow && fFromMenu);
-		menu_setVisibleMenuItem("mnutoolDelete" + menuSection + "Find", !isWorkflow && fFromMenu);
-		menu_setVisibleMenuItem("mnutoolProperties" + menuSection + "Find", !isWorkflow && fFromMenu);
+		menu_setVisibleMenuItem("mnutoolNew" + menuSection + "Find", !isRunOnly && fFromMenu);
+		menu_setVisibleMenuItem("mnutoolCopy" + menuSection + "Find", !isRunOnly && fFromMenu);
+		menu_setVisibleMenuItem("mnutoolEdit" + menuSection + "Find", !isRunOnly && fFromMenu);
+		menu_setVisibleMenuItem("mnutoolDelete" + menuSection + "Find", !isRunOnly && fFromMenu);
+		menu_setVisibleMenuItem("mnutoolProperties" + menuSection + "Find", !isRunOnly && fFromMenu);
 		menu_setVisibleMenuItem("mnutoolRun" + menuSection + "Find", (menuSection !== "Tools"));
 
 		// Show the close button for the Calendar, Absence breakdown, Bradford Factor Reports and Mail Mearge defsel when it's loaded from the database section. (E.g. from personnal record)
@@ -281,7 +284,7 @@
 		menu_setVisibletoolbarGroupById('mnuSectionReportToolsFind', false);
 		$('#toolbarReportFind').text('Find');
 		
-		if (!isWorkflow) {
+		if (!isRunOnly) {
 			menu_toolbarEnableItem("mnutoolNew" + menuSection + "Find", isNewPermitted && fFromMenu);
 			menu_toolbarEnableItem("mnutoolCopy" + menuSection + "Find", fHasRows && isNewPermitted && fFromMenu);
 			menu_toolbarEnableItem("mnutoolEdit" + menuSection + "Find", fHasRows && (isEditPermitted || isViewPermitted) && fFromMenu);
@@ -556,25 +559,27 @@
 					<td colspan="5" height="10">
 						<span class="pageTitle">
 							<%
-								If iDefSelType = UtilityType.utlCrossTab Then
-									Response.Write("Cross Tabs")
-								ElseIf iDefSelType = UtilityType.utlCustomReport Then
-									Response.Write("Custom Reports")
-								ElseIf iDefSelType = UtilityType.utlMailMerge Then
-									Response.Write("Mail Merge")
-								ElseIf iDefSelType = UtilityType.utlPicklist Then
-									Response.Write("Picklists")
-								ElseIf iDefSelType = UtilityType.utlFilter Then
-									Response.Write("Filters")
-								ElseIf iDefSelType = UtilityType.utlCalculation Then
-									Response.Write("Calculations")
-								ElseIf iDefSelType = UtilityType.utlCalendarReport Then
-									Response.Write("Calendar Reports")
-								ElseIf iDefSelType = UtilityType.utlWorkflow Then
-									Response.Write("Workflow")
-								ElseIf iDefSelType = UtilityType.utlNineBoxGrid Then
-									Response.Write("9-Box Grid Reports")
-								End If
+                                If iDefSelType = UtilityType.utlCrossTab Then
+                                    Response.Write("Cross Tabs")
+                                ElseIf iDefSelType = UtilityType.utlCustomReport Then
+                                    Response.Write("Custom Reports")
+                                ElseIf iDefSelType = UtilityType.utlMailMerge Then
+                                    Response.Write("Mail Merge")
+                                ElseIf iDefSelType = UtilityType.utlPicklist Then
+                                    Response.Write("Picklists")
+                                ElseIf iDefSelType = UtilityType.utlFilter Then
+                                    Response.Write("Filters")
+                                ElseIf iDefSelType = UtilityType.utlCalculation Then
+                                    Response.Write("Calculations")
+                                ElseIf iDefSelType = UtilityType.utlCalendarReport Then
+                                    Response.Write("Calendar Reports")
+                                ElseIf iDefSelType = UtilityType.utlWorkflow Then
+                                    Response.Write("Workflow")
+                                ElseIf iDefSelType = UtilityType.utlNineBoxGrid Then
+                                    Response.Write("9-Box Grid Reports")
+                                ElseIf iDefSelType = UtilityType.utlDataTransfer Then
+                                    Response.Write("Data Transfer")
+                                End If
 							%>
 						</span>
 					</td>

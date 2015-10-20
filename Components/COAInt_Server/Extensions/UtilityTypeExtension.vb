@@ -23,7 +23,10 @@ Namespace Extensions
 				Case UtilityType.utlMailMerge
 					sSecurityID = "MAILMERGE"
 
-				Case UtilityType.utlPicklist
+                Case UtilityType.utlDataTransfer
+                    sSecurityID = "DATATRANSFER"
+
+                Case UtilityType.utlPicklist
 					sSecurityID = "PICKLISTS"
 
 				Case UtilityType.utlFilter
