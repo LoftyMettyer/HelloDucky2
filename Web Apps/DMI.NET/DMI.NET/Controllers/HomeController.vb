@@ -2544,15 +2544,34 @@ Namespace Controllers
 
 			End Try
 
-            If value.UtilType = UtilityType.utlDataTransfer Then
-                Return Content("Feature not yet implemented!")
-            Else
-                Return View("util_run", value)
-            End If
+            ' Act dependent on utility type
+            Select Case value.UtilType
+                Case UtilityType.utlDataTransfer
+                    Dim message = RunDataTransfer(value.ID)
+                    Return View("util_run_message", message)
+
+                Case Else
+                    Return View("util_run", value)
+            End Select
 
         End Function
 
-		<HttpPost>
+        Private Function RunDataTransfer(id As Integer) As PostResponse
+
+            Dim dataTransfer = New clsDataTransferRun
+            dataTransfer.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
+            dataTransfer.ExecuteDataTransfer(id)
+
+            Dim message As New PostResponse With {
+                .Message = dataTransfer.StatusMessage
+            }
+
+            Return message
+
+        End Function
+
+        <HttpPost>
 		<ValidateAntiForgeryToken>
 		Public Function util_run_crosstab_downloadoutput() As FilePathResult
 

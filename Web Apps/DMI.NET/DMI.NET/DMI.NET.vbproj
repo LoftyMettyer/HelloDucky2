@@ -1800,6 +1800,7 @@
     <Content Include="Views\Error\PageNotFound.vbhtml" />
     <Content Include="Views\Error\InternalServer.vbhtml" />
     <Content Include="Views\Error\PermissionsError.vbhtml" />
+    <Content Include="Views\Home\util_run_message.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
