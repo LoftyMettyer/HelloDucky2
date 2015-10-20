@@ -4105,6 +4105,15 @@
                         <Component Id="cmpD392645F96B798EABD18631FF2DF8C2D" Guid="*">
                             <File Id="filD7361226AD1CB310E0D4A2551603B2DE" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\Packet_Filtering64NORM.png" />
                         </Component>
+                        <Component Id="cmp045D12347DEF230751F0D39B0B81B9E7" Guid="*">
+                            <File Id="fil2143B41B401AA570A9F46702E0D4B026" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\Packet_Picklist64DIS.png" />
+                        </Component>
+                        <Component Id="cmpAA90FBE74F6EE71DA2DB818881F3E8B5" Guid="*">
+                            <File Id="fil086E80E2734371EC9A8B36613EA0356A" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\Packet_Picklist64HOVER.png" />
+                        </Component>
+                        <Component Id="cmp3457863F47DA47F13A5AA4C7F3A11452" Guid="*">
+                            <File Id="filB98A77D0C0DADC6CED54069D11D31ECD" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\Packet_Picklist64NORM.png" />
+                        </Component>
                         <Component Id="cmpCD92B6BD25C601A4045A3C48CAE48B24" Guid="*">
                             <File Id="filAAFCF342E9C06CC0DF9D634F534234A0" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\preview64DIS.png" />
                         </Component>
@@ -5894,6 +5903,9 @@
             <ComponentRef Id="cmp3C028FE313630541EE44B337290A75A9" />
             <ComponentRef Id="cmpF26BDD376D48F675810FEEAB7F62FEC1" />
             <ComponentRef Id="cmpD392645F96B798EABD18631FF2DF8C2D" />
+            <ComponentRef Id="cmp045D12347DEF230751F0D39B0B81B9E7" />
+            <ComponentRef Id="cmpAA90FBE74F6EE71DA2DB818881F3E8B5" />
+            <ComponentRef Id="cmp3457863F47DA47F13A5AA4C7F3A11452" />
             <ComponentRef Id="cmpCD92B6BD25C601A4045A3C48CAE48B24" />
             <ComponentRef Id="cmpDFE6E0CBC148BCD284272613ECF6F9E0" />
             <ComponentRef Id="cmpBE5035E92301CB75CB6EBED615D1DB0C" />
