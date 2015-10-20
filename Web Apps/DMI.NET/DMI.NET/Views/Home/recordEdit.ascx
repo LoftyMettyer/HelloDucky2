@@ -348,9 +348,10 @@
 			enableSaveButton();
 		});
 
-		$('textarea:not([readonly])').on("keyup", function (e) { //Keyup catches more keys than keypress (for example, Backspace)			
-			if (e.keyCode < 37 || e.keyCode > 40)
-			{		
+		var keycodeNotAllowed = [17,33,34,35,36,37,38,39,40];
+		$('textarea:not([readonly])').on("keyup", function (e) { //Keyup catches more keys than keypress (for example, Backspace)					
+			if (keycodeNotAllowed.indexOf(e.keyCode) == -1)
+			{					
 				$("#ctlRecordEdit #changed").val("false");
 				enableSaveButton();
 			}
