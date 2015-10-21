@@ -77,34 +77,34 @@
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) TEXTIMAGE_ON [PRIMARY]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdenabled]  DEFAULT (0) FOR [Afdenabled]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdenabled]  DEFAULT (0) FOR [Afdenabled]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdindividual]  DEFAULT (0) FOR [Afdindividual]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdindividual]  DEFAULT (0) FOR [Afdindividual]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdforename]  DEFAULT (0) FOR [Afdforename]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdforename]  DEFAULT (0) FOR [Afdforename]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdsurname]  DEFAULT (0) FOR [Afdsurname]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdsurname]  DEFAULT (0) FOR [Afdsurname]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdinitial]  DEFAULT (0) FOR [Afdinitial]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdinitial]  DEFAULT (0) FOR [Afdinitial]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdtelephone]  DEFAULT (0) FOR [Afdtelephone]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdtelephone]  DEFAULT (0) FOR [Afdtelephone]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdaddress]  DEFAULT (0) FOR [Afdaddress]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdaddress]  DEFAULT (0) FOR [Afdaddress]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdproperty]  DEFAULT (0) FOR [Afdproperty]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdproperty]  DEFAULT (0) FOR [Afdproperty]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdstreet]  DEFAULT (0) FOR [Afdstreet]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdstreet]  DEFAULT (0) FOR [Afdstreet]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdlocality]  DEFAULT (0) FOR [Afdlocality]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdlocality]  DEFAULT (0) FOR [Afdlocality]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdtown]  DEFAULT (0) FOR [Afdtown]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdtown]  DEFAULT (0) FOR [Afdtown]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdcounty]  DEFAULT (0) FOR [Afdcounty]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_Afdcounty]  DEFAULT (0) FOR [Afdcounty]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  DEFAULT (1) FOR [OleOnServer]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  DEFAULT (1) FOR [OleOnServer]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_DefaultDisplayWidth]  DEFAULT (1) FOR [DefaultDisplayWidth]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_DefaultDisplayWidth]  DEFAULT (1) FOR [DefaultDisplayWidth]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  CONSTRAINT [DF_ASRSysColumns_QAddressEnabled]  DEFAULT (0) FOR [QAddressEnabled]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  CONSTRAINT [DF_ASRSysColumns_QAddressEnabled]  DEFAULT (0) FOR [QAddressEnabled]
 GO
-ALTER TABLE [dbo].[tbsys_columns] ADD  DEFAULT (0) FOR [CalculateIfEmpty]
+ALTER TABLE [dbo].[ASRSysColumns] ADD  DEFAULT (0) FOR [CalculateIfEmpty]

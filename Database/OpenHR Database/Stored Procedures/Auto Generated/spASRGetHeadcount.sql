@@ -9,7 +9,7 @@ BEGIN
    SET NOCOUNT ON;
 
 	 SELECT TableID AS ID 
-		FROM dbo.tbsys_tables 
+		FROM dbo.ASRSysTables 
 		WHERE TableID = 1;
 
 END

@@ -336,7 +336,6 @@
     <Build Include="Stored Procedures\Other\spASRUpdateStatistics.sql" />
     <Build Include="Stored Procedures\Other\spstat_audittable.sql" />
     <Build Include="Stored Procedures\Other\spstat_getaudittrail.sql" />
-    <Build Include="Stored Procedures\Other\spstat_scriptnewcolumn.sql" />
     <Build Include="Stored Procedures\Workflow\spASRWorkflowValidTableRecord.sql" />
     <Build Include="Stored Procedures\Workflow\spASRWorkflowActionFailed.sql" />
     <Build Include="Stored Procedures\Workflow\spASRWorkflowAscendantRecordID.sql" />

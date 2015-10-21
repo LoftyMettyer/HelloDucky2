@@ -21,7 +21,7 @@ BEGIN
 				@iCount integer;
 		SET @piResult = 0;
 
-	SELECT @psTableName = TableName FROM dbo.tbsys_tables WHERE TableID = @piTableID;
+		SELECT @psTableName = TableName FROM ASRSysTables WHERE TableID = @piTableID;
 
 		/* Check that the record has not been updated by another user since it was last checked. */
 		SET @sSQL = 'SELECT @iCurrentTimestamp = convert(integer, timestamp)' +

@@ -1484,9 +1484,9 @@ BEGIN
 	IF (@pfSomeSelectable = 1)
 	BEGIN
 		IF @piViewID <>0 BEGIN
-			SELECT @sTableOrViewName = ViewName FROM tbsys_views WHERE ViewID = @piViewID
+			SELECT @sTableOrViewName = ViewName FROM ASRSysViews WHERE ViewID = @piViewID
 		END ELSE IF @piTableID <> 0 BEGIN
-			SELECT @sTableOrViewName = TableName FROM tbsys_tables WHERE TableID = @piTableID
+			SELECT @sTableOrViewName = TableName FROM ASRSysTables WHERE TableID = @piTableID
 		END
 
 		SELECT @sBlankIfZeroColumns AS BlankIfZeroColumns
