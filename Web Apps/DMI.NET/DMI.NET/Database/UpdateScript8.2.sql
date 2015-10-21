@@ -225,10 +225,6 @@ IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRI
 	DROP PROCEDURE [dbo].[spASRIntGetLicenceInfo]
 GO
 
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRIntGetColumnsFromTablesAndViews]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[spASRIntGetColumnsFromTablesAndViews]
-GO
-
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRIntCurrentAccessForRole]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [dbo].[spASRIntCurrentAccessForRole]
 GO
@@ -12284,85 +12280,6 @@ BEGIN
 	WHERE ASRSysCalendarReportEvents.CalendarReportID = @piCalendarReportID
 	ORDER BY ASRSysCalendarReportEvents.ID;
 END
-
-GO
-
-
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntGetColumnsFromTablesAndViews]
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-	
-	SELECT c.columnName, c.columnType, c.dataType
-		, c.columnID, ISNULL(c.uniqueCheckType,0) AS uniqueCheckType
-		, t.tableName AS tableViewName
-	FROM dbo.tbsys_columns c
-	INNER JOIN tbsys_tables t ON c.tableID = t.tableID
-	UNION 
-	SELECT c.columnName, c.columnType, c.dataType
-		, c.columnID, ISNULL(c.uniqueCheckType,0) AS uniqueCheckType
-		, v.viewName AS tableViewName 
-	FROM dbo.tbsys_columns c
-	INNER JOIN ASRSysViews v ON c.tableID = v.viewTableID 
-	LEFT OUTER JOIN ASRSysViewColumns vc ON (v.viewID = vc.viewID 
-			AND c.columnID = vc.columnID)
-	WHERE vc.inView = 1 OR c.columnType = 3 
-	ORDER BY tableViewName;
-
-
-	-- Version 2 (runs better looking at the execution plan, but does in fact incur more reads!)
-	--DECLARE @columns TABLE (columnName varchar(255), columnType int, datatype integer, columnID integer, TableID integer, uniquechecktype bit);
-
-	--INSERT @columns
-	--	SELECT c.columnName, c.columnType, c.dataType
-	--		, c.columnID, c.TableID, ISNULL(c.uniqueCheckType,0) AS uniqueCheckType
-	--		FROM dbo.ASRSysColumns c;
-
-	--SELECT c.columnName, c.columnType, c.dataType
-	--	, c.columnID, c.uniqueCheckType
-	--	, t.tableName AS tableViewName
-	--FROM @columns c
-	--INNER JOIN ASRSysTables t ON c.tableID = t.tableID
-	--UNION 
-	--SELECT c.columnName, c.columnType, c.dataType
-	--	, c.columnID, c.uniqueCheckType
-	--	, v.viewName AS tableViewName 
-	--FROM @columns c
-	--INNER JOIN ASRSysViews v ON c.tableID = v.viewTableID 
-	--LEFT OUTER JOIN ASRSysViewColumns vc ON (v.viewID = vc.viewID AND c.columnID = vc.columnID)
-	--WHERE vc.inView = 1 OR c.columnType = 3 
-	--ORDER BY tableViewName;
-
-
-	-- Version 1. Looking as column and table views, but is quite slow.
-	--SELECT c.columnName, c.columnType, c.dataType
-	--	, c.columnID, ISNULL(c.uniqueCheckType,0) AS uniqueCheckType
-	--	, t.tableName AS tableViewName
-	--FROM dbo.ASRSysColumns c
-	--INNER JOIN ASRSysTables t ON c.tableID = t.tableID
-	--UNION 
-	--SELECT c.columnName, c.columnType, c.dataType
-	--	, c.columnID, ISNULL(c.uniqueCheckType,0) AS uniqueCheckType
-	--	, v.viewName AS tableViewName 
-	--FROM dbo.ASRSysColumns c
-	--INNER JOIN ASRSysViews v ON c.tableID = v.viewTableID 
-	--LEFT OUTER JOIN ASRSysViewColumns vc ON (v.viewID = vc.viewID 
-	--		AND c.columnID = vc.columnID)
-	--WHERE vc.inView = 1 OR c.columnType = 3 
-	--ORDER BY tableViewName;
-
-
-
-END
-
-
 
 GO
 
@@ -62285,7 +62202,33 @@ END
 GO
 
 
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRIntGetColumnsFromTablesAndViews]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[spASRIntGetColumnsFromTablesAndViews]
+GO
 
+CREATE PROCEDURE [dbo].[spASRIntGetColumnsFromTablesAndViews]
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	SELECT UPPER(c.columnName) AS [ColumnName], c.columnType, c.dataType
+		, c.columnID, ISNULL(c.uniqueCheckType,0) AS uniqueCheckType
+		, UPPER(t.tableName) AS tableViewName
+	FROM dbo.ASRSysColumns c
+	INNER JOIN ASRSysTables t ON c.tableID = t.tableID
+	UNION 
+	SELECT UPPER(c.columnName) AS [ColumnName], c.columnType, c.dataType
+		, c.columnID, ISNULL(c.uniqueCheckType,0) AS uniqueCheckType
+		, UPPER(v.viewName) AS tableViewName 
+	FROM dbo.ASRSysColumns c
+	INNER JOIN ASRSysViews v ON c.tableID = v.viewTableID 
+	LEFT OUTER JOIN ASRSysViewColumns vc ON (v.viewID = vc.viewID 
+			AND c.columnID = vc.columnID)
+	WHERE vc.inView = 1 OR c.columnType = 3 
+	ORDER BY tableViewName;
+
+END
 
 
 
