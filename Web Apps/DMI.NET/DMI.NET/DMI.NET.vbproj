@@ -346,6 +346,7 @@
     <Content Include="Content\images\anonymous.png" />
     <Content Include="Content\images\Chart_Popout.png" />
     <Content Include="Content\images\error.jpg" />
+    <Content Include="Content\images\greenLightIcon.png" />
     <Content Include="Content\images\minus.gif" />
     <Content Include="Content\images\OLEIcons\delete-icon.png" />
     <Content Include="Content\images\OLEIcons\delete-iconDIS.png" />
@@ -1335,7 +1336,6 @@
     <Content Include="misc\exprmenu.htm" />
     <None Include="My Project\PublishProfiles\QASRVR01 - OpenHR.pubxml.user" />
     <None Include="My Project\PublishProfiles\QASRVR01 - OpenHRRanorex.pubxml.user" />
-    <Content Include="Pictures\Logo.ico" />
     <Content Include="Scripts\ColorPicker\spectrum.js" />
     <Content Include="Scripts\date.js" />
     <Content Include="Scripts\FormScripts\find.js" />
@@ -1392,6 +1392,9 @@
     <Content Include="Scripts\officebar\winkit\sign_out_64DIS.png" />
     <Content Include="Scripts\officebar\winkit\sign_out_64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\sign_out_64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\switch_windows64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\switch_windows64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\switch_windows64NORM.png" />
     <Content Include="Views\Account\CurrentUsers.ascx" />
     <Content Include="Views\Home\util_run_bradford_factor.ascx" />
     <Content Include="Views\Home\_showChart.ascx" />

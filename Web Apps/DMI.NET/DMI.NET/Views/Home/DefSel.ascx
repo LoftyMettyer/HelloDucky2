@@ -148,6 +148,7 @@
 		if ( (parseInt($("#txtSingleRecordID").val()) > 0) || (parseInt($("#txtMultipleRecordIDs").val().length) > 0 ) )  {
 			$("#optionframe").attr("data-framesource", "DEFSEL");
 			$("#workframe").hide();
+			OpenHR.setWorkFrameDialogsVisible(false);
 			$("#ToolsFrame").hide();
 			$("#optionframe").show();
 		} else {
@@ -508,11 +509,12 @@
 	function setcancel() {
 
 		if ( (parseInt($("#txtSingleRecordID").val()) > 0) || (parseInt($("#txtMultipleRecordIDs").val()) > 0) ) {			
-			refreshData();
+			//refreshData(); Not required.
 			menu_disableMenu();
 
 			$("#optionframe").hide();
 			$("#workframe").show();
+			OpenHR.setWorkFrameDialogsVisible(true);
 			$("#toolbarRecord").show();
 			$("#toolbarRecord").click();
 
@@ -560,27 +562,27 @@
 					<td colspan="5" height="10">
 						<span class="pageTitle">
 							<%
-                                If iDefSelType = UtilityType.utlCrossTab Then
-                                    Response.Write("Cross Tabs")
-                                ElseIf iDefSelType = UtilityType.utlCustomReport Then
-                                    Response.Write("Custom Reports")
-                                ElseIf iDefSelType = UtilityType.utlMailMerge Then
-                                    Response.Write("Mail Merge")
-                                ElseIf iDefSelType = UtilityType.utlPicklist Then
-                                    Response.Write("Picklists")
-                                ElseIf iDefSelType = UtilityType.utlFilter Then
-                                    Response.Write("Filters")
-                                ElseIf iDefSelType = UtilityType.utlCalculation Then
-                                    Response.Write("Calculations")
-                                ElseIf iDefSelType = UtilityType.utlCalendarReport Then
-                                    Response.Write("Calendar Reports")
-                                ElseIf iDefSelType = UtilityType.utlWorkflow Then
-                                    Response.Write("Workflow")
-                                ElseIf iDefSelType = UtilityType.utlNineBoxGrid Then
-                                    Response.Write("9-Box Grid Reports")
+								If iDefSelType = UtilityType.utlCrossTab Then
+									Response.Write("Cross Tabs")
+								ElseIf iDefSelType = UtilityType.utlCustomReport Then
+									Response.Write("Custom Reports")
+								ElseIf iDefSelType = UtilityType.utlMailMerge Then
+									Response.Write("Mail Merge")
+								ElseIf iDefSelType = UtilityType.utlPicklist Then
+									Response.Write("Picklists")
+								ElseIf iDefSelType = UtilityType.utlFilter Then
+									Response.Write("Filters")
+								ElseIf iDefSelType = UtilityType.utlCalculation Then
+									Response.Write("Calculations")
+								ElseIf iDefSelType = UtilityType.utlCalendarReport Then
+									Response.Write("Calendar Reports")
+								ElseIf iDefSelType = UtilityType.utlWorkflow Then
+									Response.Write("Workflow")
+								ElseIf iDefSelType = UtilityType.utlNineBoxGrid Then
+									Response.Write("9-Box Grid Reports")
                                 ElseIf iDefSelType = UtilityType.utlDataTransfer Then
                                     Response.Write("Data Transfer")
-                                End If
+								End If
 							%>
 						</span>
 					</td>
@@ -847,6 +849,7 @@
 				$("#ToolsFrame").html('');
 				$("#ToolsFrame").hide();
 				$("#workframe").show();
+				OpenHR.setWorkFrameDialogsVisible(true);
 
 				if (absenceBreakdownOrBreadfordFactorForm == null && reportDefinitionForm != null) {
 

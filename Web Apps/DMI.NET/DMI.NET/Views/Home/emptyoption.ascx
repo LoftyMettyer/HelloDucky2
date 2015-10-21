@@ -36,7 +36,7 @@
 
 				if (iAction === optionActionType.SELECTORDER) {
 					fNoAction = false;
-
+					
 					if (sCurrentWorkFramePage == "RECORDEDIT") {						
 						var frmRecEdit = OpenHR.getForm("workframe","frmRecordEditForm");
 						frmRecEdit.txtRecEditFromDef.value = txtFromDef.value;
@@ -63,7 +63,7 @@
 						$("#workframe").show();
 						refreshData(); 	//recedit
 					} else {
-						if (sCurrentWorkFramePage == "FIND") {
+						if (sCurrentWorkFramePage == "FIND") {							
 							frmFind = OpenHR.getForm("workframe","frmFindForm");
 							frmFind.txtFilterSQL.value = txtFilterSQL.value;
 							frmFind.txtFilterDef.value = txtFilterDef.value;
@@ -78,15 +78,14 @@
 					var frmData = OpenHR.getForm("dataframe","frmData");
 					frmData.txtRecordID.value = txtRecordID.value;					
 					$("#workframe").attr("data-framesource", "RECORDEDIT");
+					$("#optionframe").dialog('destroy');
 					$("#optionframe").hide();
 					$("#workframe").show();
 					//OpenHR.getFrame("workframe").refreshData();
 					refreshData();	//recedit
 				}
-					var recEditControl;
 					if (iAction === optionActionType.SELECTLINK) {
 					fNoAction = false;
-					recEditControl = OpenHR.getForm("workframe", "frmRecordEditForm").ctlRecordEdit;
 						
 					var sControlName;
 					var sColumnID;
@@ -114,8 +113,7 @@
 				}
 
 				if (iAction === optionActionType.SELECTLOOKUP) {
-					fNoAction = false;
-					recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
+					fNoAction = false;					
 					recEdit_setData(txtColumnID.value, txtValue.value);
 					enableSaveButton(); //recedit
 
@@ -126,12 +124,11 @@
 
 				if ((iAction === optionActionType.SELECTIMAGE) || (iAction === optionActionType.SELECTOLE)) {
 					fNoAction = false;
-					recEditControl = OpenHR.getForm("workframe", "frmRecordEditForm").ctlRecordEdit;
-						recEdit_setData(txtColumnID.value, txtFile.value);
-						recEdit_ChangedOLEPhoto(txtColumnID.value, "");
-					
-						enableSaveButton(); //in scope.				
-					
+					recEdit_setData(txtColumnID.value, txtFile.value);
+					recEdit_ChangedOLEPhoto(txtColumnID.value, "");
+
+					enableSaveButton(); //in scope.				
+
 					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
 					//window.setTimeout("window.parent.frames('menuframe').refreshMenu()", 100);
 					menu_refreshMenu();
@@ -140,7 +137,6 @@
 				if (iAction === optionActionType.LINKOLE) {
 					if (txtErrorMessage.value == "") {
 						fNoAction = false;
-						recEditControl = OpenHR.getForm("workframe", "frmRecordEditForm").ctlRecordEdit;
 						if (txtFileValue.value.length > 0) {
 							// set the new photo value if applicable.
 							$('#txtData_' + txtColumnID.value).attr('data-Img', txtFileValue.value);

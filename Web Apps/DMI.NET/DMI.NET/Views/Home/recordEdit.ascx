@@ -4,11 +4,34 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
 
+<%
+	If Session("SSIMode") = False Then
+		
+		Response.Write("<script src=""" & Url.LatestContent("~/bundles/jQuery") & """ type=""text/javascript""></script>")
+		Response.Write("<script src=""" & Url.LatestContent("~/bundles/jQueryUI7") & """ type=""text/javascript""></script>")
+		Response.Write("<script src=""" & Url.LatestContent("~/bundles/OpenHR_General") & """ type=""text/javascript""></script>")
+		Response.Write("<script src=""" & Url.LatestContent("~/bundles/recordedit") & """ type=""text/javascript""></script>")
+		
+	End If	
+	%>
+
+<%--Base stylesheets--%>
+
+<%If Session("SSIMode") = False Then
+		Response.Write("<link href=""" & Url.LatestContent("~/Content/font-awesome.min.css") & """ rel=""stylesheet"" type=""text/css"" />")
+		Response.Write("<link href=""" & Url.LatestContent("~/Content/Site.css") & """ rel=""stylesheet"" type=""text/css"" />")
+		Response.Write("<link href=""" & Url.LatestContent("~/Content/OpenHR.css") & """ rel=""stylesheet"" type=""text/css"" />")
+		Response.Write("<link href=""" & Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css") & """ rel=""stylesheet"" type=""text/css"" />")
+		Response.Write("<link href=""" & Url.LatestContent("~/Content/ui.jqgrid.css") & """ rel=""stylesheet"" type=""text/css"" />")
+		Response.Write("<link href=""" & Url.LatestContent("~/Content/table.css") & """ rel=""stylesheet"" type=""text/css"" />")
+		
+	End If%>
+
 <script type="text/javascript">
 
 	//Global
-	if (typeof rowWasModified === 'undefined')
-		var rowWasModified = false;
+	if (typeof window.top.rowWasModified === 'undefined')
+		window.top.rowWasModified = false;
 
 	//Fault HRPRO-2953
 	(function () {
@@ -28,7 +51,7 @@
 
 		switch (event.keyCode) {
 			case 113:    // F2 insert todays date
-				$(this).datepicker("setDate", new Date())
+				$(this).datepicker("setDate", new Date());
 				$(this).datepicker('widget').hide('true');
 				break;
 			case 37:    // LEFT --> -1 day
@@ -49,9 +72,8 @@
 	function recordEdit_window_onload() {
 
 		//public variables
-		this.mavIDColumns = new Array();
+		window.top.window.mavIDColumns = new Array();
 		var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
-
 		var fOK;
 		fOK = true;
 		var sErrMsg = frmRecordEditForm.txtErrorDescription.value;
@@ -63,10 +85,10 @@
 
 		if (fOK == true) {
 			// Expand the work frame and hide the option frame.
-			$('#optionframe').hide();
+			window.top.$('#optionframe').hide();
 			$('#workframe').show();
-			$("#toolbarRecord").show();
-			$("#toolbarRecord").click();
+			window.top.$("#toolbarRecord").show();
+			window.top.$("#toolbarRecord").click();
 
 			$("#workframe").attr("data-framesource", "RECORDEDIT");
 
@@ -82,7 +104,7 @@
 		}
 
 		if (fOK == true) {
-			var frmMenuInfo = $("#frmMenuInfo")[0].children;
+			var frmMenuInfo = window.top.$("#frmMenuInfo")[0].children;
 
 			var sKey = new String("photoPath_");
 			sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
@@ -105,6 +127,7 @@
 			frmRecordEditForm.txtOLELocalPath.value = sPath;
 
 			//Create all tabs first...
+			
 			if (fOK == true) {
 				var tabsList = $('#txtRecEditTabCaptions').val();
 				if (tabsList.length > 0) {
@@ -184,7 +207,7 @@
 				$(".spinner").spinner();
 
 				//Loop over the "number" fields
-				$(".number").each(function () {
+				OpenHR.activeFrame().find(".number").each(function () {
 					var control = $(this);
 					control.autoNumeric('init'); //Attach autoNumeric plugin to each instance of a numeric field; this provides functionality such as masking, validate numbers, etc.
 					$(control).blur(function () { //On blur, set the field to the value of the data-blankIfZeroValue attribute, set in recordEdit.js
@@ -349,9 +372,9 @@
 		});
 
 		var keycodeNotAllowed = [17,33,34,35,36,37,38,39,40];
-		$('textarea:not([readonly])').on("keyup", function (e) { //Keyup catches more keys than keypress (for example, Backspace)					
+		$('textarea:not([readonly])').on("keyup", function (e) { //Keyup catches more keys than keypress (for example, Backspace)			
 			if (keycodeNotAllowed.indexOf(e.keyCode) == -1)
-			{					
+			{		
 				$("#ctlRecordEdit #changed").val("false");
 				enableSaveButton();
 			}
@@ -386,14 +409,14 @@
 			linksMainParams = null;
 		}
 
-		if (hasChanged == 6 && !rowWasModified) { // 6 = No Change
+		if (hasChanged == 6 && !window.top.rowWasModified) { // 6 = No Change
 			loadPartialView("linksMain", "Home", "workframe", linksMainParams);
 			return false;
-		} else if (hasChanged == 0 || rowWasModified) { // 0 = Changed, allow prompted navigation.
+		} else if (hasChanged == 0 || window.top.rowWasModified) { // 0 = Changed, allow prompted navigation.
 			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) { // OK
-					rowWasModified = false;
-					window.onbeforeunload = null;
+					window.top.rowWasModified = false;
+					window.top.onbeforeunload = null;
 					loadPartialView("linksMain", "Home", "workframe", linksMainParams);
 					return false;
 				} else {
@@ -403,14 +426,6 @@
 		} else
 			return false;
 
-	}
-
-	function enableSaveButton() {		
-		if ($("#ctlRecordEdit #changed").val() == "false") {
-			$("#ctlRecordEdit #changed").val("true");
-			menu_toolbarEnableItem("mnutoolSaveRecord", true);
-		}
-		window.onbeforeunload = warning;
 	}
 
 	function warning() {
@@ -469,7 +484,7 @@
 		var psLookupValue = $(objLookup).val();
 		var pfMandatory = $(objLookup).attr("data-Mandatory");
 		var pLookupFilterValueID = $(objLookup).attr("data-LookupFilterValueID");
-		var pstrFilterValue = $("#ctlRecordEdit").find("[data-columnID='" + pLookupFilterValueID + "']").val();
+		var pstrFilterValue = OpenHR.activeFrame().find("#ctlRecordEdit").find("[data-columnID='" + pLookupFilterValueID + "']").val();
 		if (pstrFilterValue == undefined) pstrFilterValue = "";
 
 		menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue);
@@ -514,7 +529,7 @@
 		var psFile = $(clickObj).attr('data-fileName');
 		var plngMaxEmbedSize = $(clickObj).attr('data-maxEmbedSize');
 		var pbIsReadOnly = $(clickObj).attr('data-readOnly');
-		var frmMenuInfo = $("#frmMenuInfo")[0].children;
+		var frmMenuInfo = window.top.$("#frmMenuInfo")[0].children;
 		var isPhoto = ($(clickObj).attr('data-controlType') == '1024');
 
 		if ($("#txtCurrentRecordID").val() == 0) {
@@ -555,31 +570,6 @@
 				menu_loadOLEPage(plngColumnID, psFile, plngOleType, plngMaxEmbedSize, pbIsReadOnly, isPhoto);
 			}
 		}
-	}
-
-	function refreshData() {
-		// Get the data.asp to get the required data.
-		var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
-		var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
-
-		frmGetDataForm.txtAction.value = "LOAD";
-		frmGetDataForm.txtReaction.value = "";
-		frmGetDataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
-		frmGetDataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
-		frmGetDataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
-		frmGetDataForm.txtSelectSQL.value = frmRecordEditForm.txtRecEditSelectSQL.value;
-		frmGetDataForm.txtFromDef.value = frmRecordEditForm.txtRecEditFromDef.value;
-		frmGetDataForm.txtFilterSQL.value = frmRecordEditForm.txtRecEditFilterSQL.value;
-		frmGetDataForm.txtFilterDef.value = frmRecordEditForm.txtRecEditFilterDef.value;
-		frmGetDataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
-		frmGetDataForm.txtRecordID.value = OpenHR.getForm("dataframe", "frmData").txtRecordID.value;
-		frmGetDataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
-		frmGetDataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
-		frmGetDataForm.txtDefaultCalcCols.value = CalculatedDefaultColumns();
-		frmGetDataForm.txtInsertUpdateDef.value = "";
-		frmGetDataForm.txtTimestamp.value = "";
-
-		data_refreshData();
 	}
 
 </script>
@@ -812,7 +802,7 @@
 
 	function resetSession() {
 		var mins = <%:Session.Timeout%>; 
-		$.post('RefreshSession', { __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val() },  function () {});
+		$.post('RefreshSession', { __RequestVerificationToken: window.top.$('[name="__RequestVerificationToken"]').val() },  function () {});
 		Decrement(mins);
 	}
 
@@ -862,9 +852,20 @@
 			//$("#ctlRecordEdit").css("transform-origin", "50% top");
 		}
 
-		var toolMfRecord = getCookie('toolMFRecord');
+		var toolMfRecord = window.top.getCookie('toolMFRecord');
 		$('#mnutoolMFRecord').removeClass('toolbarButtonOn');
 		if (toolMfRecord == 'true') toggleMandatoryColumns(true);
+
+		
+		var dialogId = OpenHR.activeWindowID();
+		var newWidth = $('#ctlRecordEdit').outerWidth() + 100;
+		var newHeight = $('#ctlRecordEdit').outerHeight() + 100;
+
+		window.top.$('#' + dialogId).dialog('option', 'width', newWidth);
+		window.top.$('#' + dialogId).dialog('option', 'height', newHeight);
+
+		OpenHR.setDatepickerLanguage();
+
 	});
 
 </script>

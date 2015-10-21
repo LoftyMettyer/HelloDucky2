@@ -1,7 +1,7 @@
 ﻿//Global variables
-if (typeof rowWasModified === 'undefined') {
-	var rowWasModified = false;
-	window.onbeforeunload = null;
+if (typeof window.top.rowWasModified === 'undefined') {
+	window.top.rowWasModified = false;
+	window.top.onbeforeunload = null;
 }
 
 var saveThisRowToDatabase = true;
@@ -26,7 +26,7 @@ function menu_window_onload() {
 	});
 		
 	//add onclick to all ribbon items.
-	$(document).on("click", ".officetab a", function() {
+	$(document).on("click", ".officetab a", function () {
 			var pTool = ($(this).closest("div").attr("id"));	    
 			menu_abMainMenu_Click(pTool);
 	});
@@ -51,7 +51,7 @@ function menu_window_onload() {
 		applyJSTree();
 
 	//Go To input box functionality
-	$("#txtLocateRecordFind").keypress(function(e) {
+	$("#txtLocateRecordFind").keypress(function (e) {
 		if (e.keyCode == 13) { //If ENTER was pressed...
 			//At this point, since we are handling the keypress event, the textbox doesn't contain the latest key pressed,
 			//so the function below will get the value and call the appropriate screen
@@ -98,7 +98,6 @@ function menu_window_onload() {
 		//DON'T NEED.
 		//abMainMenu.RecalcLayout();
 		//		}
-
 	}
 }
 
@@ -111,32 +110,25 @@ function ReloadPageWithFindTerm() {
 		return false;
 	}
 
-	if (sCurrentWorkPage == "FIND")
-	{
+	if (sCurrentWorkPage == "FIND") {
 		menu_reloadFindPage("LOCATE", sLocateValue);
 	}
-	if (sCurrentWorkPage == "LINKFIND")
-	{
+	if (sCurrentWorkPage == "LINKFIND") {
 		menu_reloadLinkPage("LOCATE", sLocateValue);
 	}
-	if (sCurrentWorkPage == "LOOKUPFIND")
-	{
+	if (sCurrentWorkPage == "LOOKUPFIND") {
 		menu_reloadLookupPage("LOCATE", sLocateValue);
 	}
-	if (sCurrentWorkPage == "TBTRANSFERCOURSEFIND")
-	{
+	if (sCurrentWorkPage == "TBTRANSFERCOURSEFIND") {
 		menu_reloadTransferCoursePage("LOCATE", sLocateValue);
 	}
-	if (sCurrentWorkPage == "TBBOOKCOURSEFIND")
-	{
+	if (sCurrentWorkPage == "TBBOOKCOURSEFIND") {
 		menu_reloadBookCoursePage("LOCATE", sLocateValue);
 	}
-	if (sCurrentWorkPage == "TBTRANSFERBOOKINGFIND")
-	{
+	if (sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") {
 		menu_reloadTransferBookingPage("LOCATE", sLocateValue);
 	}
-	if (sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND")
-	{
+	if (sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND") {
 		menu_reloadAddFromWaitingListPage("LOCATE", sLocateValue);
 	}
 }
@@ -147,13 +139,13 @@ function menu_abMainMenu_DataReady() {
 	menu_refreshMenu();
 
 	if (OpenHR.currentWorkPage() == "DEFAULT") {
-		OpenHR.postData("WorkflowOutOfOffice_Check", {__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()}, menu_OutOfOfficeTurnOff);
+		OpenHR.postData("WorkflowOutOfOffice_Check", { __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val() }, menu_OutOfOfficeTurnOff);
 	}
 
 	//Set up search box with all available/accessible options in the menu.
 	var availableTags = [];
 
-	$('.accordion').find('a').each(function() {
+	$('.accordion').find('a').each(function () {
 		var menuItem = $(this).text();
 		var menuTarget = $(this).parent().attr('id');
 		var includeThisItem = true;
@@ -173,11 +165,11 @@ function menu_abMainMenu_DataReady() {
 	});
 
 	$("#menuSearch").autocomplete({
-		source: function(request, response) {
+		source: function (request, response) {
 			var results = $.ui.autocomplete.filter(availableTags, request.term);
 			response(results.slice(0, 20));	//show first 20 items maximum
 		},
-		select: function(event, ui) {
+		select: function (event, ui) {
 			menu_abMainMenu_Click(ui.item.targetvalue); 
 			this.value = "";	//reset search value
 			return false;
@@ -238,7 +230,7 @@ function menu_MenuClick(sTool) {
 
 	if (sCurrentWorkPage == "FIND") {
 		try {
-			if (rowWasModified) {
+			if (window.top.rowWasModified) {
 				//Inform the user that they have unsaved changes on the Find window
 				OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
 				return false;
@@ -375,7 +367,7 @@ function menu_MenuClick(sTool) {
 					HideToolsRibbonButtons();
 					break;
 			}
-		} catch(e) {
+		} catch (e) {
 		} finally {
 			return false;
 		}
@@ -401,7 +393,7 @@ function menu_MenuClick(sTool) {
 					HideToolsRibbonButtons();
 					break;
 			}
-		} catch(e) {
+		} catch (e) {
 		} finally {
 			return false;
 		}
@@ -427,7 +419,7 @@ function menu_MenuClick(sTool) {
 					HideToolsRibbonButtons();
 					break;
 			}
-		} catch(e) {
+		} catch (e) {
 		} finally {
 			return false;
 		}
@@ -437,7 +429,7 @@ function menu_MenuClick(sTool) {
 	if ((sToolName == 'mnutoolDeleteReportFind') || (sToolName == 'mnutoolDeleteUtilitiesFind') || (sToolName == 'mnutoolDeleteToolsFind')) {
 		try {
 			setdelete();
-		} catch(e) {
+		} catch (e) {
 		} finally {
 			return false;
 		}
@@ -447,7 +439,7 @@ function menu_MenuClick(sTool) {
 	if ((sToolName == 'mnutoolPropertiesReportFind') || (sToolName == 'mnutoolPropertiesUtilitiesFind') || (sToolName == 'mnutoolPropertiesToolsFind')) {
 		try {
 			showproperties();
-		} catch(e) {
+		} catch (e) {
 		} finally {
 			return false;
 		}
@@ -461,7 +453,7 @@ function menu_MenuClick(sTool) {
 			} else {
 				setrun(6);
 			}
-		} catch(e) {
+		} catch (e) {
 		} finally {
 			return false;
 		}
@@ -614,8 +606,7 @@ function menu_MenuClick(sTool) {
 			return;
 	}
 
-	if ((sToolName == "mnutoolLocateRecordsCaption") || (sToolName == "mnutoolPositionRecordFind"))
-	{
+	if ((sToolName == "mnutoolLocateRecordsCaption") || (sToolName == "mnutoolPositionRecordFind")) {
 			// Do nothing
 			return;
 	}
@@ -713,7 +704,7 @@ function menu_MenuClick(sTool) {
 		return false;
 	}
 
-	if ((sToolName == "mnutoolLocateRecordsCaption")  ||
+	if ((sToolName == "mnutoolLocateRecordsCaption") ||
 		(sToolName == "mnutoolPositionRecordPosition")) {
 		// Do nothing
 		return;
@@ -774,18 +765,18 @@ function menu_MenuClick(sTool) {
 		return false;		
 	}
 
-    // Data Transfer (from record menu)
+		// Data Transfer (from record menu)
 	if (sToolName == "mnutoolDataTransferRecord") {
-	    saveChangesPrompt("DATATRANSFER", 'menu_loadRecordDefSelPage(3, 0, 0, true)');
-	    return false;
+			saveChangesPrompt("DATATRANSFER", 'menu_loadRecordDefSelPage(3, 0, 0, true)');
+			return false;
 	}
 
 		// Course Booking
 	if (sToolName == "mnutoolCancelCourseRecord") {
-		OpenHR.modalPrompt("Are you sure you want to cancel this course?", 4, "Confirm").then(function(answer) {
+		OpenHR.modalPrompt("Are you sure you want to cancel this course?", 4, "Confirm").then(function (answer) {
 			if (answer == 6) { // Yes
 				if (menu_saveChanges("CANCELCOURSE", true, false) != 2) { // 2 = vbCancel
-					window.onbeforeunload = null;
+					window.top.onbeforeunload = null;
 					menu_cancelCourse(); // HC: TODO - Tab and buttons needs to be enabled
 				}
 				return false;
@@ -848,8 +839,8 @@ function menu_MenuClick(sTool) {
 		}
 
 		if (sToolName == "mnutoolDataTransfer") {
-		    saveChangesPrompt("DATATRANSFER", 'menu_loadDefSelPage(3, 0, 0, true)');
-		    return false;
+				saveChangesPrompt("DATATRANSFER", 'menu_loadDefSelPage(3, 0, 0, true)');
+				return false;
 		}
 
 
@@ -939,7 +930,7 @@ function menu_MenuClick(sTool) {
 		}
 
 		if (sToolName == "mnutoolDataTransferFind") {
-		    LoadReportOrUtilityScreen(3);
+				LoadReportOrUtilityScreen(3);
 			return false;
 		}
 
@@ -950,7 +941,7 @@ function menu_MenuClick(sTool) {
 	// Administration Menu -------------------------------------------------------------------------------------------------------------------
 
 	
-	  // Loads the Absence Breakdown report configuration
+		// Loads the Absence Breakdown report configuration
 		if (sToolName == "mnutoolStdRpt_AbsenceBreakdownConfiguration") {
 			return false; //not available yet!!
 			saveChangesPrompt("ABSENCEBREAKDOWNCONFIGURATION", 'menu_loadPage("AbsenceBreakdownConfiguration")');
@@ -1017,7 +1008,7 @@ function menu_MenuClick(sTool) {
 			return false;
 		}
 
-	  // Report configuration
+		// Report configuration
 		if (sToolName == "mnutoolSaveStandardReportConfig") {
 			ReportConfiguration_okClick();
 			return false;
@@ -1035,7 +1026,7 @@ function menu_MenuClick(sTool) {
 	
 	if (sTool == 'mnutoolOrgChartExpand') {
 		//Expand all nodes.
-		$('.contracted').each(function() {
+		$('.contracted').each(function () {
 			$(this).removeClass('contracted').addClass('expanded');
 			$(this).nextAll("tr").find(".node").show("blind");
 			$(this).nextAll("tr").css('visibility', '');
@@ -1045,7 +1036,7 @@ function menu_MenuClick(sTool) {
 			$(this).removeClass('collapsed');			
 		});
 
-		$('.expandNode').attr('src', window.ROOT + 'Content/images/minus.gif');
+		$('.expandNode').attr('src', window.top.window.ROOT + 'Content/images/minus.gif');
 
 		//enable/disable expand all nodes button
 		menu_toolbarEnableItem("mnutoolOrgChartExpand", ($('.contracted').length > 0));
@@ -1067,7 +1058,7 @@ function menu_MenuClick(sTool) {
 			OpenHR.modalPrompt(GetPromptMessage(), 1, "Confirm").then(function (answer) {
 				if (answer == 1) {  // OK
 					//not an expandable menu item, so continue.
-					window.onbeforeunload = null;
+					window.top.onbeforeunload = null;
 					CleanToolsFrameAndResetPageSource();
 					menu_loadPage(sToolName.substr(7));
 				}
@@ -1080,7 +1071,7 @@ function menu_MenuClick(sTool) {
 			//frmData = window.parent.frames("dataframe").document.forms("frmData");
 			OpenHR.modalPrompt(GetPromptMessage(), 1, "Confirm").then(function (answer) {
 				if (answer == 1) {  // OK
-					window.onbeforeunload = null;
+					window.top.onbeforeunload = null;
 					CleanToolsFrameAndResetPageSource();
 					menu_Navigate_LoadPage(sTool, sToolName, frmMenuInfo);
 				}
@@ -1108,9 +1099,10 @@ function saveChangesPrompt(sToolName, followonfunction) {
 
 	var hasChanged = menu_saveChanges(sToolName, true, false);
 	if (hasChanged === 0) { // Prompt for navigation
+
 		OpenHR.modalPrompt(GetPromptMessage(), 1, "Confirm").then(function (answer) {
 			if (answer === 1) { // OK			
-				window.onbeforeunload = null;
+				window.top.onbeforeunload = null;
 				runPostSaveChangesPrompt(followonfunction);
 			}
 		});
@@ -1123,8 +1115,7 @@ function saveChangesPrompt(sToolName, followonfunction) {
 
 
 function runPostSaveChangesPrompt(followonfunction) {
-	try
-	{
+	try {
 		CleanToolsFrameAndResetPageSource();
 		setTimeout(followonfunction, 0);// Alerts 200
 	}
@@ -1136,8 +1127,7 @@ function runPostSaveChangesPrompt(followonfunction) {
 }
 
 
-function menu_Navigate_LoadPage(sTool, sToolName, frmMenuInfo)
-{
+function menu_Navigate_LoadPage(sTool, sToolName, frmMenuInfo) {
 	var frmData;
 	var sToolNameKey;
 
@@ -1215,7 +1205,7 @@ function toggle_Leaf(sTool) {
 	try {
 		var jsTreeID = ($("#" + sTool).parent().parent().attr("id"));
 		$("#" + jsTreeID).jstree("toggle_node", "#" + sTool);
-	} catch(e) {}
+	} catch (e) { }
 }
 
 function menu_ShowWait(sMessage) {
@@ -1236,41 +1226,46 @@ function menu_CloseWait() {
 
 function showDefaultRibbon() {
 	// Hide all tabs except FixedLinks
-	$("#toolbarHome").parent().show();
+	window.top.$("#toolbarHome").parent().show();
 
-	$("#toolbarRecordFind").parent().hide();
-	$("#toolbarRecord").parent().hide();
-	$("#toolbarRecordAbsence").parent().hide();
-	$("#toolbarOrgChart").parent().hide();
-	$("#toolbarRecordQuickFind").parent().hide();
-	$("#toolbarRecordSortOrder").parent().hide();
-	$("#toolbarRecordFilter").parent().hide();
-	$("#toolbarDelegateBookingTransfer").parent().hide();
-	$("#toolbarDelegateBookingBulkBooking").parent().hide();
-	$("#toolbarRecordMailMerge").parent().hide();
-	$("#toolbarReportFind").parent().hide();
-	$("#toolbarReportNewEditCopy").parent().hide();
-	$("#toolbarReportRun").parent().hide();
-	$("#toolbarUtilitiesFind").parent().hide();
-	$("#toolbarUtilitiesNewEditCopy").parent().hide();
-	$("#toolbarToolsFind").parent().hide();
-	$("#toolbarEventLogFind").parent().hide();
-	$("#toolbarEventLogView").parent().hide();
-	$("#toolbarWFPendingStepsFind").parent().hide();
-	$("#toolbarAdminConfig").parent().hide();
-	$("#toolbarStandardReportConfig").parent().hide();
+	window.top.$("#toolbarRecordFind").parent().hide();
+	window.top.$("#toolbarRecord").parent().hide();
+	window.top.$("#toolbarRecordAbsence").parent().hide();
+	window.top.$("#toolbarOrgChart").parent().hide();
+	window.top.$("#toolbarRecordQuickFind").parent().hide();
+	window.top.$("#toolbarRecordSortOrder").parent().hide();
+	window.top.$("#toolbarRecordFilter").parent().hide();
+	window.top.$("#toolbarDelegateBookingTransfer").parent().hide();
+	window.top.$("#toolbarDelegateBookingBulkBooking").parent().hide();
+	window.top.$("#toolbarRecordMailMerge").parent().hide();
+	window.top.$("#toolbarReportFind").parent().hide();
+	window.top.$("#toolbarReportNewEditCopy").parent().hide();
+	window.top.$("#toolbarReportRun").parent().hide();
+	window.top.$("#toolbarUtilitiesFind").parent().hide();
+	window.top.$("#toolbarUtilitiesNewEditCopy").parent().hide();
+	window.top.$("#toolbarToolsFind").parent().hide();
+	window.top.$("#toolbarEventLogFind").parent().hide();
+	window.top.$("#toolbarEventLogView").parent().hide();
+	window.top.$("#toolbarWFPendingStepsFind").parent().hide();
+	window.top.$("#toolbarAdminConfig").parent().hide();
+	window.top.$("#toolbarStandardReportConfig").parent().hide();
 	
-
 	// Hide the Self-service or OpenHR button, as appropriate	
 	if (menu_isSSIMode()) {
-		$("#mnutoolFixedSelfService").hide();
+		window.top.$("#mnutoolFixedSelfService").hide();
 		if ((OpenHR.currentWorkPage() == 'LINKSMAIN') && (window.currentLayout == 'tiles'))
-			$('#searchBox').show();
+			window.top.$('#searchBox').show();
 		else
-			$('#searchBox').hide();
+			window.top.$('#searchBox').hide();
 	} else {
-		$("#mnutoolFixedOpenHR").hide();
+		window.top.$("#mnutoolFixedOpenHR").hide();
 	}
+
+	//activate home ribbon tab, remove history menu and activate database context menu
+	window.top.$("#toolbarHome").click();
+	if (window.top.$('#mnutoolHistory').hasClass('ui-state-active')) window.top.$('#mnutoolDatabase').click();
+	window.top.$('#mnutoolHistory').next('div').find('ul').empty();
+	window.top.$("#mnutoolHistory").hide();
 }
 
 function menu_refreshMenu() {
@@ -1302,7 +1297,7 @@ function menu_refreshMenu() {
 	var sRecEditDate;
 	var sDummyDate;
 	//Get the frmMenuInfo object for implicit use in this function (non-ie)
-	var frmMenuInfo = $("#frmMenuInfo")[0].children;
+	var frmMenuInfo = window.top.$("#frmMenuInfo")[0].children;
 	
 	// Standard reports
 	var fStdRptAbsenceCalendarEnabled;
@@ -1322,11 +1317,11 @@ function menu_refreshMenu() {
 	var fCanRunCalendarReports = false;
 	var fCanRunMailMerge = false;
 
-	var isDMIUser = ($("#txtIsDMIUser")[0].value == "True");
+	var isDMIUser = (window.parent.$("#txtIsDMIUser")[0].value == "True");
 
 	fCanRunCalendarReports = false;
-	if (window.txtSysPerm_CALENDARREPORTS_RUN != null) {
-		if ((window.txtSysPerm_CALENDARREPORTS_RUN.value == 1) && isDMIUser) {
+	if (window.parent.window.txtSysPerm_CALENDARREPORTS_RUN != null) {
+		if ((window.parent.window.txtSysPerm_CALENDARREPORTS_RUN.value == 1) && isDMIUser) {
 			fCanRunCalendarReports = true;
 			fCalendarReportsEnabled = false;
 		}
@@ -1340,8 +1335,8 @@ function menu_refreshMenu() {
 	var fCanRunBradfordFactor = false;
 
 	fCanRunMailMerge = false;
-	if (window.txtSysPerm_MAILMERGE_RUN != null) {
-		if ((window.txtSysPerm_MAILMERGE_RUN.value == 1) && isDMIUser) {
+	if (window.parent.window.txtSysPerm_MAILMERGE_RUN != null) {
+		if ((window.parent.window.txtSysPerm_MAILMERGE_RUN.value == 1) && isDMIUser) {
 			fCanRunMailMerge = true;
 			fMailMergeEnabled = false;
 		}
@@ -1372,20 +1367,20 @@ function menu_refreshMenu() {
 	fStdRptStabilityVisible = false;
 
 	fCanRunAbsenceCalendar = false;
-	if (window.txtSysPerm_STANDARDREPORTS_RUN_AC != null) {
-		if ((window.txtSysPerm_STANDARDREPORTS_RUN_AC.value == 1) && isDMIUser) {
+	if (window.parent.window.txtSysPerm_STANDARDREPORTS_RUN_AC != null) {
+		if ((window.parent.window.txtSysPerm_STANDARDREPORTS_RUN_AC.value == 1) && isDMIUser) {
 			fCanRunAbsenceCalendar = true;
 		}
 	}
 	fCanRunAbsenceBreakdown = false;
-	if (window.txtSysPerm_STANDARDREPORTS_RUN_AB != null) {
-		if ((window.txtSysPerm_STANDARDREPORTS_RUN_AB.value == 1) && isDMIUser) {
+	if (window.parent.window.txtSysPerm_STANDARDREPORTS_RUN_AB != null) {
+		if ((window.parent.window.txtSysPerm_STANDARDREPORTS_RUN_AB.value == 1) && isDMIUser) {
 			fCanRunAbsenceBreakdown = true;
 		}
 	}
 	fCanRunBradfordFactor = false;
-	if (window.txtSysPerm_STANDARDREPORTS_RUN_BF != null) {
-		if ((window.txtSysPerm_STANDARDREPORTS_RUN_BF.value == 1) && isDMIUser) {
+	if (window.parent.window.txtSysPerm_STANDARDREPORTS_RUN_BF != null) {
+		if ((window.parent.window.txtSysPerm_STANDARDREPORTS_RUN_BF.value == 1) && isDMIUser) {
 			fCanRunBradfordFactor = true;
 		}
 	}
@@ -1414,19 +1409,24 @@ function menu_refreshMenu() {
 		menu_setVisibleMenuItem("mnutoolFixedLayout", false);
 	}
 	
-	if(window.currentLayout != 'winkit') menu_setVisibleMenuItem('toolbarHome', !menu_isSSIMode());
+	if (window.parent.window.currentLayout != 'winkit') menu_setVisibleMenuItem('toolbarHome', !menu_isSSIMode());
 
+	if (menu_isSSIMode()) {
+		//no multi window functionality in SSI.
+		menu_setVisibletoolbarGroupById('mnuSectionMultiWindowDisplayFind', false);
+		menu_setVisibletoolbarGroupById('mnuSectionMultiWindowDisplayRecord', false);
+	} 
 
 		//Standard reports (reports menu)
 	fStdRptAbsenceCalendarVisible = ((frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
 						isDMIUser &&
-						($("#txtAbsenceEnabled").val() == 1));
+						(window.parent.$("#txtAbsenceEnabled").val() == 1));
 	fStdRptAbsenceBreakdownVisible = ((frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
 						isDMIUser &&
-						($("#txtAbsenceEnabled").val() == 1));
+						(window.parent.$("#txtAbsenceEnabled").val() == 1));
 	fStdRptBradfordFactorVisible = ((frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
 						isDMIUser &&
-						($("#txtAbsenceEnabled").val() == 1));
+						(window.parent.$("#txtAbsenceEnabled").val() == 1));
 	fStdRptAbsenceCalendarEnabled = ((fCanRunAbsenceCalendar == true) && (fStdRptAbsenceCalendarVisible));
 	fStdRptAbsenceBreakdownEnabled = ((fCanRunAbsenceBreakdown == true) && (fStdRptAbsenceBreakdownVisible));
 	fStdRptBradfordFactorEnabled = ((fCanRunBradfordFactor == true) && (fStdRptBradfordFactorVisible));
@@ -1444,11 +1444,13 @@ function menu_refreshMenu() {
 		}
 		else { 
 	if (sCurrentWorkPage == "RECORDEDIT") {
+
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 		var frmData = OpenHR.getForm("dataframe", "frmData");
 
 		showDefaultRibbon();
-		$("#toolbarRecord").parent().show();
+			window.top.$("#toolbarRecord").parent().show();
+			window.top.$("#toolbarRecord").click();
 
 		menu_setVisibletoolbarGroupById('mnuSectionRecordFind', true);
 		menu_setVisibletoolbarGroupById('mnuSectionRecordOrder', true);
@@ -1458,7 +1460,7 @@ function menu_refreshMenu() {
 
 
 		//abMainMenu.Bands("mnubandMainToolBar").visible = true;
-		menu_setVisibleMenuItem("mnutoolRecord", false);
+			menu_setVisibleMenuItem("mnutoolRecord", false);	//Record 'context menu' from old dmi.
 
 		// Enable the record editing options as necessary.
 		menu_setVisibleMenuItem("mnutoolNewRecord", true);
@@ -1472,14 +1474,14 @@ function menu_refreshMenu() {
 						menu_toolbarEnableItem("mnutoolCopyRecord", (fMnutoolNewRecord && (frmRecEdit.txtCurrentRecordID.value > 0)));
 		menu_setVisibleMenuItem("mnutoolEditRecord", false);
 		menu_setVisibleMenuItem("mnutoolSaveRecord", true);		
-		menu_toolbarEnableItem("mnutoolSaveRecord", ($("#ctlRecordEdit #changed").val() == "true"));
+			menu_toolbarEnableItem("mnutoolSaveRecord", (OpenHR.activeFrame().find("#ctlRecordEdit #changed").val() == "true"));
 		menu_setVisibleMenuItem("mnutoolDeleteRecord", true);
 		menu_toolbarEnableItem("mnutoolDeleteRecord", ((frmRecEdit.txtRecEditDeleteGranted.value.toUpperCase() == "TRUE") &&
 				(frmRecEdit.txtCurrentRecordID.value > 0) &&
 				(isDMIUser ||
 					(frmRecEdit.txtCurrentParentTableID.value > 0) ||
 					(frmRecEdit.txtQuickEntry.value.toUpperCase() == "TRUE"))));
-		menu_setVisibleMenuItem("mnutoolParentRecord", !menu_isSSIMode());
+			menu_setVisibleMenuItem("mnutoolParentRecord", false);
 		menu_toolbarEnableItem("mnutoolParentRecord", (frmRecEdit.txtCurrentParentTableID.value > 0));
 						menu_setVisibleMenuItem("mnutoolBackRecord", false);
 						menu_toolbarEnableItem("mnutoolBackRecord", false);
@@ -1537,15 +1539,15 @@ function menu_refreshMenu() {
 		fStdRptAbsenceCalendarVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) &&
 				(frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
 				isDMIUser &&
-				(txtAbsenceEnabled.value == 1));
+					(window.parent.txtAbsenceEnabled.value == 1));
 		fStdRptAbsenceBreakdownVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) &&
 				(frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
 				isDMIUser &&
-				(txtAbsenceEnabled.value == 1));
+					(window.parent.txtAbsenceEnabled.value == 1));
 		fStdRptBradfordFactorVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) &&
 				(frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
 				isDMIUser &&
-				(txtAbsenceEnabled.value == 1));
+					(window.parent.txtAbsenceEnabled.value == 1));
 
 		// Calendar Reports (Record Menu)
 		//fCalendarReportsVisible = ((frmRecEdit.txtQuickEntry.value.toUpperCase() != "TRUE"));
@@ -1584,18 +1586,18 @@ function menu_refreshMenu() {
 
 			if (frmData.txtRecordDescription.value.length > 0) {
 				sCaption = frmData.txtRecordDescription.value;
-				if ($('#RecordEdit_PageTitle')) {
+					if (OpenHR.activeFrame().find('#RecordEdit_PageTitle')) {
 					var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
-					$('#RecordEdit_PageTitle').html(frmRecordEditForm.txtOriginalPageTitle.value + ' - ' + sCaption);
+						OpenHR.activeFrame().find('#RecordEdit_PageTitle').html(frmRecordEditForm.txtOriginalPageTitle.value + ' - ' + sCaption);
 				}
 			}
 		}
 		else {
 			sCaption = "New Record";
 			menu_SetmnutoolRecordPositionCaption(sCaption);
-			if ($('#RecordEdit_PageTitle')) {
+				if (OpenHR.activeFrame().find('#RecordEdit_PageTitle')) {
 				frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
-				$('#RecordEdit_PageTitle').html(frmRecordEditForm.txtOriginalPageTitle.value + ' - ' + sCaption);
+					OpenHR.activeFrame().find('#RecordEdit_PageTitle').html(frmRecordEditForm.txtOriginalPageTitle.value + ' - ' + sCaption);
 			}
 			menu_toolbarEnableItem('mnutoolChangeOrderRecord', true);
 		}
@@ -1603,9 +1605,9 @@ function menu_refreshMenu() {
 		menu_setVisibleMenuItem("mnutoolHistory", true);
 
 		//dynamically created function, found in menu.ascx...
-		menu_refreshHistoryScreensMenu(frmRecEdit.txtCurrentScreenID.value);
+			window.top.menu_refreshHistoryScreensMenu(frmRecEdit.txtCurrentScreenID.value);
 
-		$("#mnutoolHistory").click();
+			window.top.$("#mnutoolHistory").click();
 
 			// Standard reports (toolbar)
 		if (menu_isSSIMode() == true) {
@@ -1650,7 +1652,7 @@ function menu_refreshMenu() {
 		//this used to call a function in the ctlRecordEdit activeX control...
 		//sRecEditDate = String(frmRecEdit.ctlRecordEdit.TBCourseCancelDateValue());		
 
-		var TB_CourseCancelDateColumnID = $("#txtTB_CourseCancelDateColumnID").val();
+			var TB_CourseCancelDateColumnID = window.top.$("#txtTB_CourseCancelDateColumnID").val();
 		sRecEditDate = $("[data-columnID='" + TB_CourseCancelDateColumnID + "']").val();		
 		if (sRecEditDate) {
 			sRecEditDate = sRecEditDate.toUpperCase();
@@ -1679,11 +1681,10 @@ function menu_refreshMenu() {
 	}
 	else {
 		if (sCurrentWorkPage == "FIND") {
-			//frmFind = window.parent.frames("workframe").document.forms("frmFindForm");
 
-			frmFind = document.getElementById("frmFindForm");
+				frmFind = OpenHR.getForm("workframe", "frmFindForm");
 
-			lngRecordID = selectedRecordID(); //should be in scope at runtime.
+				lngRecordID = menu_selectedRecordID();
 
 			if (lngRecordID == "" | lngRecordID == null) {
 				lngRecordID = 0;
@@ -1698,8 +1699,8 @@ function menu_refreshMenu() {
 			showDefaultRibbon();
 
 			//New functionality: switch ribbon tab to required item.
-			$("#toolbarRecordFind").parent().show();
-			$("#toolbarRecordFind").click();			
+				window.parent.$("#toolbarRecordFind").parent().show();
+				window.parent.$("#toolbarRecordFind").click();
 			
 			// Enable the record editing options as necessary.
 			menu_setVisibleMenuItem("mnutoolNewRecordFind", true);
@@ -1737,13 +1738,14 @@ function menu_refreshMenu() {
 				menu_SetmnutoolButtonCaption("mnutoolEditRecordFind", "View");
 			}
 
-			menu_setVisibleMenuItem("mnutoolParentRecordFind", !menu_isSSIMode());
+				menu_setVisibleMenuItem("mnutoolParentRecordFind", false);
 			menu_toolbarEnableItem("mnutoolParentRecordFind", (frmFind.txtCurrentParentTableID.value > 0));
-			menu_setVisibleMenuItem("mnutoolBackRecordFind", !menu_isSSIMode());
+				menu_setVisibleMenuItem("mnutoolBackRecordFind", false);
 			menu_toolbarEnableItem("mnutoolBackRecordFind", (parseInt(frmFind.txtCurrentRecordID.value) > 0));
 
 			menu_toolbarEnableItem("mnutoolAccessLinksFind", (menu_isSSIMode() && (lngRecordID > 0)));
-			menu_setVisibletoolbarGroupById("mnuSectionRecordFindNavigate", !(menu_isSSIMode() && ($("#mnutoolAccessLinksFind").hasClass("hidden"))));
+
+				menu_setVisibletoolbarGroupById("mnuSectionRecordFindNavigate", (!(window.top.$("#mnutoolAccessLinksFind").hasClass("hidden"))));
 
 			if (menu_isSSIMode()) {
 				menu_setVisibletoolbarGroupById('mnuSectionRecordFindOrder', false);
@@ -1777,7 +1779,7 @@ function menu_refreshMenu() {
 
 
 			//frmData = window.parent.frames("dataframe").document.forms("frmData");
-			frmData = document.getElementById("frmData");
+				frmData = window.parent.document.getElementById("frmData");
 			//TODO are we setting this?
 				
 			if (frmFind.txtRecordCount.value > 0) {
@@ -1805,9 +1807,10 @@ function menu_refreshMenu() {
 			
 			menu_setVisibleMenuItem("mnutoolPositionRecordFind", true);
 			menu_SetmnutoolRecordPositionCaption(sCaption);
-
-				
-				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", false);
+				//<MWD change>
+				menu_setVisibleMenuItem("mnutoolHistory", false);
+				//menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", false);
+				//</MWD change>
 
 			fBookCourseVisible = ((frmFind.txtCurrentTableID.value == frmMenuInfo.txtTB_WaitListTableID.value) &&
 				isDMIUser) &&
@@ -2086,9 +2089,9 @@ function menu_refreshMenu() {
 		}
 		}
 
-	if ($("#txtSysPerm_INTRANET_NEW_USER").length) {
-		if ($("#txtSysPerm_INTRANET_NEW_USER").val() == 1) {
-			menu_enableMenuItem("mnutoolNewUser", $("#txtNewUserGranted").val());
+	if (window.parent.$("#txtSysPerm_INTRANET_NEW_USER").length) {
+		if (window.parent.$("#txtSysPerm_INTRANET_NEW_USER").val() == 1) {
+			menu_enableMenuItem("mnutoolNewUser", window.parent.$("#txtNewUserGranted").val());
 		}
 		else {
 			menu_enableMenuItem("mnutoolNewUser", false);
@@ -2098,8 +2101,8 @@ function menu_refreshMenu() {
 		menu_enableMenu("#mnutoolNewUser", false);
 	}
 
-	if ($("#txtSysPerm_CONFIGURATION_USER").length) {
-		if ($("#txtSysPerm_CONFIGURATION_USER").val() == 1) {
+	if (window.parent.$("#txtSysPerm_CONFIGURATION_USER").length) {
+		if (window.parent.$("#txtSysPerm_CONFIGURATION_USER").val() == 1) {
 			menu_enableMenuItem("mnutoolConfiguration", true);
 		}
 		else {
@@ -2110,9 +2113,9 @@ function menu_refreshMenu() {
 		menu_enableMenuItem("mnutoolConfiguration", false);
 	}
 
-	menu_enableMenuItem("mnutoolCurrentUsers", $("#txtCurrentUsersGranted").val());
+	menu_enableMenuItem("mnutoolCurrentUsers", window.parent.$("#txtCurrentUsersGranted").val());
 
-	var bChangePassword = ($("#txtIsWindowsLogon")[0].value == "False");
+	var bChangePassword = (window.parent.$("#txtIsWindowsLogon")[0].value == "False");
 	menu_setVisibleMenuItem("mnutoolPasswordChange", bChangePassword);
 	menu_setVisibleMenuItem("mnutoolFixedPasswordChange", bChangePassword);
 
@@ -2124,12 +2127,12 @@ function menu_refreshMenu() {
 	menu_setVisibleMenuItem("mnutoolCancelCourseRecord", fCancelCourseVisible);
 	menu_toolbarEnableItem("mnutoolCancelCourseRecord", fCancelCourseEnabled);
 	menu_setVisibletoolbarGroupById("mnuSectionRecordCourseBooking", fCancelCourseVisible);
-	if (fCancelCourseVisible) $('#mnutoolCancelCourseRecord').css('width', '100%');
+	if (fCancelCourseVisible) window.parent.$('#mnutoolCancelCourseRecord').css('width', '100%');
 	
 	menu_setVisibleMenuItem("mnutoolBookCourseFind", fBookCourseVisible);
 	menu_toolbarEnableItem("mnutoolBookCourseFind", fBookCourseEnabled);
 	menu_setVisibletoolbarGroupById("mnuSectionRecordFindCourseBooking", fBookCourseVisible);
-	if (fBookCourseVisible) $('#mnutoolBookCourseFind').css('width', '100%');
+	if (fBookCourseVisible) window.parent.$('#mnutoolBookCourseFind').css('width', '100%');
 	
 	menu_setVisibleMenuItem("mnutoolTransferBookingRecordFind", fTransferBookingVisible);
 	menu_toolbarEnableItem("mnutoolTransferBookingRecordFind", fTransferBookingEnabled);
@@ -2149,7 +2152,7 @@ function menu_refreshMenu() {
 	
 	fCanSeeLookupTableMenu = true;
 	try {
-		if ($("#txtSysPerm_MENU_VIEWLOOKUPTABLES").val() == 0) {
+		if (window.parent.$("#txtSysPerm_MENU_VIEWLOOKUPTABLES").val() == 0) {
 			fCanSeeLookupTableMenu = false;
 		}
 	}
@@ -2163,17 +2166,17 @@ function menu_refreshMenu() {
 	//		abMainMenu.Tools("mnutoolMailMerge").enabled = (txtMailMergeGranted.value == "True");
 	//HC: Seems redundant
 	//JDM: - Oh no its not!!!
-	menu_enableMenuItem("mnutoolCustomReports", $("#txtCustomReportsGranted").val());
-	menu_enableMenuItem("mnutoolCrossTabs", $("#txtCrossTabsGranted").val());
-	menu_enableMenuItem("mnutoolNineBox", $("#txtNineBoxGridGranted").val());
-	menu_enableMenuItem("mnutoolCalendarReports", $("#txtCalendarReportsGranted").val());
-	menu_enableMenuItem("mnutoolMailMerge", $("#txtMailMergeGranted").val());
-	menu_enableMenuItem("mnutoolDataTransfer", $("#txtDataTransferGranted").val());
-
+	menu_enableMenuItem("mnutoolCustomReports", window.parent.$("#txtCustomReportsGranted").val());
+	menu_enableMenuItem("mnutoolCrossTabs", window.parent.$("#txtCrossTabsGranted").val());
+	menu_enableMenuItem("mnutoolNineBox", window.parent.$("#txtNineBoxGridGranted").val());
+	menu_enableMenuItem("mnutoolCalendarReports", window.parent.$("#txtCalendarReportsGranted").val());
+	menu_enableMenuItem("mnutoolMailMerge", window.parent.$("#txtMailMergeGranted").val());
+	menu_enableMenuItem("mnutoolDataTransfer", window.parent.$("#txtDataTransferGranted").val());
+		
 	menu_setVisibleMenuItem("mnutoolTableScreens", fCanSeeLookupTableMenu);
 
 	menu_setVisibleMenuItem("mnutoolWorkflow", frmMenuInfo.txtWFEnabled.value);
-	menu_enableMenuItem("mnutoolWorkflow", $("#txtWorkflowGranted").val());
+	menu_enableMenuItem("mnutoolWorkflow", window.parent.$("#txtWorkflowGranted").val());
 
 	menu_setVisibleMenuItem("mnutoolWorkflowPopup", frmMenuInfo.txtWFEnabled.value);
 	menu_enableMenuItem("mnutoolWorkflowPopup", true);
@@ -2185,12 +2188,12 @@ function menu_refreshMenu() {
 	menu_enableMenuItem("mnutoolWorkflowOutOfOffice", frmMenuInfo.txtWFOutOfOfficeEnabled.value);
 	
 
-	menu_enableMenuItem("mnutoolCalculations", $("#txtCalculationsGranted").val());
-	menu_enableMenuItem("mnutoolFilters", $("#txtFiltersGranted").val());
-	menu_enableMenuItem("mnutoolPicklists", $("#txtPicklistsGranted").val());
-	menu_enableMenuItem("mnutoolEventLog", $("#txtEventLogGranted").val());
-	menu_enableMenuItem("mnutoolNewUser", $("#txtNewUserGranted").val());
-	menu_enableMenuItem("mnutoolQuickEntry", $("#txtQuickAccessGranted").val());
+	menu_enableMenuItem("mnutoolCalculations", window.parent.$("#txtCalculationsGranted").val());
+	menu_enableMenuItem("mnutoolFilters", window.parent.$("#txtFiltersGranted").val());
+	menu_enableMenuItem("mnutoolPicklists", window.parent.$("#txtPicklistsGranted").val());
+	menu_enableMenuItem("mnutoolEventLog", window.parent.$("#txtEventLogGranted").val());
+	menu_enableMenuItem("mnutoolNewUser", window.parent.$("#txtNewUserGranted").val());
+	menu_enableMenuItem("mnutoolQuickEntry", window.parent.$("#txtQuickAccessGranted").val());
 
 	try {
 		
@@ -2249,7 +2252,7 @@ function menu_refreshMenu() {
 //	
 function menu_enableMenu() {
 	//TODO: run through and re-enable all items.
-	if (menu_isSSIMode()  && (window.currentLayout != "winkit")) {
+	if (menu_isSSIMode() && (window.parent.window.currentLayout != "winkit")) {
 		//$(".FixedLinksLeft").fadeIn("slow");
 		//$("#officebar").show('drop', { direction: 'left' }, 1000);
 		$("#officebar").fadeIn("fast");
@@ -2378,6 +2381,7 @@ function menu_enableFindMenu() {
 }
 
 function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
+
 	// Prompt the user to save changes if required.
 	var iResult;
 	var sCurrentPage;
@@ -2399,7 +2403,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 
-		if ($("#ctlRecordEdit #changed").val() == "true") {
+		if (OpenHR.activeFrame().find("#ctlRecordEdit #changed").val() == "true") {
 			
 			// If prompting, the choice it between discarding changes or cancelling the navigation
 			// If not prompting, it is a straight save
@@ -2446,7 +2450,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 					frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
 					frmDataArea.txtDefaultCalcCols.value = CalculatedDefaultColumns();
 					frmDataArea.txtInsertUpdateDef.value = insertUpdateDef();
-					frmDataArea.txtTimestamp.value = $("#txtRecEditTimeStamp").val();
+					frmDataArea.txtTimestamp.value = OpenHR.activeFrame().find("#txtRecEditTimeStamp").val();
 					frmDataArea.txtTBCourseRecordID.value = TBCourseRecordID();
 					frmDataArea.txtTBEmployeeRecordID.value = TBEmployeeRecordID();
 					frmDataArea.txtTBBookingStatusValue.value = TBBookingStatusValue();
@@ -2505,7 +2509,7 @@ function menu_WorkflowOutOfOffice() {
 function menu_OutOfOfficeToggle(status) {
 
 	if (status.error.length > 0) {
-	    OpenHR.modalPrompt(status.error, 0, "Out of Office Error", "");
+			OpenHR.modalPrompt(status.error, 0, "Out of Office Error", "");
 		return;
 	}
 
@@ -2537,7 +2541,7 @@ function menu_OutOfOfficeToggle(status) {
 
 	OpenHR.modalPrompt(sMsg, 4, "Out of Office").then(function (answer) {
 		if (answer == 6) {
-			OpenHR.postData("WorkflowOutOfOffice_Enable", {__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val(), enable: !status.outOfOfficeOn }, null);
+			OpenHR.postData("WorkflowOutOfOffice_Enable", { __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val(), enable: !status.outOfOfficeOn }, null);
 		}
 
 	});
@@ -2548,9 +2552,9 @@ function menu_OutOfOfficeToggle(status) {
 function menu_OutOfOfficeTurnOff(status) {
 
 	if (status.outOfOfficeOn) {
-	    setTimeout(function () {
-	        menu_OutOfOfficeToggle(status);
-	    }, 100);
+			setTimeout(function () {
+					menu_OutOfOfficeToggle(status);
+			}, 100);
 	}
 
 	if (!menu_isSSIMode()) {
@@ -2609,6 +2613,7 @@ function menu_loadPage(psPage) {
 	var frmData;
 	var iIndex;
 	var sToolKey;
+
 	var frmMenuInfo = $("#frmMenuInfo")[0].children;
 
 	menu_ShowWait("Loading screen...");
@@ -2705,11 +2710,12 @@ function menu_loadPage(psPage) {
 	frmWorkArea.txtGotoFilterSQL.value = "";
 	frmWorkArea.txtGotoLineage.value = sLineage;
 	frmWorkArea.txtGotoPage.value = "recordEdit";
-
-	OpenHR.submitForm(frmWorkArea, "workframe");
+	if (menu_isSSIMode()) OpenHR.submitForm(frmWorkArea, "workframe");
+	else OpenHR.submitForm(frmWorkArea, "workframe", true, null, null, null, true);
 }
 
 	function menu_loadFindPage() {
+
 	var frmWorkArea;
 	var frmRecEdit;
 		
@@ -2749,7 +2755,8 @@ function menu_loadPage(psPage) {
 	frmWorkArea.txtGotoLineage.value = frmRecEdit.txtLineage.value;
 	frmWorkArea.txtGotoPage.value = "find";
 
-	OpenHR.submitForm(frmWorkArea, "workframe");
+	if (menu_isSSIMode()) OpenHR.submitForm(frmWorkArea, "workframe");
+	else OpenHR.submitForm(frmWorkArea, "workframe", true, null, null, null, true);
 }
 
 	function menu_loadFindPageFirst(psToolName) {
@@ -2830,7 +2837,9 @@ function menu_loadPage(psPage) {
 
 	frmWorkArea.txtGotoLineage.value = sLineage;
 	frmWorkArea.txtGotoPage.value = "find";
-	OpenHR.submitForm(frmWorkArea, "workframe");
+
+	if (menu_isSSIMode()) OpenHR.submitForm(frmWorkArea, "workframe");
+	else OpenHR.submitForm(frmWorkArea, "workframe", true, null, null, null, true);
 
 }
 
@@ -2862,7 +2871,7 @@ function menu_loadPage(psPage) {
 			txtGotoOptionPageAction: "LOAD",
 			txtGotoOptionFirstRecPos: 1,
 			txtGotoOptionCurrentRecCount: 0,
-			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		__RequestVerificationToken: window.top.$('[name="__RequestVerificationToken"]').val()
 		};
 
 		OpenHR.submitForm(frmOptionArea, "optionframe", null, postData, "menu_loadLookupPage");
@@ -3200,7 +3209,7 @@ function menu_loadPage(psPage) {
 	// Clear the locate value from the menu.
 	menu_SetmnutoolLocateRecordsText("");
 
-	OpenHR.submitForm(frmWorkArea, "workframe");
+			OpenHR.submitForm(frmWorkArea, "workframe", true, null, null, null, true, true);
 }
 
 	if (psPage == "LOOKUP") {
@@ -3416,7 +3425,7 @@ function menu_pausecomp(millis) {
 	//		}
 	//	}
 
-	window.location.href = window.ROOT + "Account/LogOff";
+	window.location.href = window.top.window.ROOT + "Account/LogOff";
 
 }
 
@@ -3462,9 +3471,9 @@ function menu_pausecomp(millis) {
 	if (sCurrentWorkPage == "RECORDEDIT") {
 		//saveChangesPrompt('NEW', 'new_RecordEdit()');
 		if (menu_saveChanges("NEW", true, false) == 0) { // Prompt to cancel
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes and create a new record, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes and create a new record, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) { // OK - Ignore changes
-					window.onbeforeunload = null;
+					window.top.onbeforeunload = null;
 					new_RecordEdit();
 		return false;
 				} else {
@@ -3496,7 +3505,9 @@ function menu_pausecomp(millis) {
 			frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
 
 			frmWorkArea.txtGotoPage.value = "recordEdit";
-			OpenHR.submitForm(frmWorkArea, "workframe");
+			if (menu_isSSIMode()) OpenHR.submitForm(frmWorkArea, "workframe");
+			else OpenHR.submitForm(frmWorkArea, "workframe", true, null, null, null, true);
+
 		}
 	}
 }
@@ -3513,6 +3524,7 @@ function menu_pausecomp(millis) {
 	function copy_RecordEdit() {
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 	frmDataArea = OpenHR.getForm("dataframe", "frmData");
+		if (!frmDataArea) alert('empty frmData! menu.js line 3507');
 
 	recEdit_setRecordID(0);			
 	frmDataArea.txtRecordPosition.value = frmDataArea.txtRecordCount.value + 1;
@@ -3528,7 +3540,7 @@ function menu_pausecomp(millis) {
 		if (menu_saveChanges("COPY", true, false) == 0) { // 2 = vbCancel
 			OpenHR.modalPrompt("You have unsaved changes. Click 'OK' to copy these changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) { // OK - Ignore changes
-					window.onbeforeunload = null;
+					window.top.onbeforeunload = null;
 					copy_RecordEdit();
 					return false;
 				} else {
@@ -3547,7 +3559,7 @@ function menu_pausecomp(millis) {
 			menu_ShowWait("Loading screen...");
 	menu_disableMenu();
 				
-	lngRecordID = selectedRecordID();	// function in find.aspx
+			lngRecordID = menu_selectedRecordID();	// function in find.aspx
 
 	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
 	frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
@@ -3564,20 +3576,24 @@ function menu_pausecomp(millis) {
 	frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
 
 	frmWorkArea.txtGotoPage.value = "recordEdit";
-	OpenHR.submitForm(frmWorkArea, "workframe");
+			if (menu_isSSIMode()) OpenHR.submitForm(frmWorkArea, "workframe");
+			else OpenHR.submitForm(frmWorkArea, "workframe", true, null, null, null, true);
+		}
 }
 }
+
+function menu_selectedRecordID() {
+	var findGridTable = OpenHR.activeFrame().find('#findGridTable');
+	return findGridTable.getGridParam('selrow');
 }
+
 
 function menu_editRecord() {
-
 	var lngRecordID;
 	var frmWorkArea;
 	var frmFindArea;
 
-	//NPG: selectedRecordID function is unique to workframe, whatever the content. 
-		//Should be in scope.
-	lngRecordID = selectedRecordID();
+	lngRecordID = menu_selectedRecordID();
 
 	if (lngRecordID > 0) {
 	menu_ShowWait("Loading screen...");
@@ -3601,8 +3617,9 @@ function menu_editRecord() {
 	frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
 
 	frmWorkArea.txtGotoPage.value = "recordEdit";
-	//frmWorkArea.submit();
-	OpenHR.submitForm(frmWorkArea, "workframe");
+
+		if (menu_isSSIMode()) OpenHR.submitForm(frmWorkArea, "workframe");
+		else OpenHR.submitForm(frmWorkArea, "workframe", true, null, null, null, true);
 }
 }
 
@@ -3638,7 +3655,9 @@ function menu_editRecord() {
 	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
 	frmDataArea.txtDefaultCalcCols.value = CalculatedDefaultColumns();
 	frmDataArea.txtInsertUpdateDef.value = insertUpdateDef();
-	frmDataArea.txtTimestamp.value = $("#txtRecEditTimeStamp").val();	// frmRecEditArea.ctlRecordEdit.timestamp;
+			debugger;
+			//TODO: check this works:
+			frmDataArea.txtTimestamp.value = OpenHR.activeFrame().find("#txtRecEditTimeStamp").val();	// frmRecEditArea.ctlRecordEdit.timestamp;
 
 	data_refreshData();
 }
@@ -3646,7 +3665,7 @@ function menu_editRecord() {
 	else {
 	if (sCurrentWorkPage == "FIND") {
 			
-	lngRecordID = selectedRecordID();
+			lngRecordID = menu_selectedRecordID();
 		
 	if (lngRecordID > 0) {
 	if (OpenHR.messageBox("Delete the current record, are you sure ?", 36) == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
@@ -3874,159 +3893,158 @@ function menu_editRecord() {
 	sSaveChangesTag = psMovement;
 	sAction = psMovement;
 	
-		function move_RecordEdit() {
-			// Get the data.asp to get the move to the FIRST record.
-			menu_ShowWait("Locating record...");
-			menu_disableMenu();
-					
-			frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
-			frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
-			
-			if ((psMovement == "MOVEPREVIOUS") && (frmRecEditArea.txtCurrentRecordID.value == 0)) {
-				sAction = "MOVELAST";
-			}
-			
-			frmDataArea.txtAction.value = sAction;
-			
-			frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
-			frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-			frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
-			frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
-			frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
-			frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-			frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-			frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
-			frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-			frmDataArea.txtOriginalRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-			frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
-			frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-			data_refreshData();
-		}
-		
+	function move_RecordEdit() {
+		// Get the data.asp to get the move to the FIRST record.
+		menu_ShowWait("Locating record...");
+		menu_disableMenu();
 
-		if (sCurrentWorkPage == "EVENTLOG") {
-			EventLog_moveRecord(psMovement);  //should be in scope.
-			return;
+		frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+		frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+
+		if ((psMovement == "MOVEPREVIOUS") && (frmRecEditArea.txtCurrentRecordID.value == 0)) {
+			sAction = "MOVELAST";
 		}
 
-		if (sCurrentWorkPage == "RECORDEDIT") {
-			if (menu_saveChanges(sSaveChangesTag, true, false) == 0) { // 0 = Prompt
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) { // OK - Ignore changes
-						window.onbeforeunload = null;
-						move_RecordEdit();
-						return false;
-					} else {
-						return false;
-					}
-				});
-			} else {  // Don't prompt
-				move_RecordEdit();
-				return false;
-			}
+		frmDataArea.txtAction.value = sAction;
+
+		frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
+		frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+		frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
+		frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
+		frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
+		frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+		frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+		frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
+		frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+		frmDataArea.txtOriginalRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+		frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
+		frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
+		data_refreshData();
+	}
+
+
+	if (sCurrentWorkPage == "EVENTLOG") {
+		EventLog_moveRecord(psMovement);  //should be in scope.
+		return;
+	}
+
+	if (sCurrentWorkPage == "RECORDEDIT") {
+		if (menu_saveChanges(sSaveChangesTag, true, false) == 0) { // 0 = Prompt
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) { // OK - Ignore changes
+					window.top.onbeforeunload = null;
+					move_RecordEdit();
+					return false;
+				} else {
+					return false;
+				}
+			});
+		} else {  // Don't prompt
+			move_RecordEdit();
 			return false;
 		}
+		return false;
+	}
 
 	if (sCurrentWorkPage == "FIND") {
-	menu_reloadFindPage(sAction, "");
-	return;
-}
+		menu_reloadFindPage(sAction, "");
+		return;
+	}
 
 	if (sCurrentWorkPage == "LINKFIND") {
-	// Get the optionData.asp to get the link find records.
-			frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
-	frmOptionDataArea = OpenHR.getForm("optiondataframe", "frmOptionData");
-	frmOptionArea = OpenHR.getForm("optionframe", "frmLinkFindForm");
-	frmOptionGetDataArea.txtOptionAction.value = "LOADFIND";
-	frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
-	frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
-	frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
-	frmOptionGetDataArea.txtOptionPageAction.value = sAction;
-	frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
-	frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
+		// Get the optionData.asp to get the link find records.
+		frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
+		frmOptionDataArea = OpenHR.getForm("optiondataframe", "frmOptionData");
+		frmOptionArea = OpenHR.getForm("optionframe", "frmLinkFindForm");
+		frmOptionGetDataArea.txtOptionAction.value = "LOADFIND";
+		frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
+		frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
+		frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
+		frmOptionGetDataArea.txtOptionPageAction.value = sAction;
+		frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
+		frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
 
-	refreshOptionData(); //should be in scope
-	return;
-}
+		refreshOptionData(); //should be in scope
+		return;
+	}
 
 	if (sCurrentWorkPage == "LOOKUPFIND") {
-	// Get the optionData.asp to get the link find records.
-			frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
-	frmOptionDataArea = OpenHR.getForm("optiondataframe", "frmOptionData");
-	frmOptionArea = OpenHR.getForm("optionframe", "frmLookupFindForm");
-	frmOptionGetDataArea.txtOptionAction.value = "LOADLOOKUPFIND";
-	frmOptionGetDataArea.txtOptionColumnID.value = frmOptionArea.txtOptionColumnID.value;		
-	frmOptionGetDataArea.txtOptionLookupColumnID.value = frmOptionArea.txtOptionLookupColumnID.value;
-	frmOptionGetDataArea.txtOptionLookupFilterValue.value = frmOptionArea.txtOptionLookupFilterValue.value;
-	frmOptionGetDataArea.txtOptionPageAction.value = sAction;
-	frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
-	frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
-	frmOptionGetDataArea.txtOptionIsLookupTable.value = frmOptionArea.txtIsLookupTable.value;
-	frmOptionGetDataArea.txtOptionRecordID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentRecordID.value;
+		// Get the optionData.asp to get the link find records.
+		frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
+		frmOptionDataArea = OpenHR.getForm("optiondataframe", "frmOptionData");
+		frmOptionArea = OpenHR.getForm("optionframe", "frmLookupFindForm");
+		frmOptionGetDataArea.txtOptionAction.value = "LOADLOOKUPFIND";
+		frmOptionGetDataArea.txtOptionColumnID.value = frmOptionArea.txtOptionColumnID.value;
+		frmOptionGetDataArea.txtOptionLookupColumnID.value = frmOptionArea.txtOptionLookupColumnID.value;
+		frmOptionGetDataArea.txtOptionLookupFilterValue.value = frmOptionArea.txtOptionLookupFilterValue.value;
+		frmOptionGetDataArea.txtOptionPageAction.value = sAction;
+		frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
+		frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
+		frmOptionGetDataArea.txtOptionIsLookupTable.value = frmOptionArea.txtIsLookupTable.value;
+		frmOptionGetDataArea.txtOptionRecordID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentRecordID.value;
 
-	frmOptionGetDataArea.txtOptionParentTableID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentParentTableID.value;
-	frmOptionGetDataArea.txtOptionParentRecordID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentParentRecordID.value;
+		frmOptionGetDataArea.txtOptionParentTableID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentParentTableID.value;
+		frmOptionGetDataArea.txtOptionParentRecordID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentParentRecordID.value;
 
-	if (frmOptionArea.txtIsLookupTable.value == "False") {
-	frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
-	frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.selectView.options[frmOptionArea.selectView.selectedIndex].value;
-	frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.selectOrder.options[frmOptionArea.selectOrder.selectedIndex].value;
-}
-	else {
-	frmOptionGetDataArea.txtOptionTableID.value = 0;
-	frmOptionGetDataArea.txtOptionViewID.value = 0;
-	frmOptionGetDataArea.txtOptionOrderID.value = 0;
-}
+		if (frmOptionArea.txtIsLookupTable.value == "False") {
+			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
+			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.selectView.options[frmOptionArea.selectView.selectedIndex].value;
+			frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.selectOrder.options[frmOptionArea.selectOrder.selectedIndex].value;
+		}
+		else {
+			frmOptionGetDataArea.txtOptionTableID.value = 0;
+			frmOptionGetDataArea.txtOptionViewID.value = 0;
+			frmOptionGetDataArea.txtOptionOrderID.value = 0;
+		}
 
-	refreshOptionData(); //should be in scope
-	return;
-}
-	
+		refreshOptionData(); //should be in scope
+		return;
+	}
+
 	if ((sCurrentWorkPage == "TBBOOKCOURSEFIND") ||
 	(sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") ||
 	(sCurrentWorkPage == "TBTRANSFERCOURSEFIND") ||
 	(sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND")) {
-	// Get the optionData.asp to get the find records.
-			frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
-	frmOptionDataArea = OpenHR.getForm("optiondataframe", "frmOptionData");
-	frmOptionArea = OpenHR.getForm("optionframe", "frmFindForm");
-				
-	if (sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") {
-	frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERBOOKING";
-}
-	else {
-	if (sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND") {
-	frmOptionGetDataArea.txtOptionAction.value = "LOADADDFROMWAITINGLIST";
-}
-	else {
-	if (sCurrentWorkPage == "TBTRANSFERCOURSEFIND") {
-	frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERCOURSE";
-}
-	else {
-	frmOptionGetDataArea.txtOptionAction.value = "LOADBOOKCOURSE";
-}
-}
-}
-		
-	frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;;
-	frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
-	frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
+		// Get the optionData.asp to get the find records.
+		frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
+		frmOptionDataArea = OpenHR.getForm("optiondataframe", "frmOptionData");
+		frmOptionArea = OpenHR.getForm("optionframe", "frmFindForm");
 
-	if (sCurrentWorkPage == "TBTRANSFERCOURSEFIND") {
-	frmOptionGetDataArea.txtOptionCourseTitle.value = frmOptionArea.txtOptionCourseTitle.value;
+		if (sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") {
+			frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERBOOKING";
+		}
+		else {
+			if (sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND") {
+				frmOptionGetDataArea.txtOptionAction.value = "LOADADDFROMWAITINGLIST";
+			}
+			else {
+				if (sCurrentWorkPage == "TBTRANSFERCOURSEFIND") {
+					frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERCOURSE";
+				}
+				else {
+					frmOptionGetDataArea.txtOptionAction.value = "LOADBOOKCOURSE";
+				}
+			}
+		}
+
+		frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;;
+		frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
+		frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
+
+		if (sCurrentWorkPage == "TBTRANSFERCOURSEFIND") {
+			frmOptionGetDataArea.txtOptionCourseTitle.value = frmOptionArea.txtOptionCourseTitle.value;
+		}
+
+		frmOptionGetDataArea.txtOptionRecordID.value = frmOptionArea.txtOptionRecordID.value;
+		frmOptionGetDataArea.txtOptionPageAction.value = sAction;
+		frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
+		frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
+
+		refreshOptionData(); //should be in scope
+	}
 }
 
-	frmOptionGetDataArea.txtOptionRecordID.value = frmOptionArea.txtOptionRecordID.value;
-	frmOptionGetDataArea.txtOptionPageAction.value = sAction;
-	frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
-	frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
-
-	refreshOptionData(); //should be in scope
-}
-}
-
-function menu_loadQuickFindNoSaveCheck() 
-{
+function menu_loadQuickFindNoSaveCheck() {
 	var frmRecEditArea;
 	var frmOptionArea;
 	
@@ -4102,7 +4120,7 @@ function menu_loadSelectOrderFilter(psType) {
 		if (menu_saveChanges(sSaveChangesTag, true, false) == 0) { // 0 = Prompt
 			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) { // OK - Ignore changes
-					window.onbeforeunload = null;
+					window.top.onbeforeunload = null;
 					orderfilter_RecordEdit();
 					return false;
 				} else {
@@ -4162,9 +4180,9 @@ function menu_clearFilter() {
 
 			var postData = {
 				Action: optionActionType.SELECTFILTER,
-				ScreenID: $("#frmWorkAreaRefresh #txtGotoScreenID").val(),
-				TableID: $("#frmWorkAreaRefresh #txtGotoTableID").val(),
-				ViewID: $("#frmWorkAreaRefresh #txtGotoViewID").val(),
+				ScreenID: window.top.$("#frmWorkAreaRefresh #txtGotoScreenID").val(),
+				TableID: window.top.$("#frmWorkAreaRefresh #txtGotoTableID").val(),
+				ViewID: window.top.$("#frmWorkAreaRefresh #txtGotoViewID").val(),
 				FilterSQL: "",
 				FilterDef: "",
 				SelectedRecordsInFindGrid: $("#txtSelectedRecordsInFindGrid").val(),
@@ -4301,7 +4319,7 @@ function menu_LoadEventLog() {
 		var lngRecordID;
 		var frmOptionArea;
 
-		lngRecordID = selectedRecordID();	//shold be in scope
+	lngRecordID = menu_selectedRecordID();	//shold be in scope
 
 		if (lngRecordID > 0) {
 			menu_ShowWait("Loading matching courses...");
@@ -4339,7 +4357,7 @@ function menu_LoadEventLog() {
 	var lngRecordID;
 	var frmOptionArea;
 	
-	lngRecordID = selectedRecordID();
+	lngRecordID = menu_selectedRecordID();
 
 	if (lngRecordID > 0) {
 	menu_ShowWait("Loading matching courses...");
@@ -4377,7 +4395,7 @@ function menu_LoadEventLog() {
 	var lngRecordID;
 	var frmDataArea;
 	var iUserChoice;
-	lngRecordID = selectedRecordID();
+	lngRecordID = menu_selectedRecordID();
 	var frmMenuInfo = $("#frmMenuInfo")[0].children;
 
 	if (lngRecordID > 0) {
@@ -4402,7 +4420,7 @@ function menu_LoadEventLog() {
 		if (iUserChoice != 2) {
 			menu_disableMenu();
 			var frmDataArea;
-			var lngRecordID = selectedRecordID();
+		var lngRecordID = menu_selectedRecordID();
 
 			frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
 
@@ -4522,13 +4540,12 @@ function menu_LoadEventLog() {
 
 		// Show loading screen
 		menu_disableMenu();
-
 		// Load the required definition selection screen
 		var postData = {
-			txtTableID: $('#txtCurrentTableID').val(),
+		txtTableID: OpenHR.activeFrame().find('#txtCurrentTableID').val(),
 			utiltype: piDefSelType,
 			utilID: 0,
-			RecordID: $('#txtCurrentRecordID').val(),
+		RecordID: OpenHR.activeFrame().find('#txtCurrentRecordID').val(),
 			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
 
@@ -4608,18 +4625,15 @@ function menu_LoadEventLog() {
 
 	}
 
-	function menu_LoadStandardReportNoSaveCheck(psReportType, psRecordSelection)
-	{
+function menu_LoadStandardReportNoSaveCheck(psReportType, psRecordSelection) {
 }
 
-	function menu_displayVersionInfo()
-	{
+function menu_displayVersionInfo() {
 //	window.open("VersionInfo.htm",null,"height=550,width=650,resizable=yes,scrollbars=yes,status=yes,toolbar=yes,menubar=yes,location=no");
 //	return;
 }
 
-	function menu_NewWindow(mypage, myname, w, h, scroll) 
-	{
+function menu_NewWindow(mypage, myname, w, h, scroll) {
 //	var winl = (screen.width - w) / 2;
 //	var wint = (screen.height - h) / 2;
 //	winprops = 'height='+h+',width='+w+',top='+wint+',left='+winl+',scrollbars='+scroll+',resizable'
@@ -4630,8 +4644,7 @@ function menu_LoadEventLog() {
 //		}
 }
 
-	function menu_refreshDefSel() 
-	{
+function menu_refreshDefSel() {
 //	if(currentWorkPage() == "DEFSEL")
 //	{
 //		try
@@ -4683,42 +4696,42 @@ function menu_LoadEventLog() {
 		// the function 'menu_abMainMenu_Click' looks for the disabled class and rejects the click.
 
 		if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
-			$("#" + itemId + " a:first").removeClass("disabled"); 
+		window.parent.$("#" + itemId + " a:first").removeClass("disabled");
 		} else {
-			$("#" + itemId + " a:first").addClass("disabled");
-			$("#" + itemId + " a:first").css({ cursor: "default" });
-			if (($("#" + itemId + " a:first").hasClass("ui-menu-item")) || (itemId.substr(0, 3) == "HT_")) { //Apply lightgrey color to disabled items on the context mennu only, not on the ribbon
-				$("#" + itemId + " a:first").css({ color: "lightgrey" });
+		window.parent.$("#" + itemId + " a:first").addClass("disabled");
+		window.parent.$("#" + itemId + " a:first").css({ cursor: "default" });
+		if ((window.parent.$("#" + itemId + " a:first").hasClass("ui-menu-item")) || (itemId.substr(0, 3) == "HT_")) { //Apply lightgrey color to disabled items on the context mennu only, not on the ribbon
+			window.parent.$("#" + itemId + " a:first").css({ color: "lightgrey" });
 			}
 		}
 }
 
 	function menu_toolbarEnableItem(itemId, fNewSetting) {
 
-		if ((($("#" + itemId).length) == 0) || ($("#" + itemId) == undefined)) {
+	if (((window.parent.$("#" + itemId).length) == 0) || (window.parent.$("#" + itemId) == undefined)) {
 			//console.log('Wrong menu item ID in menu_toolbarEnableItem: ' + itemId); //To detect menu items that exist in menu.js but not on fixedlinks.ascx
 			return;
 		}
 
-	var currSrc = $("#" + itemId + " img:first").attr("src");
+	var currSrc = window.parent.$("#" + itemId + " img:first").attr("src");
 
 	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
 		//apply enable icon
 		if (currSrc.indexOf("HOVER") <= 0) {
-			$("#" + itemId + " img:first").attr("src", currSrc.replace("DIS.png", "HOVER.png"));
-			$("#" + itemId).removeClass("disabled");
-			$("#" + itemId + " a").removeClass("disabled");
-			$("#" + itemId + " a h6").removeClass("disabled");
-			$('#' + itemId + " a h6").removeClass('ui-state-disabled');
+			window.parent.$("#" + itemId + " img:first").attr("src", currSrc.replace("DIS.png", "HOVER.png"));
+			window.parent.$("#" + itemId).removeClass("disabled");
+			window.parent.$("#" + itemId + " a").removeClass("disabled");
+			window.parent.$("#" + itemId + " a h6").removeClass("disabled");
+			window.parent.$('#' + itemId + " a h6").removeClass('ui-state-disabled');
 		}
 	} else {
 		//apply disable icon
 		if (currSrc.indexOf("DIS") <= 0) {
-			$("#" + itemId + " img:first").attr("src", currSrc.replace("HOVER.png", "DIS.png"));
-			$("#" + itemId).addClass("disabled");
-			$("#" + itemId + " a").addClass("disabled");
-			$("#" + itemId + " a h6").addClass("disabled");
-			$('#' + itemId + " a h6").addClass('ui-state-disabled');
+			window.parent.$("#" + itemId + " img:first").attr("src", currSrc.replace("HOVER.png", "DIS.png"));
+			window.parent.$("#" + itemId).addClass("disabled");
+			window.parent.$("#" + itemId + " a").addClass("disabled");
+			window.parent.$("#" + itemId + " a h6").addClass("disabled");
+			window.parent.$('#' + itemId + " a h6").addClass('ui-state-disabled');
 		}
 	}
 }
@@ -4727,25 +4740,25 @@ function menu_LoadEventLog() {
 	function menu_setVisibleMenuItem(itemId, fNewSetting) {
 	var sNewValue = "";
 
-	if ($("#" + itemId).length == 0) {
+	if (window.parent.$("#" + itemId).length == 0) {
 	//console.log('Wrong menu item ID in menu_setVisibleMenuItem: ' + itemId); //To detect menu items that exist in menu.js but not on fixedlinks.ascx
 }
 
 	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
-		$("#" + itemId + " a:first").show();
+		window.parent.$("#" + itemId + " a:first").show();
 		if (itemId == "mnutoolFixedWorkflowOutOfOffice") { //This menu item is not placed inside a div, so the code that shows it has to be slightly different
-			$("#" + itemId).show();
+			window.parent.$("#" + itemId).show();
 		}
-	if ($("#" + itemId).hasClass("hidden")) {
-	$("#" + itemId).removeClass("hidden");
+		if (window.parent.$("#" + itemId).hasClass("hidden")) {
+			window.parent.$("#" + itemId).removeClass("hidden");
 }
 	} else {
-		$("#" + itemId + " a:first").hide();
+		window.parent.$("#" + itemId + " a:first").hide();
 		if (itemId == "mnutoolFixedWorkflowOutOfOffice") { //This menu item is not placed inside a div, so the code that hides it has to be slightly different
-			$("#" + itemId).hide();
+			window.parent.$("#" + itemId).hide();
 }
-	if (!$("#" + itemId).hasClass("hidden")) {
-	$("#" + itemId).addClass("hidden");
+		if (!window.parent.$("#" + itemId).hasClass("hidden")) {
+			window.parent.$("#" + itemId).addClass("hidden");
 }
 }
 
@@ -4754,9 +4767,9 @@ function menu_LoadEventLog() {
 		//"cannot call methods on accordion prior to initialization; attempted to call method 'resize'"
 		//so I'm try-catching the statement
 		try {
-			$(".accordion").accordion("refresh");
+			window.parent.$(".accordion").accordion("refresh");
 
-		} catch(e) {}
+		} catch (e) { }
 	}
 }
 
@@ -4770,22 +4783,20 @@ function menu_LoadEventLog() {
 }
 
 	function menu_setVisibletoolbarGroup(itemId, fNewSetting) {
-
 	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
 	$("#" + itemId).parent().show();
 }
 	else {
-	$("#" + itemId).parent().hide();
+		window.top.$("#" + itemId).parent().hide();
 }
 }
 
 	function menu_setVisibletoolbarGroupById(itemId, fNewSetting) {
-
 		if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
-	$("#" + itemId).show();
+		window.top.$("#" + itemId).show();
 }
 		else {
-	$("#" + itemId).hide();
+		window.top.$("#" + itemId).hide();
 }
 }
 
@@ -4832,8 +4843,8 @@ function menu_LoadEventLog() {
 
 	function menu_SetmnutoolRecordPositionCaption(newCaption) {
 	//update the record position text.
-		$("#mnutoolRecordPosition span").text(newCaption);
-		$("#mnutoolPositionRecordFind span.totalRecordsCount").text(newCaption);
+	window.parent.$("#mnutoolRecordPosition span").text(newCaption);
+	window.parent.$("#mnutoolPositionRecordFind span.totalRecordsCount").text(newCaption);
 }
 
 	function menu_SetmnutoolEventLogRecordPositionCaption(newCaption) {
@@ -4849,7 +4860,7 @@ function menu_LoadEventLog() {
 
 
 	function menu_isSSIMode() {
-		if ((window.SSIMode.toLowerCase() == "true") || (window.SSIMode == true)) {
+	if ((window.parent.window.SSIMode.toLowerCase() == "true") || (window.parent.window.SSIMode == true)) {
 			return true;
 		} else {
 			return false;
@@ -4858,8 +4869,8 @@ function menu_LoadEventLog() {
 
 function menu_SetmnutoolButtonCaption(itemID, newCaption) {
 	try {
-		$('#' + itemID + ' a').attr('title', newCaption);
-		$('#' + itemID + ' h6').text(newCaption);
+		window.parent.$('#' + itemID + ' a').attr('title', newCaption);
+		window.parent.$('#' + itemID + ' h6').text(newCaption);
 	}
 	catch (e) { }
 }
@@ -4870,7 +4881,7 @@ function showDatabaseMenuGroup() {
 
 function toggleMandatoryColumns(pfSetting) {
 	
-	$('#ctlRecordEdit *[data-Mandatory="1"]').each(function () {
+	OpenHR.activeFrame().find('#ctlRecordEdit *[data-Mandatory="1"]').each(function () {
 		var controlType = $(this).attr('data-controlType');
 
 		if (controlType == "4096") {
@@ -5060,7 +5071,8 @@ function EnableMultiSelectRibbonButton(enableMultiSelectButton) {
 		$("#mnutoolPositionRecordFind span.selectedRecordsCount").hide();
 	}
 	else {
-		var frmFind = document.getElementById("frmFindForm");
+		//var frmFind = document.getElementById("frmFindForm");
+		var frmFind = OpenHR.getForm("workframe", "frmFindForm");	//todo: could this be optionframe??
 		menu_setVisibleMenuItem("mnutoolMultiSelectFind", true);
 		menu_toolbarEnableItem("mnutoolMultiSelectFind", enableMultiSelectButton && frmFind.txtTotalRecordCount.value > 0);
 		ToggleSelectedRecordOption(enableMultiSelectButton);
@@ -5079,30 +5091,30 @@ function ToggleSelectedRecordOption(show) {
 }
 
 // Refresh the find window ribbon buttons
-function RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGrid)
-{
+function RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGrid) {
 	var canRunCustomReports = false;
 	var canRunCalendarReports = false;
 	var canRunMailMerge = false;
 	var canRunDataTransfer = false;
 	var isMultiSelectOn = IsMultiSelectionModeOn();
-	var frmFind = document.getElementById("frmFindForm");
-	var isDmiUser = ($("#txtIsDMIUser")[0].value == "True");
+	//var frmFind = document.getElementById("frmFindForm");
+	var frmFind = OpenHR.getForm("workframe", "frmFindForm");
+	var isDmiUser = (window.top.$("#txtIsDMIUser")[0].value == "True");
 
 	if (isMultiSelectOn) {
-		if (window.txtSysPerm_MAILMERGE_RUN != null && window.txtSysPerm_MAILMERGE_RUN.value == 1 && isDmiUser) {
+		if (window.top.window.txtSysPerm_MAILMERGE_RUN != null && window.top.window.txtSysPerm_MAILMERGE_RUN.value == 1 && isDmiUser) {
 			canRunMailMerge = true;
 		}
 
-		if (window.txtSysPerm_CALENDARREPORTS_RUN != null && window.txtSysPerm_CALENDARREPORTS_RUN.value == 1 && isDmiUser) {
+		if (window.top.window.txtSysPerm_CALENDARREPORTS_RUN != null && window.top.window.txtSysPerm_CALENDARREPORTS_RUN.value == 1 && isDmiUser) {
 			canRunCalendarReports = true;
 		}
 
-		if (window.txtSysPerm_CUSTOMREPORTS_RUN != null && window.txtSysPerm_CUSTOMREPORTS_RUN.value == 1 && isDmiUser) {
+		if (window.top.window.txtSysPerm_CUSTOMREPORTS_RUN != null && window.top.window.txtSysPerm_CUSTOMREPORTS_RUN.value == 1 && isDmiUser) {
 			canRunCustomReports = true;
 		}
 
-		if (window.txtSysPerm_DATATRANSFER_RUN != null && window.txtSysPerm_DATATRANSFER_RUN.value == 1 && isDmiUser) {
+		if (window.top.window.txtSysPerm_DATATRANSFER_RUN != null && window.top.window.txtSysPerm_DATATRANSFER_RUN.value == 1 && isDmiUser) {
 			canRunDataTransfer = true;
 		}
 	}
@@ -5125,7 +5137,7 @@ function RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGri
 		menu_toolbarEnableItem("mnutoolDeleteRecordFind", false);
 	}
 	else {
-		var selectedRecordId = selectedRecordID();
+		var selectedRecordId = menu_selectedRecordID();
 		if (selectedRecordId == "" | selectedRecordId == null) {
 			selectedRecordId = 0;
 		}
@@ -5142,20 +5154,19 @@ function RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGri
 // Returns true if multi select is on, False otherwise
 function IsMultiSelectionModeOn() {
 	var isMultiSelectOn = false;
-	if ($('#mnutoolMultiSelectFind h6').text().indexOf('On') > -1) { isMultiSelectOn = true; }
+	if (window.parent.$('#mnutoolMultiSelectFind h6').text().indexOf('On') > -1) { isMultiSelectOn = true; }
 	return isMultiSelectOn;
 }
 
 // Sets multi select mode off and multi select tooltip text
 function SetMultiSelectionModeOff() {
-	$('#mnutoolMultiSelectFind h6').html("Multi-Select <br/>Off");
-	$('#mnutoolMultiSelectFind a').prop("title", "Multi-Select Off");
+	window.parent.$('#mnutoolMultiSelectFind h6').html("Multi-Select <br/>Off");
+	window.parent.$('#mnutoolMultiSelectFind a').prop("title", "Multi-Select Off");
 }
 
 // Load report or utility screeen from the find window
 function LoadReportOrUtilityScreen(utilityType) {
-
-	var multiSelectedRecords = $("#txtSelectedRecordsInFindGrid").val();
+	var multiSelectedRecords = OpenHR.activeFrame().find("#txtSelectedRecordsInFindGrid").val();
 
 	if (multiSelectedRecords === "" || multiSelectedRecords.split(",").length < 1) {
 		OpenHR.modalMessage("Please select at least one record to run the report or utility");
@@ -5169,7 +5180,7 @@ function LoadReportOrUtilityScreen(utilityType) {
 			utilID: 0,
 			RecordID: 0,
 			MultipleRecordIDs: multiSelectedRecords,
-			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+			__RequestVerificationToken: window.top.$('[name="__RequestVerificationToken"]').val()
 		};
 
 		OpenHR.submitForm(null, "optionframe", null, postData, "DefSel");

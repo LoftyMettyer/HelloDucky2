@@ -22,10 +22,11 @@ function moveFirst() {
 function find_window_onload() {
 	var fOk;
 	fOk = true;
-	$("#workframe").attr("data-framesource", "FIND");
-	$("#optionframe").hide();
+	$("#workframe").attr("data-framesource", "FIND");	
+	window.top.$("#optionframe").hide();
 	$("#workframe").show();
-	$('div#workframeset').animate({ scrollTop: 0 }, 0);
+	if (OpenHR.inIframe()) $('div#workframeset').animate({ scrollTop: 0 }, 0);
+	else $('div#workframe').animate({ scrollTop: 0 }, 0);
 
 	var frmFindForm = document.getElementById("frmFindForm");
 	var sErrMsg = frmFindForm.txtErrorDescription.value;
@@ -307,6 +308,7 @@ function find_window_onload() {
 														$(sender.target.id).focus();
 													}
 												});
+												OpenHR.setDatepickerLanguage();	//need to reapply now that we're in an iframe.
 											},
 											defaultValue: getDefaultValueForColumn(iColumnId, "date")
 										}
@@ -544,7 +546,7 @@ function find_window_onload() {
 				}
 
 				var shrinkToFit = false;
-				var wfSetWidth = $('#workframeset').width();
+				var wfSetWidth = OpenHR.inIframe ? $('#workframe').width() : $('#workframeset').width();
 				if (colModel.length < (wfSetWidth / 100)) shrinkToFit = true;
 				var gridWidth = wfSetWidth - 100;
 				var rowNum = 50;
@@ -601,7 +603,7 @@ function find_window_onload() {
 					caption: '',
 					buttonicon: 'icon-search',
 					onClickButton: function () {
-				
+
 						$("#findGridTable")[0].toggleToolbar(); // Toggle toolbar on & off when Search button is pressed.
 						$("#findGridTable")[0].clearToolbar(); // clear menu
 						
@@ -633,7 +635,7 @@ function find_window_onload() {
 					addRowParams: {
 						keys: true,
 						aftersavefunc: function (rowid, response, options) {
-							window.onbeforeunload = null;
+							window.top.onbeforeunload = null;
 							return afterSaveFindGridRow(rowid);
 						},						
 						oneditfunc: function (rowid) {
@@ -685,7 +687,7 @@ function find_window_onload() {
 
 
 				//Enable inline editing if there is at least one editable column
-				var editLicenced = ($("#txtEditableGridGranted").val() == 1);
+				var editLicenced = (window.top.$("#txtEditableGridGranted").val() == 1);
 				if (editLicenced && linktype != 'multifind') { //The "linktype" variable is defined in Find.ascx
 					//Make grid editable
 					$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
@@ -704,17 +706,17 @@ function find_window_onload() {
 									lastRowEdited = "0";
 								} else {
 									//just editing existing row, so don't indicate that the row was modified.
-									rowWasModified = false;
+									window.top.rowWasModified = false;
 									lastRowEdited = rowid;
 								}
 								return editFindGridRow(rowid);
 							},
 							aftersavefunc: function (rowid, response, options) {	//save button clicked in edit mode. NB: row has been 'saved' locally by this time.								
-								window.onbeforeunload = null;
+								window.top.onbeforeunload = null;
 								return afterSaveFindGridRow(rowid);
 							},
 							afterrestorefunc: function (rowid) {	//Cancel button clicked in edit mode.
-								window.onbeforeunload = null;
+								window.top.onbeforeunload = null;
 								return cancelFindGridRow(rowid);
 							}
 						},
@@ -824,7 +826,7 @@ function find_window_onload() {
 						.css('font-size', '20px');
 
 				//resize the grid to the height of its container.
-				var gridRowHeight = $('#workframeset').height();
+				var gridRowHeight = OpenHR.inIframe() ? $('#workframe').height() : $('#workframeset').height();
 				var pageTitleHeight = $('#row1').outerHeight();
 				var gridHeaderHeight = $('#findGridRow .ui-jqgrid-hdiv').outerHeight();
 				var gridFooterHeight = $('#findGridRow .ui-jqgrid-pager').outerHeight();
@@ -893,9 +895,9 @@ function find_window_onload() {
 }
 
 
-function saveRowToDatabase(rowid) {	
+function saveRowToDatabase(rowid) {
 	if (saveThisRowToDatabase)
-		if (rowWasModified) saveInlineRowToDatabase(rowid);
+		if (window.top.rowWasModified) saveInlineRowToDatabase(rowid);
 		else if (rowIsEditedOrNew.substr(0, 9) == 'quickedit') editNextRow();
 		else if (rowIsEditedOrNew == "new") addNextRow();
 }
@@ -954,7 +956,7 @@ function locateRecord(psSearchFor, pfIdMatch) {
 
 }
 
-function showLookupForColumn(element) {
+function showLookupForColumn(element) {	
 	//If we are editing a lookup cell we need to popup a window with its values
 
 	if (!$("#findGridTable_iledit").hasClass('ui-state-disabled')) //If we are not in edit mode then return
@@ -1008,7 +1010,7 @@ function showLookupForColumn(element) {
 		return false;
 	}
 
-	var lookupUrl = window.ROOT;
+	var lookupUrl = window.top.window.ROOT;
 	var lookupParameters = '';
 
 	if (eval('isLookupTable_' + clickedColumnId) == true) {
@@ -1019,7 +1021,7 @@ function showLookupForColumn(element) {
 		lookupUrl += 'generic/GetLookupFindRecords2';		
 		lookupParameters = { piTableID: columnLookupTableID, piOrderID: '0', piLookupColumnID: columnLookupColumnID, psFilterValue: filterCellValue, piCallingColumnID: clickedColumnId, piFirstRecPos: 0 };
 	}
-
+	
 	$.ajax({
 		url: lookupUrl,
 		data: lookupParameters,
@@ -1028,11 +1030,11 @@ function showLookupForColumn(element) {
 		cache: false,
 		success: function (jsondata) {
 			var lookupColumnGridPosition = eval('LookupColumnGridPosition_' + clickedColumnId);
-
-			$("#LookupForEditableGrid_Table").jqGrid('GridUnload'); //Unload previous grid (if any)
+			
+			window.top.$("#LookupForEditableGrid_Table").jqGrid('GridUnload'); //Unload previous grid (if any)
 
 			//jqGrid it
-			$("#LookupForEditableGrid_Table").jqGrid({
+			window.top.$("#LookupForEditableGrid_Table").jqGrid({
 				autoencode: true,
 				data: jsondata.rows,
 				datatype: "local",
@@ -1044,12 +1046,12 @@ function showLookupForColumn(element) {
 			});
 
 			//Set the dialog's title and open it (the dialog, not the title)
-			$("#LookupForEditableGrid_Title").html($("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].name);
-			$("#LookupForEditableGrid_Div").dialog("open");
+			window.top.$("#LookupForEditableGrid_Title").html($("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].name);
+			window.top.$("#LookupForEditableGrid_Div").dialog("open");
 
 			//Resize the grid
-			$("#LookupForEditableGrid_Table").jqGrid("setGridHeight", $("#LookupForEditableGrid_Div").height() - 90);
-			$("#LookupForEditableGrid_Table").jqGrid("setGridWidth", $("#LookupForEditableGrid_Div").width() - 10);
+			window.top.$("#LookupForEditableGrid_Table").jqGrid("setGridHeight", window.top.$("#LookupForEditableGrid_Div").height() - 90);
+			window.top.$("#LookupForEditableGrid_Table").jqGrid("setGridWidth", window.top.$("#LookupForEditableGrid_Div").width() -10);
 
 			//Search for the value that is currently selected in the find grid
 			rowId = null;
@@ -1062,34 +1064,35 @@ function showLookupForColumn(element) {
 
 			//If text found, select the row
 			if (rowId != null) {
-				$("#LookupForEditableGrid_Table").jqGrid('setSelection', rowId + 1, false);
+				window.top.$("#LookupForEditableGrid_Table").jqGrid('setSelection', rowId +1, false);
 			}
 
 			//If we don't have records in the grid, disable Select button
-			if ($("#LookupForEditableGrid_Table").getGridParam('reccount') == 0) {
-				$('#LookupForEditableGridSelect').attr('disabled', 'disabled');
-				$('#LookupForEditableGridSelect').addClass('disabled');
-				$('#LookupForEditableGridSelect').addClass('ui-state-disabled');
+			if (window.top.$("#LookupForEditableGrid_Table").getGridParam('reccount') == 0) {
+				window.top.$('#LookupForEditableGridSelect').attr('disabled', 'disabled');
+				window.top.$('#LookupForEditableGridSelect').addClass('disabled');
+				window.top.$('#LookupForEditableGridSelect').addClass('ui-state-disabled');
 			} else { //Enable Select button
-				$('#LookupForEditableGridSelect').removeAttr('disabled');
-				$('#LookupForEditableGridSelect').removeClass('disabled');
-				$('#LookupForEditableGridSelect').removeClass('ui-state-disabled');
+				window.top.$('#LookupForEditableGridSelect').removeAttr('disabled');
+				window.top.$('#LookupForEditableGridSelect').removeClass('disabled');
+				window.top.$('#LookupForEditableGridSelect').removeClass('ui-state-disabled');
 				//Assign a function call to the onclick event of the "Select" button
-				$('#LookupForEditableGridSelect').attr('onclick', 'selectValue("Select", "' + lookupColumnGridPosition + '","' + element.id + '",' + thisLookupColumnIsNeededByAnother + ')');
+				window.top.$('#LookupForEditableGridSelect').attr('onclick', 'selectValue("Select", "' + lookupColumnGridPosition + '","' + element.id + '",' + thisLookupColumnIsNeededByAnother + ')');
 			}
 			//Assign a function call to the onclick event of the "Clear" button
-			$('#LookupForEditableGridClear').attr('onclick', 'selectValue("Clear", "' + lookupColumnGridPosition + '","' + element.id + '",' + thisLookupColumnIsNeededByAnother + ')');
+			window.top.$('#LookupForEditableGridClear').attr('onclick', 'selectValue("Clear", "' + lookupColumnGridPosition + '","' + element.id + '",' +thisLookupColumnIsNeededByAnother + ')');
 		},
 		error: function (req, status, errorObj) {
-			//debugger;
+			alert("Error loading lookup find records");
 		}
 	});
 }
 
 function selectValue(action, lookupColumnGridPosition, elementId, thisLookupColumnIsNeededByAnother) {
+	//NB: this function called externally by the dialog.
 	// Get the value selected by the user and update the corresponding value in the find grid
-
-	var rowId = $("#LookupForEditableGrid_Table").getGridParam('selrow');
+	
+	var rowId = window.top.$("#LookupForEditableGrid_Table").getGridParam('selrow');
 
 	if (rowId == null && action == "Select") { //No row selected, show a message and return
 		OpenHR.modalMessage('Please select a value');
@@ -1099,26 +1102,25 @@ function selectValue(action, lookupColumnGridPosition, elementId, thisLookupColu
 	var cellValue = ''; //Default for action="Clear"
 
 	if (action == "Select") {
-		var columnName = $("#LookupForEditableGrid_Table").getGridParam('colModel')[lookupColumnGridPosition].name;
-		cellValue = $("#LookupForEditableGrid_Table").getRowData(rowId)[columnName];
+		var columnName = window.top.$("#LookupForEditableGrid_Table").getGridParam('colModel')[lookupColumnGridPosition].name;
+		cellValue = window.top.$("#LookupForEditableGrid_Table").getRowData(rowId)[columnName];
 	}
-
-	document.getElementById(elementId).value = cellValue;
-	$('#LookupForEditableGrid_Div').dialog('close');
-	$("#LookupForEditableGrid_Table").jqGrid('GridUnload');
-
+	
+	OpenHR.activeFrame().find('[id="' + elementId + '"]').val(cellValue);
+	window.top.$('#LookupForEditableGrid_Div').dialog('close');
+	window.top.$("#LookupForEditableGrid_Table").jqGrid('GridUnload');
 	indicateThatRowWasModified();
 
 	if (thisLookupColumnIsNeededByAnother) {
 		//Save the row to the grid (not the database), restore it and then set the row back into edit mode;
 		//this is necessary so any lookup column filtered by another column will pickup the correct value to filter on
-		var findGridRowId = $("#findGridTable").getGridParam('selrow');
+		var findGridRowId = OpenHR.activeFrame().find("#findGridTable").getGridParam('selrow');
 		//The .saveRow line below triggers the aftersavefunc event which saves the row to the database;
 		//when setting a lookup value on a cell we don't want the value to be saved to the database, so...
 		saveThisRowToDatabase = false; // ...don't save to the database
-		$('#findGridTable').saveRow(findGridRowId);
+		OpenHR.activeFrame().find('#findGridTable').saveRow(findGridRowId);
 		saveThisRowToDatabase = true; // ...save to the database again (this is the normal behaviour)
-		$('#findGridTable').editRow(findGridRowId);
+		OpenHR.activeFrame().find('#findGridTable').editRow(findGridRowId);
 	}
 }
 
@@ -1210,8 +1212,8 @@ function useThousandSeparator(columnNumber) {
 
 function indicateThatRowWasModified(keycode) {
 	if (keycode == 9) return true;
-	rowWasModified = true; //The 'rowWasModified' variable is defined as global in Find.ascx
-	window.onbeforeunload = warning;
+	window.top.rowWasModified = true; //The 'rowWasModified' variable is defined as global in Find.ascx
+	window.top.onbeforeunload = warning;
 	$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
 }
 
@@ -1237,8 +1239,8 @@ function ABSFileInput(value, options) {
 		$(fileInput).on("change", function() { commitEmbeddedFile(this, options.dataColumnId, false, options.dataIsPhoto, options.id); });
 		var fileImg = document.createElement("img");
 		$(fileImg).attr("id", "IMG_" + options.id);
-		if (value == "") $(fileImg).attr("src", window.ROOT + "Content/images/OLEIcons/delete-iconDIS.png").prop("disabled", true);
-		else $(fileImg).attr("src", window.ROOT + "Content/images/OLEIcons/delete-icon.png").prop("disabled", false);
+		if (value == "") $(fileImg).attr("src", window.top.window.ROOT + "Content/images/OLEIcons/delete-iconDIS.png").prop("disabled", true);
+		else $(fileImg).attr("src", window.top.window.ROOT + "Content/images/OLEIcons/delete-icon.png").prop("disabled", false);
 		$(fileImg).attr("title", "Delete this file");
 		$(fileImg).on("click", function () {
 			if ($(this).prop('disabled') === true) return false;	// check for non-IE browsers
@@ -1425,9 +1427,9 @@ function saveInlineRowToDatabase(rowId) {
 }
 
 function submitFollowOn() {
-
+	
 	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');	
-	if ($('#frmData #txtErrorMessage').val() !== "") { //There was an error while saving (AKA server side validation fail)		
+	if (window.top.$('#frmData #txtErrorMessage').val() !== "") { //There was an error while saving (AKA server side validation fail)		
 		indicateThatRowWasModified();
 		
 		//After a brief timeout, enable "Add" and "Edit" and disable "Save" and "Cancel"
@@ -1450,7 +1452,7 @@ function submitFollowOn() {
 		$('#pager-coldata_center input').prop('disabled', true); //Make Page textbox read only
 		$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
 	} else {		
-		//Mark row as changed if we've successfully saved the record.
+		//Mark row as changed if we've successfully saved the record.		
 		$("#findGridTable #" + rowId + ">td:first").css('border-left', '4px solid green');
 		try {
 			updateRowFromDatabase(rowId); //Get the row data from the database (show calculated values etc)			
@@ -1613,9 +1615,9 @@ function cancelFindGridRow(rowid) {
 		updateRowFromDatabase(rowid); //Get the row data from the database
 	}
 
-	rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
+	window.top.rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
 	$("#findGridTable_ilsave").addClass('ui-state-disabled'); //Disable the Save button.
-	window.onbeforeunload = null;
+	window.top.onbeforeunload = null;
 
 	$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
 	$("#pager-coldata_center").show();
@@ -1675,7 +1677,7 @@ function afterSaveFindGridRow(rowid) {
 	menu_ShowWait("Saving record...");
 	saveRowToDatabase(rowid);
 	rowIsEditedOrNew = "";
-	rowWasModified = false;
+	window.top.rowWasModified = false;
 	$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
 
 	$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
@@ -1696,8 +1698,8 @@ function editNextRow() {
 			$("#findGridTable").jqGrid('setSelection', newRowId, true);
 			$("#findGridTable").jqGrid('editRow', newRowId);
 			lastRowEdited = newRowId;
-			rowWasModified = false;
-			window.onbeforeunload = "null";
+			window.top.rowWasModified = false;
+			window.top.onbeforeunload = "null";
 		} catch (e) {
 			alert("Unable to edit the next row. Please reload the page.");
 		}
@@ -1955,8 +1957,8 @@ function refreshSummaryColumns() {
 
 function refreshImgDeleteIcon(uniqueID, fDisabled) {	
 	//disable icon if file is empty.
-	if(fDisabled)	$("[id='IMG_" + uniqueID + "']").prop("disabled", true).attr("src", window.ROOT + "Content/images/OLEIcons/delete-iconDIS.png");
-	else $("[id='IMG_" + uniqueID + "']").prop("disabled", false).attr("src", window.ROOT + "Content/images/OLEIcons/delete-icon.png");
+	if (fDisabled) $("[id='IMG_" + uniqueID + "']").prop("disabled", true).attr("src", window.top.window.ROOT + "Content/images/OLEIcons/delete-iconDIS.png");
+	else $("[id='IMG_" + uniqueID + "']").prop("disabled", false).attr("src", window.top.window.ROOT + "Content/images/OLEIcons/delete-icon.png");
 }
 
 // Refresh find grid toolbar.
