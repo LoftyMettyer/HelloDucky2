@@ -710,19 +710,19 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   Set rsModules = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
   If Not (rsModules.BOF And rsModules.EOF) Then
     Do Until rsModules.EOF
-      If rsModules!modulekey = gsMODULEKEY_TRAININGBOOKING And (Not bTR) Then
+      If rsModules!moduleKey = gsMODULEKEY_TRAININGBOOKING And (Not bTR) Then
         fUsed = True
         bTR = True
         sModuleName = "Training Booking"
         mfrmUse.AddToList (sModuleName & " Configuration")
       
-      ElseIf ((rsModules!modulekey = gsMODULEKEY_PERSONNEL) Or (rsModules!modulekey = gsMODULEKEY_HIERARCHY)) And (Not bPE) Then
+      ElseIf ((rsModules!moduleKey = gsMODULEKEY_PERSONNEL) Or (rsModules!moduleKey = gsMODULEKEY_HIERARCHY)) And (Not bPE) Then
         fUsed = True
         bPE = True
         sModuleName = "Personnel"
         mfrmUse.AddToList (sModuleName & " Configuration")
       
-      ElseIf (rsModules!modulekey = gsMODULEKEY_WORKFLOW) And (Not bWF) Then
+      ElseIf (rsModules!moduleKey = gsMODULEKEY_WORKFLOW) And (Not bWF) Then
         If Application.WorkflowModule Then
           fUsed = True
           bWF = True
@@ -730,7 +730,7 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
           mfrmUse.AddToList (sModuleName & " Configuration")
         End If
         
-      ElseIf rsModules!modulekey = gsMODULEKEY_ABSENCE Then
+      ElseIf rsModules!moduleKey = gsMODULEKEY_ABSENCE Then
         fUsed = True
         
         If (rsModules!parameterkey = gsPARAMETERKEY_BHOLREGIONTABLE) _
@@ -751,43 +751,43 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
           End If
         End If
           
-      ElseIf rsModules!modulekey = gsMODULEKEY_CURRENCY And (Not bCU) Then
+      ElseIf rsModules!moduleKey = gsMODULEKEY_CURRENCY And (Not bCU) Then
         fUsed = True
         bCU = True
         sModuleName = "Currency"
         mfrmUse.AddToList (sModuleName & " Configuration")
       
-      ElseIf rsModules!modulekey = gsMODULEKEY_POST And (Not bPO) Then
+      ElseIf rsModules!moduleKey = gsMODULEKEY_POST And (Not bPO) Then
         fUsed = True
         bPO = True
         sModuleName = "Post"
         mfrmUse.AddToList (sModuleName & " Configuration")
       
-      ElseIf rsModules!modulekey = gsMODULEKEY_MATERNITY And (Not bMA) Then
+      ElseIf rsModules!moduleKey = gsMODULEKEY_MATERNITY And (Not bMA) Then
         fUsed = True
         bMA = True
         sModuleName = "Maternity"
         mfrmUse.AddToList (sModuleName & " Configuration")
       
-      ElseIf rsModules!modulekey = gsMODULEKEY_AUDIT And (Not bAu) Then
+      ElseIf rsModules!moduleKey = gsMODULEKEY_AUDIT And (Not bAu) Then
         fUsed = True
         bAu = True
         sModuleName = "Audit"
         mfrmUse.AddToList (sModuleName & " Configuration")
       
-      ElseIf rsModules!modulekey = gsMODULEKEY_SSINTRANET And (Not bSS) Then
+      ElseIf rsModules!moduleKey = gsMODULEKEY_SSINTRANET And (Not bSS) Then
         fUsed = True
         bSS = True
         sModuleName = "Self Service Intranet"
         mfrmUse.AddToList (sModuleName & " Configuration")
       
-      ElseIf rsModules!modulekey = gsMODULEKEY_DOCMANAGEMENT And (Not bDM) Then
+      ElseIf rsModules!moduleKey = gsMODULEKEY_DOCMANAGEMENT And (Not bDM) Then
         fUsed = True
         bDM = True
         sModuleName = "Document Management"
         mfrmUse.AddToList (sModuleName & " Configuration")
       
-      ElseIf rsModules!modulekey = gsMODULEKEY_MOBILE And (Not bMo) Then
+      ElseIf rsModules!moduleKey = gsMODULEKEY_MOBILE And (Not bMo) Then
         fUsed = True
         bMo = True
         sModuleName = "Mobile Workflow"
@@ -1999,14 +1999,15 @@ Public Function WriteColumn() As Boolean
       ' Get a new column ID value.
       'ColumnID = UniqueColumnValue("tmpColumns", "columnID")
       ColumnID = GetNextObjectIdentitySeed("ASRSysColumns")
-      
+            
       ' Add a new record for the Column.
       fOK = (ColumnID > 0)
       If fOK Then
         .AddNew
+        .Fields("Guid").value = "{" & Mid(CreateGUID(), 2, 36) & "}"
         .Fields("Deleted") = False
       End If
-      
+            
       ' Create entries for this column in all views on the current table.
       If Not (recViewEdit.BOF And recViewEdit.EOF) Then
         recViewEdit.MoveFirst

@@ -276,7 +276,7 @@ Private Sub RefreshScreen()
     ControlsDisableAll Me
   End If
 
-  cmdOk.Enabled = mfChanged And (Not fReadOnly)
+  cmdOK.Enabled = mfChanged And (Not fReadOnly)
 
 End Sub
 
@@ -404,6 +404,7 @@ Private Function SaveChanges() As Boolean
         !Name = Trim(txtName.Text)
         !Description = Trim(txtDescription.Text)
         !PictureID = IIf(mlngPictureID = 0, Null, mlngPictureID)
+        !GUID = "{" & Mid(CreateGUID(), 2, 36) & "}"
         
         If miInitiationType = WORKFLOWINITIATIONTYPE_EXTERNAL Then
           sQueryString = GetWorkflowQueryString(WorkflowID * -1, -1)
@@ -610,7 +611,7 @@ Private Sub Form_Load()
   Next
   Set objControl = Nothing
 
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
   
   ' Position the form.
   UI.frmAtCenterOfParent Me, frmSysMgr
@@ -671,13 +672,13 @@ End Sub
 Private Sub txtDescription_GotFocus()
   ' Select the whole string.
   UI.txtSelText
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 
 Private Sub txtDescription_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 

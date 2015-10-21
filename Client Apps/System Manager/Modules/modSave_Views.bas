@@ -164,28 +164,22 @@ Private Function ViewNew() As Boolean
   Dim sWhereClauseCode As String
   Dim rsColumns As DAO.Recordset
   Dim objExpr As CExpression
+  Dim sGuid As String
   
   fOK = True
+  sGuid = IIf(IsNull(recViewEdit!GUID), Mid(CreateGUID(), 2, 36), Mid(recViewEdit!GUID, 8, 36))
   
   'MH20020809 Remove reference to "viewAlternativeName" column
   ' Insert the view info into the ASRSysViews Table on the server.
-  'sSQL = "INSERT INTO ASRSysViews" & _
-    " (viewID, viewName, viewDescription, viewTableID, viewSQL, viewAlternativeName, expressionID)" & _
-    "VALUES (" & recViewEdit.Fields("ViewID") & ", " & _
-    "'" & recViewEdit.Fields("ViewName") & "', " & _
-    "'" & recViewEdit.Fields("ViewDescription") & "', " & _
-    recViewEdit.Fields("ViewTableID") & ", " & _
-    "'" & recViewEdit.Fields("ViewSQL") & "', " & _
-    "'" & recViewEdit.Fields("ViewAlternativeName") & "', " & _
-    recViewEdit.Fields("ExpressionID") & ")"
   sSQL = "INSERT INTO ASRSysViews" & _
-    " (viewID, viewName, viewDescription, viewTableID, viewSQL, expressionID)" & _
+    " (viewID, viewName, viewDescription, viewTableID, viewSQL, expressionID, [Locked], [Guid])" & _
     "VALUES (" & recViewEdit.Fields("ViewID").value & ", " & _
     "'" & recViewEdit.Fields("ViewName").value & "', " & _
     "'" & recViewEdit.Fields("ViewDescription").value & "', " & _
     recViewEdit.Fields("ViewTableID").value & ", " & _
     "'" & recViewEdit.Fields("ViewSQL").value & "', " & _
-    recViewEdit.Fields("ExpressionID").value & ")"
+    recViewEdit.Fields("ExpressionID").value & ", " & _
+    IIf(recViewEdit.Fields("Locked").value, 1, 0) & ", '" & sGuid & "')"
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
   
   ' Insert the columns into the ASRSysViewColumns table on the server.

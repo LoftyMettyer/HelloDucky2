@@ -249,6 +249,7 @@ Private Function TableNew() As Boolean
   Dim sName As String
   Dim sTableName As String
   Dim sPhysicalTableName As String
+  Dim sGUID As String
   Dim sColCreate As String
   Dim rsColumns As ADODB.Recordset
   'Dim rsDiaryLinks As ADODB.Recordset
@@ -285,6 +286,7 @@ Private Function TableNew() As Boolean
     lngTableID = recTabEdit!TableID
     sTableName = recTabEdit!TableName
     sPhysicalTableName = "tbuser_" & sTableName
+    sGUID = IIf(IsNull(recTabEdit!GUID), Mid(CreateGUID(), 2, 36), Mid(recTabEdit!GUID, 8, 36))
 
     'MH20000728 Added Email
     sSQL = "INSERT INTO ASRSysTables (" & _
@@ -295,6 +297,7 @@ Private Function TableNew() As Boolean
              "recordDescExprID, " & _
              "DefaultEmailID, " & _
              "AuditInsert, AuditDelete, " & _
+             "[Locked], [Guid], " & _
              "ManualSummaryColumnBreaks, IsRemoteView, InsertTriggerDisabled, UpdateTriggerDisabled, DeleteTriggerDisabled, CopyWhenParentRecordIsCopied) " & _
            "VALUES (" & _
              lngTableID & ", '" & _
@@ -305,6 +308,7 @@ Private Function TableNew() As Boolean
              IIf(IsNull(recTabEdit!DefaultEmailID), 0, recTabEdit!DefaultEmailID) & ", " & _
              IIf(recTabEdit!AuditInsert = True, 1, 0) & ", " & _
              IIf(recTabEdit!AuditDelete = True, 1, 0) & ", " & _
+             IIf(recTabEdit!Locked, 1, 0) & ", '" & sGUID & "', " & _
              IIf(recTabEdit!ManualSummaryColumnBreaks, 1, 0) & "," & IIf(recTabEdit!IsRemoteView, 1, 0) & "," & _
              IIf(recTabEdit!InsertTriggerDisabled, 1, 0) & "," & IIf(recTabEdit!UpdateTriggerDisabled, 1, 0) & "," & IIf(recTabEdit!DeleteTriggerDisabled, 1, 0) & "," & _
              IIf(recTabEdit!CopyWhenParentRecordIsCopied, 1, 0) & ")"
@@ -409,11 +413,18 @@ Private Function TableNew() As Boolean
               'of code in as a temporary measure so that they can save changes but we
               'need to look into how this will effect the replication process.
               '(Trade Team were getting: "Incorrect type for Parameter").
-              If Not (sName = "locked" Or sName = "lastupdatedby" Or sName = "lastupdated") Then
-                If sName <> "msrepl_synctran_ts" Then
-                  If Not IsNull(recColEdit.Fields(sName).value) Then
-                    .Fields(iColumn).value = recColEdit.Fields(sName).value
-                  End If
+              If sName <> "msrepl_synctran_ts" Then
+                If Not IsNull(recColEdit.Fields(sName).value) Then
+                  
+                  Select Case recColEdit.Fields(sName).Type
+                    Case dbGUID
+                      .Fields(iColumn).value = "{" + Mid(recColEdit.Fields(sName).value, 8, 36) + "}"
+                    
+                    Case Else
+                      .Fields(iColumn).value = recColEdit.Fields(sName).value
+                  
+                  End Select
+                
                 End If
               End If
 

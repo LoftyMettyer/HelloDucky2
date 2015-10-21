@@ -194,6 +194,86 @@ PRINT 'Step - Branding'
 
 
 /* ------------------------------------------------------- */
+PRINT 'Step - Database Metadata locking'
+/* ------------------------------------------------------- */
+
+IF EXISTS(SELECT * FROM sys.objects WHERE name = 'ASRSysTables' AND type = 'V')
+BEGIN
+	EXECUTE sp_executeSQL N'DROP VIEW [ASRSysTables]';
+
+	EXEC sp_rename 'tbsys_tables', 'ASRSysTables';
+
+	EXECUTE sp_executeSQL N'ALTER TABLE ASRSysTables
+		ADD [Guid] uniqueidentifier,
+			[Locked] bit';
+
+	EXECUTE sp_executeSQL N'MERGE INTO ASRSysTables t
+		USING tbsys_scriptedobjects o ON o.ObjectType = 1 AND o.[targetid] = t.tableID
+		WHEN MATCHED THEN
+		UPDATE 
+			SET [Locked] = o.[Locked], [Guid] = o.[Guid];';
+
+END
+
+IF EXISTS(SELECT * FROM sys.objects WHERE name = 'ASRSysColumns' AND type = 'V')
+BEGIN
+	EXECUTE sp_executeSQL N'DROP VIEW [ASRSysColumns]';
+
+	EXEC sp_rename 'tbsys_columns', 'ASRSysColumns';
+
+	EXECUTE sp_executeSQL N'ALTER TABLE ASRSysColumns
+		ADD [Guid] uniqueidentifier,
+			[Locked] bit';
+
+	EXECUTE sp_executeSQL N'MERGE INTO ASRSysColumns c
+		USING tbsys_scriptedobjects o ON o.ObjectType = 2 AND o.[targetid] = c.ColumnID
+		WHEN MATCHED THEN
+		UPDATE 
+			SET [Locked] = o.[Locked], [Guid] = o.[Guid];';
+
+END
+
+
+IF EXISTS(SELECT * FROM sys.objects WHERE name = 'ASRSysViews' AND type = 'V')
+BEGIN
+	EXECUTE sp_executeSQL N'DROP VIEW [ASRSysViews]';
+
+	EXEC sp_rename 'tbsys_views', 'ASRSysViews';
+
+	EXECUTE sp_executeSQL N'ALTER TABLE ASRSysViews
+		ADD [Guid] uniqueidentifier,
+			[Locked] bit';
+
+	EXECUTE sp_executeSQL N'MERGE INTO ASRSysViews v
+		USING tbsys_scriptedobjects o ON o.ObjectType = 3 AND o.[targetid] = v.ViewId
+		WHEN MATCHED THEN
+		UPDATE 
+			SET [Locked] = o.[Locked], [Guid] = o.[Guid];';
+
+END
+
+
+IF EXISTS(SELECT * FROM sys.objects WHERE name = 'ASRSysWorkflows' AND type = 'V')
+BEGIN
+	EXECUTE sp_executeSQL N'DROP VIEW [ASRSysWorkflows]';
+
+	EXEC sp_rename 'tbsys_workflows', 'ASRSysWorkflows';
+
+	EXECUTE sp_executeSQL N'ALTER TABLE ASRSysWorkflows
+		ADD [Guid] uniqueidentifier,
+			[Locked] bit';
+
+	EXECUTE sp_executeSQL N'MERGE INTO ASRSysWorkflows w
+		USING tbsys_scriptedobjects o ON o.ObjectType = 10 AND o.[targetid] = w.Id
+		WHEN MATCHED THEN
+		UPDATE 
+			SET [Locked] = o.[Locked], [Guid] = o.[Guid];';
+
+END
+
+
+
+/* ------------------------------------------------------- */
 PRINT 'Step - Database Hardening'
 /* ------------------------------------------------------- */
 

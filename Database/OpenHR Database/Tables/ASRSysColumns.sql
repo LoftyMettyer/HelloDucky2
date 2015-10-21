@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[tbsys_columns](
+﻿CREATE TABLE [dbo].[ASRSysColumns](
 	[columnID] [int] NOT NULL,
 	[tableID] [int] NOT NULL,
 	[columnType] [smallint] NOT NULL,
@@ -69,6 +69,8 @@
 	[MaxOLESize] [int] NULL,
 	[AutoUpdateLookupValues] [bit] NULL,
 	[CalculateIfEmpty] [bit] NOT NULL,
+	[Guid] uniqueidentifier,
+	[Locked] bit,
  CONSTRAINT [PK_ASRSysColumns] PRIMARY KEY CLUSTERED 
 (
 	[columnID] ASC

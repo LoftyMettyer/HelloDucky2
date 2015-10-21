@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[tbsys_tables](
+﻿CREATE TABLE [dbo].[ASRSysTables](
 	[TableID] [int] NOT NULL,
 	[TableType] [smallint] NOT NULL,
 	[lastUpdated] [datetime] NULL,
@@ -14,6 +14,8 @@
     [UpdateTriggerDisabled] BIT NULL, 
     [DeleteTriggerDisabled] BIT NULL, 
     [CopyWhenParentRecordIsCopied] BIT NULL, 
+	[Guid] uniqueidentifier,
+	[Locked] bit,
     CONSTRAINT [PK_ASRSysTables] PRIMARY KEY CLUSTERED 
 (
 	[TableID] ASC

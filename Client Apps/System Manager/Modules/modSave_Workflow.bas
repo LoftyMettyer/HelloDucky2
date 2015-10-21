@@ -159,10 +159,13 @@ Private Function WorkflowNew() As Boolean
     .AddNew
     For iLoop = 0 To .Fields.Count - 1
       sName = .Fields(iLoop).Name
-      If Not (sName = "locked" Or sName = "lastupdatedby" Or sName = "lastupdated") Then
-        If Not IsNull(recWorkflowEdit.Fields(sName).value) Then
-          .Fields(iLoop).value = recWorkflowEdit.Fields(sName).value
-        End If
+      If Not IsNull(recWorkflowEdit.Fields(sName).value) Then
+        Select Case recWorkflowEdit.Fields(sName).Type
+          Case dbGUID
+            .Fields(iLoop).value = "{" + Mid(recWorkflowEdit.Fields(sName).value, 8, 36) + "}"
+          Case Else
+            .Fields(iLoop).value = recWorkflowEdit.Fields(sName).value
+        End Select
       End If
     Next iLoop
     .Update
