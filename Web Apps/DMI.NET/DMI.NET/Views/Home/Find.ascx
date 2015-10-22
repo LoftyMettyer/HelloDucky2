@@ -86,8 +86,6 @@
 					if (!IsMultiSelectionModeOn()) {
 						var thisWindow = OpenHR.activeWindowID();
 						window.top.menu_editRecord();
-						//setTimeout(function() { window.top.$('#' + thisWindow).dialog('close'); }, 1000);
-						window.top.$('#' + thisWindow).dialog('close');
 					}
 				}
 			});

@@ -621,7 +621,7 @@
 							width: newWidth,
 							height: newHeight,
 							position: position,
-							beforeClose: function(event, ui) {
+							beforeClose: function (event, ui) {
 								var hasChanged = menu_saveChanges('', true, false);
 								if (hasChanged === 0) {
 									// Prompt for navigation and redirect as required
@@ -639,6 +639,9 @@
 								});
 								//set this new screen to 'active'
 								window.top.$('#' + thisMwId).siblings(".ui-dialog-titlebar").removeClass('ui-state-disabled');
+							},
+							close: function () {
+								$(this).dialog('destroy').remove();
 							}
 						});
 
@@ -1704,9 +1707,7 @@
 	closeDialog = function (dialogId) {
 		window.top.$('#workframe').removeAttr('data-mwid');
 		window.top.$('#workframe').removeAttr('data-framesource');
-		window.top.$('#' + dialogId.replace("mwid", "iframe")).html('');	//clear contents before destroying dialog
-		window.top.$('#' + dialogId).dialog('destroy');
-		window.top.$('#' + dialogId).remove();
+		window.top.$('#' + dialogId.replace("mwid", "iframe")).remove();	//clear contents before destroying dialog
 		showDefaultRibbon();
 
 		//display the top window in the list.
