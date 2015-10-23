@@ -298,8 +298,6 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
           <Property Name="querystring" Type="varchar(max)" />
           <Property Name="pictureid" Type="int" />
           <Property Name="locked" Type="bit" Nullable="false" />
-          <Property Name="lastupdated" Type="datetime" />
-          <Property Name="lastupdatedby" Type="nvarchar" MaxLength="255" />
           <Property Name="HasTargetIdentifier" Type="bit" />
         </EntityType>
         <EntityContainer Name="npg_openhr8_2ModelStoreContainer">
@@ -497,8 +495,6 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
     [ASRSysWorkflows].[querystring] AS [querystring], 
     [ASRSysWorkflows].[pictureid] AS [pictureid], 
     [ASRSysWorkflows].[locked] AS [locked], 
-    [ASRSysWorkflows].[lastupdated] AS [lastupdated], 
-    [ASRSysWorkflows].[lastupdatedby] AS [lastupdatedby], 
     [ASRSysWorkflows].[HasTargetIdentifier] AS [HasTargetIdentifier]
     FROM [dbo].[ASRSysWorkflows] AS [ASRSysWorkflows]</DefiningQuery>
           </EntitySet>
@@ -773,8 +769,6 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
           <Property Name="querystring" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="pictureid" Type="Int32" />
           <Property Name="locked" Type="Boolean" Nullable="false" />
-          <Property Name="lastupdated" Type="DateTime" Precision="3" />
-          <Property Name="lastupdatedby" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="HasTargetIdentifier" Type="Boolean" />
         </EntityType>
         <EntityContainer Name="npg_openhr8_2Entities" annotation:LazyLoadingEnabled="true">
@@ -1062,8 +1056,6 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
                 <ScalarProperty Name="querystring" ColumnName="querystring" />
                 <ScalarProperty Name="pictureid" ColumnName="pictureid" />
                 <ScalarProperty Name="locked" ColumnName="locked" />
-                <ScalarProperty Name="lastupdated" ColumnName="lastupdated" />
-                <ScalarProperty Name="lastupdatedby" ColumnName="lastupdatedby" />
                 <ScalarProperty Name="HasTargetIdentifier" ColumnName="HasTargetIdentifier" />
               </MappingFragment>
             </EntityTypeMapping>

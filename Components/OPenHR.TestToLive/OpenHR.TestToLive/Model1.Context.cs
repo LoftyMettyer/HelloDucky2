@@ -15,9 +15,13 @@ namespace OpenHR.TestToLive
     
     public partial class npg_openhr8_2Entities : DbContext
     {
-        public npg_openhr8_2Entities()
-            : base("name=npg_openhr8_2Entities")
+        public npg_openhr8_2Entities(string connString)
+           //   : base("name=npg_openhr8_2Entities")
+            : base(connString)
         {
+           // var blah = System.Configuration.ConfigurationManager.ConnectionStrings["entityFrameworkConnection"].ConnectionString
+
+            //this.Database.Connection.ConnectionString = connString;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

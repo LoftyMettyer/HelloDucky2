@@ -11,20 +11,22 @@ namespace OpenHR.TestToLive
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class ASRSysWorkflow
     {
         public int id { get; set; }
+        [MaxLength(255)]
         public string name { get; set; }
+        [MaxLength(255)]
         public string description { get; set; }
         public bool enabled { get; set; }
         public Nullable<short> initiationtype { get; set; }
         public Nullable<int> basetable { get; set; }
+        [MaxLength(255)]
         public string querystring { get; set; }
         public Nullable<int> pictureid { get; set; }
         public bool locked { get; set; }
-        public Nullable<System.DateTime> lastupdated { get; set; }
-        public string lastupdatedby { get; set; }
         public Nullable<bool> HasTargetIdentifier { get; set; }
     }
 }

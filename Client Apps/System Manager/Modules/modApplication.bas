@@ -2234,7 +2234,7 @@ Public Function ImportDefinitions() As Boolean
 ' Validation to only enable if theer are no pending changes
 
 
-  objImport.Connection (gADOCon.ConnectionString)
+  objImport.Connection gsUserName, gsPassword, gsDatabaseName, gsServerName
   status = objImport.ImportDefinitions()
 
   ' Now log back out and in again to update all the access tables

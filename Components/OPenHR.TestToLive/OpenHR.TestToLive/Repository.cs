@@ -7,6 +7,9 @@ using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
 using OpenHR.TestToLive.Interfaces;
 using OpenHR.TestToLive.Enums;
+using System.Data.SqlClient;
+using System.Data.Entity.Core.EntityClient;
+using System.Data.Entity.Validation;
 
 namespace OpenHR.TestToLive
 {
@@ -15,17 +18,125 @@ namespace OpenHR.TestToLive
     public class Repository : IRepository
 	{
 
-        public void Connection(string connection)
+        private string _connection { get; set; }
+
+        public void Connection(string userName, string password, string databaseName, string serverName)
         {
-            // This needs to bind to the enity framework
+            var connection = new SqlConnection();
+
+            SqlConnectionStringBuilder sqlBuilder = new SqlConnectionStringBuilder();
+            sqlBuilder.DataSource = serverName;
+            sqlBuilder.InitialCatalog = databaseName;
+            sqlBuilder.IntegratedSecurity = false;
+            sqlBuilder.UserID = userName;
+            sqlBuilder.Password = password;
+
+            string providerString = sqlBuilder.ToString();
+
+            // Initialize the EntityConnectionStringBuilder.
+            EntityConnectionStringBuilder entityBuilder = new EntityConnectionStringBuilder();
+            entityBuilder.Provider = "System.Data.SqlClient";
+            entityBuilder.ProviderConnectionString = providerString;
+
+            // Set the Metadata location.
+            entityBuilder.Metadata = @"res://*/Model1.csdl|res://*/Model1.ssdl|res://*/Model1.msl";
+
+            _connection = entityBuilder.ToString();
         }
 
         public string ExportDefinition(int Id) {
-            return "<xml>DummyCode</xml>";
+
+            var liveDb = new npg_openhr8_2Entities(_connection);
+
+            var copiedObjects = new T2LClass();
+            ExtractAll(copiedObjects, liveDb, Id);
+
+            //---------------------------------------------------------------------------------------------------------------------------------
+            // Write all
+
+            LogData("Saving allworkflow.xml...", null);
+            ConfirmSize(copiedObjects);
+            DataContractSerializer AllWFSerializer = new DataContractSerializer(copiedObjects.GetType());
+
+            XmlWriter WFWriter = XmlWriter.Create(File.CreateText(string.Format("allworkflow.xml")));
+            AllWFSerializer.WriteObject(WFWriter, copiedObjects);
+            WFWriter.Flush();
+            WFWriter.Close();
+            LogData("Done", null);
+
+            return WFWriter.ToString();
         }
         
         public RepositoryStatus ImportDefinitions()
         {
+            var importObjects = new T2LClass();
+
+            var liveDb = new npg_openhr8_2Entities(_connection);
+
+            // Load the XML
+            LogData("Reading allworkflow.xml...", null);
+            DataContractSerializer AllWFSerializer = new DataContractSerializer(importObjects.GetType());
+            XmlReader WFReader = XmlReader.Create("allworkflow.xml");
+            importObjects = (T2LClass)AllWFSerializer.ReadObject(WFReader);
+            ConfirmSize(importObjects);
+
+            // Get the max existing WF id
+            int MaxWFId = GetMaxWFId(liveDb);
+            LogData("Max existing WF Id: {0}", MaxWFId);
+
+            // Get the imported WF id
+            int ImportedWFId = importObjects.AllWorkflows.First().id;
+
+            //AllLinks = new List<ASRSysWorkflowLinks>();
+            //AllElements = new List<ASRSysWorkflowElement>();
+            //AllColumns = new List<ASRSysWorkflowElementColumn>();
+            //AllValidations = new List<ASRSysWorkflowElementValidation>();
+            //AllExpressions = new List<ASRSysExpression>();
+            //AllComponents = new List<ASRSysExprComponent>();
+            //AllItems = new List<ASRSysWorkflowElementItem>();
+            //AllValues = new List<ASRSysWorkflowElementItemValue>();
+
+            // If the imported ID clashes with the existing id range, fixup all imported id's
+            if (ImportedWFId <= MaxWFId)
+            {
+                MaxWFId = BumpWorkflowIDs(importObjects, liveDb, MaxWFId);
+            }
+
+            // Assign the data lists back to the EF structures
+            liveDb.ASRSysWorkflows.Add(importObjects.AllWorkflows.First());
+            liveDb.ASRSysWorkflowLinks.AddRange(importObjects.AllLinks);
+            liveDb.ASRSysWorkflowElementValidations.AddRange(importObjects.AllValidations);
+            liveDb.ASRSysWorkflowElements.AddRange(importObjects.AllElements);
+            liveDb.ASRSysWorkflowElementItemValues.AddRange(importObjects.AllValues);
+            liveDb.ASRSysWorkflowElementItems.AddRange(importObjects.AllItems);
+            liveDb.ASRSysWorkflowElementColumns.AddRange(importObjects.AllColumns);
+            liveDb.ASRSysExpressions.AddRange(importObjects.AllExpressions);
+            liveDb.ASRSysExprComponents.AddRange(importObjects.AllComponents);
+            // And save
+
+
+            try
+            {
+                liveDb.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors
+                        .SelectMany(x => x.ValidationErrors)
+                        .Select(x => x.ErrorMessage);
+
+                // Join the list to a single string.
+                var fullErrorMessage = string.Join("; ", errorMessages);
+
+                // Combine the original exception message with the new one.
+                var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
+
+                // Throw a new DbEntityValidationException with the improved exception message.
+                //throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
+                return RepositoryStatus.Error;
+            }
+
             return RepositoryStatus.DefinitionsImported;
         }
 
@@ -45,33 +156,6 @@ namespace OpenHR.TestToLive
         // Class Definitions
         //=====================================================================================================================================
 
-        [Serializable()]
-		public partial class T2LClass
-		{
-			
-			public List<ASRSysWorkflow> AllWorkflows;
-			public List<ASRSysWorkflowLinks> AllLinks;
-			public List<ASRSysWorkflowElement> AllElements;
-			public List<ASRSysWorkflowElementColumn> AllColumns;
-			public List<ASRSysWorkflowElementValidation> AllValidations;
-			public List<ASRSysExpression> AllExpressions;
-			public List<ASRSysExprComponent> AllComponents;
-			public List<ASRSysWorkflowElementItem> AllItems;
-			public List<ASRSysWorkflowElementItemValue> AllValues;
-
-			public T2LClass()
-			{
-				AllWorkflows = new List<ASRSysWorkflow>();
-				AllLinks = new List<ASRSysWorkflowLinks>();
-				AllElements = new List<ASRSysWorkflowElement>();
-				AllColumns = new List<ASRSysWorkflowElementColumn>();
-				AllValidations = new List<ASRSysWorkflowElementValidation>();
-				AllExpressions = new List<ASRSysExpression>();
-				AllComponents = new List<ASRSysExprComponent>();
-				AllItems = new List<ASRSysWorkflowElementItem>();
-				AllValues = new List<ASRSysWorkflowElementItemValue>();
-			}
-		}
 
 		//=====================================================================================================================================
 		// Main
@@ -81,7 +165,7 @@ namespace OpenHR.TestToLive
 		{
 			T2LClass t2l = new T2LClass();
 
-			using (npg_openhr8_2Entities db = new npg_openhr8_2Entities())
+			using (npg_openhr8_2Entities db = new npg_openhr8_2Entities(""))
 			{
 
 				LogData("Loading all WF headers...",null);
@@ -572,8 +656,5 @@ namespace OpenHR.TestToLive
 			}
 		}
 
-		//---------------------------------------------------------------------------------------------------------------------------------------
-
-
-	}
+    }
 }

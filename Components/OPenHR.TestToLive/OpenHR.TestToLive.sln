@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHR.TestToLive", "OpenHR
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenHR.TestToLive.Setup", "OpenHR.TestToLive.Setup\OpenHR.TestToLive.Setup.vdproj", "{10002BC4-D6D9-4686-B167-0FD323AF3C37}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHR.TestToLive.Tests", "OpenHR.TestToLive.Tests\OpenHR.TestToLive.Tests.csproj", "{0191546F-6288-41E0-B6C8-A4EA2EC2C6F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,12 +23,16 @@ Global
 		{10002BC4-D6D9-4686-B167-0FD323AF3C37}.Debug|Any CPU.Build.0 = Debug
 		{10002BC4-D6D9-4686-B167-0FD323AF3C37}.Release|Any CPU.ActiveCfg = Release
 		{10002BC4-D6D9-4686-B167-0FD323AF3C37}.Release|Any CPU.Build.0 = Release
+		{0191546F-6288-41E0-B6C8-A4EA2EC2C6F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0191546F-6288-41E0-B6C8-A4EA2EC2C6F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0191546F-6288-41E0-B6C8-A4EA2EC2C6F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0191546F-6288-41E0-B6C8-A4EA2EC2C6F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
+		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath0 = .
@@ -36,5 +42,8 @@ Global
 		SccProjectUniqueName2 = OpenHR.TestToLive\\OpenHR.TestToLive.csproj
 		SccProjectName2 = OpenHR.TestToLive
 		SccLocalPath2 = OpenHR.TestToLive
+		SccProjectUniqueName3 = OpenHR.TestToLive.Tests\\OpenHR.TestToLive.Tests.csproj
+		SccProjectName3 = OpenHR.TestToLive.Tests
+		SccLocalPath3 = OpenHR.TestToLive.Tests
 	EndGlobalSection
 EndGlobal
