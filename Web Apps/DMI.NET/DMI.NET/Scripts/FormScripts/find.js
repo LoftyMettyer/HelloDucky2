@@ -825,26 +825,10 @@ function find_window_onload() {
 						.addClass("icon-step-forward")
 						.css('font-size', '20px');
 
-				//resize the grid to the height of its container.
-				var gridRowHeight = OpenHR.inIframe() ? $('#workframe').height() : $('#workframeset').height();
-				var pageTitleHeight = $('#row1').outerHeight();
-				var gridHeaderHeight = $('#findGridRow .ui-jqgrid-hdiv').outerHeight();
-				var gridFooterHeight = $('#findGridRow .ui-jqgrid-pager').outerHeight();
-				var footerMargin = 30;
-				var summaryRowHeight = 0;
 
-				if (menu_isSSIMode()) pageTitleHeight += 40; //bottom margin for SSI.
 
-				try {
-					summaryRowHeight = $('#row3').outerHeight();
-					if (summaryRowHeight > 0) summaryRowHeight += 30;
-					if (summaryRowHeight > (gridRowHeight * 0.35)) summaryRowHeight = (gridRowHeight * 0.35);
-				} catch (e) {
 
-				}
-				gridDefaultHeight = gridRowHeight - pageTitleHeight - gridHeaderHeight - gridFooterHeight - footerMargin - summaryRowHeight;
-
-				$("#findGridTable").jqGrid('setGridHeight', gridDefaultHeight);
+				resizeFindGrid();
 			}
 
 			//NOTE: may come in useful.
@@ -894,6 +878,35 @@ function find_window_onload() {
 
 }
 
+function resizeFindGrid() {
+	//resize the grid to the height of its container.
+	
+	var gridRowHeight = OpenHR.inIframe() ? $('body').height() : $('#workframeset').height();
+	var pageTitleHeight = $('#row1').outerHeight();
+	var gridHeaderHeight = $('#findGridRow .ui-jqgrid-hdiv').outerHeight();
+	var gridFooterHeight = $('#findGridRow .ui-jqgrid-pager').outerHeight();
+	var footerMargin = OpenHR.inIframe() ? 10 : 30;
+	var summaryRowHeight = 0;
+
+	if (menu_isSSIMode()) pageTitleHeight += 40; //bottom margin for SSI.
+
+	try {
+		summaryRowHeight = $('#row3').outerHeight();
+		if (summaryRowHeight > 0) summaryRowHeight += 30;
+		if (summaryRowHeight > (gridRowHeight * 0.35)) summaryRowHeight = (gridRowHeight * 0.35);
+	} catch (e) {
+
+	}
+	gridDefaultHeight = gridRowHeight - pageTitleHeight - gridHeaderHeight - gridFooterHeight - footerMargin - summaryRowHeight;
+
+	$("#findGridTable").jqGrid('setGridHeight', gridDefaultHeight);
+
+
+	var wfSetWidth = OpenHR.inIframe ? $('#workframe').width() : $('#workframeset').width();
+	var gridWidth = OpenHR.inIframe()? wfSetWidth -20 : wfSetWidth - 100;
+
+	$("#findGridTable").jqGrid('setGridWidth', gridWidth);
+}
 
 function saveRowToDatabase(rowid) {
 	if (saveThisRowToDatabase)

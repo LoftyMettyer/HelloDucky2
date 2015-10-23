@@ -62,6 +62,12 @@
 
 			setTimeout('gridBindKeys(false)', 300);
 
+			//Resize functionality
+			window.top.$('#' + OpenHR.activeWindowID()).on("dialogresizestop", function(event, ui) {
+				resizeFindGrid();
+			});
+
+
 		}
 	});
 
