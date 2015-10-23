@@ -147,8 +147,26 @@ function filteredAddClick() {
 
 	OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id) {
 		picklistdef_makeSelection("FILTER", id, '');
-	}, newWidth - 40, newHeight - 160, true, function () { frmUseful.txtChanged.value = 1; });
+	}, newWidth - 40, newHeight - 160, true);
+}
 
+//Display total record count
+function DisplayTotalRecordsCount() {
+
+	var previousRecordCount = $('#RecordCountDIV').html().replace(" Record(s)", "");
+	var totalRecordsCount = $("#ssOleDBGrid").getGridParam('reccount');
+	$('#RecordCountDIV').html(totalRecordsCount + " Record(s)");
+
+	// If save button is disabled and total record count is not empty(In case of first time load)
+	if ($('#mnutoolSaveReport').hasClass("disabled") && previousRecordCount != "") {
+
+		// IF filterAdd do not return a result then dont enable save button, enable otherwise
+		if (previousRecordCount == totalRecordsCount) { frmUseful.txtChanged.value = 0; }
+		else { frmUseful.txtChanged.value = 1; }
+
+		var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
+		menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) || (fViewing == true))));
+	}
 }
 
 function removeClick() {

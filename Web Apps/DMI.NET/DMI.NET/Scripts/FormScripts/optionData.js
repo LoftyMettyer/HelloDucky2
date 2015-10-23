@@ -761,8 +761,8 @@ function optiondata_onload() {
 				}
 			}
 
-			//Display the number of records
-			$('#RecordCountDIV').html($("#ssOleDBGrid").getGridParam('reccount') + " Record(s)");
+			//Display total record count
+			DisplayTotalRecordsCount();
 
 			if (frmOptionData.txtExpectedCount.value > iCount) {
 				if (iCount == 0) {
@@ -781,6 +781,21 @@ function optiondata_onload() {
 			}	
 
 			refreshControls();
+
+		
+
+			//if (dataCollection != null) {
+			//	debugger;
+			//	if ($('#mnutoolSaveReport').hasClass("disabled") === true) {
+			//		alert('I m in');
+			//	}
+			//	if (typeof ($('#mnutoolSaveReport').prop('disabled')) !== typeof (undefined)) {
+			//		if (frmOptionData.txtIsSaveButtonEnable.value) {
+			//			menu_toolbarEnableItem('mnutoolSaveReport', frmOptionData.txtIsSaveButtonEnable.value);
+			//		}
+			//		//menu_toolbarEnableItem('mnutoolSaveReport', frmOptionData.txtIsSaveButtonEnable.value);
+			//	}
+			//}
 
 			// Get menu.asp to refresh the menu.
 			menu_refreshMenu();
