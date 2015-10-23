@@ -67,6 +67,10 @@
 				resizeFindGrid();
 			});
 
+			//Set minimum dialog sizes
+			var dialogId = OpenHR.activeWindowID();
+			window.top.$('#' + dialogId).dialog("option", "minWidth", 500);	//500 is big enough to prevent overlap of editable grid icons
+			window.top.$('#' + dialogId).dialog("option", "minHeight", 450);	//keep it square-ish
 
 		}
 	});

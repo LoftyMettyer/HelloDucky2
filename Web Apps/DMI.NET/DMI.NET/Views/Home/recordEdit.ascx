@@ -866,6 +866,9 @@
 
 		OpenHR.setDatepickerLanguage();
 
+		//prevent resizing of recedit dialogs.
+		window.top.$('#' + dialogId).dialog("option", "resizable", false);
+
 	});
 
 </script>
