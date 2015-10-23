@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.MDIForm frmSysMgr 
@@ -1279,7 +1279,7 @@ Private Sub RefreshMenu_ScrDesigner(piFormCount As Integer)
     .Tools("ID_Cut").Enabled = fControlsExist
     .Tools("ID_Copy").Enabled = fControlsExist
     .Tools("ID_Paste").Enabled = (objScreen.ClipboardControlsCount > 0)
-    .Tools("ID_ScreenObjectDelete").Enabled = fControlsExist Or (objScreen.TabPages.Tabs.Count > 0)
+    .Tools("ID_ScreenObjectDelete").Enabled = fControlsExist Or (objScreen.tabPages.Tabs.Count > 0)
     .Tools("ID_ScreenSelectAll").Enabled = bFormHasControls
     .Tools("ID_Save").Enabled = objScreen.IsChanged
             
@@ -1559,7 +1559,7 @@ Private Sub RefreshMenu_WebFormDesigner(piFormCount As Integer)
     .Tools("ID_Cut").Enabled = fControlsExist And (Not objScreen.ReadOnly)
     .Tools("ID_Copy").Enabled = fControlsExist And (Not objScreen.ReadOnly)
     .Tools("ID_Paste").Enabled = (objScreen.ClipboardControlsCount > 0) And (Not objScreen.ReadOnly)
-    .Tools("ID_ScreenObjectDelete").Enabled = (fControlsExist And (Not objScreen.ReadOnly)) Or objScreen.TabPages.Tabs.Count > 0
+    .Tools("ID_ScreenObjectDelete").Enabled = (fControlsExist And (Not objScreen.ReadOnly)) Or objScreen.tabPages.Tabs.Count > 0
     .Tools("ID_ScreenSelectAll").Enabled = bFormHasControls And (Not objScreen.ReadOnly)
     .Tools("ID_mnuWFSave").Enabled = objScreen.IsChanged And (Not objScreen.ReadOnly)
             
@@ -1744,6 +1744,8 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_WorkflowMgr").Enabled = (piFormCount <= 1) And Application.WorkflowModule And Not gbLicenceExpired
     .Tools("ID_ViewMgr").Enabled = (piFormCount <= 1) And Not gbLicenceExpired
     .Tools("ID_MobileDesigner").Enabled = (piFormCount <= 1) And Application.MobileModule And Not gbLicenceExpired
+    .Tools("ID_ImportDefinitions").Enabled = (piFormCount <= 1) And Not gbLicenceExpired
+    
     .Tools("ID_SSIntranet").Enabled = (piFormCount <= 1) And Application.SelfServiceIntranetModule And Not gbLicenceExpired
     .Tools("ID_SaveChanges").Enabled = Application.Changed
              
@@ -1782,6 +1784,7 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_ViewMgr").Visible = True
     .Tools("ID_SSIntranet").Visible = True
     .Tools("ID_MobileDesigner").Visible = True
+    .Tools("ID_ImportDefinitions").Visible = True
     
     ' Configuration menu remove disabled menuitems
     .Tools("ID_TrainingBooking").Visible = True
@@ -2119,6 +2122,10 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_MobileDesigner"
       EditMobileDesigner
       
+    ' Import any definitions
+    Case "ID_ImportDefinitions"
+      ImportDefinitions
+      
     Case "ID_AccordTransfer"
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
@@ -2454,6 +2461,10 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     ' Edit the mobile definitions
     Case "ID_MobileDesigner"
       EditMobileDesigner
+        
+    ' Import any definitions
+    Case "ID_ImportDefinitions"
+      ImportDefinitions
         
     Case "ID_AccordTransfer"
       ' Call up the Payroll Tranfer module setup
@@ -2793,6 +2804,10 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_MobileDesigner"
       EditMobileDesigner
     
+    ' Import any definitions
+    Case "ID_ImportDefinitions"
+      ImportDefinitions
+    
     Case "ID_AccordTransfer"
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
@@ -3100,6 +3115,10 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_MobileDesigner"
       EditMobileDesigner
 
+    ' Import any definitions
+    Case "ID_ImportDefinitions"
+      ImportDefinitions
+
     Case "ID_AccordTransfer"
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
@@ -3406,6 +3425,10 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     ' Edit the mobile definitions
     Case "ID_MobileDesigner"
       EditMobileDesigner
+            
+    ' Import any definitions
+    Case "ID_ImportDefinitions"
+      ImportDefinitions
             
     Case "ID_AccordTransfer"
       ' Call up the Payroll Tranfer module setup
@@ -3756,6 +3779,10 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_MobileDesigner"
       EditMobileDesigner
 
+    ' Import any definitions
+    Case "ID_ImportDefinitions"
+      ImportDefinitions
+
     Case "ID_AccordTransfer"
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
@@ -4044,6 +4071,10 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     ' Edit the mobile definitions
     Case "ID_MobileDesigner"
       EditMobileDesigner
+
+    ' Import any definitions
+    Case "ID_ImportDefinitions"
+      ImportDefinitions
             
     Case "ID_AccordTransfer"
       ' Call up the Payroll Tranfer module setup
@@ -4440,6 +4471,10 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     ' Edit the mobile definitions
     Case "ID_MobileDesigner"
       EditMobileDesigner
+            
+    ' Import any definitions
+    Case "ID_ImportDefinitions"
+      ImportDefinitions
             
     Case "ID_AccordTransfer"
       ' Call up the Payroll Tranfer module setup

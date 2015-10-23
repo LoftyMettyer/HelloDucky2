@@ -25,6 +25,14 @@ Begin VB.Form frmWorkflowOpen
    ScaleHeight     =   6285
    ScaleWidth      =   5535
    WindowState     =   2  'Maximized
+   Begin VB.CommandButton cmdExport 
+      Caption         =   "Export..."
+      Height          =   400
+      Left            =   4245
+      TabIndex        =   15
+      Top             =   3180
+      Width           =   1200
+   End
    Begin VB.Frame fraDetails 
       Height          =   1125
       Left            =   150
@@ -638,7 +646,7 @@ Private Sub cmdCopy_Click()
        
         For iLoop = 1 To UBound(alngElementIDs, 2)
           If alngElementIDs(0, iLoop) = .Fields("ElementID") Then
-            recWorkflowElementItemEdit!elementID = alngElementIDs(1, iLoop)
+            recWorkflowElementItemEdit!elementid = alngElementIDs(1, iLoop)
             Exit For
           End If
         Next iLoop
@@ -795,7 +803,7 @@ Private Sub cmdCopy_Click()
        
         For iLoop = 1 To UBound(alngElementIDs, 2)
           If alngElementIDs(0, iLoop) = .Fields("ElementID") Then
-            recWorkflowElementColumnEdit!elementID = alngElementIDs(1, iLoop)
+            recWorkflowElementColumnEdit!elementid = alngElementIDs(1, iLoop)
             Exit For
           End If
         Next iLoop
@@ -845,7 +853,7 @@ Private Sub cmdCopy_Click()
 
         For iLoop = 1 To UBound(alngElementIDs, 2)
           If alngElementIDs(0, iLoop) = .Fields("ElementID") Then
-            recWorkflowElementValidationEdit!elementID = alngElementIDs(1, iLoop)
+            recWorkflowElementValidationEdit!elementid = alngElementIDs(1, iLoop)
             Exit For
           End If
         Next iLoop
@@ -1083,10 +1091,22 @@ ErrorTrap:
 
 End Sub
 
+Private Sub cmdExport_Click()
 
+  Dim fOK As Boolean
+  Dim iWorkflowId As Integer
+  Dim objTestToLive As OpenHR_TestToLive.Repository
+  Dim sXML As String
+  
+  iWorkflowId = WorkflowID
+  fOK = (iWorkflowId > 0)
 
+  If fOK Then
+    objTestToLive.Connection (gADOCon.ConnectionString)
+    sXML = objTestToLive.ExportDefinition(iWorkflowId)
+  End If
 
-
+End Sub
 
 Private Sub cmdModify_Click()
   ' Open the selected workflow.
@@ -1584,6 +1604,7 @@ Private Sub RefreshControls()
   cmdDelete.Enabled = fSelectionMade And Not mblnReadOnly
   cmdProperties.Enabled = fSelectionMade
   cmdPrint.Enabled = fSelectionMade
+  cmdExport.Enabled = fSelectionMade
   
   txtDesc.Text = sDescription
 
@@ -1663,6 +1684,7 @@ Private Sub Form_Load()
     cmdDelete.Enabled = False
     cmdProperties.Enabled = False
     cmdPrint.Enabled = False
+    cmdExport.Enabled = False
   End If
   
   'JPD 20070615 Fault 12293
@@ -1700,7 +1722,8 @@ Private Sub Form_Resize()
     cmdDelete.Left = cmdNew.Left
     cmdProperties.Left = cmdNew.Left
     cmdPrint.Left = cmdNew.Left
-    cmdOK.Left = cmdNew.Left
+    cmdExport.Left = cmdNew.Left
+    cmdOk.Left = cmdNew.Left
   End With
   
   With lstItems
@@ -1708,7 +1731,7 @@ Private Sub Form_Resize()
     txtDesc.Top = .Top + .Height + YGAP
   End With
     
-  cmdOK.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOK.Height
+  cmdOk.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOk.Height
     
   ' Get rid of the icon off the form
   RemoveIcon Me

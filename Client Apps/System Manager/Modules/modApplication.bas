@@ -2225,3 +2225,18 @@ ErrorTrap:
   GoTo TidyUpAndExit
 
 End Function
+
+Public Function ImportDefinitions() As Boolean
+
+  Dim objImport As OpenHR_TestToLive.Repository
+  Dim status As OpenHR_TestToLive.RepositoryStatus
+  
+' Validation to only enable if theer are no pending changes
+
+
+  objImport.Connection (gADOCon.ConnectionString)
+  status = objImport.ImportDefinitions()
+
+  ' Now log back out and in again to update all the access tables
+
+End Function
