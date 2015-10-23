@@ -31,8 +31,10 @@
 
 		$(document).on('blur', '.datepicker', function (sender) {
 			if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
-				OpenHR.modalMessage("Invalid date value entered");
-				$(sender.target.id).focus();
+			  event.preventDefault();
+			  OpenHR.modalMessage("Invalid date value entered");			  
+			  $(this).datepicker("setDate", new Date());
+			  $("#butPromptedSubmit").focus();
 			}
 		});
 		
