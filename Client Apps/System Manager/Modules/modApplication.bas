@@ -2228,7 +2228,7 @@ End Function
 
 Public Function ImportDefinitions() As Boolean
 
-  Dim objImport As OpenHR_TestToLive.Repository
+  Dim objImport As New OpenHR_TestToLive.Repository
   Dim status As OpenHR_TestToLive.RepositoryStatus
   
 ' Validation to only enable if theer are no pending changes

@@ -400,7 +400,7 @@ Private Sub cmdCopy_Click()
     recWorkflowEdit!ID = lngWorkflowID
     recWorkflowEdit!Changed = False
     recWorkflowEdit!perge = False
-    recWorkflowEdit!New = True
+    recWorkflowEdit!new = True
     recWorkflowEdit!Deleted = False
     recWorkflowEdit!Name = sWorkflowName
     recWorkflowEdit!Description = .Fields("description")
@@ -1095,7 +1095,7 @@ Private Sub cmdExport_Click()
 
   Dim fOK As Boolean
   Dim iWorkflowId As Integer
-  Dim objTestToLive As OpenHR_TestToLive.Repository
+  Dim objTestToLive As New OpenHR_TestToLive.Repository
   Dim sXML As String
   
   iWorkflowId = WorkflowID
@@ -1723,7 +1723,7 @@ Private Sub Form_Resize()
     cmdProperties.Left = cmdNew.Left
     cmdPrint.Left = cmdNew.Left
     cmdExport.Left = cmdNew.Left
-    cmdOk.Left = cmdNew.Left
+    cmdOK.Left = cmdNew.Left
   End With
   
   With lstItems
@@ -1731,7 +1731,7 @@ Private Sub Form_Resize()
     txtDesc.Top = .Top + .Height + YGAP
   End With
     
-  cmdOk.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOk.Height
+  cmdOK.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOK.Height
     
   ' Get rid of the icon off the form
   RemoveIcon Me
