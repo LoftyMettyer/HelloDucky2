@@ -3655,9 +3655,9 @@ function menu_editRecord() {
 	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
 	frmDataArea.txtDefaultCalcCols.value = CalculatedDefaultColumns();
 	frmDataArea.txtInsertUpdateDef.value = insertUpdateDef();
-			debugger;
-			//TODO: check this works:
-			frmDataArea.txtTimestamp.value = OpenHR.activeFrame().find("#txtRecEditTimeStamp").val();	// frmRecEditArea.ctlRecordEdit.timestamp;
+
+	//TODO: check this works:
+	frmDataArea.txtTimestamp.value = OpenHR.activeFrame().find("#txtRecEditTimeStamp").val();	// frmRecEditArea.ctlRecordEdit.timestamp;
 
 	data_refreshData();
 }
