@@ -39,6 +39,7 @@
 				Base Table :
 				<select class="width70 floatright" name="BaseTableID" id="BaseTableID" onchange="requestChangeReportBaseTable(event.target);"></select>
 				<input type="hidden" id="OriginalBaseTableID" />
+				<input type="hidden" id="IsBaseTableChange" value="False" />
 			</fieldset>
 
 			<div>
@@ -244,6 +245,10 @@
 
 		setViewAccess(psType, $("#" + psTable + "ViewAccess"), 'RW', '');
 
+		// Call setViewAccess() to enabled the group access grid after changing the base table plus hidden description 3 was selected.
+		if ($("#Description3ViewAccess").val() == "HD" && psType == "ALL" && $("#IsBaseTableChange").val() == "True") {
+			setViewAccess('CALC', $("#Description3ViewAccess"), 'RW', '');
+		}
 	}
 
 	// Enable OR Disable the DisplayTitleInReportHeader checkbox. This should be enabled only for Filters/Picklists selected for the Base Table on Definition Tab.
@@ -307,8 +312,8 @@
 			default:
 				displayType = "calculation";
 
-		}
-
+		}		
+			
 		accessControl.val(newAccess);
 
 		if (bResetGroupsToHidden && $("#IsForcedHidden").val() != "true") {
@@ -521,7 +526,8 @@
 		var columnCount = $("#SelectedColumns").getGridParam("reccount");
 		var eventCount = $("#CalendarEvents").getGridParam("reccount");
 		var sortOrderCount = $("#SortOrders").getGridParam("reccount");
-
+		$("#IsBaseTableChange").val("True");
+		
 		if (tableCount > 0 || columnCount > 0 || eventCount > 0 || sortOrderCount > 0) {
 			OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
 				if (answer == 6) { // Yes
@@ -531,7 +537,7 @@
 					$('#BaseTableID')[0].selectedIndex = $("#OriginalBaseTableID").val();
 				}
 			});
-		}		
+		}
 		else if ($("#txtReportType").val() == '@UtilityType.utlCrossTab' || $("#txtReportType").val() == '@UtilityType.utlNineBoxGrid')
 		{
 			OpenHR.modalPrompt("Changing the Base Table will reset all of the selected columns.<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
