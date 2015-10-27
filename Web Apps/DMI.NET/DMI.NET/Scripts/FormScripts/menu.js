@@ -576,7 +576,7 @@ function menu_MenuClick(sTool) {
 
 		//RecEdit - Find ---------------------------------------------------------------------------------------------------------------------------
 	if (sToolName == "mnutoolNewRecordFind") {
-			menu_newRecord();
+			menu_newRecord(true);
 		return;
 	}
 		
@@ -3435,7 +3435,7 @@ function menu_pausecomp(millis) {
 
 
 
-	function menu_newRecord() {		
+	function menu_newRecord(fromFind) {		
 	var sCurrentWorkPage;
 	var frmDataArea;
 	var frmRecEditArea;
@@ -3505,8 +3505,16 @@ function menu_pausecomp(millis) {
 			frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
 
 			frmWorkArea.txtGotoPage.value = "recordEdit";
-			if (menu_isSSIMode()) OpenHR.submitForm(frmWorkArea, "workframe");
-			else OpenHR.submitForm(frmWorkArea, "workframe", true, null, null, null, true);
+			if (menu_isSSIMode()) {
+				OpenHR.submitForm(frmWorkArea, "workframe");
+			} else {
+				OpenHR.submitForm(frmWorkArea, "workframe", true, null, null, null, true);
+				if (fromFind) {
+					//kill calling find window.
+					var activeWindowId = OpenHR.activeWindowID();
+					OpenHR.closeDialog(activeWindowId);
+				}
+			}
 
 		}
 	}
