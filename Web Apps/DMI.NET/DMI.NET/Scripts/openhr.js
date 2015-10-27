@@ -638,8 +638,11 @@
 								//set this new screen to 'active'
 								window.top.$('#' + thisMwId).siblings(".ui-dialog-titlebar").removeClass('ui-state-disabled');
 							},
-							close: function () {
-								$(this).dialog('destroy').remove();
+							close: function () {								
+								try {
+									$(this).dialog('destroy').remove();
+								}
+								catch (e) { }
 							}
 						});
 
@@ -1712,7 +1715,10 @@
 		window.top.$('#workframe').removeAttr('data-framesource');
 		window.top.$('#' + dialogId.replace("mwid", "iframe")).remove();	//clear contents before destroying dialog
 		showDefaultRibbon();
-
+		try {
+			$("#" + dialogId).dialog('destroy').remove();
+		}
+		catch (e) { }
 		//display the top window in the list.
 		var windowList = OpenHR.listOpenWindows();
 		if (windowList.length > 0) {

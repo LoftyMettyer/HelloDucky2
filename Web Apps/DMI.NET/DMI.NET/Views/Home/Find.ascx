@@ -94,8 +94,7 @@
 			$("#findGridTable").jqGrid("setGridParam", {
 				ondblClickRow: function (rowID) {
 					if (!IsMultiSelectionModeOn()) {
-						var thisWindow = OpenHR.activeWindowID();
-						window.top.menu_editRecord();
+						window.top.menu_editRecord(true);
 					}
 				}
 			});
@@ -106,7 +105,7 @@
 						return;
 					}
 
-					window.top.menu_editRecord();
+					window.top.menu_editRecord(true);
 				}
 			});
 

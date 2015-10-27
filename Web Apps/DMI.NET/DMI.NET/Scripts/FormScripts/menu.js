@@ -586,7 +586,7 @@ function menu_MenuClick(sTool) {
 	}
 		
 	if (sToolName == "mnutoolEditRecordFind") {
-			menu_editRecord();
+			menu_editRecord(true);
 		return;
 	}
 		
@@ -3588,7 +3588,7 @@ function menu_selectedRecordID() {
 }
 
 
-function menu_editRecord() {
+function menu_editRecord(fromFind) {
 	var lngRecordID;
 	var frmWorkArea;
 	var frmFindArea;
@@ -3596,31 +3596,41 @@ function menu_editRecord() {
 	lngRecordID = menu_selectedRecordID();
 
 	if (lngRecordID > 0) {
-	menu_ShowWait("Loading screen...");
-	menu_disableMenu();
+		menu_ShowWait("Loading screen...");
+		menu_disableMenu();
 
-	// Submit the current "workframe" form, and then load the required record Edit page.
-	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
-	frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
+		// Submit the current "workframe" form, and then load the required record Edit page.
+		frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
+		frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
 
-	frmWorkArea.txtAction.value = "LOAD";
-	frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
-	frmWorkArea.txtGotoViewID.value = frmFindArea.txtCurrentViewID.value;
-	frmWorkArea.txtGotoScreenID.value = frmFindArea.txtCurrentScreenID.value;
-	frmWorkArea.txtGotoOrderID.value = frmFindArea.txtCurrentOrderID.value;
-	frmWorkArea.txtGotoRecordID.value = lngRecordID;
-	frmWorkArea.txtGotoOriginalRecordID.value = lngRecordID;
-	frmWorkArea.txtGotoParentTableID.value = frmFindArea.txtCurrentParentTableID.value;
-	frmWorkArea.txtGotoParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
-	frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
-	frmWorkArea.txtGotoFilterDef.value = frmFindArea.txtFilterDef.value;
-	frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
+		frmWorkArea.txtAction.value = "LOAD";
+		frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
+		frmWorkArea.txtGotoViewID.value = frmFindArea.txtCurrentViewID.value;
+		frmWorkArea.txtGotoScreenID.value = frmFindArea.txtCurrentScreenID.value;
+		frmWorkArea.txtGotoOrderID.value = frmFindArea.txtCurrentOrderID.value;
+		frmWorkArea.txtGotoRecordID.value = lngRecordID;
+		frmWorkArea.txtGotoOriginalRecordID.value = lngRecordID;
+		frmWorkArea.txtGotoParentTableID.value = frmFindArea.txtCurrentParentTableID.value;
+		frmWorkArea.txtGotoParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
+		frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
+		frmWorkArea.txtGotoFilterDef.value = frmFindArea.txtFilterDef.value;
+		frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
 
-	frmWorkArea.txtGotoPage.value = "recordEdit";
+		frmWorkArea.txtGotoPage.value = "recordEdit";
 
-		if (menu_isSSIMode()) OpenHR.submitForm(frmWorkArea, "workframe");
-		else OpenHR.submitForm(frmWorkArea, "workframe", true, null, null, null, true);
-}
+		if (menu_isSSIMode()) {
+			OpenHR.submitForm(frmWorkArea, "workframe");
+		}
+		else {
+			OpenHR.submitForm(frmWorkArea, "workframe", true, null, null, null, true);
+			if (fromFind) {
+				//kill calling find window.
+				var activeWindowId = OpenHR.activeWindowID();
+				OpenHR.closeDialog(activeWindowId);
+			}
+		}
+
+	}
 }
 
 	function menu_deleteRecord() {
