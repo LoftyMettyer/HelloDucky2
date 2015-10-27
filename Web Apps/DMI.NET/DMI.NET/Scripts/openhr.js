@@ -582,8 +582,6 @@
 						$frame.find("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
 					});
 				} else {
-					//floatWindow = true	
-
 					var multiwindowid;
 					if (reuseWindow) {
 						//reuse the active window (reloading after data change)
@@ -659,11 +657,17 @@
 					iframe = (iframe.contentWindow) ? iframe.contentWindow : (iframe.contentDocument.document) ? iframe.contentDocument.document : iframe.contentDocument;
 					iframe.document.open();
 					//Populate the iframe with the AJAX response
-					iframe.document.write("<div id='workframe' name='mwid_" + multiwindowid + "' class='absolutefull'>" + html +
-						"<scri" + "pt>window.top.OpenHR.setupMwIframe(" + multiwindowid + ", $('#workframe').attr('data-framesource'), $('.pageTitle').text());</scr" + "ipt>" +
+					iframe.document.write("<div id='workframe' name='mwid_" + multiwindowid + "' class='absolutefull'>" +
+						html +
+						"<script>window.top.OpenHR.setupMwIframe(" + multiwindowid + ", $('#workframe').attr('data-framesource'), $('.pageTitle').text());<\/script>" +
 						"</div>");
 					iframe.document.close();
 
+					//remove 'please wait' spinner
+					//NB: This is where an iframe has completely loaded all content.
+					window.top.$('#iframe_' + multiwindowid).load(function() {
+						window.top.$('body').removeClass('loading');
+					});
 				}
 
 				if (typeof followOnFunctionName !== "undefined" && followOnFunctionName !== null) {
@@ -1571,7 +1575,7 @@
 		}
 	},
 
-	setupMwIframe = function (iFrameId, framesource, pageTitle) {
+	setupMwIframe = function (iFrameId, framesource, pageTitle) {		
 		//move the page title to the modal dialog title
 		$('#mwid_' + iFrameId).dialog('option', 'title', pageTitle);
 		$('#iframe_' + iFrameId).contents().find('.pageTitleDiv').hide();
@@ -1604,7 +1608,6 @@
 
 
 		//Add a click event to the dialog		
-		//TODO: Need to prevent focus on clicked element. And support dragging!!
 		$('#mwid_' + iFrameId).parent('.ui-dialog, .ui-dialog-content').on('mousedown', function (events) {
 			window.top.window.isDragging = false;
 		})
@@ -1634,7 +1637,7 @@
 
 			}
 		});
-
+	
 	},
 
 	activateDialog = function (iFrameId) {
@@ -1745,6 +1748,18 @@
 
 	setWorkFrameDialogsVisible = function(visibility) {
 		window.top.$('[id^="mwid_"]').parent().toggle(visibility);
+	},
+
+	activeIFrameID = function () {
+		var windowList = listOpenWindows();
+		var result = windowList.filter(function (item) {
+			return (item.active === true);
+		});
+
+		if (result) {
+			if (result.length > 0) return result[0].id.replace('mwid_', 'iframe_');
+		}
+		return '';
 	}
 
 	window.OpenHR = {
@@ -1813,7 +1828,8 @@
 		closeDialog: closeDialog,
 		populateSwitchWindows: populateSwitchWindows,
 		getIframePageTitle: getIframePageTitle,
-		setWorkFrameDialogsVisible: setWorkFrameDialogsVisible
+		setWorkFrameDialogsVisible: setWorkFrameDialogsVisible,
+		activeIFrameID: activeIFrameID
 	};
 
 })(window, jQuery);

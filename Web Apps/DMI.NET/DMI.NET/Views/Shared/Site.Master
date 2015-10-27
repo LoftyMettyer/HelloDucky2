@@ -448,9 +448,23 @@
 			});
 
 			$(document).ajaxStop(function () {
+
+				//remove the 'please wait' spinner only if all active iFrames have completed loading.
+				var iframe = document.getElementById(OpenHR.activeIFrameID());
+				if (iframe) {
+					var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+					// Check if loading is complete
+					if (iframeDoc.readyState !== 'complete') {
+						return true;
+					}
+				}
+				
+				//Ready to close spinner.
 				$('#txtProgressMessage').val('Please wait...');
 				$("body").removeClass("loading");
 				setTimeout('updateProgressMsg()', 50);
+
 			});
 
 		});
