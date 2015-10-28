@@ -1586,22 +1586,22 @@ function menu_refreshMenu() {
 
 			if (frmData.txtRecordDescription.value.length > 0) {
 				sCaption = frmData.txtRecordDescription.value;
-					if (OpenHR.activeFrame().find('#RecordEdit_PageTitle')) {
+				if (OpenHR.activeFrame().find('#RecordEdit_PageTitle')) {
 					var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
-						OpenHR.activeFrame().find('#RecordEdit_PageTitle').html(frmRecordEditForm.txtOriginalPageTitle.value + ' - ' + sCaption);
+					OpenHR.activeFrame().find('#RecordEdit_PageTitle').html(frmRecordEditForm.txtOriginalPageTitle.value + ' - ' + sCaption);
 				}
 			}
 		}
 		else {
 			sCaption = "New Record";
 			menu_SetmnutoolRecordPositionCaption(sCaption);
-				if (OpenHR.activeFrame().find('#RecordEdit_PageTitle')) {
+			if (OpenHR.activeFrame().find('#RecordEdit_PageTitle')) {
 				frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
-					OpenHR.activeFrame().find('#RecordEdit_PageTitle').html(frmRecordEditForm.txtOriginalPageTitle.value + ' - ' + sCaption);
+				OpenHR.activeFrame().find('#RecordEdit_PageTitle').html(frmRecordEditForm.txtOriginalPageTitle.value + ' - ' + sCaption);
 			}
 			menu_toolbarEnableItem('mnutoolChangeOrderRecord', true);
 		}
-		
+
 		menu_setVisibleMenuItem("mnutoolHistory", true);
 
 		//dynamically created function, found in menu.ascx...
@@ -2603,116 +2603,130 @@ function menu_loadPage(psPage) {
 	}
 
 	function menu_loadRecordEditPage(psToolName) {
-	var lngTableID;
-	var lngViewID;
-	var lngScreenID;
-	var sSubString;
-	var sLineage;
-	var frmWorkArea;
-	var frmRecEdit;
-	var frmData;
-	var iIndex;
-	var sToolKey;
+		var lngTableID;
+		var lngViewID;
+		var lngScreenID;
+		var sSubString;
+		var sLineage;
+		var frmWorkArea;
+		var frmRecEdit;
+		var frmData;
+		var iIndex;
+		var sToolKey;
 
-	var frmMenuInfo = $("#frmMenuInfo")[0].children;
+		var frmMenuInfo = $("#frmMenuInfo")[0].children;
 
-	menu_ShowWait("Loading screen...");
-	menu_disableMenu();
-	
-	// Get the table, view and screen info from the tool name.
-	sSubString = psToolName.substr(3);
-	iIndex = sSubString.indexOf("_");
-	lngTableID = sSubString.substr(0, iIndex);
-	sSubString = sSubString.substr(iIndex + 1);
-	iIndex = sSubString.indexOf("_");
-	lngViewID = sSubString.substr(0, iIndex);
-	lngScreenID = sSubString.substr(iIndex + 1);
+		menu_ShowWait("Loading screen...");
+		menu_disableMenu();
 
-	// Submit the current "workframe" form, and then load the required record Edit page.
-	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
-	frmWorkArea.txtGotoTableID.value = lngTableID;
-	frmWorkArea.txtGotoViewID.value = lngViewID;
-	frmWorkArea.txtGotoScreenID.value = lngScreenID;
-	frmWorkArea.txtGotoOrderID.value = 0;
-	frmWorkArea.txtGotoRecordID.value = 0;
-	
-	sToolKey = psToolName.substr(0, 3);
-	if (sToolKey == "HT_") {
-	frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
-	frmWorkArea.txtGotoParentTableID.value = frmRecEdit.txtCurrentTableID.value;
-	frmData = OpenHR.getForm("dataframe", "frmData");
-	frmWorkArea.txtGotoParentRecordID.value = frmData.txtRecordID.value;
+		// Get the table, view and screen info from the tool name.
+		sSubString = psToolName.substr(3);
+		iIndex = sSubString.indexOf("_");
+		lngTableID = sSubString.substr(0, iIndex);
+		sSubString = sSubString.substr(iIndex + 1);
+		iIndex = sSubString.indexOf("_");
+		lngViewID = sSubString.substr(0, iIndex);
+		lngScreenID = sSubString.substr(iIndex + 1);
 
-	sLineage = frmRecEdit.txtCurrentTableID.value +
-	"_" + frmRecEdit.txtCurrentViewID.value +
-	"_" + frmRecEdit.txtCurrentScreenID.value +
-	"_" + frmRecEdit.txtCurrentOrderID.value +
-	"_" + frmData.txtRecordID.value +
-	"_" + frmData.txtParentTableID.value +
-	"_" + frmData.txtParentRecordID.value + ":" +
-	frmRecEdit.txtLineage.value;
-}
-	else {
-	frmWorkArea.txtGotoParentTableID.value = 0;
-	frmWorkArea.txtGotoParentRecordID.value = 0;
-	sLineage = "";
-}
+		// Submit the current "workframe" form, and then load the required record Edit page.
+		frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
+		frmWorkArea.txtGotoTableID.value = lngTableID;
+		frmWorkArea.txtGotoViewID.value = lngViewID;
+		frmWorkArea.txtGotoScreenID.value = lngScreenID;
+		frmWorkArea.txtGotoOrderID.value = 0;
+		frmWorkArea.txtGotoRecordID.value = 0;
 
-	if ((sToolKey == "PT_")
-	|| (sToolKey == "PV_")) {
-	// PT_ = primary table
-		// PV_ = primary table view
-	if (frmMenuInfo.txtPrimaryStartMode.value == 1) {
-	frmWorkArea.txtAction.value = "NEW";
-}
-	else {
-	frmWorkArea.txtAction.value = "";
-}
-}
-	else {					
-	if (sToolKey == "TS_") {
-	// TS_ = Table screen
-	if (frmMenuInfo.txtLookupStartMode.value == 1) {
-	frmWorkArea.txtAction.value = "NEW";
-}
-	else {
-	frmWorkArea.txtAction.value = "";
-}
-}
-	else {				
-	if (sToolKey == "QE_") {
-	// QE_ = quick entry screen
-	if (frmMenuInfo.txtQuickAccessStartMode.value == 1) {
-	frmWorkArea.txtAction.value = "NEW";
-}
-	else {
-	frmWorkArea.txtAction.value = "";
-}
-}
-	else {	
-	if (sToolKey == "HT_") {										
-	// HT_ = history table
-	if (frmMenuInfo.txtHistoryStartMode.value == 1) {
-	frmWorkArea.txtAction.value = "NEW";
-}
-	else {
-	frmWorkArea.txtAction.value = "";
-}
-}				
-	else {
-	frmWorkArea.txtAction.value = "";
-}
-}
-}
-}
-	
-	frmWorkArea.txtGotoFilterDef.value = "";
-	frmWorkArea.txtGotoFilterSQL.value = "";
-	frmWorkArea.txtGotoLineage.value = sLineage;
-	frmWorkArea.txtGotoPage.value = "recordEdit";
-	if (menu_isSSIMode()) OpenHR.submitForm(frmWorkArea, "workframe");
-	else OpenHR.submitForm(frmWorkArea, "workframe", true, null, null, null, true);
-}
+		sToolKey = psToolName.substr(0, 3);
+		if (sToolKey == "HT_") {
+			//Check if this history screen is already open, only one per parent allowed.
+			var windowList = OpenHR.listOpenWindows();
+			var result = windowList.filter(function (item) {
+				return (item.screenid === lngScreenID && item.viewid === lngViewID);
+			});
+
+			if (result) {
+				if (result.length > 0) {
+					//just give focus.
+					OpenHR.activateDialog(result[0].windowNumber);
+					return true;
+				}
+			}
+
+			frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
+			frmWorkArea.txtGotoParentTableID.value = frmRecEdit.txtCurrentTableID.value;
+			frmData = OpenHR.getForm("dataframe", "frmData");
+			frmWorkArea.txtGotoParentRecordID.value = frmData.txtRecordID.value;
+
+			sLineage = frmRecEdit.txtCurrentTableID.value +
+			"_" + frmRecEdit.txtCurrentViewID.value +
+			"_" + frmRecEdit.txtCurrentScreenID.value +
+			"_" + frmRecEdit.txtCurrentOrderID.value +
+			"_" + frmData.txtRecordID.value +
+			"_" + frmData.txtParentTableID.value +
+			"_" + frmData.txtParentRecordID.value + ":" +
+			frmRecEdit.txtLineage.value;
+		}
+		else {
+			frmWorkArea.txtGotoParentTableID.value = 0;
+			frmWorkArea.txtGotoParentRecordID.value = 0;
+			sLineage = "";
+		}
+
+		if ((sToolKey == "PT_")
+		|| (sToolKey == "PV_")) {
+			// PT_ = primary table
+			// PV_ = primary table view
+			if (frmMenuInfo.txtPrimaryStartMode.value == 1) {
+				frmWorkArea.txtAction.value = "NEW";
+			}
+			else {
+				frmWorkArea.txtAction.value = "";
+			}
+		}
+		else {
+			if (sToolKey == "TS_") {
+				// TS_ = Table screen
+				if (frmMenuInfo.txtLookupStartMode.value == 1) {
+					frmWorkArea.txtAction.value = "NEW";
+				}
+				else {
+					frmWorkArea.txtAction.value = "";
+				}
+			}
+			else {
+				if (sToolKey == "QE_") {
+					// QE_ = quick entry screen
+					if (frmMenuInfo.txtQuickAccessStartMode.value == 1) {
+						frmWorkArea.txtAction.value = "NEW";
+					}
+					else {
+						frmWorkArea.txtAction.value = "";
+					}
+				}
+				else {
+					if (sToolKey == "HT_") {
+						// HT_ = history table
+						if (frmMenuInfo.txtHistoryStartMode.value == 1) {
+							frmWorkArea.txtAction.value = "NEW";
+						}
+						else {
+							frmWorkArea.txtAction.value = "";
+						}
+					}
+					else {
+						frmWorkArea.txtAction.value = "";
+					}
+				}
+			}
+		}
+
+		frmWorkArea.txtGotoFilterDef.value = "";
+		frmWorkArea.txtGotoFilterSQL.value = "";
+		frmWorkArea.txtGotoLineage.value = sLineage;
+		frmWorkArea.txtGotoPage.value = "recordEdit";
+		if (menu_isSSIMode()) OpenHR.submitForm(frmWorkArea, "workframe");
+		else OpenHR.submitForm(frmWorkArea, "workframe", true, null, null, null, true);
+	}
 
 	function menu_loadFindPage() {
 
@@ -2798,6 +2812,20 @@ function menu_loadPage(psPage) {
 	frmWorkArea.txtSelectedRecordsInFindGrid.value = "";
 
 	if (psToolName.substr(0, 3) == "HT_") {
+		//Check if this history screen is already open, only one per parent allowed.
+		var windowList = OpenHR.listOpenWindows();
+		var result = windowList.filter(function (item) {
+			return (item.screenid === lngScreenID && item.viewid === lngViewID);
+		});
+
+		if (result) {
+			if (result.length > 0) {
+				//just give focus.
+				OpenHR.activateDialog(result[0].windowNumber);
+				return true;
+			}
+		}
+		
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 		frmFindForm = OpenHR.getForm("workframe", "frmFindForm");
 

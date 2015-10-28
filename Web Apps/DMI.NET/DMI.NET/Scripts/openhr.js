@@ -596,6 +596,14 @@
 						window.top.$('#workframeset').append('<div id="mwid_' + multiwindowid + '"><iframe frameborder="0" style="width: 100%; height: 100%;padding: 0;" id="iframe_' + multiwindowid + '"/></div>');
 					}
 
+					//set parent form id. 					
+					var parentFormId = OpenHR.activeWindowID();
+					//if this parent has a parent use it.
+					var parentsParentFormId = $('#' + parentFormId).attr('data-parentformid');
+					if (parentsParentFormId) {
+						if (parentsParentFormId !== "") parentFormId = parentsParentFormId;
+					}
+
 					var thisMwId = 'mwid_' + multiwindowid;
 
 					var newHeight = screen.height / 2;
@@ -666,9 +674,17 @@
 						"</div>");
 					iframe.document.close();
 
-					//remove 'please wait' spinner
-					//NB: This is where an iframe has completely loaded all content.
-					window.top.$('#iframe_' + multiwindowid).load(function() {
+					window.top.$('#iframe_' + multiwindowid).load(function () {						
+						//NB: This is where an iframe has completely loaded all content.
+
+						//get screen type and assign parent id - parentFormId
+						if (OpenHR.getScreenType('mwid_' + multiwindowid) === "history") {
+							$(this).parent().attr('data-parentFormID', parentFormId);
+						} else {
+							$(this).parent().attr('data-parentFormID', "");
+						}
+						
+						//remove 'please wait' spinner
 						window.top.$('body').removeClass('loading');
 					});
 				}
@@ -1676,6 +1692,15 @@
 		window.top.$('div[role="dialog"][class*="mwid_"]').each(function () {
 			var active = (!$(this).find('.ui-dialog-titlebar').hasClass('ui-state-disabled'));
 			var classList = $(this).attr('class').split(' ');
+			var screenId = 0;
+			var viewId = 0;						
+
+			try {
+				screenId = $(this).find('iframe').contents().find('#workframe').find('#txtCurrentScreenID').val();
+				viewId = $(this).find('iframe').contents().find('#workframe').find('#txtCurrentViewID').val();	//todo: should this be tableID?				
+			}
+			catch (e) { }
+
 			var idvar;
 			var windowNumber;
 			$.each(classList, function (i, v) {
@@ -1685,7 +1710,9 @@
 				}
 			});
 
-			idList.push({ windowNumber: windowNumber, id: idvar, active: active });
+			var screenType = OpenHR.getScreenType('mwid_' + windowNumber);
+
+			idList.push({ windowNumber: windowNumber, id: idvar, active: active, screenid: screenId, viewid: viewId, screentype: screenType });
 
 		});
 
@@ -1707,6 +1734,12 @@
 	activeFrame = function () {
 		var activeIframeId = OpenHR.activeWindowID().replace('mwid', 'iframe');
 		if (activeIframeId !== "") return window.top.$('#' + activeIframeId).contents();
+		return $('body');
+	},
+
+	activeDialog = function () {
+		var activeDialogId = OpenHR.activeWindowID();
+		if (activeDialogId !== "") return window.top.$('#' + activeDialogId);
 		return $('body');
 	},
 
@@ -1748,8 +1781,8 @@
 
 	getIframePageTitle = function (iFrameNumber) {
 		var pageTitle = window.top.$('#iframe_' + iFrameNumber).contents().find('.pageTitle').text();
-		var descriptor = (window.top.$('#iframe_' + iFrameNumber).contents().find('#workframe').attr('data-framesource') == "FIND" ? " Find - " : "");
-		return descriptor + pageTitle;
+			var descriptor = (window.top.$('#iframe_' + iFrameNumber).contents().find('#workframe').attr('data-framesource') == "FIND" ? " Find - " : "");
+			return descriptor + pageTitle;
 	},
 
 	setWorkFrameDialogsVisible = function(visibility) {
@@ -1766,6 +1799,18 @@
 			if (result.length > 0) return result[0].id.replace('mwid_', 'iframe_');
 		}
 		return '';
+	},
+
+	getScreenType = function (mwid) {
+		var screenType = "";
+		try {
+			var parentTableId = Number($('#' + mwid).find('iframe').contents().find('#workframe').find('#txtCurrentParentTableID').val());
+			if (parentTableId === 0) screenType = "parent";
+			else if (parentTableId > 0) screenType = "history";
+		}
+		catch (e) { return "" }
+
+		return screenType;
 	}
 
 	window.OpenHR = {
@@ -1835,7 +1880,9 @@
 		populateSwitchWindows: populateSwitchWindows,
 		getIframePageTitle: getIframePageTitle,
 		setWorkFrameDialogsVisible: setWorkFrameDialogsVisible,
-		activeIFrameID: activeIFrameID
+		activeIFrameID: activeIFrameID,
+		getScreenType: getScreenType,
+		activeDialog: activeDialog
 	};
 
 })(window, jQuery);
