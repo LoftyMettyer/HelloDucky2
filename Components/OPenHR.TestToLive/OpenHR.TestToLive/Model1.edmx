@@ -71,7 +71,6 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflowElementColumns' do
             <PropertyRef Name="ID" />
             <PropertyRef Name="ElementID" />
             <PropertyRef Name="ColumnID" />
-            <PropertyRef Name="ValueType" />
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="ElementID" Type="int" Nullable="false" />
@@ -90,7 +89,6 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflowElementItems' does
           <Key>
             <PropertyRef Name="ID" />
             <PropertyRef Name="ElementID" />
-            <PropertyRef Name="ItemType" />
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="ElementID" Type="int" Nullable="false" />
@@ -186,9 +184,6 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflowElements' does not
           <Key>
             <PropertyRef Name="ID" />
             <PropertyRef Name="WorkflowID" />
-            <PropertyRef Name="Type" />
-            <PropertyRef Name="LeftCoord" />
-            <PropertyRef Name="TopCoord" />
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="WorkflowID" Type="int" Nullable="false" />
@@ -249,6 +244,7 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflowElements' does not
           <Property Name="Attachment_DBElement" Type="varchar" MaxLength="200" />
           <Property Name="Attachment_DBValue" Type="varchar" MaxLength="200" />
           <Property Name="UseAsTargetIdentifier" Type="bit" />
+          <Property Name="RequiresAuthentication" Type="bit" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflowElementValidations' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -257,7 +253,6 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflowElementValidations
             <PropertyRef Name="ID" />
             <PropertyRef Name="ElementID" />
             <PropertyRef Name="ExprID" />
-            <PropertyRef Name="Type" />
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="ElementID" Type="int" Nullable="false" />
@@ -271,8 +266,6 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflowLinks' does not ha
           <Key>
             <PropertyRef Name="ID" />
             <PropertyRef Name="WorkflowID" />
-            <PropertyRef Name="StartElementID" />
-            <PropertyRef Name="EndElementID" />
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="WorkflowID" Type="int" Nullable="false" />
@@ -280,224 +273,32 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflowLinks' does not ha
           <Property Name="EndElementID" Type="int" Nullable="false" />
           <Property Name="StartOutboundFlowCode" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="ASRSysWorkflows">
+        <EntityType Name="tbsys_workflows">
           <Key>
             <PropertyRef Name="id" />
-            <PropertyRef Name="name" />
-            <PropertyRef Name="enabled" />
-            <PropertyRef Name="locked" />
           </Key>
           <Property Name="id" Type="int" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="description" Type="char" MaxLength="255" />
           <Property Name="enabled" Type="bit" Nullable="false" />
-          <Property Name="initiationtype" Type="smallint" />
-          <Property Name="basetable" Type="int" />
-          <Property Name="querystring" Type="varchar(max)" />
-          <Property Name="pictureid" Type="int" />
-          <Property Name="locked" Type="bit" Nullable="false" />
+          <Property Name="initiationType" Type="smallint" />
+          <Property Name="baseTable" Type="int" />
+          <Property Name="queryString" Type="varchar(max)" />
+          <Property Name="PictureID" Type="int" />
           <Property Name="HasTargetIdentifier" Type="bit" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityContainer Name="npg_openhr8_2ModelStoreContainer">
           <EntitySet Name="ASRSysExprComponents" EntityType="Self.ASRSysExprComponents" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ASRSysExpressions" EntityType="Self.ASRSysExpressions" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ASRSysWorkflowElementColumns" EntityType="Self.ASRSysWorkflowElementColumns" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [ASRSysWorkflowElementColumns].[ID] AS [ID], 
-    [ASRSysWorkflowElementColumns].[ElementID] AS [ElementID], 
-    [ASRSysWorkflowElementColumns].[ColumnID] AS [ColumnID], 
-    [ASRSysWorkflowElementColumns].[ValueType] AS [ValueType], 
-    [ASRSysWorkflowElementColumns].[Value] AS [Value], 
-    [ASRSysWorkflowElementColumns].[WFFormIdentifier] AS [WFFormIdentifier], 
-    [ASRSysWorkflowElementColumns].[WFValueIDentifier] AS [WFValueIDentifier], 
-    [ASRSysWorkflowElementColumns].[DBColumnID] AS [DBColumnID], 
-    [ASRSysWorkflowElementColumns].[DBRecord] AS [DBRecord], 
-    [ASRSysWorkflowElementColumns].[CalcID] AS [CalcID]
-    FROM [dbo].[ASRSysWorkflowElementColumns] AS [ASRSysWorkflowElementColumns]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="ASRSysWorkflowElementItems" EntityType="Self.ASRSysWorkflowElementItems" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [ASRSysWorkflowElementItems].[ID] AS [ID], 
-    [ASRSysWorkflowElementItems].[ElementID] AS [ElementID], 
-    [ASRSysWorkflowElementItems].[Caption] AS [Caption], 
-    [ASRSysWorkflowElementItems].[DBColumnID] AS [DBColumnID], 
-    [ASRSysWorkflowElementItems].[DBRecord] AS [DBRecord], 
-    [ASRSysWorkflowElementItems].[Identifier] AS [Identifier], 
-    [ASRSysWorkflowElementItems].[InputType] AS [InputType], 
-    [ASRSysWorkflowElementItems].[InputSize] AS [InputSize], 
-    [ASRSysWorkflowElementItems].[InputDecimals] AS [InputDecimals], 
-    [ASRSysWorkflowElementItems].[InputDefault] AS [InputDefault], 
-    [ASRSysWorkflowElementItems].[WFFormIdentifier] AS [WFFormIdentifier], 
-    [ASRSysWorkflowElementItems].[WFValueIdentifier] AS [WFValueIdentifier], 
-    [ASRSysWorkflowElementItems].[ItemType] AS [ItemType], 
-    [ASRSysWorkflowElementItems].[LeftCoord] AS [LeftCoord], 
-    [ASRSysWorkflowElementItems].[TopCoord] AS [TopCoord], 
-    [ASRSysWorkflowElementItems].[Width] AS [Width], 
-    [ASRSysWorkflowElementItems].[Height] AS [Height], 
-    [ASRSysWorkflowElementItems].[BackColor] AS [BackColor], 
-    [ASRSysWorkflowElementItems].[ForeColor] AS [ForeColor], 
-    [ASRSysWorkflowElementItems].[PictureID] AS [PictureID], 
-    [ASRSysWorkflowElementItems].[PictureBorder] AS [PictureBorder], 
-    [ASRSysWorkflowElementItems].[FontName] AS [FontName], 
-    [ASRSysWorkflowElementItems].[FontSize] AS [FontSize], 
-    [ASRSysWorkflowElementItems].[FontBold] AS [FontBold], 
-    [ASRSysWorkflowElementItems].[FontItalic] AS [FontItalic], 
-    [ASRSysWorkflowElementItems].[FontStrikeThru] AS [FontStrikeThru], 
-    [ASRSysWorkflowElementItems].[FontUnderline] AS [FontUnderline], 
-    [ASRSysWorkflowElementItems].[Alignment] AS [Alignment], 
-    [ASRSysWorkflowElementItems].[ZOrder] AS [ZOrder], 
-    [ASRSysWorkflowElementItems].[TabIndex] AS [TabIndex], 
-    [ASRSysWorkflowElementItems].[BackStyle] AS [BackStyle], 
-    [ASRSysWorkflowElementItems].[BackColorEven] AS [BackColorEven], 
-    [ASRSysWorkflowElementItems].[BackColorOdd] AS [BackColorOdd], 
-    [ASRSysWorkflowElementItems].[ColumnHeaders] AS [ColumnHeaders], 
-    [ASRSysWorkflowElementItems].[ForeColorEven] AS [ForeColorEven], 
-    [ASRSysWorkflowElementItems].[ForeColorOdd] AS [ForeColorOdd], 
-    [ASRSysWorkflowElementItems].[HeaderBackColor] AS [HeaderBackColor], 
-    [ASRSysWorkflowElementItems].[HeadFontName] AS [HeadFontName], 
-    [ASRSysWorkflowElementItems].[HeadFontSize] AS [HeadFontSize], 
-    [ASRSysWorkflowElementItems].[HeadFontBold] AS [HeadFontBold], 
-    [ASRSysWorkflowElementItems].[HeadFontItalic] AS [HeadFontItalic], 
-    [ASRSysWorkflowElementItems].[HeadFontStrikeThru] AS [HeadFontStrikeThru], 
-    [ASRSysWorkflowElementItems].[HeadFontUnderline] AS [HeadFontUnderline], 
-    [ASRSysWorkflowElementItems].[Headlines] AS [Headlines], 
-    [ASRSysWorkflowElementItems].[TableID] AS [TableID], 
-    [ASRSysWorkflowElementItems].[RecSelWebFormIdentifier] AS [RecSelWebFormIdentifier], 
-    [ASRSysWorkflowElementItems].[RecSelIdentifier] AS [RecSelIdentifier], 
-    [ASRSysWorkflowElementItems].[ForeColorHighlight] AS [ForeColorHighlight], 
-    [ASRSysWorkflowElementItems].[BackColorHighlight] AS [BackColorHighlight], 
-    [ASRSysWorkflowElementItems].[LookupTableID] AS [LookupTableID], 
-    [ASRSysWorkflowElementItems].[LookupColumnID] AS [LookupColumnID], 
-    [ASRSysWorkflowElementItems].[RecordTableID] AS [RecordTableID], 
-    [ASRSysWorkflowElementItems].[Orientation] AS [Orientation], 
-    [ASRSysWorkflowElementItems].[RecordOrderID] AS [RecordOrderID], 
-    [ASRSysWorkflowElementItems].[RecordFilterID] AS [RecordFilterID], 
-    [ASRSysWorkflowElementItems].[Behaviour] AS [Behaviour], 
-    [ASRSysWorkflowElementItems].[Mandatory] AS [Mandatory], 
-    [ASRSysWorkflowElementItems].[CalcID] AS [CalcID], 
-    [ASRSysWorkflowElementItems].[CaptionType] AS [CaptionType], 
-    [ASRSysWorkflowElementItems].[DefaultValueType] AS [DefaultValueType], 
-    [ASRSysWorkflowElementItems].[VerticalOffset] AS [VerticalOffset], 
-    [ASRSysWorkflowElementItems].[VerticalOffsetBehaviour] AS [VerticalOffsetBehaviour], 
-    [ASRSysWorkflowElementItems].[HorizontalOffset] AS [HorizontalOffset], 
-    [ASRSysWorkflowElementItems].[HorizontalOffsetBehaviour] AS [HorizontalOffsetBehaviour], 
-    [ASRSysWorkflowElementItems].[HeightBehaviour] AS [HeightBehaviour], 
-    [ASRSysWorkflowElementItems].[WidthBehaviour] AS [WidthBehaviour], 
-    [ASRSysWorkflowElementItems].[PasswordType] AS [PasswordType], 
-    [ASRSysWorkflowElementItems].[LookupFilterColumnID] AS [LookupFilterColumnID], 
-    [ASRSysWorkflowElementItems].[LookupFilterOperator] AS [LookupFilterOperator], 
-    [ASRSysWorkflowElementItems].[LookupFilterValue] AS [LookupFilterValue], 
-    [ASRSysWorkflowElementItems].[pageno] AS [pageno], 
-    [ASRSysWorkflowElementItems].[buttonstyle] AS [buttonstyle], 
-    [ASRSysWorkflowElementItems].[LookupOrderID] AS [LookupOrderID], 
-    [ASRSysWorkflowElementItems].[HotSpotIdentifier] AS [HotSpotIdentifier], 
-    [ASRSysWorkflowElementItems].[UseAsTargetIdentifier] AS [UseAsTargetIdentifier]
-    FROM [dbo].[ASRSysWorkflowElementItems] AS [ASRSysWorkflowElementItems]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="ASRSysWorkflowElementItemValues" EntityType="Self.ASRSysWorkflowElementItemValues" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [ASRSysWorkflowElementItemValues].[itemID] AS [itemID], 
-    [ASRSysWorkflowElementItemValues].[value] AS [value], 
-    [ASRSysWorkflowElementItemValues].[sequence] AS [sequence]
-    FROM [dbo].[ASRSysWorkflowElementItemValues] AS [ASRSysWorkflowElementItemValues]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="ASRSysWorkflowElements" EntityType="Self.ASRSysWorkflowElements" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [ASRSysWorkflowElements].[ID] AS [ID], 
-    [ASRSysWorkflowElements].[WorkflowID] AS [WorkflowID], 
-    [ASRSysWorkflowElements].[Type] AS [Type], 
-    [ASRSysWorkflowElements].[Caption] AS [Caption], 
-    [ASRSysWorkflowElements].[ConnectionPairID] AS [ConnectionPairID], 
-    [ASRSysWorkflowElements].[LeftCoord] AS [LeftCoord], 
-    [ASRSysWorkflowElements].[TopCoord] AS [TopCoord], 
-    [ASRSysWorkflowElements].[DecisionCaptionType] AS [DecisionCaptionType], 
-    [ASRSysWorkflowElements].[Identifier] AS [Identifier], 
-    [ASRSysWorkflowElements].[TrueFlowIdentifier] AS [TrueFlowIdentifier], 
-    [ASRSysWorkflowElements].[DataAction] AS [DataAction], 
-    [ASRSysWorkflowElements].[DataTableID] AS [DataTableID], 
-    [ASRSysWorkflowElements].[DataRecord] AS [DataRecord], 
-    [ASRSysWorkflowElements].[EmailID] AS [EmailID], 
-    [ASRSysWorkflowElements].[EmailRecord] AS [EmailRecord], 
-    [ASRSysWorkflowElements].[WebFormBGColor] AS [WebFormBGColor], 
-    [ASRSysWorkflowElements].[WebFormBGImageID] AS [WebFormBGImageID], 
-    [ASRSysWorkflowElements].[WebFormBGImageLocation] AS [WebFormBGImageLocation], 
-    [ASRSysWorkflowElements].[WebFormDefaultFontName] AS [WebFormDefaultFontName], 
-    [ASRSysWorkflowElements].[WebFormDefaultFontSize] AS [WebFormDefaultFontSize], 
-    [ASRSysWorkflowElements].[WebFormDefaultFontBold] AS [WebFormDefaultFontBold], 
-    [ASRSysWorkflowElements].[WebFormDefaultFontItalic] AS [WebFormDefaultFontItalic], 
-    [ASRSysWorkflowElements].[WebFormDefaultFontStrikeThru] AS [WebFormDefaultFontStrikeThru], 
-    [ASRSysWorkflowElements].[WebFormDefaultFontUnderline] AS [WebFormDefaultFontUnderline], 
-    [ASRSysWorkflowElements].[WebFormHeight] AS [WebFormHeight], 
-    [ASRSysWorkflowElements].[WebFormWidth] AS [WebFormWidth], 
-    [ASRSysWorkflowElements].[RecSelWebFormIdentifier] AS [RecSelWebFormIdentifier], 
-    [ASRSysWorkflowElements].[RecSelIdentifier] AS [RecSelIdentifier], 
-    [ASRSysWorkflowElements].[SecondaryDataRecord] AS [SecondaryDataRecord], 
-    [ASRSysWorkflowElements].[SecondaryRecSelWebFormIdentifier] AS [SecondaryRecSelWebFormIdentifier], 
-    [ASRSysWorkflowElements].[SecondaryRecSelIdentifier] AS [SecondaryRecSelIdentifier], 
-    [ASRSysWorkflowElements].[EmailSubject] AS [EmailSubject], 
-    [ASRSysWorkflowElements].[TimeoutFrequency] AS [TimeoutFrequency], 
-    [ASRSysWorkflowElements].[TimeoutPeriod] AS [TimeoutPeriod], 
-    [ASRSysWorkflowElements].[DataRecordTable] AS [DataRecordTable], 
-    [ASRSysWorkflowElements].[SecondaryDataRecordTable] AS [SecondaryDataRecordTable], 
-    [ASRSysWorkflowElements].[TrueFlowType] AS [TrueFlowType], 
-    [ASRSysWorkflowElements].[TrueFlowExprID] AS [TrueFlowExprID], 
-    [ASRSysWorkflowElements].[DescriptionExprID] AS [DescriptionExprID], 
-    [ASRSysWorkflowElements].[WebFormFGColor] AS [WebFormFGColor], 
-    [ASRSysWorkflowElements].[DescHasWorkflowName] AS [DescHasWorkflowName], 
-    [ASRSysWorkflowElements].[DescHasElementCaption] AS [DescHasElementCaption], 
-    [ASRSysWorkflowElements].[EmailCCID] AS [EmailCCID], 
-    [ASRSysWorkflowElements].[TimeoutExcludeWeekend] AS [TimeoutExcludeWeekend], 
-    [ASRSysWorkflowElements].[CompletionMessageType] AS [CompletionMessageType], 
-    [ASRSysWorkflowElements].[CompletionMessage] AS [CompletionMessage], 
-    [ASRSysWorkflowElements].[SavedForLaterMessageType] AS [SavedForLaterMessageType], 
-    [ASRSysWorkflowElements].[SavedForLaterMessage] AS [SavedForLaterMessage], 
-    [ASRSysWorkflowElements].[FollowOnFormsMessageType] AS [FollowOnFormsMessageType], 
-    [ASRSysWorkflowElements].[FollowOnFormsMessage] AS [FollowOnFormsMessage], 
-    [ASRSysWorkflowElements].[Attachment_Type] AS [Attachment_Type], 
-    [ASRSysWorkflowElements].[Attachment_File] AS [Attachment_File], 
-    [ASRSysWorkflowElements].[Attachment_WFElementIdentifier] AS [Attachment_WFElementIdentifier], 
-    [ASRSysWorkflowElements].[Attachment_WFValueIdentifier] AS [Attachment_WFValueIdentifier], 
-    [ASRSysWorkflowElements].[Attachment_DBColumnID] AS [Attachment_DBColumnID], 
-    [ASRSysWorkflowElements].[Attachment_DBRecord] AS [Attachment_DBRecord], 
-    [ASRSysWorkflowElements].[Attachment_DBElement] AS [Attachment_DBElement], 
-    [ASRSysWorkflowElements].[Attachment_DBValue] AS [Attachment_DBValue], 
-    [ASRSysWorkflowElements].[UseAsTargetIdentifier] AS [UseAsTargetIdentifier]
-    FROM [dbo].[ASRSysWorkflowElements] AS [ASRSysWorkflowElements]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="ASRSysWorkflowElementValidations" EntityType="Self.ASRSysWorkflowElementValidations" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [ASRSysWorkflowElementValidations].[ID] AS [ID], 
-    [ASRSysWorkflowElementValidations].[ElementID] AS [ElementID], 
-    [ASRSysWorkflowElementValidations].[ExprID] AS [ExprID], 
-    [ASRSysWorkflowElementValidations].[Type] AS [Type], 
-    [ASRSysWorkflowElementValidations].[Message] AS [Message]
-    FROM [dbo].[ASRSysWorkflowElementValidations] AS [ASRSysWorkflowElementValidations]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="ASRSysWorkflowLinks" EntityType="Self.ASRSysWorkflowLinks" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [ASRSysWorkflowLinks].[ID] AS [ID], 
-    [ASRSysWorkflowLinks].[WorkflowID] AS [WorkflowID], 
-    [ASRSysWorkflowLinks].[StartElementID] AS [StartElementID], 
-    [ASRSysWorkflowLinks].[EndElementID] AS [EndElementID], 
-    [ASRSysWorkflowLinks].[StartOutboundFlowCode] AS [StartOutboundFlowCode]
-    FROM [dbo].[ASRSysWorkflowLinks] AS [ASRSysWorkflowLinks]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="ASRSysWorkflows" EntityType="Self.ASRSysWorkflows" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [ASRSysWorkflows].[id] AS [id], 
-    [ASRSysWorkflows].[name] AS [name], 
-    [ASRSysWorkflows].[description] AS [description], 
-    [ASRSysWorkflows].[enabled] AS [enabled], 
-    [ASRSysWorkflows].[initiationtype] AS [initiationtype], 
-    [ASRSysWorkflows].[basetable] AS [basetable], 
-    [ASRSysWorkflows].[querystring] AS [querystring], 
-    [ASRSysWorkflows].[pictureid] AS [pictureid], 
-    [ASRSysWorkflows].[locked] AS [locked], 
-    [ASRSysWorkflows].[HasTargetIdentifier] AS [HasTargetIdentifier]
-    FROM [dbo].[ASRSysWorkflows] AS [ASRSysWorkflows]</DefiningQuery>
-          </EntitySet>
+          <EntitySet Name="tbsys_workflows" EntityType="Self.tbsys_workflows" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ASRSysWorkflowElementColumns" EntityType="Self.ASRSysWorkflowElementColumns" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ASRSysWorkflowElementItems" EntityType="Self.ASRSysWorkflowElementItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ASRSysWorkflowElementItemValues" EntityType="Self.ASRSysWorkflowElementItemValues" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ASRSysWorkflowElements" EntityType="Self.ASRSysWorkflowElements" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ASRSysWorkflowElementValidations" EntityType="Self.ASRSysWorkflowElementValidations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ASRSysWorkflowLinks" EntityType="Self.ASRSysWorkflowLinks" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -567,7 +368,6 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
             <PropertyRef Name="ID" />
             <PropertyRef Name="ElementID" />
             <PropertyRef Name="ColumnID" />
-            <PropertyRef Name="ValueType" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="ElementID" Type="Int32" Nullable="false" />
@@ -584,7 +384,6 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
           <Key>
             <PropertyRef Name="ID" />
             <PropertyRef Name="ElementID" />
-            <PropertyRef Name="ItemType" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="ElementID" Type="Int32" Nullable="false" />
@@ -676,9 +475,6 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
           <Key>
             <PropertyRef Name="ID" />
             <PropertyRef Name="WorkflowID" />
-            <PropertyRef Name="Type" />
-            <PropertyRef Name="LeftCoord" />
-            <PropertyRef Name="TopCoord" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="WorkflowID" Type="Int32" Nullable="false" />
@@ -739,37 +535,19 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
           <Property Name="Attachment_DBElement" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Attachment_DBValue" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="UseAsTargetIdentifier" Type="Boolean" />
+          <Property Name="RequiresAuthentication" Type="Boolean" />
         </EntityType>
         <EntityType Name="ASRSysWorkflowElementValidation">
           <Key>
             <PropertyRef Name="ID" />
             <PropertyRef Name="ElementID" />
             <PropertyRef Name="ExprID" />
-            <PropertyRef Name="Type" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="ElementID" Type="Int32" Nullable="false" />
           <Property Name="ExprID" Type="Int32" Nullable="false" />
           <Property Name="Type" Type="Int16" Nullable="false" />
           <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="ASRSysWorkflow">
-          <Key>
-            <PropertyRef Name="id" />
-            <PropertyRef Name="name" />
-            <PropertyRef Name="enabled" />
-            <PropertyRef Name="locked" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
-          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="description" Type="String" MaxLength="255" FixedLength="true" Unicode="false" />
-          <Property Name="enabled" Type="Boolean" Nullable="false" />
-          <Property Name="initiationtype" Type="Int16" />
-          <Property Name="basetable" Type="Int32" />
-          <Property Name="querystring" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="pictureid" Type="Int32" />
-          <Property Name="locked" Type="Boolean" Nullable="false" />
-          <Property Name="HasTargetIdentifier" Type="Boolean" />
         </EntityType>
         <EntityContainer Name="npg_openhr8_2Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="ASRSysExprComponents" EntityType="Self.ASRSysExprComponent" />
@@ -779,21 +557,33 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
           <EntitySet Name="ASRSysWorkflowElementItemValues" EntityType="Self.ASRSysWorkflowElementItemValue" />
           <EntitySet Name="ASRSysWorkflowElements" EntityType="Self.ASRSysWorkflowElement" />
           <EntitySet Name="ASRSysWorkflowElementValidations" EntityType="Self.ASRSysWorkflowElementValidation" />
-          <EntitySet Name="ASRSysWorkflows" EntityType="Self.ASRSysWorkflow" />
           <EntitySet Name="ASRSysWorkflowLinks" EntityType="npg_openhr8_2Model.ASRSysWorkflowLinks" />
+          <EntitySet Name="tbsys_workflows" EntityType="npg_openhr8_2Model.tbsys_workflows" />
         </EntityContainer>
         <EntityType Name="ASRSysWorkflowLinks">
           <Key>
             <PropertyRef Name="ID" />
             <PropertyRef Name="WorkflowID" />
-            <PropertyRef Name="StartElementID" />
-            <PropertyRef Name="EndElementID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="WorkflowID" Type="Int32" Nullable="false" />
           <Property Name="StartElementID" Type="Int32" Nullable="false" />
           <Property Name="EndElementID" Type="Int32" Nullable="false" />
           <Property Name="StartOutboundFlowCode" Type="Int32" />
+        </EntityType>
+        <EntityType Name="tbsys_workflows">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="description" Type="String" MaxLength="255" FixedLength="true" Unicode="false" />
+          <Property Name="enabled" Type="Boolean" Nullable="false" />
+          <Property Name="initiationType" Type="Int16" />
+          <Property Name="baseTable" Type="Int32" />
+          <Property Name="queryString" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="PictureID" Type="Int32" />
+          <Property Name="HasTargetIdentifier" Type="Boolean" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -971,6 +761,7 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
           <EntitySetMapping Name="ASRSysWorkflowElements">
             <EntityTypeMapping TypeName="npg_openhr8_2Model.ASRSysWorkflowElement">
               <MappingFragment StoreEntitySet="ASRSysWorkflowElements">
+                <ScalarProperty Name="RequiresAuthentication" ColumnName="RequiresAuthentication" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="WorkflowID" ColumnName="WorkflowID" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
@@ -1044,22 +835,6 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ASRSysWorkflows">
-            <EntityTypeMapping TypeName="npg_openhr8_2Model.ASRSysWorkflow">
-              <MappingFragment StoreEntitySet="ASRSysWorkflows">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="description" ColumnName="description" />
-                <ScalarProperty Name="enabled" ColumnName="enabled" />
-                <ScalarProperty Name="initiationtype" ColumnName="initiationtype" />
-                <ScalarProperty Name="basetable" ColumnName="basetable" />
-                <ScalarProperty Name="querystring" ColumnName="querystring" />
-                <ScalarProperty Name="pictureid" ColumnName="pictureid" />
-                <ScalarProperty Name="locked" ColumnName="locked" />
-                <ScalarProperty Name="HasTargetIdentifier" ColumnName="HasTargetIdentifier" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ASRSysWorkflowLinks">
             <EntityTypeMapping TypeName="npg_openhr8_2Model.ASRSysWorkflowLinks">
               <MappingFragment StoreEntitySet="ASRSysWorkflowLinks">
@@ -1068,6 +843,21 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
                 <ScalarProperty Name="StartElementID" ColumnName="StartElementID" />
                 <ScalarProperty Name="WorkflowID" ColumnName="WorkflowID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbsys_workflows">
+            <EntityTypeMapping TypeName="npg_openhr8_2Model.tbsys_workflows">
+              <MappingFragment StoreEntitySet="tbsys_workflows">
+                <ScalarProperty Name="HasTargetIdentifier" ColumnName="HasTargetIdentifier" />
+                <ScalarProperty Name="PictureID" ColumnName="PictureID" />
+                <ScalarProperty Name="queryString" ColumnName="queryString" />
+                <ScalarProperty Name="baseTable" ColumnName="baseTable" />
+                <ScalarProperty Name="initiationType" ColumnName="initiationType" />
+                <ScalarProperty Name="enabled" ColumnName="enabled" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

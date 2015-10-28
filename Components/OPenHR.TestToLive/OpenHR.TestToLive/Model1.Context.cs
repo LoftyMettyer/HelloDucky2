@@ -15,15 +15,15 @@ namespace OpenHR.TestToLive
     
     public partial class npg_openhr8_2Entities : DbContext
     {
-        public npg_openhr8_2Entities(string connString)
-           //   : base("name=npg_openhr8_2Entities")
-            : base(connString)
+        public npg_openhr8_2Entities()
+            : base("name=npg_openhr8_2Entities")
         {
-           // var blah = System.Configuration.ConfigurationManager.ConnectionStrings["entityFrameworkConnection"].ConnectionString
-
-            //this.Database.Connection.ConnectionString = connString;
         }
-    
+
+        public npg_openhr8_2Entities(string nameOrConnectionString) : base(nameOrConnectionString)
+        {
+        }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
@@ -36,7 +36,7 @@ namespace OpenHR.TestToLive
         public virtual DbSet<ASRSysWorkflowElementItemValue> ASRSysWorkflowElementItemValues { get; set; }
         public virtual DbSet<ASRSysWorkflowElement> ASRSysWorkflowElements { get; set; }
         public virtual DbSet<ASRSysWorkflowElementValidation> ASRSysWorkflowElementValidations { get; set; }
-        public virtual DbSet<ASRSysWorkflow> ASRSysWorkflows { get; set; }
         public virtual DbSet<ASRSysWorkflowLinks> ASRSysWorkflowLinks { get; set; }
+        public virtual DbSet<tbsys_workflows> tbsys_workflows { get; set; }
     }
 }

@@ -73,5 +73,6 @@ namespace OpenHR.TestToLive
         public string Attachment_DBElement { get; set; }
         public string Attachment_DBValue { get; set; }
         public Nullable<bool> UseAsTargetIdentifier { get; set; }
+        public Nullable<bool> RequiresAuthentication { get; set; }
     }
 }

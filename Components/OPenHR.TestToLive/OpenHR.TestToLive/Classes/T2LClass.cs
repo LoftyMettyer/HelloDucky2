@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public partial class T2LClass
 {
 
-    public List<ASRSysWorkflow> AllWorkflows;
+    public List<tbsys_workflows> AllWorkflows;
     public List<ASRSysWorkflowLinks> AllLinks;
     public List<ASRSysWorkflowElement> AllElements;
     public List<ASRSysWorkflowElementColumn> AllColumns;
@@ -19,7 +19,7 @@ public partial class T2LClass
 
     public T2LClass()
     {
-        AllWorkflows = new List<ASRSysWorkflow>();
+        AllWorkflows = new List<tbsys_workflows>();
         AllLinks = new List<ASRSysWorkflowLinks>();
         AllElements = new List<ASRSysWorkflowElement>();
         AllColumns = new List<ASRSysWorkflowElementColumn>();
