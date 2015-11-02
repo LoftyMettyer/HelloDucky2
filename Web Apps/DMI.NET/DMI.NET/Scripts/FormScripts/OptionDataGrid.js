@@ -1,6 +1,7 @@
 ﻿$(function () {
 	$("#optionframe").attr("data-framesource", $('#DataFrameSource').val());
 	$("#workframe").hide();
+	OpenHR.setWorkFrameDialogsVisible(false);
 	$("#optionframe").show();
 
 	//resize grid	
@@ -41,6 +42,7 @@ $('#selectOrder, #selectView').change(function () { refreshData(); });
 
 $('#cmdCancel').click(function () {
 	$("#optionframe").hide();
+	OpenHR.setWorkFrameDialogsVisible(true);
 	$("#workframe").show();
 
 	var frmGotoOption = document.getElementById("frmGotoOption");

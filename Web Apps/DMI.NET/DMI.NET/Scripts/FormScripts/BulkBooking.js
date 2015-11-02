@@ -3,6 +3,7 @@
 $(function () {
 	$("#optionframe").attr("data-framesource", "BULKBOOKING");
 	$("#workframe").hide();
+	OpenHR.setWorkFrameDialogsVisible(false);
 	$("#optionframe").show();
 
 	resizeGridToFit();
@@ -28,6 +29,7 @@ function add() {
 
 function cancel() {
 	$("#optionframe").hide();
+	OpenHR.setWorkFrameDialogsVisible(true);
 	$("#workframe").show();
 
 	menu_refreshMenu();

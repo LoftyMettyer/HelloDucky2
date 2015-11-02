@@ -179,7 +179,8 @@
 					fNoAction = false;
 
 					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
-					$("#optionframe").hide();
+					$("#optionframe").hide();					
+					OpenHR.setWorkFrameDialogsVisible(true);
 					$("#workframe").show();
 
 					//menu_refreshMenu();
