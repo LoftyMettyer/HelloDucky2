@@ -225,6 +225,7 @@
 				<%
 					Dim sErrorDescription As String = ""
 					Dim sThousSepSummaryFields As String
+					Dim OriginalPageTitle As String = ""
 					
 					If ViewBag.pageTitle.ToString().Length = 0 Then
 						' DMI View.
@@ -250,6 +251,7 @@
 											Replace(prm_psTitle.Value.ToString, "_", " ") & "</span>" & vbCrLf, homelinkURL))
 							response.write("<label id='txtRIE' style='float: right;'></label>")
 							Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & prm_pfQuickEntry.Value.ToString & "></div>" & vbCrLf)
+							OriginalPageTitle = prm_psTitle.Value.ToString()							
 						End If
 					Else
 						' SSI View.
@@ -894,6 +896,7 @@ End If
 End If
 	
 If Len(sErrorDescription) = 0 Then
+			
 Response.Write("				<input type='hidden' id=txtCurrentTableID name=txtCurrentTableID value=" & Session("tableID") & ">" & vbCrLf)
 Response.Write("				<input type='hidden' id=txtCurrentViewID name=txtCurrentViewID value=" & Session("viewID") & ">" & vbCrLf)
 Response.Write("				<input type='hidden' id=txtCurrentScreenID name=txtCurrentScreenID value=" & Session("screenID") & ">" & vbCrLf)
@@ -908,6 +911,7 @@ Response.Write("				<input type='hidden' id=txtFilterSQL name=txtFilterSQL value
 Response.Write("				<input type='hidden' id='txtThousSepSummary' name='txtThousSepSummary' value='" & sThousSepSummaryFields & "'>" & vbCrLf)
 Response.Write("				<input type='hidden' id='txtMaxRequestLength' name='txtMaxRequestLength' value='" & Session("maxRequestLength") & "'>" & vbCrLf)
 Response.Write("				<input type='hidden' id=txtSelectedRecordsInFindGrid name=txtSelectedRecordsInFindGrid value=" & Session("OptionSelectedRecordIds") & ">" & vbCrLf)
+Response.Write("				<input type='hidden' id='txtOriginalPageTitle' name='txtOriginalPageTitle' value='" & OriginalPageTitle & "'>" & vbCrLf)
 			
 End If
 

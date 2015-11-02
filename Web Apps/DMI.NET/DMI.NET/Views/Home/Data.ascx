@@ -40,10 +40,7 @@
 			var sCurrentWorkPage = OpenHR.currentWorkPage();
 			
 			if (sCurrentWorkPage == "RECORDEDIT") {
-				if (OpenHR.activeWindowID() !== "") {
-					window.top.$('#' + OpenHR.activeWindowID()).parent().children().find('span').html(OpenHR.activeFrame().find('#txtOriginalPageTitle').val() + " - " + frmData.txtRecordDescription.value);
-				}
-
+				
 				try {
 					resetSession(); //try to reset session timeout counter in record edit
 				}

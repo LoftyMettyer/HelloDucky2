@@ -1583,12 +1583,14 @@ function menu_refreshMenu() {
 			if (frmRecEdit.txtRecEditFilterDef.value.length > 0) {
 				sCaption = sCaption + " (filtered)";
 			}
-
+			
 			if (frmData.txtRecordDescription.value.length > 0) {
 				sCaption = frmData.txtRecordDescription.value;
 				if (OpenHR.activeFrame().find('#RecordEdit_PageTitle')) {
 					var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
-					OpenHR.activeFrame().find('#RecordEdit_PageTitle').html(frmRecordEditForm.txtOriginalPageTitle.value + ' - ' + sCaption);
+
+					OpenHR.updateDialogPageTitle();
+
 				}
 			}
 		}
@@ -1801,10 +1803,10 @@ function menu_refreshMenu() {
 			//	if (frmData.txtRecordDescription.value.length > 0) {
 			//		sCaption = sCaption + " : " + frmData.txtRecordDescription.value;
 			//	}
-			//}
-			
-			
-			
+			//}					
+
+
+
 			menu_setVisibleMenuItem("mnutoolPositionRecordFind", true);
 			menu_SetmnutoolRecordPositionCaption(sCaption);
 				//<MWD change>

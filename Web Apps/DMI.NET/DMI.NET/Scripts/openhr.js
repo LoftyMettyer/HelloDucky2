@@ -675,7 +675,7 @@
 					iframe.document.close();
 
 					window.top.$('#iframe_' + multiwindowid).load(function () {						
-						//NB: This is where an iframe has completely loaded all content.
+						//NPG: I thought this was fired when the dialogs are completely loaded. But for recedit at least it isn't. The search continues...
 
 						//get screen type and assign parent id - parentFormId
 						if (OpenHR.getScreenType('mwid_' + multiwindowid) === "history") {
@@ -684,6 +684,8 @@
 							$(this).parent().attr('data-parentFormID', "");
 						}
 						
+						OpenHR.updateDialogPageTitle();
+
 						//remove 'please wait' spinner
 						window.top.$('body').removeClass('loading');
 					});
@@ -1640,14 +1642,13 @@
 				//check for changes!
 				var activeWindowNumber = Number(OpenHR.activeWindowID().replace('mwid_', ''));
 				var selectedWindowNumber = Number(iFrameId);
-
+				
 				if (activeWindowNumber !== selectedWindowNumber) {
 					//is dialog clicked not the active one?				
 					var hasChanged = menu_saveChanges('', true, false);
 					if (hasChanged === 0) {
 						// Prompt for navigation and redirect as required
-						saveChangesPrompt("floatingWindow", 'OpenHR.activateDialog(' + iFrameId + '")'); //todo: result runs activateDialog if OK.
-						//todo: bring window to top if navigate cancelled.
+						saveChangesPrompt("floatingWindow", 'OpenHR.activateDialog(' + iFrameId + '")'); //todo: bring window to top if navigate cancelled.
 					} else {
 						//activate clicked dialog.
 						OpenHR.activateDialog(iFrameId);
@@ -1664,8 +1665,6 @@
 
 		//make this dialog 'active' and any others 'inactive'
 		$('[id^="mwid_"]').each(function () {
-			var pageTitle = $(this).dialog('option', 'title');
-			$(this).dialog('option', 'title', OpenHR.replaceAll(pageTitle, ' - active', ''));
 			$(this).siblings(".ui-dialog-titlebar").addClass('ui-state-disabled');
 		});
 
@@ -1676,12 +1675,9 @@
 		$('#workframe').attr('data-framesource', framesource);
 		$('#workframe').attr('data-mwid', 'mwid_' + iFrameId);
 
-		var pageTitle = OpenHR.activeFrame().find('.pageTitle').text();
-		$('#mwid_' + iFrameId).dialog('option', 'title', pageTitle + ' - active');
-
 		OpenHR.setWorkFrameDialogsVisible(true);
 
-		menu_refreshMenu();
+		menu_refreshMenu();		
 
 	},
 
@@ -1780,9 +1776,7 @@
 	},
 
 	getIframePageTitle = function (iFrameNumber) {
-		var pageTitle = window.top.$('#iframe_' + iFrameNumber).contents().find('.pageTitle').text();
-			var descriptor = (window.top.$('#iframe_' + iFrameNumber).contents().find('#workframe').attr('data-framesource') == "FIND" ? " Find - " : "");
-			return descriptor + pageTitle;
+		return window.top.$('#iframe_' + iFrameNumber).contents().find('.pageTitle').text();
 	},
 
 	setWorkFrameDialogsVisible = function(visibility) {
@@ -1811,6 +1805,54 @@
 		catch (e) { return "" }
 
 		return screenType;
+	},
+
+	updateDialogPageTitle = function () {
+		
+		var caption;
+		if (!menu_isSSIMode()) {
+
+			var parentFormId = OpenHR.activeDialog().attr("data-parentformid");
+			var originalPageTitle = OpenHR.activeFrame().find('#txtOriginalPageTitle').val();
+
+			if (OpenHR.activeFrame().find('#frmFindForm').length > 0) {
+				//find window
+				if (parentFormId === "") {
+					OpenHR.activeFrame().find('.pageTitle').html("Find - " + originalPageTitle);
+					OpenHR.activeDialog().dialog("option", "title", "Find - " + originalPageTitle + (caption ? ' - ' + caption : ""));
+				} else {
+					var parentPageTitle = window.top.$('#' + parentFormId).find('iframe').contents().find('.pageTitle').text();
+					OpenHR.activeFrame().find('.pageTitle').html(originalPageTitle + ' (' + parentPageTitle + ')');
+					OpenHR.activeDialog().dialog("option", "title", originalPageTitle + ' (' + parentPageTitle + ')');
+				}
+			} else {
+				//recedit
+				var frmData = OpenHR.getForm("dataframe", "frmData");
+				var frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
+
+				if (frmRecEdit.txtCurrentRecordID.value > 0) {
+					if (frmData.txtRecordDescription.value.length > 0) {
+						caption = frmData.txtRecordDescription.value;
+					}
+				}
+				else {
+					caption = "New Record";
+				}
+
+				if (parentFormId === "") {
+					OpenHR.activeFrame().find('.pageTitle').html(originalPageTitle + (caption ? ' - ' + caption : ""));
+					OpenHR.activeDialog().dialog("option", "title", originalPageTitle + (caption ? ' - ' + caption : ""));
+				} else {
+					var parentPageTitle = window.top.$('#' + parentFormId).find('iframe').contents().find('.pageTitle').text();
+					OpenHR.activeFrame().find('.pageTitle').html(originalPageTitle + ' (' + parentPageTitle + ')');
+					OpenHR.activeDialog().dialog("option", "title", originalPageTitle + ' (' + parentPageTitle + ')');
+				}
+			}
+
+
+			
+		}
+
 	}
 
 	window.OpenHR = {
@@ -1882,7 +1924,8 @@
 		setWorkFrameDialogsVisible: setWorkFrameDialogsVisible,
 		activeIFrameID: activeIFrameID,
 		getScreenType: getScreenType,
-		activeDialog: activeDialog
+		activeDialog: activeDialog,
+		updateDialogPageTitle: updateDialogPageTitle
 	};
 
 })(window, jQuery);
