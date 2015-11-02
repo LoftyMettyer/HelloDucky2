@@ -2109,6 +2109,12 @@ function recEdit_setParentRecordID(plngParentRecordID) {
 	//frmRecordEditForm.ctlRecordEdit.ParentRecordID = plngParentRecordID;
 }
 
+function recEdit_setLocalFormData() {
+	//duplicate frmData
+	OpenHR.activeFrame().find('#frmData').remove();
+	window.top.$('#frmData').clone().appendTo(OpenHR.activeFrame().find('body'));
+}
+
 function updateControl(lngColumnID, value) {
 	
 	//get the column type, then add this value to it/them.

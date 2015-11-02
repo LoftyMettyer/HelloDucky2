@@ -93,7 +93,7 @@
 					
 					if (recEditForm.txtRecEditFilterSQL.value == "") {
 						OpenHR.messageBox("The record saved is no longer in the current view");
-					}
+					}			
 				}
 
 				if (sAction == "LOGOFF") {
@@ -302,7 +302,10 @@
 				recEdit_setRecordID(frmData.txtRecordID.value); //workframe
 				recEdit_setParentTableID(frmData.txtParentTableID.value); //workframe
 				recEdit_setParentRecordID(frmData.txtParentRecordID.value); //workframe
-				
+
+				recEdit_setLocalFormData();
+
+
 				/* Check if the record is empty. */
 				if ((sAction != "NEW") && (sAction != "COPY") && (frmData.txtRecordCount.value == 0)) {
 					// No records. Clear the filter.
@@ -573,7 +576,7 @@
 	<%=Html.AntiForgeryToken()%>
 	</form>
 
-	<form id="frmData" name="frmData">
+	<form id="frmData" name="frmData" style="display: none;">
 <%
 	
 	Dim lngRecordID As Long

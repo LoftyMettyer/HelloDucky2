@@ -1680,6 +1680,12 @@
 		$('#workframe').attr('data-framesource', framesource);
 		$('#workframe').attr('data-mwid', 'mwid_' + iFrameId);
 
+		//if this is recedit, clone the frmdata back
+		if (OpenHR.currentWorkPage() === "RECORDEDIT") {
+			window.top.$('#frmData').remove();
+			OpenHR.activeFrame().find('#frmData').clone().appendTo(window.top.$('#dataframe'));
+		}
+
 		OpenHR.setWorkFrameDialogsVisible(true);
 
 		menu_refreshMenu();		
