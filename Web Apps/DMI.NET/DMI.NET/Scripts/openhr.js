@@ -634,7 +634,12 @@
 									saveChangesPrompt("floatingWindow", 'OpenHR.closeDialog("' + thisMwId + '")');
 									return false;
 								} else {
-									//activate clicked dialog.
+									//close all dependent dialogs
+									$('[id^="mwid_"]').each(function () {
+										var parentFormId = $(this).attr('data-parentformid');
+										if (parentFormId === thisMwId) OpenHR.closeDialog($(this).attr('id'));
+									});
+									//close this dialog.
 									OpenHR.closeDialog(thisMwId);
 								}
 							},
@@ -658,7 +663,7 @@
 						//Prevent floating window from leaving the workarea
 						var container = $('#workframeset'),
 							dialog = $('#mwid_' + multiwindowid).parent();
-						dialog.draggable("option", "containment", container);
+						dialog.draggable({ "containment": container});
 
 					}
 
