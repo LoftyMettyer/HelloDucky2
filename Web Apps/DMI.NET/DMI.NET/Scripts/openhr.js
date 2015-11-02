@@ -1681,7 +1681,7 @@
 		$('#workframe').attr('data-mwid', 'mwid_' + iFrameId);
 
 		//if this is recedit, clone the frmdata back
-		if (OpenHR.currentWorkPage() === "RECORDEDIT") {
+		if (OpenHR.currentWorkPage() === "RECORDEDIT" && !menu_isSSIMode()) {
 			window.top.$('#frmData').remove();
 			OpenHR.activeFrame().find('#frmData').clone().appendTo(window.top.$('#dataframe'));
 		}
@@ -1840,7 +1840,7 @@
 				//recedit
 				var frmData = OpenHR.getForm("dataframe", "frmData");
 				var frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
-
+				
 				if (frmRecEdit.txtCurrentRecordID.value > 0) {
 					if (frmData.txtRecordDescription.value.length > 0) {
 						caption = frmData.txtRecordDescription.value;

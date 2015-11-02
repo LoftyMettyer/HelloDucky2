@@ -1588,9 +1588,6 @@ function menu_refreshMenu() {
 				sCaption = frmData.txtRecordDescription.value;
 				if (OpenHR.activeFrame().find('#RecordEdit_PageTitle')) {
 					var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
-
-					OpenHR.updateDialogPageTitle();
-
 				}
 			}
 		}
@@ -1679,7 +1676,9 @@ function menu_refreshMenu() {
 					(frmMenuInfo.txtTB_TBStatusColumnUpdate.value.toUpperCase() == "TRUE") &&
 					((frmMenuInfo.txtTB_TBCancelDateColumnID.value == 0) ||
 						(frmMenuInfo.txtTB_TBCancelDateColumnUpdate.value.toUpperCase() == "TRUE")) &&
-					(sRecEditDate == sDummyDate));				
+					(sRecEditDate == sDummyDate));
+
+		if(!menu_isSSIMode()) OpenHR.updateDialogPageTitle();
 	}
 	else {
 		if (sCurrentWorkPage == "FIND") {

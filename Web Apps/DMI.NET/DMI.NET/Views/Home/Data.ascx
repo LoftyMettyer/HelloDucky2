@@ -303,7 +303,7 @@
 				recEdit_setParentTableID(frmData.txtParentTableID.value); //workframe
 				recEdit_setParentRecordID(frmData.txtParentRecordID.value); //workframe
 
-				recEdit_setLocalFormData();
+				if(!menu_isSSIMode()) recEdit_setLocalFormData();
 
 
 				/* Check if the record is empty. */
