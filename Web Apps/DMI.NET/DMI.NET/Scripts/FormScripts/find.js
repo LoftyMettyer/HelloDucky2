@@ -883,7 +883,7 @@ function find_window_onload() {
 function resizeFindGrid() {
 	//resize the grid to the height of its container.
 	
-	var gridRowHeight = OpenHR.inIframe() ? $('body').height() : $('#workframeset').height();
+	var gridRowHeight = OpenHR.inIframe() ? $('#workframe').height() : $('#workframeset').height();
 	var pageTitleHeight = $('#row1').outerHeight();
 	var gridHeaderHeight = $('#findGridRow .ui-jqgrid-hdiv').outerHeight();
 	var gridFooterHeight = $('#findGridRow .ui-jqgrid-pager').outerHeight();
