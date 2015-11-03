@@ -487,7 +487,16 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<script type="text/javascript">		
+	<script type="text/javascript">
+		//Set up the session timeout counter variables
+		var timeoutSecondsLeft = <%:Session.Timeout%> * 60;
+		var originalTimeoutSeconds = <%:Session.Timeout%> * 60;
+		var currentSeconds = 0;
+		var currentMinutes = 0;
+		var decrementFunctionIsSetup = false;
+	</script>
+
+	<script type="text/javascript">
 		//if ((screen.width < 768) || (screen.height < 748)) {			
 		//	viewport = document.querySelector("meta[name=viewport]");
 		//	viewport.setAttribute('content', 'width=460;');
@@ -640,7 +649,6 @@
 				$('.linkspagebuttonbox').css('width', width + 50);
 			}
 		}
-
 	</script>
 
 </head>

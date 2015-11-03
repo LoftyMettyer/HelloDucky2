@@ -44,8 +44,9 @@ function refreshData() {
 	var orderID = $("#selectOrder").val();
 	var pageAction = $('#txtPageAction').val();
 
-	$.getJSON(
-			"BulkBookingSelectionData", { tableID: tableID, viewID: viewID, orderID: orderID, pageAction: pageAction })
+	OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+
+	$.getJSON("BulkBookingSelectionData", { tableID: tableID, viewID: viewID, orderID: orderID, pageAction: pageAction })
 		.done(function (jsonData) {
 			refreshGrid(jsonData);
 		})

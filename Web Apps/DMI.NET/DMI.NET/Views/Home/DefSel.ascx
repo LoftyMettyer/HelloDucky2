@@ -260,7 +260,7 @@
 		var isRunOnly = (defSelType === "utlWorkflow" || defSelType === "utlDataTransfer");
 
 		try {
-			if (!fFromMenu) resetSession();	//reset session timeout for record edit. Well, try to.
+			if (!fFromMenu) OpenHR.resetSession();	//reset session timeout for record edit. Well, try to.
 		}
 		catch(e) {}
 

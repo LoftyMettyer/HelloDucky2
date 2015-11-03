@@ -42,7 +42,7 @@
 			if (sCurrentWorkPage == "RECORDEDIT") {
 				
 				try {
-					resetSession(); //try to reset session timeout counter in record edit
+					OpenHR.ResetSession(); //try to reset session timeout counter in record edit
 				}
 				catch(e) {}
 				// Refresh the recEdit controls with the data if required.

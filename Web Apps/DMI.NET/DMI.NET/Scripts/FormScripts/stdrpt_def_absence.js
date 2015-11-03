@@ -113,6 +113,8 @@ function absence_returnToRecEdit() {
 }
 
 function loadEmptyOption() {
+	OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+
 	$.ajax({
 		url: 'emptyoption',
 		type: "POST",

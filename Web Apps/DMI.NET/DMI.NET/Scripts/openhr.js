@@ -365,6 +365,7 @@
 		},
 
 		postData = function (url, jsonData, followOnFunctionName) {
+			OpenHR.ResetSession(); //Reset the session so it doesn't timeout
 
 			$.ajax({
 				url: url,
@@ -416,6 +417,7 @@
 		},
 
 	openDialog = function (url, targetWin, jsonData, dialogWidth) { //dialogWidth should be passed as a string, not a number: i.e 'auto' or '900px'
+		OpenHR.ResetSession(); //Reset the session so it doesn't timeout
 
 		var $frame;
 		$.ajax({
@@ -479,6 +481,7 @@
 
 
 	submitForm = function (form, targetWin, asyncFlag, jsonData, action, followOnFunctionName, floatWindow, reuseWindow) {
+		OpenHR.ResetSession(); //Reset the session so it doesn't timeout
 
 		var $form = $(form),
 			$frame = $form.closest("div[data-framesource]").first(),
@@ -513,6 +516,7 @@
 			asyncFlag = false;
 		}
 
+		OpenHR.ResetSession(); //Reset the session so it doesn't timeout
 
 		$.ajax({
 			url: url,
@@ -1557,6 +1561,8 @@
 		var aboutUrl = window.top.window.ROOT + "/account/about";
 		if (window.top.window.ROOT.slice(-1) == "/") aboutUrl = window.top.window.ROOT + "account/about";
 
+		OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+
 		$.ajax({
 			url: aboutUrl,
 			dataType: 'html',
@@ -1840,13 +1846,12 @@
 				//recedit
 				var frmData = OpenHR.getForm("dataframe", "frmData");
 				var frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
-				
+
 				if (frmRecEdit.txtCurrentRecordID.value > 0) {
 					if (frmData.txtRecordDescription.value.length > 0) {
 						caption = frmData.txtRecordDescription.value;
 					}
-				}
-				else {
+				} else {
 					caption = "New Record";
 				}
 
@@ -1861,9 +1866,41 @@
 			}
 
 
-			
 		}
+	},
 
+	resetSession = function () { //Some variables used in this function are global and declared in Site.Master
+		$.post('RefreshSession', { __RequestVerificationToken: window.top.$('[name="__RequestVerificationToken"]').val() }, function () { });
+
+		window.top.timeoutSecondsLeft = window.top.originalTimeoutSeconds;
+
+		if (!window.top.decrementFunctionIsSetup) {
+			var countdownTimer = setInterval(function() {
+					window.top.currentMinutes = Math.floor(window.top.timeoutSecondsLeft / 60);
+					window.top.currentSeconds = window.top.timeoutSecondsLeft % 60;
+					if (window.top.currentSeconds <= 9) window.top.currentSeconds = "0" + window.top.currentSeconds;
+					window.top.timeoutSecondsLeft--;
+
+					try {
+						if (window.top.timeoutSecondsLeft < 300)
+							$("#sessionWarning").show(); //show countdown for the last 5 minutes.
+						else
+							$("#sessionWarning").hide();
+
+						if (window.top.timeoutSecondsLeft === 0) {
+							clearInterval(countdownTimer);
+							document.getElementById("timerText").innerHTML = "0:00";
+						}
+
+						document.getElementById("timerText").innerHTML = window.top.currentMinutes + ":" + window.top.currentSeconds; //Set the element id you need the time put into.
+					} catch (e) {
+						//do nothing if this fails - we've probably navigated away and the elements no longer exist. That's the trouble with using 1 second delays.
+					}
+				}, 1000
+			);
+
+			window.top.decrementFunctionIsSetup = true;
+		}
 	}
 
 	window.OpenHR = {
@@ -1936,7 +1973,8 @@
 		activeIFrameID: activeIFrameID,
 		getScreenType: getScreenType,
 		activeDialog: activeDialog,
-		updateDialogPageTitle: updateDialogPageTitle
+		updateDialogPageTitle: updateDialogPageTitle,
+		ResetSession: resetSession
 	};
 
 })(window, jQuery);

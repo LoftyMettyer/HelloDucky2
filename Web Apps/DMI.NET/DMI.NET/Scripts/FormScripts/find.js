@@ -652,6 +652,8 @@ function find_window_onload() {
 
 							var calcColumnsString = arrCalcColumnsString.join(",");
 
+							OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+
 							//Pass list to stored proc.
 							$.ajax({
 								url: "GetDefaultCalcValueForColumn",
@@ -1035,6 +1037,8 @@ function showLookupForColumn(element) {
 		lookupParameters = { piTableID: columnLookupTableID, piOrderID: '0', piLookupColumnID: columnLookupColumnID, psFilterValue: filterCellValue, piCallingColumnID: clickedColumnId, piFirstRecPos: 0 };
 	}
 	
+	OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+
 	$.ajax({
 		url: lookupUrl,
 		data: lookupParameters,
@@ -1495,6 +1499,8 @@ function updateRowFromDatabase(rowid) {
 
 	if (Number(recordID) === 0) alert('There was an error reloading the grid.');	
 
+	OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+
 	//Get the row from the server
 	$.ajax({
 		url: "getfindrecordbyid",
@@ -1852,6 +1858,8 @@ function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto, uniqueID)
 		}
 	}
 	
+	OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+
 	$.ajax({
 		type: "POST",
 		url: "AjaxFileUpload",
@@ -1903,6 +1911,7 @@ function preChecks(isPhoto) {
 }
 
 function getSummaryColumns() {	
+	OpenHR.ResetSession(); //Reset the session so it doesn't timeout
 
 	$.ajax({
 		url: "GetSummaryColumns",
