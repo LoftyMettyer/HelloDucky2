@@ -2111,9 +2111,10 @@ function recEdit_setParentRecordID(plngParentRecordID) {
 
 function recEdit_setLocalFormData() {
 	//duplicate frmData
-	if (menu_isSSIMode()) return false;
+	if (menu_isSSIMode()) return false;	
 	OpenHR.activeFrame().find('#frmData').remove();
-	window.top.$('#frmData').clone().appendTo(OpenHR.activeFrame().find('body'));
+	var x = window.top.document.getElementById("frmData").innerHTML;
+	OpenHR.activeFrame().find('body').append("<div id='frmData' name='frmData' style='display: none;'>" + x + "</div>");
 }
 
 function updateControl(lngColumnID, value) {

@@ -1688,8 +1688,9 @@
 
 		//if this is recedit, clone the frmdata back
 		if (OpenHR.currentWorkPage() === "RECORDEDIT" && !menu_isSSIMode()) {
-			window.top.$('#frmData').remove();
-			OpenHR.activeFrame().find('#frmData').clone().appendTo(window.top.$('#dataframe'));
+			OpenHR.activeFrame().find("#frmData").children().each(function(element) {
+				window.top.$('#frmData').find('#' + this.id).val(this.value);
+			});
 		}
 
 		OpenHR.setWorkFrameDialogsVisible(true);
