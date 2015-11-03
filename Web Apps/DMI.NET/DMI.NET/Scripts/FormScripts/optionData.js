@@ -782,21 +782,6 @@ function optiondata_onload() {
 
 			refreshControls();
 
-		
-
-			//if (dataCollection != null) {
-			//	debugger;
-			//	if ($('#mnutoolSaveReport').hasClass("disabled") === true) {
-			//		alert('I m in');
-			//	}
-			//	if (typeof ($('#mnutoolSaveReport').prop('disabled')) !== typeof (undefined)) {
-			//		if (frmOptionData.txtIsSaveButtonEnable.value) {
-			//			menu_toolbarEnableItem('mnutoolSaveReport', frmOptionData.txtIsSaveButtonEnable.value);
-			//		}
-			//		//menu_toolbarEnableItem('mnutoolSaveReport', frmOptionData.txtIsSaveButtonEnable.value);
-			//	}
-			//}
-
 			// Get menu.asp to refresh the menu.
 			menu_refreshMenu();
 		}
