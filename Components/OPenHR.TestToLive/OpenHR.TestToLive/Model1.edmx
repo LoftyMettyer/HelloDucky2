@@ -273,7 +273,7 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflowLinks' does not ha
           <Property Name="EndElementID" Type="int" Nullable="false" />
           <Property Name="StartOutboundFlowCode" Type="int" />
         </EntityType>
-        <EntityType Name="tbsys_workflows">
+        <EntityType Name="ASRSysWorkflows">
           <Key>
             <PropertyRef Name="id" />
           </Key>
@@ -292,7 +292,7 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
         <EntityContainer Name="npg_openhr8_2ModelStoreContainer">
           <EntitySet Name="ASRSysExprComponents" EntityType="Self.ASRSysExprComponents" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ASRSysExpressions" EntityType="Self.ASRSysExpressions" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="tbsys_workflows" EntityType="Self.tbsys_workflows" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ASRSysWorkflows" EntityType="Self.ASRSysWorkflows" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ASRSysWorkflowElementColumns" EntityType="Self.ASRSysWorkflowElementColumns" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ASRSysWorkflowElementItems" EntityType="Self.ASRSysWorkflowElementItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ASRSysWorkflowElementItemValues" EntityType="Self.ASRSysWorkflowElementItemValues" Schema="dbo" store:Type="Tables" />
@@ -558,7 +558,7 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
           <EntitySet Name="ASRSysWorkflowElements" EntityType="Self.ASRSysWorkflowElement" />
           <EntitySet Name="ASRSysWorkflowElementValidations" EntityType="Self.ASRSysWorkflowElementValidation" />
           <EntitySet Name="ASRSysWorkflowLinks" EntityType="npg_openhr8_2Model.ASRSysWorkflowLinks" />
-          <EntitySet Name="tbsys_workflows" EntityType="npg_openhr8_2Model.tbsys_workflows" />
+          <EntitySet Name="ASRSysWorkflows" EntityType="npg_openhr8_2Model.ASRSysWorkflows" />
         </EntityContainer>
         <EntityType Name="ASRSysWorkflowLinks">
           <Key>
@@ -571,7 +571,7 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
           <Property Name="EndElementID" Type="Int32" Nullable="false" />
           <Property Name="StartOutboundFlowCode" Type="Int32" />
         </EntityType>
-        <EntityType Name="tbsys_workflows">
+        <EntityType Name="ASRSysWorkflows">
           <Key>
             <PropertyRef Name="id" />
           </Key>
@@ -846,9 +846,9 @@ warning 6002: The table/view 'npg_openhr8_2.dbo.ASRSysWorkflows' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tbsys_workflows">
-            <EntityTypeMapping TypeName="npg_openhr8_2Model.tbsys_workflows">
-              <MappingFragment StoreEntitySet="tbsys_workflows">
+          <EntitySetMapping Name="ASRSysWorkflows">
+            <EntityTypeMapping TypeName="npg_openhr8_2Model.ASRSysWorkflows">
+              <MappingFragment StoreEntitySet="ASRSysWorkflows">
                 <ScalarProperty Name="HasTargetIdentifier" ColumnName="HasTargetIdentifier" />
                 <ScalarProperty Name="PictureID" ColumnName="PictureID" />
                 <ScalarProperty Name="queryString" ColumnName="queryString" />

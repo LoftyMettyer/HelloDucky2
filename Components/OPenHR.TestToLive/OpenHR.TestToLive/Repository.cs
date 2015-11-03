@@ -103,7 +103,7 @@ namespace OpenHR.TestToLive
             }
 
             // Assign the data lists back to the EF structures
-            liveDb.tbsys_workflows.Add(importObjects.AllWorkflows.First());
+            liveDb.ASRSysWorkflows.Add(importObjects.AllWorkflows.First());
             liveDb.ASRSysWorkflowLinks.AddRange(importObjects.AllLinks);
             liveDb.ASRSysWorkflowElementValidations.AddRange(importObjects.AllValidations);
             liveDb.ASRSysWorkflowElements.AddRange(importObjects.AllElements);
@@ -170,10 +170,10 @@ namespace OpenHR.TestToLive
 
 				LogData("Loading all WF headers...",null);
 
-  			int WFCount = db.tbsys_workflows.ToList().Count();
+  			int WFCount = db.ASRSysWorkflows.ToList().Count();
 				LogData("{0} Records loaded.", WFCount);
 
-				foreach (tbsys_workflows WFRecord in db.tbsys_workflows)
+				foreach (ASRSysWorkflows WFRecord in db.ASRSysWorkflows)
 				{
 					LogData(string.Format("id: {0} \tname: {1}", WFRecord.id, WFRecord.name),null);
 				}
@@ -234,7 +234,7 @@ namespace OpenHR.TestToLive
 					}
 
 					// Assign the data lists back to the EF structures
-					db.tbsys_workflows.Add(t2l.AllWorkflows.First());
+					db.ASRSysWorkflows.Add(t2l.AllWorkflows.First());
 					db.ASRSysWorkflowLinks.AddRange(t2l.AllLinks);
 					db.ASRSysWorkflowElementValidations.AddRange(t2l.AllValidations);
 					db.ASRSysWorkflowElements.AddRange(t2l.AllElements);
@@ -266,8 +266,8 @@ namespace OpenHR.TestToLive
 			MaxWFId++;
 			LogData("Bumping WF id's to {0}", MaxWFId);
 			t2l.AllWorkflows.First().id = MaxWFId;
-						
-			foreach (ASRSysWorkflowElement item in t2l.AllElements) { item.WorkflowID = MaxWFId; }
+
+            foreach (ASRSysWorkflowElement item in t2l.AllElements) { item.WorkflowID = MaxWFId; }
 
             // Bump the Workflow Link ID's
             int MaxLinkID = db.ASRSysWorkflowLinks.Max(x => x.ID);
@@ -279,10 +279,11 @@ namespace OpenHR.TestToLive
                 item.ID = MaxLinkID;
                 MaxLinkID++;
             }
-						
-			int MaxElementItemID = db.ASRSysWorkflowElementItems.Max(x => x.ID);
-			MaxElementItemID++;
-			LogData("Bumping WF Element Item ID's to start at {0}", MaxElementItemID);
+
+
+            int MaxElementItemID = db.ASRSysWorkflowElementItems.Max(x => x.ID);
+            MaxElementItemID++;
+            LogData("Bumping WF Element Item ID's to start at {0}", MaxElementItemID);
             foreach (ASRSysWorkflowElementItem child in t2l.AllItems)  // ID - Unique, ElementID - FK to WFElement.ID
             {
                 // Bump the grandchildren
@@ -295,9 +296,28 @@ namespace OpenHR.TestToLive
                 MaxElementItemID++;
             }
 
+            int MaxElementColumnID = db.ASRSysWorkflowElementColumns.Max(x => x.ID);
+            MaxElementColumnID++;
+            LogData("Bumping WF Element Columns ID's to start at {0}", MaxElementColumnID);
+            foreach (ASRSysWorkflowElementColumn child in t2l.AllColumns)  // ID - Unique, ElementID - FK to WFElement.ID
+            {
+                child.ID = MaxElementColumnID;
+                MaxElementColumnID++;
+            }
+
+            int MaxElementValidationID = db.ASRSysWorkflowElementValidations.Max(x => x.ID);
+            MaxElementValidationID++;
+            LogData("Bumping WF Element Validations ID's to start at {0}", MaxElementValidationID);
+            foreach (ASRSysWorkflowElementValidation child in t2l.AllValidations)  // ID - Unique, ElementID - FK to WFElement.ID
+            {
+                child.ID = MaxElementValidationID;
+                MaxElementValidationID++;
+            }
+
             // Bump the workflow element ID's
             int MaxElementID = db.ASRSysWorkflowElements.Max(x => x.ID);
             MaxElementID++;
+
             LogData("Bumping WF Element ID's to start at {0}", MaxElementID);
             foreach (ASRSysWorkflowElement item in t2l.AllElements) 
 			{
@@ -314,6 +334,13 @@ namespace OpenHR.TestToLive
 				{
                     if (child.ElementID == CurrentElementID) { child.ElementID = MaxElementID; }
 				}
+
+                foreach (ASRSysWorkflowLinks link in t2l.AllLinks)  // ID - Unique, ElementID - FK to WFElement.ID
+                {
+                    if (link.StartElementID == CurrentElementID) { link.StartElementID = MaxElementID; }
+                    if (link.EndElementID == CurrentElementID) { link.EndElementID = MaxElementID; }
+                }
+
                 // Bump the parent
                 item.ID = MaxElementID;
 				MaxElementID++;
@@ -326,7 +353,7 @@ namespace OpenHR.TestToLive
             {
                 item.ComponentID = MaxExprComponentID;
                 MaxExprComponentID++;
-            }
+            }                      
             // Bump the Expression ID's
             int MaxExprID = db.ASRSysExpressions.Max(x => x.ExprID);
             MaxExprID++;
@@ -355,14 +382,14 @@ namespace OpenHR.TestToLive
 
 		private static int GetMaxWFId(npg_openhr8_2Entities db)
 		{
-            int MaxId = db.tbsys_workflows.Max(x => x.id);
+            int MaxId = db.ASRSysWorkflows.Max(x => x.id);
 			return MaxId;
 		}
 
 		private static void ExtractAll(T2LClass t2l, npg_openhr8_2Entities db, int WFkey)
 		{
 			// Select single ASRSysWorkflows
-			var SingleWFRecord = db.tbsys_workflows.Where(x => x.id == WFkey);  // int WFkey
+			var SingleWFRecord = db.ASRSysWorkflows.Where(x => x.id == WFkey);  // int WFkey
             SingleWFRecord.First().description = SingleWFRecord.First().description.TrimEnd(' ');
             //WFCount = SingleWFRecord.ToList().Count();
             LogData("{0} WF Records loaded.", SingleWFRecord.ToList().Count());

@@ -37,6 +37,6 @@ namespace OpenHR.TestToLive
         public virtual DbSet<ASRSysWorkflowElement> ASRSysWorkflowElements { get; set; }
         public virtual DbSet<ASRSysWorkflowElementValidation> ASRSysWorkflowElementValidations { get; set; }
         public virtual DbSet<ASRSysWorkflowLinks> ASRSysWorkflowLinks { get; set; }
-        public virtual DbSet<tbsys_workflows> tbsys_workflows { get; set; }
+        public virtual DbSet<ASRSysWorkflows> ASRSysWorkflows { get; set; }
     }
 }

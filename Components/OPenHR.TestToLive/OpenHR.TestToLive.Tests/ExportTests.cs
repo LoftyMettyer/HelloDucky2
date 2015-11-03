@@ -23,10 +23,10 @@ namespace OpenHR.TestToLive.Tests
         {
             var export = new OpenHR.TestToLive.Repository();
 
-            //export.Connection ("sa", "asr", "openhr81pe", ".\\sql2014");
-            export.Connection("sa", "asr", "npg_openhr8_2", "HARPDEV02");
+            export.Connection ("sa", "asr", "openhr81pe", ".\\sql2014");
+            //export.Connection("sa", "asr", "npg_openhr8_2", "HARPDEV02");
 
-            var result = export.ExportDefinition(4);
+            var result = export.ExportDefinition(12);
 
      //       Assert.Fail();
         }
@@ -35,8 +35,8 @@ namespace OpenHR.TestToLive.Tests
         public void TestImport()
         {
             var import = new OpenHR.TestToLive.Repository();
-            //import.Connection("sa", "asr", "openhr81pe", ".\\sql2014");
-            import.Connection("sa", "asr", "npg_openhr8_2", "HARPDEV02");
+            import.Connection("sa", "asr", "openhr81pe", ".\\sql2014");
+            //import.Connection("sa", "asr", "npg_openhr8_2", "HARPDEV02");
 
             var result = import.ImportDefinitions();
 

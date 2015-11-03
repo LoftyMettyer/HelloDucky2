@@ -12,7 +12,7 @@ namespace OpenHR.TestToLive
     using System;
     using System.Collections.Generic;
     
-    public partial class tbsys_workflows
+    public partial class ASRSysWorkflows
     {
         public int id { get; set; }
         public string name { get; set; }
@@ -23,6 +23,5 @@ namespace OpenHR.TestToLive
         public string queryString { get; set; }
         public Nullable<int> PictureID { get; set; }
         public Nullable<bool> HasTargetIdentifier { get; set; }
-
     }
 }

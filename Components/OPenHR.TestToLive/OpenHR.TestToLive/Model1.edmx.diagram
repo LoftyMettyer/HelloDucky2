@@ -13,7 +13,7 @@
         <EntityTypeShape EntityType="npg_openhr8_2Model.ASRSysWorkflowElement" Width="1.5" PointX="4" PointY="4.25" IsExpanded="true" />
         <EntityTypeShape EntityType="npg_openhr8_2Model.ASRSysWorkflowElementValidation" Width="1.5" PointX="6.25" PointY="2.75" IsExpanded="true" />
         <EntityTypeShape EntityType="npg_openhr8_2Model.ASRSysWorkflowLinks" Width="1.5" PointX="3.375" PointY="0.75" />
-        <EntityTypeShape EntityType="npg_openhr8_2Model.tbsys_workflows" Width="1.5" PointX="0.75" PointY="1.5" />
+        <EntityTypeShape EntityType="npg_openhr8_2Model.ASRSysWorkflows" Width="1.5" PointX="0.75" PointY="1.5" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
