@@ -30,6 +30,11 @@
 <%--Base stylesheets--%>
 
 <%If Session("SSIMode") = False Then
+		
+		'theme and layout
+		Response.Write("<link href=""" & Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css") & """ rel=""stylesheet"" type=""text/css"" />")
+		Response.Write("<link href=""" & Url.LatestContent("~/Content/DashboardStyles/themes/white.css") & """ rel=""stylesheet"" type=""text/css"" />")
+		
 		Response.Write("<link href=""" & Url.LatestContent("~/Content/font-awesome.min.css") & """ rel=""stylesheet"" type=""text/css"" />")
 		Response.Write("<link href=""" & Url.LatestContent("~/Content/Site.css") & """ rel=""stylesheet"" type=""text/css"" />")
 		Response.Write("<link href=""" & Url.LatestContent("~/Content/OpenHR.css") & """ rel=""stylesheet"" type=""text/css"" />")

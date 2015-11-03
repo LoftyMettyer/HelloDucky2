@@ -364,8 +364,6 @@
     <Content Include="Content\images\Utilities.gif" />
     <Content Include="Content\images\warning.png" />
     <Content Include="Content\jquery.gridster.min.css" />
-    <Content Include="Content\jquery.jqGrid\ellipsis-xbl.xml" />
-    <Content Include="Content\jquery.jqGrid\ui.jqgrid.css" />
     <Content Include="Content\jquery.mCustomScrollbar.css" />
     <Content Include="Content\jquery.mCustomScrollbar.min.css">
       <DependentUpon>jquery.mCustomScrollbar.css</DependentUpon>

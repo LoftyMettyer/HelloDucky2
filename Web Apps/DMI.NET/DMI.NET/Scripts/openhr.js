@@ -676,6 +676,7 @@
 					var iframe = window.top.document.getElementById('iframe_' + multiwindowid);
 					iframe = (iframe.contentWindow) ? iframe.contentWindow : (iframe.contentDocument.document) ? iframe.contentDocument.document : iframe.contentDocument;
 					iframe.document.open();
+					iframe.document.write("<!DOCTYPE html>");
 					//Populate the iframe with the AJAX response
 					iframe.document.write("<div id='workframe' name='mwid_" + multiwindowid + "' class='absolutefull'>" +
 						html +
