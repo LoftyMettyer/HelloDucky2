@@ -10,6 +10,7 @@ using OpenHR.TestToLive.Enums;
 using System.Data.SqlClient;
 using System.Data.Entity.Core.EntityClient;
 using System.Data.Entity.Validation;
+using System.Text;
 
 namespace OpenHR.TestToLive
 {
@@ -44,9 +45,10 @@ namespace OpenHR.TestToLive
             _connection = entityBuilder.ToString();
         }
 
-        public string ExportDefinition(int Id) {
+        public string ExportDefinition(int Id, string fileName) {
 
             var liveDb = new npg_openhr8_2Entities(_connection);
+            var output = new StringBuilder();
 
             var copiedObjects = new T2LClass();
             ExtractAll(copiedObjects, liveDb, Id);
@@ -58,25 +60,30 @@ namespace OpenHR.TestToLive
             ConfirmSize(copiedObjects);
             DataContractSerializer AllWFSerializer = new DataContractSerializer(copiedObjects.GetType());
 
-            XmlWriter WFWriter = XmlWriter.Create(File.CreateText(string.Format("allworkflow.xml")));
+            XmlWriter WFWriter = XmlWriter.Create(File.CreateText(string.Format(fileName)));
+            //XmlWriter WFWriter = XmlWriter.Create(output);
+
             AllWFSerializer.WriteObject(WFWriter, copiedObjects);
             WFWriter.Flush();
             WFWriter.Close();
             LogData("Done", null);
 
+            //return output.ToString();
             return WFWriter.ToString();
+            
         }
         
-        public RepositoryStatus ImportDefinitions()
+        public RepositoryStatus ImportDefinitions(string inputFile)
         {
             var importObjects = new T2LClass();
 
             var liveDb = new npg_openhr8_2Entities(_connection);
 
+
             // Load the XML
             LogData("Reading allworkflow.xml...", null);
             DataContractSerializer AllWFSerializer = new DataContractSerializer(importObjects.GetType());
-            XmlReader WFReader = XmlReader.Create("allworkflow.xml");
+            XmlReader WFReader = XmlReader.Create(inputFile);
             importObjects = (T2LClass)AllWFSerializer.ReadObject(WFReader);
             ConfirmSize(importObjects);
 
@@ -726,6 +733,11 @@ namespace OpenHR.TestToLive
 				}
 			}
 		}
+
+        private bool ValidateXML(string inputData)
+        {
+            return true;
+        }
 
     }
 }

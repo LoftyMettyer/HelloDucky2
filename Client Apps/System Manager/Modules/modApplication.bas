@@ -1931,9 +1931,9 @@ Public Function CreateQueryDefs() As Boolean
   On Error GoTo ErrorTrap
 
   Dim sSQL As String
-  Dim bOK As Boolean
+  Dim bok As Boolean
 
-  bOK = True
+  bok = True
 
   ' spadmin_gettables
   sSQL = "SELECT t.tableid AS ID" & _
@@ -2089,11 +2089,11 @@ Public Function CreateQueryDefs() As Boolean
   daoDb.CreateQueryDef "spadmin_getmasks", sSQL
 
 TidyUpAndExit:
-  CreateQueryDefs = bOK
+  CreateQueryDefs = bok
   Exit Function
   
 ErrorTrap:
-  bOK = False
+  bok = False
   MsgBox "Error creating spadmin functions on the TempDB"
   Resume TidyUpAndExit
 
@@ -2170,14 +2170,14 @@ End Sub
 
 Public Sub AttemptReLogin()
 
-  Dim bOK As Boolean
+  Dim bok As Boolean
   Dim iRetryCount As Integer
   Dim iAnswer As Integer
  
   iRetryCount = 0
-  bOK = False
+  bok = False
 
-  Do While Not bOK
+  Do While Not bok
     iRetryCount = iRetryCount + 1
     iAnswer = MsgBox("Your network connectivity has been lost." & vbCrLf & vbCrLf _
       & "Would you like to attempt to automatically relogin? " & vbCrLf & vbCrLf _
@@ -2186,7 +2186,7 @@ Public Sub AttemptReLogin()
     , vbCritical + vbYesNo, App.Title)
     
     If iAnswer = 6 Then
-      bOK = AttemptConnection
+      bok = AttemptConnection
     Else
       GoTo Quit
     End If
@@ -2230,13 +2230,55 @@ Public Function ImportDefinitions() As Boolean
 
   Dim objImport As New OpenHR_TestToLive.Repository
   Dim status As OpenHR_TestToLive.RepositoryStatus
+  Dim sOutputFileName As String
+  Dim sMessage As String
+  Dim bok As Boolean
   
-' Validation to only enable if theer are no pending changes
+  ' Validation to only enable if theer are no pending changes
 
+  ' Get the desired output location
+  With frmSysMgr.CommonDialog1
+  
+    .Filter = "XML File (*.xml)"
+    .CancelError = False
+    .DialogTitle = "Import file"
+    .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames
+    
+    .ShowOpen
+    
+    If .FileName <> vbNullString Then
+      If Len(.FileName) > 255 Then
+        MsgBox "Path and file name must not exceed 255 characters in length", vbExclamation, frmSysMgr.Caption
+      Else
+        sOutputFileName = .FileName
+      End If
+    End If
+  
+  End With
 
   objImport.Connection gsUserName, gsPassword, gsDatabaseName, gsServerName
-  status = objImport.ImportDefinitions()
+  status = objImport.ImportDefinitions(sOutputFileName)
+
+  If status = RepositoryStatus_DefinitionsImported Then
+    sMessage = "Definitions imported successfully" & vbCrLf & vbCrLf & "System Manager will now reload"
+    bok = True
+  Else
+    sMessage = "Error Importing Definition"
+    bok = False
+  End If
+
+  MsgBox sMessage, vbOKOnly & vbInformation, "OpenHR System Manager"
 
   ' Now log back out and in again to update all the access tables
+  If bok Then
+    UnLoad frmSysMgr
+    ' Close the temporary database.
+    If Forms.Count < 1 Then
+      If Not daoDb Is Nothing Then
+        daoDb.Close
+      End If
+      Main
+    End If
+  End If
 
 End Function

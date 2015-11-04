@@ -1,5 +1,6 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmWorkflowOpen 
    Caption         =   "Workflow Designer"
    ClientHeight    =   6285
@@ -204,10 +205,18 @@ Begin VB.Form frmWorkflowOpen
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9234
+            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
+   End
+   Begin MSComDlg.CommonDialog CommonDialog1 
+      Left            =   0
+      Top             =   0
+      _ExtentX        =   847
+      _ExtentY        =   847
+      _Version        =   393216
    End
 End
 Attribute VB_Name = "frmWorkflowOpen"
@@ -1097,13 +1106,33 @@ Private Sub cmdExport_Click()
   Dim iWorkflowId As Integer
   Dim objTestToLive As New OpenHR_TestToLive.Repository
   Dim sXML As String
+  Dim sOutputFileName As String
   
   iWorkflowId = WorkflowID
   fOK = (iWorkflowId > 0)
 
-  If fOK Then
+  With CommonDialog1
+  
+    .Filter = "XML File (*.xml)"
+    .CancelError = False
+    .DialogTitle = "Export file"
+    .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames
+    
+    .ShowSave
+    
+    If .FileName <> vbNullString Then
+      If Len(.FileName) > 255 Then
+        MsgBox "Path and file name must not exceed 255 characters in length", vbExclamation, Me.Caption
+      Else
+        sOutputFileName = .FileName
+      End If
+    End If
+  
+  End With
+
+  If fOK And Len(sOutputFileName) > 0 Then
     objTestToLive.Connection gsUserName, gsPassword, gsDatabaseName, gsServerName
-    sXML = objTestToLive.ExportDefinition(iWorkflowId)
+    sXML = objTestToLive.ExportDefinition(iWorkflowId, sOutputFileName)
   End If
 
 End Sub
@@ -1723,7 +1752,7 @@ Private Sub Form_Resize()
     cmdProperties.Left = cmdNew.Left
     cmdPrint.Left = cmdNew.Left
     cmdExport.Left = cmdNew.Left
-    cmdOk.Left = cmdNew.Left
+    cmdOK.Left = cmdNew.Left
   End With
   
   With lstItems
@@ -1731,7 +1760,7 @@ Private Sub Form_Resize()
     txtDesc.Top = .Top + .Height + YGAP
   End With
     
-  cmdOk.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOk.Height
+  cmdOK.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOK.Height
     
   ' Get rid of the icon off the form
   RemoveIcon Me

@@ -15,20 +15,26 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_1625F34FCE6CFE5DE6D5FAC63C93EFE4"
+        "MsmKey" = "8:_216E46F9024FB156E96B8ED4297D9F6F"
         "OwnerKey" = "8:_D972E1B0063F467EB7FA47CF8559EB67"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_A5AF2112BA2044BA1A830554931F2F21"
+        "MsmKey" = "8:_216E46F9024FB156E96B8ED4297D9F6F"
+        "OwnerKey" = "8:_C506B4B0CB0BCD62F9C626730C256A58"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_82A177C2810BE6A17D0621352EC0E07C"
         "OwnerKey" = "8:_D972E1B0063F467EB7FA47CF8559EB67"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_A5AF2112BA2044BA1A830554931F2F21"
-        "OwnerKey" = "8:_1625F34FCE6CFE5DE6D5FAC63C93EFE4"
+        "MsmKey" = "8:_C506B4B0CB0BCD62F9C626730C256A58"
+        "OwnerKey" = "8:_D972E1B0063F467EB7FA47CF8559EB67"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -58,13 +64,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1625F34FCE6CFE5DE6D5FAC63C93EFE4"
+        "OwnerKey" = "8:_C506B4B0CB0BCD62F9C626730C256A58"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A5AF2112BA2044BA1A830554931F2F21"
+        "OwnerKey" = "8:_216E46F9024FB156E96B8ED4297D9F6F"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -124,6 +130,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
             }
         }
     }
@@ -154,20 +168,20 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1625F34FCE6CFE5DE6D5FAC63C93EFE4"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_216E46F9024FB156E96B8ED4297D9F6F"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_1625F34FCE6CFE5DE6D5FAC63C93EFE4"
+                    "_216E46F9024FB156E96B8ED4297D9F6F"
                     {
-                    "Name" = "8:EntityFramework.SqlServer.dll"
+                    "Name" = "8:EntityFramework.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:EntityFramework.SqlServer.dll"
+            "SourcePath" = "8:EntityFramework.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_2B237AAA35A540FB8FCC908CECB7B280"
@@ -185,20 +199,40 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A5AF2112BA2044BA1A830554931F2F21"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_82A177C2810BE6A17D0621352EC0E07C"
+            {
+            "SourcePath" = "8:OpenHR.TestToLive.tlb"
+            "TargetName" = "8:OpenHR.TestToLive.tlb"
+            "Tag" = "8:"
+            "Folder" = "8:_2B237AAA35A540FB8FCC908CECB7B280"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:2"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C506B4B0CB0BCD62F9C626730C256A58"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_A5AF2112BA2044BA1A830554931F2F21"
+                    "_C506B4B0CB0BCD62F9C626730C256A58"
                     {
-                    "Name" = "8:EntityFramework.dll"
+                    "Name" = "8:EntityFramework.SqlServer.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:EntityFramework.dll"
+            "SourcePath" = "8:EntityFramework.SqlServer.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_2B237AAA35A540FB8FCC908CECB7B280"
@@ -303,14 +337,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR.TestToLive.Setup"
-        "ProductCode" = "8:{A2520309-98CB-42F2-8E06-B57284866CAA}"
-        "PackageCode" = "8:{9044BF82-FD50-4C70-85ED-5597012735DD}"
-        "UpgradeCode" = "8:{8C5A719E-5B85-44C5-938B-D41D1EED2312}"
+        "ProductCode" = "8:{9469E690-31E9-4483-BFE5-E2CA1A2ED108}"
+        "PackageCode" = "8:{850BEB56-91D3-4857-AB19-CE5FFA669E03}"
+        "UpgradeCode" = "8:{D87EB81D-E695-48A1-805B-7B9AC01126F0}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
-        "RemovePreviousVersions" = "11:FALSE"
+        "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "InstallAllUsers" = "11:FALSE"
+        "InstallAllUsers" = "11:TRUE"
         "ProductVersion" = "8:1.0.0"
         "Manufacturer" = "8:Default Company Name"
         "ARPHELPTELEPHONE" = "8:"
@@ -825,7 +859,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D972E1B0063F467EB7FA47CF8559EB67"
             {
-            "SourcePath" = "8:..\\OpenHR.TestToLive\\obj\\Debug\\OpenHR.TestToLive.dll"
+            "SourcePath" = "8:..\\OpenHR.TestToLive\\obj\\Release\\OpenHR.TestToLive.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_2B237AAA35A540FB8FCC908CECB7B280"
