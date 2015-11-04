@@ -49,6 +49,8 @@ namespace OpenHRTestToLive
 
             var liveDb = new npg_openhr8_2Entities(_connection);
             var output = new StringBuilder();
+            var settings = new XmlWriterSettings();
+                settings.CloseOutput = true;
 
             var copiedObjects = new T2LClass();
             ExtractAll(copiedObjects, liveDb, Id);
@@ -56,16 +58,17 @@ namespace OpenHRTestToLive
             //---------------------------------------------------------------------------------------------------------------------------------
             // Write all
 
-            LogData("Saving allworkflow.xml...", null);
+            LogData("Saving {0}...", fileName);
             ConfirmSize(copiedObjects);
             DataContractSerializer AllWFSerializer = new DataContractSerializer(copiedObjects.GetType());
 
-            XmlWriter WFWriter = XmlWriter.Create(File.CreateText(string.Format(fileName)));
+            XmlWriter WFWriter = XmlWriter.Create(File.CreateText(string.Format(fileName)),settings);
             //XmlWriter WFWriter = XmlWriter.Create(output);
 
             AllWFSerializer.WriteObject(WFWriter, copiedObjects);
             WFWriter.Flush();
             WFWriter.Close();
+
             LogData("Done", null);
 
             //return output.ToString();
@@ -81,8 +84,8 @@ namespace OpenHRTestToLive
 
 
             // Load the XML
-            LogData("Reading allworkflow.xml...", null);
-            DataContractSerializer AllWFSerializer = new DataContractSerializer(importObjects.GetType());
+            LogData("Reading {0}...", inputFile);
+      DataContractSerializer AllWFSerializer = new DataContractSerializer(importObjects.GetType());
             XmlReader WFReader = XmlReader.Create(inputFile);
             importObjects = (T2LClass)AllWFSerializer.ReadObject(WFReader);
             ConfirmSize(importObjects);
