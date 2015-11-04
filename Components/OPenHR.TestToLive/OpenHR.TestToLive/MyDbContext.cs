@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 
-namespace OpenHR.TestToLive
+namespace OpenHRTestToLive
 {
     public class MyDbContext : DbContext
     {

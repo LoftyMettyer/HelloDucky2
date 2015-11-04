@@ -1,5 +1,5 @@
 ﻿
-using OpenHR.TestToLive;
+using OpenHRTestToLive;
 using System;
 using System.Collections.Generic;
 

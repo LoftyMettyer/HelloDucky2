@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OpenHR.TestToLive")]
-[assembly: AssemblyDescription("OpenHR.TestToLive")]
+[assembly: AssemblyTitle("OpenHRTestToLive")]
+[assembly: AssemblyDescription("OpenHRTestToLive")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Advanced Computer Software")]
-[assembly: AssemblyProduct("OpenHR.TestToLive")]
+[assembly: AssemblyProduct("OpenHRTestToLive")]
 [assembly: AssemblyCopyright("Copyright © Advanced Computer Software 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

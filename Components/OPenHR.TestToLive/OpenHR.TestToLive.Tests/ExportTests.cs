@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpenHR.TestToLive.Enums;
+using OpenHRTestToLive.Enums;
 
-namespace OpenHR.TestToLive.Tests
+namespace OpenHRTestToLive.Tests
 {
     [TestClass]
     public class ExportTests
@@ -20,7 +20,7 @@ namespace OpenHR.TestToLive.Tests
         [TestMethod()]
         public void TestExport()
         {
-            var export = new OpenHR.TestToLive.Repository();
+            var export = new OpenHRTestToLive.Repository();
             var outputFilename = "c:\\dev\\absdef1.xml";
 
             export.Connection ("sa", "asr", "openhr81pe", ".\\sql2014");

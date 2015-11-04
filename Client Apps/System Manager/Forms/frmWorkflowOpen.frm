@@ -1104,7 +1104,7 @@ Private Sub cmdExport_Click()
 
   Dim fOK As Boolean
   Dim iWorkflowId As Integer
-  Dim objTestToLive As New OpenHR_TestToLive.Repository
+  Dim objTestToLive As New OpenHRTestToLive.Repository
   Dim sXML As String
   Dim sOutputFileName As String
   

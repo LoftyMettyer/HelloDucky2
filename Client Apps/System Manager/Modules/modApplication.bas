@@ -2228,8 +2228,8 @@ End Function
 
 Public Function ImportDefinitions() As Boolean
 
-  Dim objImport As New OpenHR_TestToLive.Repository
-  Dim status As OpenHR_TestToLive.RepositoryStatus
+  Dim objImport As New OpenHRTestToLive.Repository
+  Dim status As OpenHRTestToLive.RepositoryStatus
   Dim sOutputFileName As String
   Dim sMessage As String
   Dim bok As Boolean

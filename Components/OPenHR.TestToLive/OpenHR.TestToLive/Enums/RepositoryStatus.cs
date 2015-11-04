@@ -1,4 +1,4 @@
-﻿namespace OpenHR.TestToLive.Enums
+﻿namespace OpenHRTestToLive.Enums
 {
     public enum RepositoryStatus
     {

@@ -67,14 +67,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenHR.TestToLive\OpenHR.TestToLive.csproj">
-      <Project>{F35ACD91-FCC6-48EA-B545-20DC3DA3F5BC}</Project>
-      <Name>OpenHR.TestToLive</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenHR.TestToLive\OpenHR.TestToLive.csproj">
+      <Project>{f35acd91-fcc6-48ea-b545-20dc3da3f5bc}</Project>
+      <Name>OpenHR.TestToLive</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

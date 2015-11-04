@@ -1,6 +1,6 @@
-﻿using OpenHR.TestToLive.Enums;
+﻿using OpenHRTestToLive.Enums;
 
-namespace OpenHR.TestToLive.Interfaces
+namespace OpenHRTestToLive.Interfaces
 {
     public interface IRepository
     {

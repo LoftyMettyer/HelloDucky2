@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace OpenHR.TestToLive
+namespace OpenHRTestToLive
 {
     using System;
     using System.Collections.Generic;

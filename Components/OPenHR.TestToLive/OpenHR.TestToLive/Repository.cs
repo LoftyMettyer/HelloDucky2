@@ -5,14 +5,14 @@ using System.Linq;
 using System.Xml;
 using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
-using OpenHR.TestToLive.Interfaces;
-using OpenHR.TestToLive.Enums;
+using OpenHRTestToLive.Interfaces;
+using OpenHRTestToLive.Enums;
 using System.Data.SqlClient;
 using System.Data.Entity.Core.EntityClient;
 using System.Data.Entity.Validation;
 using System.Text;
 
-namespace OpenHR.TestToLive
+namespace OpenHRTestToLive
 {
     [ClassInterface(ClassInterfaceType.None)]
     [ComVisible(true)]
