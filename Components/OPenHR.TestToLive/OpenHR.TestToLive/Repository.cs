@@ -360,7 +360,8 @@ namespace OpenHRTestToLive
             {
                 item.ComponentID = MaxExprComponentID;
                 MaxExprComponentID++;
-            }                      
+            }
+
             // Bump the Expression ID's
             int MaxExprID = db.ASRSysExpressions.Max(x => x.ExprID);
             MaxExprID++;
@@ -370,6 +371,7 @@ namespace OpenHRTestToLive
                 int CurrentExprID = item.ExprID;
                 // Bump the PK
                 item.ExprID = MaxExprID;
+                item.UtilityID = MaxWFId;
                 // Bunp the FK's
                 foreach (ASRSysExprComponent child in t2l.AllComponents)
                 {
@@ -379,6 +381,11 @@ namespace OpenHRTestToLive
                 {
                     if (child.ExprID == CurrentExprID) { child.ExprID = MaxExprID; }
                 }
+                foreach (ASRSysWorkflowElementItem child in t2l.AllItems.Where(i => i.CalcID == CurrentExprID))
+                {
+                    child.CalcID = MaxExprID;
+                }
+
                 MaxExprID++;
             }
 
@@ -439,15 +446,15 @@ namespace OpenHRTestToLive
 					LogData("{0} Element Column grandchild records found", GChildWFElementColumn.Count());
 					LogData("Total: {0}", t2l.AllColumns.Count());
 				}
-			}
-			//WFWriter = XmlWriter.Create(File.CreateText(string.Format("workflowelementcolumns.xml")));
-			//DataContractSerializer WFElementColumnSerializer = new DataContractSerializer(t2l.AllColumns.GetType());
-			//WFElementColumnSerializer. WriteObject(WFWriter, t2l.AllColumns.ToList());
-			//WFWriter.Flush();
-			//WFWriter.Close();
+            }
+            //WFWriter = XmlWriter.Create(File.CreateText(string.Format("workflowelementcolumns.xml")));
+            //DataContractSerializer WFElementColumnSerializer = new DataContractSerializer(t2l.AllColumns.GetType());
+            //WFElementColumnSerializer. WriteObject(WFWriter, t2l.AllColumns.ToList());
+            //WFWriter.Flush();
+            //WFWriter.Close();
 
-			// For each WorkFlow Element, select all ElementValidation records
-			foreach (ASRSysWorkflowElement Element in t2l.AllElements)
+            // For each WorkFlow Element, select all ElementValidation records
+            foreach (ASRSysWorkflowElement Element in t2l.AllElements)
 			{
 				ElementId = Element.ID;
 				LogData("Element ID: {0}", ElementId);
@@ -503,7 +510,7 @@ namespace OpenHRTestToLive
 				}
 				else
 					LogData("No Element Item Value great-grandchild records found", null);
-			}
+            }
 			//DataContractSerializer WFElementItemValueSerializer = new DataContractSerializer(t2l.AllValues.GetType());
 			//WFWriter = XmlWriter.Create(File.CreateText(string.Format("workflowelementitemvalue.xml")));
 			//WFElementItemValueSerializer.WriteObject(WFWriter, t2l.AllValues.ToList());
