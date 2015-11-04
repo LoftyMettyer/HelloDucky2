@@ -654,6 +654,7 @@
 								});
 								//set this new screen to 'active'
 								window.top.$('#' + thisMwId).siblings(".ui-dialog-titlebar").removeClass('ui-state-disabled');
+								$.get("SaveSessionVariableState?windowId=" + multiwindowid);
 							},
 							close: function () {								
 								try {
@@ -1693,6 +1694,8 @@
 				window.top.$('#frmData').find('#' + this.id).val(this.value);
 			});
 		}
+
+		$.get("RestoreSessionVariableState?windowId=" + iFrameId);
 
 		OpenHR.setWorkFrameDialogsVisible(true);
 

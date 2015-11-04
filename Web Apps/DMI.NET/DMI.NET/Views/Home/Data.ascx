@@ -32,7 +32,7 @@
 		
 	if (sFatalErrorMsg.length > 0) {
 		OpenHR.messageBox(sFatalErrorMsg);
-		window.location = "Login";
+		window.parent.location.replace("<%:Url.Action("logOff", "account")%>");
 	}
 	else {
 		// Do nothing if the menu controls are not yet instantiated.

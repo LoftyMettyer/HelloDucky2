@@ -1998,10 +1998,10 @@ Namespace Controllers
 								Dim seriesNames As String = ""
 								'See Color Palette details here:http://blogs.msdn.com/b/alexgor/archive/2009/10/06/setting-chart-series-colors.aspx
 								Dim brightPastelColorPalette As Integer() = {15764545, 4306172, 671968, 9593861, 12566463, 6896410, 8578047, 14523410, 4942794, 14375936, 8966899, 8479568, 11057649, 689120, 12489592}
-                                Dim pointNum As Integer
+								Dim pointNum As Integer
 
-                                'Fill missing data
-                                Dim i As Integer
+								'Fill missing data
+								Dim i As Integer
 								Dim j As Integer
 								Dim r As DataRow
 
@@ -2059,19 +2059,19 @@ Namespace Controllers
 										Dim yVal As Integer = CInt(objRow("Aggregate"))
 										Dim pointBackColor As Color
 
-                                        pointNum = CInt(objRow("HORIZONTAL_ID"))
+										pointNum = CInt(objRow("HORIZONTAL_ID"))
 
-                                        If objRow("COLOUR") = 16777215 Then
-                                            pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
-                                        Else
-                                            Try
+										If objRow("COLOUR") = 16777215 Then
+											pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
+										Else
+											Try
 												pointBackColor = ColorTranslator.FromWin32(objRow("COLOUR"))
 											Catch ex As Exception
 												pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
 											End Try
 										End If
 
-                                        If Not seriesNames.Contains("<" & seriesName & ">") Then
+										If Not seriesNames.Contains("<" & seriesName & ">") Then
 											' Add the series - ONLY if not already added.
 											MultiAxisChart.Series.Add(seriesName)
 
@@ -2111,21 +2111,21 @@ Namespace Controllers
 											End Select
 										End If
 
-                                        If showLabels Then
-                                            MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
-                                                .YValues = New Double() {yVal},
-                                                .AxisLabel = columnName,
-                                                .Color = pointBackColor,
-                                                .IsEmpty = (yVal = 0)
-                             })
-                                        Else
-                                            MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
-                                                .Label = " ",
-                                                .YValues = New Double() {yVal},
-                                                .Color = pointBackColor,
-                                                .IsEmpty = (yVal = 0)
-                                                                                                                                                                             })
-                                        End If
+										If showLabels Then
+											MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
+																																												 .YValues = New Double() {yVal},
+																								.AxisLabel = columnName,
+																																												 .Color = pointBackColor,
+																																												 .IsEmpty = (yVal = 0)
+																																												 })
+										Else
+											MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
+																																											 .Label = " ",
+																																											 .YValues = New Double() {yVal},
+																																											 .Color = pointBackColor,
+																																											 .IsEmpty = (yVal = 0)
+																																											 })
+										End If
 
 										If showLegend = True Then
 											Dim legendAdded As Boolean = False
@@ -2140,10 +2140,10 @@ Namespace Controllers
 
 									End If
 
-                                Next
+								Next
 
-                                'For 2D pie charts with more than one series we need to add a chart area for each series
-                                Dim thisSeries As String
+								'For 2D pie charts with more than one series we need to add a chart area for each series
+								Dim thisSeries As String
 								For Each s As Series In MultiAxisChart.Series
 									'Add a chart area for the series and set its properties
 									thisSeries = s.Name
@@ -2493,8 +2493,8 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
-<ValidateAntiForgeryToken>
-			Function util_run_promptedvalues_submit(value As PromptedValuesModel) As ActionResult
+		<ValidateAntiForgeryToken>
+		Function util_run_promptedvalues_submit(value As PromptedValuesModel) As ActionResult
 
 			Try
 
@@ -2544,34 +2544,34 @@ Namespace Controllers
 
 			End Try
 
-            ' Act dependent on utility type
-            Select Case value.UtilType
-                Case UtilityType.utlDataTransfer
-                    Dim message = RunDataTransfer(value.ID)
-                    Return View("util_run_message", message)
+			' Act dependent on utility type
+			Select Case value.UtilType
+				Case UtilityType.utlDataTransfer
+					Dim message = RunDataTransfer(value.ID)
+					Return View("util_run_message", message)
 
-                Case Else
-                    Return View("util_run", value)
-            End Select
+				Case Else
+					Return View("util_run", value)
+			End Select
 
-        End Function
+		End Function
 
-        Private Function RunDataTransfer(id As Integer) As PostResponse
+		Private Function RunDataTransfer(id As Integer) As PostResponse
 
-            Dim dataTransfer = New clsDataTransferRun
-            dataTransfer.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+			Dim dataTransfer = New clsDataTransferRun
+			dataTransfer.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-            dataTransfer.ExecuteDataTransfer(id)
+			dataTransfer.ExecuteDataTransfer(id)
 
-            Dim message As New PostResponse With {
-                .Message = dataTransfer.StatusMessage
-            }
+			Dim message As New PostResponse With {
+					.Message = dataTransfer.StatusMessage
+			}
 
-            Return message
+			Return message
 
-        End Function
+		End Function
 
-        <HttpPost>
+		<HttpPost>
 		<ValidateAntiForgeryToken>
 		Public Function util_run_crosstab_downloadoutput() As FilePathResult
 
@@ -4423,29 +4423,29 @@ Namespace Controllers
 				Dim objMergeDocument As Code.MailMergeRun = Session("MailMerge_CompletedDocument")
 
 				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
-        Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Mail merge completed successfully.")) ' Send completion message
+				Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Mail merge completed successfully."))	' Send completion message
 
-        Dim filename As String = objMergeDocument.OutputFileName
-        For Each c In IO.Path.GetInvalidFileNameChars
-          filename = filename.Replace(c, "")
-        Next
+				Dim filename As String = objMergeDocument.OutputFileName
+				For Each c In IO.Path.GetInvalidFileNameChars
+					filename = filename.Replace(c, "")
+				Next
 
-        Return File(objMergeDocument.MergeDocument, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
-          , Path.GetFileName(filename))
+				Return File(objMergeDocument.MergeDocument, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
+					, Path.GetFileName(filename))
 
-      Catch ex As Exception
-        ' error generated - return error
-        Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message)) ' marks the download as complete on the client		
-        Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+			Catch ex As Exception
+				' error generated - return error
+				Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
 
-      Finally
+			Finally
 				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client	
 			End Try
 
-    End Function
+		End Function
 
-    <HttpPost()>
-    <ValidateAntiForgeryToken>
+		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function tbTransferBookingFind_Submit(form As DelegateBookingModel)
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
@@ -5506,6 +5506,22 @@ Namespace Controllers
 				Session("defseltype") = utiltype
 			End If
 			Session("IsLoadedFromReportDefinition") = isLoadedFromReportDefinition
+		End Sub
+
+
+		Public Sub SaveSessionVariableState(windowId As Integer)
+
+			Dim sessionVariables = CType(Session("SessionVariables"), SessionVariablesCollection)
+			sessionVariables.UpdateState(windowId)
+			Session("SessionVariables") = sessionVariables
+
+		End Sub
+
+		Public Sub RestoreSessionVariableState(windowId As Integer)
+
+			Dim sessionVariables = CType(Session("SessionVariables"), SessionVariablesCollection)
+			sessionVariables.RestoreState(windowId)
+
 		End Sub
 
 	End Class

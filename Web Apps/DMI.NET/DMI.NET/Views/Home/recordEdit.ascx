@@ -80,7 +80,7 @@
 		if (sErrMsg.length > 0) {
 			fOK = false;
 			OpenHR.messageBox(sErrMsg);
-			window.parent.location.replace("login");
+			window.parent.location.replace("<%:Url.Action("logOff", "account")%>");
 		}
 
 		if (fOK == true) {
