@@ -205,6 +205,8 @@ Begin VB.Form frmWorkflowOpen
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9234
+            TextSave        =   ""
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -1109,25 +1111,6 @@ Private Sub cmdExport_Click()
   iWorkflowId = WorkflowID
   fOK = (iWorkflowId > 0)
 
-'  With CommonDialog1
-'
-'    .Filter = "XML File (*.xml)"
-'    .CancelError = False
-'    .DialogTitle = "Export file"
-'    .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames
-'
-'    .ShowSave
-'
-'    If .FileName <> vbNullString Then
-'      If Len(.FileName) > 255 Then
-'        MsgBox "Path and file name must not exceed 255 characters in length", vbExclamation, Me.Caption
-'      Else
-'        sOutputFileName = .FileName
-'      End If
-'    End If
-'
-'  End With
-
   If fOK Then
     Dim workflowname As String
     workflowname = "Exported Workflow_" + lstItems.SelectedItem + ".xml"
@@ -1135,7 +1118,6 @@ Private Sub cmdExport_Click()
     sOutputFileName = workflowname
   
     With CommonDialog1
-      .InitDir = "c:\"
       .FileName = sOutputFileName
       .CancelError = False
       .DialogTitle = "Select a filename for your XML workflow export..."
@@ -1779,7 +1761,7 @@ Private Sub Form_Resize()
     cmdProperties.Left = cmdNew.Left
     cmdPrint.Left = cmdNew.Left
     cmdExport.Left = cmdNew.Left
-    cmdOk.Left = cmdNew.Left
+    cmdOK.Left = cmdNew.Left
   End With
   
   With lstItems
@@ -1787,7 +1769,7 @@ Private Sub Form_Resize()
     txtDesc.Top = .Top + .Height + YGAP
   End With
     
-  cmdOk.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOk.Height
+  cmdOK.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOK.Height
     
   ' Get rid of the icon off the form
   RemoveIcon Me
