@@ -112,6 +112,13 @@ namespace OpenHRTestToLive
                 MaxWFId = BumpWorkflowIDs(importObjects, liveDb, MaxWFId);
             }
 
+            // Disable all imported workflows
+            foreach (var workflow in importObjects.AllWorkflows)
+            {
+                workflow.enabled = false;
+            }
+
+
             // Assign the data lists back to the EF structures
             liveDb.ASRSysWorkflows.Add(importObjects.AllWorkflows.First());
             liveDb.ASRSysWorkflowLinks.AddRange(importObjects.AllLinks);
@@ -656,7 +663,7 @@ namespace OpenHRTestToLive
 		static void LogData(string s, object args)
 		{
 			Console.WriteLine(s,args);
-		}
+        }
 
 		//-------------------------------------------------------------------------------------------------------------------------------------
 

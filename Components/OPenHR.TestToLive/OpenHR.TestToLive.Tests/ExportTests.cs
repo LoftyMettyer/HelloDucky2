@@ -26,7 +26,7 @@ namespace OpenHRTestToLive.Tests
             export.Connection ("sa", "asr", "openhr81pe", ".\\sql2014");
             //export.Connection("sa", "asr", "npg_openhr8_2", "HARPDEV02");
 
-            var result = export.ExportDefinition(12, outputFilename);
+            var result = export.ExportDefinition(10, outputFilename);
 
             Assert.IsInstanceOfType(result, typeof(string));
         }
