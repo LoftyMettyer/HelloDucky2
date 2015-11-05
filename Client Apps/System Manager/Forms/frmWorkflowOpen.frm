@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.4#0"; "comctl32.Ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmWorkflowOpen 
    Caption         =   "Workflow Designer"
    ClientHeight    =   6285
@@ -1112,10 +1112,10 @@ Private Sub cmdExport_Click()
   fOK = (iWorkflowId > 0)
 
   If fOK Then
-    Dim workflowname As String
-    workflowname = "Exported Workflow_" + lstItems.SelectedItem + ".xml"
+    Dim WorkflowName As String
+    WorkflowName = "Exported Workflow_" + lstItems.SelectedItem + ".xml"
   
-    sOutputFileName = workflowname
+    sOutputFileName = WorkflowName
   
     With CommonDialog1
       .FileName = sOutputFileName
@@ -1514,7 +1514,7 @@ Public Function RefreshWorkflows() As Boolean
   ' Column 1 = workflow ID
   ' Column 2 = description
   ' Column 3 = enabled
-  ReDim mavWorkflowInfo(4, 0)
+  ReDim mavWorkflowInfo(5, 0)
   
   lngWorkflowID = WorkflowID
 
@@ -1522,7 +1522,7 @@ Public Function RefreshWorkflows() As Boolean
 
   ' Define the selection string which determines
   ' what objects are displayed on the selection form.
-  sSQL = "SELECT name, ID, description, enabled, locked" & _
+  sSQL = "SELECT name, ID, description, enabled, locked, changed" & _
     " FROM tmpWorkflows" & _
     " WHERE deleted = FALSE"
   
@@ -1550,11 +1550,12 @@ Public Function RefreshWorkflows() As Boolean
       Set objListItem = lstItems.ListItems.Add(, , !Name)
       objListItem.Tag = !ID
       
-      ReDim Preserve mavWorkflowInfo(4, UBound(mavWorkflowInfo, 2) + 1)
+      ReDim Preserve mavWorkflowInfo(5, UBound(mavWorkflowInfo, 2) + 1)
       mavWorkflowInfo(1, UBound(mavWorkflowInfo, 2)) = !ID
       mavWorkflowInfo(2, UBound(mavWorkflowInfo, 2)) = !Description
       mavWorkflowInfo(3, UBound(mavWorkflowInfo, 2)) = !Enabled
       mavWorkflowInfo(4, UBound(mavWorkflowInfo, 2)) = !Locked
+      mavWorkflowInfo(5, UBound(mavWorkflowInfo, 2)) = !Changed
       
       If !ID = lngWorkflowID Then
         iSelectedWorkflow = lstItems.ListItems.Count
@@ -1618,6 +1619,7 @@ Private Sub RefreshControls()
   Dim bLocked As Boolean
   Dim iLoop As Integer
   Dim sDescription As String
+  Dim bModified As Boolean
   
   fSelectionMade = (Not (lstItems.SelectedItem Is Nothing))
  
@@ -1629,6 +1631,7 @@ Private Sub RefreshControls()
         sDescription = CStr(mavWorkflowInfo(2, iLoop))
         bLocked = mavWorkflowInfo(4, iLoop)
         mblnWorkflowEnabled = CBool(mavWorkflowInfo(3, iLoop))
+        bModified = CBool(mavWorkflowInfo(5, iLoop))
         Exit For
       End If
     Next
@@ -1642,7 +1645,7 @@ Private Sub RefreshControls()
   cmdDelete.Enabled = fSelectionMade And Not mblnReadOnly
   cmdProperties.Enabled = fSelectionMade
   cmdPrint.Enabled = fSelectionMade
-  cmdExport.Enabled = fSelectionMade
+  cmdExport.Enabled = fSelectionMade And Not bModified
   
   txtDesc.Text = sDescription
 
@@ -1761,7 +1764,7 @@ Private Sub Form_Resize()
     cmdProperties.Left = cmdNew.Left
     cmdPrint.Left = cmdNew.Left
     cmdExport.Left = cmdNew.Left
-    cmdOK.Left = cmdNew.Left
+    cmdOk.Left = cmdNew.Left
   End With
   
   With lstItems
@@ -1769,7 +1772,7 @@ Private Sub Form_Resize()
     txtDesc.Top = .Top + .Height + YGAP
   End With
     
-  cmdOK.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOK.Height
+  cmdOk.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOk.Height
     
   ' Get rid of the icon off the form
   RemoveIcon Me
