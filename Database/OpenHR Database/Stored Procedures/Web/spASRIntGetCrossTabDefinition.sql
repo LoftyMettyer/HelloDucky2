@@ -51,7 +51,8 @@ BEGIN
 			@psOutputEmailSubject	varchar(MAX) = '',
 			@psOutputEmailAttachAs	varchar(MAX) = '',
 			@psOutputFilename		varchar(MAX) = '',
- 			@piTimestamp			integer	= 0;	
+ 			@piTimestamp			integer	= 0,
+			@piCategoryID		integer;	
 
 	DECLARE	@iCount			integer,
 			@sTempHidden	varchar(MAX),
@@ -142,8 +143,14 @@ BEGIN
 		SET @psOutputEmailName = '';
 	END
 
+	-- Get's the category id associated with the crossTab report. Return 0 if not found
+	SET @piCategoryID = 0
+	SELECT @piCategoryID = ISNULL(categoryid,0)
+		FROM [dbo].[tbsys_objectcategories]
+		WHERE objectid = @piReportID AND objecttype = 1
+
 	SELECT @psErrorMsg AS ErrorMsg, @psReportName AS Name, @psReportOwner AS [Owner], @psReportDesc AS [Description]
-		, @piBaseTableID AS [BaseTableID], @piSelection AS SelectionType
+		, @piBaseTableID AS [BaseTableID],  @piCategoryID As CategoryID, @piSelection AS SelectionType
 		, @piPicklistID AS PicklistID, @psPicklistName AS PicklistName, @pfPicklistHidden AS [IsPicklistHidden]
 		, @piFilterID AS FilterID, @psFilterName AS [FilterName], @pfFilterHidden AS [IsFilterHidden]
 		, @pfPrintFilterHeader AS [PrintFilterHeader]
@@ -162,4 +169,3 @@ BEGIN
 		CASE WHEN @pfPicklistHidden = 1 OR @pfFilterHidden = 1 THEN 'HD' ELSE '' END AS [BaseViewAccess];
 
 END
-

@@ -4,7 +4,11 @@ CREATE PROCEDURE [dbo].[spASRIntValidateCrossTab] (
 	@piTimestamp 		integer, 
 	@piBasePicklistID	integer, 
 	@piBaseFilterID 	integer, 
-	@piEmailGroupID 	integer, 
+	@piEmailGroupID 	integer,
+	
+	/* Category to check it exists in table or not */
+	@piCategoryID 		integer,
+	 
 	@psHiddenGroups 	varchar(MAX), 
 	@psErrorMsg			varchar(MAX)	OUTPUT,
 	@piErrorCode		varchar(MAX)	OUTPUT, /* 	0 = no errors, 
@@ -200,6 +204,25 @@ BEGIN
 			SET @piErrorCode = 1
 		END
 	END
+
+	--//------------------------------------------------------------
+
+	IF (@piErrorCode = 0) AND (@piCategoryID > 0)
+	BEGIN
+		/* Check that the category exists. */
+		SELECT @iCount = COUNT(*)
+		FROM [dbo].[tbuser_Object_Categories_Table]
+		WHERE ID = @piCategoryID And _deleted = 'True'
+
+		IF @iCount = 1
+		BEGIN
+			SET @psErrorMsg = 'The category has been deleted by another user.'
+			SET @piErrorCode = 1
+		END
+	END
+
+	--//------------------------------------------------------------
+
 
 	IF (@piErrorCode = 0) AND (@piUtilID > 0) AND (len(@psHiddenGroups) > 0)
 	BEGIN

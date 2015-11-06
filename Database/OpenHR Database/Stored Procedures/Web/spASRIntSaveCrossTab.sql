@@ -40,6 +40,7 @@ CREATE PROCEDURE [dbo].[spASRIntSaveCrossTab] (
 	@psAccess			varchar(MAX),
 	@psJobsToHide		varchar(MAX),
 	@psJobsToHideGroups	varchar(MAX),
+	@piCategoryID		integer,
 	@piID				integer	OUTPUT
 )
 AS
@@ -150,6 +151,9 @@ BEGIN
 		SET @fIsNew = 1
 		/* Get the ID of the inserted record.*/
 		SELECT @piID = MAX(CrossTabID) FROM ASRSysCrossTab
+
+		Exec [dbo].[spsys_saveobjectcategories] 1, @piID, @piCategoryID
+
 	END
 	ELSE
 	BEGIN
@@ -193,6 +197,9 @@ BEGIN
 			OutputEmailAttachAs = @psOutputEmailAttachAs,
 			OutputFileName = @psOutputFilename
 		WHERE CrossTabID = @piID
+
+		Exec [dbo].[spsys_saveobjectcategories] 1, @piID, @piCategoryID
+
 	END
 
 	DELETE FROM ASRSysCrossTabAccess WHERE ID = @piID
@@ -305,3 +312,4 @@ BEGIN
 	END
 	
 END
+

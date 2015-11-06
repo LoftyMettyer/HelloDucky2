@@ -27,6 +27,7 @@ CREATE PROCEDURE [dbo].[spASRIntSaveMailMerge] (
 	@psJobsToHideGroups	varchar(MAX),
 	@psColumns			varchar(MAX),
 	@psColumns2			varchar(MAX),
+	@piCategoryID		integer,
 	@piID				integer	OUTPUT
 )
 AS
@@ -125,6 +126,10 @@ BEGIN
 		SET @fIsNew = 1
 		/* Get the ID of the inserted record.*/
 		SELECT @piID = MAX(MailMergeID) FROM ASRSysMailMergeName
+
+		/* Insert the category into the table tbsys_objectcategories */
+		Exec [dbo].[spsys_saveobjectcategories] 9, @piID, @piCategoryID
+
 	END
 	ELSE
 	BEGIN
@@ -159,6 +164,10 @@ BEGIN
 		/* Delete existing report details. */
 		DELETE FROM ASRSysMailMergeColumns
 		WHERE MailMergeID = @piID
+
+		/* Update the category into the table tbsys_objectcategories */
+		Exec [dbo].[spsys_saveobjectcategories] 9, @piID, @piCategoryID
+
 	END
 	/* Create the details records. */
 	SET @sTemp = @psColumns

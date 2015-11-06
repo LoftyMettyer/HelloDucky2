@@ -60,7 +60,8 @@ BEGIN
 		@psParent2PicklistName		varchar(255) = '',
 		@pfParent2PicklistHidden	bit,
 		@psInfoMsg					varchar(MAX) = '',
-		@pfIgnoreZeros				bit;
+		@pfIgnoreZeros				bit,
+		@piCategoryID		integer;
 
 	EXEC [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT;
 	
@@ -108,7 +109,7 @@ BEGIN
 		@pfIgnoreZeros = IgnoreZeros
 	FROM [dbo].[ASRSysCustomReportsName]
 	WHERE ID = @piReportID;
-
+		
 	/* Check the current user can view the report. */
 	exec [dbo].[spASRIntCurrentUserAccess]
 		2, 
@@ -385,9 +386,15 @@ BEGIN
 		SET @psOutputEmailName = '';
 	END
 
+	-- Get's the category id associated with the custom report. Return 0 if not found
+	SET @piCategoryID = 0
+	SELECT @piCategoryID = ISNULL(categoryid,0)
+		FROM [dbo].[tbsys_objectcategories]
+		WHERE objectid = @piReportID AND objecttype = 2
+
 
 	-- Definition
-	SELECT @psReportName AS name, @psReportDesc AS [Description], @piBaseTableID AS baseTableID, @psReportOwner AS [Owner],
+	SELECT @psReportName AS name, @psReportDesc AS [Description], @piCategoryID As CategoryID, @piBaseTableID AS baseTableID, @psReportOwner AS [Owner],
 		CASE WHEN @pfAllRecords = 1 THEN 0 ELSE CASE WHEN ISNULL(@piPicklistID, 0) > 0 THEN 1 ELSE 2 END END AS [SelectionType],
 		@piPicklistID AS PicklistID, @piFilterID AS FilterID,
 		@psPicklistName AS PicklistName, @psFilterName AS FilterName,
@@ -491,5 +498,3 @@ BEGIN
 	ORDER BY T.TableName;
 	
 END
-
-

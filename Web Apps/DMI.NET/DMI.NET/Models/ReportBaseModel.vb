@@ -43,6 +43,10 @@ Namespace Models
 			End Set
 		End Property
 
+		<Display(Name:="Category :")>
+		Public Property CategoryList As New Collection(Of SelectListItem)
+		Public Property CategoryID As Integer
+
 		<MaxLength(255, ErrorMessage:="Description cannot be longer than 255 characters.")>
 		<DisplayName("Description :")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>

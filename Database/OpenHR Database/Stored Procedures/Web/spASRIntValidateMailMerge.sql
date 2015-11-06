@@ -3,7 +3,8 @@ CREATE PROCEDURE [dbo].[spASRIntValidateMailMerge] (
 	@piUtilID 			integer, 
 	@piTimestamp 		integer, 
 	@piBasePicklistID	integer, 
-	@piBaseFilterID 	integer, 
+	@piBaseFilterID 	integer,
+	@piCategoryID 		integer, 
 	@psCalculations 	varchar(MAX), 
 	@psHiddenGroups 	varchar(MAX), 
 	@psErrorMsg			varchar(MAX)	OUTPUT,
@@ -155,6 +156,20 @@ BEGIN
 				SET @psErrorMsg = 'The base table picklist has been made hidden by another user.'
 				SET @piErrorCode = 1
 			END
+		END
+	END
+
+	IF (@piErrorCode = 0) AND (@piCategoryID > 0)
+	BEGIN
+		/* Check that the category exists. */
+		SELECT @iCount = COUNT(*)
+		FROM [dbo].[tbuser_Object_Categories_Table]
+		WHERE ID = @piCategoryID And _deleted = 'True'
+
+		IF @iCount = 1
+		BEGIN
+			SET @psErrorMsg = 'The category has been deleted by another user.'
+			SET @piErrorCode = 1
 		END
 	END
 

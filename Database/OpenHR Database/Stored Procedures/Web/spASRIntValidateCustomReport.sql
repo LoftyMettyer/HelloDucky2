@@ -8,7 +8,10 @@ CREATE PROCEDURE [dbo].[spASRIntValidateCustomReport] (
 	@piParent1PicklistID		integer, 
 	@piParent1FilterID 			integer, 
 	@piParent2PicklistID		integer, 
-	@piParent2FilterID 			integer, 
+	@piParent2FilterID 			integer,
+	/* Category to check it exists in table or not */
+	@piCategoryID 				integer,
+	
 	@piChildFilterID 			varchar(100),			/* tab delimited string of child filter ids */ 
 	@psCalculations 			varchar(MAX), 
 	@psHiddenGroups 			varchar(MAX), 
@@ -25,6 +28,7 @@ CREATE PROCEDURE [dbo].[spASRIntValidateCustomReport] (
 	@psJobIDsToHide				varchar(MAX)	OUTPUT,
 	@psDeletedPicklists 		varchar(MAX)	OUTPUT,
 	@psHiddenPicklists 			varchar(MAX)	OUTPUT
+	
 )
 AS
 BEGIN
@@ -80,6 +84,7 @@ BEGIN
 	SET @psHiddenFilters = ''
 	SET @psDeletedPicklists = ''
 	SET @psHiddenPicklists = ''
+	--SET @psDeletedCategory = ''
 
 	EXEC spASRIntSysSecMgr @fSysSecMgr OUTPUT
 	
@@ -239,6 +244,24 @@ BEGIN
 			SET @piErrorCode = 1
 		END
 	END
+
+	--//------------------------------------------------------------
+
+	IF (@piErrorCode = 0) AND (@piCategoryID > 0)
+	BEGIN
+		/* Check that the category exists. */
+		SELECT @iCount = COUNT(*)
+		FROM [dbo].[tbuser_Object_Categories_Table]
+		WHERE ID = @piCategoryID And _deleted = 'True'
+
+		IF @iCount = 1
+		BEGIN
+			SET @psErrorMsg = 'The category has been deleted by another user.'
+			SET @piErrorCode = 1
+		END
+	END
+
+	--//------------------------------------------------------------
 
 	IF (@piErrorCode = 0) AND (@piParent1PicklistID > 0)
 	BEGIN
@@ -790,8 +813,6 @@ BEGIN
 	SET @psJobIDsToHide = @sOwnedJobIDs
 	
 END
-
-
 
 GO
 

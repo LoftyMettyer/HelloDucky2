@@ -61,7 +61,8 @@ BEGIN
 		@psOutputEmailSubject		varchar(MAX) = '',
 		@psOutputEmailAttachAs		varchar(MAX) = '',
 		@psOutputFilename			varchar(MAX) = '',	
- 		@piTimestamp				integer;
+ 		@piTimestamp				integer,
+		@piCategoryID		integer;
 
 	DECLARE	@iCount			integer,
 			@sTempHidden	varchar(10),
@@ -258,9 +259,14 @@ BEGIN
 		SET @psOutputEmailName = '';
 	END
 
+	-- Get's the category id associated with the calendar report. Return 0 if not found
+	SET @piCategoryID = 0
+	SELECT @piCategoryID = ISNULL(categoryid,0)
+		FROM [dbo].[tbsys_objectcategories]
+		WHERE objectid = @piCalendarReportID AND objecttype = 17
 
 	-- Definition
-	SELECT @psReportName AS name, @psReportDesc AS [Description], @piBaseTableID AS baseTableID, @psReportOwner AS [Owner],
+	SELECT @psReportName AS name, @psReportDesc AS [Description], @piCategoryID As CategoryID , @piBaseTableID AS baseTableID, @psReportOwner AS [Owner],
 		CASE WHEN @pfAllRecords = 1 THEN 0 ELSE CASE WHEN ISNULL(@piPicklistID, 0) > 0 THEN 1 ELSE 2 END END AS [SelectionType],
 		@piPicklistID AS PicklistID, @piFilterID AS FilterID,
 		@psPicklistName AS PicklistName, @psFilterName AS FilterName,@pfPrintFilterHeader AS printFilterHeader,

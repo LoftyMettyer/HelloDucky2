@@ -63,6 +63,7 @@
 	@ColorDesc8 varchar(6),
 	@Description9 varchar(255),
 	@ColorDesc9 varchar(6),
+	@piCategoryID		integer,
 	@piID				integer	OUTPUT
 )
 AS
@@ -224,6 +225,9 @@ BEGIN
 		SET @fIsNew = 1
 		/* Get the ID of the inserted record.*/
 		SELECT @piID = MAX(CrossTabID) FROM ASRSysCrossTab
+
+		Exec [dbo].[spsys_saveobjectcategories] 35, @piID, @piCategoryID
+
 	END
 	ELSE
 	BEGIN
@@ -290,6 +294,9 @@ BEGIN
 			Description9 = @Description9,
 			ColorDesc9 = @ColorDesc9
 		WHERE CrossTabID = @piID
+
+		Exec [dbo].[spsys_saveobjectcategories] 35, @piID, @piCategoryID
+
 	END
 
 	DELETE FROM ASRSysCrossTabAccess WHERE ID = @piID
@@ -402,3 +409,4 @@ BEGIN
 	END
 	
 END
+

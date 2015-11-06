@@ -21,7 +21,8 @@ BEGIN
 			@psReportOwner		varchar(255),
 			@psReportName		varchar(255),
 			@piPicklistID		integer = 0,
-			@piFilterID			integer = 0;
+			@piFilterID			integer = 0,
+			@piCategoryID		integer;
 
 	EXEC [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT;
 
@@ -37,7 +38,7 @@ BEGIN
 			, @piPicklistID = picklistID, @piFilterID = FilterID
 		FROM [dbo].[ASRSysMailMergeName]		
 		WHERE MailMergeID = @piReportID;
-	
+
 	-- Check the current user can view the report.
 	EXEC [dbo].[spASRIntCurrentUserAccess] 9, @piReportID, @sAccess OUTPUT;
 
@@ -87,8 +88,14 @@ BEGIN
 
 	END
 
+	-- Get's the category id associated with the mail merge utility. Return 0 if not found
+	SET @piCategoryID = 0
+	SELECT @piCategoryID = ISNULL(categoryid,0)
+		FROM [dbo].[tbsys_objectcategories]
+		WHERE objectid = @piReportID AND objecttype = 9
+
 	-- Definition
-	SELECT @psReportName AS [Name], m.[description], @psReportOwner AS [owner],		
+	SELECT @psReportName AS [Name], @piCategoryID As CategoryID, m.[description], @psReportOwner AS [owner],		
 		m.tableID AS BaseTableID,		
 		m.selection AS SelectionType,
 		m.picklistID,	

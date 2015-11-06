@@ -35,7 +35,8 @@ CREATE PROCEDURE [dbo].[spASRIntSaveCustomReport] (
 	@psColumns2					varchar(MAX),
 	@psChildString				varchar(MAX),
 	@piID						integer					OUTPUT,
-	@pfIgnoreZeros				bit
+	@pfIgnoreZeros				bit,
+	@piCategoryID				integer
 )
 AS
 BEGIN
@@ -153,6 +154,9 @@ BEGIN
 		SET @fIsNew = 1
 		/* Get the ID of the inserted record.*/
 		SELECT @piID = MAX(ID) FROM ASRSysCustomReportsName
+
+		Exec [dbo].[spsys_saveobjectcategories] 2, @piID, @piCategoryID
+
 	END
 	ELSE
 	BEGIN
@@ -188,6 +192,8 @@ BEGIN
 			Parent2AllRecords = @pfParent2AllRecords,
 			Parent2Picklist = @piParent2Picklist
 		WHERE ID = @piID
+
+		Exec [dbo].[spsys_saveobjectcategories] 2, @piID, @piCategoryID
 
 		/* Delete existing report details. */
 		DELETE FROM ASRSysCustomReportsDetails 

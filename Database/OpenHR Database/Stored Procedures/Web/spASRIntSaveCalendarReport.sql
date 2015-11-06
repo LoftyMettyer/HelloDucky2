@@ -48,6 +48,7 @@ CREATE PROCEDURE [dbo].[spASRIntSaveCalendarReport]
 	@psEvents					varchar(MAX),
 	@psEvents2					varchar(MAX),
 	@psOrderString				varchar(MAX),
+	@piCategoryID				integer,
 	@piID						integer	OUTPUT
 	)
 AS
@@ -188,6 +189,9 @@ BEGIN
 		SET @fIsNew = 1;
 		/* Get the ID of the inserted record.*/
 		SELECT @piID = MAX(ID) FROM ASRSysCalendarReports;
+
+		Exec [dbo].[spsys_saveobjectcategories] 17 , @piID, @piCategoryID
+
 	END
 	ELSE
 	BEGIN
@@ -236,6 +240,8 @@ BEGIN
 			OutputFileName = @psOutputFilename  
 			WHERE ID = @piID;
 		
+		Exec [dbo].[spsys_saveobjectcategories] 17 , @piID, @piCategoryID
+
 		/* Delete existing report event details. */
 		DELETE FROM ASRSysCalendarReportEvents 
 		WHERE calendarReportID = @piID;
@@ -520,3 +526,4 @@ BEGIN
 		EXEC sp_executesql @sSQL;
 	END
 END
+

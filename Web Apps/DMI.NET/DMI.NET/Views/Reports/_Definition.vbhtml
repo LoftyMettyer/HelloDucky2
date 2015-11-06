@@ -23,6 +23,11 @@
 			</div>
 		</fieldset>
 
+        <fieldset class="">
+            @Html.LabelFor(Function(m) m.CategoryList)
+            @Html.DropDownListFor(Function(m) m.CategoryID, New SelectList(Model.CategoryList, "Value", "Text"), New With {.class = "width70 floatright", .onchange = "enableSaveButton()"})
+        </fieldset>
+
 		<fieldset class="">
 			@Html.LabelFor(Function(m) m.Description)
 			<div id="textareadescription" class="width70 floatright">

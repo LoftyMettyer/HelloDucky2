@@ -77,7 +77,8 @@ BEGIN
 			@Description8 varchar(255) = '',
 			@ColorDesc8 varchar(6) = '',
 			@Description9 varchar(255) = '',
-			@ColorDesc9 varchar(6);
+			@ColorDesc9 varchar(6),
+			@piCategoryID		integer;
 
 
 	DECLARE	@iCount			integer,
@@ -195,8 +196,15 @@ BEGIN
 		SET @psOutputEmailName = '';
 	END
 
+	-- Get's the category id associated with the nine box grid report. Return 0 if not found
+	SET @piCategoryID = 0
+	SELECT @piCategoryID = ISNULL(categoryid,0)
+		FROM [dbo].[tbsys_objectcategories]
+		WHERE objectid = @piReportID AND objecttype = 35
+
+
 	SELECT @psErrorMsg AS ErrorMsg, @psReportName AS Name, @psReportOwner AS [Owner], @psReportDesc AS [Description]
-		, @piBaseTableID AS [BaseTableID], @piSelection AS SelectionType
+		, @piBaseTableID AS [BaseTableID], @piCategoryID As CategoryID, @piSelection AS SelectionType
 		, @piPicklistID AS PicklistID, @psPicklistName AS PicklistName, @pfPicklistHidden AS [IsPicklistHidden]
 		, @piFilterID AS FilterID, @psFilterName AS [FilterName], @pfFilterHidden AS [IsFilterHidden]
 		, @pfPrintFilterHeader AS [PrintFilterHeader]
