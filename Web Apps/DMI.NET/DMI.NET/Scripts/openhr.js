@@ -1665,7 +1665,7 @@
 					var hasChanged = menu_saveChanges('', true, false);
 					if (hasChanged === 0) {
 						// Prompt for navigation and redirect as required
-						saveChangesPrompt("floatingWindow", 'OpenHR.activateDialog(' + iFrameId + '")'); //todo: bring window to top if navigate cancelled.
+						saveChangesPrompt("floatingWindow", 'OpenHR.activateDialog(' + iFrameId + ')'); //todo: bring window to top if navigate cancelled.
 					} else {
 						//activate clicked dialog.
 						OpenHR.activateDialog(iFrameId);
