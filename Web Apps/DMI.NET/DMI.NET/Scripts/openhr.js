@@ -662,6 +662,10 @@
 								}
 								catch (e) { }
 							}
+						})
+						.dialogExtend({
+							"closable": true,
+							"minimizable": true
 						});
 
 
@@ -1674,11 +1678,12 @@
 	},
 
 	activateDialog = function (iFrameId) {
+		$('#mwid_' + iFrameId).dialogExtend("restore");
 		$('#mwid_' + iFrameId).dialog('moveToTop');
 
 		//make this dialog 'active' and any others 'inactive'
-		$('[id^="mwid_"]').each(function () {
-			$(this).siblings(".ui-dialog-titlebar").addClass('ui-state-disabled');
+		$('div[role="dialog"][class*="mwid_"]').each(function () {
+			$(this).find(".ui-dialog-titlebar").addClass('ui-state-disabled');
 		});
 
 		$('#mwid_' + iFrameId).siblings(".ui-dialog-titlebar").removeClass('ui-state-disabled');
@@ -1707,7 +1712,7 @@
 	listOpenWindows = function () {
 		var idList = [];
 
-		window.top.$('div[role="dialog"][class*="mwid_"]').each(function () {
+		window.top.$('div[role="dialog"][class*="mwid_"]:visible').each(function () {
 			var active = (!$(this).find('.ui-dialog-titlebar').hasClass('ui-state-disabled'));
 			var classList = $(this).attr('class').split(' ');
 			var screenId = 0;
@@ -1802,7 +1807,15 @@
 	},
 
 	setWorkFrameDialogsVisible = function(visibility) {
-		window.top.$('[id^="mwid_"]').parent().toggle(visibility);
+		window.top.$('[id^="mwid_"]').each(function () {
+			if (visibility === false || $(this).dialogExtend("state") !== "minimized") {
+				$(this).parent().toggle(visibility);
+			}
+
+			//hide minimised dialogs too
+			$('#dialog-extend-fixed-container').toggle(visibility);
+
+		});
 	},
 
 	activeIFrameID = function () {

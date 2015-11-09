@@ -56,7 +56,8 @@
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/SignalR")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/ESAPI")%>" type="text/javascript"></script>
-	
+	<script src="http://localhost/dmi.net/Scripts/jquery.dialogextend.min.js"></script>
+
 	<script src="<%: ResolveUrl("~/signalr/hubs") %>" type="text/javascript"></script>
 					
 	<script type="text/javascript">
