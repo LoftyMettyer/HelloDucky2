@@ -406,7 +406,7 @@ Public Class [Default]
 						If IsMobileBrowser() Then
 							.Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
 						End If
-
+						.Style("z-index") = "1"
 					End With
 
 					tabPages(formItem.PageNo).Controls.Add(control)
@@ -493,7 +493,7 @@ Public Class [Default]
 						If IsMobileBrowser() Then
 							.Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
 						End If
-
+						.Style("z-index") = "1"
 					End With
 					tabPages(formItem.PageNo).Controls.Add(control)
 
@@ -561,6 +561,7 @@ Public Class [Default]
 						If IsMobileBrowser() Then
 							.Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
 						End If
+						.Style("z-index") = "1"
 					End With
 
 					Dim panel As New Panel
@@ -869,6 +870,7 @@ Public Class [Default]
 							.Style.Add("background-repeat", "no-repeat")
 							.Style.Add("background-origin", "content-box")
 							.Style.Add("background-size", "17px 100%")
+							.Style.Add("z-index", "1")
 						End With
 
 						tabPages(formItem.PageNo).Controls.Add(textBox)

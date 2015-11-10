@@ -168,10 +168,10 @@ Public Class OpenHROutlookCalendarService
             Next
 
             If _exchangeServer.Equals(String.Empty) Then
-                LogEvent("No exchange server parameter defined.  Service stopping.", EventLogEntryType.Warning)
+                LogEvent("No exchange server parameter defined. Service stopping.", EventLogEntryType.Warning)
                 Me.Stop()
             ElseIf _openHRSystems.Count <= 0 Then
-                LogEvent("No server and database parameters defined.  Service stopping.", EventLogEntryType.Warning)
+                LogEvent("No server and database parameters defined. Service stopping.", EventLogEntryType.Warning)
                 Me.Stop()
             ElseIf blankSystems > 0 Then
                 LogEvent(String.Format("OpenHR Outlook Calendar service configured for {0} system(s). {1} blank systems were ignored.", _

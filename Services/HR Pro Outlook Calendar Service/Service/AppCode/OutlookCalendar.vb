@@ -118,7 +118,7 @@ Public Class OutlookCalendar
                 mailboxItem = _session.GetSharedMailbox(mailboxName)
                 TraceLog("GetSharedMailbox OK", _sw, _enableTrace)
             Catch
-                _errorMessage = String.Format("Unable to open mailbox for {0}.  Check permissions.", GetNameFromMailbox(_folder))
+                _errorMessage = String.Format("Unable to open mailbox for {0}. Check permissions.", GetNameFromMailbox(_folder))
 
                 ReleaseItem(mailboxItem)
                 Return False
@@ -128,7 +128,7 @@ Public Class OutlookCalendar
                 folderItem = GetFolderFromPath(_folder, mailboxItem.IPMRootFolder.Folders)
 
             Catch
-                _errorMessage = String.Format("Unable to open mailbox for {0}.  Check permissions.", GetNameFromMailbox(_folder))
+                _errorMessage = String.Format("Unable to open mailbox for {0}. Check permissions.", GetNameFromMailbox(_folder))
 
                 Return False
             Finally
@@ -173,7 +173,7 @@ Public Class OutlookCalendar
                 If _allDayEvent Then
                     .AllDayEvent = True
                     .Start = _startDate
-                    'If no times are specified then outlook correctly finishes at midnight but does not include the end date.  
+                    'If no times are specified then outlook correctly finishes at midnight but does not include the end date. 
                     'For OpenHR we need the event to be inclusive of both the start date and end date so if its an all day
                     'event add one day to the end date.
                     If Date.Compare(_startDate, _endDate) > 0 Then
@@ -594,7 +594,7 @@ Public Class OutlookCalendar
 
     ' This code added by Visual Basic to correctly implement the disposable pattern.
     Public Sub Dispose() Implements IDisposable.Dispose
-        ' Do not change this code.  Put cleanup code in Dispose(ByVal disposing As Boolean) above.
+        ' Do not change this code. Put cleanup code in Dispose(ByVal disposing As Boolean) above.
         Dispose(True)
         GC.SuppressFinalize(Me)
     End Sub

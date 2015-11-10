@@ -103,7 +103,7 @@ Public Class OutlookCalendar
                     .AllDayEvent = True
                     .Start = _startDate
                     'If no times are specified then outlook correctly finishes at midnight
-                    'but does not include the end date.  For OpenHR we need to the event to
+                    'but does not include the end date. For OpenHR we need to the event to
                     'be inclusive of both the start date and end date so if its an all day
                     'event add one day to the end date.
                     .End = _endDate.AddDays(1)
