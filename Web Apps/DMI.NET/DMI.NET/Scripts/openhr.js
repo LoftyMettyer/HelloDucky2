@@ -5,7 +5,7 @@
 
 	function setDatepickerLanguage() {
 
-		var language = window.UserLocale || window.opener.window.UserLocale;
+		var language = window.top.window.UserLocale || window.opener.window.UserLocale;
 
 		// No regional setting for US - assumed as the default.
 		if ((language.toUpperCase() == "EN-US") || (language.toUpperCase() == "EN")) {
@@ -33,9 +33,9 @@
 		messageBox(html.ErrorMessage.replace("<p>", "\n\n"), 48, html.ErrorTitle);
 
 		//redirect if specified...
-		if (html.Redirect.length > 0) {			
+		if (html.Redirect.length > 0) {
 			if (html.Route === "" || html.Route === null) html.Route = "home";
-			window.location.href = window.ROOT + html.Route + "/" + html.Redirect;
+			window.top.window.location.href = window.top.window.ROOT + html.Route + "/" + html.Redirect;
 		}
 
 	}
@@ -47,26 +47,26 @@
 		messageBox = function (prompt, buttons, title) {
 
 			switch (buttons) {
-			case mbStyle.vbExclamation:
-				//48
-				alert(prompt);
-				break;
-			case mbStyle.vbYesNoCancel:
-				//TODO - Need to find a popup that can handle multiple buttons
-				return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
-			case mbStyle.vbQuestion + mbStyle.vbYesNo:
-				//36
-				return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
+				case mbStyle.vbExclamation:
+					//48
+					alert(prompt);
+					break;
+				case mbStyle.vbYesNoCancel:
+					//TODO - Need to find a popup that can handle multiple buttons
+					return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
+				case mbStyle.vbQuestion + mbStyle.vbYesNo:
+					//36
+					return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
 
-				break;
-			case mbStyle.vbQuestion + mbStyle.vbYesNoCancel:
-				//35
-				return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
-				break;
-			default:
-				alert(prompt);
-				//throw Error("OpenHR.messageBox buttons not coded for.");
-				break;
+					break;
+				case mbStyle.vbQuestion + mbStyle.vbYesNoCancel:
+					//35
+					return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
+					break;
+				default:
+					alert(prompt);
+					//throw Error("OpenHR.messageBox buttons not coded for.");
+					break;
 			}
 
 
@@ -77,24 +77,24 @@
 
 			// Default parameters
 			if (!title || title.length == 0) title = 'OpenHR Web';
-			
-			$('#dialog-confirm').dialog('option', 'buttons', dialogButtons);
+
+			window.top.$('#dialog-confirm').dialog('option', 'buttons', dialogButtons);
 			//$('#dialog-confirm').dialog('option', 'title', title);
-			$('#dialog-confirm p').html($.parseHTML(prompt));
-			$('#dialog-confirm').dialog('open');
+			window.top.$('#dialog-confirm p').html($.parseHTML(prompt));
+			window.top.$('#dialog-confirm').dialog('open');
 			// If Any ActiveX controls are in the workframeset, move the dailog to the very top of the screen to avoid it being hidden behind the ActiveX
-			if ($('#workframeset object').length > 0) {
-				$('#dialog-confirm').dialog('option', 'position', 'top');
+			if (window.top.$('#workframeset object').length > 0) {
+				window.top.$('#dialog-confirm').dialog('option', 'position', 'top');
 			} else {
-				$('#dialog-confirm').dialog('option', 'position', 'center');
+				window.top.$('#dialog-confirm').dialog('option', 'position', 'center');
 			}
-				
-},
+
+		},
 
 		modalMessage = function (message, title) {
 			var dialogButtons = {
 				"OK": function () {
-					$(this).dialog("close");
+					window.top.$(this).dialog("close");
 				}
 			};
 
@@ -110,8 +110,8 @@
 			if (type == 'CALC') {
 				capitalizedText = 'Calculations';
 			}
-			
-			$("#ExpressionsAvailable").jqGrid('GridUnload');			
+
+			$("#ExpressionsAvailable").jqGrid('GridUnload');
 			$("#ExpressionsAvailable").jqGrid({
 				url: 'Reports/GetExpressionsForTable?TableID=' + tableId + '&&selectionType=' + type,
 				datatype: 'json',
@@ -174,23 +174,23 @@
 						}
 					});
 
-					$("#ExpressionSelectCancel").off('click').on('click', function () {					
+					$("#ExpressionSelectCancel").off('click').on('click', function () {
 						frame.dialog("close");
 					});
 
-					$("#ExpressionSelectNone").off('click').on('click', function () {					
+					$("#ExpressionSelectNone").off('click').on('click', function () {
 						followOnFunctionName(0, "None", "RW");
 						frame.dialog("close");
 					});
 
 					$("#ExpressionsAvailable").jqGrid("setSelection", currentID);
-					$("#ExpressionSelection_PageTitle").text(capitalizedText);					
+					$("#ExpressionSelection_PageTitle").text(capitalizedText);
 				}
 			});
 
 			var dialogwidth = $("#ExpressionsAvailable").width();
 			frame.dialog({
-				width: dialogwidth + 50,					
+				width: dialogwidth + 50,
 				modal: true
 			});
 
@@ -199,7 +199,7 @@
 
 			function capitalizeMe(val) {
 				return val.charAt(0).toUpperCase() + val.substr(1).toLowerCase();
-			}	
+			}
 
 			//jQuery styling
 			$(function () {
@@ -232,7 +232,7 @@
 					UtilType: utilityType.Filter,
 					FilteredAdd: true,
 					__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
-					};
+				};
 				OpenHR.submitForm(null, "reportframe", null, postData, "util_run_promptedValues");
 
 
@@ -285,39 +285,39 @@
 					};
 					break;
 
-			case 1:
-				dialogButtons = {
-					"OK": function() {
-						defer.resolve(1);
-						$(this).dialog("close");
-						if (followOnFunctionName) followOnFunctionName(1);
-					},
-					"Cancel": function() {
-						defer.resolve(2);
-						$(this).dialog("close");
-						if (followOnFunctionName) followOnFunctionName(2);
-					}
-				};
-				break;
-			case 3:
-				dialogButtons = {
-					"Yes": function() {
-						defer.resolve(6);
-						$(this).dialog("close");
-						if (followOnFunctionName) followOnFunctionName(6);
-					},
-					"No": function() {
-						defer.resolve(7);
-						$(this).dialog("close");
-						if (followOnFunctionName) followOnFunctionName(7);
-					},
-					"Cancel": function() {
-						defer.resolve(2);
-						$(this).dialog("close");
-						if (followOnFunctionName) followOnFunctionName(2);
-					}
-				};
-				break;
+				case 1:
+					dialogButtons = {
+						"OK": function() {
+							defer.resolve(1);
+							$(this).dialog("close");
+							if (followOnFunctionName) followOnFunctionName(1);
+						},
+						"Cancel": function() {
+							defer.resolve(2);
+							$(this).dialog("close");
+							if (followOnFunctionName) followOnFunctionName(2);
+						}
+					};
+					break;
+				case 3:
+					dialogButtons = {
+						"Yes": function() {
+							defer.resolve(6);
+							$(this).dialog("close");
+							if (followOnFunctionName) followOnFunctionName(6);
+						},
+						"No": function() {
+							defer.resolve(7);
+							$(this).dialog("close");
+							if (followOnFunctionName) followOnFunctionName(7);
+						},
+						"Cancel": function() {
+							defer.resolve(2);
+							$(this).dialog("close");
+							if (followOnFunctionName) followOnFunctionName(2);
+						}
+					};
+					break;
 				case 4:
 					dialogButtons = {
 						"Yes": function() {
@@ -332,31 +332,40 @@
 						}
 					};
 					break;
-			default:
-				dialogButtons = {
-					"OK": function() {
-						defer.resolve(1);
-						$(this).dialog("close");
-						if (followOnFunctionName) followOnFunctionName(1);
-					}
-				};
+				default:
+					dialogButtons = {
+						"OK": function() {
+							defer.resolve(1);
+							$(this).dialog("close");
+							if (followOnFunctionName) followOnFunctionName(1);
+						}
+					};
 			}
 			displayModalDialog(prompt, dialogButtons, title);
 			return defer.promise();
 		},
-	
+
 		getFrame = function (frameId) {
 			return document.frames[frameId];
 		},
 		getForm = function (frameId, formId) {
-			//return document.forms[formId];
+			//calculate floatingWindow
+			var floatingWindow = false;
+			if (!menu_isSSIMode()) {
+				if (formId == "frmFind" || formId == "frmFindForm") floatingWindow = true;
+				if (formId == "frmRecordEdit" || formId == "frmRecordEditForm") floatingWindow = true;
+			}
+			if (!floatingWindow) return window.top.document.querySelector('#' + frameId + ' #' + formId);
 
-			return document.querySelector('#' + frameId + ' #' + formId);
+			//floating window -work out where we are.
+			var activeIframeId = 'iframe_' + OpenHR.activeWindowID().replace('mwid_', '');
+			if (activeIframeId == "iframe_") return null;	// no valid form found.
 
+			return window.top.document.getElementById(activeIframeId).contentWindow.document.getElementById(formId);
 		},
 
 		postData = function (url, jsonData, followOnFunctionName) {
-		    OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+			OpenHR.ResetSession(); //Reset the session so it doesn't timeout
 
 			$.ajax({
 				url: url,
@@ -408,8 +417,7 @@
 		},
 
 	openDialog = function (url, targetWin, jsonData, dialogWidth) { //dialogWidth should be passed as a string, not a number: i.e 'auto' or '900px'
-
-	    OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+		OpenHR.ResetSession(); //Reset the session so it doesn't timeout
 
 		var $frame;
 		$.ajax({
@@ -472,9 +480,8 @@
 	},
 
 
-	submitForm = function (form, targetWin, asyncFlag, jsonData, action, followOnFunctionName) {
-
-   		OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+	submitForm = function (form, targetWin, asyncFlag, jsonData, action, followOnFunctionName, floatWindow, reuseWindow) {
+		OpenHR.ResetSession(); //Reset the session so it doesn't timeout
 
 		var $form = $(form),
 			$frame = $form.closest("div[data-framesource]").first(),
@@ -486,14 +493,14 @@
 
 		if (action == undefined) {
 			url = $form.attr("action");
-		}	else {
+		} else {
 			url = action;
 		}
 
 
 		if (jsonData == undefined) {
 			data = $form.serialize();
-		}	else {
+		} else {
 			data = jsonData;
 			method = "POST";  // bit trigger happy this, maybe some of the the controller actions should be gets???
 
@@ -501,105 +508,226 @@
 			//		var token = $('input[name="__RequestVerificationToken"]', globalToken).val();
 			//		data.push(token);
 		}
-	
 
-			if ((asyncFlag == undefined) || (asyncFlag.length == 0) || (asyncFlag == true)) {
-				asyncFlag = true;
-			} else {
-				asyncFlag = false;
-			}
 
-   		OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+		if ((asyncFlag == undefined) || (asyncFlag.length == 0) || (asyncFlag == true)) {
+			asyncFlag = true;
+		} else {
+			asyncFlag = false;
+		}
+
+		OpenHR.ResetSession(); //Reset the session so it doesn't timeout
 
 		$.ajax({
-				url: url,
-				type: method,
-				dataType: 'html',
-				data: data,
-				async: asyncFlag,
-				success: function (html) {
+			url: url,
+			type: method,
+			dataType: 'html',
+			data: data,
+			async: asyncFlag,
+			success: function (html) {
 
-					try {
-						var jsonResponse = $.parseJSON(html);
-						if (jsonResponse.ErrorMessage.length > 0) {
-							handleAjaxError(jsonResponse);
+				try {
+					var jsonResponse = $.parseJSON(html);
+					if (jsonResponse.ErrorMessage.length > 0) {
+						handleAjaxError(jsonResponse);
+						return false;
+					}
+				} catch (e) {
+				}
+				//console.log(html);
+
+				try {
+					if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {
+						if (html.ErrorMessage.length > 0) {
+							//A handled error was returned. Display error message, then redirect accordingly...
+							handleAjaxError(html);
 							return false;
 						}
-					} catch (e) {
 					}
-					//console.log(html);
+				} catch (e) {
+					//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + e.toString() + "'.");
+					$("#errorDialogTitle").text(e.toString);
+					$("#errorDialogContentText").html(e.responseText);
+					$("#errorDialog").dialog("open");
+				}
+				//clear the frame...
 
-					try {
-						if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {
-							if (html.ErrorMessage.length > 0) {
-								//A handled error was returned. Display error message, then redirect accordingly...
-								handleAjaxError(html);
-								return false;
-							}
-						}
-					} catch (e) {
-						//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + e.toString() + "'.");
-						$("#errorDialogTitle").text(e.toString);
-						$("#errorDialogContentText").html(e.responseText);
-						$("#errorDialog").dialog("open");
-					}
-					//clear the frame...
-
-					//OK
-
+				//OK
+				if (!floatWindow || floatWindow === false) {
 					if (targetWin != null) {
 
 						//$frame = $form.closest("div[" + targetWin + "]").first();
-						$frame = $("#" + targetWin);
-						
+						if (targetWin.toLowerCase() == "workframe") $frame = $("#" + targetWin);
+						else $frame = window.top.$("#" + targetWin);
+
 						if ($("#" + targetWin).hasClass("reportoutput") === true && asyncFlag === true) {
 							$frame.html('');
 							$(".popup").dialog("open");
 							$(".popup").dialog({ dialogClass: 'no-close' });
-						}						
+						}
 
-					} 
+					}
 
 					$frame.html('');
-					$frame.html(html);					
+					$frame.html(html);
 
 					//jQuery styling
 					$(function () {
-						$("input[type=submit], input[type=button], button").button();
-						$("input").addClass("ui-widget ui-corner-all");
-						$("input").removeClass("text");
+						$frame.find("input[type=submit], input[type=button], button").button();
+						$frame.find("input").addClass("ui-widget ui-corner-all");
+						$frame.find("input").removeClass("text");
 
-						$("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
-						$("textarea").removeClass("text");
+						$frame.find("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
+						$frame.find("textarea").removeClass("text");
 
-						$("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
-						$("select").removeClass("text");
-						$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
-						$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");						
+						$frame.find("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
+						$frame.find("select").removeClass("text");
+						$frame.find("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+						$frame.find("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
 					});
-
-					if (typeof followOnFunctionName !== "undefined") {
-						followOnFunctionName();
+				} else {
+					var multiwindowid;
+					if (reuseWindow) {
+						//reuse the active window (reloading after data change)
+						multiwindowid = Number(OpenHR.activeWindowID().replace("mwid_", ""));
+					} else {
+						if (window.top.window.multiwindowid) {
+							multiwindowid = window.top.window.multiwindowid + 1;
+						} else {
+							multiwindowid = 1;
+						}
+						window.top.window.multiwindowid = multiwindowid;
+						window.top.$('#workframeset').append('<div id="mwid_' + multiwindowid + '"><iframe frameborder="0" style="width: 100%; height: 100%;padding: 0;" id="iframe_' + multiwindowid + '"/></div>');
 					}
 
-				},
-				error: function (req, status, errorObj) {
-					//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
-
-					//Sometimes (when?) an error is thrown with both errorObj and/or req.Response being empty; in this case don't show the empty error window
-					if (!(errorObj == "" || req.responseText == "")) {
-						//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
-						$("#errorDialogTitle").text(errorObj);
-						$("#errorDialogContentText").html(req.responseText);
-						$("#errorDialog").dialog("open");
+					//set parent form id. 					
+					var parentFormId = OpenHR.activeWindowID();
+					//if this parent has a parent use it.
+					var parentsParentFormId = $('#' + parentFormId).attr('data-parentformid');
+					if (parentsParentFormId) {
+						if (parentsParentFormId !== "") parentFormId = parentsParentFormId;
 					}
+
+					var thisMwId = 'mwid_' + multiwindowid;
+
+					var newHeight = screen.height / 2;
+					var newWidth = screen.width / 2;
+					var position = {};
+					
+					//Calculate size of new dialog
+					//The first find window is full size, all other windows are half screen size.
+					if (OpenHR.listOpenWindows().length === 0) {
+						var frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
+						if (frmWorkArea.txtGotoPage.value.toLowerCase() === "find") {
+							newHeight = $('#workframeset').outerHeight() - 10;
+							newWidth = $('#workframeset').width() - 10;
+							position = { my: "left top", at: "left top", of: "#workframeset" };
+						}
+					}
+
+					if (!reuseWindow) {
+						window.top.$('#mwid_' + multiwindowid).dialog({
+							dialogClass: "mwid_" + multiwindowid,
+							width: newWidth,
+							height: newHeight,
+							position: position,
+							beforeClose: function (event, ui) {
+								var hasChanged = menu_saveChanges('', true, false);
+								if (hasChanged === 0) {
+									// Prompt for navigation and redirect as required
+									saveChangesPrompt("floatingWindow", 'OpenHR.closeDialog("' + thisMwId + '")');
+									return false;
+								} else {
+									//close all dependent dialogs
+									$('[id^="mwid_"]').each(function () {
+										var parentFormId = $(this).attr('data-parentformid');
+										if (parentFormId === thisMwId) OpenHR.closeDialog($(this).attr('id'));
+									});
+									//close this dialog.
+									OpenHR.closeDialog(thisMwId);
+								}
+							},
+							open: function() {
+								//set all existing dialogs to 'inactive'
+								window.top.$('[id^="mwid_"]').each(function() {
+									$(this).siblings(".ui-dialog-titlebar").addClass('ui-state-disabled');
+								});
+								//set this new screen to 'active'
+								window.top.$('#' + thisMwId).siblings(".ui-dialog-titlebar").removeClass('ui-state-disabled');
+								$.get("SaveSessionVariableState?windowId=" + multiwindowid);
+							},
+							close: function () {								
+								try {
+									$(this).dialog('destroy').remove();
+								}
+								catch (e) { }
+							}
+						})
+						.dialogExtend({
+							"closable": true,
+							"minimizable": true
+						});
+
+
+						//Prevent floating window from leaving the workarea
+						var container = $('#workframeset'),
+							dialog = $('#mwid_' + multiwindowid).parent();
+						dialog.draggable({ "containment": container});
+
+					}
+
+					//todo: using document.write isn't good. It also kills the ajax spinner. May need to find a jquery way of populating the iframe...					
+					//todo: is this populating the iframe twice when reusewindow = true?
+					var iframe = window.top.document.getElementById('iframe_' + multiwindowid);
+					iframe = (iframe.contentWindow) ? iframe.contentWindow : (iframe.contentDocument.document) ? iframe.contentDocument.document : iframe.contentDocument;
+					iframe.document.open();
+					iframe.document.write("<!DOCTYPE html>");
+					//Populate the iframe with the AJAX response
+					iframe.document.write("<div id='workframe' name='mwid_" + multiwindowid + "' class='absolutefull'>" +
+						html +
+						"<script>window.top.OpenHR.setupMwIframe(" + multiwindowid + ", $('#workframe').attr('data-framesource'), $('.pageTitle').text());<\/script>" +
+						"</div>");
+					iframe.document.close();
+
+					window.top.$('#iframe_' + multiwindowid).load(function () {						
+						//NPG: I thought this was fired when the dialogs are completely loaded. But for recedit at least it isn't. The search continues...
+
+						//get screen type and assign parent id - parentFormId
+						if (OpenHR.getScreenType('mwid_' + multiwindowid) === "history") {
+							$(this).parent().attr('data-parentFormID', parentFormId);
+						} else {
+							$(this).parent().attr('data-parentFormID', "");
+						}
+						
+						OpenHR.updateDialogPageTitle();
+
+						//remove 'please wait' spinner
+						window.top.$('body').removeClass('loading');
+					});
 				}
-			});
-		},
+
+				if (typeof followOnFunctionName !== "undefined" && followOnFunctionName !== null) {
+					followOnFunctionName();
+				}
+
+			},
+			error: function (req, status, errorObj) {
+				//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+
+				//Sometimes (when?) an error is thrown with both errorObj and/or req.Response being empty; in this case don't show the empty error window
+				if (!(errorObj == "" || req.responseText == "")) {
+					//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+					$("#errorDialogTitle").text(errorObj);
+					$("#errorDialogContentText").html(req.responseText);
+					$("#errorDialog").dialog("open");
+				}
+			}
+		});
+	},
 		addActiveXHandler = function (controlId, eventName, func) {
 			var ctl = document.getElementById(controlId);
 			var handler;
-			
+
 			if (ctl != null) {
 				if (eventName == "mouseUp") {
 					handler = document.createElement("script");
@@ -623,10 +751,10 @@
 			//TODO
 		},
 		localeDecimalSeparator = function () {
-			return window.LocaleDecimalSeparator;
+			return window.top.window.LocaleDecimalSeparator;
 		},
 		localeThousandSeparator = function () {
-			return window.LocaleThousandSeparator;
+			return window.top.window.LocaleThousandSeparator;
 		},
 		printerCount = function () {
 			//TODO
@@ -650,22 +778,27 @@
 		},
 		currentWorkPage = function () {
 			var sCurrentPage;
-			
+
+			if (OpenHR.activeWindowID() !== "") {
+				//Multi window display active
+				var iFrame = OpenHR.activeWindowID().replace('mwid', 'iframe');
+				sCurrentPage = $("#" + iFrame).contents().find('#workframe').attr("data-framesource");
+			}
+
 			if (!($("#workframe").css('display') == 'none')) {
 				//Work frame is in view.
 				sCurrentPage = $("#workframe").attr("data-framesource");
 			}
-			else if (!($("#optionframe").css('display') == 'none'))
-			{
+			else if (!($("#optionframe").css('display') == 'none')) {
 				//Option frame is in view.
 				sCurrentPage = $("#optionframe").attr("data-framesource");
 			}
 
-			//ToolsFrame frame is in view.
+				//ToolsFrame frame is in view.
 			else if (!($("#ToolsFrame").css('display') == 'none')) {
 				sCurrentPage = $("#ToolsFrame").attr("data-framesource");
 			}
-			
+
 			//Popout optionframe check
 			try {
 				if ($("#optionframe").dialog("isOpen") == true) {
@@ -909,17 +1042,17 @@
 			"ZH-TW": "yyyy/M/d",
 			"ZU-ZA": "yyyy/MM/dd"
 		};
-		
-		var language = window.UserLocale || window.opener.window.UserLocale;
+
+		var language = window.top.window.UserLocale || window.opener.window.UserLocale;
 		return formats[language.toUpperCase()] || 'dd/MM/yyyy';
 
-	} ,
+	},
 
 		convertSqlDateToLocale = function (z) {
 
 			var convertDate = Date.parseExact(z, "M/d/yyyy");
 			if (convertDate != null) {
-				return convertDate.toString(window.LocaleDateFormat);
+				return convertDate.toString(window.top.window.LocaleDateFormat);
 			} else {
 				return "";
 			}
@@ -947,10 +1080,10 @@
 			if (psDateString.toString().trim() == "") return "null";
 
 			if (!isValidDate(psDateString)) {
-			return psDateString;
+				return psDateString;
 			}
 
-			sDateFormat = window.LocaleDateFormat || window.dialogArguments.window.LocaleDateFormat;
+			sDateFormat = window.top.window.LocaleDateFormat || window.dialogArguments.window.LocaleDateFormat;
 
 			sDays = "";
 			sMonths = "";
@@ -1134,7 +1267,7 @@
 			}
 		}
 		return '';
-		},
+	},
 		getFileExtension = function(strFilename) {
 			return strFilename.substr(strFilename.lastIndexOf('.') + 1);
 
@@ -1168,7 +1301,7 @@
 		var returnvalue = "";
 		if ((arg == undefined) || (arg == "") || arg.length <= 0) {
 			return returnvalue;
-		} else {			
+		} else {
 			try {
 				returnvalue = String(arg);
 			} catch(e) {
@@ -1198,7 +1331,9 @@
 		$("#divSignalRMessage").dialog({
 			dialogClass: 'alert',
 			closeText: 'Log Out',
-			close: function () { window.onbeforeunload = null; try { window.location.href = "Main"; } catch (e) { } return false; }
+			close: function () {
+				window.top.onbeforeunload = null; try { window.location.href = "Main"; } catch (e) { } return false;
+			}
 		});
 
 		$("#divSignalRMessage").dialog('open');
@@ -1246,11 +1381,10 @@
 			grid.jqGrid("setSelection", rowData.ID);
 		}
 	},
-		
-	getLocaleDateString = function () {
 
-		var res = window.LocaleDateFormat.replace("dd", "d").replace("MM", "m").replace("M", "m").replace("yyyy", "Y");
-		return res;
+	getLocaleDateString = function () {
+		if (inIframe) return window.top.window.LocaleDateFormat.replace("dd", "d").replace("MM", "m").replace("M", "m").replace("yyyy", "Y");
+		return window.top.window.LocaleDateFormat.replace("dd", "d").replace("MM", "m").replace("M", "m").replace("yyyy", "Y");
 	},
 
 	parentExists = function ()
@@ -1268,7 +1402,7 @@
 
 		return window.open(destination, "_blank", windowProperties);
 	},
-	
+
 	isChrome = function() {
 		// please note, that IE11 now returns undefined again for window.chrome
 		var isChromium = window.chrome,
@@ -1298,7 +1432,7 @@
 	gridSelectLastRow = function (grid) {
 		grid.jqGrid('resetSelection');
 		var rowCount = grid.getGridParam("reccount");
-		var ids = grid.getDataIDs();		
+		var ids = grid.getDataIDs();
 		grid.jqGrid("setSelection", ids[rowCount - 1], true);
 	},
 	gridPageDown = function (grid) {
@@ -1319,7 +1453,7 @@
 		else { grid.jqGrid("setSelection", ids[rowNumber - 18], true); }
 	},
 	gridKeyboardEvent = function(keyPressed, grid) {
-		
+
 		if ((keyPressed != 40) && (keyPressed != 38) && (keyPressed != 13) && (keyPressed != 32) && (keyPressed != 33) && (keyPressed != 34) && (keyPressed != 35) && (keyPressed != 36)) {
 			//Character search
 			try {
@@ -1430,11 +1564,10 @@
 	},
 
 	showAboutPopup = function () {
+		var aboutUrl = window.top.window.ROOT + "/account/about";
+		if (window.top.window.ROOT.slice(-1) == "/") aboutUrl = window.top.window.ROOT + "account/about";
 
-		var aboutUrl = window.ROOT + "/account/about";
-		if (window.ROOT.slice(-1) == "/") aboutUrl = window.ROOT + "account/about";
-
-   		OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+		OpenHR.ResetSession(); //Reset the session so it doesn't timeout
 
 		$.ajax({
 			url: aboutUrl,
@@ -1458,111 +1591,408 @@
 				$("#About").dialog("open");
 			},
 			error: function () {
-				
+
 			}
 		});
 	},
 
 	isValidFileExtension = function (filename) {
-		var validFileExtensions = $("#globals>#ValidFileExtensions").val().toLowerCase().split(",");
+		var validFileExtensions = window.top.$("#globals>#ValidFileExtensions").val().toLowerCase().split(",");
 
 		var fileExtension = OpenHR.GetFileExtension(filename).toLocaleLowerCase();
 		if (validFileExtensions.indexOf(fileExtension) == -1) return false;
 		return true;
 
 	},
-    resetSession = function () { //Some variables used in this function are global and declared in Site.Master
-            $.post('RefreshSession', { __RequestVerificationToken: window.top.$('[name="__RequestVerificationToken"]').val() }, function () { });
 
-            window.top.timeoutSecondsLeft = window.top.originalTimeoutSeconds;
+	inIframe = function () {
+		try {
+			return window.self !== window.top;
+		} catch (e) {
+			return false;
+		}
+	},
 
-            if (!window.top.decrementFunctionIsSetup) {
-                var countdownTimer = setInterval(function() {
-                    window.top.currentMinutes = Math.floor(window.top.timeoutSecondsLeft / 60);
-                    window.top.currentSeconds = window.top.timeoutSecondsLeft % 60;
-                    if (window.top.currentSeconds <= 9) window.top.currentSeconds = "0" + window.top.currentSeconds;
-                    window.top.timeoutSecondsLeft--;
+	setupMwIframe = function (iFrameId, framesource, pageTitle) {		
+		//move the page title to the modal dialog title
+		$('#mwid_' + iFrameId).dialog('option', 'title', pageTitle);
+		$('#iframe_' + iFrameId).contents().find('.pageTitleDiv').hide();
 
-                    try {
-                        if (window.top.timeoutSecondsLeft < 300)
-                            $("#sessionWarning").show(); //show countdown for the last 5 minutes.
-                        else
-                            $("#sessionWarning").hide();
+		//show the close button for these dialogs
+		$('#mwid_' + iFrameId).siblings(".ui-widget-header").find("button.ui-dialog-titlebar-close").show();
 
-                        if (window.top.timeoutSecondsLeft === 0) {
-                            clearInterval(countdownTimer);
-                            document.getElementById("timerText").innerHTML = "0:00";
-                        }
+		//set the parent workframe data-framesource to match the dialog workframe
+		$('#workframe').attr('data-framesource', framesource);	//todo: is this a good idea??
+		$('#workframe').attr('data-mwid', 'mwid_' + iFrameId);
 
-                        document.getElementById("timerText").innerHTML = window.top.currentMinutes + ":" + window.top.currentSeconds; //Set the element id you need the time put into.
-                    } catch (e) {
-                        //do nothing if this fails - we've probably navigated away and the elements no longer exist. That's the trouble with using 1 second delays.
-                    }
-                }, 1000
-                );
+		//clear the parent workframe
+		$('#workframe').html('');
 
-                window.top.decrementFunctionIsSetup = true;
-            }
-        }
+		var $frame = OpenHR.activeFrame().find("#workframe");
+		//jQuery styling
+		$(function () {
+			$frame.find("input[type=submit], input[type=button], button").button();
+			$frame.find("input").addClass("ui-widget ui-corner-all");
+			$frame.find("input").removeClass("text");
+
+			$frame.find("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
+			$frame.find("textarea").removeClass("text");
+
+			$frame.find("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
+			$frame.find("select").removeClass("text");
+			$frame.find("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+			$frame.find("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+		});
+
+
+		//Add a click event to the dialog		
+		$('#mwid_' + iFrameId).parent('.ui-dialog, .ui-dialog-content').on('mousedown', function (events) {
+			window.top.window.isDragging = false;
+		})
+		.on('mousemove', function () {
+			window.top.window.isDragging = true;
+		})
+		.on('mouseup', function () {
+			var wasDragging = window.top.window.isDragging;
+			window.top.window.isDragging = false;
+			if (!wasDragging) {
+				//check for changes!
+				var activeWindowNumber = Number(OpenHR.activeWindowID().replace('mwid_', ''));
+				var selectedWindowNumber = Number(iFrameId);
+				
+				if (activeWindowNumber !== selectedWindowNumber) {
+					//is dialog clicked not the active one?				
+					var hasChanged = menu_saveChanges('', true, false);
+					if (hasChanged === 0) {
+						// Prompt for navigation and redirect as required
+						saveChangesPrompt("floatingWindow", 'OpenHR.activateDialog(' + iFrameId + ')'); //todo: bring window to top if navigate cancelled.
+					} else {
+						//activate clicked dialog.
+						OpenHR.activateDialog(iFrameId);
+					}
+				}
+
+			}
+		});
+	
+	},
+
+	activateDialog = function (iFrameId) {
+		$('#mwid_' + iFrameId).dialogExtend("restore");
+		$('#mwid_' + iFrameId).dialog('moveToTop');
+
+		//make this dialog 'active' and any others 'inactive'
+		$('div[role="dialog"][class*="mwid_"]').each(function () {
+			$(this).find(".ui-dialog-titlebar").addClass('ui-state-disabled');
+		});
+
+		$('#mwid_' + iFrameId).siblings(".ui-dialog-titlebar").removeClass('ui-state-disabled');
+
+		//Now the selected frame is active.
+		var framesource = OpenHR.activeFrame().find('#workframe').attr('data-framesource');
+		$('#workframe').attr('data-framesource', framesource);
+		$('#workframe').attr('data-mwid', 'mwid_' + iFrameId);
+
+		//if this is recedit, clone the frmdata back
+		if (OpenHR.currentWorkPage() === "RECORDEDIT" && !menu_isSSIMode()) {
+			OpenHR.activeFrame().find("#frmData").children().each(function(element) {
+				window.top.$('#frmData').find('#' + this.id).val(this.value);
+			});
+		}
+
+		$.get("RestoreSessionVariableState?windowId=" + iFrameId);
+
+		OpenHR.setWorkFrameDialogsVisible(true);
+
+		menu_refreshMenu();		
+
+	},
+
+
+	listOpenWindows = function () {
+		var idList = [];
+
+		window.top.$('div[role="dialog"][class*="mwid_"]:visible').each(function () {
+			var active = (!$(this).find('.ui-dialog-titlebar').hasClass('ui-state-disabled'));
+			var classList = $(this).attr('class').split(' ');
+			var screenId = 0;
+			var viewId = 0;						
+
+			try {
+				screenId = $(this).find('iframe').contents().find('#workframe').find('#txtCurrentScreenID').val();
+				viewId = $(this).find('iframe').contents().find('#workframe').find('#txtCurrentViewID').val();	//todo: should this be tableID?				
+			}
+			catch (e) { }
+
+			var idvar;
+			var windowNumber;
+			$.each(classList, function (i, v) {
+				if (v.match(/^mwid_/)) {
+					idvar = v;
+					windowNumber = Number(v.replace('mwid_', ''));
+				}
+			});
+
+			var screenType = OpenHR.getScreenType('mwid_' + windowNumber);
+
+			idList.push({ windowNumber: windowNumber, id: idvar, active: active, screenid: screenId, viewid: viewId, screentype: screenType });
+
+		});
+
+		return idList;
+	},
+
+	activeWindowID = function () {
+		var windowList = listOpenWindows();
+		var result = windowList.filter(function (item) {
+			return (item.active === true);
+		});
+
+		if (result) {
+			if (result.length > 0) return result[0].id;
+		}
+		return '';
+	},
+
+	activeFrame = function () {
+		var activeIframeId = OpenHR.activeWindowID().replace('mwid', 'iframe');
+		if (activeIframeId !== "") return window.top.$('#' + activeIframeId).contents();
+		return $('body');
+	},
+
+	activeDialog = function () {
+		var activeDialogId = OpenHR.activeWindowID();
+		if (activeDialogId !== "") return window.top.$('#' + activeDialogId);
+		return $('body');
+	},
+
+	closeDialog = function (dialogId) {
+		window.top.$('#workframe').removeAttr('data-mwid');
+		window.top.$('#workframe').removeAttr('data-framesource');
+		window.top.$('#' + dialogId.replace("mwid", "iframe")).remove();	//clear contents before destroying dialog
+		showDefaultRibbon();
+		try {
+			$("#" + dialogId).dialog('destroy').remove();
+		}
+		catch (e) { }
+		//display the top window in the list.
+		var windowList = OpenHR.listOpenWindows();
+		if (windowList.length > 0) {
+			var windowNumber = OpenHR.listOpenWindows()[0].windowNumber;
+			if (windowNumber) OpenHR.activateDialog(windowNumber);
+		}
+	},
+
+	populateSwitchWindows = function () {
+		var openWindows = listOpenWindows();
+
+		window.top.$('.buttonsplitmenu>ul').empty();
+
+		openWindows.forEach(function (item) {
+			var iFrameNumber = item.id.replace('mwid_', '');
+			var pageTitle = OpenHR.getIframePageTitle(iFrameNumber);
+
+			window.top.$('.buttonsplitmenu>ul').append('<li data-frameid="' +
+				iFrameNumber + '"><a onclick="OpenHR.activateDialog(' +
+				iFrameNumber + ');"><span><img style="width: 16px; height: 16px; display: ' + (item.active ? 'inline-block;' : 'none;') + '" src="' +
+				window.top.window.ROOT + '/Content/images/greenLightIcon.png" alt=""/>' +
+				pageTitle + '</span></a></li>');
+
+		});
+
+	},
+
+	getIframePageTitle = function (iFrameNumber) {
+		return window.top.$('#iframe_' + iFrameNumber).contents().find('.pageTitle').text();
+	},
+
+	setWorkFrameDialogsVisible = function(visibility) {
+		window.top.$('[id^="mwid_"]').each(function () {
+			if (visibility === false || $(this).dialogExtend("state") !== "minimized") {
+				$(this).parent().toggle(visibility);
+			}
+
+			//hide minimised dialogs too
+			$('#dialog-extend-fixed-container').toggle(visibility);
+
+		});
+	},
+
+	activeIFrameID = function () {
+		var windowList = listOpenWindows();
+		var result = windowList.filter(function (item) {
+			return (item.active === true);
+		});
+
+		if (result) {
+			if (result.length > 0) return result[0].id.replace('mwid_', 'iframe_');
+		}
+		return '';
+	},
+
+	getScreenType = function (mwid) {
+		var screenType = "";
+		try {
+			var parentTableId = Number($('#' + mwid).find('iframe').contents().find('#workframe').find('#txtCurrentParentTableID').val());
+			if (parentTableId === 0) screenType = "parent";
+			else if (parentTableId > 0) screenType = "history";
+		}
+		catch (e) { return "" }
+
+		return screenType;
+	},
+
+	updateDialogPageTitle = function () {
+		
+		var caption;
+		if (!menu_isSSIMode()) {
+
+			var parentFormId = OpenHR.activeDialog().attr("data-parentformid");
+			var originalPageTitle = OpenHR.activeFrame().find('#txtOriginalPageTitle').val();
+
+			if (OpenHR.activeFrame().find('#frmFindForm').length > 0) {
+				//find window
+				if (parentFormId === "") {
+					OpenHR.activeFrame().find('.pageTitle').html("Find - " + originalPageTitle);
+					OpenHR.activeDialog().dialog("option", "title", "Find - " + originalPageTitle + (caption ? ' - ' + caption : ""));
+				} else {
+					var parentPageTitle = window.top.$('#' + parentFormId).find('iframe').contents().find('.pageTitle').text();
+					OpenHR.activeFrame().find('.pageTitle').html(originalPageTitle + ' (' + parentPageTitle + ')');
+					OpenHR.activeDialog().dialog("option", "title", originalPageTitle + ' (' + parentPageTitle + ')');
+				}
+			} else {
+				//recedit
+				var frmData = OpenHR.getForm("dataframe", "frmData");
+				var frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
+
+				if (frmRecEdit.txtCurrentRecordID.value > 0) {
+					if (frmData.txtRecordDescription.value.length > 0) {
+						caption = frmData.txtRecordDescription.value;
+					}
+				} else {
+					caption = "New Record";
+				}
+
+				if (parentFormId === "") {
+					OpenHR.activeFrame().find('.pageTitle').html(originalPageTitle + (caption ? ' - ' + caption : ""));
+					OpenHR.activeDialog().dialog("option", "title", originalPageTitle + (caption ? ' - ' + caption : ""));
+				} else {
+					var parentPageTitle = window.top.$('#' + parentFormId).find('iframe').contents().find('.pageTitle').text();
+					OpenHR.activeFrame().find('.pageTitle').html(originalPageTitle + ' (' + parentPageTitle + ')');
+					OpenHR.activeDialog().dialog("option", "title", originalPageTitle + ' (' + parentPageTitle + ')');
+				}
+			}
+
+
+		}
+	},
+
+	resetSession = function () { //Some variables used in this function are global and declared in Site.Master
+		$.post('RefreshSession', { __RequestVerificationToken: window.top.$('[name="__RequestVerificationToken"]').val() }, function () { });
+
+		window.top.timeoutSecondsLeft = window.top.originalTimeoutSeconds;
+
+		if (!window.top.decrementFunctionIsSetup) {
+			var countdownTimer = setInterval(function() {
+					window.top.currentMinutes = Math.floor(window.top.timeoutSecondsLeft / 60);
+					window.top.currentSeconds = window.top.timeoutSecondsLeft % 60;
+					if (window.top.currentSeconds <= 9) window.top.currentSeconds = "0" + window.top.currentSeconds;
+					window.top.timeoutSecondsLeft--;
+
+					try {
+						if (window.top.timeoutSecondsLeft < 300)
+							$("#sessionWarning").show(); //show countdown for the last 5 minutes.
+						else
+							$("#sessionWarning").hide();
+
+						if (window.top.timeoutSecondsLeft === 0) {
+							clearInterval(countdownTimer);
+							document.getElementById("timerText").innerHTML = "0:00";
+						}
+
+						document.getElementById("timerText").innerHTML = window.top.currentMinutes + ":" + window.top.currentSeconds; //Set the element id you need the time put into.
+					} catch (e) {
+						//do nothing if this fails - we've probably navigated away and the elements no longer exist. That's the trouble with using 1 second delays.
+					}
+				}, 1000
+			);
+
+			window.top.decrementFunctionIsSetup = true;
+		}
+	}
 
 	window.OpenHR = {
-	        version: version,
-	        messageBox: messageBox,
-	        modalPrompt: modalPrompt,
-	        modalMessage: modalMessage,
-	        getFrame: getFrame,
-	        getForm: getForm,
-	        postData: postData,
-	        submitForm: submitForm,
-	        addActiveXHandler: addActiveXHandler,
-	        refreshMenu: refreshMenu,
-	        disableMenu: disableMenu,
-	        LocaleDateFormat: localeDateFormat,
-	        LocaleDecimalSeparator: localeDecimalSeparator,
-	        LocaleThousandSeparator: localeThousandSeparator,
-	        ConvertSQLDateToLocale: convertSqlDateToLocale,
-	        PrinterCount: printerCount,
-	        PrinterName: printerName,
-	        GetRegistrySetting: getRegistrySetting,
-	        SaveRegistrySetting: saveRegistrySetting,
-	        ValidateDir: validateDir,
-	        ValidateFilePath: validateFilePath,
-	        currentWorkPage: currentWorkPage,
-	        MM_WORD_CreateTemplateFile: mmwordCreateTemplateFile,
-	        convertLocaleDateToSQL: convertLocaleDateToSQL,
-	        getFileNameOnly: getFileNameOnly,
-	        ConvertToUNC: ConvertToUNC,
-	        GetPathOnly: GetPathOnly,
-	        getCookie: getCookie,
-	        CheckOLEFileNameLength: CheckOLEFileNameLength,
-	        GetFileExtension: getFileExtension,
-	        SessionTimeout: sessionTimeout,
-	        printDiv: printDiv,
-	        nullsafeString: nullsafeString,
-	        nullsafeInteger: nullsafeInteger,
-	        replaceAll: replaceAll,
-	        getLocaleDateString: getLocaleDateString,
-	        setDatepickerLanguage: setDatepickerLanguage,
-	        IsValidDate: isValidDate,
-	        MoveItemInGrid: moveItemInGrid,
-	        OpenDialog: openDialog,
-	        modalExpressionSelect: modalExpressionSelect,
-	        parentExists: parentExists,
-	        windowOpen: windowOpen,
-	        isChrome: isChrome,
-	        clearTmpDialog: clearTmpDialog,
-	        gridSelectTopRow: gridSelectTopRow,
-	        gridSelectLastRow: gridSelectLastRow,
-	        gridPageDown: gridPageDown,
-	        gridPageUp: gridPageUp,
-	        gridKeyboardEvent: gridKeyboardEvent,
-	        showAboutPopup: showAboutPopup,
-	        checkInvalidCharacters: checkInvalidCharacters,
-	        validateInteger: validateInteger,
-	        validateNumeric: validateNumeric,
-	        displayServerMessage: displayServerMessage,
-	        isValidFileExtension: isValidFileExtension,
-        	ResetSession: resetSession
-	};	
+		version: version,
+		messageBox: messageBox,
+		modalPrompt: modalPrompt,
+		modalMessage: modalMessage,
+		getFrame: getFrame,
+		getForm: getForm,
+		postData: postData,
+		submitForm: submitForm,
+		addActiveXHandler: addActiveXHandler,
+		refreshMenu: refreshMenu,
+		disableMenu: disableMenu,
+		LocaleDateFormat: localeDateFormat,
+		LocaleDecimalSeparator: localeDecimalSeparator,
+		LocaleThousandSeparator: localeThousandSeparator,
+		ConvertSQLDateToLocale: convertSqlDateToLocale,
+		PrinterCount: printerCount,
+		PrinterName: printerName,
+		GetRegistrySetting: getRegistrySetting,
+		SaveRegistrySetting: saveRegistrySetting,
+		ValidateDir: validateDir,
+		ValidateFilePath: validateFilePath,
+		currentWorkPage: currentWorkPage,
+		MM_WORD_CreateTemplateFile: mmwordCreateTemplateFile,
+		convertLocaleDateToSQL: convertLocaleDateToSQL,
+		getFileNameOnly: getFileNameOnly,
+		ConvertToUNC: ConvertToUNC,
+		GetPathOnly: GetPathOnly,
+		getCookie: getCookie,
+		CheckOLEFileNameLength: CheckOLEFileNameLength,
+		GetFileExtension: getFileExtension,
+		SessionTimeout: sessionTimeout,
+		printDiv: printDiv,
+		nullsafeString: nullsafeString,
+		nullsafeInteger: nullsafeInteger,
+		replaceAll: replaceAll,
+		getLocaleDateString: getLocaleDateString,
+		setDatepickerLanguage: setDatepickerLanguage,
+		IsValidDate: isValidDate,
+		MoveItemInGrid: moveItemInGrid,
+		OpenDialog: openDialog,
+		modalExpressionSelect: modalExpressionSelect,
+		parentExists: parentExists,
+		windowOpen: windowOpen,
+		isChrome: isChrome,
+		clearTmpDialog: clearTmpDialog,
+		gridSelectTopRow: gridSelectTopRow,
+		gridSelectLastRow: gridSelectLastRow,
+		gridPageDown: gridPageDown,
+		gridPageUp: gridPageUp,
+		gridKeyboardEvent: gridKeyboardEvent,
+		showAboutPopup: showAboutPopup,
+		checkInvalidCharacters: checkInvalidCharacters,
+		validateInteger: validateInteger,
+		validateNumeric: validateNumeric,
+		displayServerMessage: displayServerMessage,
+		isValidFileExtension: isValidFileExtension,
+		inIframe: inIframe,
+		setupMwIframe: setupMwIframe,
+		listOpenWindows: listOpenWindows,
+		activeWindowID: activeWindowID,
+		activeFrame: activeFrame,
+		activateDialog: activateDialog,
+		closeDialog: closeDialog,
+		populateSwitchWindows: populateSwitchWindows,
+		getIframePageTitle: getIframePageTitle,
+		setWorkFrameDialogsVisible: setWorkFrameDialogsVisible,
+		activeIFrameID: activeIFrameID,
+		getScreenType: getScreenType,
+		activeDialog: activeDialog,
+		updateDialogPageTitle: updateDialogPageTitle,
+		ResetSession: resetSession
+	};
 
 })(window, jQuery);
