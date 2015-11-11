@@ -4,34 +4,11 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
 
-<%
-	If Session("SSIMode") = False Then
-		
-		Response.Write("<script src=""" & Url.LatestContent("~/bundles/jQuery") & """ type=""text/javascript""></script>")
-		Response.Write("<script src=""" & Url.LatestContent("~/bundles/jQueryUI7") & """ type=""text/javascript""></script>")
-		Response.Write("<script src=""" & Url.LatestContent("~/bundles/OpenHR_General") & """ type=""text/javascript""></script>")
-		Response.Write("<script src=""" & Url.LatestContent("~/bundles/recordedit") & """ type=""text/javascript""></script>")
-		
-	End If	
-	%>
-
-<%--Base stylesheets--%>
-
-<%If Session("SSIMode") = False Then
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/font-awesome.min.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/Site.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/OpenHR.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/ui.jqgrid.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/table.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		
-	End If%>
-
 <script type="text/javascript">
 
 	//Global
-	if (typeof window.top.rowWasModified === 'undefined')
-		window.top.rowWasModified = false;
+	if (typeof rowWasModified === 'undefined')
+		var rowWasModified = false;
 
 	//Fault HRPRO-2953
 	(function () {
@@ -51,7 +28,7 @@
 
 		switch (event.keyCode) {
 			case 113:    // F2 insert todays date
-				$(this).datepicker("setDate", new Date());
+				$(this).datepicker("setDate", new Date())
 				$(this).datepicker('widget').hide('true');
 				break;
 			case 37:    // LEFT --> -1 day
@@ -72,23 +49,24 @@
 	function recordEdit_window_onload() {
 
 		//public variables
-		window.top.window.mavIDColumns = new Array();
+		this.mavIDColumns = new Array();
 		var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
+
 		var fOK;
 		fOK = true;
 		var sErrMsg = frmRecordEditForm.txtErrorDescription.value;
 		if (sErrMsg.length > 0) {
 			fOK = false;
 			OpenHR.messageBox(sErrMsg);
-			window.parent.location.replace("<%:Url.Action("logOff", "account")%>");
+			window.parent.location.replace("login");
 		}
 
 		if (fOK == true) {
 			// Expand the work frame and hide the option frame.
-			window.top.$('#optionframe').hide();
+			$('#optionframe').hide();
 			$('#workframe').show();
-			window.top.$("#toolbarRecord").show();
-			window.top.$("#toolbarRecord").click();
+			$("#toolbarRecord").show();
+			$("#toolbarRecord").click();
 
 			$("#workframe").attr("data-framesource", "RECORDEDIT");
 
@@ -104,7 +82,7 @@
 		}
 
 		if (fOK == true) {
-			var frmMenuInfo = window.top.$("#frmMenuInfo")[0].children;
+			var frmMenuInfo = $("#frmMenuInfo")[0].children;
 
 			var sKey = new String("photoPath_");
 			sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
@@ -127,7 +105,6 @@
 			frmRecordEditForm.txtOLELocalPath.value = sPath;
 
 			//Create all tabs first...
-			
 			if (fOK == true) {
 				var tabsList = $('#txtRecEditTabCaptions').val();
 				if (tabsList.length > 0) {
@@ -207,7 +184,7 @@
 				$(".spinner").spinner();
 
 				//Loop over the "number" fields
-				OpenHR.activeFrame().find(".number").each(function () {
+				$(".number").each(function () {
 					var control = $(this);
 					control.autoNumeric('init'); //Attach autoNumeric plugin to each instance of a numeric field; this provides functionality such as masking, validate numbers, etc.
 					$(control).blur(function () { //On blur, set the field to the value of the data-blankIfZeroValue attribute, set in recordEdit.js
@@ -372,9 +349,9 @@
 		});
 
 		var keycodeNotAllowed = [17,33,34,35,36,37,38,39,40];
-		$('textarea:not([readonly])').on("keyup", function (e) { //Keyup catches more keys than keypress (for example, Backspace)			
+		$('textarea:not([readonly])').on("keyup", function (e) { //Keyup catches more keys than keypress (for example, Backspace)					
 			if (keycodeNotAllowed.indexOf(e.keyCode) == -1)
-			{		
+			{					
 				$("#ctlRecordEdit #changed").val("false");
 				enableSaveButton();
 			}
@@ -409,14 +386,14 @@
 			linksMainParams = null;
 		}
 
-		if (hasChanged == 6 && !window.top.rowWasModified) { // 6 = No Change
+		if (hasChanged == 6 && !rowWasModified) { // 6 = No Change
 			loadPartialView("linksMain", "Home", "workframe", linksMainParams);
 			return false;
-		} else if (hasChanged == 0 || window.top.rowWasModified) { // 0 = Changed, allow prompted navigation.
+		} else if (hasChanged == 0 || rowWasModified) { // 0 = Changed, allow prompted navigation.
 			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) { // OK
-					window.top.rowWasModified = false;
-					window.top.onbeforeunload = null;
+					rowWasModified = false;
+					window.onbeforeunload = null;
 					loadPartialView("linksMain", "Home", "workframe", linksMainParams);
 					return false;
 				} else {
@@ -426,6 +403,14 @@
 		} else
 			return false;
 
+	}
+
+	function enableSaveButton() {		
+		if ($("#ctlRecordEdit #changed").val() == "false") {
+			$("#ctlRecordEdit #changed").val("true");
+			menu_toolbarEnableItem("mnutoolSaveRecord", true);
+		}
+		window.onbeforeunload = warning;
 	}
 
 	function warning() {
@@ -484,7 +469,7 @@
 		var psLookupValue = $(objLookup).val();
 		var pfMandatory = $(objLookup).attr("data-Mandatory");
 		var pLookupFilterValueID = $(objLookup).attr("data-LookupFilterValueID");
-		var pstrFilterValue = OpenHR.activeFrame().find("#ctlRecordEdit").find("[data-columnID='" + pLookupFilterValueID + "']").val();
+		var pstrFilterValue = $("#ctlRecordEdit").find("[data-columnID='" + pLookupFilterValueID + "']").val();
 		if (pstrFilterValue == undefined) pstrFilterValue = "";
 
 		menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue);
@@ -529,7 +514,7 @@
 		var psFile = $(clickObj).attr('data-fileName');
 		var plngMaxEmbedSize = $(clickObj).attr('data-maxEmbedSize');
 		var pbIsReadOnly = $(clickObj).attr('data-readOnly');
-		var frmMenuInfo = window.top.$("#frmMenuInfo")[0].children;
+		var frmMenuInfo = $("#frmMenuInfo")[0].children;
 		var isPhoto = ($(clickObj).attr('data-controlType') == '1024');
 
 		if ($("#txtCurrentRecordID").val() == 0) {
@@ -570,6 +555,31 @@
 				menu_loadOLEPage(plngColumnID, psFile, plngOleType, plngMaxEmbedSize, pbIsReadOnly, isPhoto);
 			}
 		}
+	}
+
+	function refreshData() {
+		// Get the data.asp to get the required data.
+		var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
+		var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
+
+		frmGetDataForm.txtAction.value = "LOAD";
+		frmGetDataForm.txtReaction.value = "";
+		frmGetDataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
+		frmGetDataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
+		frmGetDataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
+		frmGetDataForm.txtSelectSQL.value = frmRecordEditForm.txtRecEditSelectSQL.value;
+		frmGetDataForm.txtFromDef.value = frmRecordEditForm.txtRecEditFromDef.value;
+		frmGetDataForm.txtFilterSQL.value = frmRecordEditForm.txtRecEditFilterSQL.value;
+		frmGetDataForm.txtFilterDef.value = frmRecordEditForm.txtRecEditFilterDef.value;
+		frmGetDataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
+		frmGetDataForm.txtRecordID.value = OpenHR.getForm("dataframe", "frmData").txtRecordID.value;
+		frmGetDataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
+		frmGetDataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
+		frmGetDataForm.txtDefaultCalcCols.value = CalculatedDefaultColumns();
+		frmGetDataForm.txtInsertUpdateDef.value = "";
+		frmGetDataForm.txtTimestamp.value = "";
+
+		data_refreshData();
 	}
 
 </script>
@@ -630,125 +640,125 @@
 			</div>
 
 			<%
-				'Save the page title in a hidden field for use in menu.js
-				Response.Write("<input type='hidden' id='txtOriginalPageTitle' name='txtOriginalPageTitle' value='" & Replace(prmTitle.Value.ToString(), "_", " ") & "'>" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtCurrentTableID name=txtCurrentTableID value=" & Session("tableID") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtCurrentViewID name=txtCurrentViewID value=" & Session("viewID") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtCurrentScreenID name=txtCurrentScreenID value=" & Session("screenID") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtCurrentOrderID name=txtCurrentOrderID value=" & Session("orderID") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtCurrentRecordID name=txtCurrentRecordID value=" & Session("recordID") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtOriginalRecordID name=txtOriginalRecordID value=" & Session("recordID") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtCurrentParentTableID name=txtCurrentParentTableID value=" & Session("parentTableID") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtCurrentParentRecordID name=txtCurrentParentRecordID value=" & Session("parentRecordID") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtLineage name=txtLineage value=" & Session("lineage") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtCurrentRecPos name=txtCurrentRecPos value=" & Session("parentRecordID") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtCopiedRecordID name=txtCopiedRecordID value=''>" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtRecEditTimeStamp name=txtRecEditTimeStamp value=''>" & vbCrLf)
-	
-				If Len(sErrorDescription) = 0 Then
-			
-					Try
-			
-						SPParameters = New SqlParameter() { _
-								New SqlParameter("piScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))}, _
-								New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}}
-			
-						Dim rowScreenInfo = objDatabaseAccess.GetFromSP("sp_ASRIntGetScreenDefinition", SPParameters).Rows(0)
+                'Save the page title in a hidden field for use in menu.js
+                Response.Write("<input type='hidden' id='txtOriginalPageTitle' name='txtOriginalPageTitle' value='" & Replace(prmTitle.Value.ToString(), "_", " ") & "'>" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtCurrentTableID name=txtCurrentTableID value=" & Session("tableID") & ">" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtCurrentViewID name=txtCurrentViewID value=" & Session("viewID") & ">" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtCurrentScreenID name=txtCurrentScreenID value=" & Session("screenID") & ">" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtCurrentOrderID name=txtCurrentOrderID value=" & Session("orderID") & ">" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtCurrentRecordID name=txtCurrentRecordID value=" & Session("recordID") & ">" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtOriginalRecordID name=txtOriginalRecordID value=" & Session("recordID") & ">" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtCurrentParentTableID name=txtCurrentParentTableID value=" & Session("parentTableID") & ">" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtCurrentParentRecordID name=txtCurrentParentRecordID value=" & Session("parentRecordID") & ">" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtLineage name=txtLineage value=" & Session("lineage") & ">" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtCurrentRecPos name=txtCurrentRecPos value=" & Session("parentRecordID") & ">" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtCopiedRecordID name=txtCopiedRecordID value=''>" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtRecEditTimeStamp name=txtRecEditTimeStamp value=''>" & vbCrLf)
 
-						Response.Write("<input type='hidden' id=txtRecEditTableID name=txtRecEditTableID value=" & Session("tableID") & ">" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditViewID name=txtRecEditViewID value=" & Session("viewID") & ">" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditHeight name=txtRecEditHeight value=" & rowScreenInfo("height") & ">" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditWidth name=txtRecEditWidth value=" & rowScreenInfo("width") & ">" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditTabCount name=txtRecEditTabCount value=" & rowScreenInfo("tabCount") & ">" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditTabCaptions name=txtRecEditTabCaptions value=""" & Replace(Replace(rowScreenInfo("tabCaptions").ToString(), "&", "&&"), """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditFontName name=txtRecEditFontName value=""" & Replace(rowScreenInfo("fontName").ToString(), """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditFontSize name=txtRecEditFontSize value=" & rowScreenInfo("fontSize") & ">" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditFontBold name=txtRecEditFontBold value=" & rowScreenInfo("fontBold") & ">" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditFontItalic name=txtRecEditFontItalic value=" & rowScreenInfo("fontItalic") & ">" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditFontUnderline name=txtRecEditFontUnderline value=" & rowScreenInfo("fontUnderline") & ">" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditFontStrikethru name=txtRecEditFontStrikethru value=" & rowScreenInfo("fontStrikethru") & ">" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditRealSource name=txtRecEditRealSource value=""" & Replace(rowScreenInfo("realSource").ToString(), """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditInsertGranted name=txtRecEditInsertGranted value=" & rowScreenInfo("insertGranted") & ">" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditDeleteGranted name=txtRecEditDeleteGranted value=" & rowScreenInfo("deleteGranted") & ">" & vbCrLf)
-			
-					Catch ex As Exception
-						sErrorDescription = "The screen definition could not be read." & vbCrLf & FormatError(ex.Message)
-			
-					End Try
-			
-				End If
+                If Len(sErrorDescription) = 0 Then
 
-				If Len(sErrorDescription) = 0 Then
-		
-					Try
+                    Try
 
-						Dim prmSelectSQL = New SqlParameter("psselectSQL", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-						Dim prmFromDef = New SqlParameter("psFromDef", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-						Dim prmOrderID = New SqlParameter("piOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("orderID"))}
-		
-						SPParameters = New SqlParameter() { _
-							New SqlParameter("piScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))}, _
-							New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))},
-							prmSelectSQL, prmFromDef, prmOrderID}
-						Dim dtControls As DataTable = objDatabaseAccess.GetFromSP("sp_ASRIntGetScreenControlsString2", SPParameters)
+                        SPParameters = New SqlParameter() { _
+                                New SqlParameter("piScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))}, _
+                                New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}}
 
-						Dim iloop = 1
-						For Each objRow As DataRow In dtControls.Rows
-							Response.Write("<input type='hidden' id=txtRecEditControl_" & iloop & " name=txtRecEditControl_" & iloop & " value=""" & Replace(Replace(objRow("controlDefinition").ToString(), """", "&quot;"), "&&", "&") & """>" & vbCrLf)
-							iloop += 1
-						Next
+                        Dim rowScreenInfo = objDatabaseAccess.GetFromSP("sp_ASRIntGetScreenDefinition", SPParameters).Rows(0)
 
-						Response.Write("<input type='hidden' id=txtRecEditSelectSQL name=txtRecEditSelectSQL value=""" & Replace(Replace(prmSelectSQL.Value.ToString(), "'", "'''"), """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditFromDef name=txtRecEditFromDef value=""" & Replace(Replace(prmFromDef.Value.ToString(), "'", "'''"), """", "&quot;") & """>" & vbCrLf)
-						Response.Write("<input type='hidden' id=txtRecEditOrderID name=txtRecEditOrderID value=" & prmOrderID.Value.ToString() & ">" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditTableID name=txtRecEditTableID value=" & Session("tableID") & ">" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditViewID name=txtRecEditViewID value=" & Session("viewID") & ">" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditHeight name=txtRecEditHeight value=" & rowScreenInfo("height") & ">" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditWidth name=txtRecEditWidth value=" & rowScreenInfo("width") & ">" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditTabCount name=txtRecEditTabCount value=" & rowScreenInfo("tabCount") & ">" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditTabCaptions name=txtRecEditTabCaptions value=""" & Replace(Replace(rowScreenInfo("tabCaptions").ToString(), "&", "&&"), """", "&quot;") & """>" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditFontName name=txtRecEditFontName value=""" & Replace(rowScreenInfo("fontName").ToString(), """", "&quot;") & """>" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditFontSize name=txtRecEditFontSize value=" & rowScreenInfo("fontSize") & ">" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditFontBold name=txtRecEditFontBold value=" & rowScreenInfo("fontBold") & ">" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditFontItalic name=txtRecEditFontItalic value=" & rowScreenInfo("fontItalic") & ">" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditFontUnderline name=txtRecEditFontUnderline value=" & rowScreenInfo("fontUnderline") & ">" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditFontStrikethru name=txtRecEditFontStrikethru value=" & rowScreenInfo("fontStrikethru") & ">" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditRealSource name=txtRecEditRealSource value=""" & Replace(rowScreenInfo("realSource").ToString(), """", "&quot;") & """>" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditInsertGranted name=txtRecEditInsertGranted value=" & rowScreenInfo("insertGranted") & ">" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditDeleteGranted name=txtRecEditDeleteGranted value=" & rowScreenInfo("deleteGranted") & ">" & vbCrLf)
 
-			
-			
-						Dim rstScreenControlValues = objDatabaseAccess.GetFromSP("sp_ASRIntGetScreenControlValuesString" _
-						, New SqlParameter("plngScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))})
-			
-						iloop = 1
-						For Each objRow As DataRow In rstScreenControlValues.Rows
-							Response.Write("<input type='hidden' id='txtRecEditControlValues_" & iloop & "' name='txtRecEditControlValues_" & iloop & "' value='" & Html.Encode(objRow("valueDefinition").ToString()) & "'>" & vbCrLf)
-							iloop += 1
-						Next
-			
-						'Add two more culture-specific hidden fields: number decimal separator and thousand separator; they will be used by the autoNumeric plugin
-						Response.Write("<input type='hidden' id='txtRecEditControlNumberDecimalSeparator' name='txtRecEditControlNumberDecimalSeparator' value='" & Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator & "'>" & vbCrLf)
-						Response.Write("<input type='hidden' id='txtRecEditControlNumberGroupSeparator' name='txtRecEditControlNumberGroupSeparator' value='" & Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator & "'>" & vbCrLf)
-				
-			
-					Catch ex As Exception
-						sErrorDescription = "The screen control definitions could not be read." & vbCrLf & FormatError(ex.Message)
+                    Catch ex As Exception
+                        sErrorDescription = "The screen definition could not be read." & vbCrLf & FormatError(ex.Message)
 
-					End Try
-		
-				End If
+                    End Try
 
-				Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
-				Response.Write("<input type='hidden' id=txtRecEditFilterDef name=txtRecEditFilterDef value=""" & Replace(Session("filterDef_" & Session("tableID")), """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtRecEditFilterSQL name=txtRecEditFilterSQL value=""" & Replace(Session("filterSQL_" & Session("tableID")), """", "&quot;") & """>" & vbCrLf)
+                End If
 
-				Dim objUtilities As HR.Intranet.Server.Utilities = Session("UtilitiesObject")
-	
-				Dim sTempPath = Server.MapPath("~/pictures")
-				Dim picturesArray = objUtilities.GetPictures(Session("screenID"), CStr(sTempPath))
+                If Len(sErrorDescription) = 0 Then
 
-				For iCount = 1 To UBound(picturesArray, 2)
-					Response.Write("<INPUT type='hidden' id=txtRecEditPicture_" & picturesArray(1, iCount) & " name=txtRecEditPicture_" & picturesArray(1, iCount) & " value=""" & picturesArray(2, iCount) & """>" & vbCrLf)
-				Next
-				objUtilities = Nothing
+                    Try
 
-				'sReferringPage = Request.ServerVariables("HTTP_REFERER") 
-				'iIndex = inStrRev(sReferringPage, "/")
-				'if iIndex > 0 then
-				'	sReferringPage = left(sReferringPage, iIndex - 1)
-				'	if left(sReferringPage, 5) = "http:" then
-				'		sReferringPage = mid(sReferringPage, 6)
-				'	end if
-				'end if
-				'Response.Write "<INPUT type='hidden' id=txtImagePath name=txtImagePath value=""" & sReferringPage & """>" & vbcrlf				
+                        Dim prmSelectSQL = New SqlParameter("psselectSQL", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+                        Dim prmFromDef = New SqlParameter("psFromDef", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+                        Dim prmOrderID = New SqlParameter("piOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("orderID"))}
+
+                        SPParameters = New SqlParameter() { _
+                            New SqlParameter("piScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))}, _
+                            New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))},
+                            prmSelectSQL, prmFromDef, prmOrderID}
+                        Dim dtControls As DataTable = objDatabaseAccess.GetFromSP("sp_ASRIntGetScreenControlsString2", SPParameters)
+
+                        Dim iloop = 1
+                        For Each objRow As DataRow In dtControls.Rows
+                            Response.Write("<input type='hidden' id=txtRecEditControl_" & iloop & " name=txtRecEditControl_" & iloop & " value=""" & Replace(Replace(objRow("controlDefinition").ToString(), """", "&quot;"), "&&", "&") & """>" & vbCrLf)
+                            iloop += 1
+                        Next
+
+                        Response.Write("<input type='hidden' id=txtRecEditSelectSQL name=txtRecEditSelectSQL value=""" & Replace(Replace(prmSelectSQL.Value.ToString(), "'", "'''"), """", "&quot;") & """>" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditFromDef name=txtRecEditFromDef value=""" & Replace(Replace(prmFromDef.Value.ToString(), "'", "'''"), """", "&quot;") & """>" & vbCrLf)
+                        Response.Write("<input type='hidden' id=txtRecEditOrderID name=txtRecEditOrderID value=" & prmOrderID.Value.ToString() & ">" & vbCrLf)
+
+
+
+                        Dim rstScreenControlValues = objDatabaseAccess.GetFromSP("sp_ASRIntGetScreenControlValuesString" _
+                        , New SqlParameter("plngScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))})
+
+                        iloop = 1
+                        For Each objRow As DataRow In rstScreenControlValues.Rows
+                            Response.Write("<input type='hidden' id='txtRecEditControlValues_" & iloop & "' name='txtRecEditControlValues_" & iloop & "' value='" & Html.Encode(objRow("valueDefinition").ToString()) & "'>" & vbCrLf)
+                            iloop += 1
+                        Next
+
+                        'Add two more culture-specific hidden fields: number decimal separator and thousand separator; they will be used by the autoNumeric plugin
+                        Response.Write("<input type='hidden' id='txtRecEditControlNumberDecimalSeparator' name='txtRecEditControlNumberDecimalSeparator' value='" & Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator & "'>" & vbCrLf)
+                        Response.Write("<input type='hidden' id='txtRecEditControlNumberGroupSeparator' name='txtRecEditControlNumberGroupSeparator' value='" & Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator & "'>" & vbCrLf)
+
+
+                    Catch ex As Exception
+                        sErrorDescription = "The screen control definitions could not be read." & vbCrLf & FormatError(ex.Message)
+
+                    End Try
+
+                End If
+
+                Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
+                Response.Write("<input type='hidden' id=txtRecEditFilterDef name=txtRecEditFilterDef value=""" & Replace(Session("filterDef_" & Session("tableID")), """", "&quot;") & """>" & vbCrLf)
+                Response.Write("<input type='hidden' id=txtRecEditFilterSQL name=txtRecEditFilterSQL value=""" & Replace(Session("filterSQL_" & Session("tableID")), """", "&quot;") & """>" & vbCrLf)
+
+                Dim objUtilities As HR.Intranet.Server.Utilities = Session("UtilitiesObject")
+
+                Dim sTempPath = Server.MapPath("~/pictures")
+                Dim picturesArray = objUtilities.GetPictures(Session("screenID"), CStr(sTempPath))
+
+                For iCount = 1 To UBound(picturesArray, 2)
+                    Response.Write("<INPUT type='hidden' id=txtRecEditPicture_" & picturesArray(1, iCount) & " name=txtRecEditPicture_" & picturesArray(1, iCount) & " value=""" & picturesArray(2, iCount) & """>" & vbCrLf)
+                Next
+                objUtilities = Nothing
+
+                'sReferringPage = Request.ServerVariables("HTTP_REFERER") 
+                'iIndex = inStrRev(sReferringPage, "/")
+                'if iIndex > 0 then
+                '	sReferringPage = left(sReferringPage, iIndex - 1)
+                '	if left(sReferringPage, 5) = "http:" then
+                '		sReferringPage = mid(sReferringPage, 6)
+                '	end if
+                'end if
+                'Response.Write "<INPUT type='hidden' id=txtImagePath name=txtImagePath value=""" & sReferringPage & """>" & vbcrlf				
 			%>
 
 			<input type='hidden' id="txtPicturePath" name="txtPicturePath">
@@ -757,6 +767,7 @@
 			<input type='hidden' id="txtOLELocalPath" name="txtOLELocalPath">
 		</div>
 	</form>
+
 </div>
 
 
@@ -811,23 +822,9 @@
 			//$("#ctlRecordEdit").css("transform-origin", "50% top");
 		}
 
-		var toolMfRecord = window.top.getCookie('toolMFRecord');
+		var toolMfRecord = getCookie('toolMFRecord');
 		$('#mnutoolMFRecord').removeClass('toolbarButtonOn');
 		if (toolMfRecord == 'true') toggleMandatoryColumns(true);
-
-		
-		var dialogId = OpenHR.activeWindowID();
-		var newWidth = $('#ctlRecordEdit').outerWidth() + 100;
-		var newHeight = $('#ctlRecordEdit').outerHeight() + 100;
-
-		window.top.$('#' + dialogId).dialog('option', 'width', newWidth);
-		window.top.$('#' + dialogId).dialog('option', 'height', newHeight);
-
-		OpenHR.setDatepickerLanguage();
-
-		//prevent resizing of recedit dialogs.
-		window.top.$('#' + dialogId).dialog("option", "resizable", false);
-
 	});
 
 </script>
