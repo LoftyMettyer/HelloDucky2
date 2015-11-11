@@ -64,7 +64,7 @@ function applyDefaultValues() {
 	//NB calculated default values are handled elsewhere
 	//this method also clears all other controls
 	
-	OpenHR.activeFrame().find('input[id^="txtRecEditControl_"]').each(function (index) {
+	$('input[id^="txtRecEditControl_"]').each(function (index) {
 		var objScreenControl = getScreenControl_Collection($(this).val());
 
 		//NB we don#t use .Tag any more. Removed as we can grab controls from the txtRecordEditControl_ list instead.
@@ -110,7 +110,7 @@ function ClearUniqueColumnControls() {
 function CalculatedDefaultColumns() {
 	var sColsAndCalcs = "";
 
-	OpenHR.activeFrame().find('input[id^="txtRecEditControl_"]').each(function (index) {
+	$('input[id^="txtRecEditControl_"]').each(function (index) {
 		var objScreenControl = getScreenControl_Collection($(this).val());
 
 		if ((objScreenControl.ColumnID > 0) &&
@@ -166,7 +166,7 @@ function insertUpdateDef() {
 
 	var uniqueIdentifier = 0;
 
-	OpenHR.activeFrame().find('input[id^="txtRecEditControl_"]').each(function (index) {
+	$('input[id^="txtRecEditControl_"]').each(function (index) {
 
 
 		uniqueIdentifier += 1;
@@ -176,7 +176,7 @@ function insertUpdateDef() {
 		//because we can display a column on the screen multiple times, with different properties (e.g. readonly),
 		//we need to ensure we're dealing with the right one. So, unique id is used.
 		var uniqueID = "FI_" + objScreenControl.ColumnID + "_" + objScreenControl.ControlType + "_" + uniqueIdentifier;
-		var objControl = OpenHR.activeFrame().find("#" + uniqueID);	//the actual screen object.
+		var objControl = $("#" + uniqueID);	//the actual screen object.
 
 		if ($(objControl).length == 0) {
 			fDoControl = false;
@@ -387,10 +387,10 @@ function insertUpdateDef() {
 						}
 					}
 
-					else if (objScreenControl.ControlType == 16) {						
+					else if (objScreenControl.ControlType == 16) {
 						//TypeOf objControl Is COAInt_OptionGroup Then
 						//	 Character field from an option group (CHAR type column). Save the text from the option group.
-						var optionSelected = OpenHR.activeFrame().find("input:radio[name='" + $(objControl).attr("id") + "']:checked").val();
+						var optionSelected = $("input:radio[name='" + $(objControl).attr("id") + "']:checked").val();
 
 						if (optionSelected == undefined) {
 							asColumnsToAdd[1] = "";
@@ -472,20 +472,20 @@ function insertUpdateDef() {
 					else if (objScreenControl.ControlType == 2048) {						
 						//TypeOf objControl Is CommandButton (link button)
 						if (objScreenControl.LinkTableID != $("#txtCurrentParentTableID").val()) {
-							ubound = (window.top.window.mavIDColumns.length);
+							ubound = (window.mavIDColumns.length);
 
 							for (iLoop = 0; iLoop < (ubound); iLoop++) {
 
-								if (window.top.window.mavIDColumns[iLoop][1] == "ID_" + objScreenControl.LinkTableID) {
-									asColumnsToAdd[1] = window.top.window.mavIDColumns[iLoop][2];
-									asColumnsToAdd[3] = window.top.window.mavIDColumns[iLoop][2];
+								if (window.mavIDColumns[iLoop][1] == "ID_" + objScreenControl.LinkTableID) {
+									asColumnsToAdd[1] = window.mavIDColumns[iLoop][2];
+									asColumnsToAdd[3] = window.mavIDColumns[iLoop][2];
 									break;
 								}
 
 							}
 						} else {
-							asColumnsToAdd[1] = OpenHR.activeFrame().find("#txtCurrentParentTableID").val();
-							asColumnsToAdd[3] = OpenHR.activeFrame().find("#txtCurrentParentTableID").val();
+							asColumnsToAdd[1] = $("#txtCurrentParentTableID").val();
+							asColumnsToAdd[3] = $("#txtCurrentParentTableID").val();
 						}		
 					}
 				}
@@ -503,12 +503,12 @@ function insertUpdateDef() {
 	//	Set objControl = Nothing
 
 	//	See if we are a history screen and if we are save away the id of the parent also
-	if (OpenHR.activeFrame().find("#txtCurrentParentTableID").val() > 0) {
+	if ($("#txtCurrentParentTableID").val() > 0) {
 		//	Check if the column's update string has already been constructed.
 		fColumnDone = false;
 		var ubound = asColumns.length - 1;
 		for (iNextIndex = 0; iNextIndex <= ubound; iNextIndex++) {
-			if (asColumns[iNextIndex][0] == "ID_" + $.trim(OpenHR.activeFrame().find("#txtCurrentParentTableID").val())) {
+			if (asColumns[iNextIndex][0] == "ID_" + $.trim($("#txtCurrentParentTableID").val())) {
 				fColumnDone = true;
 				break;
 			}
@@ -520,10 +520,10 @@ function insertUpdateDef() {
 			//	Add the column name to the array of columns that have already been entered in the
 			//	SQL update/insert string.
 			//iNextIndex = asColumns.length + 1; //TODO: check this...			
-			asIDToAdd[0] = "ID_" + $.trim(OpenHR.activeFrame().find("#txtCurrentParentTableID").val());
-			asIDToAdd[1] = $.trim(OpenHR.activeFrame().find("#txtCurrentParentRecordID").val());
-			asIDToAdd[2] = "ID_" + $.trim(OpenHR.activeFrame().find("#txtCurrentParentTableID").val());
-			asIDToAdd[3] = $.trim(OpenHR.activeFrame().find("#txtCurrentParentRecordID").val());
+			asIDToAdd[0] = "ID_" + $.trim($("#txtCurrentParentTableID").val());
+			asIDToAdd[1] = $.trim($("#txtCurrentParentRecordID").val());
+			asIDToAdd[2] = "ID_" + $.trim($("#txtCurrentParentTableID").val());
+			asIDToAdd[3] = $.trim($("#txtCurrentParentRecordID").val());
 
 			asColumns.push(asIDToAdd);
 
@@ -532,8 +532,8 @@ function insertUpdateDef() {
 
 	if (asColumns.length > 0) {
 		//	Create a SQL string to update the record with.
-		if (OpenHR.activeFrame().find("#txtCurrentRecordID").val() == 0) {
-			sInsertUpdateDef = OpenHR.activeFrame().find("#txtRecEditRealSource").val() + "\t";
+		if ($("#txtCurrentRecordID").val() == 0) {
+			sInsertUpdateDef = $("#txtRecEditRealSource").val() + "\t";
 
 			if (bCopyImageDataType) {
 				sInsertUpdateDef += "1" + "\t";
@@ -541,7 +541,7 @@ function insertUpdateDef() {
 				sInsertUpdateDef += "0" + "\t";
 			}
 
-			sInsertUpdateDef += OpenHR.activeFrame().find("#txtCopiedRecordID").val() + "\t";
+			sInsertUpdateDef += $("#txtCopiedRecordID").val() + "\t";
 			ubound = asColumns.length - 1;
 			for (iLoop = 0; iLoop <= ubound; iLoop++) {
 				if (asColumns[iLoop][0].length > 0) {
@@ -564,7 +564,7 @@ function insertUpdateDef() {
 }
 
 function ConvertSQLNumberToLocale(strInput) {
-	return OpenHR.replaceAll(String(strInput), ".", window.top.window.LocaleDecimalSeparator);
+	return OpenHR.replaceAll(String(strInput), ".", window.LocaleDecimalSeparator);
 }
 
 function ConvertNumberForSQL(strInput) {
@@ -572,7 +572,7 @@ function ConvertNumberForSQL(strInput) {
 	// (e.g. on french systems replace decimal comma for a decimal point)
 	// TODO: return strInput.replace(msLocaleDecimalSeparator, ".");
 
-	return OpenHR.replaceAll(String(strInput),window.top.window.LocaleDecimalSeparator, ".");
+	return OpenHR.replaceAll(String(strInput),window.LocaleDecimalSeparator, ".");
 }
 
 
@@ -610,7 +610,7 @@ function ConvertData(pvData, pDataType) {
 				if ($.trim(pvData).length == 0) {
 					vReturnData = null;
 				} else {
-					vReturnData = Number(pvData.toString().split(window.top.window.LocaleThousandSeparator).join("").split(window.top.window.LocaleDecimalSeparator).join("."));
+					vReturnData = Number(pvData.toString().split(window.LocaleThousandSeparator).join("").split(window.LocaleDecimalSeparator).join("."));
 				}
 				break;
 			case 4:
@@ -619,7 +619,7 @@ function ConvertData(pvData, pDataType) {
 
 					vReturnData = null;
 				} else {
-					vReturnData = Number(pvData.toString().split(window.top.window.LocaleThousandSeparator).join("").split(window.top.window.LocaleDecimalSeparator).join("."));
+					vReturnData = Number(pvData.toString().split(window.LocaleThousandSeparator).join("").split(window.LocaleDecimalSeparator).join("."));
 				}
 				break;
 
@@ -727,19 +727,19 @@ function validateSave() {
 
 	//converted from activeX function validateSave()
 	// Check that at least one parent is linked to.
-	if (Number(OpenHR.activeFrame().find("#txtCurrentParentRecordID").val()) == 0) {
+	if (Number($("#txtCurrentParentRecordID").val()) == 0) {
 		fHasParents = false;
 		fLinked = false;
 
-		var ubound = (window.top.window.mavIDColumns.length);
+		var ubound = (this.mavIDColumns.length);
 
 		for (iLoop = 0; iLoop < (ubound) ; iLoop++) {
 
-			if (window.top.window.mavIDColumns[iLoop][2].length > 2) {
+			if (this.mavIDColumns[iLoop][2].length > 2) {
 				// Must be parent id column (ID_) rather that own record id column (id)
 				fHasParents = true;
 
-				if (Number(window.top.window.mavIDColumns[iLoop][3]) > 0) {
+				if (Number(this.mavIDColumns[iLoop][3]) > 0) {
 					fLinked = true;
 					break;
 				}
@@ -856,7 +856,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 	if (controlItemArray[0] < 0) {
 		//The definition is for an id column.            
-		window.top.window.mavIDColumns.push([Number(controlItemArray[1]), controlItemArray[2], 0]);
+		this.mavIDColumns.push([Number(controlItemArray[1]), controlItemArray[2], 0]);
 	}
 
 	//-------------------------------------------------Get permissions for this control first -----------------------------------------------------------------
@@ -1076,7 +1076,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			if (!fControlEnabled) $(image).prop('disabled', true);
 
-			var path = window.top.window.ROOT + 'Home/ShowImageFromDb?imageID=' + controlItemArray[50];
+			var path = window.ROOT + 'Home/ShowImageFromDb?imageID=' + controlItemArray[50];
 
 			image.setAttribute('src', path);
 
@@ -1188,7 +1188,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			break;
 		case 32: //ctlSpinner		
-			if (window.top.window.isMobileDevice == "True") {				
+			if (window.isMobileDevice == "True") {				
 				spinner = document.createElement('input');			
 				spinner.className = "number";
 				
@@ -1576,11 +1576,11 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			
 			//steal the weekday names from the datepicker library.
 			var userLocale;
-			if ($.datepicker.regional[window.top.window.UserLocale]) {
-				userLocale = window.top.window.UserLocale;
+			if ($.datepicker.regional[window.UserLocale]) {
+				userLocale = window.UserLocale;
 			}
-			else if ($.datepicker.regional[window.top.window.UserLocale.substr(0, 2)]) {
-				userLocale = window.top.window.UserLocale.substr(0, 2);
+			else if ($.datepicker.regional[window.UserLocale.substr(0, 2)]) {
+				userLocale = window.UserLocale.substr(0, 2);
 			}
 
 			if (userLocale !== undefined) {
@@ -2019,56 +2019,21 @@ function addHTMLControlValues(controlValues) {
 	return false;
 }
 
-function enableSaveButton() {	
-	//this function moved from recedit.ascx during mwd changes
-	if (OpenHR.activeFrame().find("#ctlRecordEdit #changed").val() == "false") {
-		OpenHR.activeFrame().find("#ctlRecordEdit #changed").val("true");
-		menu_toolbarEnableItem("mnutoolSaveRecord", true);
-	}
-	window.top.onbeforeunload = warning;
-}
-
-function refreshData() {
-	//this function moved from recedit.ascx during mwd changes
-	// Get the data.asp to get the required data.
-	var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
-	var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
-
-	frmGetDataForm.txtAction.value = "LOAD";
-	frmGetDataForm.txtReaction.value = "";
-	frmGetDataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
-	frmGetDataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
-	frmGetDataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
-	frmGetDataForm.txtSelectSQL.value = frmRecordEditForm.txtRecEditSelectSQL.value;
-	frmGetDataForm.txtFromDef.value = frmRecordEditForm.txtRecEditFromDef.value;
-	frmGetDataForm.txtFilterSQL.value = frmRecordEditForm.txtRecEditFilterSQL.value;
-	frmGetDataForm.txtFilterDef.value = frmRecordEditForm.txtRecEditFilterDef.value;
-	frmGetDataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
-	frmGetDataForm.txtRecordID.value = OpenHR.getForm("dataframe", "frmData").txtRecordID.value;
-	frmGetDataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
-	frmGetDataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
-	frmGetDataForm.txtDefaultCalcCols.value = CalculatedDefaultColumns();
-	frmGetDataForm.txtInsertUpdateDef.value = "";
-	frmGetDataForm.txtTimestamp.value = "";
-
-	data_refreshData();
-}
-
 function recEdit_setData(columnID, value) {
 	
 	//Set the given column's value
 	//copied from recordDMI.ocx        	
 	if (columnID.toUpperCase() == "TIMESTAMP") {
 		// The column is the timestamp column.
-		OpenHR.activeFrame().find("#txtRecEditTimeStamp").val(value);
+		$("#txtRecEditTimeStamp").val(value);
 	}
 	else {
 		var fIsIDColumn = false;
 
-		var ubound = (window.top.window.mavIDColumns.length);
+		var ubound = (window.mavIDColumns.length);
 		for (var i = 0; i < (ubound); i++) {
-				if (window.top.window.mavIDColumns[i][0] == Number(columnID)) {
-					window.top.window.mavIDColumns[i][2] = Number(value);
+				if (window.mavIDColumns[i][0] == Number(columnID)) {
+					this.mavIDColumns[i][2] = Number(value);
 					fIsIDColumn = true;
 				}
 		}
@@ -2086,41 +2051,33 @@ function recEdit_setTimeStamp() {
 }
 
 function recEdit_setRecordID(plngRecordID) {
-	var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
+	var frmRecordEditForm = document.getElementById("frmRecordEditForm");
 	frmRecordEditForm.txtCurrentRecordID.value = plngRecordID;
 	//frmRecordEditForm.ctlRecordEdit.recordID = plngRecordID;
 }
 
 function recEdit_setCopiedRecordID(plngRecordID) {
-	var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
+	var frmRecordEditForm = document.getElementById("frmRecordEditForm");
 	frmRecordEditForm.txtCopiedRecordID.value = plngRecordID;
 	//frmRecordEditForm.ctlRecordEdit.CopiedRecordID = plngRecordID;
 }
 
 function recEdit_setParentTableID(plngParentTableID) {
-	var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
+	var frmRecordEditForm = document.getElementById("frmRecordEditForm");
 	frmRecordEditForm.txtCurrentParentTableID.value = plngParentTableID;
 	//frmRecordEditForm.ctlRecordEdit.ParentTableID = plngParentTableID;
 }
 
 function recEdit_setParentRecordID(plngParentRecordID) {
-	var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
+	var frmRecordEditForm = document.getElementById("frmRecordEditForm");
 	frmRecordEditForm.txtCurrentParentRecordID.value = plngParentRecordID;
 	//frmRecordEditForm.ctlRecordEdit.ParentRecordID = plngParentRecordID;
 }
 
-function recEdit_setLocalFormData() {
-	//duplicate frmData
-	if (menu_isSSIMode()) return false;	
-	OpenHR.activeFrame().find('#frmData').remove();
-	var x = window.top.document.getElementById("frmData").innerHTML;
-	OpenHR.activeFrame().find('body').append("<div id='frmData' name='frmData' style='display: none;'>" + x + "</div>");
-}
-
 function updateControl(lngColumnID, value) {
-	
+
 	//get the column type, then add this value to it/them.
-	OpenHR.activeFrame().find("#ctlRecordEdit").find("[data-columnID='" + lngColumnID + "']").each(function () {
+	$("#ctlRecordEdit").find("[data-columnID='" + lngColumnID + "']").each(function () {
 
 		//TODO: is this control tagged to a column?
 
@@ -2211,9 +2168,9 @@ function updateControl(lngColumnID, value) {
 							oleType = $(this).attr('data-OleType');
 						}
 						filename = value.replace('::LINKED_OLE_DOCUMENT::', '').replace('::EMBEDDED_OLE_DOCUMENT::', '');
-						var filesize = window.top.$('#txtData_' + lngColumnID).attr('data-filesize');
-						var createdate = window.top.$('#txtData_' + lngColumnID).attr('data-createdate');
-						var modifydate = window.top.$('#txtData_' + lngColumnID).attr('data-filemodifydate');
+						var filesize = $('#txtData_' + lngColumnID).attr('data-filesize');
+						var createdate = $('#txtData_' + lngColumnID).attr('data-createdate');
+						var modifydate = $('#txtData_' + lngColumnID).attr('data-filemodifydate');
 						
 						//OLE_LOCAL = 0
 						//OLE_SERVER = 1
@@ -2271,13 +2228,13 @@ function updateControl(lngColumnID, value) {
 			}
 			
 			//refresh 'autoNumeric' Columns
-			if ($(this).hasClass('number')) {				
-				//$(this).autoNumeric('update'); //TODO: this must be checked
+			if ($(this).hasClass('number')) {
+				$(this).autoNumeric('update');
 			}
 		}
 
 		if ($(this).is("img")) {
-			
+
 			filename = value.replace('::LINKED_OLE_DOCUMENT::', '').replace('::EMBEDDED_OLE_DOCUMENT::', '');
 			var msPhotoPath = $('#frmRecordEditForm #txtPicturePath').val();
 			
@@ -2288,7 +2245,7 @@ function updateControl(lngColumnID, value) {
 			}
 			else if (value.indexOf('::EMBEDDED_OLE_DOCUMENT::') >= 0) {
 				//point source at hidden tag value.
-				$(this).attr('src', 'data:image/jpeg;base64, ' + window.top.$('#txtData_' + lngColumnID).attr('data-Img'));
+				$(this).attr('src', 'data:image/jpeg;base64, ' + $('#txtData_' + lngColumnID).attr('data-Img'));
 				oleType = 2;
 			} else {
 				if (value != "") {
@@ -2299,9 +2256,9 @@ function updateControl(lngColumnID, value) {
 				}
 			}
 			
-			var filesize = window.top.$('#txtData_' + lngColumnID).attr('data-filesize');
-			var createdate = window.top.$('#txtData_' + lngColumnID).attr('data-createdate');
-			var modifydate = window.top.$('#txtData_' + lngColumnID).attr('data-filemodifydate');
+			var filesize = $('#txtData_' + lngColumnID).attr('data-filesize');
+			var createdate = $('#txtData_' + lngColumnID).attr('data-createdate');
+			var modifydate = $('#txtData_' + lngColumnID).attr('data-filemodifydate');
 
 			//OLE_LOCAL = 0
 			//OLE_SERVER = 1
@@ -2452,8 +2409,8 @@ function TBCourseRecordID() {
 
 	var TBCourseRecordID = 0;
 	var mlngCourseTableID = $("#txtTB_CourseTableID").val();
-	var mlngParentTableID = OpenHR.activeFrame().find("#txtCurrentParentTableID").val();
-	var mlngParentRecordID = OpenHR.activeFrame().find("#txtCurrentParentRecordID").val();
+	var mlngParentTableID = $("#txtCurrentParentTableID").val();
+	var mlngParentRecordID = $("#txtCurrentParentRecordID").val();
 
 	if (mlngCourseTableID > 0) {
 		if (mlngCourseTableID == mlngParentTableID) {
@@ -2478,8 +2435,8 @@ function TBEmployeeRecordID() {
 
 	var TBEmployeeRecordID = 0;
 	var mlngEmployeeTableID = $("#txtTB_EmpTableID").val();
-	var mlngParentTableID = OpenHR.activeFrame().find("#txtCurrentParentTableID").val();
-	var mlngParentRecordID = OpenHR.activeFrame().find("#txtCurrentParentRecordID").val();
+	var mlngParentTableID = $("#txtCurrentParentTableID").val();
+	var mlngParentRecordID = $("#txtCurrentParentRecordID").val();
 
 	if (mlngEmployeeTableID > 0) {
 		if (mlngEmployeeTableID == mlngParentTableID) {
@@ -2573,13 +2530,13 @@ function ExecutePostSaveCode() {
 function linkButtonClick(lngLinkTableID, lngLinkOrderID, lngLinkViewID) {
 	//Get the ID of the linked table.
 	var lngLinkRecordID = 0;
-	var ubound = (window.top.window.mavIDColumns.length);
+	var ubound = (window.mavIDColumns.length);
 
 	for (var iLoop = 0; iLoop < (ubound) ; iLoop++) {
 
-		if (window.top.window.mavIDColumns[iLoop][2] == "ID_" + lngLinkTableID) {
+		if (window.mavIDColumns[iLoop][2] == "ID_" + lngLinkTableID) {
 			// The given column is an ID column so put the value into the ID column array.
-			lngLinkRecordID = window.top.window.mavIDColumns[iLoop][3];
+			lngLinkRecordID = window.mavIDColumns[iLoop][3];
 			break;
 		}
 	}
@@ -2624,3 +2581,4 @@ function recEdit_ChangedOLEPhoto(plngColumnID, psWhat) {
 			break;
 	}
 }
+

@@ -33,11 +33,6 @@
 			$("#optionframe").attr("data-framesource", "QUICKFIND");
 			$("#workframe").hide();
 			$("#optionframe").show();
-			$("#optionframe").dialog({
-				width: screen.width / 2,
-				height: screen.height / 2,
-				modal: true
-			});
 
 			// Set focus onto one of the form controls. 
 			// NB. This needs to be done before making any reference to the grid
@@ -303,7 +298,6 @@
 	function CancelQuickFind() {
 		// Redisplay the workframe recedit control. 
 		$("#workframe").attr("data-framesource", "RECORDEDIT");
-		$("#optionframe").dialog('destroy');
 		$("#optionframe").hide();
 		$("#workframe").show();
 
@@ -486,3 +480,4 @@
 	</form>
 
 <script type="text/javascript"> quickfind_window_onload();</script>
+

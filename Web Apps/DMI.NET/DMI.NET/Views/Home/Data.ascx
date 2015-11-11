@@ -15,12 +15,13 @@
 
 <script type="text/javascript">
 	function data_window_onload() {
-		var frmData = window.top.document.getElementById("frmData");
-		var frmGetData = window.top.document.getElementById("frmGetData");
-		var frmMenuInfo = window.top.$("#frmMenuInfo")[0].children;
+
+		var frmData = document.getElementById("frmData");
+		var frmGetData = document.getElementById("frmGetData");
+		var frmMenuInfo = $("#frmMenuInfo")[0].children;
 		var frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 		var frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
-		var frmFindForm = OpenHR.getForm("workframe", "frmFindForm");	//todo: could this be optionframe?
+		var frmFindForm = OpenHR.getForm("workframe", "frmFindForm");
 		var recEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
 		var frmLog = OpenHR.getForm("workframe", "frmLog");
 
@@ -32,7 +33,7 @@
 		
 	if (sFatalErrorMsg.length > 0) {
 		OpenHR.messageBox(sFatalErrorMsg);
-		window.parent.location.replace("<%:Url.Action("logOff", "account")%>");
+		window.location = "Login";
 	}
 	else {
 		// Do nothing if the menu controls are not yet instantiated.
@@ -40,13 +41,12 @@
 			var sCurrentWorkPage = OpenHR.currentWorkPage();
 			
 			if (sCurrentWorkPage == "RECORDEDIT") {
-				
 				try {
-					OpenHR.ResetSession(); //try to reset session timeout counter in record edit
+					OpenHR.resetSession(); //try to reset session timeout counter in record edit
 				}
 				catch(e) {}
 				// Refresh the recEdit controls with the data if required.
-				var recEditControl = $(recEditForm).find('#ctlRecordEdit');
+				var recEditControl = recEditForm.ctlRecordEdit;
 				sErrorMsg = frmData.txtErrorMessage.value;
 
 				if (sErrorMsg.length > 0) {
@@ -81,7 +81,7 @@
 				}
 				
 				//No errors and recordedit navigation. Reset warning 'Are you sure you want to leave this page?'.
-				window.top.onbeforeunload = null;
+				window.onbeforeunload = null;
 
 				var sAction = frmData.txtAction.value;
 				
@@ -93,7 +93,7 @@
 					
 					if (recEditForm.txtRecEditFilterSQL.value == "") {
 						OpenHR.messageBox("The record saved is no longer in the current view");
-					}			
+					}
 				}
 
 				if (sAction == "LOGOFF") {
@@ -273,7 +273,8 @@
 						return;
 					}
 				}
-				
+
+
 				if (sAction == "NEW") {
 					applyDefaultValues();					
 				}
@@ -282,10 +283,12 @@
 				var sColumnId;
 				var dataCollection = frmData.elements;
 
+				var frmRecEditForm = document.getElementById("frmRecordEditForm");
+
 				if (dataCollection!=null) {
 					// Need to hide the popup in case setdata causes
 					// the intrecedit control to display an error message.
-					OpenHR.activeFrame().find("#ctlRecordEdit #changed").val("false");
+					$("#ctlRecordEdit #changed").val("false");
 
 					for (var i=0; i<dataCollection.length; i++)  {
 						sControlName = dataCollection.item(i).name;
@@ -293,6 +296,9 @@
 						if (sControlName=="txtData_") {
 							sColumnId = dataCollection.item(i).name;
 							sColumnId = sColumnId.substr(8);
+								var x = $("#FI_" + sColumnId);
+								//recEditControl.setData(sColumnId, dataCollection.item(i).value);
+								//$("#FI_" + sColumnId).val(dataCollection.item(i).value);
 								//setData function is in recordEdit.ascx.						    
 								recEdit_setData(sColumnId, dataCollection.item(i).value);						    
 						}
@@ -302,10 +308,7 @@
 				recEdit_setRecordID(frmData.txtRecordID.value); //workframe
 				recEdit_setParentTableID(frmData.txtParentTableID.value); //workframe
 				recEdit_setParentRecordID(frmData.txtParentRecordID.value); //workframe
-
-				if(!menu_isSSIMode()) recEdit_setLocalFormData();
-
-
+				
 				/* Check if the record is empty. */
 				if ((sAction != "NEW") && (sAction != "COPY") && (frmData.txtRecordCount.value == 0)) {
 					// No records. Clear the filter.
@@ -382,7 +385,7 @@
 				}
 
 				if (sAction == "NEW") {
-					OpenHR.activeFrame().find("#ctlRecordEdit #changed").val(allDefaults());
+					$("#ctlRecordEdit #changed").val(allDefaults());
 				}
 
 					// Get menu to refresh the menu.
@@ -576,7 +579,7 @@
 	<%=Html.AntiForgeryToken()%>
 	</form>
 
-	<form id="frmData" name="frmData" style="display: none;">
+	<form id="frmData" name="frmData">
 <%
 	
 	Dim lngRecordID As Long
@@ -952,3 +955,4 @@
 </div>
 
 <script type="text/javascript">data_window_onload();</script>
+

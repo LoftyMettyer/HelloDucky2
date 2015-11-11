@@ -75,11 +75,6 @@
 			$("#optionframe").attr("data-framesource", "SELECTFILTER");
 			$("#workframe").hide();
 			$("#optionframe").show();
-			$("#optionframe").dialog({
-				width: screen.width / 2,
-				height: screen.height / 2,
-				modal: true
-			});
 
 			frmFilterForm.selectColumn.focus();
 
@@ -656,7 +651,7 @@
 			FilterSQL: sFilterSQL,
 			FilterDef: sFilterDef,
 			SelectedRecordsInFindGrid: "<%:Session("OptionSelectedRecordIds")%>",
-			<%:Html.AntiForgeryTokenForAjaxPost() %> };		
+			<%:Html.AntiForgeryTokenForAjaxPost() %> };
 		OpenHR.submitForm(null, "optionframe", null, postData, "filterselect_Submit");
 
 	}
@@ -668,7 +663,6 @@
 			//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
 			//window.parent.document.all.item("workframeset").cols = "*, 0";	
 			$("#workframe").attr("data-framesource", "RECORDEDIT");
-			$("#optionframe").dialog('destroy');
 			$("#optionframe").hide();
 			$("#workframe").show();
 			refreshData(); //recedit
@@ -677,7 +671,6 @@
 			if (sWorkPage == "FIND") {
 				//window.parent.frames("workframe").document.forms("frmFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
 				$("#workframe").attr("data-framesource", "FIND");
-				$("#optionframe").dialog('destroy');
 				$("#optionframe").hide();
 				$("#workframe").show();
 			}
@@ -1394,3 +1387,4 @@
 		filterselect_window_onload()		
 	</script>
 </div>
+

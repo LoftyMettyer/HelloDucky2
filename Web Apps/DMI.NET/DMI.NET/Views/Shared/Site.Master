@@ -56,8 +56,7 @@
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/SignalR")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/ESAPI")%>" type="text/javascript"></script>
-	<script src="http://localhost/dmi.net/Scripts/jquery.dialogextend.min.js"></script>
-
+	
 	<script src="<%: ResolveUrl("~/signalr/hubs") %>" type="text/javascript"></script>
 					
 	<script type="text/javascript">
@@ -65,7 +64,7 @@
 		window.LocaleDateFormat = "";
 		window.SSIMode = '<%=session("SSIMode")%>';
 		window.isMobileDevice = '<%=Session("isMobileDevice")%>';
-		window.top.window.isDragging = false;
+
 		document.title = 'OpenHR <%:session("VersionShorter")%>';	
 
 		//Force all dialogs to have no close button by default.
@@ -421,11 +420,11 @@
 					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/" & Session("ui-winkit-theme").ToString() & "/jquery-ui.min.css")%>" });
 					break;
 				case "wireframe":
-					if (cookieapplyWireframeTheme == "true") $("link[id=WireframethemeLink]").attr({ href: window.top.window.ROOT + "Content/DashboardStyles/themes/upgraded.css" });
+					if (cookieapplyWireframeTheme == "true") $("link[id=WireframethemeLink]").attr({ href: window.ROOT + "Content/DashboardStyles/themes/upgraded.css" });
 
 					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
-					$("link[id=SSIthemeLink]").attr({ href: window.top.window.ROOT + "Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
-					$("link[id=DMIthemeLink]").attr({ href: window.top.window.ROOT + "Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
+					$("link[id=SSIthemeLink]").attr({ href: window.ROOT + "Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
+					$("link[id=DMIthemeLink]").attr({ href: window.ROOT + "Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
 					break;
 				case "tiles":
 					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
@@ -449,23 +448,9 @@
 			});
 
 			$(document).ajaxStop(function () {
-
-				//remove the 'please wait' spinner only if all active iFrames have completed loading.
-				var iframe = document.getElementById(OpenHR.activeIFrameID());
-				if (iframe) {
-					var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-					// Check if loading is complete
-					if (iframeDoc.readyState !== 'complete') {
-						return true;
-					}
-				}
-				
-				//Ready to close spinner.
 				$('#txtProgressMessage').val('Please wait...');
 				$("body").removeClass("loading");
 				setTimeout('updateProgressMsg()', 50);
-
 			});
 
 		});
@@ -486,9 +471,10 @@
 
 	</script>
 
+
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<script type="text/javascript">
+   	<script type="text/javascript">
 		//Set up the session timeout counter variables
 		var timeoutSecondsLeft = <%:Session.Timeout%> * 60;
 		var originalTimeoutSeconds = <%:Session.Timeout%> * 60;
@@ -498,14 +484,6 @@
 	</script>
 
 	<script type="text/javascript">
-		//if ((screen.width < 768) || (screen.height < 748)) {			
-		//	viewport = document.querySelector("meta[name=viewport]");
-		//	viewport.setAttribute('content', 'width=460;');
-		//	window.isMobileBrowser = true;		
-		//}
-		//else {
-		//	window.isMobileBrowser = false;
-		//}
 
 		// Initialise the ESAPI to validate the black list filter
 		org.owasp.esapi.ESAPI.initialize();
@@ -535,7 +513,7 @@
 		window.currentLayout = "<%=currentLayout %>";
 
 		//set up ROOT variable for use in external JS files.
-		window.top.window.ROOT = '<%= Url.Content("~/") %>';		
+		window.ROOT = '<%= Url.Content("~/") %>';		
 		
 		//Set locale-related global variables
 		window.UserLocale = "<%:LocaleLanguage() %>";
@@ -546,13 +524,13 @@
 
 			if (OpenHR.currentWorkPage() == "FIND") {
 				try {
-					if (window.top.rowWasModified) {
+					if (rowWasModified) {
 						//Inform the user that they have unsaved changes on the Find window
 						OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
 						return false;
 					}
 				} catch (e) { //continue with navigation 
-					if (window.top.rowWasModified) return false;
+					if (rowWasModified) return false;
 				}
 			}
 			
@@ -560,7 +538,7 @@
 			if (action.toUpperCase().substr(0, 9) === "LINKSMAIN") csrfProt = $('[name="__RequestVerificationToken"]').val();
 
 			$.ajax({
-				url: window.top.window.ROOT + controller + "/" + action,
+				url: window.ROOT + controller + "/" + action,
 				data: { psScreenInfo: params, __RequestVerificationToken: csrfProt },
 				dataType: 'html',
 				type: "POST",
@@ -650,6 +628,7 @@
 				$('.linkspagebuttonbox').css('width', width + 50);
 			}
 		}
+
 	</script>
 
 </head>
@@ -733,3 +712,4 @@
 	</div>--%>
 </body>
 </html>
+

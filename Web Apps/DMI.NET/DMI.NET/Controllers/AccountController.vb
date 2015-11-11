@@ -256,7 +256,7 @@ Namespace Controllers
 			End Try
 
 			Dim objSerialize As New JavaScriptSerializer
-			Dim modelSerialized As String = objSerialize.Serialize(LoginViewModel)
+			Dim modelSerialized As String = objSerialize.Serialize(LoginViewModel)		
 			Dim objCrypt As New clsCrypt
 
 			Dim sEncryptedString = objCrypt.EncryptString(modelSerialized, sEncryptKey, True)
@@ -356,7 +356,6 @@ Namespace Controllers
 					Session("DatabaseFunctions") = objDatabase
 					Session("DatabaseAccess") = objDataAccess
 					Session("sessionContext") = objServerSession
-					Session("SessionVariables") = New SessionVariablesCollection
 
 					If Licence.IsModuleLicenced(SoftwareModule.Workflow) Then
 						PopulateWorkflowSessionVariables()
@@ -820,4 +819,5 @@ Namespace Controllers
 		End Property
 	End Class
 End Namespace
+
 

@@ -37,7 +37,10 @@
         Response.Write("  var sLastToolName;" & vbCrLf)
         Response.Write("  var lngLastScreenID;" & vbCrLf & vbCrLf)
         Response.Write("  	var frmMenuInfo = $(""#frmMenuInfo"")[0].children;" & vbCrLf)
-				Response.Write("  frmMenuInfo.txtDoneDatabaseMenu.value = 1;" & vbCrLf & vbCrLf)
+        Response.Write("  if (frmMenuInfo.txtDoneDatabaseMenu.value == 1) {" & vbCrLf)
+        Response.Write("    return;" & vbCrLf)
+        Response.Write("  }" & vbCrLf & vbCrLf)
+        Response.Write("  frmMenuInfo.txtDoneDatabaseMenu.value = 1;" & vbCrLf & vbCrLf)
 
         If Session("avPrimaryMenuInfo") Is Nothing Then
             avPrimaryMenuInfo = objMenu.GetPrimaryTableMenu
@@ -526,3 +529,4 @@
 	$("#contextmenu").fadeIn("slow");
 
 </script>
+

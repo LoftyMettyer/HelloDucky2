@@ -6,16 +6,6 @@
 <%@ Import Namespace="System.Data" %>
 
 <%
-	If Session("SSIMode") = False Then
-		
-		Response.Write("<script src=""" & Url.LatestContent("~/bundles/jQuery") & """ type=""text/javascript""></script>")
-		Response.Write("<script src=""" & Url.LatestContent("~/bundles/jQueryUI7") & """ type=""text/javascript""></script>")
-		Response.Write("<script src=""" & Url.LatestContent("~/bundles/OpenHR_General") & """ type=""text/javascript""></script>")
-		
-	End If	
-	%>
-
-<%
 	'Data access variables
 	Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	'Set session info
 	Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
@@ -26,24 +16,6 @@
 	Dim rstOriginalColumns As DataTable
 	Dim resultsDataTable As DataTable
 %>
-
-<%--Base stylesheets--%>
-
-<%If Session("SSIMode") = False Then
-		
-		'theme and layout
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/DashboardStyles/themes/white.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/font-awesome.min.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/Site.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/OpenHR.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/ui.jqgrid.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		Response.Write("<link href=""" & Url.LatestContent("~/Content/table.css") & """ rel=""stylesheet"" type=""text/css"" />")
-		
-	End If%>
-
 <script src="<%: Url.LatestContent("~/bundles/recordedit")%>" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -67,16 +39,6 @@
 
 			setTimeout('gridBindKeys(false)', 300);
 
-			//Resize functionality
-			window.top.$('#' + OpenHR.activeWindowID()).on("dialogresizestop", function(event, ui) {
-				resizeFindGrid();
-			});
-
-			//Set minimum dialog sizes
-			var dialogId = OpenHR.activeWindowID();
-			window.top.$('#' + dialogId).dialog("option", "minWidth", 500);	//500 is big enough to prevent overlap of editable grid icons
-			window.top.$('#' + dialogId).dialog("option", "minHeight", 450);	//keep it square-ish
-
 		}
 	});
 
@@ -98,9 +60,7 @@
 		} else {
 			$("#findGridTable").jqGrid("setGridParam", {
 				ondblClickRow: function (rowID) {
-					if (!IsMultiSelectionModeOn()) {
-						window.top.menu_editRecord(true);
-					}
+					if (!IsMultiSelectionModeOn()) { menu_editRecord(); }
 				}
 			});
 			$('#findGridTable').jqGrid('bindKeys', {
@@ -110,7 +70,7 @@
 						return;
 					}
 
-					window.top.menu_editRecord(true);
+					menu_editRecord();
 				}
 			});
 
@@ -217,7 +177,7 @@
 
 
 	// Provide empty function. Called when clicking close from the report/utility whilst loaded from find window.
-	function find_refreshData() { }
+	function refreshData() { }
 
 	/******* End Changes for the user story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
 
@@ -230,7 +190,6 @@
 				<%
 					Dim sErrorDescription As String = ""
 					Dim sThousSepSummaryFields As String
-					Dim OriginalPageTitle As String = ""
 					
 					If ViewBag.pageTitle.ToString().Length = 0 Then
 						' DMI View.
@@ -256,7 +215,6 @@
 											Replace(prm_psTitle.Value.ToString, "_", " ") & "</span>" & vbCrLf, homelinkURL))
 							response.write("<label id='txtRIE' style='float: right;'></label>")
 							Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & prm_pfQuickEntry.Value.ToString & "></div>" & vbCrLf)
-							OriginalPageTitle = prm_psTitle.Value.ToString()							
 						End If
 					Else
 						' SSI View.
@@ -618,7 +576,7 @@
 							'We need TableID and OrderID in the client side
 							Response.Write(String.Concat(vbCrLf, "var tableId = ", Session("tableID"), ";", vbCrLf))
 							Response.Write(String.Concat(vbCrLf, "var orderId = ", Session("orderID"), ";", vbCrLf))
-							Response.Write(String.Concat(vbCrLf, "window.top.rowWasModified = false;", vbCrLf))
+							Response.Write(String.Concat(vbCrLf, "var rowWasModified = false;", vbCrLf))
 							Response.Write(String.Concat(vbCrLf, "var linktype = '", Session("linktype"), "';", vbCr))
 
 							Response.Write("</script>" & vbCrLf)
@@ -862,9 +820,8 @@ If fCanSelect Then
 	Try
 		resultsDataTable = objDataAccess.GetDataTable("spASRIntGetSummaryValues", CommandType.StoredProcedure, SPParameters)
 		Dim sTempValue As String
-					
+			
 		If resultsDataTable.Rows.Count = 0 Then
-			  	
 			sErrorDescription = "The screen cannot be loaded because you do not have access to its associated parent record"
 		End If
 
@@ -872,7 +829,7 @@ If fCanSelect Then
 			For iLoop = 0 To (resultsDataTable.Columns.Count - 1)
 				If GeneralUtilities.IsDataColumnDecimal(resultsDataTable.Columns(iLoop)) Then
 					sTemp = "," & resultsDataTable.Columns(iLoop).ColumnName & ","
-			  	
+
 					If IsDBNull(resultsDataTable.Rows(0)(iLoop)) Then
 						sTempValue = "0"
 					Else
@@ -886,6 +843,7 @@ If fCanSelect Then
 						sTemp = ""
 						sTemp = FormatNumber(sTempValue, , True, False, False)
 					End If
+							
 					Response.Write("			<INPUT type='hidden' id=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " name=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " value=""" & sTemp & """>" & vbCrLf)
 				Else
 					Response.Write("			<INPUT type='hidden' id=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " name=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " value=""" & resultsDataTable.Rows(0)(iLoop) & """>" & vbCrLf)
@@ -901,7 +859,6 @@ End If
 End If
 	
 If Len(sErrorDescription) = 0 Then
-			
 Response.Write("				<input type='hidden' id=txtCurrentTableID name=txtCurrentTableID value=" & Session("tableID") & ">" & vbCrLf)
 Response.Write("				<input type='hidden' id=txtCurrentViewID name=txtCurrentViewID value=" & Session("viewID") & ">" & vbCrLf)
 Response.Write("				<input type='hidden' id=txtCurrentScreenID name=txtCurrentScreenID value=" & Session("screenID") & ">" & vbCrLf)
@@ -916,7 +873,6 @@ Response.Write("				<input type='hidden' id=txtFilterSQL name=txtFilterSQL value
 Response.Write("				<input type='hidden' id='txtThousSepSummary' name='txtThousSepSummary' value='" & sThousSepSummaryFields & "'>" & vbCrLf)
 Response.Write("				<input type='hidden' id='txtMaxRequestLength' name='txtMaxRequestLength' value='" & Session("maxRequestLength") & "'>" & vbCrLf)
 Response.Write("				<input type='hidden' id=txtSelectedRecordsInFindGrid name=txtSelectedRecordsInFindGrid value=" & Session("OptionSelectedRecordIds") & ">" & vbCrLf)
-Response.Write("				<input type='hidden' id='txtOriginalPageTitle' name='txtOriginalPageTitle' value='" & OriginalPageTitle & "'>" & vbCrLf)
 			
 End If
 
@@ -932,9 +888,9 @@ Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDes
 
 
 	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
-	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">	
+	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
 
-	<script type="text/javascript">		
+	<script type="text/javascript">
 		find_window_onload();
 
 		if (!menu_isSSIMode()) {
@@ -943,3 +899,4 @@ Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDes
 
 	</script>
 </div>
+

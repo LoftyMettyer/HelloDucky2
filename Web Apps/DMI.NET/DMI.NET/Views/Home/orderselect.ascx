@@ -14,11 +14,6 @@
 		$("#optionframe").attr("data-framesource", "SELECTORDER");
 		$("#workframe").hide();
 		$("#optionframe").show();
-		$("#optionframe").dialog({
-			width: screen.width / 2,
-			height: screen.height / 2,
-			modal: true
-	});
 
 		var fOK;
 		fOK = true;
@@ -74,7 +69,6 @@
 
 	function SelectOrder() {
 		//return selected orderID off to calling form.
-		$("#optionframe").dialog('destroy');
 		$("#optionframe").hide();
 		$("#workframe").show();
 
@@ -94,7 +88,6 @@
 
 	function CancelOrder() {
 		// Redisplay the workframe recedit control. 
-		$("#optionframe").dialog('destroy');
 		$("#optionframe").hide();
 		$("#workframe").show();
 
@@ -324,4 +317,5 @@
 	orderselect_addhandlers();
 	orderselect_window_onload();
 </script>
+
 

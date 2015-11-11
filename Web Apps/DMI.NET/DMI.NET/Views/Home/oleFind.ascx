@@ -596,7 +596,7 @@
 		var sMessage;
 		var frmGotoOption = document.getElementById('frmFindForm');
 		var frmFindForm = document.getElementById('frmFindForm');
-		
+
 		lngOleType = frmGotoOption.txtOLEType.value;
 
 		if (lngOleType == 3) {
@@ -621,7 +621,7 @@
 			if (columnID.length > 0) {
 				//FI_3002_8_384
 
-				OpenHR.activeFrame().find("#ctlRecordEdit").find("[data-columnID='" + columnID + "']").each(function () {
+				$("#ctlRecordEdit").find("[data-columnID='" + columnID + "']").each(function () {
 					// Update the display
 					//All these ASRIntOLE1 values are stored on the control now.
 					//frmFindForm.ASRIntOLE1.DMIBackColor = 16777215;

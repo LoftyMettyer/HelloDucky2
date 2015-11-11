@@ -738,7 +738,6 @@ div.officetab li div.button a img {
 
 div.officetab li div.split a span {
 	background: transparent url(../../../Scripts/officebar/images/dropdown.png) no-repeat scroll 18px 15px;
-	background-position-x: center;
 	padding-bottom: 7px;
 	margin: 1px 2px 0 2px;
 	border-top: 1px solid transparent;
@@ -972,3 +971,4 @@ div.officetab li div.textboxlist input {
 
 /* Find window grid - navigation icons. */
 .ui-jqgrid .ui-jqgrid-pager .ui-pg-div>span { margin: 0 5px; font-size: 20px; }
+
