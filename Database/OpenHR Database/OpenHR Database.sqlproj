@@ -644,6 +644,7 @@
     <Build Include="User Defined Functions\udfsysStringToTable.sql" />
     <Build Include="Stored Procedures\Workflow\spASRWorkflowValidateService.sql" />
     <Build Include="Roles\ASRSysWorkflowAdmin.sql" />
+    <Build Include="Stored Procedures\Other\spsys_saveobjectcategories.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
