@@ -52,6 +52,7 @@ CREATE PROCEDURE [dbo].[spASRInstantiateWorkflow]
 			SELECT @iSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2));
 		
 			DECLARE @succeedingElements table(elementID int);
+			DECLARE	@outputTable table (id int NOT NULL);
 		
 			SET @iInitiatorID = 0;
 			SET @psFormElements = '';
@@ -159,6 +160,7 @@ CREATE PROCEDURE [dbo].[spASRInstantiateWorkflow]
 				[parent2TableID],
 				[parent2RecordID],
 				[pageno])
+			OUTPUT inserted.ID INTO @outputTable
 			VALUES (@piWorkflowID, 
 				@iInitiatorID, 
 				0, 
@@ -170,8 +172,7 @@ CREATE PROCEDURE [dbo].[spASRInstantiateWorkflow]
 				@iParent2RecordID,
 				0);
 						
-			SELECT @piInstanceID = MAX(id)
-			FROM [dbo].[ASRSysWorkflowInstances];
+			SELECT @piInstanceID = id FROM @outputTable;
 		
 			/* Create the Workflow Instance Steps records. 
 			Set the first steps' status to be 1 (pending Workflow Engine action). 

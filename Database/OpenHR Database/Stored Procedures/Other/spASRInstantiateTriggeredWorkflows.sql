@@ -15,7 +15,8 @@ CREATE PROCEDURE [dbo].[spASRInstantiateTriggeredWorkflows]
 				@iParent2RecordID	integer,
 				@TargetName varchar(MAX);
 
-			DECLARE @succeedingElements table(elementID int)
+			DECLARE @succeedingElements table(elementID int);
+			DECLARE	@outputTable table (id int NOT NULL);
 		
 			DECLARE triggeredWFCursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT Q.queueID,
@@ -54,6 +55,7 @@ CREATE PROCEDURE [dbo].[spASRInstantiateTriggeredWorkflows]
 					parent2RecordID,
 					pageno,
 					TargetName)
+				OUTPUT inserted.ID INTO @outputTable
 				VALUES (@iWorkflowID, 
 					@iRecordID, 
 					0, 
@@ -65,8 +67,7 @@ CREATE PROCEDURE [dbo].[spASRInstantiateTriggeredWorkflows]
 					0,
 					@TargetName)
 								
-				SELECT @iInstanceID = MAX(id)
-				FROM ASRSysWorkflowInstances
+				SELECT @iInstanceID = id FROM @outputTable;
 				
 				UPDATE ASRSysWorkflowQueue
 				SET instanceID = @iInstanceID

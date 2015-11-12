@@ -780,11 +780,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntAddFromWaitingList]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntAddEventLogHeader]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntAddEventLogHeader]
-GO
-
-
 
 SET ANSI_NULLS ON
 GO
@@ -931,51 +926,6 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntAddEventLogHeader]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntAddEventLogHeader]
-(
-    @piNewRecordID	integer OUTPUT,   /* Output variable to hold the new record ID. */
-    @piType			integer,
-    @psName			varchar(150), 
-    @psUserName		varchar(50),
-    @psBatchName	varchar(50),
-    @piBatchRunID	integer,
-    @piBatchJobID	integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	INSERT INTO [dbo].[ASRSysEventLog] (
-		[DateTime],	[Type],	[Name], [Status], [Username],
-		[Mode], [BatchName], [SuccessCount], [FailCount], [BatchRunID], [BatchJobID])
-	VALUES (GETDATE(), @piType, @psName, 0, @psUserName,
-		CASE
-			WHEN len(@psBatchName) = 0 THEN 0
-			ELSE 1
-		END,    
-		@psBatchName, NULL,NULL,
-		CASE
-			WHEN @piBatchRunID > 0 THEN @piBatchRunID
-			ELSE null
-		END,
-		CASE 
-			WHEN @piBatchJobID > 0 THEN @piBatchJobID
-			ELSE null
-		END);
-                  
-    -- Get the ID of the inserted record.
-    SELECT @piNewRecordID = MAX(id) FROM [dbo].[ASRSysEventLog];
-
-END
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntAddFromWaitingList]    Script Date: 23/07/2013 11:18:30 ******/
 SET ANSI_NULLS ON
@@ -16113,6 +16063,8 @@ BEGIN
 			@sAccess				varchar(MAX),
 			@sSQL					nvarchar(MAX);
 
+	DECLARE	@outputTable table (id int NOT NULL);
+
 	/* Clean the input string parameters. */
 	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''');
 	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''');
@@ -16166,6 +16118,7 @@ BEGIN
 			OutputEmailSubject, 
 			OutputEmailAttachAs, 
 			OutputFileName)
+		OUTPUT inserted.ID INTO @outputTable
 		VALUES (
 			@psName,
 			@psDescription,
@@ -16212,8 +16165,9 @@ BEGIN
 		);
 		
 		SET @fIsNew = 1;
-		/* Get the ID of the inserted record.*/
-		SELECT @piID = MAX(ID) FROM ASRSysCalendarReports;
+
+		-- Get the ID of the inserted record.
+		SELECT @piID = id FROM @outputTable;
 
 		Exec [dbo].[spsys_saveobjectcategories] 17 , @piID, @piCategoryID
 
@@ -17667,57 +17621,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntAddFromWaitingList]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntAddEventLogHeader]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntAddEventLogHeader]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntAddEventLogHeader]    Script Date: 13/09/2013 08:59:32 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntAddEventLogHeader]
-(
-    @piNewRecordID	integer OUTPUT,   /* Output variable to hold the new record ID. */
-    @piType			integer,
-    @psName			varchar(150), 
-    @psUserName		varchar(50),
-    @psBatchName	varchar(50),
-    @piBatchRunID	integer,
-    @piBatchJobID	integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	INSERT INTO [dbo].[ASRSysEventLog] (
-		[DateTime],	[Type],	[Name], [Status], [Username],
-		[Mode], [BatchName], [SuccessCount], [FailCount], [BatchRunID], [BatchJobID])
-	VALUES (GETDATE(), @piType, @psName, 0, @psUserName,
-		CASE
-			WHEN len(@psBatchName) = 0 THEN 0
-			ELSE 1
-		END,    
-		@psBatchName, NULL,NULL,
-		CASE
-			WHEN @piBatchRunID > 0 THEN @piBatchRunID
-			ELSE null
-		END,
-		CASE 
-			WHEN @piBatchJobID > 0 THEN @piBatchJobID
-			ELSE null
-		END);
-                  
-    -- Get the ID of the inserted record.
-    SELECT @piNewRecordID = MAX(id) FROM [dbo].[ASRSysEventLog];
-
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntAddFromWaitingList]    Script Date: 13/09/2013 08:59:32 ******/
 SET ANSI_NULLS ON
@@ -33800,7 +33703,9 @@ BEGIN
 	DECLARE
 		@iIndex		integer,
 		@iCount	integer,
-		@sSubstring	varchar(MAX)
+		@sSubstring	varchar(MAX);
+
+	DECLARE	@outputTable table (id int NOT NULL);
 
 	/* Clean the input string parameters. */
 	IF len(@psColumns) > 0 SET @psColumns = replace(@psColumns, '''', '''''')
@@ -33811,15 +33716,12 @@ BEGIN
 		/* Saving a new picklist. */
 		INSERT INTO ASRSysPickListName
 			(name, description, tableID, access, userName)
-		VALUES
+		OUTPUT inserted.picklistID INTO @outputTable
+		VALUES 
 			(@psName, @psDescription, @piTableID, @psAccess, @psUserName)
 
-		/* Get the ID of the inserted record.
-		NB. We do not use @@IDENTITY as the insertion that we have just performed may have triggered
-		other insertions (eg. into the Audit Trail table. The @@IDENTITY variable would then be the last IDENTITY value
-		entered in the Audit Trail table.*/
-		SELECT @piID = MAX(picklistID) 
-		FROM ASRSysPickListName
+		-- Get the ID of the inserted record.
+		SELECT @piID = id FROM @outputTable;
 
 		WHILE len(@psColumns) > 0
 		BEGIN
@@ -40367,6 +40269,8 @@ BEGIN
 			@sAccess	varchar(MAX),
 			@sSQL		nvarchar(MAX);
 
+	DECLARE	@outputTable table (crossTabId int NOT NULL);
+
 	/* Clean the input string parameters. */
 	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''')
 	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''')
@@ -40417,6 +40321,7 @@ BEGIN
 			OutputEmailAttachAs, 
 			OutputFileName,
 			CrossTabType)
+		OUTPUT inserted.crossTabId INTO @outputTable
 		VALUES (
 			@psName,
 			@psDescription,
@@ -40460,8 +40365,9 @@ BEGIN
 		)
 
 		SET @fIsNew = 1
-		/* Get the ID of the inserted record.*/
-		SELECT @piID = MAX(CrossTabID) FROM ASRSysCrossTab
+
+		-- Get the ID of the inserted record.
+		SELECT @piID = crossTabId FROM @outputTable;
 
 		Exec [dbo].[spsys_saveobjectcategories] 1, @piID, @piCategoryID
 
@@ -41287,6 +41193,8 @@ BEGIN
 			@sAccess	varchar(MAX),
 			@sSQL		nvarchar(MAX);
 
+	DECLARE	@outputTable table (crossTabId int NOT NULL);
+
 	/* Clean the input string parameters. */
 	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''')
 	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''')
@@ -41363,6 +41271,7 @@ BEGIN
 			ColorDesc8,
 			Description9,
 			ColorDesc9)
+		OUTPUT inserted.CrossTabID INTO @outputTable
 		VALUES (
 			@psName,
 			@psDescription,
@@ -41431,8 +41340,9 @@ BEGIN
 			@ColorDesc9)
 
 		SET @fIsNew = 1
-		/* Get the ID of the inserted record.*/
-		SELECT @piID = MAX(CrossTabID) FROM ASRSysCrossTab
+		-- Get the ID of the inserted record.
+		SELECT @piID = crossTabId FROM @outputTable;
+	
 
 		Exec [dbo].[spsys_saveobjectcategories] 35, @piID, @piCategoryID
 
@@ -41617,7 +41527,6 @@ BEGIN
 	END
 	
 END
-
 GO
 
 IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetNineBoxGridDefinition]') AND xtype in (N'P'))
@@ -44292,6 +44201,9 @@ BEGIN
 			@sGroup			varchar(255),
 			@sAccess		varchar(MAX),
 			@sSQL			nvarchar(MAX);
+
+	DECLARE	@outputTable table (MailMergeId int NOT NULL);
+
 	/* Clean the input string parameters. */
 	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''')
 	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''')
@@ -44327,7 +44239,8 @@ BEGIN
 			ManualDocManHeader,			
 			IsLabel, 
 			LabelTypeID, 
-			PromptStart) 
+			PromptStart)
+		OUTPUT inserted.MailMergeID INTO @outputTable
 		VALUES (
 			@psName,
 			@psDescription,
@@ -44357,8 +44270,8 @@ BEGIN
 			0, 
 			0)
 		SET @fIsNew = 1
-		/* Get the ID of the inserted record.*/
-		SELECT @piID = MAX(MailMergeID) FROM ASRSysMailMergeName
+		-- Get the ID of the inserted record.
+		SELECT @piID = MailMergeId FROM @outputTable;
 
 		/* Insert the category into the table tbsys_objectcategories */
 		Exec [dbo].[spsys_saveobjectcategories] 9, @piID, @piCategoryID
@@ -44394,13 +44307,12 @@ BEGIN
 			LabelTypeID = 0,
 			PromptStart = 0
 		WHERE MailMergeID = @piID
-
-		/* Update the category into the table tbsys_objectcategories */
-		Exec [dbo].[spsys_saveobjectcategories] 9, @piID, @piCategoryID
-
 		/* Delete existing report details. */
 		DELETE FROM ASRSysMailMergeColumns
 		WHERE MailMergeID = @piID
+
+		/* Update the category into the table tbsys_objectcategories */
+		Exec [dbo].[spsys_saveobjectcategories] 9, @piID, @piCategoryID
 
 	END
 	/* Create the details records. */
@@ -44657,6 +44569,8 @@ BEGIN
 			@sAccess				varchar(MAX),
 			@sSQL					nvarchar(MAX);
 
+	DECLARE	@outputTable table (id int NOT NULL);
+
 	/* Clean the input string parameters. */
 	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''')
 	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''')
@@ -44698,6 +44612,7 @@ BEGIN
  			Parent1Picklist, 
  			Parent2AllRecords, 
  			Parent2Picklist)
+		OUTPUT inserted.ID INTO @outputTable
  		VALUES (
  			@psName,
  			@psDescription,
@@ -44732,8 +44647,8 @@ BEGIN
 		)
 
 		SET @fIsNew = 1
-		/* Get the ID of the inserted record.*/
-		SELECT @piID = MAX(ID) FROM ASRSysCustomReportsName
+		-- Get the ID of the inserted record.
+		SELECT @piID = id FROM @outputTable;
 
 		Exec [dbo].[spsys_saveobjectcategories] 2, @piID, @piCategoryID
 
@@ -45043,6 +44958,7 @@ BEGIN
 		EXEC sp_executesql @sSQL
 	END
 END
+
 GO
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntValidateCrossTab]') AND xtype in (N'P'))
@@ -62544,9 +62460,56 @@ BEGIN
 	ORDER BY tableViewName;
 
 END
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntAddEventLogHeader]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntAddEventLogHeader]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntAddEventLogHeader]
+(
+    @piNewRecordID	integer OUTPUT,   /* Output variable to hold the new record ID. */
+    @piType			integer,
+    @psName			varchar(150), 
+    @psUserName		varchar(50),
+    @psBatchName	varchar(50),
+    @piBatchRunID	integer,
+    @piBatchJobID	integer
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE	@outputTable table (id int NOT NULL);
+
+	INSERT INTO [dbo].[ASRSysEventLog] (
+		[DateTime],	[Type],	[Name], [Status], [Username],
+		[Mode], [BatchName], [SuccessCount], [FailCount], [BatchRunID], [BatchJobID])
+	OUTPUT inserted.ID INTO @outputTable
+	VALUES (GETDATE(), @piType, @psName, 0, @psUserName,
+		CASE
+			WHEN len(@psBatchName) = 0 THEN 0
+			ELSE 1
+		END,    
+		@psBatchName, NULL,NULL,
+		CASE
+			WHEN @piBatchRunID > 0 THEN @piBatchRunID
+			ELSE null
+		END,
+		CASE 
+			WHEN @piBatchJobID > 0 THEN @piBatchJobID
+			ELSE null
+		END);
+                  
+    -- Get the ID of the inserted record.
+	SELECT @piNewRecordID = id FROM @outputTable;
+
+END
+GO
 
 
-
+GO
 
 
 /*---------------------------------------------*/

@@ -13,9 +13,12 @@ BEGIN
 
 	SET NOCOUNT ON;
 
+	DECLARE	@outputTable table (id int NOT NULL);
+
 	INSERT INTO [dbo].[ASRSysEventLog] (
 		[DateTime],	[Type],	[Name], [Status], [Username],
 		[Mode], [BatchName], [SuccessCount], [FailCount], [BatchRunID], [BatchJobID])
+	OUTPUT inserted.ID INTO @outputTable
 	VALUES (GETDATE(), @piType, @psName, 0, @psUserName,
 		CASE
 			WHEN len(@psBatchName) = 0 THEN 0
@@ -32,6 +35,6 @@ BEGIN
 		END);
                   
     -- Get the ID of the inserted record.
-    SELECT @piNewRecordID = MAX(id) FROM [dbo].[ASRSysEventLog];
+	SELECT @piNewRecordID = id FROM @outputTable;
 
 END

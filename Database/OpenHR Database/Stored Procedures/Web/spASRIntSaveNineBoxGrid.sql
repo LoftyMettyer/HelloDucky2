@@ -79,6 +79,8 @@ BEGIN
 			@sAccess	varchar(MAX),
 			@sSQL		nvarchar(MAX);
 
+	DECLARE	@outputTable table (crossTabId int NOT NULL);
+
 	/* Clean the input string parameters. */
 	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''')
 	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''')
@@ -155,6 +157,7 @@ BEGIN
 			ColorDesc8,
 			Description9,
 			ColorDesc9)
+		OUTPUT inserted.CrossTabID INTO @outputTable
 		VALUES (
 			@psName,
 			@psDescription,
@@ -223,8 +226,9 @@ BEGIN
 			@ColorDesc9)
 
 		SET @fIsNew = 1
-		/* Get the ID of the inserted record.*/
-		SELECT @piID = MAX(CrossTabID) FROM ASRSysCrossTab
+		-- Get the ID of the inserted record.
+		SELECT @piID = crossTabId FROM @outputTable;
+	
 
 		Exec [dbo].[spsys_saveobjectcategories] 35, @piID, @piCategoryID
 

@@ -16,7 +16,9 @@ BEGIN
 	DECLARE
 		@iIndex		integer,
 		@iCount	integer,
-		@sSubstring	varchar(MAX)
+		@sSubstring	varchar(MAX);
+
+	DECLARE	@outputTable table (id int NOT NULL);
 
 	/* Clean the input string parameters. */
 	IF len(@psColumns) > 0 SET @psColumns = replace(@psColumns, '''', '''''')
@@ -27,15 +29,12 @@ BEGIN
 		/* Saving a new picklist. */
 		INSERT INTO ASRSysPickListName
 			(name, description, tableID, access, userName)
-		VALUES
+		OUTPUT inserted.picklistID INTO @outputTable
+		VALUES 
 			(@psName, @psDescription, @piTableID, @psAccess, @psUserName)
 
-		/* Get the ID of the inserted record.
-		NB. We do not use @@IDENTITY as the insertion that we have just performed may have triggered
-		other insertions (eg. into the Audit Trail table. The @@IDENTITY variable would then be the last IDENTITY value
-		entered in the Audit Trail table.*/
-		SELECT @piID = MAX(picklistID) 
-		FROM ASRSysPickListName
+		-- Get the ID of the inserted record.
+		SELECT @piID = id FROM @outputTable;
 
 		WHILE len(@psColumns) > 0
 		BEGIN

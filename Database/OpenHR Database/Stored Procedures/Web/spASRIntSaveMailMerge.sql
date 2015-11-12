@@ -59,6 +59,9 @@ BEGIN
 			@sGroup			varchar(255),
 			@sAccess		varchar(MAX),
 			@sSQL			nvarchar(MAX);
+
+	DECLARE	@outputTable table (MailMergeId int NOT NULL);
+
 	/* Clean the input string parameters. */
 	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''')
 	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''')
@@ -94,7 +97,8 @@ BEGIN
 			ManualDocManHeader,			
 			IsLabel, 
 			LabelTypeID, 
-			PromptStart) 
+			PromptStart)
+		OUTPUT inserted.MailMergeID INTO @outputTable
 		VALUES (
 			@psName,
 			@psDescription,
@@ -124,8 +128,8 @@ BEGIN
 			0, 
 			0)
 		SET @fIsNew = 1
-		/* Get the ID of the inserted record.*/
-		SELECT @piID = MAX(MailMergeID) FROM ASRSysMailMergeName
+		-- Get the ID of the inserted record.
+		SELECT @piID = MailMergeId FROM @outputTable;
 
 		/* Insert the category into the table tbsys_objectcategories */
 		Exec [dbo].[spsys_saveobjectcategories] 9, @piID, @piCategoryID

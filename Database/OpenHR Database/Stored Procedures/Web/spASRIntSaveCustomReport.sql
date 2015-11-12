@@ -77,6 +77,8 @@ BEGIN
 			@sAccess				varchar(MAX),
 			@sSQL					nvarchar(MAX);
 
+	DECLARE	@outputTable table (id int NOT NULL);
+
 	/* Clean the input string parameters. */
 	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''')
 	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''')
@@ -118,6 +120,7 @@ BEGIN
  			Parent1Picklist, 
  			Parent2AllRecords, 
  			Parent2Picklist)
+		OUTPUT inserted.ID INTO @outputTable
  		VALUES (
  			@psName,
  			@psDescription,
@@ -152,8 +155,8 @@ BEGIN
 		)
 
 		SET @fIsNew = 1
-		/* Get the ID of the inserted record.*/
-		SELECT @piID = MAX(ID) FROM ASRSysCustomReportsName
+		-- Get the ID of the inserted record.
+		SELECT @piID = id FROM @outputTable;
 
 		Exec [dbo].[spsys_saveobjectcategories] 2, @piID, @piCategoryID
 
@@ -463,8 +466,3 @@ BEGIN
 		EXEC sp_executesql @sSQL
 	END
 END
-
-
-
-GO
-
