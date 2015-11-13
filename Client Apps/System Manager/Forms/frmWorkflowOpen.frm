@@ -593,7 +593,8 @@ Private Sub cmdCopy_Click()
         recWorkflowElementEdit!DataRecordTable = .Fields("DataRecordTable")
         recWorkflowElementEdit!SecondaryDataRecordTable = .Fields("secondaryDataRecordTable")
         recWorkflowElementEdit!UseAsTargetIdentifier = .Fields("UseAsTargetIdentifier")
-        
+        recWorkflowElementEdit!RequiresAuthentication = .Fields("RequiresAuthentication")
+               
         'JPD 20060908 Fault 11482
         recWorkflowElementEdit!EMailSubject = .Fields("EmailSubject")
         recWorkflowElementEdit!TimeoutFrequency = .Fields("TimeoutFrequency")
@@ -615,7 +616,7 @@ Private Sub cmdCopy_Click()
         recWorkflowElementEdit!Attachment_DBRecord = .Fields("Attachment_DBRecord")
         recWorkflowElementEdit!Attachment_DBElement = .Fields("Attachment_DBElement")
         recWorkflowElementEdit!Attachment_DBValue = .Fields("Attachment_DBValue")
-        
+                
         recWorkflowElementEdit.Update
 
         ReDim Preserve alngElementIDs(1, UBound(alngElementIDs, 2) + 1)
@@ -1764,7 +1765,7 @@ Private Sub Form_Resize()
     cmdProperties.Left = cmdNew.Left
     cmdPrint.Left = cmdNew.Left
     cmdExport.Left = cmdNew.Left
-    cmdOk.Left = cmdNew.Left
+    cmdOK.Left = cmdNew.Left
   End With
   
   With lstItems
@@ -1772,7 +1773,7 @@ Private Sub Form_Resize()
     txtDesc.Top = .Top + .Height + YGAP
   End With
     
-  cmdOk.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOk.Height
+  cmdOK.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOK.Height
     
   ' Get rid of the icon off the form
   RemoveIcon Me
