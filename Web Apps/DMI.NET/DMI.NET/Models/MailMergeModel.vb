@@ -26,6 +26,7 @@ Namespace Models
         Public Overrides Property ColumnsAsString As String
 
         <DisplayName("Template :")>
+        <Required(ErrorMessage:="No template uploaded")>
         Public Property UploadTemplateName As String
 
         Private _uploadTemplate As Byte()
