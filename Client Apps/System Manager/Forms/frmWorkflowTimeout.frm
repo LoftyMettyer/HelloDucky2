@@ -943,7 +943,7 @@ Begin VB.Form frmWorkflowTimeout
             Top             =   6960
             Width           =   8000
             Begin VB.CheckBox chkRequireAuthentication 
-               Caption         =   "Form requires authenticating before proceeding"
+               Caption         =   "Form requires authenticating before &proceeding"
                Height          =   300
                Left            =   180
                TabIndex        =   188
