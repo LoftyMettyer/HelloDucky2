@@ -112,6 +112,8 @@
 		frmConfiguration.chkOwner_MailMerge.checked = (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1);
 		frmConfiguration.chkOwner_Picklists.checked = (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1);
 		frmConfiguration.chkOwner_CalendarReports.checked = (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1);
+		frmConfiguration.chkOwner_DataTransfer.checked = (frmOriginalConfiguration.txtOnlyMineDataTransfer.value == 1);
+
 
 		display_Configuration_Page(1);
 
@@ -227,6 +229,7 @@
 		if (frmConfiguration.chkOwner_MailMerge.checked == true) frmConfiguration.txtOwner_MailMerge.value = 1;
 		if (frmConfiguration.chkOwner_Picklists.checked == true) frmConfiguration.txtOwner_Picklists.value = 1;
 		if (frmConfiguration.chkOwner_CalendarReports.checked == true) frmConfiguration.txtOwner_CalendarReports.value = 1;
+		if (frmConfiguration.chkOwner_DataTransfer.checked == true) frmConfiguration.txtOwner_DataTransfer.value = 1;
 
 		OpenHR.submitForm(frmConfiguration);
 
@@ -362,6 +365,7 @@
 		if ((frmConfiguration.chkOwner_Calculations.checked != (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1)) ||
 		(frmConfiguration.chkOwner_CrossTabs.checked != (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1)) ||
 		(frmConfiguration.chkOwner_NineBoxGrid.checked != (frmOriginalConfiguration.txtOnlyMineNineBoxGrid.value == 1)) ||
+		(frmConfiguration.chkOwner_DataTransfer.checked != (frmOriginalConfiguration.txtOnlyMineDataTransfer.value == 1)) ||
 		(frmConfiguration.chkOwner_CustomReports.checked != (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1)) ||
 		(frmConfiguration.chkOwner_Filters.checked != (frmOriginalConfiguration.txtOnlyMineFilters.value == 1)) ||
 		(frmConfiguration.chkOwner_MailMerge.checked != (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1)) ||
@@ -399,6 +403,7 @@
 			frmConfiguration.chkOwner_MailMerge.checked = false;
 			frmConfiguration.chkOwner_Picklists.checked = false;
 			frmConfiguration.chkOwner_CalendarReports.checked = false;
+			frmConfiguration.chkOwner_DataTransfer.checked = false;
 
 			enableSaveButton();
 		}
@@ -675,6 +680,17 @@
 							</td>
 							<td colspan="4"></td>
 						</tr>
+
+					    <tr>
+							<td></td>
+							<td style="width: 20px"></td>
+							<td align="left" nowrap>
+								<input type="checkbox" id="chkOwner_DataTransfer" name="chkOwner_DataTransfer" />
+								<label for="chkOwner_DataTransfer" class="checkbox">Data Transfer</label>
+							</td>
+							<td colspan="4"></td>
+						</tr>
+
 
 						<tr>
 							<td colspan="7" style="height: 10px"></td>
