@@ -31,12 +31,10 @@
         If fok Then fok = fNotCancelled
     End If
 
-    If fok Then
-        lngEventLogID = objMailMerge.EventLogAddHeader
-        fok = (lngEventLogID > 0)
-        fNotCancelled = Response.IsClientConnected
-        If fok Then fok = fNotCancelled
-    End If
+    lngEventLogID = objMailMerge.EventLogAddHeader
+    fok = (lngEventLogID > 0)
+    fNotCancelled = Response.IsClientConnected
+    If fok Then fok = fNotCancelled
 
     aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("utilid"))
     If fok Then
@@ -133,32 +131,33 @@
 <script type="text/javascript">
 	
 	<%
-	Dim sErrorMessage As String
+    Dim sErrorMessage As String
 
-	' Errors during the merge
-	If Len(objMailMerge.ErrorString) > 0 Then
-		sErrorMessage = objMailMerge.ErrorString
-		Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, HttpUtility.HtmlEncode(objMailMerge.DefName)))
-	
-	ElseIf objMailMergeOutput.Errors.Count > 0 Then
-		objMailMerge.EventLogChangeHeaderStatus(EventLog_Status.elsFailed)
-		sErrorMessage = Join(objMailMergeOutput.Errors.ToArray())
-		objMailMerge.FailedMessage = sErrorMessage
-		Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, HttpUtility.HtmlEncode(objMailMerge.DefName)))
-		
-	Else
-		objMailMerge.EventLogChangeHeaderStatus(EventLog_Status.elsSuccessful)
-		
-		' No data in result set
-		If objMailMerge.NoRecords Then
-			sErrorMessage = "Completed successfully, however there were no records that meet the selection criteria. No document has been produced."
-			Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, HttpUtility.HtmlEncode(objMailMerge.DefName)))
-		Else
-			sErrorMessage = "Mail merge completed successfully."
-			Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, HttpUtility.HtmlEncode(objMailMerge.DefName)))
-		End If
-        
-	End If
+    ' Errors during the merge
+    If Len(objMailMerge.ErrorString) > 0 Then
+        objMailMerge.EventLogChangeHeaderStatus(EventLog_Status.elsFailed)
+        objMailMerge.FailedMessage = objMailMerge.ErrorString
+        Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", objMailMerge.ErrorString, HttpUtility.HtmlEncode(objMailMerge.DefName)))
+
+    ElseIf objMailMergeOutput.Errors.Count > 0 Then
+        objMailMerge.EventLogChangeHeaderStatus(EventLog_Status.elsFailed)
+        sErrorMessage = Join(objMailMergeOutput.Errors.ToArray())
+        objMailMerge.FailedMessage = sErrorMessage
+        Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, HttpUtility.HtmlEncode(objMailMerge.DefName)))
+
+    Else
+        objMailMerge.EventLogChangeHeaderStatus(EventLog_Status.elsSuccessful)
+
+        ' No data in result set
+        If objMailMerge.NoRecords Then
+            sErrorMessage = "Completed successfully, however there were no records that meet the selection criteria. No document has been produced."
+            Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, HttpUtility.HtmlEncode(objMailMerge.DefName)))
+        Else
+            sErrorMessage = "Mail merge completed successfully."
+            Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, HttpUtility.HtmlEncode(objMailMerge.DefName)))
+        End If
+
+    End If
 	%>
 
 	<%	If bDownloadFile And blnSuccess Then%>
