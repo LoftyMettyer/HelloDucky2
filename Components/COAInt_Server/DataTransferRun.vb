@@ -106,11 +106,11 @@ Public Class clsDataTransferRun
 
         mbLoggingDTSuccess = CBool(GetUserSetting("LogEvents", "Data_Transfer_Success", False))
 
-        CheckIfTransferIsValid()
+        If fOK Then fOK = CheckIfTransferIsValid()
 
         Logs.AddHeader(EventLog_Type.eltDataTransfer, mstrTransferName)
 
-        CreateInsertTableArray()
+        If fOK Then CreateInsertTableArray()
         mstrProcedureName = General.UniqueSQLObjectName("sp_ASRTempDataTransfer", 4)
         If fOK Then CreateStoredProcedure()
         If fOK Then ProcessRecords()
@@ -805,7 +805,7 @@ Public Class clsDataTransferRun
 
     End Sub
 
-    Private Sub CheckIfTransferIsValid()
+    Private Function CheckIfTransferIsValid() As Boolean
 
         Dim rsTemp As DataTable
         Dim strSQL As String
@@ -815,6 +815,7 @@ Public Class clsDataTransferRun
         Dim strTablesInDef As String
         Dim strColumnsInDef As String
         Dim strErrorColumns As String = ""
+        Dim isOk As Boolean = True
 
         Const SQLWhereMandatoryColumn =
             "(Rtrim(DefaultValue) = '' OR (Rtrim(DefaultValue) = '__/__/____') and DataType = 11)" &
@@ -823,50 +824,29 @@ Public Class clsDataTransferRun
             " AND Mandatory = '1'" &
             " AND ColumnType <> 4 "
 
+        strTablesInDef = String.Format("SELECT DISTINCT ASRSysDataTransferColumns.ToTableID FROM ASRSysDataTransferColumns " &
+            "WHERE ASRSysDataTransferColumns.DataTransferID = {0} ", mlngSelectedID)
 
-        strTablesInDef = "SELECT DISTINCT ASRSysDataTransferColumns.ToTableID " & "FROM ASRSysDataTransferColumns " & "WHERE ASRSysDataTransferColumns.DataTransferID = " & CStr(mlngSelectedID)
+        strColumnsInDef = String.Format("SELECT ASRSysDataTransferColumns.ToColumnID FROM ASRSysDataTransferColumns " &
+            "WHERE ASRSysDataTransferColumns.DataTransferID = {0} ", mlngSelectedID)
 
-        strColumnsInDef = "SELECT ASRSysDataTransferColumns.ToColumnID " & "FROM ASRSysDataTransferColumns " & "WHERE ASRSysDataTransferColumns.DataTransferID = " & CStr(mlngSelectedID)
+        'This will retreive all of the read only destination columns in the data transfer
+        strSQL1 = String.Format("SELECT ASRSysTables.TableName+'.'+ASRSysColumns.ColumnName as 'TableColumn', " & "'Read Only' as Reason " &
+            "FROM ASRSysDataTransferColumns " & "JOIN ASRSysColumns ON ASRSysColumns.ColumnID = ASRSysDataTransferColumns.ToColumnID " &
+            "JOIN ASRSysTables ON ASRSysTables.TableID = ASRSysColumns.TableID " & "WHERE ASRSysDataTransferColumns.DataTransferID = {0} " &
+            "AND ASRSysColumns.ReadOnly <> 0", mlngSelectedID)
 
-
-        'This will retreive all of the read only
-        'destination columns in the data transfer
-        strSQL1 = "SELECT ASRSysTables.TableName+'.'+ASRSysColumns.ColumnName as 'TableColumn', " & "'Read Only' as Reason " & "FROM ASRSysDataTransferColumns " & "JOIN ASRSysColumns ON ASRSysColumns.ColumnID = ASRSysDataTransferColumns.ToColumnID " & "JOIN ASRSysTables ON ASRSysTables.TableID = ASRSysColumns.TableID " & "WHERE ASRSysDataTransferColumns.DataTransferID = " & CStr(mlngSelectedID) & " AND ASRSysColumns.ReadOnly <> 0"
-
-
-        'This will get all of the mandatory columns
-        'which have not been included in the definition
-
-        'MH20000814
-        'Allow save if mandatory ommitted if it has a default value
-        'This is to get around the staff number on a applicants to personnel transfer
-
-        'MH20000904
-        'Allow save if mandatory ommitted and it is a calculated column
-
-        '******************************************************************************
-        ' TM20010719 Fault 2242 - ColumnType <> 4 clause added to ignore all linked   *
-        ' columns. (It doesn't need to validate the linked columns because this is    *
-        ' done using the Vaidate SP.                                                  *
-        '******************************************************************************
-
+        'This will get all of the mandatory columns which have not been included in the definition
         strSQL2 = "SELECT ASRSysTables.TableName+'.'+ASRSysColumns.ColumnName as 'TableColumn', " & "'Mandatory' as Reason " & "FROM ASRSysColumns " &
             "JOIN ASRSysTables ON ASRSysTables.TableID = ASRSysColumns.TableID " & "WHERE ASRSysColumns.TableID IN (" & strTablesInDef & ") " &
             " AND ASRSysColumns.ColumnID NOT IN (" & strColumnsInDef & ") " & " AND " & SQLWhereMandatoryColumn
-        '" AND Mandatory = '1'" & _
-        '" AND CalcExprID = 0 " & _
-        '" AND ColumnType <> 4 " & _
-        '" AND Rtrim(DefaultValue) = '' AND Convert(int,dfltValueExprID) = 0 "
 
-
-        'This will ensure matching data types and
-        'compatable column sizes
+        'This will ensure matching data types and compatable column sizes
         strSQL3 = "SELECT FromTable.TableName+'.'+FromColumn.ColumnName+' / '+ToTable.TableName+'.'+ToColumn.ColumnName as 'TableColumn', " &
             "'Type or Size' as Reason " & "FROM ASRSysDataTransferColumns " & "JOIN ASRSysColumns FromColumn ON FromColumn.ColumnID = ASRSysDataTransferColumns.FromColumnID " &
             "JOIN ASRSysTables FromTable ON FromTable.TableID = FromColumn.TableID " & "JOIN ASRSysColumns ToColumn ON ToColumn.ColumnID = ASRSysDataTransferColumns.ToColumnID " &
             "JOIN ASRSysTables ToTable ON ToTable.TableID = ToColumn.TableID " & "WHERE ASRSysDataTransferColumns.DataTransferID = " & CStr(mlngSelectedID) &
             "  AND (FromColumn.DataType <> ToColumn.DataType OR " & "FromColumn.Size > ToColumn.Size OR " & "FromColumn.Decimals > ToColumn.Decimals)"
-
 
         strSQL = strSQL1 & " UNION " & strSQL2 & " UNION " & strSQL3 & " ORDER BY 'TableColumn'"
 
@@ -880,9 +860,12 @@ Public Class clsDataTransferRun
             mstrStatusMessage = "Unable to run this Data Transfer as the following " &
                         "column definitions have changed:" & vbNewLine & vbNewLine &
                         strErrorColumns
+            isOk = False
         End If
 
-    End Sub
+        Return isOk
+
+    End Function
 
 
     Private Function GetPicklistFilterSelect() As String
