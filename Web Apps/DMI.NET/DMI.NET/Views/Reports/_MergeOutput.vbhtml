@@ -13,7 +13,7 @@
                 @Html.Hidden("txtMaxRequestLength", Session("maxRequestLength"))
                 @Html.TextBoxFor(Function(m) m.UploadTemplateName, New With {.id = "txtTemplateFileName", .class = "width25", .ReadOnly = "ReadOnly"})
                 <label for="TemplateFile">Upload</label>
-                <input type="button" value="Download" onclick="DownloadTemplate();" />
+                <input id="button_download_template" type="button" value="Download" onclick="DownloadTemplate();" />
             </div>
         </div>
     </fieldset>
@@ -156,6 +156,7 @@
             processData: false,
             data: data,
             success: function (result) {
+                button_disable($("#button_download_template")[0], false);
                 OpenHR.modalMessage("Template uploaded successfully");
             },
             error: function (xhr, status, p3, p4) {
@@ -263,8 +264,11 @@ float: 'left'
 			$('#SuppressBlankLines').prop('checked', true);
 		}
 
-
 	    $('.upload label').button();
+
+	    if ($("#txtTemplateFileName").val() === "") {
+	        button_disable($("#button_download_template")[0], true);
+	    }
 
 	});
 
