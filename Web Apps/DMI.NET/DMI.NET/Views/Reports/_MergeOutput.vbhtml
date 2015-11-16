@@ -253,7 +253,6 @@ float: 'left'
 		});		
 
 		$('fieldset').css("border", "1");
-		$('#WordDisplayOutputOnScreen').prop('checked', true);
 		$('#WordDocumentPrinter').prop('disabled', true);
 		if ('@Model.Filename' == '')
         {
