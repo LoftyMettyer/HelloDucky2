@@ -264,8 +264,10 @@ float: 'left'
 			$('#SuppressBlankLines').prop('checked', true);
 		}
 
-	    $('.upload label').button();
-
+	    $(".upload label").button({
+	        disabled: isDefinitionReadOnly()
+	    });
+   
 	    if ($("#txtTemplateFileName").val() === "") {
 	        button_disable($("#button_download_template")[0], true);
 	    }
