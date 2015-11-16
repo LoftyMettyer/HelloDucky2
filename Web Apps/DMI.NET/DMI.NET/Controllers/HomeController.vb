@@ -356,8 +356,16 @@ Namespace Controllers
 
 			If bOK Then
 
-				' Licence check
-				Dim objCurrentLogin = CType(Session("sessionCurrentUser"), LoginViewModel)
+                ' Check the overnight
+                Dim objDatabase As Database = Session("DatabaseFunctions")
+
+                If targetWebArea = WebArea.DMI AndAlso Not objDatabase.IsOvernightJobOk() Then
+                    Session("WarningText") = "The overnight job has not completed within the last 24 hours.<br/>This may affect date dependant areas of OpenHR." _
+                        & "<br/><br/>" & "Please inform your SQL administrator."
+                End If
+
+                ' Licence check
+                Dim objCurrentLogin = CType(Session("sessionCurrentUser"), LoginViewModel)
 				Dim licenceValidate = LicenceHub.NavigateWebArea(objCurrentLogin, targetWebArea)
 
 				Select Case licenceValidate

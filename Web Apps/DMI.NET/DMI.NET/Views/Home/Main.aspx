@@ -80,7 +80,7 @@
 
 		var sMessage = '<%: HttpUtility.JavaScriptStringEncode(Session("WarningText").ToString)%>';
 		if (sMessage != '') {
-			OpenHR.displayServerMessage("Licence Warning", sMessage, false, true);
+			OpenHR.displayServerMessage("Warning", sMessage, false, true);
 		}
 
 		$("#fixedlinksframe").show();

@@ -166,4 +166,44 @@ Public Class Database
 
 	End Function
 
+    Public Function IsOvernightJobOk() As Boolean
+
+        Const strSQL = "SELECT datediff(hh,convert(datetime,SettingValue,103),getdate()) FROM ASRSysSystemSettings " &
+           " WHERE Section = 'overnight'" &
+           " AND SettingKey = 'last completed'"
+        Dim bOvernightOk As Boolean = True
+
+        Try
+
+            Dim data = DB.GetDataTable(strSQL)
+            Dim objRow = data.Rows(0)
+
+            If data.Rows.Count > 0 Then
+                If CInt(objRow(0)) > 24 Then
+                    bOvernightOk = False
+                End If
+            End If
+
+            If Not bOvernightOk Then
+
+                Dim prmWarnUser As New SqlParameter("@WarnUser", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+                DB.ExecuteSP("spASRUpdateWarningLog" _
+                        , New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = _login.Username} _
+                        , New SqlParameter("@WarningType", SqlDbType.Int) With {.Value = WarningType.OvernightCheck} _
+                        , New SqlParameter("@WarningRefreshRate", SqlDbType.Int) With {.Value = 1} _
+                        , prmWarnUser)
+
+                Return Not CBool(prmWarnUser.Value)
+
+            End If
+
+        Catch ex As Exception
+            Return False
+
+        End Try
+
+        Return bOvernightOk
+
+    End Function
+
 End Class
