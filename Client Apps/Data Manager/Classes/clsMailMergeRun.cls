@@ -490,7 +490,7 @@ Private Sub SQLGetMergeDefinition()
     mstrEmailAddr = vbNullString
         
     If Not mbIsLabel And mstrDefTemplateFormat = vbNullString Then
-      mstrStatusMessage = "This definition is set to use a template file which is not compatible with your version of Microsoft Office."
+      mstrStatusMessage = "This definition has been defined using OpenHR Web and has not had a template file assigned for use in Data Manager. Please edit the definition and select the required template file."
       fOK = False
       GoTo TidyAndExit
     End If
@@ -552,7 +552,7 @@ Private Sub SQLGetMergeDefinition()
     
     End Select
 
-    mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
+    mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!userName)))
 
 
   End With
@@ -876,16 +876,16 @@ Private Sub WrdPopulateDataSource()
           Trim(mrsMergeData.Fields(intCount - 1).Value)
         strOutput = strOutput & _
           IIf(intCount > 2, vbTab, vbNullString) & _
-          FormatData(mrsMergeData.Fields(intCount - 1).Value, intCount - 1)
+          FormatData(mrsMergeData.Fields(intCount - 1).value, intCount - 1)
       Next
 
       blnRecordOkay = True
       If mlngEmailAddrCalc > 0 Then
-        strEmailAddr = GetEmailAddress(mlngEmailAddrCalc, mrsMergeData.Fields(0).Value)
+        strEmailAddr = GetEmailAddress(mlngEmailAddrCalc, mrsMergeData.Fields(0).value)
         If Trim(strEmailAddr) = vbNullString Then
           'email is blank
           gobjEventLog.AddDetailEntry _
-              GetRecordDesc(mrsMergeData.Fields(0).Value) & vbCrLf & vbCrLf & _
+              GetRecordDesc(mrsMergeData.Fields(0).value) & vbCrLf & vbCrLf & _
               "Email Address is blank"
           blnRecordOkay = False
         
@@ -1887,7 +1887,7 @@ Private Sub SQLCodeCreate()
     Exit Sub
   End If
 
-  mstrSQLFrom = gcoTablePrivileges.Item(mstrDefBaseTable).RealSource
+  mstrSQLFrom = gcoTablePrivileges.item(mstrDefBaseTable).RealSource
   mstrSQLSelect = mstrSQLFrom & ".ID"
 
   With mrsMailMergeColumns
@@ -2062,7 +2062,7 @@ Private Sub SQLAddColumn(sColumnList As String, lngTableID As Long, sTableName A
   Set objColumnPrivileges = GetColumnPrivileges(sTableName)
   fColumnOK = objColumnPrivileges.IsValid(sColumnName)
   If fColumnOK Then
-    fColumnOK = objColumnPrivileges.Item(sColumnName).AllowSelect
+    fColumnOK = objColumnPrivileges.item(sColumnName).AllowSelect
   End If
     
   Set objColumnPrivileges = Nothing
@@ -2071,7 +2071,7 @@ Private Sub SQLAddColumn(sColumnList As String, lngTableID As Long, sTableName A
     ' The column can be read from the base table/view, or directly from a parent table.
     ' Add the column to the column list.
       
-    sRealSource = gcoTablePrivileges.Item(sTableName).RealSource
+    sRealSource = gcoTablePrivileges.item(sTableName).RealSource
       
     sColumnList = sColumnList & _
         IIf(sColumnList <> vbNullString, ", ", "") & _
@@ -2128,7 +2128,7 @@ Private Sub SQLAddColumn(sColumnList As String, lngTableID As Long, sTableName A
         Set objColumnPrivileges = GetColumnPrivileges(sSource)
 
         If objColumnPrivileges.IsValid(sColumnName) Then
-          If objColumnPrivileges.Item(sColumnName).AllowSelect Then
+          If objColumnPrivileges.item(sColumnName).AllowSelect Then
             ' Add the view info to an array to be put into the column list or order code below.
             iNextIndex = UBound(asViews) + 1
             ReDim Preserve asViews(iNextIndex)
@@ -2533,11 +2533,11 @@ Private Function GetRecordDesc(lngRecordID As Long)
 
     Set pmADO = .CreateParameter("RecordID", adInteger, adParamInput)
     .Parameters.Append pmADO
-    pmADO.Value = lngRecordID
+    pmADO.value = lngRecordID
 
     cmADO.Execute
 
-    GetRecordDesc = .Parameters(0).Value
+    GetRecordDesc = .Parameters(0).value
   End With
   Set cmADO = Nothing
 
@@ -2860,24 +2860,24 @@ Private Sub RetrieveLabelDefinition()
   End If
 
   With rsLabelDefinition
-    msngLabelTopMargin = wrdApp.CentimetersToPoints(.Fields("TopMargin").Value)
-    msngLabelSideMargin = wrdApp.CentimetersToPoints(.Fields("SideMargin").Value)
-    msngLabelHorizontalPitch = wrdApp.CentimetersToPoints(.Fields("HorizontalPitch").Value)
-    msngLabelVerticalPitch = wrdApp.CentimetersToPoints(.Fields("VerticalPitch").Value)
-    msngLabelHeight = wrdApp.CentimetersToPoints(.Fields("LabelHeight").Value)
-    msngLabelWidth = wrdApp.CentimetersToPoints(.Fields("LabelWidth").Value)
-    miLabelNumberDown = .Fields("NumberDown").Value
-    miLabelNumberAcross = .Fields("NumberAcross").Value
+    msngLabelTopMargin = wrdApp.CentimetersToPoints(.Fields("TopMargin").value)
+    msngLabelSideMargin = wrdApp.CentimetersToPoints(.Fields("SideMargin").value)
+    msngLabelHorizontalPitch = wrdApp.CentimetersToPoints(.Fields("HorizontalPitch").value)
+    msngLabelVerticalPitch = wrdApp.CentimetersToPoints(.Fields("VerticalPitch").value)
+    msngLabelHeight = wrdApp.CentimetersToPoints(.Fields("LabelHeight").value)
+    msngLabelWidth = wrdApp.CentimetersToPoints(.Fields("LabelWidth").value)
+    miLabelNumberDown = .Fields("NumberDown").value
+    miLabelNumberAcross = .Fields("NumberAcross").value
     
-    mintLabelPageOrientation = IIf(.Fields("PageOrientation").Value, 1, 0)
-    msngLabelPageHeight = wrdApp.CentimetersToPoints(.Fields("PageHeight").Value)
-    msngLabelPageWidth = wrdApp.CentimetersToPoints(.Fields("PageWidth").Value)
-    mbIsEnvelope = IIf(IsNull(.Fields("IsEnvelope").Value), False, .Fields("IsEnvelope").Value)
+    mintLabelPageOrientation = IIf(.Fields("PageOrientation").value, 1, 0)
+    msngLabelPageHeight = wrdApp.CentimetersToPoints(.Fields("PageHeight").value)
+    msngLabelPageWidth = wrdApp.CentimetersToPoints(.Fields("PageWidth").value)
+    mbIsEnvelope = IIf(IsNull(.Fields("IsEnvelope").value), False, .Fields("IsEnvelope").value)
     
-    msngEnvelopeFromTop = wrdApp.CentimetersToPoints(.Fields("FromTop").Value)
-    msngEnvelopeFromLeft = wrdApp.CentimetersToPoints(.Fields("FromLeft").Value)
-    mbEnvelopeFromTopAuto = .Fields("FromTopAuto").Value
-    mbEnvelopeFromLeftAuto = .Fields("FromLeftAuto").Value
+    msngEnvelopeFromTop = wrdApp.CentimetersToPoints(.Fields("FromTop").value)
+    msngEnvelopeFromLeft = wrdApp.CentimetersToPoints(.Fields("FromLeft").value)
+    mbEnvelopeFromTopAuto = .Fields("FromTopAuto").value
+    mbEnvelopeFromLeftAuto = .Fields("FromLeftAuto").value
     
     ' Centimeterstopoints fires off extraenous winword.exes for some reason
     wrdApp.Quit
@@ -3134,7 +3134,7 @@ Private Sub WrdSetV1HeaderText()
       Set rsData = datGeneral.GetRecords("SELECT DISTINCT [id], [" & sColumnName & "] FROM dbo.[" & sTableName & "] " & _
                     "WHERE [id] = " & rsDocumentMap!CategoryRecordID)
       If Not (rsData.EOF And rsData.BOF) Then
-        sCategory = rsData.Fields(1).Value
+        sCategory = rsData.Fields(1).value
       End If
       rsData.Close
 
@@ -3143,7 +3143,7 @@ Private Sub WrdSetV1HeaderText()
       Set rsData = datGeneral.GetRecords("SELECT [id], [" & sColumnName & "] FROM dbo.[" & sTableName & "] " & _
                     "WHERE [id] = " & rsDocumentMap!TypeRecordID)
       If Not (rsData.EOF And rsData.BOF) Then
-        sType = rsData.Fields(1).Value
+        sType = rsData.Fields(1).value
       End If
       rsData.Close
       
@@ -3165,15 +3165,15 @@ Private Sub WrdSetV1HeaderText()
         Set rsData = datGeneral.GetRecords("SELECT [heading], [columnid], [value], [type] FROM dbo.[ASRSysDocumentManagementHeaderInfo]" & _
                     "WHERE NOT [type] = 0 AND [tableid] = " & rsDocumentMap!Parent1TableID)
         Do While Not (rsData.EOF Or rsData.BOF)
-          objWordSelection.TypeText "~~@[" & rsData.Fields("Heading").Value & ":"
+          objWordSelection.TypeText "~~@[" & rsData.Fields("Heading").value & ":"
           
-          Select Case rsData.Fields("type").Value
+          Select Case rsData.Fields("type").value
             Case 1
               sColumn = datGeneral.GetColumnName(rsData!ColumnID, True)
               .Add objWordSelection.Range, wdFieldMergeField, Replace(sColumn, ".", "_", 1), False
           
             Case 2
-              objWordSelection.TypeText rsData.Fields("Value").Value
+              objWordSelection.TypeText rsData.Fields("Value").value
               
             
           End Select
