@@ -169,29 +169,32 @@ Namespace Helpers
 
 		End Function
 
-		<Extension()> _
-		Public Function EmailGroupDropdown(helper As HtmlHelper, name As String, bindValue As Integer, items As IEnumerable(Of ReportTableItem)) As MvcHtmlString
-			If items Is Nothing OrElse items.Count = 0 OrElse String.IsNullOrEmpty(name) Then
-				Return MvcHtmlString.Empty
-			End If
+        <Extension()>
+        Public Function EmailGroupDropdown(helper As HtmlHelper, name As String, bindValue As Integer, items As IEnumerable(Of ReportTableItem), htmlAttributes As Object) As MvcHtmlString
+            If items Is Nothing OrElse items.Count = 0 OrElse String.IsNullOrEmpty(name) Then
+                Return MvcHtmlString.Empty
+            End If
 
-			Dim content As New StringBuilder
-			Dim builder As New TagBuilder("select")
-			builder.MergeAttribute("name", name)
+            Dim objAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)
 
-			For Each tableItem In items
-				Dim iID As Integer = tableItem.id
+            Dim content As New StringBuilder
+            Dim builder As New TagBuilder("select")
+            builder.MergeAttribute("name", name)
+            builder.MergeAttributes(objAttributes)
 
-				content.AppendFormat("<option value={0} {2}>{1}</option>" _
-																, iID.ToString(), tableItem.Name, IIf(bindValue = iID, "selected", ""))
+            For Each tableItem In items
+                Dim iID As Integer = tableItem.id
 
-			Next
+                content.AppendFormat("<option value={0} {2}>{1}</option>" _
+                                                                , iID.ToString(), tableItem.Name, IIf(bindValue = iID, "selected", ""))
 
-			builder.InnerHtml = content.ToString
-			Return MvcHtmlString.Create(builder.ToString())
+            Next
 
-		End Function
+            builder.InnerHtml = content.ToString
+            Return MvcHtmlString.Create(builder.ToString())
 
-	End Module
+        End Function
+
+    End Module
 
 End Namespace

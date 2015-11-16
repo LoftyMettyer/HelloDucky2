@@ -85,7 +85,7 @@
 
 	<fieldset id="fieldsetsubjectemail">
 		@Html.LabelFor(Function(m) m.EmailGroupID, New With {.class = "display-label_emails"})
-		@Html.EmailGroupDropdown("EmailGroupID", Model.EmailGroupID, Model.AvailableEmails)
+		@Html.EmailGroupDropdown("EmailGroupID", Model.EmailGroupID, Model.AvailableEmails, New With {.Class = "enableSaveButtonOnComboChange"})
 		<br />
 		@Html.LabelFor(Function(m) m.EmailSubject, New With {.class = "display-label_emails"})
 		@Html.TextBox("EmailSubject", Model.EmailSubject, New With {.class = "display-textbox-emails"})
