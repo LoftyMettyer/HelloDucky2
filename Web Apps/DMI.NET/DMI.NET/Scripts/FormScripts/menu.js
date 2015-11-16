@@ -5107,13 +5107,10 @@ function RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGri
 		}
 	}
 
-	menu_toolbarEnableItem("mnutoolCustomReportsFind", isNonMultiFindLinkType && canRunCustomReports && frmFind.txtCustomReportGrantedForFindWindow.value.toUpperCase() == "TRUE");
-	menu_toolbarEnableItem("mnutoolMailMergeFind", isNonMultiFindLinkType && canRunMailMerge && frmFind.txtMailMergeGrantedForFindWindow.value.toUpperCase() == "TRUE");
-	menu_toolbarEnableItem("mnutoolCalendarReportsFind", isNonMultiFindLinkType && canRunCalendarReports && frmFind.txtCalendarReportGrantedForFindWindow.value.toUpperCase() == "TRUE");
-	menu_toolbarEnableItem("mnutoolDataTransferFind", false);
-
-	//Enable below line and remove above line, when implementing DataTransfter functionality. Till that time the button should be disabled.
-	//menu_toolbarEnableItem("mnutoolDataTransferFind", isNonMultiFindLinkType && canRunDataTransfer);
+	menu_toolbarEnableItem("mnutoolCustomReportsFind", isNonMultiFindLinkType && canRunCustomReports && frmFind.txtCustomReportGrantedForFindWindow.value.toUpperCase() === "TRUE");
+	menu_toolbarEnableItem("mnutoolMailMergeFind", isNonMultiFindLinkType && canRunMailMerge && frmFind.txtMailMergeGrantedForFindWindow.value.toUpperCase() === "TRUE");
+	menu_toolbarEnableItem("mnutoolCalendarReportsFind", isNonMultiFindLinkType && canRunCalendarReports && frmFind.txtCalendarReportGrantedForFindWindow.value.toUpperCase() === "TRUE");
+	menu_toolbarEnableItem("mnutoolDataTransferFind", isNonMultiFindLinkType && canRunDataTransfer && frmFind.txtDataTransferGrantedForFindWindow.value.toUpperCase() === "TRUE");
 
 	// Enable multiselect button is multi find is false
 	EnableMultiSelectRibbonButton(isNonMultiFindLinkType, isNonEditableGrid);

@@ -2547,7 +2547,7 @@ Namespace Controllers
             ' Act dependent on utility type
             Select Case value.UtilType
                 Case UtilityType.utlDataTransfer
-                    Dim message = RunDataTransfer(value.ID)
+                    Dim message = RunDataTransfer(value.ID, Session("multipleRecordIDs"))
                     Return View("util_run_message", message)
 
                 Case Else
@@ -2556,12 +2556,13 @@ Namespace Controllers
 
         End Function
 
-        Private Function RunDataTransfer(id As Integer) As PostResponse
+        Private Function RunDataTransfer(id As Integer, multipleRecordIds As String) As PostResponse
 
             Dim dataTransfer = New clsDataTransferRun
             dataTransfer.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-            dataTransfer.ExecuteDataTransfer(id)
+            '  dataTransfer.
+            dataTransfer.ExecuteDataTransfer(id, multipleRecordIds)
 
             Dim message As New PostResponse With {
                 .Message = dataTransfer.StatusMessage
