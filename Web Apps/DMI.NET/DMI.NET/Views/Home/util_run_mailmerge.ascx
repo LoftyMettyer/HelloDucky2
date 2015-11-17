@@ -51,6 +51,7 @@
     objMailMergeOutput.EmailCalculationID = objMailMerge.DefEmailAddrCalc
     objMailMergeOutput.IsAttachment = objMailMerge.DefEMailAttachment
     objMailMergeOutput.AttachmentName = objMailMerge.DefAttachmentName
+    objMailMergeOutput.SuppressBlankLines = objMailMerge.DefSuppressBlankLines
     objMailMergeOutput.Columns = objMailMerge.Columns
 
     If fok Then

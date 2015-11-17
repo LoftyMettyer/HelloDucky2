@@ -18,6 +18,7 @@ Namespace Code
 		Public EmailSubject As String
 		Public EmailCalculationID As Integer
 		Public IsAttachment As Boolean
+    public SuppressBlankLines as Boolean
 		Public AttachmentName As String
 		Public Name As String
 		Public PrinterName As String
@@ -100,11 +101,15 @@ Namespace Code
 				mailClient = New SmtpClient	'Take SMTP settings from Web.config (i.e. SMTP settings defined for the website in IIS)
 
 				For Each objRow As DataRow In MergeData.Rows
-                    Template.Position = 0
+          Template.Position = 0
 
-                    doc = New Document(Template)
-                    doc.MailMerge.CleanupOptions = MailMergeCleanupOptions.RemoveEmptyParagraphs
-                    doc.MailMerge.Execute(objRow)
+          doc = New Document(Template)
+
+          if SuppressBlankLines then
+            doc.MailMerge.CleanupOptions =  MailMergeCleanupOptions.RemoveEmptyParagraphs
+          end if
+
+          doc.MailMerge.Execute(objRow)
 					objStream = New MemoryStream()
 					message = New MailMessage
 
@@ -175,18 +180,21 @@ Namespace Code
 				Dim objWordLicense As New License
 				objWordLicense.SetLicense("Aspose.Words.lic")
 
-                If Template Is Nothing Then
-                    Errors.Add("The definition has no uploaded mail merge template")
-                    Return False
-                End If
+        If Template Is Nothing Then
+            Errors.Add("The definition has no uploaded mail merge template")
+            Return False
+        End If
 
-                Template.Position = 0
+        Template.Position = 0
 
-                Dim doc As New Document(Template)
+        Dim doc As New Document(Template)
 
-                doc.MailMerge.CleanupOptions = MailMergeCleanupOptions.RemoveEmptyParagraphs
-                doc.MailMerge.FieldMergingCallback = Me
-                doc.MailMerge.Execute(MergeData)
+			  if SuppressBlankLines then
+          doc.MailMerge.CleanupOptions = MailMergeCleanupOptions.RemoveEmptyParagraphs			    
+			  End If
+
+        doc.MailMerge.FieldMergingCallback = Me
+        doc.MailMerge.Execute(MergeData)
 				MergeDocument = New MemoryStream
 
 				If DirectToPrinter And PrinterName.Length > 0 Then

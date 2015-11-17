@@ -128,9 +128,9 @@ Public Class MailMerge
         End Get
     End Property
 
-    Public ReadOnly Property DefSuppressBlankLines() As String
+    Public ReadOnly Property DefSuppressBlankLines() As Boolean
         Get
-            Return CStr(mblnDefSuppressBlankLines)
+            Return mblnDefSuppressBlankLines
         End Get
     End Property
 
