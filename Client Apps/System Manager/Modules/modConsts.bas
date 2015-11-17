@@ -54,6 +54,7 @@ Public Const gsPARAMETERKEY_DELEGATIONACTIVATEDCOLUMN = "Param_DelegationActivat
 Public Const gsPARAMETERKEY_DELEGATEEMAIL = "Param_DelegateEmail"
 Public Const gsPARAMETERKEY_COPYDELEGATEEMAIL = "Param_CopyDelegateEmail"
 Public Const gsPARAMETERKEY_LOGINDETAILS = "Param_FieldsLoginDetails"
+Public Const gsPARAMETERKEY_REQUIRESAUTHORIZATION = "Param_FieldsAuthorization"
 
 Public Const gsWORKFLOWAPPLICATIONPREFIX = "OpenHR Workflow"
 

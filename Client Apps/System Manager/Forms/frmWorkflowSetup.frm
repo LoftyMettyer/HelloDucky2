@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmWorkflowSetup 
@@ -49,14 +49,14 @@ Begin VB.Form frmWorkflowSetup
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraWebSiteLogin"
       Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).ControlCount=   2
+      Tab(0).Control(2)=   "fraAuthenticate"
+      Tab(0).Control(2).Enabled=   0   'False
+      Tab(0).ControlCount=   3
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraDelegation"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraPersonnelTable"
-      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
       TabPicture(2)   =   "frmWorkflowSetup.frx":0044
@@ -67,15 +67,29 @@ Begin VB.Form frmWorkflowSetup
       TabPicture(3)   =   "frmWorkflowSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraMobileKey"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "Frame1"
-      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
+      Begin VB.Frame fraAuthenticate 
+         Caption         =   "Authentication :"
+         Height          =   900
+         Left            =   150
+         TabIndex        =   48
+         Top             =   1500
+         Width           =   6500
+         Begin VB.CheckBox chkRequireAuthorization 
+            Caption         =   "Authenticate after all email lin&ks"
+            Height          =   480
+            Left            =   135
+            TabIndex        =   4
+            Top             =   270
+            Width           =   3195
+         End
+      End
       Begin VB.Frame fraMobileKey 
          Caption         =   "Custom.Web.Config :"
          Height          =   975
          Left            =   -74850
-         TabIndex        =   43
+         TabIndex        =   44
          Top             =   3090
          Visible         =   0   'False
          Width           =   6500
@@ -84,7 +98,7 @@ Begin VB.Form frmWorkflowSetup
             Enabled         =   0   'False
             Height          =   400
             Left            =   5100
-            TabIndex        =   44
+            TabIndex        =   45
             Top             =   315
             Width           =   1200
          End
@@ -93,7 +107,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "Generate Mobile Web Config Keys :"
             Height          =   195
             Left            =   195
-            TabIndex        =   45
+            TabIndex        =   46
             Top             =   420
             Width           =   3060
          End
@@ -102,14 +116,14 @@ Begin VB.Form frmWorkflowSetup
          Caption         =   "Personnel Table :"
          Height          =   2445
          Left            =   -74850
-         TabIndex        =   33
+         TabIndex        =   34
          Top             =   500
          Width           =   6500
          Begin VB.ComboBox cboMobUserActivated 
             Height          =   315
             Left            =   2370
             Style           =   2  'Dropdown List
-            TabIndex        =   38
+            TabIndex        =   39
             Top             =   1890
             Width           =   3975
          End
@@ -117,7 +131,7 @@ Begin VB.Form frmWorkflowSetup
             Height          =   315
             Left            =   2370
             Style           =   2  'Dropdown List
-            TabIndex        =   36
+            TabIndex        =   37
             Top             =   1110
             Width           =   3975
          End
@@ -126,7 +140,7 @@ Begin VB.Form frmWorkflowSetup
             Height          =   315
             Left            =   2370
             Style           =   2  'Dropdown List
-            TabIndex        =   34
+            TabIndex        =   35
             Top             =   300
             Width           =   3975
          End
@@ -134,7 +148,7 @@ Begin VB.Form frmWorkflowSetup
             Height          =   315
             Left            =   2370
             Style           =   2  'Dropdown List
-            TabIndex        =   35
+            TabIndex        =   36
             Top             =   720
             Width           =   3975
          End
@@ -142,7 +156,7 @@ Begin VB.Form frmWorkflowSetup
             Height          =   315
             Left            =   2370
             Style           =   2  'Dropdown List
-            TabIndex        =   37
+            TabIndex        =   38
             Top             =   1500
             Width           =   3975
          End
@@ -150,7 +164,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "User Activated Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   46
+            TabIndex        =   47
             Top             =   1935
             Width           =   2115
          End
@@ -158,7 +172,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "Registration Email Address :"
             Height          =   390
             Left            =   195
-            TabIndex        =   42
+            TabIndex        =   43
             Top             =   660
             Width           =   1770
          End
@@ -167,7 +181,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "Mobile Login Username :"
             Height          =   195
             Left            =   195
-            TabIndex        =   41
+            TabIndex        =   42
             Top             =   1170
             Width           =   2115
          End
@@ -176,7 +190,7 @@ Begin VB.Form frmWorkflowSetup
             Enabled         =   0   'False
             Height          =   195
             Left            =   195
-            TabIndex        =   40
+            TabIndex        =   41
             Top             =   360
             Width           =   1560
          End
@@ -184,7 +198,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "Login Expiry Date :"
             Height          =   195
             Left            =   195
-            TabIndex        =   39
+            TabIndex        =   40
             Top             =   1545
             Width           =   1995
          End
@@ -193,15 +207,15 @@ Begin VB.Form frmWorkflowSetup
          Caption         =   "Login :"
          Height          =   1700
          Left            =   150
-         TabIndex        =   4
-         Top             =   1500
+         TabIndex        =   5
+         Top             =   2565
          Visible         =   0   'False
          Width           =   6500
          Begin VB.CommandButton cmdTestLogon 
             Caption         =   "&Test Login"
             Height          =   400
             Left            =   5100
-            TabIndex        =   9
+            TabIndex        =   10
             Top             =   1100
             Width           =   1200
          End
@@ -209,7 +223,7 @@ Begin VB.Form frmWorkflowSetup
             Height          =   315
             Left            =   1230
             MaxLength       =   128
-            TabIndex        =   6
+            TabIndex        =   7
             Top             =   300
             Width           =   5070
          End
@@ -219,7 +233,7 @@ Begin VB.Form frmWorkflowSetup
             Left            =   1230
             MaxLength       =   128
             PasswordChar    =   "*"
-            TabIndex        =   8
+            TabIndex        =   9
             Top             =   700
             Width           =   5070
          End
@@ -229,7 +243,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "User :"
             Height          =   195
             Left            =   200
-            TabIndex        =   5
+            TabIndex        =   6
             Top             =   360
             Width           =   435
          End
@@ -239,7 +253,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "Password :"
             Height          =   195
             Left            =   195
-            TabIndex        =   7
+            TabIndex        =   8
             Top             =   765
             Width           =   930
          End
@@ -248,14 +262,14 @@ Begin VB.Form frmWorkflowSetup
          Caption         =   "Service :"
          Height          =   925
          Left            =   -74850
-         TabIndex        =   29
+         TabIndex        =   30
          Top             =   500
          Width           =   6500
          Begin VB.CommandButton cmdSuspendService 
             Caption         =   "S&uspend"
             Height          =   400
             Left            =   5100
-            TabIndex        =   31
+            TabIndex        =   32
             Top             =   300
             Width           =   1200
          End
@@ -264,7 +278,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "The Workflow Service is (not) currently suspended."
             Height          =   195
             Left            =   195
-            TabIndex        =   30
+            TabIndex        =   31
             Top             =   360
             Width           =   3690
          End
@@ -273,14 +287,14 @@ Begin VB.Form frmWorkflowSetup
          Caption         =   "Out of Office Delegation :"
          Height          =   1560
          Left            =   -74850
-         TabIndex        =   22
+         TabIndex        =   23
          Top             =   3900
          Width           =   6500
          Begin VB.CheckBox chkCopyDelegateEmail 
             Caption         =   "Copy &email to original recipient"
             Height          =   315
             Left            =   200
-            TabIndex        =   28
+            TabIndex        =   29
             Top             =   1100
             Width           =   3180
          End
@@ -290,7 +304,7 @@ Begin VB.Form frmWorkflowSetup
             Height          =   315
             Left            =   2400
             Locked          =   -1  'True
-            TabIndex        =   26
+            TabIndex        =   27
             TabStop         =   0   'False
             Top             =   700
             Width           =   3585
@@ -299,7 +313,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "..."
             Height          =   315
             Left            =   5985
-            TabIndex        =   27
+            TabIndex        =   28
             Top             =   700
             UseMaskColor    =   -1  'True
             Width           =   315
@@ -308,7 +322,7 @@ Begin VB.Form frmWorkflowSetup
             Height          =   315
             Left            =   2400
             Style           =   2  'Dropdown List
-            TabIndex        =   24
+            TabIndex        =   25
             Top             =   300
             Width           =   3900
          End
@@ -318,7 +332,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "'Delegate To' Email :"
             Height          =   195
             Left            =   195
-            TabIndex        =   25
+            TabIndex        =   26
             Top             =   765
             Width           =   1785
          End
@@ -327,7 +341,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "Activation Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   23
+            TabIndex        =   24
             Top             =   360
             Width           =   1755
          End
@@ -336,7 +350,7 @@ Begin VB.Form frmWorkflowSetup
          Caption         =   "Personnel Table :"
          Height          =   3320
          Left            =   -74850
-         TabIndex        =   10
+         TabIndex        =   11
          Top             =   500
          Width           =   6500
          Begin VB.ComboBox cboLoginName 
@@ -344,7 +358,7 @@ Begin VB.Form frmWorkflowSetup
             Index           =   1
             Left            =   2370
             Style           =   2  'Dropdown List
-            TabIndex        =   15
+            TabIndex        =   16
             Top             =   1100
             Width           =   3975
          End
@@ -352,7 +366,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "Remo&ve All"
             Height          =   400
             Left            =   5100
-            TabIndex        =   21
+            TabIndex        =   22
             Top             =   2700
             Width           =   1200
          End
@@ -360,7 +374,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "&Remove"
             Height          =   400
             Left            =   5100
-            TabIndex        =   20
+            TabIndex        =   21
             Top             =   2200
             Width           =   1200
          End
@@ -368,7 +382,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "&Add ..."
             Height          =   400
             Left            =   5100
-            TabIndex        =   19
+            TabIndex        =   20
             Top             =   1700
             Width           =   1200
          End
@@ -377,7 +391,7 @@ Begin VB.Form frmWorkflowSetup
             Index           =   0
             Left            =   2370
             Style           =   2  'Dropdown List
-            TabIndex        =   14
+            TabIndex        =   15
             Top             =   700
             Width           =   3975
          End
@@ -385,14 +399,14 @@ Begin VB.Form frmWorkflowSetup
             Height          =   315
             Left            =   2370
             Style           =   2  'Dropdown List
-            TabIndex        =   12
+            TabIndex        =   13
             Top             =   300
             Width           =   3975
          End
          Begin SSDataWidgets_B.SSDBGrid grdEmailAddressColumns 
             Height          =   1395
             Left            =   2370
-            TabIndex        =   18
+            TabIndex        =   19
             Top             =   1695
             Width           =   2625
             _Version        =   196617
@@ -471,7 +485,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "Email Addresses :"
             Height          =   195
             Left            =   195
-            TabIndex        =   17
+            TabIndex        =   18
             Top             =   1755
             Width           =   1620
          End
@@ -480,7 +494,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "Login Name Column(s) :"
             Height          =   195
             Left            =   195
-            TabIndex        =   13
+            TabIndex        =   14
             Top             =   765
             Width           =   2100
          End
@@ -488,7 +502,7 @@ Begin VB.Form frmWorkflowSetup
             Caption         =   "Personnel Table :"
             Height          =   195
             Left            =   195
-            TabIndex        =   11
+            TabIndex        =   12
             Top             =   360
             Width           =   1560
          End
@@ -523,7 +537,7 @@ Begin VB.Form frmWorkflowSetup
       Default         =   -1  'True
       Height          =   400
       Left            =   4485
-      TabIndex        =   32
+      TabIndex        =   33
       Top             =   5960
       Width           =   1200
    End
@@ -532,7 +546,7 @@ Begin VB.Form frmWorkflowSetup
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   5750
-      TabIndex        =   16
+      TabIndex        =   17
       Top             =   5960
       Width           =   1200
    End
@@ -554,6 +568,7 @@ Private mlngSecondLoginColumnID As Long
 Private mlngDelegationActivatedColumnID As Long
 Private mlngDelegateEmailID As Long
 Private mfCopyDelegateEmail As Boolean
+Private mfRequiresAuthorization As Boolean
 Private mfServiceSuspended As Boolean
 Private mlngMobPersonnelTableID As Long
 Private mlngMobLoginColumnID As Long
@@ -758,6 +773,11 @@ Private Sub chkCopyDelegateEmail_Click()
   Changed = True
   RefreshControls
 
+End Sub
+
+Private Sub chkRequireAuthorization_Click()
+  mfRequiresAuthorization = (chkRequireAuthorization.value = vbChecked)
+  Changed = True
 End Sub
 
 Private Sub cmdAddEmailAddressColumn_Click()
@@ -1105,7 +1125,8 @@ Private Sub SaveChanges()
   SaveModuleSetting gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_DELEGATIONACTIVATEDCOLUMN, gsPARAMETERTYPE_COLUMNID, mlngDelegationActivatedColumnID
   SaveModuleSetting gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_DELEGATEEMAIL, gsPARAMETERTYPE_EMAILID, mlngDelegateEmailID
   SaveModuleSetting gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_COPYDELEGATEEMAIL, gsPARAMETERTYPE_OTHER, IIf(mfCopyDelegateEmail, "TRUE", "FALSE")
-  
+  SaveModuleSetting gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_REQUIRESAUTHORIZATION, gsPARAMETERTYPE_OTHER, IIf(mfRequiresAuthorization, "TRUE", "FALSE")
+   
   Application.Changed = True
 
 End Sub
@@ -1414,6 +1435,9 @@ Private Sub ReadParameters()
     
   mfCopyDelegateEmail = GetModuleSetting(gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_COPYDELEGATEEMAIL, True)
   chkCopyDelegateEmail.value = IIf(mfCopyDelegateEmail, vbChecked, vbUnchecked)
+
+  mfRequiresAuthorization = GetModuleSetting(gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_REQUIRESAUTHORIZATION, False)
+  chkRequireAuthorization.value = IIf(mfRequiresAuthorization, vbChecked, vbUnchecked)
 
   ' Get the ServiceSuspended flag
   mfServiceSuspended = GetSystemSetting("workflow", "suspended", "0")

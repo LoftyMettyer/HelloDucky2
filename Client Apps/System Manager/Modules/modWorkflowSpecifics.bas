@@ -5433,6 +5433,7 @@ Public Function CreateSP_WorkflowGetValidLoginsForStep() As Boolean
   Dim strSPSQL As String
   Dim fOK As Boolean
   Dim lngModuleRefId As Long
+  Dim bRequireAuthorization As Boolean
   
   Dim sPersonnelTableName As String
   Dim sWorkEmailColumnName As String
@@ -5454,6 +5455,8 @@ Public Function CreateSP_WorkflowGetValidLoginsForStep() As Boolean
     lngModuleRefId = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_WORKEMAIL, 0)
     sWorkEmailColumnName = GetColumnName(lngModuleRefId, True)
   
+    bRequireAuthorization = GetModuleSetting(gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_REQUIRESAUTHORIZATION, 0)
+  
     strSPSQL = _
       "------------------------------------------------------" & vbNewLine & _
       "-- Workflow Web Form authentication stored procedure." & vbNewLine & _
@@ -5462,17 +5465,27 @@ Public Function CreateSP_WorkflowGetValidLoginsForStep() As Boolean
       "CREATE PROCEDURE [dbo].[" & strSPName & "]" & vbNewLine & _
       "(" & vbNewLine & _
       "    @instanceId integer," & vbNewLine & _
-      "    @elementId integer" & vbNewLine & _
+      "    @elementId integer," & vbNewLine & _
+      "    @requiresAuthorization bit OUTPUT" & vbNewLine & _
       ")" & vbNewLine & _
       "AS" & vbNewLine & _
-      "BEGIN" & vbNewLine
-               
+      "BEGIN" & vbNewLine & _
+      "    SET NOCOUNT ON;" & vbNewLine & vbNewLine & _
+      "    DECLARE @Email nvarchar(MAX);" & vbNewLine & vbNewLine
+      
     strSPSQL = strSPSQL & _
-      "    DECLARE @Email nvarchar(MAX);" & vbNewLine & _
-      "    SELECT @Email = s.UserEmail + ';' + ISNULL(s.EmailCC, '')" & vbNewLine & _
+      "    SELECT @Email = s.UserEmail + ';' + ISNULL(s.EmailCC, ''), @requiresAuthorization = ISNULL(e.RequiresAuthentication, 0)" & vbNewLine & _
       "        FROM ASRSysWorkflowInstanceSteps s" & vbNewLine & _
       "        INNER JOIN ASRSysWorkflowElements e ON e.ID = s.ElementID" & vbNewLine & _
-      "        WHERE s.elementid = @elementId AND s.instanceId = @instanceID;" & vbNewLine & vbNewLine & _
+      "        WHERE s.elementid = @elementId AND s.instanceId = @instanceID;" & vbNewLine & vbNewLine
+      
+    If bRequireAuthorization Then
+      strSPSQL = strSPSQL & _
+        "    IF LEN(@Email) > 1" & vbNewLine & _
+        "        SET @requiresAuthorization = 1;" & vbNewLine & vbNewLine
+    End If
+      
+    strSPSQL = strSPSQL & _
       "    SELECT l.SplitColumn AS [Email], p.[" & sSelfServiceLoginColumnName & "] AS [Login] FROM dbo.[udfsysStringToTable](@Email, ';') l" & vbNewLine & _
       "       INNER JOIN [" & sPersonnelTableName & "] p ON p.[" & sWorkEmailColumnName & "] = l.SplitColumn" & vbNewLine & _
       "       WHERE l.SplitColumn <> '' AND p.[" & sSelfServiceLoginColumnName & "] <> '';" & vbNewLine & vbNewLine & _
