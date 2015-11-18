@@ -42,11 +42,27 @@ function util_def_exprcomponent_onload() {
 	$('#SSFunctionTree').jstree(options);
 
 
-	$('#txtFieldRecSel_Specific').spinner({
-		min: 1,
-		max: 250,
-		step: 1
-	});
+  $('#txtFieldRecSel_Specific').spinner({
+    min: 1,
+    max: 99999,
+    step: 1
+  }).on('input', function () {
+    if ($(this).data('onInputPrevented')) return;
+    var val = this.value,
+        $this = $(this),
+        max = $this.spinner('option', 'max'),
+        min = $this.spinner('option', 'min');
+    // We want only number, no alpha. 
+    // We set it to previous default value.         
+    if (!val.match(/^[+-]?[\d]{0,}$/)) val = $(this).data('defaultValue');
+    this.value = val > max ? max : val < min ? min : val;
+  }).on('keydown', function (e) {
+    // we set default value for spinner.
+    if (!$(this).data('defaultValue')) $(this).data('defaultValue', this.value);
+    // To handle backspace
+    $(this).data('onInputPrevented', e.which === 8 ? true : false);
+  });
+
 
 	$('#txtPValSize, #txtPValDecimals').spinner({
 		min: 1,
@@ -753,7 +769,7 @@ function field_refreshChildFrame() {
 					$('#txtFieldRecSel_Specific').spinner('disable');
 				}
 				else {
-					$('#txtFieldRecSel_Specific').spinner('enable');
+				  $('#txtFieldRecSel_Specific').spinner('enable');
 				}
 
 				button_disable(frmMainForm.btnFieldRecOrder, false);

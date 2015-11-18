@@ -198,7 +198,7 @@ Namespace Expressions
 			Dim iFieldPassBy As Short
 			Dim lngFieldSelectionTableID As Integer
 			Dim iFieldSelectionRecord As Short
-			Dim lngFieldSelectionLine As Integer
+			Dim lngFieldSelectionLine As Long
 			Dim lngFieldSelectionOrderID As Integer
 			Dim lngFieldSelectionFilter As Integer
 			Dim lngFunctionID As Integer
@@ -354,7 +354,7 @@ Namespace Expressions
 									End If
 								Case 9
 									If Len(sParameter) > 0 Then
-										lngFieldSelectionLine = CInt(sParameter)
+										lngFieldSelectionLine = CLng(sParameter)
 									Else
 										lngFieldSelectionLine = 0
 									End If
