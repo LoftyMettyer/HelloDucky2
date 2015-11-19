@@ -181,3 +181,4 @@ Public gbLicenceExpired As Boolean
 Public gobjDefaultScreenFont As New StdFont
 Public glngDefaultScreenForeColor As Long
 
+Public gstrWebSiteAddress As String

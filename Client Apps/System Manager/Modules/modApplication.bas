@@ -1746,6 +1746,9 @@ Public Sub ActivateModules()
 
   gbMaximizeScreens = GetSystemSetting("General", "MaximizeScreens", False)
   
+  ' Web Information
+  gstrWebSiteAddress = GetSystemSetting("Web", "SiteAddress", "")
+  
   ' Which columns are to be shown
   LoadShowWhichColumns
 

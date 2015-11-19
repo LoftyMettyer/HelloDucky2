@@ -607,6 +607,8 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       SaveSystemSetting "General", "MaximizeScreens", gbMaximizeScreens
       SaveSystemSetting "General", "RememberColumnsView", gbRememberDBColumnsView
     
+      SaveSystemSetting "Web", "SiteAddress", gstrWebSiteAddress
+    
       If gbRememberDBColumnsView Then
         SaveSystemSetting "ShowColumn_DataMan", "Name", gpropShowColumns_DataMgr("Name").value
         SaveSystemSetting "ShowColumn_DataMan", "Data Type", gpropShowColumns_DataMgr("Data Type").value
