@@ -6,6 +6,7 @@ Public Module Globals
   Public CommitDb As IConnection
 
   Public Tables As ICollection(Of Table)
+  Public Columns As ICollection(Of Column)
   Public Operators As ICollection(Of CodeLibrary)
   Public Functions As ICollection(Of CodeLibrary)
   Public Expressions As ICollection(Of Expression)
@@ -27,6 +28,7 @@ Public Module Globals
 
     ' Metadata objects
     Tables = New Collection(Of Table)
+    Columns = New Collection(Of Column)
     Operators = New Collection(Of CodeLibrary)
     Functions = New Collection(Of CodeLibrary)
     Expressions = New Collection(Of Expression)

@@ -103,6 +103,7 @@
     <Compile Include="Enums\Connection\DbType.vb" />
     <Compile Include="Enums\Connection\MetadataProvider.vb" />
     <Compile Include="Enums\Connection\Provider.vb" />
+    <Compile Include="Enums\ModuleParameterSubType.vb" />
     <Compile Include="Enums\TriggerCodePosition.vb" />
     <Compile Include="Interfaces\ICommitDB.vb" />
     <Compile Include="Interfaces\IConnection.vb" />

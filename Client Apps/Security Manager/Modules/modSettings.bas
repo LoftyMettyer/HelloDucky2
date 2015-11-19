@@ -99,6 +99,11 @@ Public gbEnableUDFFunctions As Boolean
 Public gbDeleteOrphanWindowsLogins As Boolean
 Public gbDeleteOrphanUsers As Boolean
 
+Public gbLoginMaintAutoAdd As Boolean
+Public gstrLoginMaintAutoAddGroup As String
+Public gbLoginMaintDisableOnLeave As Boolean
+Public gbLoginMaintSendEmail As Boolean
+
 'Security Settings - Login Checks i.e.Bad Attempts
 Private gblnCFG_PCL As Boolean
 Private gintCFG_BA As Integer

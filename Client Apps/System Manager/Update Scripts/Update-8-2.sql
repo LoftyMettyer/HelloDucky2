@@ -2469,6 +2469,23 @@ PRINT 'Step - Misc Updates'
 	END';
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - Auto Self Service Logins'
+/* ------------------------------------------------------- */
+
+	IF NOT EXISTS (SELECT * FROM sys.types WHERE is_table_type = 1 AND name ='SelfServiceType')
+		EXECUTE sp_executesql N'CREATE TYPE SelfServiceType AS TABLE ([Login] nvarchar(255) NULL, [Email] nvarchar(255), [LeavingDate] datetime, [KnownAs] nvarchar(255))';
+
+	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGenerateSelfServiceLogins]') AND xtype = 'P')
+		EXECUTE sp_executesql N'CREATE PROCEDURE spASRGenerateSelfServiceLogins(@logins AS SelfServiceType READONLY)
+		AS
+		BEGIN
+			SET NOCOUNT ON;
+		END';
+
+
+
+
 PRINT 'Final Step - Updating Versions'
 
 	EXEC spsys_setsystemsetting 'database', 'version', '8.2';

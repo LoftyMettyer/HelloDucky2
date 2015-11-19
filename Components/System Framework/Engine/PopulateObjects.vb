@@ -1,5 +1,6 @@
 ﻿Option Strict Off
 
+Imports System.Windows.Forms
 Imports SystemFramework.Enums
 Imports SystemFramework.Enums.Errors
 
@@ -23,11 +24,11 @@ Public Module PopulateObjects
 
     PopulateTableViews()
     PopulateTableViewItems()
-		PopulateTableValidations()
-		PopulateTableTriggerCode()
+    PopulateTableValidations()
+    PopulateTableTriggerCode()
     PopulateTableRecordDescriptions()
     PopulateTableMasks()
-		PopulateFusionMessages()
+    PopulateFusionMessages()
 
     _componentbase = Nothing
     _componentfunction = Nothing
@@ -52,27 +53,36 @@ Public Module PopulateObjects
 
   Public Sub PopulateModuleSettings()
 
-    ModuleSetup.Clear()
+    Try
 
-    Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getmodulesetup", Nothing)
+      ModuleSetup.Clear()
 
-    For Each row As DataRow In ds.Tables(0).Rows
+      Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getmodulesetup", Nothing)
 
-      Dim setting As New Setting
-      setting.Module = row.Item("modulekey").ToString
-      setting.Parameter = row.Item("parameterkey").ToString
+      For Each row As DataRow In ds.Tables(0).Rows
 
-      If Not row.Item("value").ToString = "" Then
-        Select Case row.Item("subtype").ToString
-          Case 1
-            setting.Table = Tables.GetById(row.Item("value").ToString)
-          Case Else
-            setting.Value = row.Item("value").ToString
-        End Select
+        Dim setting As New Setting
+        setting.Module = row.Item("modulekey").ToString
+        setting.Parameter = row.Item("parameterkey").ToString
 
-        ModuleSetup.Add(setting)
-      End If
-    Next
+        If Not row.Item("value").ToString = "" Then
+          Select Case row.Item("subtype").ToString
+            Case ModuleParameterSubType.Table
+              setting.Table = Tables.GetById(row.Item("value").ToString)
+            Case ModuleParameterSubType.Column
+              setting.Column = Columns.GetById(row.Item("value").ToString)
+            Case Else
+              setting.Value = row.Item("value").ToString
+          End Select
+
+          ModuleSetup.Add(setting)
+        End If
+      Next
+
+    Catch ex As Exception
+      ErrorLog.Add(Section.LoadingData, "PopulateModuleSettings", Severity.Error, ex.Message, ex.InnerException.ToString)
+
+    End Try
 
   End Sub
 
@@ -200,6 +210,7 @@ Public Module PopulateObjects
         column.Alignment = row.Item("alignment").ToString
 
         table.Columns.Add(column)
+        Columns.Add(column)
       Next
 
     Catch ex As Exception

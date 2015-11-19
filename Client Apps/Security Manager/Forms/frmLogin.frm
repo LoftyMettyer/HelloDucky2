@@ -855,6 +855,12 @@ Private Sub Login()
   gbDeleteOrphanWindowsLogins = GetSystemSetting("Misc", "CFG_DELETEORPHANLOGINS", False)
   gbDeleteOrphanUsers = GetSystemSetting("Misc", "CFG_DELETEORPHANUSERS", False)
   
+  ' Login Maintenance
+  gbLoginMaintAutoAdd = GetSystemSetting("LoginMaintenance", "AUTOADD", False)
+  gstrLoginMaintAutoAddGroup = GetSystemSetting("LoginMaintenance", "AUTOADDGROUP", "")
+  gbLoginMaintDisableOnLeave = GetSystemSetting("LoginMaintenance", "DISABLEONLEAVE", False)
+  gbLoginMaintSendEmail = GetSystemSetting("LoginMaintenance", "SENDEMAIL", False)
+  
   ' Sometimes the ODBC API reports the username being empty so check it
   If IsEmpty(gsUserName) Then
     Err.Raise vbObjectError + 512, "Login", "Login Failed Due To ODBC Driver Error."

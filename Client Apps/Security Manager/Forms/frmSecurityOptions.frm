@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmSecurityOptions 
    BorderStyle     =   3  'Fixed Dialog
@@ -7,7 +7,7 @@ Begin VB.Form frmSecurityOptions
    ClientHeight    =   5115
    ClientLeft      =   45
    ClientTop       =   435
-   ClientWidth     =   6975
+   ClientWidth     =   6945
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -25,14 +25,14 @@ Begin VB.Form frmSecurityOptions
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   5115
-   ScaleWidth      =   6975
+   ScaleWidth      =   6945
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.CommandButton cmdCancel 
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   5640
+      Left            =   5625
       TabIndex        =   2
       Top             =   4590
       Width           =   1200
@@ -41,14 +41,14 @@ Begin VB.Form frmSecurityOptions
       Caption         =   "&OK"
       Enabled         =   0   'False
       Height          =   400
-      Left            =   4410
+      Left            =   4380
       TabIndex        =   1
       Top             =   4590
       Width           =   1200
    End
    Begin TabDlg.SSTab sstabOptions 
       Height          =   4425
-      Left            =   135
+      Left            =   120
       TabIndex        =   0
       Top             =   75
       Width           =   6705
@@ -56,7 +56,6 @@ Begin VB.Form frmSecurityOptions
       _ExtentY        =   7805
       _Version        =   393216
       Style           =   1
-      Tabs            =   2
       TabsPerRow      =   4
       TabHeight       =   520
       TabCaption(0)   =   "&Security Policy"
@@ -68,11 +67,75 @@ Begin VB.Form frmSecurityOptions
       TabCaption(1)   =   "&Advanced"
       TabPicture(1)   =   "frmSecurityOptions.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraOrphanedAccounts"
-      Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "frmWindowsAuth"
-      Tab(1).Control(1).Enabled=   0   'False
+      Tab(1).Control(0)=   "frmWindowsAuth"
+      Tab(1).Control(1)=   "fraOrphanedAccounts"
       Tab(1).ControlCount=   2
+      TabCaption(2)   =   "&Login Maintenance"
+      TabPicture(2)   =   "frmSecurityOptions.frx":0044
+      Tab(2).ControlEnabled=   0   'False
+      Tab(2).Control(0)=   "fraSelfServiceLogin"
+      Tab(2).Control(0).Enabled=   0   'False
+      Tab(2).ControlCount=   1
+      Begin VB.Frame fraSelfServiceLogin 
+         Caption         =   "Self Service Logins :"
+         Height          =   3825
+         Left            =   -74850
+         TabIndex        =   32
+         Top             =   405
+         Width           =   6375
+         Begin VB.CheckBox chkEmailWorkAddress 
+            Caption         =   "Send login details to wor&k email address"
+            Height          =   225
+            Left            =   135
+            TabIndex        =   31
+            Top             =   1815
+            Width           =   3975
+         End
+         Begin VB.CheckBox chkDisableLoginsOnLeaveDate 
+            Caption         =   "Disable logins on leavin&g date"
+            Enabled         =   0   'False
+            Height          =   255
+            Left            =   135
+            TabIndex        =   30
+            Top             =   1245
+            Width           =   3210
+         End
+         Begin VB.CheckBox chkAutoAddFromSelfService 
+            Caption         =   "Automaticall&y add logins for self service column"
+            Height          =   435
+            Left            =   135
+            TabIndex        =   29
+            Top             =   315
+            Width           =   4575
+         End
+         Begin VB.ComboBox cboAutoAddSelfServiceGroup 
+            Height          =   315
+            ItemData        =   "frmSecurityOptions.frx":0060
+            Left            =   2835
+            List            =   "frmSecurityOptions.frx":0062
+            Style           =   2  'Dropdown List
+            TabIndex        =   33
+            Top             =   795
+            Width           =   2805
+         End
+         Begin VB.Label Label2 
+            Caption         =   $"frmSecurityOptions.frx":0064
+            ForeColor       =   &H000000FF&
+            Height          =   900
+            Left            =   405
+            TabIndex        =   35
+            Top             =   2175
+            Width           =   5625
+         End
+         Begin VB.Label Label1 
+            Caption         =   "Default Security Group : "
+            Height          =   270
+            Left            =   405
+            TabIndex        =   34
+            Top             =   840
+            Width           =   2220
+         End
+      End
       Begin VB.Frame frmWindowsAuth 
          Caption         =   "Windows Authentication : "
          Height          =   1830
@@ -97,7 +160,7 @@ Begin VB.Form frmSecurityOptions
             Width           =   3900
          End
          Begin VB.Label lblDeleteOrphanWarning 
-            Caption         =   $"frmSecurityOptions.frx":0044
+            Caption         =   $"frmSecurityOptions.frx":0142
             ForeColor       =   &H000000FF&
             Height          =   600
             Left            =   435
@@ -122,7 +185,7 @@ Begin VB.Form frmSecurityOptions
             Width           =   4500
          End
          Begin VB.Label lblBypassWarning 
-            Caption         =   $"frmSecurityOptions.frx":00F0
+            Caption         =   $"frmSecurityOptions.frx":01EE
             ForeColor       =   &H000000FF&
             Height          =   900
             Left            =   465
@@ -148,7 +211,7 @@ Begin VB.Form frmSecurityOptions
             Width           =   405
          End
          Begin VB.CheckBox chkPasswordsRemembered 
-            Caption         =   "Pass&word History :                       remembered"
+            Caption         =   "Password History :                       remembered"
             Enabled         =   0   'False
             Height          =   240
             Left            =   195
@@ -173,7 +236,7 @@ Begin VB.Form frmSecurityOptions
             Width           =   420
          End
          Begin VB.CheckBox chkMinimumPasswordAge 
-            Caption         =   "M&inimum password age :"
+            Caption         =   "Minimum password age :"
             Height          =   240
             Left            =   195
             TabIndex        =   5
@@ -181,7 +244,7 @@ Begin VB.Form frmSecurityOptions
             Width           =   3060
          End
          Begin VB.CheckBox chkPCLockout 
-            Caption         =   "Enable Loc&kout"
+            Caption         =   "Enable Lockout"
             Height          =   255
             Left            =   195
             TabIndex        =   12
@@ -198,7 +261,7 @@ Begin VB.Form frmSecurityOptions
             Width           =   405
          End
          Begin VB.CheckBox chkComplexity 
-            Caption         =   "Passwords must meet complexity re&quirements"
+            Caption         =   "Passwords must meet complexity requirements"
             Enabled         =   0   'False
             Height          =   300
             Left            =   195
@@ -224,7 +287,7 @@ Begin VB.Form frmSecurityOptions
             Width           =   420
          End
          Begin VB.CheckBox chkMinimumPasswordLength 
-            Caption         =   "&Minimum password length : "
+            Caption         =   "Minimum password length : "
             Height          =   255
             Left            =   195
             TabIndex        =   3
@@ -232,7 +295,7 @@ Begin VB.Form frmSecurityOptions
             Width           =   3165
          End
          Begin VB.CheckBox chkMaximumPasswordAge 
-            Caption         =   "Ma&ximum password age : "
+            Caption         =   "Maximum password age : "
             Height          =   270
             Left            =   195
             TabIndex        =   8
@@ -341,7 +404,7 @@ Private mblnReadOnly As Boolean
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOk.Enabled = pblnNewValue
+  cmdOK.Enabled = pblnNewValue
 End Property
 
 
@@ -362,7 +425,7 @@ Public Function Initialise() As Boolean
   If pblnOK Then
     pblnOK = LoadSecuritySettings()
   End If
-  
+    
   RefreshButtons
    
   lblBypassWarning.Visible = chkSecManBypass.Enabled
@@ -490,6 +553,12 @@ Private Function LoadSecuritySettings() As Boolean
     chkDisableDomainListBuilder.Enabled = False
   End If
   
+  ' Login maintenance
+  chkAutoAddFromSelfService.Value = IIf(gbLoginMaintAutoAdd, vbChecked, vbUnchecked)
+  SetComboText cboAutoAddSelfServiceGroup, gstrLoginMaintAutoAddGroup
+  chkDisableLoginsOnLeaveDate.Value = IIf(gbLoginMaintDisableOnLeave, vbChecked, vbUnchecked)
+  chkEmailWorkAddress.Value = IIf(gbLoginMaintSendEmail, vbChecked, vbUnchecked)
+  
   RefreshButtons
   LoadSecuritySettings = True
   
@@ -560,6 +629,21 @@ Private Function SaveSecuritySettings() As Boolean
   gbDeleteOrphanWindowsLogins = IIf(chkDelOrphanedLogins.Value = vbChecked, True, False)
   SaveSystemSetting "Misc", "CFG_DELETEORPHANLOGINS", gbDeleteOrphanWindowsLogins
   SaveSystemSetting "Misc", "CFG_DELETEORPHANUSERS", gbDeleteOrphanUsers
+
+  ' Login Maintenance
+  gbLoginMaintAutoAdd = IIf(chkAutoAddFromSelfService.Value = vbChecked, True, False)
+  SaveSystemSetting "LoginMaintenance", "AUTOADD", gbLoginMaintAutoAdd
+  
+  gstrLoginMaintAutoAddGroup = cboAutoAddSelfServiceGroup.Text
+  SaveSystemSetting "LoginMaintenance", "AUTOADDGROUP", gstrLoginMaintAutoAddGroup
+  
+  gbLoginMaintDisableOnLeave = IIf(chkDisableLoginsOnLeaveDate.Value = vbChecked, True, False)
+  SaveSystemSetting "LoginMaintenance", "DISABLEONLEAVE", gbLoginMaintDisableOnLeave
+  
+  gbLoginMaintSendEmail = IIf(chkEmailWorkAddress.Value = vbChecked, True, False)
+  SaveSystemSetting "LoginMaintenance", "SENDEMAIL", gbLoginMaintSendEmail
+
+  ApplyChanges_LoginMaintenance
 
   SaveSecuritySettings = True
   
@@ -634,7 +718,15 @@ Private Function ValidateSecuritySettings() As Boolean
   
 End Function
 
+Private Sub cboAutoAddSelfServiceGroup_Click()
+  Changed = True
+End Sub
+
 Private Sub cboChangePeriod_Change()
+  Changed = True
+End Sub
+
+Private Sub chkAutoAddFromSelfService_Click()
   Changed = True
 End Sub
 
@@ -647,6 +739,14 @@ Private Sub chkDelOrphanedLogins_Click()
 End Sub
 
 Private Sub chkDisableDomainListBuilder_Click()
+  Changed = True
+End Sub
+
+Private Sub chkDisableLoginsOnLeaveDate_Click()
+  Changed = True
+End Sub
+
+Private Sub chkEmailWorkAddress_Click()
   Changed = True
 End Sub
 
@@ -821,6 +921,11 @@ Private Function LoadCombos() As Boolean
     .AddItem "Month(s)"
     .AddItem "Year(s)"
   End With
+  
+  Dim objGroup As SecurityGroup
+  For Each objGroup In gObjGroups
+   cboAutoAddSelfServiceGroup.AddItem (objGroup.Name)
+  Next objGroup
 
   LoadCombos = True
   Exit Function
@@ -893,3 +998,4 @@ Private Sub RefreshButtons()
   End If
   
 End Sub
+
