@@ -67,8 +67,8 @@ Begin VB.Form frmSecurityOptions
       TabCaption(1)   =   "&Advanced"
       TabPicture(1)   =   "frmSecurityOptions.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "frmWindowsAuth"
-      Tab(1).Control(1)=   "fraOrphanedAccounts"
+      Tab(1).Control(0)=   "fraOrphanedAccounts"
+      Tab(1).Control(1)=   "frmWindowsAuth"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Login Maintenance"
       TabPicture(2)   =   "frmSecurityOptions.frx":0044
@@ -93,7 +93,6 @@ Begin VB.Form frmSecurityOptions
          End
          Begin VB.CheckBox chkDisableLoginsOnLeaveDate 
             Caption         =   "Disable logins on leavin&g date"
-            Enabled         =   0   'False
             Height          =   255
             Left            =   135
             TabIndex        =   30

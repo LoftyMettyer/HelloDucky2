@@ -2477,12 +2477,18 @@ PRINT 'Step - Auto Self Service Logins'
 		EXECUTE sp_executesql N'CREATE TYPE SelfServiceType AS TABLE ([Login] nvarchar(255) NULL, [Email] nvarchar(255), [StartDate] datetime, [LeavingDate] datetime, [KnownAs] nvarchar(255))';
 
 	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGenerateSelfServiceLogins]') AND xtype = 'P')
-		EXECUTE sp_executesql N'CREATE PROCEDURE spASRGenerateSelfServiceLogins(@logins AS SelfServiceType READONLY)
+		EXECUTE sp_executesql N'CREATE PROCEDURE dbo.spASRGenerateSelfServiceLogins(@logins AS SelfServiceType READONLY)
 		AS
 		BEGIN
 			SET NOCOUNT ON;
 		END';
 
+	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRDeleteExpiredSelfServiceLogins]') AND xtype = 'P')
+		EXECUTE sp_executesql N'CREATE PROCEDURE dbo.spASRDeleteExpiredSelfServiceLogins
+		AS
+		BEGIN
+			SET NOCOUNT ON;
+		END';
 
 
 

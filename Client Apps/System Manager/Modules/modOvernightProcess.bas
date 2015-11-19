@@ -494,7 +494,9 @@ Private Function OvernightJob5() As Boolean
     "        EXEC sp_executeSQL spASRUpdateStatistics;" & vbNewLine & vbNewLine & _
     "        -- Optimise the record save for single record" & vbNewLine & _
     "        EXEC sp_executeSQL spadmin_optimiserecordsave;" & vbNewLine & _
-    "    END" & vbNewLine
+    "    END" & vbNewLine & vbNewLine & _
+    "    -- Clear automagic self service logins" & vbNewLine & _
+    "    EXEC sp_executeSQL spASRDeleteExpiredSelfServiceLogins;" & vbNewLine & vbNewLine
   
   strSQL = strSQL & "END"
   
