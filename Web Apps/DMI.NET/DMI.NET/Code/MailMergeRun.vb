@@ -264,7 +264,7 @@ Namespace Code
 				Next
 
 				If templateFields.Count > 0 Then
-					Errors.Add(String.Format("The uploaded template has the following merge fields which are missing from your definition:{0}{0}{1}{0}{0}Please edit the template or the definition." _
+					Errors.Add(String.Format("The uploaded template has the following merge fields which are missing from your definition:{0}{0}{1}{0}{0}Please edit the template and upload it in the definition, or review the selected columns in the definition." _
 												, "<br/>", Join(templateFields.ToArray(), "<br/>")))
 					Return False
 				End If
