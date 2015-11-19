@@ -2,6 +2,7 @@
 (
 	[Login] nvarchar(255) NULL,
 	[Email] nvarchar(255),
+	[StartDate] datetime,
 	[LeavingDate] datetime,
 	[KnownAs] nvarchar(255)
 )
