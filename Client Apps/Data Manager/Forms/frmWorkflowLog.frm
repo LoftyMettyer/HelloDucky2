@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmWorkflowLog 
@@ -415,22 +415,22 @@ Private Sub DeleteWorkflow()
       ReDim arrayBookmarks(nTotalSelRows)
       
       For intCount = 1 To nTotalSelRows
-        arrayBookmarks(intCount) = grdWorkflowLog.SelBookmarks.Item(intCount - 1)
+        arrayBookmarks(intCount) = grdWorkflowLog.SelBookmarks.item(intCount - 1)
       Next intCount
       
       For intCount = 1 To nTotalSelRows
         grdWorkflowLog.Bookmark = arrayBookmarks(intCount)
         
-        If grdWorkflowLog.Columns("Status").Value = WorkflowStatusDescription(giWFSTATUS_SCHEDULED) _
-          And grdWorkflowLog.Columns("Username").Value = "<Triggered>" Then
+        If grdWorkflowLog.Columns("Status").value = WorkflowStatusDescription(giWFSTATUS_SCHEDULED) _
+          And grdWorkflowLog.Columns("Username").value = "<Triggered>" Then
                 
           strQueueIDs = strQueueIDs & _
             IIf(Len(strQueueIDs) > 0, ",", "") & _
-            grdWorkflowLog.Columns("ID").Value
+            grdWorkflowLog.Columns("ID").value
         Else
           strWorkflowIDs = strWorkflowIDs & _
             IIf(Len(strWorkflowIDs) > 0, ",", "") & _
-            grdWorkflowLog.Columns("ID").Value
+            grdWorkflowLog.Columns("ID").value
         End If
       Next intCount
       grdWorkflowLog.SelBookmarks.RemoveAll
@@ -531,17 +531,17 @@ Private Function ViewWorkflow()
   Dim frmQueueDetails As frmWorkflowQueueDetails
   Dim varBookmark As Variant
   
-  If IsNumeric(grdWorkflowLog.Columns("ID").Value) Then
-    If grdWorkflowLog.Columns("Status").Value = WorkflowStatusDescription(giWFSTATUS_SCHEDULED) _
-      And grdWorkflowLog.Columns("Username").Value = "<Triggered>" Then
+  If IsNumeric(grdWorkflowLog.Columns("ID").value) Then
+    If grdWorkflowLog.Columns("Status").value = WorkflowStatusDescription(giWFSTATUS_SCHEDULED) _
+      And grdWorkflowLog.Columns("Username").value = "<Triggered>" Then
     
       Set frmQueueDetails = New frmWorkflowQueueDetails
       
-      If frmQueueDetails.Initialise(CLng(grdWorkflowLog.Columns("ID").Value)) Then
+      If frmQueueDetails.Initialise(CLng(grdWorkflowLog.Columns("ID").value)) Then
         frmQueueDetails.Show vbModal
 
         If grdWorkflowLog.SelBookmarks.Count = 1 Then
-          varBookmark = grdWorkflowLog.SelBookmarks.Item(0)
+          varBookmark = grdWorkflowLog.SelBookmarks.item(0)
         End If
 
         RefreshGrid
@@ -559,13 +559,13 @@ Private Function ViewWorkflow()
       End If
     Else
       Set frmDetails = New frmWorkflowLogDetails
-      If frmDetails.Initialise(CLng(grdWorkflowLog.Columns("ID").Value), Me) Then
+      If frmDetails.Initialise(CLng(grdWorkflowLog.Columns("ID").value), Me) Then
   
         frmDetails.Caption = Me.Caption & " Details"
         frmDetails.Show vbModal
       
         If grdWorkflowLog.SelBookmarks.Count = 1 Then
-          varBookmark = grdWorkflowLog.SelBookmarks.Item(0)
+          varBookmark = grdWorkflowLog.SelBookmarks.item(0)
         End If
         
         RefreshGrid
@@ -870,7 +870,7 @@ Private Function RefreshGrid() As Boolean
     "     WHEN 2 THEN '<External>'" & _
     "     ELSE WI.Username" & _
     "   END AS [Username]," & _
-    "   [TargetName]" & _
+    "   ISNULL([TargetName], '') AS [TargetName]" & _
     " FROM ASRSysWorkflowInstances WI" & _
     " INNER JOIN ASRSysWorkflows WF ON WI.workflowID = WF.ID"
 
@@ -914,7 +914,7 @@ Private Function RefreshGrid() As Boolean
       " ISNULL(WF.Name,'<Deleted>') AS [Name]," & _
       " '" & WorkflowStatusDescription(giWFSTATUS_SCHEDULED) & "' AS [Status]," & _
       " '<Triggered>' AS [Username]," & _
-      " '<System>' AS [TargetName]" & _
+      " '' AS [TargetName]" & _
       " FROM [ASRSysWorkflowQueue] Q" & _
       " INNER JOIN [ASRSysWorkflowTriggeredLinks] TL ON Q.linkID = TL.linkID" & _
       " INNER JOIN [ASRSysWorkflows] WF ON TL.workflowID = WF.ID" & _
@@ -1052,7 +1052,6 @@ Private Sub Form_Load()
   ' Add all distinct target names
   With cboTargetName
     .AddItem "<All>"
-    .AddItem "<System>"
        
     Set rstWorkflows = mclsData.OpenRecordset("SELECT DISTINCT TargetName FROM ASRSysWorkflowInstances ORDER BY TargetName", adOpenForwardOnly, adLockReadOnly)
     Do Until rstWorkflows.EOF
@@ -1372,11 +1371,11 @@ Private Sub grdWorkflowLog_UnboundReadData(ByVal RowBuf As SSDataWidgets_B.ssRow
         For iFieldIndex = 0 To (mrstHeaders.Fields.Count - 1)
           Select Case mrstHeaders.Fields(iFieldIndex).Name
             Case "InitiationDateTime", "CompletionDateTime"
-              RowBuf.Value(iRowIndex, iFieldIndex) = Format(mrstHeaders.Fields(iFieldIndex), sDateFormat & " hh:nn")
+              RowBuf.value(iRowIndex, iFieldIndex) = Format(mrstHeaders.Fields(iFieldIndex), sDateFormat & " hh:nn")
             Case "Duration"
-              RowBuf.Value(iRowIndex, iFieldIndex) = IIf(mrstHeaders.Fields("Duration").Value = 0, "", FormatEventDuration(mrstHeaders.Fields("Duration").Value))
+              RowBuf.value(iRowIndex, iFieldIndex) = IIf(mrstHeaders.Fields("Duration").value = 0, "", FormatEventDuration(mrstHeaders.Fields("Duration").value))
             Case Else
-              RowBuf.Value(iRowIndex, iFieldIndex) = CStr(IIf(IsNull(mrstHeaders.Fields(iFieldIndex)), "", mrstHeaders.Fields(iFieldIndex)))
+              RowBuf.value(iRowIndex, iFieldIndex) = CStr(IIf(IsNull(mrstHeaders.Fields(iFieldIndex)), "", mrstHeaders.Fields(iFieldIndex)))
           End Select
         Next iFieldIndex
         RowBuf.Bookmark(iRowIndex) = mrstHeaders.Bookmark
