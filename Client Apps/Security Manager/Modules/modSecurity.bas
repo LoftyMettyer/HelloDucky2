@@ -5714,6 +5714,10 @@ On Error GoTo ErrorTrap:
           "          EXEC sp_executeSQL @sCode;" & vbNewLine & vbNewLine
           
     sSQL = sSQL & _
+          "        INSERT ASRSysAuditGroup(UserName, DateTimeStamp, GroupName, UserLogin, [Action])" & vbNewLine & _
+          "            VALUES ('System', GETDATE(), '" & gstrLoginMaintAutoAddGroup & "', @login, 'User Added')" & vbNewLine & vbNewLine
+          
+    sSQL = sSQL & _
           "          IF @sendEmail = 1" & vbNewLine & _
           "          BEGIN" & vbNewLine & _
           "              INSERT ASRSysEmailQueue(RecordDesc, ColumnValue, DateDue, UserName, [Immediate], RecalculateRecordDesc," & vbNewLine & _
@@ -5758,8 +5762,8 @@ On Error GoTo ErrorTrap:
   
     sSQL = sSQL & _
         "    DECLARE loginCursor CURSOR LOCAL FAST_FORWARD FOR" & vbNewLine & _
-        "    SELECT [" & sSelfServiceColumn & "] FROM [" & sPersonnelTable & "]" & vbNewLine & _
-        "        WHERE [" & sLeavingDateColumn & "] = @yesterday;" & vbNewLine & vbNewLine & _
+        "        SELECT [" & sSelfServiceColumn & "] FROM [" & sPersonnelTable & "]" & vbNewLine & _
+        "        WHERE [" & sLeavingDateColumn & "] <= @yesterday;" & vbNewLine & vbNewLine & _
         "    OPEN loginCursor;" & vbNewLine & _
         "    FETCH NEXT FROM loginCursor INTO @login;" & vbNewLine & _
         "    WHILE @@FETCH_STATUS = 0" & vbNewLine & _
@@ -5767,7 +5771,11 @@ On Error GoTo ErrorTrap:
         "        IF EXISTS (SELECT * FROM sys.sysusers WHERE name = @login)" & vbNewLine & _
         "            EXECUTE ('DROP USER [' + @login + ']');" & vbNewLine & vbNewLine & _
         "        IF EXISTS (SELECT * FROM sys.syslogins WHERE name = @login)" & vbNewLine & _
-        "            EXECUTE ('DROP LOGIN [' + @login + ']');" & vbNewLine & vbNewLine & _
+        "        BEGIN" & vbNewLine & _
+        "            EXECUTE ('DROP LOGIN [' + @login + ']');" & vbNewLine & _
+        "            INSERT dbo.ASRSysAuditGroup(UserName, DateTimeStamp, GroupName, UserLogin, [Action])" & vbNewLine & _
+        "                VALUES ('System', @yesterday + 1, '" & gstrLoginMaintAutoAddGroup & "', @login, 'User Deleted')" & vbNewLine & _
+        "        END" & vbNewLine & _
         "        FETCH NEXT FROM loginCursor INTO @login;" & vbNewLine & _
         "   END" & vbNewLine & vbNewLine & _
         "CLOSE loginCursor;" & vbNewLine & _
