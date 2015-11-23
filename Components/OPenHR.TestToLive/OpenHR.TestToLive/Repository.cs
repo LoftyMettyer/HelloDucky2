@@ -45,25 +45,29 @@ namespace OpenHRTestToLive
             _connection = entityBuilder.ToString();
         }
 
-        public string ExportDefinition(int Id, string fileName) {
+        public string ExportDefinition(int Id, string fileName)
+        {
 
             var liveDb = new npg_openhr8_2Entities(_connection);
-            var output = new StringBuilder();
-            var settings = new XmlWriterSettings();
-                settings.CloseOutput = true;
+
+            var settings = new XmlWriterSettings
+            {
+                CloseOutput = true,
+                Indent = true,
+                NewLineHandling = NewLineHandling.Entitize
+
+            };
 
             var copiedObjects = new T2LClass();
             ExtractAll(copiedObjects, liveDb, Id);
 
             //---------------------------------------------------------------------------------------------------------------------------------
             // Write all
-
             LogData("Saving {0}...", fileName);
             ConfirmSize(copiedObjects);
             DataContractSerializer AllWFSerializer = new DataContractSerializer(copiedObjects.GetType());
 
-            XmlWriter WFWriter = XmlWriter.Create(File.CreateText(string.Format(fileName)),settings);
-            //XmlWriter WFWriter = XmlWriter.Create(output);
+            XmlWriter WFWriter = XmlWriter.Create(File.CreateText(string.Format(fileName)), settings);
 
             AllWFSerializer.WriteObject(WFWriter, copiedObjects);
             WFWriter.Flush();
@@ -73,9 +77,9 @@ namespace OpenHRTestToLive
 
             //return output.ToString();
             return WFWriter.ToString();
-            
+
         }
-        
+
         public RepositoryStatus ImportDefinitions(string inputFile)
         {
             var importObjects = new T2LClass();
