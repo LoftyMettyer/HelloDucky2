@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using System.Data.Entity.Core.EntityClient;
 using System.Data.Entity.Validation;
 using System.Text;
+using OpenHRTestToLive.Extensions;
 
 namespace OpenHRTestToLive
 {
@@ -162,253 +163,259 @@ namespace OpenHRTestToLive
         }
 
 
-        //	Entity Hierarchy: --------------------------------------------------------------------------------------------------------------
-        //	ASRSysWorkflows
-        //		-	ASRSysWorkflowLinks
-        //		-	ASRSysWorkflowElements
-        //			-	ASRSysWorkflowElementColumn
-        //			-	ASRSysWorkflowElementValidation
-        //				- ASRSysExpression
-        //					-	ASRSysExprComponent
-        //			-	ASRSysWorkflowElementItem
-        //				-	ASRSysWorkflowElementItemValue
+    //	Entity Hierarchy: --------------------------------------------------------------------------------------------------------------
+    //	ASRSysWorkflows
+    //		-	ASRSysWorkflowLinks
+    //		-	ASRSysWorkflowElements
+    //			-	ASRSysWorkflowElementColumn
+    //			-	ASRSysWorkflowElementValidation
+    //				- ASRSysExpression
+    //					-	ASRSysExprComponent
+    //			-	ASRSysWorkflowElementItem
+    //				-	ASRSysWorkflowElementItemValue
 
-        //=====================================================================================================================================
-        // Class Definitions
-        //=====================================================================================================================================
-
-
-		//=====================================================================================================================================
-		// Main
-		//=====================================================================================================================================
-
-		public static void Main(string[] args)
-		{
-			T2LClass t2l = new T2LClass();
-
-			using (npg_openhr8_2Entities db = new npg_openhr8_2Entities(""))
-			{
-
-				LogData("Loading all WF headers...",null);
-
-  			int WFCount = db.ASRSysWorkflows.ToList().Count();
-				LogData("{0} Records loaded.", WFCount);
-
-				foreach (ASRSysWorkflows WFRecord in db.ASRSysWorkflows)
-				{
-					LogData(string.Format("id: {0} \tname: {1}", WFRecord.id, WFRecord.name),null);
-				}
-				Console.Write("Please enter the WF id to copy: ");
-				int WFkey = Convert.ToInt32( Console.ReadLine() );
-
-				//XmlWriterSettings Settings = new XmlWriterSettings();
-				//Settings.OmitXmlDeclaration = false;
-				//Settings.NamespaceHandling = System.Xml.NamespaceHandling.OmitDuplicates;
-				//Settings.NewLineOnAttributes = true;
-				//XmlWriter WFWriter = XmlWriter.Create(File.CreateText("workflows.xml"),Settings);
-
-				if (WFkey > 0)  // Extract WF definitions
-				{
-					ExtractAll(t2l, db, WFkey);
-
-					//---------------------------------------------------------------------------------------------------------------------------------
-					// Write all
-
-					LogData("Saving allworkflow.xml...", null);
-					ConfirmSize(t2l);
-					DataContractSerializer AllWFSerializer = new DataContractSerializer(t2l.GetType());
-					XmlWriter WFWriter = XmlWriter.Create(File.CreateText(string.Format("allworkflow.xml")));
-					AllWFSerializer.WriteObject(WFWriter, t2l);
-					WFWriter.Flush();
-					WFWriter.Close();
-					LogData("Done", null);
-				}
-				else if (WFkey == 0) // Load WF definition
-				{
-					// Load the XML
-					LogData("Reading allworkflow.xml...", null);
-					DataContractSerializer AllWFSerializer = new DataContractSerializer(t2l.GetType());
-					XmlReader WFReader = XmlReader.Create("allworkflow.xml");
-					t2l = (T2LClass)AllWFSerializer.ReadObject(WFReader);
-					ConfirmSize(t2l);
-
-					// Get the max existing WF id
-					int MaxWFId = GetMaxWFId(db);
-					LogData("Max existing WF Id: {0}", MaxWFId);
-
-					// Get the imported WF id
-					int ImportedWFId = t2l.AllWorkflows.First().id;
-
-					//AllLinks = new List<ASRSysWorkflowLinks>();
-					//AllElements = new List<ASRSysWorkflowElement>();
-					//AllColumns = new List<ASRSysWorkflowElementColumn>();
-					//AllValidations = new List<ASRSysWorkflowElementValidation>();
-					//AllExpressions = new List<ASRSysExpression>();
-					//AllComponents = new List<ASRSysExprComponent>();
-					//AllItems = new List<ASRSysWorkflowElementItem>();
-					//AllValues = new List<ASRSysWorkflowElementItemValue>();
-
-					// If the imported ID clashes with the existing id range, fixup all imported id's
-					if (ImportedWFId <= MaxWFId)
-					{
-						MaxWFId = BumpWorkflowIDs(t2l, db, MaxWFId);
-					}
-
-					// Assign the data lists back to the EF structures
-					db.ASRSysWorkflows.Add(t2l.AllWorkflows.First());
-					db.ASRSysWorkflowLinks.AddRange(t2l.AllLinks);
-					db.ASRSysWorkflowElementValidations.AddRange(t2l.AllValidations);
-					db.ASRSysWorkflowElements.AddRange(t2l.AllElements);
-					db.ASRSysWorkflowElementItemValues.AddRange(t2l.AllValues);
-					db.ASRSysWorkflowElementItems.AddRange(t2l.AllItems);
-					db.ASRSysWorkflowElementColumns.AddRange(t2l.AllColumns);
-					db.ASRSysExpressions.AddRange(t2l.AllExpressions);
-					db.ASRSysExprComponents.AddRange(t2l.AllComponents);
-					// And save
-					db.SaveChanges();
-				}
-			}
-
-			Console.ReadLine();
-		}
-
-		//=====================================================================================================================================
-		// Utility
-		//=====================================================================================================================================
-
-		private static int BumpWorkflowIDs(T2LClass t2l, npg_openhr8_2Entities db, int MaxWFId)
-		{
-			// Update the descriptions
-			string WFDescription = t2l.AllWorkflows.First().description;
-			WFDescription = string.Concat("(T2L) ",WFDescription);
-			t2l.AllWorkflows.First().description = WFDescription;
-
-			// Bump the WorkflowID
-			MaxWFId++;
-			LogData("Bumping WF id's to {0}", MaxWFId);
-			t2l.AllWorkflows.First().id = MaxWFId;
-
-            foreach (ASRSysWorkflowElement item in t2l.AllElements) { item.WorkflowID = MaxWFId; }
-
-            // Bump the Workflow Link ID's
-            int MaxLinkID = db.ASRSysWorkflowLinks.Max(x => x.ID);
-            MaxLinkID++;
-            LogData("Bumping WF Link ID's to start at {0}", MaxLinkID);
-            foreach (ASRSysWorkflowLinks item in t2l.AllLinks)
-            {
-                item.WorkflowID = MaxWFId;
-                item.ID = MaxLinkID;
-                MaxLinkID++;
-            }
+    //=====================================================================================================================================
+    // Class Definitions
+    //=====================================================================================================================================
 
 
-            int MaxElementItemID = db.ASRSysWorkflowElementItems.Max(x => x.ID);
-            MaxElementItemID++;
-            LogData("Bumping WF Element Item ID's to start at {0}", MaxElementItemID);
-            foreach (ASRSysWorkflowElementItem child in t2l.AllItems)  // ID - Unique, ElementID - FK to WFElement.ID
-            {
-                // Bump the grandchildren
-                int CurrentItemID = child.ID;
-                child.ID = MaxElementItemID;
-                foreach (ASRSysWorkflowElementItemValue grandchild in t2l.AllValues) // ItemID - FK to WFElementItem.ID
-                {
-                    if (grandchild.itemID == CurrentItemID) { grandchild.itemID = MaxElementItemID; }
-                }
-                MaxElementItemID++;
-            }
+    //=====================================================================================================================================
+    // Main
+    //=====================================================================================================================================
 
-            int MaxElementColumnID = db.ASRSysWorkflowElementColumns.Max(x => x.ID);
-            MaxElementColumnID++;
-            LogData("Bumping WF Element Columns ID's to start at {0}", MaxElementColumnID);
-            foreach (ASRSysWorkflowElementColumn child in t2l.AllColumns)  // ID - Unique, ElementID - FK to WFElement.ID
-            {
-                child.ID = MaxElementColumnID;
-                MaxElementColumnID++;
-            }
+    public static void Main(string[] args)
+    {
+      T2LClass t2l = new T2LClass();
 
-            int MaxElementValidationID = db.ASRSysWorkflowElementValidations.Max(x => x.ID);
-            MaxElementValidationID++;
-            LogData("Bumping WF Element Validations ID's to start at {0}", MaxElementValidationID);
-            foreach (ASRSysWorkflowElementValidation child in t2l.AllValidations)  // ID - Unique, ElementID - FK to WFElement.ID
-            {
-                child.ID = MaxElementValidationID;
-                MaxElementValidationID++;
-            }
+      using (npg_openhr8_2Entities db = new npg_openhr8_2Entities(""))
+      {
 
-            // Bump the workflow element ID's
-            int MaxElementID = db.ASRSysWorkflowElements.Max(x => x.ID);
-            MaxElementID++;
+        LogData("Loading all WF headers...", null);
 
-            LogData("Bumping WF Element ID's to start at {0}", MaxElementID);
-            foreach (ASRSysWorkflowElement item in t2l.AllElements) 
-			{
-				// Deal with the child records first
-				int CurrentElementID = item.ID;
-				foreach (ASRSysWorkflowElementColumn child in t2l.AllColumns) { 
-					if (child.ElementID == CurrentElementID) { child.ElementID = MaxElementID; } 
-				}
-				foreach (ASRSysWorkflowElementValidation child in t2l.AllValidations)
-				{
-					if (child.ElementID == CurrentElementID) { child.ElementID = MaxElementID; }
-				}
-				foreach (ASRSysWorkflowElementItem child in t2l.AllItems)  // ID - Unique, ElementID - FK to WFElement.ID
-				{
-                    if (child.ElementID == CurrentElementID) { child.ElementID = MaxElementID; }
-				}
+        int WFCount = db.ASRSysWorkflows.ToList().Count();
+        LogData("{0} Records loaded.", WFCount);
 
-                foreach (ASRSysWorkflowLinks link in t2l.AllLinks)  // ID - Unique, ElementID - FK to WFElement.ID
-                {
-                    if (link.StartElementID == CurrentElementID) { link.StartElementID = MaxElementID; }
-                    if (link.EndElementID == CurrentElementID) { link.EndElementID = MaxElementID; }
-                }
+        foreach (ASRSysWorkflows WFRecord in db.ASRSysWorkflows)
+        {
+          LogData(string.Format("id: {0} \tname: {1}", WFRecord.id, WFRecord.name), null);
+        }
+        Console.Write("Please enter the WF id to copy: ");
+        int WFkey = Convert.ToInt32(Console.ReadLine());
 
-                // Bump the parent
-                item.ID = MaxElementID;
-				MaxElementID++;
-			}
-            // Bump the Expression Component ID's
-            int MaxExprComponentID = db.ASRSysExprComponents.Max(x => x.ComponentID);
-            MaxExprComponentID++;
-            LogData("Bumping WF Expression Component ID's to start at {0}", MaxExprComponentID);
-            foreach (ASRSysExprComponent item in t2l.AllComponents)
-            {
-                item.ComponentID = MaxExprComponentID;
-                MaxExprComponentID++;
-            }
+        //XmlWriterSettings Settings = new XmlWriterSettings();
+        //Settings.OmitXmlDeclaration = false;
+        //Settings.NamespaceHandling = System.Xml.NamespaceHandling.OmitDuplicates;
+        //Settings.NewLineOnAttributes = true;
+        //XmlWriter WFWriter = XmlWriter.Create(File.CreateText("workflows.xml"),Settings);
 
-            // Bump the Expression ID's
-            int MaxExprID = db.ASRSysExpressions.Max(x => x.ExprID);
-            MaxExprID++;
-            LogData("Bumping WF Expression ID's to start at {0}", MaxExprID);
-            foreach (ASRSysExpression item in t2l.AllExpressions)
-            {
-                int CurrentExprID = item.ExprID;
-                // Bump the PK
-                item.ExprID = MaxExprID;
-                item.UtilityID = MaxWFId;
-                // Bunp the FK's
-                foreach (ASRSysExprComponent child in t2l.AllComponents)
-                {
-                    if (child.ExprID == CurrentExprID) { child.ExprID = MaxExprID; }
-                }
-                foreach (ASRSysWorkflowElementValidation child in t2l.AllValidations)
-                {
-                    if (child.ExprID == CurrentExprID) { child.ExprID = MaxExprID; }
-                }
-                foreach (ASRSysWorkflowElementItem child in t2l.AllItems.Where(i => i.CalcID == CurrentExprID))
-                {
-                    child.CalcID = MaxExprID;
-                }
+        if (WFkey > 0)  // Extract WF definitions
+        {
+          ExtractAll(t2l, db, WFkey);
 
-                MaxExprID++;
-            }
+          //---------------------------------------------------------------------------------------------------------------------------------
+          // Write all
 
-            return MaxWFId;
-		}
+          LogData("Saving allworkflow.xml...", null);
+          ConfirmSize(t2l);
+          DataContractSerializer AllWFSerializer = new DataContractSerializer(t2l.GetType());
+          XmlWriter WFWriter = XmlWriter.Create(File.CreateText(string.Format("allworkflow.xml")));
+          AllWFSerializer.WriteObject(WFWriter, t2l);
+          WFWriter.Flush();
+          WFWriter.Close();
+          LogData("Done", null);
+        }
+        else if (WFkey == 0) // Load WF definition
+        {
+          // Load the XML
+          LogData("Reading allworkflow.xml...", null);
+          DataContractSerializer AllWFSerializer = new DataContractSerializer(t2l.GetType());
+          XmlReader WFReader = XmlReader.Create("allworkflow.xml");
+          t2l = (T2LClass)AllWFSerializer.ReadObject(WFReader);
+          ConfirmSize(t2l);
 
-		//-------------------------------------------------------------------------------------------------------------------------------------
+          // Get the max existing WF id
+          int MaxWFId = GetMaxWFId(db);
+          LogData("Max existing WF Id: {0}", MaxWFId);
 
-		private static int GetMaxWFId(npg_openhr8_2Entities db)
+          // Get the imported WF id
+          int ImportedWFId = t2l.AllWorkflows.First().id;
+
+          //AllLinks = new List<ASRSysWorkflowLinks>();
+          //AllElements = new List<ASRSysWorkflowElement>();
+          //AllColumns = new List<ASRSysWorkflowElementColumn>();
+          //AllValidations = new List<ASRSysWorkflowElementValidation>();
+          //AllExpressions = new List<ASRSysExpression>();
+          //AllComponents = new List<ASRSysExprComponent>();
+          //AllItems = new List<ASRSysWorkflowElementItem>();
+          //AllValues = new List<ASRSysWorkflowElementItemValue>();
+
+          // If the imported ID clashes with the existing id range, fixup all imported id's
+          if (ImportedWFId <= MaxWFId)
+          {
+            MaxWFId = BumpWorkflowIDs(t2l, db, MaxWFId);
+          }
+
+          // Assign the data lists back to the EF structures
+          db.ASRSysWorkflows.Add(t2l.AllWorkflows.First());
+          db.ASRSysWorkflowLinks.AddRange(t2l.AllLinks);
+          db.ASRSysWorkflowElementValidations.AddRange(t2l.AllValidations);
+          db.ASRSysWorkflowElements.AddRange(t2l.AllElements);
+          db.ASRSysWorkflowElementItemValues.AddRange(t2l.AllValues);
+          db.ASRSysWorkflowElementItems.AddRange(t2l.AllItems);
+          db.ASRSysWorkflowElementColumns.AddRange(t2l.AllColumns);
+          db.ASRSysExpressions.AddRange(t2l.AllExpressions);
+          db.ASRSysExprComponents.AddRange(t2l.AllComponents);
+          // And save
+          db.SaveChanges();
+        }
+      }
+
+      Console.ReadLine();
+    }
+
+    //=====================================================================================================================================
+    // Utility
+    //=====================================================================================================================================
+
+    private static int BumpWorkflowIDs(T2LClass t2l, npg_openhr8_2Entities db, int MaxWFId)
+    {
+      // Update the descriptions
+      string WFDescription = t2l.AllWorkflows.First().description;
+      WFDescription = string.Concat("(T2L) ", WFDescription);
+      t2l.AllWorkflows.First().description = WFDescription;
+
+      // Bump the WorkflowID
+      MaxWFId++;
+      LogData("Bumping WF id's to {0}", MaxWFId);
+      t2l.AllWorkflows.First().id = MaxWFId;
+
+      foreach (ASRSysWorkflowElement item in t2l.AllElements) { item.WorkflowID = MaxWFId; }
+
+      // Bump the Workflow Link ID's
+      int MaxLinkID = db.ASRSysWorkflowLinks.Max(x => x.ID);
+      MaxLinkID++;
+      LogData("Bumping WF Link ID's to start at {0}", MaxLinkID);
+      foreach (ASRSysWorkflowLinks item in t2l.AllLinks)
+      {
+        item.WorkflowID = MaxWFId;
+        item.ID = MaxLinkID;
+        MaxLinkID++;
+      }
+
+
+      int MaxElementItemID = db.ASRSysWorkflowElementItems.Max(x => x.ID);
+      MaxElementItemID++;
+      LogData("Bumping WF Element Item ID's to start at {0}", MaxElementItemID);
+      foreach (ASRSysWorkflowElementItem child in t2l.AllItems)  // ID - Unique, ElementID - FK to WFElement.ID
+      {
+        // Bump the grandchildren
+        int CurrentItemID = child.ID;
+        child.ID = MaxElementItemID;
+        foreach (ASRSysWorkflowElementItemValue grandchild in t2l.AllValues) // ItemID - FK to WFElementItem.ID
+        {
+          if (grandchild.itemID == CurrentItemID) { grandchild.itemID = MaxElementItemID; }
+        }
+        MaxElementItemID++;
+      }
+
+      int MaxElementColumnID = db.ASRSysWorkflowElementColumns.Max(x => x.ID);
+      MaxElementColumnID++;
+      LogData("Bumping WF Element Columns ID's to start at {0}", MaxElementColumnID);
+      foreach (ASRSysWorkflowElementColumn child in t2l.AllColumns)  // ID - Unique, ElementID - FK to WFElement.ID
+      {
+        child.ID = MaxElementColumnID;
+        MaxElementColumnID++;
+      }
+
+      int MaxElementValidationID = db.ASRSysWorkflowElementValidations.Max(x => x.ID);
+      MaxElementValidationID++;
+      LogData("Bumping WF Element Validations ID's to start at {0}", MaxElementValidationID);
+      foreach (ASRSysWorkflowElementValidation child in t2l.AllValidations)  // ID - Unique, ElementID - FK to WFElement.ID
+      {
+        child.ID = MaxElementValidationID;
+        MaxElementValidationID++;
+      }
+
+      // Bump the workflow element ID's
+      int MaxElementID = db.ASRSysWorkflowElements.Max(x => x.ID);
+      MaxElementID++;
+
+      LogData("Bumping WF Element ID's to start at {0}", MaxElementID);
+      foreach (ASRSysWorkflowElement item in t2l.AllElements)
+      {
+        // Deal with the child records first
+        int CurrentElementID = item.ID;
+        foreach (ASRSysWorkflowElementColumn child in t2l.AllColumns)
+        {
+          if (child.ElementID == CurrentElementID) { child.ElementID = MaxElementID; }
+        }
+        foreach (ASRSysWorkflowElementValidation child in t2l.AllValidations)
+        {
+          if (child.ElementID == CurrentElementID) { child.ElementID = MaxElementID; }
+        }
+        foreach (ASRSysWorkflowElementItem child in t2l.AllItems)  // ID - Unique, ElementID - FK to WFElement.ID
+        {
+          if (child.ElementID == CurrentElementID) { child.ElementID = MaxElementID; }
+        }
+
+        foreach (ASRSysWorkflowLinks link in t2l.AllLinks)  // ID - Unique, ElementID - FK to WFElement.ID
+        {
+          if (link.StartElementID == CurrentElementID) { link.StartElementID = MaxElementID; }
+          if (link.EndElementID == CurrentElementID) { link.EndElementID = MaxElementID; }
+        }
+
+        // Bump the parent
+        item.ID = MaxElementID;
+        MaxElementID++;
+      }
+      // Bump the Expression Component ID's
+      int MaxExprComponentID = db.ASRSysExprComponents.Max(x => x.ComponentID);
+      MaxExprComponentID++;
+      LogData("Bumping WF Expression Component ID's to start at {0}", MaxExprComponentID);
+      foreach (ASRSysExprComponent item in t2l.AllComponents)
+      {
+        var parents = t2l.AllExpressions
+          .Where(e => e.ParentComponentID == item.ComponentID).ToList();
+        parents.ForEach(e => e.ParentComponentID = MaxExprComponentID);
+
+        item.ComponentID = MaxExprComponentID;
+        MaxExprComponentID++;
+
+      }
+
+      // Bump the Expression ID's
+      int MaxExprID = db.ASRSysExpressions.Max(x => x.ExprID);
+      MaxExprID++;
+      LogData("Bumping WF Expression ID's to start at {0}", MaxExprID);
+      foreach (ASRSysExpression item in t2l.AllExpressions)
+      {
+        int CurrentExprID = item.ExprID;
+        // Bump the PK
+        item.ExprID = MaxExprID;
+        item.UtilityID = MaxWFId;
+        // Bunp the FK's
+        foreach (ASRSysExprComponent child in t2l.AllComponents)
+        {
+          if (child.ExprID == CurrentExprID) { child.ExprID = MaxExprID; }
+        }
+        foreach (ASRSysWorkflowElementValidation child in t2l.AllValidations)
+        {
+          if (child.ExprID == CurrentExprID) { child.ExprID = MaxExprID; }
+        }
+        foreach (ASRSysWorkflowElementItem child in t2l.AllItems.Where(i => i.CalcID == CurrentExprID))
+        {
+          child.CalcID = MaxExprID;
+        }
+
+        MaxExprID++;
+      }
+
+      return MaxWFId;
+    }
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+
+    private static int GetMaxWFId(npg_openhr8_2Entities db)
 		{
             int MaxId = db.ASRSysWorkflows.Max(x => x.id);
 			return MaxId;
@@ -494,7 +501,7 @@ namespace OpenHRTestToLive
 				ElementId = Element.ID;
 				LogData("Element ID: {0}", ElementId);
 				var GChildWFElementItem = db.ASRSysWorkflowElementItems.Where(x => x.ElementID == ElementId);
-				if (GChildWFElementItem.Count() > 0)
+				if (GChildWFElementItem.Any())
 				{
 					t2l.AllItems.AddRange(GChildWFElementItem);
 					LogData("{0} Element Item grandchild records found", GChildWFElementItem.Count());
@@ -516,7 +523,7 @@ namespace OpenHRTestToLive
 				ElementItemId = ElementItem.ID;
 				LogData("Element ID: {0}", ElementItemId);
 				var GChildWFElementItemValue = db.ASRSysWorkflowElementItemValues.Where(x => x.itemID == ElementItemId);
-				if (GChildWFElementItemValue.Count() > 0)
+				if (GChildWFElementItemValue.Any())
 				{
 					t2l.AllValues.AddRange(GChildWFElementItemValue);
 					LogData("{0} Element Item Value great-grandchild records found", GChildWFElementItemValue.Count());
@@ -532,7 +539,7 @@ namespace OpenHRTestToLive
 			//WFWriter.Close();
 
 			// Expression Records ---------------------------------------------------------------------------------------------
-			int ExpressionId = 0;
+			int? ExpressionId = 0;
 			// - WF Element (DescriptionExprID)
 			foreach (ASRSysWorkflowElement Element in t2l.AllElements)
 			{
@@ -541,7 +548,7 @@ namespace OpenHRTestToLive
 					ExpressionId = (int)Element.DescriptionExprID;
 					LogData("Expression ID: {0}", ExpressionId);
 					var WFExpression = db.ASRSysExpressions.Where(x => x.ExprID == ExpressionId);
-					if (WFExpression.Count() > 0)
+					if (WFExpression.Any())
 					{
 						t2l.AllExpressions.AddRange(WFExpression);
 						LogData("{0} Expression grandchild records found in WF Element (DescriptionExprID)", WFExpression.Count());
@@ -559,7 +566,7 @@ namespace OpenHRTestToLive
 					ExpressionId = (int)Element.TrueFlowExprID;
 					LogData("Expression ID: {0}", ExpressionId);
 					var WFExpression = db.ASRSysExpressions.Where(x => x.ExprID == ExpressionId);
-					if (WFExpression.Count() > 0)
+					if (WFExpression.Any())
 					{
 						t2l.AllExpressions.AddRange(WFExpression);
 						LogData("{0} Expression grandchild records found in WF Element (TrueFlowExprID)", WFExpression.Count());
@@ -577,7 +584,7 @@ namespace OpenHRTestToLive
 					ExpressionId = (int)Column.CalcID;
 					LogData("Expression ID: {0}", ExpressionId);
 					var WFExpression = db.ASRSysExpressions.Where(x => x.ExprID == ExpressionId);
-					if (WFExpression.Count() > 0)
+					if (WFExpression.Any())
 					{
 						t2l.AllExpressions.AddRange(WFExpression);
 						LogData("{0} Expression grandchild records found in WF Element Column", WFExpression.Count());
@@ -587,51 +594,47 @@ namespace OpenHRTestToLive
 						LogData("No Expression grandchild records found in WF Element Column", null);
 				}
 			}
-			// - WF Element Item (CalcID)
-			foreach (ASRSysWorkflowElementItem Item in t2l.AllItems)
-			{
-				if (Item.CalcID != null)
-				{
-					ExpressionId = (int)Item.CalcID;
-					LogData("Expression ID: {0}", ExpressionId);
-					var WFExpression = db.ASRSysExpressions.Where(x => x.ExprID == ExpressionId);
-					if (WFExpression.Count() > 0)
-					{
-						t2l.AllExpressions.AddRange(WFExpression);
-						LogData("{0} Expression grandchild records found in WF Element Item (CalcID)", WFExpression.Count());
-						LogData("Total: {0}", t2l.AllExpressions.Count());
-					}
-					else
-						LogData("No Expression grandchild records found in WF Element Item (CalcID)", null);
-				}
-			}
-			// - WF Element Item (RecordFilterID)
-			foreach (ASRSysWorkflowElementItem Item in t2l.AllItems)
-			{
-				if (Item.RecordFilterID != null)
-				{
-					ExpressionId = (int)Item.RecordFilterID;
-					LogData("Expression ID: {0}", ExpressionId);
-					var WFExpression = db.ASRSysExpressions.Where(x => x.ExprID == ExpressionId);
-					if (WFExpression.Count() > 0)
-					{
-						t2l.AllExpressions.AddRange(WFExpression);
-						LogData("{0} Expression grandchild records found in WF Element Item (RecordFilterID)", WFExpression.Count());
-						LogData("Total: {0}", t2l.AllExpressions.Count());
-					}
-					else
-						LogData("No Expression grandchild records found in WF Element Item (RecordFilterID)", null);
-				}
-			}
-			// - WF Element Validation
-			foreach (ASRSysWorkflowElementValidation Validation in t2l.AllValidations)
+
+      foreach (var id in t2l.AllItems
+        .Where(i => i.CalcID != null && i.CalcID > 0)
+        .Distinct()
+        .Select(Item => Item.CalcID))
+      {
+        LogData("Expression ID: {0}", ExpressionId);
+
+        if (!t2l.AllExpressions.Exists(e => e.ExprID == id))
+        {
+          var WFExpression = db.ASRSysExpressions.First(x => x.ExprID == id);
+          t2l.AllExpressions.Add(WFExpression);
+        }
+      }
+
+
+      // - WF Element Item (RecordFilterID)
+      foreach (var id in t2l.AllItems
+        .Where(i => i.RecordFilterID != null && i.RecordFilterID > 0)
+        .Distinct()
+        .Select(Item => Item.RecordFilterID))
+      {
+        LogData("Expression ID: {0}", ExpressionId);
+
+        if (!t2l.AllExpressions.Exists(e => e.ExprID == id))
+        {
+          var WFExpression = db.ASRSysExpressions.First(x => x.ExprID == id);
+          t2l.AllExpressions.Add(WFExpression);
+          LogData("Expression grandchild records found in WF Element Item (RecordFilterID)", null);
+        }
+      }
+
+      // - WF Element Validation
+      foreach (ASRSysWorkflowElementValidation Validation in t2l.AllValidations)
 			{
 				if (Validation.ExprID != null)
 				{
 					ExpressionId = Validation.ExprID;
 					LogData("ExprID: {0}", ExpressionId);
 					var WFExpression = db.ASRSysExpressions.Where(x => x.ExprID == ExpressionId);
-					if (WFExpression.Count() > 0)
+					if (WFExpression.Any())
 					{
 						t2l.AllExpressions.AddRange(WFExpression);
 						LogData("{0} Expression grandchild records found in WF Element Validation", WFExpression.Count());
@@ -643,7 +646,6 @@ namespace OpenHRTestToLive
 			}
 
 			// Expression Components
-			List<ASRSysExprComponent> AllExpressionComponents = new List<ASRSysExprComponent>();
 			FindExpressionComponents(db, t2l.AllExpressions, t2l.AllComponents);
 
 			// Recursive Expressions
@@ -695,70 +697,75 @@ namespace OpenHRTestToLive
 		/// <param name="Expressions"></param>
 		private static void FindRecursiveExpressions(npg_openhr8_2Entities db, List<ASRSysExprComponent> ExpressionComponents, List<ASRSysExpression> Expressions)
 		{
-			int ExpressionId = 0;
-			foreach (ASRSysExprComponent ExprComponent in ExpressionComponents)
+			foreach (var ExprComponent in ExpressionComponents)
 			{
-				ExpressionId = 0;
+				int expressionId = 0;
 
 				// Expressions can be referenced from 3 fields
 				if (ExprComponent.CalculationID != null)
 				{
-					ExpressionId = (int)ExprComponent.CalculationID;
-					Console.WriteLine("Calculation ID: {0}", ExpressionId);
+          expressionId = (int)ExprComponent.CalculationID;
+					Console.WriteLine("Calculation ID: {0}", expressionId);
 				}
 				if (ExprComponent.FieldSelectionFilter != null)
 				{
-					ExpressionId = (int)ExprComponent.FieldSelectionFilter;
-					Console.WriteLine("FieldSelectionFilter: {0}", ExpressionId);
+          expressionId = (int)ExprComponent.FieldSelectionFilter;
+					Console.WriteLine("FieldSelectionFilter: {0}", expressionId);
 				}
 				if (ExprComponent.FilterID != null)
 				{
-					ExpressionId = (int)ExprComponent.FilterID;
-					Console.WriteLine("FilterID: {0}", ExpressionId);
+          expressionId = (int)ExprComponent.FilterID;
+					Console.WriteLine("FilterID: {0}", expressionId);
 				}
-				// Any non-zero, non-null value indicates an expression reference
-				if (ExpressionId > 0)
-				{
-					var WFExpression = db.ASRSysExpressions.Where(x => x.ExprID == ExpressionId);
-					if (WFExpression.Count() > 0)
-					{
-						Expressions.AddRange(WFExpression);
-						Console.WriteLine("{0} Recursive Expression records found ", WFExpression.Count());
-						Console.WriteLine("Total: {0}", Expressions.Count());
-					}
-				}
-			}
-		}
 
-		//-------------------------------------------------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Find all expression components referenced by a list of expressions.
-		/// Return the results as a list.
-		/// </summary>
-		/// <param name="db"></param>
-		/// <param name="Expressions"></param>
-		/// <param name="ExpressionComponents"></param>
-		private static void FindExpressionComponents(npg_openhr8_2Entities db, List<ASRSysExpression> Expressions, List<ASRSysExprComponent> ExpressionComponents)
-		{
-			int ExpressionId = 0;
-			foreach (ASRSysExpression Expression in Expressions)
-			{
-				ExpressionId = Expression.ExprID;
-				Console.WriteLine("Expression ID: {0}", ExpressionId);
-				var WFExpressionComponents = db.ASRSysExprComponents.Where(x => x.ExprID == ExpressionId);
-				if (WFExpressionComponents.Count() > 0)
-				{
-					ExpressionComponents.AddRange(WFExpressionComponents);
-					Console.WriteLine("{0} Expression Component grandchild records found in Expr Component", WFExpressionComponents.Count());
-					Console.WriteLine("Total: {0}", ExpressionComponents.Count());
-				}
-			}
-		}
-
-        private bool ValidateXML(string inputData)
+        if (ExprComponent.FunctionID > 0)
         {
-            return true;
+          //var component = ExprComponent;
+          var parents = db.ASRSysExpressions
+            .Where(x => x.ParentComponentID == ExprComponent.ComponentID);
+
+          Expressions.AddUniqueBy((s, i) => s.ExprID == i.ExprID, parents);
+          Console.WriteLine("Function: {0}, FilterID: {1}", ExprComponent.FunctionID, expressionId);
         }
 
+        // Any non-zero, non-null value indicates an expression reference
+        if (expressionId > 0 && !Expressions.Exists(e => e.ExprID == expressionId))
+			  {
+			    var WFExpression = db.ASRSysExpressions.Where(x => x.ExprID == expressionId);
+			    if (WFExpression.Any())
+			    {
+            Expressions.AddRange(WFExpression);
+			      Console.WriteLine("{0} Recursive Expression records found ", WFExpression.Count());
+			      Console.WriteLine("Total: {0}", Expressions.Count());
+			    }
+			  }
+			}
     }
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    /// <summary>
+    /// Find all expression components referenced by a list of expressions.
+    /// Return the results as a list.
+    /// </summary>
+    /// <param name="db"></param>
+    /// <param name="Expressions"></param>
+    /// <param name="ExpressionComponents"></param>
+    private static void FindExpressionComponents(npg_openhr8_2Entities db, List<ASRSysExpression> Expressions, List<ASRSysExprComponent> ExpressionComponents)
+    {
+      int ExpressionId = 0;
+      foreach (ASRSysExpression Expression in Expressions)
+      {
+        ExpressionId = Expression.ExprID;
+        Console.WriteLine("Expression ID: {0}", ExpressionId);
+        var WFExpressionComponents = db.ASRSysExprComponents.Where(x => x.ExprID == ExpressionId);
+        if (WFExpressionComponents.Any())
+        {
+          ExpressionComponents.AddRange(WFExpressionComponents);
+          Console.WriteLine("{0} Expression Component grandchild records found in Expr Component", WFExpressionComponents.Count());
+          Console.WriteLine("Total: {0}", ExpressionComponents.Count());
+        }
+      }
+    }
+
+  }
 }

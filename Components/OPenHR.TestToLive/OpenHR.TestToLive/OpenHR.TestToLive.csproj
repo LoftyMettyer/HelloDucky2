@@ -93,6 +93,7 @@
     </Compile>
     <Compile Include="Classes\T2LClass.cs" />
     <Compile Include="Enums\RepositoryStatus.cs" />
+    <Compile Include="Extensions\CollectionExtension.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Model1.Context.cs">
       <AutoGen>True</AutoGen>
