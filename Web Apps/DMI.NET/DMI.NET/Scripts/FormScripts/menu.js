@@ -173,16 +173,14 @@ function menu_abMainMenu_DataReady() {
 	});
 
 	$("#menuSearch").autocomplete({
-		source: function(request, response) {
-			var results = $.ui.autocomplete.filter(availableTags, request.term);
-			response(results.slice(0, 20));	//show first 20 items maximum
+		source: function (request, response) {
+			GetAccordianSearchResult(request, response, availableTags);
 		},
-		select: function(event, ui) {
-			menu_abMainMenu_Click(ui.item.targetvalue); 
-			this.value = "";	//reset search value
+		select: function (event, ui) {
+			SelectAccordianSearchResultItem(event, ui);
 			return false;
 		},
-		position: { my: "left bottom", at: "left top", collision: "flip" }	//open upwards
+		position: { my: "left bottom", at: "left top", collision: "flip" } //open upwards
 	});
 }
 
@@ -800,25 +798,25 @@ function menu_MenuClick(sTool) {
 
 		// Crosstab Reports
 		if (sToolName == "mnutoolCrossTabs") {
-			saveChangesPrompt("CROSSTABS", 'menu_loadDefSelPage(1, 0, 0, true)');
+			saveChangesPrompt("CROSSTABS", 'menu_loadDefSelPage(1, 0, 0, true, true)');
 			return false;
 		}
 
 	// Nine box grid Reports
 		if (sToolName == "mnutoolNineBox") {
-			saveChangesPrompt("NINEBOXGRID", 'menu_loadDefSelPage(35, 0, 0, true)');
+			saveChangesPrompt("NINEBOXGRID", 'menu_loadDefSelPage(35, 0, 0, true, true)');
 			return false;
 		}
 
 		// Custom Reports
 		if (sToolName == "mnutoolCustomReports") {
-			saveChangesPrompt("CUSTOMREPORTS", 'menu_loadDefSelPage(2, 0, 0, true)');
+			saveChangesPrompt("CUSTOMREPORTS", 'menu_loadDefSelPage(2, 0, 0, true, true)');
 			return false;
 		}
 		
 		// Calendar Reports
 		if (sToolName == "mnutoolCalendarReports") {
-			saveChangesPrompt("CALENDAR", 'menu_loadDefSelPage(17, 0, 0, true)');
+			saveChangesPrompt("CALENDAR", 'menu_loadDefSelPage(17, 0, 0, true, true)');
 			return false;
 		}
 		
@@ -838,7 +836,7 @@ function menu_MenuClick(sTool) {
 		// Utilities Menu -------------------------------------------------------------------------------------------------------------------
 
 		if (sToolName == "mnutoolMailMerge") {
-			saveChangesPrompt("MAILMERGE", 'menu_loadDefSelPage(9, 0, 0, true)');
+			saveChangesPrompt("MAILMERGE", 'menu_loadDefSelPage(9, 0, 0, true, true)');
 			return false;
 		}
 
@@ -856,17 +854,17 @@ function menu_MenuClick(sTool) {
 		// Utilities Menu -------------------------------------------------------------------------------------------------------------------
 		
 		if (sToolName == "mnutoolCalculations") {
-			saveChangesPrompt("CALCULATIONS", 'menu_loadDefSelPage(12, 0, 0, true)');
+			saveChangesPrompt("CALCULATIONS", 'menu_loadDefSelPage(12, 0, 0, true, true)');
 			return false;
 		}
 
 		if (sToolName == "mnutoolFilters") {
-			saveChangesPrompt("FILTERS", 'menu_loadDefSelPage(11, 0, 0, true)');
+			saveChangesPrompt("FILTERS", 'menu_loadDefSelPage(11, 0, 0, true, true)');
 			return false;
 		}
 
 		if (sToolName == "mnutoolPicklists") {
-			saveChangesPrompt("PICKLISTS", 'menu_loadDefSelPage(10, 0, 0, true)');
+			saveChangesPrompt("PICKLISTS", 'menu_loadDefSelPage(10, 0, 0, true, true)');
 			return false;
 		}
 
@@ -2590,6 +2588,25 @@ function menu_loadPage(psPage) {
 			utiltype: piDefSelType,
 			utilID: piUtilID,
 			txtGotoFromMenu: pfFromMenu,
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		};
+
+		OpenHR.submitForm(null, displayDiv, null, postData, "DefSel");
+		showDefaultRibbon();
+
+	}
+
+	function menu_loadDefSelPage(piDefSelType, piUtilID, piTableID, pfFromMenu, bResetSession) {
+
+		// Load the required definition selection screen
+		var displayDiv = (pfFromMenu === true ? "workframe" : "optionframe");
+
+		var postData = {
+			txtTableID: piTableID,
+			utiltype: piDefSelType,
+			utilID: piUtilID,
+			txtGotoFromMenu: pfFromMenu,
+			resetCategoryAndOwner: bResetSession,
 			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
 
@@ -4962,6 +4979,7 @@ function LoadToolsScreenInToolsFrame(utilityType) {
 		utiltype: utilityType,
 		utilID: 0,
 		txtGotoFromMenu: true,
+		resetCategoryAndOwner: true,
 		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 	};
 
@@ -4983,7 +5001,7 @@ function SetOptionFrameToEmpty() {
 	}
 }
 
-// Hide Tools (Piclist/Filter/Calculation) ribbon buttons. 
+// Hide Tools (Picklist/Filter/Calculation) ribbon buttons. 
 function HideToolsRibbonButtons() {
 	menu_setVisibleMenuItem("mnutoolFilterReport", false);
 	menu_setVisibleMenuItem("mnutoolPicklistReport", false);
@@ -5174,3 +5192,89 @@ function LoadReportOrUtilityScreen(utilityType) {
 }
 
 /******* End Changes for the user story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
+
+/******* Begin Changes for the User Story 19519:As a user, I want to be able to assign categories to Reports and Utilities  *********/
+
+function GetCurrentAccordianMenuItem() {
+	var control = $(".searchBoxActiveIcon").each(function () {
+		return this;
+	});
+
+	var controlId = 'MenuItemSearch';
+	if (typeof (control) != typeof (undefined)) {
+		controlId = control[0].id;
+	}
+	return controlId;
+}
+
+// Gets the search result for accordian menu OR for reprorts.
+function GetAccordianSearchResult(request, response, availableTags) {
+
+	// Set the scroll size for the search result output
+	$("ul.ui-autocomplete.ui-widget-content").addClass("searchResultScrollbarHeight");
+
+	if (GetCurrentAccordianMenuItem() == "ReportsAndMailMergeSearch") {
+
+		var result = [];
+		var postData = {
+			SearchText: request.term,
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		}
+
+		OpenHR.postData("GetDefinitionSearchResult", postData, function (output) {
+			$.each(output.rows, function (index, item) {
+				result.push({ label: item.TextToDisplay, targetvalue: item });
+			});
+			response(result);
+
+			//Set class to show normal font to the search result. If we dont do it, it would fire ui-menu-state class on focus and set the focused item in BOLD font.
+			$("ul.ui-autocomplete > li.ui-menu-item").addClass("searchResultNormalFont");
+
+		});
+	} else {
+
+		var results = $.ui.autocomplete.filter(availableTags, request.term);
+		response(results); //show all items. //response(results.slice(0, 20));	//show first 20 items maximum
+
+		//Set class to show normal font to the search result. If we dont do it, it would fire ui-menu-state class on focus and set the focused item in BOLD font.
+		$("ul.ui-autocomplete > li.ui-menu-item").addClass("searchResultNormalFont");
+	}
+}
+
+// On selection of search result itme, Either open the menu item OR run the report or mail merge.
+function SelectAccordianSearchResultItem(event, ui) {
+	if (GetCurrentAccordianMenuItem() == "ReportsAndMailMergeSearch") {
+		Run(ui.item.targetvalue);
+	} else {
+		menu_abMainMenu_Click(ui.item.targetvalue);
+	}
+
+	//reset search value
+	this.value = "";
+}
+
+// Run the report or mail merge
+function Run(sTool) {
+
+	if (!sTool) return false;
+
+	// CrossTab 1, Custom Report 2, Calendar 17, 9-box grid 35, Mail merge
+	var reports = [1, 2, 17, 35, 9];
+	var reportORutilityType = sTool.ReportType;
+
+	if (jQuery.inArray(reportORutilityType, reports) != -1) {
+
+		var postData = {
+			UtilType: sTool.ReportType,
+			ID: sTool.Id,
+			Name: sTool.Name,
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		}
+
+		OpenHR.submitForm(null, "reportframe", true, postData, "util_run_promptedValues");
+	}
+
+	return false;
+}
+
+/******* End Changes for the User Story 19519:As a user, I want to be able to assign categories to Reports and Utilities *********/

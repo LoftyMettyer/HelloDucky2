@@ -1,7 +1,9 @@
 CREATE PROCEDURE [dbo].[sp_ASRIntPopulateDefsel] (
 	@intType int, 
 	@blnOnlyMine bit,
-	@intTableID	integer
+	@intTableID	integer,
+	@intCategoryID integer = -1,
+	@strOwner varchar(255) = ''
 )
 AS
 BEGIN
@@ -22,7 +24,8 @@ BEGIN
 		@fSysSecMgr			bit,
 		@fDoneWhere			bit,
 		@sActualUserName	varchar(250),
-		@iActualUserGroupID	integer
+		@iActualUserGroupID	integer,
+		@sObjectCategoryTableName	varchar(255)
 
 	SET @fNewAccess = 0;
 	SET @sExtraWhereSQL = '';
@@ -36,7 +39,7 @@ BEGIN
 		FROM [dbo].[ASRSysTables]
 		ORDER BY tableName;
 	END
-
+	
 	IF @intType = 1 /*'crosstabs'*/
 	BEGIN
 		SET @strTableName = 'ASRSysCrossTab';
@@ -57,7 +60,7 @@ BEGIN
 			SET @sExtraWhereSQL = 'ASRSysCustomReportsName.BaseTable = ' + convert(varchar(255), @intTableID);
 		END
 	END
-
+	
 	IF @intType = 3 /*'datatransfer'*/
 	BEGIN
 		SET @strTableName = 'ASRSysDataTransferName';
@@ -142,7 +145,7 @@ BEGIN
 		
 	IF len(@strExplicitSQL) > 0 
 	BEGIN
-		SET @strSQL = @strExplicitSQL;
+		SET @strSQL = @strExplicitSQL;		
 	END
 	ELSE
 	BEGIN
@@ -166,13 +169,13 @@ BEGIN
 			END;
 			
 		IF @fNewAccess = 1
-		BEGIN
+		BEGIN			
 			SET @strSQL = 'SELECT ' + @strTableName + '.Name, ' +
 				'replace(' + @strTableName + '.Description, char(9), '''') AS [description], ' +
 				'lower(' + @strTableName + '.Username) as [Username], ';
-				
+												 
 			IF (@fSysSecMgr = 0)  
-			BEGIN
+			BEGIN			
 				SET @strSQL = @strSQL +
 					'CASE WHEN Username = SYSTEM_USER THEN ''rw'' ELSE LOWER(' + @sAccessTableName + '.Access) END AS [Access], ';
 
@@ -182,13 +185,16 @@ BEGIN
 				SET @strSQL = @strSQL +
 					'''rw'' as [Access], ';
 			END
-								
+			
+			SET @sObjectCategoryTableName = 'tbsys_objectcategories';
 			SET @strSQL = @strSQL +
-				@strTableName + '.' + @strIDName + '  AS [ID] 
+				@strTableName + '.' + @strIDName + '  AS [ID] ,' +
+				'CASE ISNULL(' + @sObjectCategoryTableName + '.categoryid,0) WHEN 0 THEN 0 ELSE ' + @sObjectCategoryTableName + '.categoryid END AS [Categoryid]   
 				FROM ' + @strTableName + 
+				' LEFT JOIN '+ @sObjectCategoryTableName +' ON ' + @sObjectCategoryTableName + '.objectid = ' + @strTableName + '.' + @strIDName +  ' AND ' + @sObjectCategoryTableName + '.objecttype = ' + convert(varchar(255), @intType) +
 				' INNER JOIN ' + @sAccessTableName + ' ON ' + @strTableName + '.' + @strIDName +  ' = ' + @sAccessTableName + '.ID
-				AND ' + @sAccessTableName + '.groupname = ''' + @sRoleName + '''';
-
+				AND ' + @sAccessTableName + '.groupname = ''' + @sRoleName + '''';				
+				
 			IF (@fSysSecMgr = 0)  
 			BEGIN
 				SET @strSQL = @strSQL +
@@ -236,8 +242,41 @@ BEGIN
 
 				SET @strSQL = @strSQL  + ' (' + @sExtraWhereSQL + ')';
 			END
+
+			IF (@intCategoryID) > -1 
+			BEGIN
+			  
+				IF @fDoneWhere = 0
+				BEGIN
+					SET @strSQL = @strSQL  + ' WHERE';
+					SET @fDoneWhere = 1;				
+					
+				END
+				ELSE
+				BEGIN
+					SET @strSQL = @strSQL  + ' AND';
+				END
+				
+				SET @strSQL = @strSQL  + ' (ISNULL(' + @sObjectCategoryTableName + '.categoryid,0) = ' + convert(varchar(255), @intCategoryID) +')';
+			END
 			
-			SET @strSQL = @strSQL + ' ORDER BY ' + @strTableName + '.Name';
+			IF LEN(@strOwner) > 0 AND @strOwner <> 'All' 
+			BEGIN
+			  
+				IF @fDoneWhere = 0
+				BEGIN
+					SET @strSQL = @strSQL  + ' WHERE';
+					SET @fDoneWhere = 1;
+				END
+				ELSE
+				BEGIN
+					SET @strSQL = @strSQL  + ' AND';					
+				END				
+				SET @strSQL = @strSQL  + ' lower(' + @strTableName + '.Username) = lower(''' + @strOwner + ''' ) ' 			
+				
+			END
+
+			SET @strSQL = @strSQL + ' ORDER BY ' + @strTableName + '.Name';			
 		END
 		ELSE
 		BEGIN
@@ -303,11 +342,26 @@ BEGIN
 				SET @strSQL = @strSQL  + ' (' + @sExtraWhereSQL + ')';
 			END
 
-			SET @strSQL = @strSQL + ' ORDER BY Name';
+			IF LEN(@strOwner) > 0 AND @strOwner <> 'All' 
+			BEGIN
+			  
+				IF @fDoneWhere = 0
+				BEGIN
+					SET @strSQL = @strSQL  + ' WHERE';
+					SET @fDoneWhere = 1;
+				END
+				ELSE
+				BEGIN
+					SET @strSQL = @strSQL  + ' AND';					
+				END				
+				SET @strSQL = @strSQL  + ' lower(' + @strTableName + '.Username) = lower(''' + @strOwner + ''' ) ' 				
+			END
+
+			SET @strSQL = @strSQL + ' ORDER BY Name';			
 		END
 	END
 	
-	-- Return the resultset.
+	-- Return the resultset.	
 	EXECUTE sp_executeSQL @strSQL;
 	
 END

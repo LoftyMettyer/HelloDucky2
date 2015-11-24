@@ -828,3 +828,32 @@ select.readonly {
 	float: right;
 	margin: 10px 5px 5px 0;
 }
+
+.searchBoxIcons {
+		float: right;
+		padding: 2px;
+	}
+
+.searchBoxActiveIcon {
+	padding: 1px;
+	border: 1px solid #FFD42A;
+	background-color: rgba(254, 171, 71, 1);
+	text-decoration: none;
+	-ms-box-shadow: 0 0 7px #fff;
+	-moz-box-shadow: 0 0 7px #fff;
+	-webkit-box-shadow: 0 0 7px #fff;
+	box-shadow: 0 0 7px #fff;
+}
+
+	/* Set the vertical scrollbar for the result to display in accordian menu search */
+.searchResultScrollbarHeight {
+	max-height: 300px;
+	overflow-y: auto;
+	padding-right: 5px;
+	/* prevent horizontal scrollbar */
+	overflow-x: hidden;
+}
+
+.searchResultNormalFont {
+	font-weight: normal !important;
+}

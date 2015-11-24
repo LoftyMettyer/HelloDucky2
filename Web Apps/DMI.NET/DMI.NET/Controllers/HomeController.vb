@@ -1099,7 +1099,12 @@ Namespace Controllers
 			Session("singleRecordID") = value.RecordID
 			Session("multipleRecordIDs") = value.MultipleRecordIDs
 
-			If value.txtGotoFromMenu Then
+			If (value.ResetCategoryAndOwner) Then
+				Session("defsel_categoryId_" & value.utiltype) = -1
+				Session("defsel_ownerName_" & value.utiltype) = ""
+			End If
+
+			If (value.txtGotoFromMenu) Or ((Not Session("multipleRecordIDs") Is Nothing AndAlso Session("multipleRecordIDs").ToString().Length > 0) Or (Not Session("singleRecordID") Is Nothing AndAlso Session("singleRecordID") > 0)) Then
 				Session("OnlyMine") = CBool(objSession.GetUserSetting("defsel", "onlymine " + value.utiltype.ToSecurityPrefix, False))
 			Else
 				Session("OnlyMine") = value.OnlyMine
@@ -1133,6 +1138,10 @@ Namespace Controllers
 				Session("utilname") = value.utilName
 				Session("action") = value.Action
 				Session("utilTableID") = value.txtTableID
+
+				' Reset ownername and categoryid sessions
+				Session("defsel_categoryId_" & value.utiltype) = value.CategoryId
+				Session("defsel_ownerName_" & value.utiltype) = value.OwnerName
 
 				' Now examine what we are doing and redirect as appropriate
 				If (Session("action") = "new") Or _
@@ -5348,7 +5357,7 @@ Namespace Controllers
 		End Function
 
 		<HttpGet()>
-		Function GetDefinitionsForType(UtilityType As Integer, TableID As Integer, OnlyMine As Boolean) As JsonResult
+		Function GetDefinitionsForType(UtilType As Integer, TableID As Integer, OnlyMine As Boolean, CategoryID As Integer, OwnerName As String) As JsonResult
 
 			Dim rstDefSelRecords As DataTable
 
@@ -5359,7 +5368,7 @@ Namespace Controllers
 
 				Dim prmType = New SqlParameter("intType", SqlDbType.Int)
 				prmType.Direction = ParameterDirection.Input
-				prmType.Value = UtilityType
+				prmType.Value = UtilType
 
 				Dim prmOnlyMine = New SqlParameter("blnOnlyMine", SqlDbType.Bit)
 				prmOnlyMine.Direction = ParameterDirection.Input
@@ -5374,7 +5383,37 @@ Namespace Controllers
 					prmTableId.Value = CleanNumeric(Request.Form("SelectedTableID"))
 				End If
 
-				rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure, prmType, prmOnlyMine, prmTableId)
+				Dim prmCategoryID = New SqlParameter("@intCategoryID", SqlDbType.Int)
+				prmCategoryID.Direction = ParameterDirection.Input
+				prmCategoryID.Value = CategoryID
+
+				Dim prmOwner = New SqlParameter("@strOwner", SqlDbType.VarChar, 255)
+				prmOwner.Direction = ParameterDirection.Input
+				If OwnerName.IndexOf("'") > 0 Then
+					prmOwner.Value = Replace(OwnerName, "'", "''")
+				Else
+					prmOwner.Value = OwnerName
+				End If
+
+				Dim userName = Session("Username")
+				Dim isLoggedinUser = Session("OnlyMine")
+				If isLoggedinUser = True AndAlso userName = OwnerName Then
+					If userName.IndexOf("'") > 0 Then
+						prmOwner.Value = Replace(userName, "'", "''")
+					Else
+						prmOwner.Value = userName
+					End If
+					Session("defsel_ownerName_" & UtilType) = userName
+				Else
+					Session("defsel_ownerName_" & UtilType) = OwnerName
+				End If
+
+
+				If UtilType = UtilityType.utlCustomReport Or UtilType = UtilityType.utlCrossTab Or UtilType = UtilityType.utlCalendarReport Or UtilType = UtilityType.utlMailMerge Or UtilType = UtilityType.utlNineBoxGrid Then
+					Session("CategoryID") = CategoryID
+				End If
+
+				rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefsel", CommandType.StoredProcedure, prmType, prmOnlyMine, prmTableId, prmCategoryID, prmOwner)
 
 				Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
 				Dim rows As New List(Of Dictionary(Of String, Object))()
@@ -5517,6 +5556,73 @@ Namespace Controllers
 			End If
 			Session("IsLoadedFromReportDefinition") = isLoadedFromReportDefinition
 		End Sub
+
+		' Gets report & utilities which matches the search criteria
+		<ValidateAntiForgeryToken()>
+		<HttpPost>
+		Public Function GetDefinitionSearchResult(value As DefinitionSearchResultModel) As JsonResult
+
+			Dim sErrorMessage As String = ""
+			Dim outputList As New List(Of DefinitionSearchResultModel)
+
+			Try
+
+				Dim searchResultRow As DefinitionSearchResultModel
+				Dim objSessionInfo = CType(Session("SessionContext"), SessionInfo)
+				Dim objDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
+				Dim outputResult = objDataAccess.GetDataSet("sp_ASRGetReportsAndUtilitiesSearchResult" _
+						, New SqlParameter("@searchText", SqlDbType.VarChar, 255) With {.Value = value.SearchText}).Tables(0)
+
+				' Gets RUN permission for the logged in user
+				Dim isMailMeargeRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlMailMerge.ToSecurityPrefix, "RUN").ToString.ToLower
+				Dim isCustomReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCustomReport.ToSecurityPrefix, "RUN").ToString.ToLower
+				Dim isCalenderReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCalendarReport.ToSecurityPrefix, "RUN").ToString.ToLower
+				Dim isCrossTabReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCrossTab.ToSecurityPrefix, "RUN").ToString.ToLower
+				Dim isNineBoxGridRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlNineBoxGrid.ToSecurityPrefix, "RUN").ToString.ToLower
+
+				Dim isRunAllowed As Boolean = False
+				Dim reportType As UtilityType
+
+				For Each datarow As DataRow In outputResult.Rows
+
+					isRunAllowed = False
+					reportType = datarow("objectType")
+
+					Select Case reportType
+						Case UtilityType.utlMailMerge
+							isRunAllowed = isMailMeargeRunPermitted
+						Case UtilityType.utlCustomReport
+							isRunAllowed = isCustomReportRunPermitted
+						Case UtilityType.utlCalendarReport
+							isRunAllowed = isCalenderReportRunPermitted
+						Case UtilityType.utlCrossTab
+							isRunAllowed = isCrossTabReportRunPermitted
+						Case UtilityType.utlNineBoxGrid
+							isRunAllowed = isNineBoxGridRunPermitted
+					End Select
+
+					' If edit/view allowed for the MailMerge and RUN allowed for the customreport, calendarreport, crosstab and ninebox grid then 
+					'	only show those definition in the accordian menu search output
+					If (isRunAllowed) Then
+						searchResultRow = New DefinitionSearchResultModel
+						searchResultRow.ReportType = datarow("objectType")
+						searchResultRow.Id = datarow("ID")
+						searchResultRow.Name = datarow("Name")
+						searchResultRow.TextToDisplay = datarow("TextToDisplay")
+						outputList.Add(searchResultRow)
+					End If
+
+				Next
+
+			Catch ex As Exception
+				sErrorMessage = "Unable to get search result."
+			End Try
+
+			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = outputList, .error = sErrorMessage}
+			Return Json(results, JsonRequestBehavior.AllowGet)
+
+		End Function
 
 	End Class
 

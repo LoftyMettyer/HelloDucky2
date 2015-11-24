@@ -28,5 +28,9 @@ Namespace Models.ObjectRequests
 
 		Public Property MultipleRecordIDs As String
 
+		Public Property CategoryId As Integer = -1
+		Public Property OwnerName As String = String.Empty
+		Public Property ResetCategoryAndOwner As Boolean
+
 	End Class
 End Namespace

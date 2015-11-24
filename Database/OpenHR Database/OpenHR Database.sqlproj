@@ -648,6 +648,10 @@
     <Build Include="Stored Procedures\Auto Generated\spASRGenerateSelfServiceLogins.sql" />
     <Build Include="Types\SelfServiceType.sql" />
     <Build Include="Stored Procedures\Auto Generated\spASRDeleteExpiredSelfServiceLogins.sql" />
+    <Build Include="Views\ASRSysAllObjectAccessForOpenHRWeb.sql" />
+    <Build Include="Views\ASRSysAllObjectNamesForOpenHRWeb.sql" />
+    <Build Include="Stored Procedures\Web\sp_ASRGetAllObjectNames.sql" />
+    <Build Include="Stored Procedures\Web\sp_ASRGetReportsAndUtilitiesSearchResult.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

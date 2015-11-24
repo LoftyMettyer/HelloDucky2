@@ -423,7 +423,13 @@
 			</ul>
 		</div>
 </div>
-<div class="ui-dialog-titlebar ui-widget-header" style="font-size: 14pt; font-weight: normal; padding: 2px;">Search : <input id="menuSearch" style="font-size: small;" type="text"/></div>
+<div class="ui-dialog-titlebar ui-widget-header" style="min-width:300px; font-size: 14pt; font-weight: normal; padding: 2px;">
+	<div style="width:300px;">
+		Search : <input id="menuSearch" style="font-size: small;" type="text" />
+		<img id="ReportsAndMailMergeSearch" class="searchBoxIcons ui-corner-all" src="<%: Url.Content("~/Scripts/officebar/winkit/Document Find-WF.png")%>" title="Run Reports & Mail Merge" />
+		<img id="MenuItemSearch" class="searchBoxIcons ui-corner-all" src="<%: Url.Content("~/Scripts/officebar/winkit/Data-Find.png")%>" title="Menu" />
+	</div>
+</div>
 <div class="accessibility ui-accordion-header ui-helper-reset ui-state-default ui-corner-all">
 	<ul>
 		<li><a class="size-big" href="#" id="FontSizeBig" title="Large font"><span>A</span></a></li>
@@ -450,6 +456,9 @@
 			$(this).attr('title', $(this).text().trim());
 		});
 
+		// Set Accordian menu search ON by default
+		$('#MenuItemSearch').addClass('searchBoxActiveIcon');
+
 	}
 
 	$(document).ready(function() {
@@ -475,6 +484,14 @@
 		//$(".accordion h3").css("font-size", "12pt");
 		OpenHR.SaveRegistrySetting("HR Pro", "AccordionAccessibilityFontSize", "accordion-font-size", "small");
 	});
+
+	// Switch the search selection betweeen Menu and Run Reports & Mail Merge
+	$(".searchBoxIcons").click(function () {
+		$("#menuSearch")[0].value = "";
+		$(".searchBoxIcons").removeClass('searchBoxActiveIcon');
+		$(this).addClass('searchBoxActiveIcon');
+	});
+	
 </script>
 
 <div id="frmMenuInfo" >

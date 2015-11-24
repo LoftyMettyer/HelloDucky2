@@ -39367,7 +39367,9 @@ GO
 CREATE PROCEDURE [dbo].[sp_ASRIntPopulateDefsel] (
 	@intType int, 
 	@blnOnlyMine bit,
-	@intTableID	integer
+	@intTableID	integer,
+	@intCategoryID integer =-1,
+	@strOwner varchar(255) = ''
 )
 AS
 BEGIN
@@ -39388,7 +39390,8 @@ BEGIN
 		@fSysSecMgr			bit,
 		@fDoneWhere			bit,
 		@sActualUserName	varchar(250),
-		@iActualUserGroupID	integer
+		@iActualUserGroupID	integer,
+		@sObjectCategoryTableName	varchar(255)
 
 	SET @fNewAccess = 0;
 	SET @sExtraWhereSQL = '';
@@ -39402,7 +39405,7 @@ BEGIN
 		FROM [dbo].[ASRSysTables]
 		ORDER BY tableName;
 	END
-
+	
 	IF @intType = 1 /*'crosstabs'*/
 	BEGIN
 		SET @strTableName = 'ASRSysCrossTab';
@@ -39423,7 +39426,7 @@ BEGIN
 			SET @sExtraWhereSQL = 'ASRSysCustomReportsName.BaseTable = ' + convert(varchar(255), @intTableID);
 		END
 	END
-
+	
 	IF @intType = 3 /*'datatransfer'*/
 	BEGIN
 		SET @strTableName = 'ASRSysDataTransferName';
@@ -39508,7 +39511,7 @@ BEGIN
 		
 	IF len(@strExplicitSQL) > 0 
 	BEGIN
-		SET @strSQL = @strExplicitSQL;
+		SET @strSQL = @strExplicitSQL;		
 	END
 	ELSE
 	BEGIN
@@ -39532,13 +39535,13 @@ BEGIN
 			END;
 			
 		IF @fNewAccess = 1
-		BEGIN
+		BEGIN			
 			SET @strSQL = 'SELECT ' + @strTableName + '.Name, ' +
 				'replace(' + @strTableName + '.Description, char(9), '''') AS [description], ' +
 				'lower(' + @strTableName + '.Username) as [Username], ';
-				
+												 
 			IF (@fSysSecMgr = 0)  
-			BEGIN
+			BEGIN			
 				SET @strSQL = @strSQL +
 					'CASE WHEN Username = SYSTEM_USER THEN ''rw'' ELSE LOWER(' + @sAccessTableName + '.Access) END AS [Access], ';
 
@@ -39548,13 +39551,16 @@ BEGIN
 				SET @strSQL = @strSQL +
 					'''rw'' as [Access], ';
 			END
-								
+			
+			SET @sObjectCategoryTableName = 'tbsys_objectcategories';
 			SET @strSQL = @strSQL +
-				@strTableName + '.' + @strIDName + '  AS [ID] 
+				@strTableName + '.' + @strIDName + '  AS [ID] ,' +
+				'CASE ISNULL(' + @sObjectCategoryTableName + '.categoryid,0) WHEN 0 THEN 0 ELSE ' + @sObjectCategoryTableName + '.categoryid END AS [Categoryid]   
 				FROM ' + @strTableName + 
+				' LEFT JOIN '+ @sObjectCategoryTableName +' ON ' + @sObjectCategoryTableName + '.objectid = ' + @strTableName + '.' + @strIDName +  ' AND ' + @sObjectCategoryTableName + '.objecttype = ' + convert(varchar(255), @intType) +
 				' INNER JOIN ' + @sAccessTableName + ' ON ' + @strTableName + '.' + @strIDName +  ' = ' + @sAccessTableName + '.ID
-				AND ' + @sAccessTableName + '.groupname = ''' + @sRoleName + '''';
-
+				AND ' + @sAccessTableName + '.groupname = ''' + @sRoleName + '''';				
+				
 			IF (@fSysSecMgr = 0)  
 			BEGIN
 				SET @strSQL = @strSQL +
@@ -39602,8 +39608,41 @@ BEGIN
 
 				SET @strSQL = @strSQL  + ' (' + @sExtraWhereSQL + ')';
 			END
+
+			IF (@intCategoryID) > -1 
+			BEGIN
+			  
+				IF @fDoneWhere = 0
+				BEGIN
+					SET @strSQL = @strSQL  + ' WHERE';
+					SET @fDoneWhere = 1;				
+					
+				END
+				ELSE
+				BEGIN
+					SET @strSQL = @strSQL  + ' AND';
+				END
+				
+				SET @strSQL = @strSQL  + ' (ISNULL(' + @sObjectCategoryTableName + '.categoryid,0) = ' + convert(varchar(255), @intCategoryID) +')';
+			END
 			
-			SET @strSQL = @strSQL + ' ORDER BY ' + @strTableName + '.Name';
+			IF LEN(@strOwner) > 0 AND @strOwner <> 'All' 
+			BEGIN
+			  
+				IF @fDoneWhere = 0
+				BEGIN
+					SET @strSQL = @strSQL  + ' WHERE';
+					SET @fDoneWhere = 1;
+				END
+				ELSE
+				BEGIN
+					SET @strSQL = @strSQL  + ' AND';					
+				END				
+				SET @strSQL = @strSQL  + ' lower(' + @strTableName + '.Username) = lower(''' + @strOwner + ''' ) ' 			
+				
+			END
+
+			SET @strSQL = @strSQL + ' ORDER BY ' + @strTableName + '.Name';			
 		END
 		ELSE
 		BEGIN
@@ -39669,11 +39708,26 @@ BEGIN
 				SET @strSQL = @strSQL  + ' (' + @sExtraWhereSQL + ')';
 			END
 
-			SET @strSQL = @strSQL + ' ORDER BY Name';
+			IF LEN(@strOwner) > 0 AND @strOwner <> 'All' 
+			BEGIN
+			  
+				IF @fDoneWhere = 0
+				BEGIN
+					SET @strSQL = @strSQL  + ' WHERE';
+					SET @fDoneWhere = 1;
+				END
+				ELSE
+				BEGIN
+					SET @strSQL = @strSQL  + ' AND';					
+				END				
+				SET @strSQL = @strSQL  + ' lower(' + @strTableName + '.Username) = lower(''' + @strOwner + ''' ) ' 				
+			END
+
+			SET @strSQL = @strSQL + ' ORDER BY Name';			
 		END
 	END
 	
-	-- Return the resultset.
+	-- Return the resultset.	
 	EXECUTE sp_executeSQL @strSQL;
 	
 END
@@ -62508,9 +62562,202 @@ BEGIN
 END
 GO
 
+/*-----------------------------------------------------------------------------------------*/
+/* New Procs and Views for the new requirements of Category Definition */
+/*-----------------------------------------------------------------------------------------*/
+
+-- ==========================================================================================
+-- Author:		Prashant Shah
+-- Create date: 05/Nov/2015
+-- Description:	This view used to gets the object type of reports/utilities.
+-- ==========================================================================================
+IF EXISTS(SELECT * FROM sys.views WHERE object_id = object_id(N'[dbo].[ASRSysAllObjectAccessForOpenHRWeb]') AND [type] in (N'V'))
+     DROP VIEW [dbo].[ASRSysAllObjectAccessForOpenHRWeb]
+GO
+
+CREATE VIEW [dbo].[ASRSysAllObjectAccessForOpenHRWeb]
+	AS
+		SELECT CASE b.[IsBatch] 
+					WHEN 0 THEN 29
+					WHEN 1 THEN 0
+				END	AS [objectType], a.* FROM ASRSysBatchJobAccess a
+			INNER JOIN ASRSysBatchJobName b ON a.ID = b.ID
+		UNION
+		SELECT CASE m.[CrossTabType]
+					WHEN 0 THEN 1
+					WHEN 4 THEN 35
+				END	AS [objectType], a.* FROM [ASRSysCrossTabAccess] a
+			INNER JOIN ASRSysCrossTab m ON a.ID = m.CrossTabID
+		UNION
+		SELECT 2 AS [objectType], * FROM [ASRSysCustomReportAccess]
+		UNION
+		SELECT 3 AS [objectType], * FROM [ASRSysDataTransferAccess]
+		UNION
+		SELECT 4 AS [objectType], * FROM [ASRSysExportAccess]
+		UNION		
+		SELECT CASE [type] 
+					WHEN 'A' THEN 5
+					WHEN 'D' THEN 6
+					WHEN 'U' THEN 7
+				END	AS [objectType], a.* FROM [ASRSysGlobalAccess] a
+			INNER JOIN ASRSysGlobalFunctions g ON a.ID = g.functionID	
+		UNION
+		SELECT 8 AS [objectType], * FROM [ASRSysImportAccess]
+		UNION
+		SELECT CASE m.[IsLabel] 
+					WHEN 0 THEN 9
+					WHEN 1 THEN 18
+				END	AS [objectType], a.* FROM ASRSysMailMergeAccess a
+			INNER JOIN ASRSysMailMergeName m ON a.ID = m.MailMergeID
+		UNION
+		SELECT CASE [MatchReportType] 
+				WHEN 0 THEN 14 
+				WHEN 1 THEN 23
+				WHEN 2 THEN 24 
+			END	AS [objectType], a.* FROM ASRSysMatchReportAccess a
+			INNER JOIN ASRSysMatchReportName m ON a.ID = m.MatchReportID			
+		UNION
+		SELECT 17 AS [objectType], * FROM ASRSysCalendarReportAccess
+		UNION
+		SELECT 20 AS [objectType], * FROM [ASRSysRecordProfileAccess]
+GO
+
+-- ==========================================================================================
+-- Author:		Prashant Shah
+-- Create date: 05/Nov/2015
+-- Description:	This view used to gets the username and description of reports/utilities.
+-- ==========================================================================================
+IF EXISTS(SELECT * FROM sys.views WHERE object_id = object_id(N'[dbo].[ASRSysAllObjectNamesForOpenHRWeb]') AND [type] in (N'V'))
+     DROP VIEW [dbo].[ASRSysAllObjectNamesForOpenHRWeb]
+GO
+
+CREATE VIEW [dbo].[ASRSysAllObjectNamesForOpenHRWeb]
+AS
+		SELECT 25 AS [objectType], [ID], [Name], '' AS Username, description FROM ASRSysWorkflows
+		UNION
+		SELECT CASE [IsBatch] 
+				WHEN 0 THEN 29
+				WHEN 1 THEN 0
+			END	, ID,  Name, Username, description FROM ASRSysBatchJobName
+		UNION
+		SELECT CASE [IsLabel] 
+				WHEN 0 THEN 9
+				WHEN 1 THEN 18
+			END	AS [objectType],  MailMergeID AS ID, Name, Username, description FROM ASRSysMailMergeName
+		UNION
+		SELECT 2 AS [objectType], ID, Name, Username, description FROM ASRSysCustomReportsName
+		UNION
+		SELECT CASE [CrossTabType]
+			   WHEN 0 THEN 1
+			   WHEN 4 THEN 35
+			   END  AS [objectType], CrossTabID AS ID, Name, Username, description FROM ASRSysCrossTab
+		UNION		
+		SELECT CASE [MatchReportType] 
+				WHEN 0 THEN 14 
+				WHEN 1 THEN 23
+				WHEN 2 THEN 24 
+			END	AS [objectType], MatchReportID AS ID, Name, Username, description FROM ASRSysMatchReportName			
+		UNION
+		SELECT 4 AS [objectType], ID AS ID, Name, Username, description FROM ASRSysExportName
+		UNION		
+		SELECT 8 AS [objectType], ID AS ID, Name, Username, description FROM ASRSysImportName
+		UNION
+		SELECT 3 AS [objectType], DataTransferID AS ID, Name, Username, description FROM ASRSysDataTransferName
+		UNION
+		SELECT CASE [type] 
+				WHEN 'A' THEN 5
+				WHEN 'D' THEN 6
+				WHEN 'U' THEN 7
+			END	AS [objectType], [FunctionID] AS ID, Name, Username, description FROM ASRSysGlobalFunctions
+		UNION		
+		SELECT 15 AS [objectType], 0 AS ID, 'Absence Breakdown', '' AS Username, '' AS Description
+		UNION
+		SELECT 16 AS [objectType], 0 AS ID, 'Bradford Factor', '' AS Username, '' AS Description
+		UNION
+		SELECT 17 AS [objectType], ID AS ID, Name, Username, description FROM ASRSysCalendarReports
+		UNION		
+		SELECT 20 AS [objectType], RecordProfileID AS ID, Name, Username, description FROM ASRSysRecordProfileName
+		UNION
+		SELECT 30 AS [objectType], 0 AS ID, 'Turnover', '' AS Username, '' AS Description
+		UNION
+		SELECT 31 AS [objectType], 0 AS ID, 'Stability Index', '' AS Username, '' AS Description;		
 
 GO
 
+-- ==========================================================================================
+-- Author:		Prashant Shah
+-- Create date: 05/Nov/2015
+-- Description:	Gets the reports/utilities whose definition name mathches the search criteria.
+-- ==========================================================================================
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRGetReportsAndUtilitiesSearchResult]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRGetReportsAndUtilitiesSearchResult]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRGetReportsAndUtilitiesSearchResult] (
+	@searchText varchar(50) = NULL
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	/* Return a recordset of the details with which to populate the intranet defsel grid. */
+	DECLARE 
+		@sRoleName			varchar(255),
+		@sActualUserName	varchar(250),
+		@iActualUserGroupID	integer
+	
+	EXEC [dbo].[spASRIntGetActualUserDetails]
+			@sActualUserName OUTPUT,
+			@sRoleName OUTPUT,
+			@iActualUserGroupID OUTPUT;
+
+	SELECT 
+		ASRSysAllObjectNamesForOpenHRWeb.ID,
+		ASRSysAllObjectNamesForOpenHRWeb.objecttype,
+		ASRSysAllObjectNamesForOpenHRWeb.Name,
+		CASE ASRSysAllObjectNamesForOpenHRWeb.objecttype
+			WHEN 1 THEN 'CrossTab: ' + ASRSysAllObjectNamesForOpenHRWeb.name 
+			WHEN 2 THEN 'Custom Report: ' + ASRSysAllObjectNamesForOpenHRWeb.name 
+			WHEN 9 THEN 'Mail Merge: ' + ASRSysAllObjectNamesForOpenHRWeb.name 
+			WHEN 17 THEN 'Calender Report: ' + ASRSysAllObjectNamesForOpenHRWeb.name 
+			WHEN 35 THEN '9 Box Grid Report: ' + ASRSysAllObjectNamesForOpenHRWeb.name 
+		END TextToDisplay, 
+		ASRSysAllObjectNamesForOpenHRWeb.description AS [description],
+		Access
+	FROM ASRSysAllObjectNamesForOpenHRWeb 
+		INNER JOIN ASRSysAllObjectAccessForOpenHRWeb ON 
+					ASRSysAllObjectNamesForOpenHRWeb.ID = ASRSysAllObjectAccessForOpenHRWeb.ID AND 
+					ASRSysAllObjectAccessForOpenHRWeb.groupname = @sRoleName AND 
+					(ASRSysAllObjectAccessForOpenHRWeb.access <> 'HD' OR ASRSysAllObjectNamesForOpenHRWeb.userName = SYSTEM_USER) 
+	WHERE	ASRSysAllObjectAccessForOpenHRWeb.objecttype = ASRSysAllObjectNamesForOpenHRWeb.objecttype AND 
+			ASRSysAllObjectNamesForOpenHRWeb.objecttype IN (1,2,9,17,35) AND 
+			ASRSysAllObjectNamesForOpenHRWeb.name LIKE '%' + @searchText + '%'
+	ORDER By TextToDisplay
+
+END
+
+GO
+
+-- =======================================================
+-- Author:		Amrit
+-- Create date: 05/Nov/2015
+-- Description:	Gets the report/utilities creator users.
+-- =======================================================
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRGetAllObjectNames]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRGetAllObjectNames]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRGetAllObjectNames]
+	
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from interfering with SELECT statements.
+	SET NOCOUNT ON;
+	SELECT DISTINCT Username FROM ASRSysAllObjectNamesForOpenHRWeb WHERE NOT NULLIF(username,'') = '' ORDER BY username;
+END
+
+GO
 
 /*---------------------------------------------*/
 /* Ensure the required permissions are granted */
