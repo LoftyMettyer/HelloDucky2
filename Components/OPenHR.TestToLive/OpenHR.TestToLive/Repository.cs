@@ -551,8 +551,8 @@ namespace OpenHRTestToLive
 					var WFExpression = db.ASRSysExpressions.Where(x => x.ExprID == ExpressionId);
 					if (WFExpression.Any())
 					{
-						t2l.AllExpressions.AddRange(WFExpression);
-						LogData("{0} Expression grandchild records found in WF Element (DescriptionExprID)", WFExpression.Count());
+            t2l.AllExpressions.AddUniqueBy((s, i) => s.ExprID == i.ExprID, WFExpression);
+            LogData("{0} Expression grandchild records found in WF Element (DescriptionExprID)", WFExpression.Count());
 						LogData("Total: {0}", t2l.AllExpressions.Count());
 					}
 					else
@@ -569,8 +569,8 @@ namespace OpenHRTestToLive
 					var WFExpression = db.ASRSysExpressions.Where(x => x.ExprID == ExpressionId);
 					if (WFExpression.Any())
 					{
-						t2l.AllExpressions.AddRange(WFExpression);
-						LogData("{0} Expression grandchild records found in WF Element (TrueFlowExprID)", WFExpression.Count());
+            t2l.AllExpressions.AddUniqueBy((s, i) => s.ExprID == i.ExprID, WFExpression);
+            LogData("{0} Expression grandchild records found in WF Element (TrueFlowExprID)", WFExpression.Count());
 						LogData("Total: {0}", t2l.AllExpressions.Count());
 					}
 					else
@@ -587,8 +587,8 @@ namespace OpenHRTestToLive
 					var WFExpression = db.ASRSysExpressions.Where(x => x.ExprID == ExpressionId);
 					if (WFExpression.Any())
 					{
-						t2l.AllExpressions.AddRange(WFExpression);
-						LogData("{0} Expression grandchild records found in WF Element Column", WFExpression.Count());
+            t2l.AllExpressions.AddUniqueBy((s, i) => s.ExprID == i.ExprID, WFExpression);
+            LogData("{0} Expression grandchild records found in WF Element Column", WFExpression.Count());
 						LogData("Total: {0}", t2l.AllExpressions.Count());
 					}
 					else
@@ -637,8 +637,8 @@ namespace OpenHRTestToLive
 					var WFExpression = db.ASRSysExpressions.Where(x => x.ExprID == ExpressionId);
 					if (WFExpression.Any())
 					{
-						t2l.AllExpressions.AddRange(WFExpression);
-						LogData("{0} Expression grandchild records found in WF Element Validation", WFExpression.Count());
+            t2l.AllExpressions.AddUniqueBy((s, i) => s.ExprID == i.ExprID, WFExpression);
+            LogData("{0} Expression grandchild records found in WF Element Validation", WFExpression.Count());
 						LogData("Total: {0}", t2l.AllExpressions.Count());
 					}
 					else
@@ -657,8 +657,8 @@ namespace OpenHRTestToLive
 			while (NewExpressions.Count > 0)
 			{
 				FindExpressionComponents(db, NewExpressions, NewExpressionComponents);
-				t2l.AllExpressions.AddRange(NewExpressions);
-				NewExpressions.Clear();
+        t2l.AllExpressions.AddUniqueBy((s, i) => s.ExprID == i.ExprID, NewExpressions);
+        NewExpressions.Clear();
 				FindRecursiveExpressions(db, NewExpressionComponents, NewExpressions);
 				t2l.AllComponents.AddRange(NewExpressionComponents);
 				NewExpressionComponents.Clear();
