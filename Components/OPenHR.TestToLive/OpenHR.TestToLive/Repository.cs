@@ -723,6 +723,7 @@ namespace OpenHRTestToLive
         {
           //var component = ExprComponent;
           var parents = db.ASRSysExpressions
+            .OrderBy(e => e.ExprID)
             .Where(x => x.ParentComponentID == ExprComponent.ComponentID);
 
           Expressions.AddUniqueBy((s, i) => s.ExprID == i.ExprID, parents);
