@@ -358,16 +358,23 @@ namespace OpenHRTestToLive
           if (child.ElementID == CurrentElementID) { child.ElementID = MaxElementID; }
         }
 
-        foreach (ASRSysWorkflowLinks link in t2l.AllLinks)  // ID - Unique, ElementID - FK to WFElement.ID
+        foreach (var link in t2l.AllLinks)  // ID - Unique, ElementID - FK to WFElement.ID
         {
           if (link.StartElementID == CurrentElementID) { link.StartElementID = MaxElementID; }
           if (link.EndElementID == CurrentElementID) { link.EndElementID = MaxElementID; }
+        }
+
+        // Bump the connector pairs
+        foreach (var pair in t2l.AllElements.Where(f => f.ConnectionPairID == CurrentElementID))
+        {
+          pair.ConnectionPairID = MaxElementID;
         }
 
         // Bump the parent
         item.ID = MaxElementID;
         MaxElementID++;
       }
+
       // Bump the Expression Component ID's
       int MaxExprComponentID = db.ASRSysExprComponents.Max(x => x.ComponentID);
       MaxExprComponentID++;
