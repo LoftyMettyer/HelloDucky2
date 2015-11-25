@@ -454,60 +454,54 @@ namespace OpenHRTestToLive
 			// Select all child ASRSysWorkflowElement
 			t2l.AllElements = db.ASRSysWorkflowElements.Where(x => x.WorkflowID == WFkey).ToList();
 			LogData("{0} WFElements Records loaded.", t2l.AllElements.Count());
-			//DataContractSerializer WFElementsSerializer = new DataContractSerializer(t2l.AllElements.GetType());
-			//WFWriter = XmlWriter.Create(File.CreateText("workflowelements.xml"));
-			//WFElementsSerializer.WriteObject(WFWriter, t2l.AllElements.ToList());
-			//WFWriter.Flush();
-			//WFWriter.Close();
+      //DataContractSerializer WFElementsSerializer = new DataContractSerializer(t2l.AllElements.GetType());
+      //WFWriter = XmlWriter.Create(File.CreateText("workflowelements.xml"));
+      //WFElementsSerializer.WriteObject(WFWriter, t2l.AllElements.ToList());
+      //WFWriter.Flush();
+      //WFWriter.Close();
 
-			// For each WorkFlow Element, select all ElementColumn records
-			int ElementId = 0;
-			//List<ASRSysWorkflowElementColumn> AllColumns = new List<ASRSysWorkflowElementColumn>();
-			foreach (ASRSysWorkflowElement Element in t2l.AllElements)
+      // For each WorkFlow Element, select all ElementColumn records
+      int ElementId = 0;
+      //List<ASRSysWorkflowElementColumn> AllColumns = new List<ASRSysWorkflowElementColumn>();
+      foreach (ASRSysWorkflowElement Element in t2l.AllElements)
+      {
+        ElementId = Element.ID;
+        LogData("Element ID: {0}", ElementId);
+        var GChildWFElementColumn = db.ASRSysWorkflowElementColumns.Where(x => x.ElementID == ElementId);
+        if (GChildWFElementColumn.Any())
+        {
+          t2l.AllColumns.AddRange(GChildWFElementColumn);
+          LogData("{0} Element Column grandchild records found", GChildWFElementColumn.Count());
+          LogData("Total: {0}", t2l.AllColumns.Count());
+        }
+      }
+     
+      // For each WorkFlow Element, select all ElementValidation records
+      foreach (ASRSysWorkflowElement Element in t2l.AllElements)
+      {
+        ElementId = Element.ID;
+        LogData("Element ID: {0}", ElementId);
+        var GChildWFElementValidation = db.ASRSysWorkflowElementValidations.Where(x => x.ElementID == ElementId);
+        if (GChildWFElementValidation.Any())
+        {
+          t2l.AllValidations.AddRange(GChildWFElementValidation);
+          LogData("{0} Element Validation grandchild records found", GChildWFElementValidation.Count());
+          LogData("Total: {0}", t2l.AllValidations.Count());
+        }
+        else
+          LogData("No Element Validation grandchild records found", null);
+      }
+
+      // For each WorkFlow Element, select all ElementItem records
+      foreach (ASRSysWorkflowElement Element in t2l.AllElements)
 			{
 				ElementId = Element.ID;
 				LogData("Element ID: {0}", ElementId);
-				var GChildWFElementColumn = db.ASRSysWorkflowElementColumns.Where(x => x.ElementID == ElementId);
-				if (GChildWFElementColumn.Count() > 0)
-				{
-					t2l.AllColumns.AddRange(GChildWFElementColumn);
-					LogData("{0} Element Column grandchild records found", GChildWFElementColumn.Count());
-					LogData("Total: {0}", t2l.AllColumns.Count());
-				}
-            }
-            //WFWriter = XmlWriter.Create(File.CreateText(string.Format("workflowelementcolumns.xml")));
-            //DataContractSerializer WFElementColumnSerializer = new DataContractSerializer(t2l.AllColumns.GetType());
-            //WFElementColumnSerializer. WriteObject(WFWriter, t2l.AllColumns.ToList());
-            //WFWriter.Flush();
-            //WFWriter.Close();
 
-            // For each WorkFlow Element, select all ElementValidation records
-            foreach (ASRSysWorkflowElement Element in t2l.AllElements)
-			{
-				ElementId = Element.ID;
-				LogData("Element ID: {0}", ElementId);
-				var GChildWFElementValidation = db.ASRSysWorkflowElementValidations.Where(x => x.ElementID == ElementId);
-				if (GChildWFElementValidation.Count() > 0)
-				{
-					t2l.AllValidations.AddRange(GChildWFElementValidation);
-					LogData("{0} Element Validation grandchild records found", GChildWFElementValidation.Count());
-					LogData("Total: {0}", t2l.AllValidations.Count());
-				}
-				else
-					LogData("No Element Validation grandchild records found", null);
-			}
-			//DataContractSerializer WFElementValidationSerializer = new DataContractSerializer(t2l.AllValidations.GetType());
-			//WFWriter = XmlWriter.Create(File.CreateText(string.Format("workflowelementvalidation.xml")));
-			//WFElementValidationSerializer.WriteObject(WFWriter, t2l.AllValidations.ToList());
-			//WFWriter.Flush();
-			//WFWriter.Close();
+        var GChildWFElementItem = db.ASRSysWorkflowElementItems
+          .OrderBy(x => x.ID)
+          .Where(x => x.ElementID == ElementId);
 
-			// For each WorkFlow Element, select all ElementItem records
-			foreach (ASRSysWorkflowElement Element in t2l.AllElements)
-			{
-				ElementId = Element.ID;
-				LogData("Element ID: {0}", ElementId);
-				var GChildWFElementItem = db.ASRSysWorkflowElementItems.Where(x => x.ElementID == ElementId);
 				if (GChildWFElementItem.Any())
 				{
 					t2l.AllItems.AddRange(GChildWFElementItem);
