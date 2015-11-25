@@ -2236,6 +2236,7 @@ Public Function ImportDefinitions() As Boolean
   Dim sOutputFileName As String
   Dim sMessage As String
   Dim bok As Boolean
+  Dim bCancel As Boolean
   
   ' Validation to only enable if theer are no pending changes
 
@@ -2256,8 +2257,10 @@ Public Function ImportDefinitions() As Boolean
         sOutputFileName = .FileName
       End If
     End If
-  
+   
   End With
+
+  If Len(sOutputFileName) = 0 Then Exit Function
 
   objImport.Connection gsUserName, gsPassword, gsDatabaseName, gsServerName
   status = objImport.ImportDefinitions(sOutputFileName)

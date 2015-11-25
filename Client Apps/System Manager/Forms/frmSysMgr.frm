@@ -38,6 +38,7 @@ Begin VB.MDIForm frmSysMgr
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -1286,7 +1287,7 @@ Private Sub RefreshMenu_ScrDesigner(piFormCount As Integer)
     .Tools("ID_Cut").Enabled = fControlsExist
     .Tools("ID_Copy").Enabled = fControlsExist
     .Tools("ID_Paste").Enabled = (objScreen.ClipboardControlsCount > 0)
-    .Tools("ID_ScreenObjectDelete").Enabled = fControlsExist Or (objScreen.TabPages.Tabs.Count > 0)
+    .Tools("ID_ScreenObjectDelete").Enabled = fControlsExist Or (objScreen.tabPages.Tabs.Count > 0)
     .Tools("ID_ScreenSelectAll").Enabled = bFormHasControls
     .Tools("ID_Save").Enabled = objScreen.IsChanged
             
@@ -1566,7 +1567,7 @@ Private Sub RefreshMenu_WebFormDesigner(piFormCount As Integer)
     .Tools("ID_Cut").Enabled = fControlsExist And (Not objScreen.ReadOnly)
     .Tools("ID_Copy").Enabled = fControlsExist And (Not objScreen.ReadOnly)
     .Tools("ID_Paste").Enabled = (objScreen.ClipboardControlsCount > 0) And (Not objScreen.ReadOnly)
-    .Tools("ID_ScreenObjectDelete").Enabled = (fControlsExist And (Not objScreen.ReadOnly)) Or objScreen.TabPages.Tabs.Count > 0
+    .Tools("ID_ScreenObjectDelete").Enabled = (fControlsExist And (Not objScreen.ReadOnly)) Or objScreen.tabPages.Tabs.Count > 0
     .Tools("ID_ScreenSelectAll").Enabled = bFormHasControls And (Not objScreen.ReadOnly)
     .Tools("ID_mnuWFSave").Enabled = objScreen.IsChanged And (Not objScreen.ReadOnly)
             
@@ -1751,7 +1752,7 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_WorkflowMgr").Enabled = (piFormCount <= 1) And Application.WorkflowModule And Not gbLicenceExpired
     .Tools("ID_ViewMgr").Enabled = (piFormCount <= 1) And Not gbLicenceExpired
     .Tools("ID_MobileDesigner").Enabled = (piFormCount <= 1) And Application.MobileModule And Not gbLicenceExpired
-    .Tools("ID_ImportDefinitions").Enabled = (piFormCount <= 1) And Not gbLicenceExpired And Application.WorkflowModule
+    .Tools("ID_ImportDefinitions").Enabled = (piFormCount <= 1) And Not gbLicenceExpired And Application.WorkflowModule And !Application.Changed
     
     .Tools("ID_SSIntranet").Enabled = (piFormCount <= 1) And Application.SelfServiceIntranetModule And Not gbLicenceExpired
     .Tools("ID_SaveChanges").Enabled = Application.Changed
