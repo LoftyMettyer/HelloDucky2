@@ -1752,7 +1752,7 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_WorkflowMgr").Enabled = (piFormCount <= 1) And Application.WorkflowModule And Not gbLicenceExpired
     .Tools("ID_ViewMgr").Enabled = (piFormCount <= 1) And Not gbLicenceExpired
     .Tools("ID_MobileDesigner").Enabled = (piFormCount <= 1) And Application.MobileModule And Not gbLicenceExpired
-    .Tools("ID_ImportDefinitions").Enabled = (piFormCount <= 1) And Not gbLicenceExpired And Application.WorkflowModule And !Application.Changed
+    .Tools("ID_ImportDefinitions").Enabled = (piFormCount <= 1) And Not gbLicenceExpired And Application.WorkflowModule And Not Application.Changed
     
     .Tools("ID_SSIntranet").Enabled = (piFormCount <= 1) And Application.SelfServiceIntranetModule And Not gbLicenceExpired
     .Tools("ID_SaveChanges").Enabled = Application.Changed
