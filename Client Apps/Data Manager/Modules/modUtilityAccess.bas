@@ -184,7 +184,7 @@ Public Sub CheckCanMakeHiddenInBatchJobs(piUtilityType As UtilityType, _
     Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
         
     Do Until rsTemp.EOF
-      If LCase(rsTemp!UserName) = pstrUser Then
+      If LCase(rsTemp!userName) = pstrUser Then
         ' Found a Batch Job whose owner is the same
         If (rsTemp!scheduled = 1) And _
           (Len(rsTemp!RoleToPrompt) > 0) And _
@@ -196,7 +196,7 @@ Public Sub CheckCanMakeHiddenInBatchJobs(piUtilityType As UtilityType, _
           psScheduledUserGroups = psScheduledUserGroups & rsTemp!RoleToPrompt & vbCrLf
           
           If CurrentUserAccess(utlBatchJob, rsTemp!ID) = ACCESS_HIDDEN Then
-            psScheduledJobDetails = psScheduledJobDetails & "Batch Job : <Hidden> by " & rsTemp!UserName & vbCrLf
+            psScheduledJobDetails = psScheduledJobDetails & "Batch Job : <Hidden> by " & rsTemp!userName & vbCrLf
           Else
             psScheduledJobDetails = psScheduledJobDetails & "Batch Job : " & rsTemp!Name & vbCrLf
           End If
@@ -212,7 +212,7 @@ Public Sub CheckCanMakeHiddenInBatchJobs(piUtilityType As UtilityType, _
         pblnBatchJobsOK = False
     
         If CurrentUserAccess(utlBatchJob, rsTemp!ID) = ACCESS_HIDDEN Then
-          psNonOwnedJobDetails = psNonOwnedJobDetails & "Batch Job : <Hidden> by " & rsTemp!UserName & vbCrLf
+          psNonOwnedJobDetails = psNonOwnedJobDetails & "Batch Job : <Hidden> by " & rsTemp!userName & vbCrLf
         Else
           psNonOwnedJobDetails = psNonOwnedJobDetails & "Batch Job : " & rsTemp!Name & vbCrLf
         End If
@@ -307,7 +307,7 @@ Public Sub CheckForPicklistsExpressions(piUtilityType As UtilityType, _
       
       Select Case piUtilityType
         Case utlCalculation, utlFilter
-          If LCase(rsTemp!UserName) = pstrUser Then
+          If LCase(rsTemp!userName) = pstrUser Then
             ' Found a tool whose owner is the same
             If rsTemp!Access <> ACCESS_HIDDEN Then
               piOwnedCount = piOwnedCount + 1
@@ -319,14 +319,14 @@ Public Sub CheckForPicklistsExpressions(piUtilityType As UtilityType, _
               piNonOwnedCount = piNonOwnedCount + 1
       
             If rsTemp!Access = ACCESS_HIDDEN Then
-              psNonOwnedDetails = psNonOwnedDetails & sKey & " : <Hidden> by " & rsTemp!UserName & vbCrLf
+              psNonOwnedDetails = psNonOwnedDetails & sKey & " : <Hidden> by " & rsTemp!userName & vbCrLf
             Else
               psNonOwnedDetails = psNonOwnedDetails & sKey & " : " & rsTemp!Name & vbCrLf
             End If
           End If
       
         Case Else
-          If LCase(rsTemp!UserName) = pstrUser Then
+          If LCase(rsTemp!userName) = pstrUser Then
             ' Found a utility/report whose owner is the same
             If rsTemp!nonHiddenCount > 0 Then
                 piOwnedCount = piOwnedCount + 1
@@ -338,7 +338,7 @@ Public Sub CheckForPicklistsExpressions(piUtilityType As UtilityType, _
             piNonOwnedCount = piNonOwnedCount + 1
             
             If CurrentUserAccess(piUtilityType, rsTemp!ID) = ACCESS_HIDDEN Then
-              psNonOwnedDetails = psNonOwnedDetails & sKey & " : <Hidden> by " & rsTemp!UserName & vbCrLf
+              psNonOwnedDetails = psNonOwnedDetails & sKey & " : <Hidden> by " & rsTemp!userName & vbCrLf
             Else
               psNonOwnedDetails = psNonOwnedDetails & sKey & " : " & rsTemp!Name & vbCrLf
             End If
@@ -568,7 +568,7 @@ Public Sub UtilityAmended(piUtilityType As UtilityType, _
     blnTimeStampChanged = (plngTimestamp <> rsCheck!Timestamp)
     
     sCurrentUserAccess = CurrentUserAccess(piUtilityType, plngRecordID)
-    blnReadOnly = (LCase$(rsCheck!UserName) <> LCase$(gsUserName)) And _
+    blnReadOnly = (LCase$(rsCheck!userName) <> LCase$(gsUserName)) And _
       (sCurrentUserAccess <> ACCESS_READWRITE)
   End If
   
@@ -590,7 +590,7 @@ Public Sub UtilityAmended(piUtilityType As UtilityType, _
                   
     strMBText = strMBText & vbCrLf & _
                 "Save as a new " & strType & "?"
-    intMBResponse = COAMsgBox(strMBText, vbExclamation + vbOKCancel, App.ProductName)
+    intMBResponse = COAMsgBox(strMBText, vbExclamation + vbOKCancel, app.ProductName)
       
     Select Case intMBResponse
       Case vbOK         'save as new (but this may cause duplicate name message)
@@ -617,7 +617,7 @@ Public Sub UtilityAmended(piUtilityType As UtilityType, _
       'Prompt to see if user should overwrite definition
       strMBText = "The current " & strType & " has been amended by another user. " & vbCrLf & _
                   "Would you like to overwrite this " & strType & "?" & vbCrLf
-      intMBResponse = COAMsgBox(strMBText, vbExclamation + vbYesNoCancel, App.ProductName)
+      intMBResponse = COAMsgBox(strMBText, vbExclamation + vbYesNoCancel, app.ProductName)
       
       Select Case intMBResponse
         Case vbYes        'overwrite existing definition and any changes
@@ -637,7 +637,7 @@ Public Sub UtilityAmended(piUtilityType As UtilityType, _
   
 Amended_ERROR:
   
-  COAMsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.title
   blnContinueSave = False
   
 End Sub
@@ -939,7 +939,7 @@ Public Function GetUtilityAccessRecords(piUtilityType As UtilityType, _
     " LEFT OUTER JOIN " & sAccessTableName & " ON (sysusers.name = " & sAccessTableName & ".groupName" & _
     "  AND " & sAccessTableName & ".id = " & CStr(plngID) & ")" & _
     " WHERE sysusers.uid = sysusers.gid" & _
-    " AND sysusers.uid <> 0" & _
+    " AND ISNULL(sysusers.uid, 0) <> 0" & _
     " AND NOT (sysusers.name LIKE 'ASRSys%') AND NOT (sysusers.name LIKE 'db[_]%')" & _
     " ORDER BY sysusers.name"
 
@@ -1208,7 +1208,7 @@ Public Function GetUtilityOwner(piUtilityType As UtilityType, _
     Set rsOwner = datGeneral.GetReadOnlyRecords(sSQL)
         
     If Not (rsOwner.BOF And rsOwner.EOF) Then
-      sOwner = IIf(IsNull(rsOwner!UserName), "", rsOwner!UserName)
+      sOwner = IIf(IsNull(rsOwner!userName), "", rsOwner!userName)
     End If
       
     rsOwner.Close
@@ -1544,7 +1544,7 @@ Public Function ValidateFilter(plngID As Long) As RecordSelectionValidityCodes
       iResult = REC_SEL_VALID_DELETED
     Else
       If (rsTemp!Access = ACCESS_HIDDEN) Or HasHiddenComponents(CLng(plngID)) Then
-        If (LCase(Trim(rsTemp!UserName)) = LCase(Trim(gsUserName))) Then
+        If (LCase(Trim(rsTemp!userName)) = LCase(Trim(gsUserName))) Then
           ' Filter is hidden by the current user.
           iResult = REC_SEL_VALID_HIDDENBYUSER
         Else
@@ -1611,7 +1611,7 @@ Public Function ValidateCalculation(plngID As Long) As RecordSelectionValidityCo
       iResult = REC_SEL_VALID_DELETED
     Else
       If (rsTemp!Access = ACCESS_HIDDEN) Or HasHiddenComponents(CLng(plngID)) Then
-        If (LCase(Trim(rsTemp!UserName)) = LCase(Trim(gsUserName))) Then
+        If (LCase(Trim(rsTemp!userName)) = LCase(Trim(gsUserName))) Then
           ' Calculation is hidden by the current user.
           iResult = REC_SEL_VALID_HIDDENBYUSER
         Else
@@ -1678,7 +1678,7 @@ Public Function ValidatePicklist(plngID As Long) As RecordSelectionValidityCodes
       iResult = REC_SEL_VALID_DELETED
     Else
       If (rsTemp!Access = ACCESS_HIDDEN) Then
-        If (LCase(Trim(rsTemp!UserName)) = LCase(Trim(gsUserName))) Then
+        If (LCase(Trim(rsTemp!userName)) = LCase(Trim(gsUserName))) Then
           ' Picklist is hidden by the current user.
           iResult = REC_SEL_VALID_HIDDENBYUSER
         Else

@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmExport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Export Definition"
@@ -72,15 +72,15 @@ Begin VB.Form frmExport
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmExport.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraInformation"
-      Tab(0).Control(1)=   "fraBase"
+      Tab(0).Control(0)=   "fraBase"
+      Tab(0).Control(1)=   "fraInformation"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraChild"
+      Tab(1).Control(0)=   "fraParent1"
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(2)=   "fraParent1"
+      Tab(1).Control(2)=   "fraChild"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmExport.frx":0044
@@ -95,9 +95,9 @@ Begin VB.Form frmExport
       TabCaption(4)   =   "O&ptions"
       TabPicture(4)   =   "frmExport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraDateOptions"
+      Tab(4).Control(0)=   "fraHeaderOptions"
       Tab(4).Control(0).Enabled=   0   'False
-      Tab(4).Control(1)=   "fraHeaderOptions"
+      Tab(4).Control(1)=   "fraDateOptions"
       Tab(4).Control(1).Enabled=   0   'False
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
@@ -733,9 +733,9 @@ Begin VB.Form frmExport
             RecordSelectors =   0   'False
             Col.Count       =   11
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -747,9 +747,9 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmExport.frx":0181
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -1950,7 +1950,7 @@ Public Property Let FormPrint(ByVal bPrint As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -1990,7 +1990,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -2277,11 +2277,11 @@ Public Sub UpdateDependantFields()
     prstTables.MoveFirst
   End If
   
-  Select Case prstTables.recordCount
+  Select Case prstTables.RecordCount
     Case 0
       txtParent1.Text = "" '"<None>"
       txtParent1.Tag = 0
-      optParent1AllRecords.value = True
+      optParent1AllRecords.Value = True
       txtParent1Filter.Text = ""
       txtParent1Filter.Tag = 0
       txtParent1Picklist.Text = ""
@@ -2293,7 +2293,7 @@ Public Sub UpdateDependantFields()
       
       txtParent2.Text = "" '"<None>"
       txtParent2.Tag = 0
-      optParent2AllRecords.value = True
+      optParent2AllRecords.Value = True
       txtParent2Filter.Text = ""
       txtParent2Filter.Tag = 0
       txtParent2Picklist.Text = ""
@@ -2305,7 +2305,7 @@ Public Sub UpdateDependantFields()
     Case 1
       txtParent1.Text = prstTables!TableName
       txtParent1.Tag = prstTables!TableID
-      optParent1AllRecords.value = True
+      optParent1AllRecords.Value = True
       txtParent1Filter.Text = "" '"<None>"
       txtParent1Filter.Tag = 0
       txtParent1Picklist.Text = ""
@@ -2317,7 +2317,7 @@ Public Sub UpdateDependantFields()
       
       txtParent2.Text = "" '"<None>"
       txtParent2.Tag = 0
-      optParent2AllRecords.value = True
+      optParent2AllRecords.Value = True
       txtParent2Filter.Text = ""
       txtParent2Filter.Tag = 0
       txtParent2Picklist.Text = ""
@@ -2329,7 +2329,7 @@ Public Sub UpdateDependantFields()
     Case 2
       txtParent1.Text = prstTables!TableName
       txtParent1.Tag = prstTables!TableID
-      optParent1AllRecords.value = True
+      optParent1AllRecords.Value = True
       txtParent1Filter.Text = "" '"<None>"
       txtParent1Filter.Tag = 0
       txtParent1Picklist.Text = ""
@@ -2343,7 +2343,7 @@ Public Sub UpdateDependantFields()
       
       txtParent2.Text = prstTables!TableName
       txtParent2.Tag = prstTables!TableID
-      optParent2AllRecords.value = True
+      optParent2AllRecords.Value = True
       txtParent2Filter.Text = "" '"<None>"
       txtParent2Filter.Tag = 0
       txtParent2Picklist.Text = ""
@@ -2386,7 +2386,7 @@ Public Sub UpdateDependantFields()
   
   txtChildFilter.Text = ""
   txtChildFilter.Tag = 0
-  spnMaxRecords.value = 0
+  spnMaxRecords.Value = 0
   
   'TM20011212 Fault 2791
   SetComboText cboChild, mstrChildTable
@@ -2452,7 +2452,7 @@ End Sub
 
 Private Sub chkSplitFile_Click()
   
-  If chkSplitFile.value = vbChecked Then
+  If chkSplitFile.Value = vbChecked Then
     lblSplitFileSize.Enabled = True
     spnSplitFileSize.Enabled = True
     spnSplitFileSize.BackColor = &H80000005
@@ -2460,7 +2460,7 @@ Private Sub chkSplitFile_Click()
     lblSplitFileSize.Enabled = False
     spnSplitFileSize.Enabled = False
     spnSplitFileSize.BackColor = &H8000000F
-    spnSplitFileSize.value = 0
+    spnSplitFileSize.Value = 0
   End If
   
   Changed = True
@@ -2495,7 +2495,7 @@ Private Sub cmdAddAllColumns_Click()
     .Initialise True, "", 0, 0, , , , Me, , , , , True
     
     'Initialise the edit column form for CMG options
-    If optOutputFormat(fmtCMGFile).value And mbCMGExportFieldCode Then
+    If optOutputFormat(fmtCMGFile).Value And mbCMGExportFieldCode Then
       .SetCMGOptions ("")
     End If
     
@@ -2877,7 +2877,7 @@ Private Sub CheckIfOmitHeaderEnabled()
 
   chkOmitHeader.Enabled = blnEnabled
   If Not blnEnabled And Not mblnLoading Then
-    chkOmitHeader.value = vbUnchecked
+    chkOmitHeader.Value = vbUnchecked
   End If
 
 End Sub
@@ -3331,7 +3331,7 @@ End Sub
 Private Sub spnMaxRecords_Change()
 
   Changed = True
-  lblMaxRecordsAll.Visible = spnMaxRecords.value = 0
+  lblMaxRecordsAll.Visible = spnMaxRecords.Value = 0
 
 End Sub
 
@@ -3656,16 +3656,16 @@ Private Sub cmdNewColumn_Click()
   
   With pfrmColumnEdit
     
-    .IsXML = optOutputFormat(fmtXML).value
+    .IsXML = optOutputFormat(fmtXML).Value
     
     .Initialise True, "", 0, 0, , , , Me, , , False, False, False
     
     'Initialise the edit column form for CMG options
-    If optOutputFormat(fmtCMGFile).value And mbCMGExportFieldCode Then
+    If optOutputFormat(fmtCMGFile).Value And mbCMGExportFieldCode Then
       .SetCMGOptions ("")
     End If
     
-    If optOutputFormat(fmtXML).value Then
+    If optOutputFormat(fmtXML).Value Then
       .SetXMLOptions
     End If
     
@@ -3742,7 +3742,7 @@ Private Sub cmdNewColumn_Click()
       pstrRow = pstrRow & vbTab & .cboConvCase.ListIndex
       
       'NPG20080617 Suggestion S000816
-      pstrRow = pstrRow & vbTab & IIf(.chkSuppressNulls.value = 1, True, False)
+      pstrRow = pstrRow & vbTab & IIf(.chkSuppressNulls.Value = 1, True, False)
       
       With grdColumns
         .AddItem pstrRow
@@ -3789,50 +3789,50 @@ Private Sub cmdEditColumn_Click()
       
     plngRow = .AddItemRowIndex(.Bookmark)
     
-    pfrmColumnEdit.IsXML = optOutputFormat(fmtXML).value
+    pfrmColumnEdit.IsXML = optOutputFormat(fmtXML).Value
 
     ' Pass in CMG Codes
-    If optOutputFormat(fmtCMGFile).value = True And mbCMGExportFieldCode Then
-      pfrmColumnEdit.SetCMGOptions (Trim(.Columns("CMG Code").value))
+    If optOutputFormat(fmtCMGFile).Value = True And mbCMGExportFieldCode Then
+      pfrmColumnEdit.SetCMGOptions (Trim(.Columns("CMG Code").Value))
     End If
       
-    If optOutputFormat(fmtXML).value Then
+    If optOutputFormat(fmtXML).Value Then
       pfrmColumnEdit.SetXMLOptions
     End If
     
     Select Case .Columns("Type").Text
       
       Case "C":
-        lID = .Columns("ColExprID").value
+        lID = .Columns("ColExprID").Value
         pfrmColumnEdit.Initialise False _
                                   , "C" _
-                                  , .Columns("TableID").value _
-                                  , .Columns("ColExprID").value _
+                                  , .Columns("TableID").Value _
+                                  , .Columns("ColExprID").Value _
                                   , Left(.Columns("Data").Text _
                                   , InStr(.Columns("Data").Text, ".") - 1) _
                                   , Mid(.Columns("Data").Text _
                                   , InStr(.Columns("Data").Text, ".") + 1 _
                                   , Len(.Columns("Data").Text)) _
-                                  , .Columns("Length").value _
+                                  , .Columns("Length").Value _
                                   , Me _
-                                  , CInt(IIf((IsNull(.Columns("Decimals").value)) Or (.Columns("Decimals").value = vbNullString), 0, .Columns("Decimals").value)) _
-                                  , .Columns("Heading").value _
-                                  , .Columns("ConvertCase").value _
-                                  , .Columns("SuppressNulls").value 'NPG20080617 Suggestion S000816
+                                  , CInt(IIf((IsNull(.Columns("Decimals").Value)) Or (.Columns("Decimals").Value = vbNullString), 0, .Columns("Decimals").Value)) _
+                                  , .Columns("Heading").Value _
+                                  , .Columns("ConvertCase").Value _
+                                  , .Columns("SuppressNulls").Value 'NPG20080617 Suggestion S000816
                                   
       Case "X"
         pfrmColumnEdit.Initialise False _
                                   , "X" _
                                   , 0 _
-                                  , .Columns("ColExprID").value _
+                                  , .Columns("ColExprID").Value _
                                   , _
                                   , .Columns("Data").Text _
-                                  , .Columns("Length").value _
+                                  , .Columns("Length").Value _
                                   , Me _
-                                  , CInt(IIf((IsNull(.Columns("Decimals").value)) Or (.Columns("Decimals").value = vbNullString), 0, .Columns("Decimals").value)) _
-                                  , .Columns("Heading").value _
-                                  , .Columns("ConvertCase").value _
-                                  , .Columns("SuppressNulls").value 'NPG20080617 Suggestion S000816
+                                  , CInt(IIf((IsNull(.Columns("Decimals").Value)) Or (.Columns("Decimals").Value = vbNullString), 0, .Columns("Decimals").Value)) _
+                                  , .Columns("Heading").Value _
+                                  , .Columns("ConvertCase").Value _
+                                  , .Columns("SuppressNulls").Value 'NPG20080617 Suggestion S000816
       Case "T"
         pfrmColumnEdit.Initialise False _
                                   , "T" _
@@ -3840,10 +3840,10 @@ Private Sub cmdEditColumn_Click()
                                   , 0 _
                                   , .Columns("Data").Text _
                                   , _
-                                  , .Columns("Length").value _
+                                  , .Columns("Length").Value _
                                   , Me _
-                                  , CInt(IIf((IsNull(.Columns("Decimals").value)) Or (.Columns("Decimals").value = vbNullString), 0, .Columns("Decimals").value)) _
-                                  , .Columns("Heading").value
+                                  , CInt(IIf((IsNull(.Columns("Decimals").Value)) Or (.Columns("Decimals").Value = vbNullString), 0, .Columns("Decimals").Value)) _
+                                  , .Columns("Heading").Value
       Case "F"
         pfrmColumnEdit.Initialise False _
                                   , "F" _
@@ -3851,10 +3851,10 @@ Private Sub cmdEditColumn_Click()
                                   , 0 _
                                   , "" _
                                   , _
-                                  , .Columns("Length").value _
+                                  , .Columns("Length").Value _
                                   , Me _
-                                  , CInt(IIf((IsNull(.Columns("Decimals").value)) Or (.Columns("Decimals").value = vbNullString), 0, .Columns("Decimals").value)) _
-                                  , .Columns("Heading").value
+                                  , CInt(IIf((IsNull(.Columns("Decimals").Value)) Or (.Columns("Decimals").Value = vbNullString), 0, .Columns("Decimals").Value)) _
+                                  , .Columns("Heading").Value
       Case "R"
         pfrmColumnEdit.Initialise False _
                                   , "R" _
@@ -3862,10 +3862,10 @@ Private Sub cmdEditColumn_Click()
                                   , 0 _
                                   , "" _
                                   , _
-                                  , .Columns("Length").value _
+                                  , .Columns("Length").Value _
                                   , Me _
-                                  , CInt(IIf((IsNull(.Columns("Decimals").value)) Or (.Columns("Decimals").value = vbNullString), 0, .Columns("Decimals").value)) _
-                                  , .Columns("Heading").value
+                                  , CInt(IIf((IsNull(.Columns("Decimals").Value)) Or (.Columns("Decimals").Value = vbNullString), 0, .Columns("Decimals").Value)) _
+                                  , .Columns("Heading").Value
       Case "N"
         pfrmColumnEdit.Initialise False _
                                   , "N" _
@@ -3873,10 +3873,10 @@ Private Sub cmdEditColumn_Click()
                                   , 0 _
                                   , "" _
                                   , _
-                                  , .Columns("Length").value _
+                                  , .Columns("Length").Value _
                                   , Me _
-                                  , CInt(IIf((IsNull(.Columns("Decimals").value)) Or (.Columns("Decimals").value = vbNullString), 0, .Columns("Decimals").value)) _
-                                  , .Columns("Heading").value
+                                  , CInt(IIf((IsNull(.Columns("Decimals").Value)) Or (.Columns("Decimals").Value = vbNullString), 0, .Columns("Decimals").Value)) _
+                                  , .Columns("Heading").Value
     
     End Select
     
@@ -3905,7 +3905,7 @@ Private Sub cmdEditColumn_Click()
 '          Next iCount
 '
 '          If fFoundInSortOrder Then
-        If IsUsedInSortOrder(grdColumns.Columns("ColExprID").value) = True Then
+        If IsUsedInSortOrder(grdColumns.Columns("ColExprID").Value) = True Then
             
             If COAMsgBox("You have changed a column that is used in the export sort order." & vbCrLf & _
                       "Continuing will remove the old column from the sort order." & vbCrLf & _
@@ -3988,7 +3988,7 @@ Private Sub cmdEditColumn_Click()
       pstrRow = pstrRow & vbTab & .cboConvCase.ListIndex
       
       'NPG20080617 Suggestion S000816
-      pstrRow = pstrRow & vbTab & IIf(.chkSuppressNulls.value = 1, True, False)
+      pstrRow = pstrRow & vbTab & IIf(.chkSuppressNulls.Value = 1, True, False)
       
       With grdColumns
         .RemoveItem plngRow
@@ -4024,9 +4024,9 @@ Private Sub cmdDeleteColumn_Click()
   Changed = True
   mblnBaseTableSpecificChanged = True
  
-  If IsUsedInSortOrder(grdColumns.Columns("ColExprID").value) = True Then
-    If COAMsgBox("The '" & grdColumns.Columns("Data").value & "' column is defined in the export sort order." & vbCrLf & "If you delete the column from the export, it will be removed from the sort order." & vbCrLf & "Do you wish to continue ?", vbQuestion + vbYesNo, "Export") = vbYes Then
-      RemoveFromSortOrder (grdColumns.Columns("ColExprID").value)
+  If IsUsedInSortOrder(grdColumns.Columns("ColExprID").Value) = True Then
+    If COAMsgBox("The '" & grdColumns.Columns("Data").Value & "' column is defined in the export sort order." & vbCrLf & "If you delete the column from the export, it will be removed from the sort order." & vbCrLf & "Do you wish to continue ?", vbQuestion + vbYesNo, "Export") = vbYes Then
+      RemoveFromSortOrder (grdColumns.Columns("ColExprID").Value)
       UpdateButtonStatus
     Else
       Exit Sub
@@ -4491,7 +4491,7 @@ Private Sub ClearForNew(Optional bPartialClear As Boolean)
   'Output  : None
   
   With Me
-    .optBaseAllRecords.value = True
+    .optBaseAllRecords.Value = True
     .txtBasePicklist.Text = ""
     .txtBasePicklist.Tag = 0
     .txtBaseFilter.Text = ""
@@ -4527,7 +4527,7 @@ Private Sub ClearForNew(Optional bPartialClear As Boolean)
     .txtDesc = vbNullString
     .txtUserName = gsUserName
     '.optDELIMITED.Value = True
-    .optOutputFormat(fmtCSV).value = True
+    .optOutputFormat(fmtCSV).Value = True
     .cboDelimiter.ListIndex = 0
     .txtFilename.Text = ""
     '.txtFilename(2).Text = ""
@@ -4539,9 +4539,9 @@ Private Sub ClearForNew(Optional bPartialClear As Boolean)
     SetComboText cboDateSeparator, UI.GetSystemDateSeparator
     If cboDateSeparator.ListIndex = -1 Then cboDateSeparator.ListIndex = 0
     'UpdateDate
-    .chkQuotes.value = vbUnchecked
+    .chkQuotes.Value = vbUnchecked
     '.chkAppendToFile = vbUnchecked
-    .chkOmitHeader.value = vbUnchecked
+    .chkOmitHeader.Value = vbUnchecked
     cboHeaderOptions.ListIndex = 0
     cboFooterOptions.ListIndex = 0
 
@@ -4610,7 +4610,7 @@ Private Sub EnableFrame(fraTemp As Control, blnEnabled As Boolean)
           End If
         ElseIf TypeOf ctl Is CheckBox Then
           If Not blnEnabled Then
-            ctl.value = vbUnchecked
+            ctl.Value = vbUnchecked
           End If
         End If
       End If
@@ -4658,7 +4658,7 @@ Public Sub EnableDisableTabControls()
   If cboChild.ListIndex = 0 Then
     txtChildFilter.Text = ""
     txtChildFilter.Tag = 0
-    spnMaxRecords.value = 0
+    spnMaxRecords.Value = 0
   End If
 
   lblMaxRecords.Enabled = lblChildFilter.Enabled
@@ -4721,7 +4721,7 @@ Public Sub EnableDisableTabControls()
       'Changed = False
     End With
         
-    If chkSplitFile.value = vbChecked Then
+    If chkSplitFile.Value = vbChecked Then
       lblSplitFileSize.Enabled = True
       spnSplitFileSize.Enabled = True
       spnSplitFileSize.BackColor = &H80000005
@@ -4729,7 +4729,7 @@ Public Sub EnableDisableTabControls()
       lblSplitFileSize.Enabled = False
       spnSplitFileSize.Enabled = False
       spnSplitFileSize.BackColor = &H8000000F
-      spnSplitFileSize.value = 0
+      spnSplitFileSize.Value = 0
     End If
     
   End Select
@@ -4808,7 +4808,7 @@ Private Function ValidateDefinition() As Boolean
   End If
   
   ' BASE TABLE - If using a picklist, check one has been selected
-  If optBasePicklist.value Then
+  If optBasePicklist.Value Then
     If txtBasePicklist.Text = "" Or txtBasePicklist.Tag = "0" Or txtBasePicklist.Tag = "" Then
       COAMsgBox "You must select a picklist, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Export"
       SSTab1.Tab = 0
@@ -4819,7 +4819,7 @@ Private Function ValidateDefinition() As Boolean
   End If
   
   ' BASE TABLE - If using a filter, check one has been selected
-  If optBaseFilter.value Then
+  If optBaseFilter.Value Then
     If txtBaseFilter.Text = "" Or txtBaseFilter.Tag = "0" Or txtBasePicklist.Tag = "" Then
       COAMsgBox "You must select a filter, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Export"
       SSTab1.Tab = 0
@@ -4830,7 +4830,7 @@ Private Function ValidateDefinition() As Boolean
   End If
   
   ' PARENT 1 TABLE - If using a picklist, check one has been selected
-  If optParent1Picklist.value Then
+  If optParent1Picklist.Value Then
     If txtParent1Picklist.Text = "" Or txtParent1Picklist.Tag = "0" Or txtParent1Picklist.Tag = "" Then
       COAMsgBox "You must select a picklist, or change the record selection for your first parent table.", vbExclamation + vbOKOnly, "Export"
       SSTab1.Tab = 1
@@ -4841,7 +4841,7 @@ Private Function ValidateDefinition() As Boolean
   End If
   
   ' PARENT 1 TABLE - If using a filter, check one has been selected
-  If optParent1Filter.value Then
+  If optParent1Filter.Value Then
     If txtParent1Filter.Text = "" Or txtParent1Filter.Tag = "0" Or txtParent1Filter.Tag = "" Then
       COAMsgBox "You must select a filter, or change the record selection for your first parent table.", vbExclamation + vbOKOnly, "Export"
       SSTab1.Tab = 1
@@ -4852,7 +4852,7 @@ Private Function ValidateDefinition() As Boolean
   End If
   
   ' PARENT 2 TABLE - If using a picklist, check one has been selected
-  If optParent2Picklist.value Then
+  If optParent2Picklist.Value Then
     If txtParent2Picklist.Text = "" Or txtParent2Picklist.Tag = "0" Or txtParent2Picklist.Tag = "" Then
       COAMsgBox "You must select a picklist, or change the record selection for your second parent table.", vbExclamation + vbOKOnly, "Export"
       SSTab1.Tab = 1
@@ -4863,7 +4863,7 @@ Private Function ValidateDefinition() As Boolean
   End If
   
   ' PARENT 2 TABLE - If using a filter, check one has been selected
-  If optParent2Filter.value Then
+  If optParent2Filter.Value Then
     If txtParent2Filter.Text = "" Or txtParent2Filter.Tag = "0" Or txtParent2Filter.Tag = "" Then
       COAMsgBox "You must select a filter, or change the record selection for your second parent table.", vbExclamation + vbOKOnly, "Export"
       SSTab1.Tab = 1
@@ -4932,7 +4932,7 @@ Private Function ValidateDefinition() As Boolean
   End If
 
   
-  If optOutputFormat(fmtCMGFile).value = True Then
+  If optOutputFormat(fmtCMGFile).Value = True Then
     If cboParentFields.Text = vbNullString Then
       COAMsgBox "No record identifier selected for the CMG file.", vbExclamation, "Export"
       ValidateDefinition = False
@@ -4966,7 +4966,7 @@ Private Function ValidateDefinition() As Boolean
     End If
 
 
-    If optOutputFormat(fmtFixedLengthFile).value = True Then
+    If optOutputFormat(fmtFixedLengthFile).Value = True Then
       If grdColumns.Columns("Length").CellValue(pvarbookmark) = 0 Then
         If grdColumns.Columns("Type").CellValue(pvarbookmark) <> "R" Then
           
@@ -4988,7 +4988,7 @@ Private Function ValidateDefinition() As Boolean
 
     'MH21012002
     If grdColumns.Columns("Type").CellText(pvarbookmark) = "N" Then  'Rec Num
-      If optOutputFormat(fmtCMGFile).value = True Then
+      If optOutputFormat(fmtCMGFile).Value = True Then
         grdColumns.SelBookmarks.RemoveAll
         grdColumns.SelBookmarks.Add pvarbookmark
         grdColumns.Bookmark = pvarbookmark
@@ -5194,18 +5194,18 @@ Private Function SaveDefinition() As Boolean
              "Name = '" & Trim(Replace(txtName.Text, "'", "''")) & "'," & _
              "Description = '" & Replace(txtDesc.Text, "'", "''") & "'," & _
              "BaseTable = " & cboBaseTable.ItemData(cboBaseTable.ListIndex) & "," & _
-             "AllRecords = " & IIf(optBaseAllRecords.value, 1, 0) & "," & _
-             "Picklist = " & IIf(optBasePicklist.value, txtBasePicklist.Tag, 0) & "," & _
-             "Filter = " & IIf(optBaseFilter.value, txtBaseFilter.Tag, 0) & "," & _
+             "AllRecords = " & IIf(optBaseAllRecords.Value, 1, 0) & "," & _
+             "Picklist = " & IIf(optBasePicklist.Value, txtBasePicklist.Tag, 0) & "," & _
+             "Filter = " & IIf(optBaseFilter.Value, txtBaseFilter.Tag, 0) & "," & _
              "Parent1Table = " & txtParent1.Tag & "," & _
              "Parent1Filter= " & txtParent1Filter.Tag & "," & _
              "Parent2Table = " & txtParent2.Tag & "," & _
              "Parent2Filter= " & txtParent2Filter.Tag & "," & _
              "ChildTable = " & cboChild.ItemData(cboChild.ListIndex) & "," & _
              "ChildFilter = " & txtChildFilter.Tag & "," & _
-             "ChildMaxRecords = " & Me.spnMaxRecords.value & ","
+             "ChildMaxRecords = " & Me.spnMaxRecords.Value & ","
   
-    If optOutputFormat(fmtCSV).value Then
+    If optOutputFormat(fmtCSV).Value Then
       strSQL = strSQL & "Delimiter = '" & cboDelimiter.Text & "',"
       strSQL = strSQL & "OtherDelimiter = '" & Replace(Me.txtDelimiter.Text, "'", "''") & "',"
     Else
@@ -5215,7 +5215,7 @@ Private Function SaveDefinition() As Boolean
     
     strSQL = strSQL & "OutputFormat = " & CStr(mobjOutputDef.GetSelectedFormatIndex) & ","
 
-    If chkDestination(desSave).value = vbChecked Then
+    If chkDestination(desSave).Value = vbChecked Then
       strSQL = strSQL & _
         "OutputSave = 1, " & _
         "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
@@ -5225,7 +5225,7 @@ Private Function SaveDefinition() As Boolean
         "OutputSaveExisting = 0, "
     End If
         
-    If chkDestination(desEmail).value = vbChecked Then
+    If chkDestination(desEmail).Value = vbChecked Then
       strSQL = strSQL & _
           "OutputEmail = 1, " & _
           "OutputEmailAddr = " & txtEmailGroup.Tag & ", " & _
@@ -5249,26 +5249,26 @@ Private Function SaveDefinition() As Boolean
     
     
     ' Save the CMG export options
-    If optOutputFormat(fmtCMGFile).value = True Then
+    If optOutputFormat(fmtCMGFile).Value = True Then
       strSQL = strSQL & "CMGExportFileCode = '" & Replace(txtFileExportCode.Text, "'", "''") & "'" & _
-        ",CMGExportUpdateAudit = " & IIf(Me.chkUpdateAuditPointer.value, 1, 0) & _
+        ",CMGExportUpdateAudit = " & IIf(Me.chkUpdateAuditPointer.Value, 1, 0) & _
         ",CMGExportRecordID = " & cboParentFields.ItemData(cboParentFields.ListIndex) & ","
     End If
     
     ' Save the XML export options
-    If optOutputFormat(fmtXML).value = True Then
+    If optOutputFormat(fmtXML).Value = True Then
       strSQL = strSQL & "TransformFile = '" & Replace(txtTransformFile.Text, "'", "''") & "'," _
               & "XMLDataNodeName = '" & Replace(txtXMLDataNodeName.Text, "'", "''") & "'," _
               & "XSDFilename = '" & Replace(txtXSDFilename.Text, "'", "''") & "'," _
-              & "PreserveTransformPath = " & IIf(chkPreserveTransformPath.value = vbChecked, "1", "0") & ", " _
-              & "PreserveXSDPath = " & IIf(chkPreserveXSDPath.value = vbChecked, "1", "0") & ", " _
-              & "SplitXMLNodesFile = " & IIf(chkSplitXMLNodesFile.value = vbChecked, "1", "0") & ", "
+              & "PreserveTransformPath = " & IIf(chkPreserveTransformPath.Value = vbChecked, "1", "0") & ", " _
+              & "PreserveXSDPath = " & IIf(chkPreserveXSDPath.Value = vbChecked, "1", "0") & ", " _
+              & "SplitXMLNodesFile = " & IIf(chkSplitXMLNodesFile.Value = vbChecked, "1", "0") & ", "
     End If
        
-    strSQL = strSQL & "Quotes = " & IIf(Me.chkQuotes.value, 1, 0) & "," & _
-                  "StripDelimiterFromData = " & IIf(Me.chkStripDelimiter.value, 1, 0) & "," & _
-                  "SplitFile = " & IIf(Me.chkSplitFile.value, 1, 0) & "," & _
-                  "SplitFileSize = '" & Replace(spnSplitFileSize.value, "'", "''") & "'," & _
+    strSQL = strSQL & "Quotes = " & IIf(Me.chkQuotes.Value, 1, 0) & "," & _
+                  "StripDelimiterFromData = " & IIf(Me.chkStripDelimiter.Value, 1, 0) & "," & _
+                  "SplitFile = " & IIf(Me.chkSplitFile.Value, 1, 0) & "," & _
+                  "SplitFileSize = '" & Replace(spnSplitFileSize.Value, "'", "''") & "'," & _
                   "Header = " & cboHeaderOptions.ListIndex & "," & _
                   "HeaderText = '" & Replace(txtCustomHeader.Text, "'", "''") & "'," & _
                   "Footer = " & cboFooterOptions.ListIndex & "," & _
@@ -5276,15 +5276,15 @@ Private Function SaveDefinition() As Boolean
                   "DateFormat = '" & cboDateFormat.Text & "'," & _
                   "DateSeparator = '" & cboDateSeparator.Text & "'," & _
                   "DateYearDigits = '" & cboDateYearDigits.Text & "'," & _
-                  "AuditChangesOnly = " & IIf(chkAuditChangesOnly.value = vbChecked, "1", "0") & ", " & _
-                  "OmitHeader = " & IIf(chkOmitHeader.value, 1, 0) & "," & _
-                  "ForceHeader = " & IIf(chkForceHeader.value, 1, 0) & ","
+                  "AuditChangesOnly = " & IIf(chkAuditChangesOnly.Value = vbChecked, "1", "0") & ", " & _
+                  "OmitHeader = " & IIf(chkOmitHeader.Value, 1, 0) & "," & _
+                  "ForceHeader = " & IIf(chkForceHeader.Value, 1, 0) & ","
 
     strSQL = strSQL & _
-                  "Parent1AllRecords = " & IIf(optParent1AllRecords.value, 1, 0) & "," & _
-                  "Parent1Picklist = " & IIf(optParent1Picklist.value, txtParent1Picklist.Tag, 0) & "," & _
-                  "Parent2AllRecords = " & IIf(optParent2AllRecords.value, 1, 0) & "," & _
-                  "Parent2Picklist = " & IIf(optParent2Picklist.value, txtParent2Picklist.Tag, 0) & " " & _
+                  "Parent1AllRecords = " & IIf(optParent1AllRecords.Value, 1, 0) & "," & _
+                  "Parent1Picklist = " & IIf(optParent1Picklist.Value, txtParent1Picklist.Tag, 0) & "," & _
+                  "Parent2AllRecords = " & IIf(optParent2AllRecords.Value, 1, 0) & "," & _
+                  "Parent2Picklist = " & IIf(optParent2Picklist.Value, txtParent2Picklist.Tag, 0) & " " & _
                   "WHERE ID = " & mlngExportID
 
 
@@ -5337,9 +5337,9 @@ Private Function SaveDefinition() As Boolean
     strSQL = strSQL & ", " & CStr(txtParent2Filter.Tag)
     strSQL = strSQL & ", " & CStr(cboChild.ItemData(cboChild.ListIndex))
     strSQL = strSQL & ", " & CStr(txtChildFilter.Tag)
-    strSQL = strSQL & ", " & CStr(spnMaxRecords.value)
+    strSQL = strSQL & ", " & CStr(spnMaxRecords.Value)
 
-    If optOutputFormat(fmtCSV).value Then
+    If optOutputFormat(fmtCSV).Value Then
       strSQL = strSQL & ",'" & cboDelimiter.Text & "'"
       strSQL = strSQL & ",'" & txtDelimiter.Text & "'" '"OtherDelimiter = '" & Replace(Me.txtDelimiter.Text, "'", "''") & "',"
     Else
@@ -5347,11 +5347,11 @@ Private Function SaveDefinition() As Boolean
     End If
 
 
-    If Me.chkQuotes.value Then strSQL = strSQL & ", 1" Else strSQL = strSQL & ", 0"
-    If Me.chkStripDelimiter.value Then strSQL = strSQL & ", 1" Else strSQL = strSQL & ", 0"
-    If Me.chkSplitFile.value Then strSQL = strSQL & ", 1" Else strSQL = strSQL & ", 0"
+    If Me.chkQuotes.Value Then strSQL = strSQL & ", 1" Else strSQL = strSQL & ", 0"
+    If Me.chkStripDelimiter.Value Then strSQL = strSQL & ", 1" Else strSQL = strSQL & ", 0"
+    If Me.chkSplitFile.Value Then strSQL = strSQL & ", 1" Else strSQL = strSQL & ", 0"
                  
-    strSQL = strSQL & ", '" & spnSplitFileSize.value & "'" & _
+    strSQL = strSQL & ", '" & spnSplitFileSize.Value & "'" & _
                   ", " & CStr(cboHeaderOptions.ListIndex) & _
                   ", '" & Replace(txtCustomHeader.Text, "'", "''") & "'" & _
                   ", " & CStr(cboFooterOptions.ListIndex) & _
@@ -5365,7 +5365,7 @@ Private Function SaveDefinition() As Boolean
     
     ' Save the CMG export options
     strSQL = strSQL & ", '" & Replace(txtFileExportCode.Text, "'", "''") & "'"
-    strSQL = strSQL & ", " & IIf(Me.chkUpdateAuditPointer.value, 1, 0)
+    strSQL = strSQL & ", " & IIf(Me.chkUpdateAuditPointer.Value, 1, 0)
     cboParentFields.ListIndex = IIf(cboParentFields.ListIndex = -1, 0, cboParentFields.ListIndex)
     strSQL = strSQL & ", " & cboParentFields.ItemData(cboParentFields.ListIndex) & ","
    
@@ -5376,20 +5376,20 @@ Private Function SaveDefinition() As Boolean
   
     ' Header and append options
     'strSQL = strSQL & IIf(chkAppendToFile.Value = vbChecked, "1", "0") & ","
-    strSQL = strSQL & IIf(chkAuditChangesOnly.value = vbChecked, "1", "0") & ", "
-    strSQL = strSQL & IIf(chkOmitHeader.value = vbChecked, "1", "0") & ","
-    strSQL = strSQL & IIf(chkForceHeader.value = vbChecked, "1", "0") & ","
+    strSQL = strSQL & IIf(chkAuditChangesOnly.Value = vbChecked, "1", "0") & ", "
+    strSQL = strSQL & IIf(chkOmitHeader.Value = vbChecked, "1", "0") & ","
+    strSQL = strSQL & IIf(chkForceHeader.Value = vbChecked, "1", "0") & ","
     
     strSQL = strSQL & CStr(mobjOutputDef.GetSelectedFormatIndex) & ","
     
-    If chkDestination(desSave).value = vbChecked Then
+    If chkDestination(desSave).Value = vbChecked Then
       strSQL = strSQL & "1, " & _
         cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
     Else
       strSQL = strSQL & "0, 0, "
     End If
 
-    If chkDestination(desEmail).value = vbChecked Then
+    If chkDestination(desEmail).Value = vbChecked Then
       strSQL = strSQL & "1, " & _
           txtEmailGroup.Tag & ", " & _
           "'" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
@@ -5402,9 +5402,9 @@ Private Function SaveDefinition() As Boolean
         "'" & Replace(txtFilename.Text, "'", "''") & "','" & Replace(txtTransformFile.Text, "'", "''") & "'," & _
         "'" & Replace(txtXMLDataNodeName.Text, "'", "''") & "'," & _
         "'" & Replace(txtXSDFilename.Text, "'", "''") & "'," & _
-        IIf(chkPreserveTransformPath.value = vbChecked, "1", "0") & ", " & _
-        IIf(chkPreserveXSDPath.value = vbChecked, "1", "0") & ", " & _
-        IIf(chkSplitXMLNodesFile.value = vbChecked, "1", "0") & ")"
+        IIf(chkPreserveTransformPath.Value = vbChecked, "1", "0") & ", " & _
+        IIf(chkPreserveXSDPath.Value = vbChecked, "1", "0") & ", " & _
+        IIf(chkSplitXMLNodesFile.Value = vbChecked, "1", "0") & ")"
           
     If IsRecordSelectionValid = False Then
       SaveDefinition = False
@@ -5533,7 +5533,7 @@ Private Sub SaveAccess()
     " FROM sysusers" & _
     " WHERE sysusers.uid = sysusers.gid" & _
     " AND sysusers.name <> 'ASRSysGroup'" & _
-    " AND sysusers.uid <> 0)"
+    " AND ISNULL(sysusers.uid, 0) <> 0)"
   mdatData.ExecuteSql (sSQL)
 
   ' Update the new access records with the real access values.
@@ -5638,15 +5638,15 @@ Private Function InsertExport(pstrSQL As String) As Long
             
     Set pmADO = .CreateParameter("insertString", adLongVarChar, adParamInput, -1)
     .Parameters.Append pmADO
-    pmADO.value = pstrSQL
+    pmADO.Value = pstrSQL
               
     Set pmADO = .CreateParameter("tablename", adVarChar, adParamInput, 255)
     .Parameters.Append pmADO
-    pmADO.value = "AsrSysExportName"
+    pmADO.Value = "AsrSysExportName"
               
     Set pmADO = .CreateParameter("idcolumnname", adVarChar, adParamInput, 30)
     .Parameters.Append pmADO
-    pmADO.value = "ID"
+    pmADO.Value = "ID"
               
     Set pmADO = Nothing
             
@@ -5660,7 +5660,7 @@ Private Function InsertExport(pstrSQL As String) As Long
         Exit Function
     End If
     
-    InsertExport = IIf(IsNull(.Parameters(0).value), 0, .Parameters(0).value)
+    InsertExport = IIf(IsNull(.Parameters(0).Value), 0, .Parameters(0).Value)
           
   End With
   
@@ -5766,45 +5766,45 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   UpdateDependantFields
   
   ' Set Base Table Record Select Options
-  If rsTemp!AllRecords Then optBaseAllRecords.value = True
+  If rsTemp!AllRecords Then optBaseAllRecords.Value = True
   If rsTemp!picklist Then
-    optBasePicklist.value = True
+    optBasePicklist.Value = True
     txtBasePicklist.Tag = rsTemp!picklist
     txtBasePicklist.Text = datGeneral.GetPicklistName(rsTemp!picklist)
   End If
   
   If rsTemp!Filter Then
-    optBaseFilter.value = True
+    optBaseFilter.Value = True
     txtBaseFilter.Tag = rsTemp!Filter
     txtBaseFilter.Text = datGeneral.GetFilterName(rsTemp!Filter)
   End If
   
   ' Set Parent 1 Table Record Select Options
-  If (rsTemp!parent1AllRecords) Or (rsTemp!parent1table <= 0) Then optParent1AllRecords.value = True
+  If (rsTemp!parent1AllRecords) Or (rsTemp!parent1table <= 0) Then optParent1AllRecords.Value = True
   
   If rsTemp!parent1picklist > 0 Then
-    optParent1Picklist.value = True
+    optParent1Picklist.Value = True
     txtParent1Picklist.Tag = rsTemp!parent1picklist
     txtParent1Picklist.Text = datGeneral.GetPicklistName(rsTemp!parent1picklist)
   End If
     
   If rsTemp!parent1filter > 0 Then
-    optParent1Filter.value = True
+    optParent1Filter.Value = True
     txtParent1Filter.Tag = rsTemp!parent1filter
     txtParent1Filter.Text = datGeneral.GetFilterName(txtParent1Filter.Tag)
   End If
   
   ' Set Parent 2 Table Record Select Options
-  If (rsTemp!parent2AllRecords) Or (rsTemp!parent2table <= 0) Then optParent2AllRecords.value = True
+  If (rsTemp!parent2AllRecords) Or (rsTemp!parent2table <= 0) Then optParent2AllRecords.Value = True
   
   If rsTemp!parent2picklist > 0 Then
-    optParent2Picklist.value = True
+    optParent2Picklist.Value = True
     txtParent2Picklist.Tag = rsTemp!parent2picklist
     txtParent2Picklist.Text = datGeneral.GetPicklistName(rsTemp!parent2picklist)
   End If
       
   If rsTemp!parent2filter > 0 Then
-    optParent2Filter.value = True
+    optParent2Filter.Value = True
     txtParent2Filter.Tag = rsTemp!parent2filter
     txtParent2Filter.Text = datGeneral.GetFilterName(txtParent2Filter.Tag)
   End If
@@ -5827,17 +5827,17 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   End If
   
   ' Set Child Max Records
-  spnMaxRecords.value = rsTemp!ChildMaxRecords
+  spnMaxRecords.Value = rsTemp!ChildMaxRecords
       
   ' Header / append options
   'chkAppendToFile.Value = IIf(rsTemp!AppendToFile = True, vbChecked, vbUnchecked)
-  chkForceHeader.value = IIf(rsTemp!ForceHeader = True, vbChecked, vbUnchecked)
-  chkOmitHeader.value = IIf(rsTemp!OmitHeader = True, vbChecked, vbUnchecked)
+  chkForceHeader.Value = IIf(rsTemp!ForceHeader = True, vbChecked, vbUnchecked)
+  chkOmitHeader.Value = IIf(rsTemp!OmitHeader = True, vbChecked, vbUnchecked)
   
   If Not IsNull(rsTemp!SplitFile) Then
     If rsTemp!SplitFile Then
-      chkSplitFile.value = vbChecked
-      spnSplitFileSize.value = IIf(IsNull(rsTemp!SplitFileSize), 0, rsTemp!SplitFileSize)
+      chkSplitFile.Value = vbChecked
+      spnSplitFileSize.Value = IIf(IsNull(rsTemp!SplitFileSize), 0, rsTemp!SplitFileSize)
     End If
   End If
   
@@ -5894,15 +5894,15 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   grdColumns.Columns(4).ForeColor = vbWindowText
   grdColumns.Columns(4).HeadForeColor = vbWindowText
 
-  optOutputFormat(rsTemp!OutputFormat).value = True
+  optOutputFormat(rsTemp!OutputFormat).Value = True
   optOutputFormat_Click rsTemp!OutputFormat
   'TextOptionsStatus rsTemp!OutputFormat
 
-  chkDestination(desSave).value = IIf(rsTemp!OutputSave, vbChecked, vbUnchecked)
+  chkDestination(desSave).Value = IIf(rsTemp!OutputSave, vbChecked, vbUnchecked)
   mobjOutputDef.DestinationClick desSave
   SetComboItem cboSaveExisting, rsTemp!OutputSaveExisting
 
-  chkDestination(desEmail).value = IIf(rsTemp!OutputEmail, vbChecked, vbUnchecked)
+  chkDestination(desEmail).Value = IIf(rsTemp!OutputEmail, vbChecked, vbUnchecked)
   If rsTemp!OutputEmail Then
     txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsTemp!OutputEmailAddr)
     txtEmailGroup.Tag = rsTemp!OutputEmailAddr
@@ -5918,9 +5918,9 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
 
 
   'Text file options
-  If rsTemp!Quotes Then chkQuotes.value = vbChecked
+  If rsTemp!Quotes Then chkQuotes.Value = vbChecked
   If Not IsNull(rsTemp!StripDelimiterFromData) Then
-    If rsTemp!StripDelimiterFromData Then chkStripDelimiter.value = vbChecked
+    If rsTemp!StripDelimiterFromData Then chkStripDelimiter.Value = vbChecked
   End If
   
   If IsNull(rsTemp!delimiter) Then
@@ -5943,7 +5943,7 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   CheckIfOmitHeaderEnabled
 
   'CMG Options
-  If rsTemp!CMGExportUpdateAudit = True Then chkUpdateAuditPointer.value = 1
+  If rsTemp!CMGExportUpdateAudit = True Then chkUpdateAuditPointer.Value = 1
   
   If rsTemp!OutputFormat = fmtCMGFile Then
     If Not IsNull(rsTemp!CMGExportFileCode) Then txtFileExportCode.Text = rsTemp!CMGExportFileCode
@@ -5956,12 +5956,12 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
     If Not IsNull(rsTemp!XMLDataNodeName) Then txtXMLDataNodeName.Text = rsTemp!XMLDataNodeName
     
     If Not IsNull(rsTemp!XSDFilename) Then txtXSDFilename.Text = rsTemp!XSDFilename
-    chkPreserveTransformPath.value = IIf(rsTemp!PreserveTransformPath = True, vbChecked, vbUnchecked)
-    chkPreserveXSDPath.value = IIf(rsTemp!PreserveXSDPath = True, vbChecked, vbUnchecked)
-    chkSplitXMLNodesFile.value = IIf(rsTemp!SplitXMLNodesFile = True, vbChecked, vbUnchecked)
+    chkPreserveTransformPath.Value = IIf(rsTemp!PreserveTransformPath = True, vbChecked, vbUnchecked)
+    chkPreserveXSDPath.Value = IIf(rsTemp!PreserveXSDPath = True, vbChecked, vbUnchecked)
+    chkSplitXMLNodesFile.Value = IIf(rsTemp!SplitXMLNodesFile = True, vbChecked, vbUnchecked)
   End If
 
-  chkAuditChangesOnly.value = IIf(rsTemp!AuditChangesOnly = True, vbChecked, vbUnchecked)
+  chkAuditChangesOnly.Value = IIf(rsTemp!AuditChangesOnly = True, vbChecked, vbUnchecked)
 
   ' Set Date Format
   SetComboText cboDateFormat, rsTemp!DateFormat
@@ -6966,7 +6966,7 @@ Private Function IsAuditColumn(lColumnID As Long) As Boolean
   
   Set rsColumns = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
 
-  IsAuditColumn = IIf(rsColumns(0).value = 1, True, False)
+  IsAuditColumn = IIf(rsColumns(0).Value = 1, True, False)
   
   Set rsColumns = Nothing
   Set datData = Nothing
@@ -7210,13 +7210,13 @@ Public Sub PrintDef(lExportID As Long)
         End Select
         
         .PrintNormal
-        If chkDestination(2).value = vbChecked Then
+        If chkDestination(2).Value = vbChecked Then
           .PrintNormal "Output Destination : Save to file"
           .PrintNormal "File Name : " & txtFilename.Text
           .PrintNormal "File Options : " & cboSaveExisting.List(cboSaveExisting.ListIndex)
         End If
         
-        If chkDestination(3).value = vbChecked Then
+        If chkDestination(3).Value = vbChecked Then
           .PrintNormal "Output Destination : Send to email"
           .PrintNormal "Email Group : " & txtEmailGroup.Text
           .PrintNormal "Email Subject : " & txtEmailSubject.Text
@@ -7243,8 +7243,8 @@ Public Sub PrintDef(lExportID As Long)
           Case 2: .PrintNormal "Footer Line : Custom Footer '" & Replace(rsTemp!FooterText, vbTab, "   ") & "'"
           End Select
           
-          .PrintNormal "Force header if no records : " & IIf(chkForceHeader.value, "Yes", "No")
-          .PrintNormal "Omit header when appending to file : " & IIf(chkOmitHeader.value, "Yes", "No")
+          .PrintNormal "Force header if no records : " & IIf(chkForceHeader.Value, "Yes", "No")
+          .PrintNormal "Omit header when appending to file : " & IIf(chkOmitHeader.Value, "Yes", "No")
           .PrintNormal
         End If
         
@@ -7291,7 +7291,7 @@ Private Function IsRecordSelectionValid() As Boolean
   
   ' Base Table First
   
-  If optBaseFilter.value Then
+  If optBaseFilter.Value Then
     sSQL = "SELECT * FROM AsrSysExpressions WHERE ExprID = " & txtBaseFilter.Tag
     Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
     If rsTemp.BOF And rsTemp.EOF Then
@@ -7311,7 +7311,7 @@ Private Function IsRecordSelectionValid() As Boolean
       IsRecordSelectionValid = False
       Exit Function
     End If
-  ElseIf optBasePicklist.value Then
+  ElseIf optBasePicklist.Value Then
     sSQL = "SELECT * FROM AsrSysPicklistName WHERE PickListID = " & txtBasePicklist.Tag
     Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
     If rsTemp.BOF And rsTemp.EOF Then
@@ -7354,7 +7354,7 @@ Private Function IsRecordSelectionValid() As Boolean
       IsRecordSelectionValid = False
       Exit Function
     End If
-  ElseIf optParent1Picklist.value And txtParent1Picklist.Tag > 0 Then
+  ElseIf optParent1Picklist.Value And txtParent1Picklist.Tag > 0 Then
     sSQL = "SELECT * FROM AsrSysPicklistName WHERE PickListID = " & txtParent1Picklist.Tag
     Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
     
@@ -7398,7 +7398,7 @@ Private Function IsRecordSelectionValid() As Boolean
       IsRecordSelectionValid = False
       Exit Function
     End If
-  ElseIf optParent2Picklist.value And txtParent2Picklist.Tag > 0 Then
+  ElseIf optParent2Picklist.Value And txtParent2Picklist.Tag > 0 Then
     sSQL = "SELECT * FROM AsrSysPicklistName WHERE PickListID = " & txtParent2Picklist.Tag
     Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
     
@@ -7554,7 +7554,7 @@ Private Sub ShowRelevantColumns()
 'Set the visible property of the Decimals column.
 
 'Display the appropraite columns for the selected output type
-  If optOutputFormat(fmtCMGFile).value Then
+  If optOutputFormat(fmtCMGFile).Value Then
     lng_DataCOLUMNWIDTH = 5045.236
 
     grdColumns.Columns(7).Visible = False
@@ -7569,7 +7569,7 @@ Private Sub ShowRelevantColumns()
     grdColumns.Columns(5).Width = lng_LengthCOLUMNWIDTH
     grdColumns.Columns(6).Width = lng_AuditCOLUMNWIDTH
     
-  ElseIf optOutputFormat(fmtXML).value Then
+  ElseIf optOutputFormat(fmtXML).Value Then
     grdColumns.Columns(4).Visible = False
     grdColumns.Columns(5).Visible = False
     grdColumns.Columns(6).Visible = True
