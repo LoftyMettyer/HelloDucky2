@@ -46,121 +46,128 @@ namespace OpenHRTestToLive
             _connection = entityBuilder.ToString();
         }
 
-        public string ExportDefinition(int Id, string fileName)
+    public string ExportDefinition(int Id, string fileName)
+    {
+
+      var liveDb = new npg_openhr8_2Entities(_connection);
+
+      var settings = new XmlWriterSettings
+      {
+        CloseOutput = true,
+        Indent = true,
+        NewLineHandling = NewLineHandling.Entitize
+
+      };
+
+      var copiedObjects = new T2LClass();
+      ExtractAll(copiedObjects, liveDb, Id);
+
+      //---------------------------------------------------------------------------------------------------------------------------------
+      // Write all
+      LogData("Saving {0}...", fileName);
+      ConfirmSize(copiedObjects);
+      DataContractSerializer AllWFSerializer = new DataContractSerializer(copiedObjects.GetType());
+
+      XmlWriter WFWriter = XmlWriter.Create(File.CreateText(string.Format(fileName)), settings);
+
+      AllWFSerializer.WriteObject(WFWriter, copiedObjects);
+      WFWriter.Flush();
+      WFWriter.Close();
+
+      LogData("Done", null);
+
+      //return output.ToString();
+      return WFWriter.ToString();
+
+    }
+
+    public RepositoryStatus ImportDefinitions(string inputFile)
+    {
+      try
+      {
+
+        var importObjects = new T2LClass();
+        var liveDb = new npg_openhr8_2Entities(_connection);
+
+        // Load the XML
+        LogData("Reading {0}...", inputFile);
+        DataContractSerializer AllWFSerializer = new DataContractSerializer(importObjects.GetType());
+        XmlReader WFReader = XmlReader.Create(inputFile);
+        importObjects = (T2LClass)AllWFSerializer.ReadObject(WFReader);
+        ConfirmSize(importObjects);
+
+        // Get the max existing WF id
+        int MaxWFId = GetMaxWFId(liveDb);
+        LogData("Max existing WF Id: {0}", MaxWFId);
+
+        // Get the imported WF id
+        int ImportedWFId = importObjects.AllWorkflows.First().id;
+
+        //AllLinks = new List<ASRSysWorkflowLinks>();
+        //AllElements = new List<ASRSysWorkflowElement>();
+        //AllColumns = new List<ASRSysWorkflowElementColumn>();
+        //AllValidations = new List<ASRSysWorkflowElementValidation>();
+        //AllExpressions = new List<ASRSysExpression>();
+        //AllComponents = new List<ASRSysExprComponent>();
+        //AllItems = new List<ASRSysWorkflowElementItem>();
+        //AllValues = new List<ASRSysWorkflowElementItemValue>();
+
+        // If the imported ID clashes with the existing id range, fixup all imported id's
+        if (ImportedWFId <= MaxWFId)
         {
-
-            var liveDb = new npg_openhr8_2Entities(_connection);
-
-            var settings = new XmlWriterSettings
-            {
-                CloseOutput = true,
-                Indent = true,
-                NewLineHandling = NewLineHandling.Entitize
-
-            };
-
-            var copiedObjects = new T2LClass();
-            ExtractAll(copiedObjects, liveDb, Id);
-
-            //---------------------------------------------------------------------------------------------------------------------------------
-            // Write all
-            LogData("Saving {0}...", fileName);
-            ConfirmSize(copiedObjects);
-            DataContractSerializer AllWFSerializer = new DataContractSerializer(copiedObjects.GetType());
-
-            XmlWriter WFWriter = XmlWriter.Create(File.CreateText(string.Format(fileName)), settings);
-
-            AllWFSerializer.WriteObject(WFWriter, copiedObjects);
-            WFWriter.Flush();
-            WFWriter.Close();
-
-            LogData("Done", null);
-
-            //return output.ToString();
-            return WFWriter.ToString();
-
+          MaxWFId = BumpWorkflowIDs(importObjects, liveDb, MaxWFId);
         }
 
-        public RepositoryStatus ImportDefinitions(string inputFile)
+        // Disable all imported workflows
+        foreach (var workflow in importObjects.AllWorkflows)
         {
-            var importObjects = new T2LClass();
-
-            var liveDb = new npg_openhr8_2Entities(_connection);
-
-
-            // Load the XML
-            LogData("Reading {0}...", inputFile);
-      DataContractSerializer AllWFSerializer = new DataContractSerializer(importObjects.GetType());
-            XmlReader WFReader = XmlReader.Create(inputFile);
-            importObjects = (T2LClass)AllWFSerializer.ReadObject(WFReader);
-            ConfirmSize(importObjects);
-
-            // Get the max existing WF id
-            int MaxWFId = GetMaxWFId(liveDb);
-            LogData("Max existing WF Id: {0}", MaxWFId);
-
-            // Get the imported WF id
-            int ImportedWFId = importObjects.AllWorkflows.First().id;
-
-            //AllLinks = new List<ASRSysWorkflowLinks>();
-            //AllElements = new List<ASRSysWorkflowElement>();
-            //AllColumns = new List<ASRSysWorkflowElementColumn>();
-            //AllValidations = new List<ASRSysWorkflowElementValidation>();
-            //AllExpressions = new List<ASRSysExpression>();
-            //AllComponents = new List<ASRSysExprComponent>();
-            //AllItems = new List<ASRSysWorkflowElementItem>();
-            //AllValues = new List<ASRSysWorkflowElementItemValue>();
-
-            // If the imported ID clashes with the existing id range, fixup all imported id's
-            if (ImportedWFId <= MaxWFId)
-            {
-                MaxWFId = BumpWorkflowIDs(importObjects, liveDb, MaxWFId);
-            }
-
-            // Disable all imported workflows
-            foreach (var workflow in importObjects.AllWorkflows)
-            {
-                workflow.enabled = false;
-            }
-
-
-            // Assign the data lists back to the EF structures
-            liveDb.ASRSysWorkflows.Add(importObjects.AllWorkflows.First());
-            liveDb.ASRSysWorkflowLinks.AddRange(importObjects.AllLinks);
-            liveDb.ASRSysWorkflowElementValidations.AddRange(importObjects.AllValidations);
-            liveDb.ASRSysWorkflowElements.AddRange(importObjects.AllElements);
-            liveDb.ASRSysWorkflowElementItemValues.AddRange(importObjects.AllValues);
-            liveDb.ASRSysWorkflowElementItems.AddRange(importObjects.AllItems);
-            liveDb.ASRSysWorkflowElementColumns.AddRange(importObjects.AllColumns);
-            liveDb.ASRSysExpressions.AddRange(importObjects.AllExpressions);
-            liveDb.ASRSysExprComponents.AddRange(importObjects.AllComponents);
-            // And save
-
-
-            try
-            {
-                liveDb.SaveChanges();
-            }
-            catch (DbEntityValidationException ex)
-            {
-                // Retrieve the error messages as a list of strings.
-                var errorMessages = ex.EntityValidationErrors
-                        .SelectMany(x => x.ValidationErrors)
-                        .Select(x => x.ErrorMessage);
-
-                // Join the list to a single string.
-                var fullErrorMessage = string.Join("; ", errorMessages);
-
-                // Combine the original exception message with the new one.
-                var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
-
-                // Throw a new DbEntityValidationException with the improved exception message.
-                //throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
-                return RepositoryStatus.Error;
-            }
-
-            return RepositoryStatus.DefinitionsImported;
+          workflow.enabled = false;
         }
+
+        // Assign the data lists back to the EF structures
+        liveDb.ASRSysWorkflows.Add(importObjects.AllWorkflows.First());
+        liveDb.ASRSysWorkflowLinks.AddRange(importObjects.AllLinks);
+        liveDb.ASRSysWorkflowElementValidations.AddRange(importObjects.AllValidations);
+        liveDb.ASRSysWorkflowElements.AddRange(importObjects.AllElements);
+        liveDb.ASRSysWorkflowElementItemValues.AddRange(importObjects.AllValues);
+        liveDb.ASRSysWorkflowElementItems.AddRange(importObjects.AllItems);
+        liveDb.ASRSysWorkflowElementColumns.AddRange(importObjects.AllColumns);
+        liveDb.ASRSysExpressions.AddRange(importObjects.AllExpressions);
+        liveDb.ASRSysExprComponents.AddRange(importObjects.AllComponents);
+        // And save
+
+
+        try
+        {
+          liveDb.SaveChanges();
+        }
+        catch (DbEntityValidationException ex)
+        {
+          // Retrieve the error messages as a list of strings.
+          var errorMessages = ex.EntityValidationErrors
+                  .SelectMany(x => x.ValidationErrors)
+                  .Select(x => x.ErrorMessage);
+
+          // Join the list to a single string.
+          var fullErrorMessage = string.Join("; ", errorMessages);
+
+          // Combine the original exception message with the new one.
+          var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
+
+          // Throw a new DbEntityValidationException with the improved exception message.
+          //throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
+          return RepositoryStatus.Error;
+        }
+
+      }
+      catch (Exception)
+      {
+        return RepositoryStatus.Error;
+      }
+
+
+      return RepositoryStatus.DefinitionsImported;
+    }
 
 
     //	Entity Hierarchy: --------------------------------------------------------------------------------------------------------------

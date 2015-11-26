@@ -45,5 +45,21 @@ namespace OpenHRTestToLive.Tests
             Assert.IsTrue(result == RepositoryStatus.DefinitionsImported);
         }
 
+
+    [TestMethod()]
+    public void TestImportInvalidFile()
+      {
+
+        var import = new Repository();
+        import.Connection("sa", "asr", "openhr81pe", ".\\sql2014");
+
+        const string inputFile = "c:\\dev\\junkfile2.xml";
+
+        var result = import.ImportDefinitions(inputFile);
+
+        Assert.IsTrue(result == RepositoryStatus.Error);
+
+    }
+
     }
 }
