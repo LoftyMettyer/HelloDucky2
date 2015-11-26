@@ -205,8 +205,6 @@ Begin VB.Form frmWorkflowOpen
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9234
-            TextSave        =   ""
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -1646,7 +1644,7 @@ Private Sub RefreshControls()
   cmdDelete.Enabled = fSelectionMade And Not mblnReadOnly
   cmdProperties.Enabled = fSelectionMade
   cmdPrint.Enabled = fSelectionMade
-  cmdExport.Enabled = fSelectionMade And Not bModified
+  cmdExport.Enabled = fSelectionMade And Not bModified And mblnWorkflowEnabled
   
   txtDesc.Text = sDescription
 
