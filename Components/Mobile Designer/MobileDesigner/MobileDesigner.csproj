@@ -62,11 +62,13 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ConfOrm">
-      <HintPath>..\..\lib\ConfOrm.2.0.0.0\lib\Net35\ConfOrm.dll</HintPath>
+    <Reference Include="ConfOrm, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed8affdf01cbe4cf, processorArchitecture=MSIL">
+      <HintPath>..\..\System Framework\packages\ConfOrm.2.0.0.0\lib\Net35\ConfOrm.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="ConfOrm.Shop">
-      <HintPath>..\..\lib\ConfOrm.2.0.0.0\lib\Net35\ConfOrm.Shop.dll</HintPath>
+    <Reference Include="ConfOrm.Shop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=90b38bd64c76a74a, processorArchitecture=MSIL">
+      <HintPath>..\..\System Framework\packages\ConfOrm.2.0.0.0\lib\Net35\ConfOrm.Shop.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Iesi.Collections">
       <HintPath>..\..\lib\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
