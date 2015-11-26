@@ -638,7 +638,7 @@ Private Function GetExportDefinition() As Boolean
     'mstrExportOutputType = !outputtype
     'mstrExportOutputName = !outputname
     mblnExportQuotes = !Quotes
-    mblnStripDelimiter = IIf(IsNull(!StripDelimiterFromData), False, !StripDelimiterFromData)
+    mblnStripDelimiter = True
     
     mlngSplitFileSize = IIf(IsNull(!SplitFileSize), 0, !SplitFileSize)
     mbSplitFile = IIf(IsNull(!SplitFile), False, !SplitFile And mlngSplitFileSize > 0)
@@ -3652,12 +3652,14 @@ Private Function SendArrayToOutputOptions()
   
         If mblnHeader Then
           objOutput.DisableDelimiterCheck = True
+          objOutput.DisableSeparatorInHeaderAndFooter = (mintExportHeader <> 1)
           objOutput.DataArray mstrArrayHeader
         End If
     
         objOutput.EncloseInQuotes = mblnExportQuotes
         If Not mblnNoRecords Then
           objOutput.DisableDelimiterCheck = False
+          objOutput.DisableSeparatorInHeaderAndFooter = (mintExportHeader <> 1)
           objOutput.UpdateProgressPerRow = True
           objOutput.DataArray aryOutputData
           objOutput.UpdateProgressPerRow = False

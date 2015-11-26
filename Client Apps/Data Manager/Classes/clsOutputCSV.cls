@@ -25,9 +25,7 @@ Private mstrFileName As String
 Private mstrDelim As String
 Private mblnQuotes As Boolean
 Private mblnDisableDelimiterCheck As Boolean
-
-'Private mlngSaveFileFormat As Long
-'Private mlngEmailFileFormat As Long
+Private mblnDisableSeparatorInHeaderAndFooter As Boolean
 
 Private mstrErrorMessage As String
 
@@ -171,12 +169,19 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
   Dim lngGridCol As Long
   Dim lngGridRow As Long
   Dim blnQuoteRequired As Boolean
-
+  Dim iEndColumn As Integer
+  
   On Local Error GoTo LocalErr
 
   For lngGridRow = 0 To UBound(strArray, 2)
     strOutput = vbNullString
-    For lngGridCol = 0 To UBound(strArray, 1)
+    
+    iEndColumn = UBound(strArray, 1)
+    If mblnDisableSeparatorInHeaderAndFooter And lngGridRow = 0 Then
+      iEndColumn = 0
+    End If
+    
+    For lngGridCol = 0 To iEndColumn
       
       strTemp = strArray(lngGridCol, lngGridRow)
 
@@ -268,6 +273,10 @@ End Property
 
 Public Property Let DisableDelimiterCheck(ByVal blnNewValue As Boolean)
   mblnDisableDelimiterCheck = blnNewValue
+End Property
+
+Public Property Let DisableSeparatorInHeaderAndFooter(ByVal blnNewValue As Boolean)
+  mblnDisableSeparatorInHeaderAndFooter = blnNewValue
 End Property
 
 Public Property Let EncloseInQuotes(ByVal blnNewValue As Boolean)

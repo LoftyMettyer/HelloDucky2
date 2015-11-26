@@ -898,10 +898,10 @@ Public Function SetOptions( _
   If blnPrompt Then
     With mfrmOutput
 
-      .optOutputFormat(lngFormat).value = True
-      .chkDestination(desScreen).value = IIf(blnScreen And .chkDestination(desScreen).Enabled, vbChecked, vbUnchecked)
+      .optOutputFormat(lngFormat).Value = True
+      .chkDestination(desScreen).Value = IIf(blnScreen And .chkDestination(desScreen).Enabled, vbChecked, vbUnchecked)
 
-      .chkDestination(desPrinter).value = IIf(blnPrinter, vbChecked, vbUnchecked)
+      .chkDestination(desPrinter).Value = IIf(blnPrinter, vbChecked, vbUnchecked)
       SetComboText .cboPrinterName, strPrinterName
       If strPrinterName <> vbNullString Then
         If .cboPrinterName.Text <> strPrinterName Then
@@ -912,12 +912,12 @@ Public Function SetOptions( _
         End If
       End If
 
-      .chkDestination(desSave).value = IIf(blnSave, vbChecked, vbUnchecked)
+      .chkDestination(desSave).Value = IIf(blnSave, vbChecked, vbUnchecked)
       If blnSave Then
         SetComboItem .cboSaveExisting, lngSaveExisting
       End If
 
-      .chkDestination(desEmail).value = IIf(blnEmail, vbChecked, vbUnchecked)
+      .chkDestination(desEmail).Value = IIf(blnEmail, vbChecked, vbUnchecked)
       If blnEmail Then
         .txtEmailGroup.Text = datGeneral.GetEmailGroupName(lngEmailAddr)
         .txtEmailGroup.Tag = lngEmailAddr
@@ -935,12 +935,12 @@ Public Function SetOptions( _
       End If
 
       lngFormat = mfrmOutput.Format
-      blnScreen = (.chkDestination(desScreen).value = vbChecked)
-      blnPrinter = (.chkDestination(desPrinter).value = vbChecked)
+      blnScreen = (.chkDestination(desScreen).Value = vbChecked)
+      blnPrinter = (.chkDestination(desPrinter).Value = vbChecked)
       strPrinterName = .cboPrinterName.Text
-      blnSave = (.chkDestination(desSave).value = vbChecked)
+      blnSave = (.chkDestination(desSave).Value = vbChecked)
 
-      blnEmail = (.chkDestination(desEmail).value = vbChecked)
+      blnEmail = (.chkDestination(desEmail).Value = vbChecked)
       lngEmailAddr = Val(.txtEmailGroup.Tag)
       strEmailSubject = .txtEmailSubject.Text
       strEmailAttachAs = .txtEmailAttachAs.Text
@@ -1097,6 +1097,12 @@ Public Property Let DisableDelimiterCheck(ByVal blnNewValue As Boolean)
   'clsOutputCSV only
   On Local Error Resume Next
   mobjOutputType.DisableDelimiterCheck = blnNewValue
+End Property
+
+Public Property Let DisableSeparatorInHeaderAndFooter(ByVal blnNewValue As Boolean)
+  'clsOutputCSV only
+  On Local Error Resume Next
+  mobjOutputType.DisableSeparatorInHeaderAndFooter = blnNewValue
 End Property
 
 Public Property Let EncloseInQuotes(ByVal blnNewValue As Boolean)
