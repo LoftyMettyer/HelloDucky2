@@ -522,10 +522,10 @@ Private Function CreateSP_ResetPassword() As Boolean
     "    END" & vbNewLine & _
     "    ELSE" & vbNewLine & _
     "    BEGIN" & vbNewLine & _
-    "      SET @sMessage = 'To reset your password, copy the link shown below into your browser address bar. This will take you to a web page where you can create a new password.' + CHAR(13) + CHAR(10) +" & vbNewLine & _
+    "      SET @sMessage = 'To reset your password click shown below. This will take you to a web page where you can create a new password.' + CHAR(13) + CHAR(10) +" & vbNewLine & _
     "            'If you weren''t trying to reset your password, don''t worry — your account is still secure and no one has been given access to it.' + CHAR(13) + CHAR(10) + CHAR(13) + CHAR(10) +" & vbNewLine & _
-    "            'Copy the link shown below into your web browser to reset your password:' + CHAR(13) + CHAR(10) +" & vbNewLine & _
-    "            @psWebsiteURL + '?' + @psEncryptedLink;" & vbNewLine & vbNewLine
+    "            'Please click the link shown below to reset your password:' + CHAR(13) + CHAR(10) +" & vbNewLine & _
+    "            '<' + @psWebsiteURL + '?' + @psEncryptedLink + '>';" & vbNewLine & vbNewLine
     
   sProcSQL = sProcSQL & "      INSERT [dbo].[ASRSysEmailQueue](" & vbNewLine & _
     "        RecordDesc," & vbNewLine & _
@@ -547,7 +547,7 @@ Private Function CreateSP_ResetPassword() As Boolean
     "        @psEmailAddress," & vbNewLine & _
     "        @sMessage," & vbNewLine & _
     "        0," & vbNewLine & _
-    "        'How to reset your OpenHR Web password');" & vbNewLine & vbNewLine
+    "        'How to reset your OpenHR password');" & vbNewLine & vbNewLine
     
   sProcSQL = sProcSQL & "      EXEC [dbo].[spASREmailImmediate] 'OpenHR Web';" & vbNewLine & _
     "    END;" & vbNewLine & _
