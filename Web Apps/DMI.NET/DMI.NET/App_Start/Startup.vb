@@ -16,15 +16,23 @@ Public Class Startup
 	End Sub
 
 	Public Sub ConfigureOAuth(app As IAppBuilder)
+		Dim issuer As String, audience As String, secret As Byte()
 
-		Dim issuer = ConfigurationManager.AppSettings("as:Issuer")
-		Dim audience As String = ConfigurationManager.AppSettings("as:AudienceId")
-		Dim secret As Byte() = TextEncodings.Base64Url.Decode(ConfigurationManager.AppSettings("as:AudienceSecret"))
+		Try
+			issuer = ConfigurationManager.AppSettings("as:Issuer")
+			audience = ConfigurationManager.AppSettings("as:AudienceId")
+			secret = TextEncodings.Base64Url.Decode(ConfigurationManager.AppSettings("as:AudienceSecret"))
+		Catch ex As Exception
+			' Handle missing custom.config entries
+			Exit Sub
+		End Try
+
+		If issuer = vbNullString Then Exit Sub ' Handle empty custom.config entries
 
 		' Api controllers with an [Authorize] attribute will be validated with JWT
 		app.UseJwtBearerAuthentication(New JwtBearerAuthenticationOptions() With {
-			.AuthenticationMode = AuthenticationMode.Active,			
-			.AllowedAudiences = {audience},			
+			.AuthenticationMode = AuthenticationMode.Active,
+			.AllowedAudiences = {audience},
 			.IssuerSecurityTokenProviders = New IIssuerSecurityTokenProvider() {New SymmetricKeyIssuerSecurityTokenProvider(issuer, secret)}
 		})
 
