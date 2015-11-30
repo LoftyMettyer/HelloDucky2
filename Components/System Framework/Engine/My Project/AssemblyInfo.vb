@@ -9,16 +9,16 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("OpenHR Framework")> 
-<Assembly: AssemblyDescription("OpenHR Framework")> 
-<Assembly: AssemblyCompany("Advanced Business Software and Solutions Limited")> 
-<Assembly: AssemblyProduct("OpenHR Framework")> 
-<Assembly: AssemblyCopyright("Copyright ©  Advanced Business Software and Solutions Limited 2000-2011")> 
+<Assembly: AssemblyDescription("OpenHR Framework")>
+<Assembly: AssemblyCompany("Advanced Computer Software")>
+<Assembly: AssemblyProduct("OpenHR Framework")>
+<Assembly: AssemblyCopyright("Copyright © Advanced Computer Software 2015")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(True)> 
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("663b3f16-b4ed-41e2-8933-45881379f0ea")> 
+<Assembly: Guid("663b3f16-b4ed-41e2-8933-45881379f0ea")>
 
 ' Version information for an assembly consists of the following four values:
 '
@@ -31,7 +31,7 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("8.2.5.0")> 
+<Assembly: AssemblyVersion("8.2.7.0")>
 
 
-<Assembly: AssemblyFileVersionAttribute("8.2.5.0")> 
+<Assembly: AssemblyFileVersion("8.2.7.0")>
