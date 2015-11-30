@@ -23,10 +23,10 @@ namespace OpenHRTestToLive.Tests
             var export = new OpenHRTestToLive.Repository();
             var outputFilename = "c:\\dev\\absdef1.xml";
 
-            export.Connection ("sa", "asr", "openhr81pe", ".\\sql2014");
-            //export.Connection("sa", "asr", "npg_openhr8_2", "HARPDEV02");
+      export.Connection ("sa", "asr", "openhr81pe", ".\\sql2014");
+      //export.Connection("sa", "asr", "npg_openhr8_2", "HARPDEV02");
 
-            var result = export.ExportDefinition(10, outputFilename);
+      var result = export.ExportDefinition(10, outputFilename);
 
             Assert.IsInstanceOfType(result, typeof(string));
         }
@@ -36,11 +36,13 @@ namespace OpenHRTestToLive.Tests
         {
             var import = new Repository();
             import.Connection("sa", "asr", "openhr81pe", ".\\sql2014");
-            //import.Connection("sa", "asr", "npg_openhr8_2", "HARPDEV02");
+      //import.Connection("sa", "asr", "npg_openhr8_2", "HARPDEV02");
+      import.Connection("sa", "Password1", "func8.2_dev", "qasrvr04");
 
-            var inputFile = "c:\\dev\\absdef1.xml";
+      //var inputFile = "c:\\dev\\absdef1.xml";
+      var inputFile = "C:\\WorkflowExports\\Exported Workflow_eRecruitment.xml";
 
-            var result = import.ImportDefinitions(inputFile);
+      var result = import.ImportDefinitions(inputFile);
 
             Assert.IsTrue(result == RepositoryStatus.DefinitionsImported);
         }
