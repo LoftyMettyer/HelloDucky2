@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("OpenHR Designer")]
 [assembly: AssemblyDescription("OpenHR Designer")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Advanced Business Software and Solutions Limited")]
+[assembly: AssemblyCompany("Advanced Computer Software")]
 [assembly: AssemblyProduct("OpenHR Designer")]
-[assembly: AssemblyCopyright("Copyright ©  Advanced Business Software and Solutions Limited 2000-2012")]
+[assembly: AssemblyCopyright("Copyright © Advanced Computer Software 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("8.2.5.0")]
-[assembly: AssemblyFileVersion("8.2.5.0")]
+[assembly: AssemblyVersion("8.2.7.0")]
+[assembly: AssemblyFileVersion("8.2.7.0")]
