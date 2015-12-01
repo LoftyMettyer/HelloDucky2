@@ -54,7 +54,7 @@
 		Response.Write("  AddToIntTypeCombo(""Total"",""4"");" & vbCrLf)
 			 
 		For intCount = 0 To objCrossTab.ColumnHeadingUbound(2)
-			Response.Write("  AddToPgbCombo(""" & CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(2, intCount), 255)) & """,""" & CStr(intCount) & """);" & vbCrLf)
+			Response.Write("  AddToPgbCombo(""" & HttpUtility.HtmlDecode(CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(2, intCount), 255))) & """,""" & CStr(intCount) & """);" & vbCrLf)
 		Next
 
 		If CleanStringForJavaScript(objCrossTab.PageBreakColumnName) <> "<None>" Then
