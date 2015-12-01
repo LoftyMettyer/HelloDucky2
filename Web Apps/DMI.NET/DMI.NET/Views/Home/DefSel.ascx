@@ -768,9 +768,10 @@
 										</tr>
 
 										<tr>
-											<td height="70">
-												<textarea cols="20" class="disabled" style="width: 100%; overflow: auto" name="txtDescription" id="txtDescription" rows="4" tabindex="-1" disabled="disabled">
-									</textarea>
+											<td height="70">												
+												<textarea cols="20" class="txtareaDisable" name="txtDescription" id="txtDescription" rows="4" tabindex="-1" 
+													readonly="readonly">
+													</textarea>
 											</td>
 										</tr>
 									</table>
@@ -932,6 +933,14 @@
             $('#DefSelRecords').jqGrid('GridUnload');
             attachDefSelGrid();
         });
+
+			$('#txtDescription').on('mouseover', function (e) {
+							$(this).is('[readonly]') ? $(this).addClass("cursorNotAllowed") : $(this).removeClass("cursorNotAllowed");
+					});
+
+					$('#txtDescription').focus(function(){
+							$(this).is('[readonly]') ? this.blur() : "";
+					});
 
     });
 
