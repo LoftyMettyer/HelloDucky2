@@ -822,8 +822,7 @@
 			//$("#ctlRecordEdit").css("transform-origin", "50% top");
 		}
 
-		var toolMfRecord = getCookie('toolMFRecord');
-		$('#mnutoolMFRecord').removeClass('toolbarButtonOn');
+		var toolMfRecord = getCookie('toolMFRecord');		
 		if (toolMfRecord == 'true') toggleMandatoryColumns(true);
 	});
 

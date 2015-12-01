@@ -599,11 +599,11 @@
 						</li>
 						<li id="mnuSectionRecordMF"><span>Record Tools</span>
 							<div id="mnutoolMFRecord" class="button">
-								<a href="#" rel="table" title="Toggle Mandatory Fields">
+								<a href="#" rel="table" title="Highlight Mandatory Columns On">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Registry64HOVER.png")%>"
 										alt="" />
 									<i class="icon-th-list"></i>
-									<h6>Highlight Mandatory<br/>Columns</h6>
+									<h6>Highlight Mandatory<br/>Columns On</h6>
 								</a>
 							</div>
 						</li>

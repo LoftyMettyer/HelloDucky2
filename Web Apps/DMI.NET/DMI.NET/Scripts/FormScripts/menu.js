@@ -340,7 +340,12 @@ function menu_MenuClick(sTool) {
 	}
 	
 	if (sToolName == "mnutoolMFRecord") {
-			
+		var highlightMandatoryText = ($('#mnutoolMFRecord h6').text().indexOf('Off') > -1 ? "Highlight Mandatory <br/>Columns On" : "Highlight Mandatory <br/>Columns Off");
+		var highlightMandatorytooltipText = ($('#mnutoolMFRecord h6').text().indexOf('Off') > -1 ? "Highlight Mandatory Columns On" : "Highlight Mandatory Columns Off");
+
+		$('#mnutoolMFRecord h6').html(highlightMandatoryText);
+		$('#mnutoolMFRecord a').prop("title", highlightMandatorytooltipText);
+
 		toggleMandatoryColumns();			
 			
 		return false;
@@ -4912,10 +4917,8 @@ function toggleMandatoryColumns(pfSetting) {
 		}
 	});
 
-	$('#mnutoolMFRecord').toggleClass('toolbarButtonOn');
-
 	//Store user setting to cookie		
-	if (!pfSetting) {
+	if (!pfSetting) {		
 		setCookie("toolMFRecord", ($('#mnutoolMFRecord').hasClass('toolbarButtonOn')), 100);
 	}
 }
@@ -5078,7 +5081,7 @@ function EnableMultiSelectRibbonButton(enableMultiSelectButton) {
 		$("#mnutoolPositionRecordFind span.selectedRecordsCount").hide();
 	}
 	else {
-		var frmFind = document.getElementById("frmFindForm");
+		var frmFind = document.getElementById("frmFindForm");		
 		menu_setVisibleMenuItem("mnutoolMultiSelectFind", true);
 		menu_toolbarEnableItem("mnutoolMultiSelectFind", enableMultiSelectButton && frmFind.txtTotalRecordCount.value > 0);
 		ToggleSelectedRecordOption(enableMultiSelectButton);
