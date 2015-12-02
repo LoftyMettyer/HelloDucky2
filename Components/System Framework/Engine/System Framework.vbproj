@@ -69,9 +69,9 @@
     <AssemblyOriginatorKeyFile>advanced.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NSQLFormatter">
-      <HintPath>..\packages\NSQLFormatter.1.0\lib\NSQLFormatter.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="NSQLFormatter, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NSQLFormatter.1.1\lib\net45\NSQLFormatter.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -275,7 +275,9 @@
   <ItemGroup>
     <Content Include="Connectivity\Access DB Stored Procedures\spadmin_gettables.txt" />
     <Content Include="Connectivity\Stored Procedures\Get Metadata Stored Procedures.sql" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Resources\Cancel48.png" />
     <None Include="Resources\Cancel256.png" />
     <None Include="Resources\mobsync.15.ico" />
