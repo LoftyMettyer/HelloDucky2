@@ -14,15 +14,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{87D18D
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Test Harness", "Test Harness\Test Harness.vbproj", "{1D876F09-E9F9-41F2-ADF3-62666FC221D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHR.TestToLive", "..\OpenHR.TestToLive\OpenHR.TestToLive\OpenHR.TestToLive.csproj", "{F35ACD91-FCC6-48EA-B545-20DC3DA3F5BC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHR.TestToLive.Tests", "..\OpenHR.TestToLive\OpenHR.TestToLive.Tests\OpenHR.TestToLive.Tests.csproj", "{0191546F-6288-41E0-B6C8-A4EA2EC2C6F4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDesigner", "..\Mobile Designer\MobileDesigner\MobileDesigner.csproj", "{6D7DBE8A-D215-4F00-9438-DD412B50E48B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDesigner.Test", "..\Mobile Designer\MobileDesigner.Test\MobileDesigner.Test.csproj", "{DC0A927D-9ADA-423D-880B-304F4C4D7529}"
-EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenHR Framework Setup", "Setup\HR Pro Engine Setup.vdproj", "{FE4148DC-2FE2-462C-A43F-211996873995}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDesigner", "Mobile Designer\MobileDesigner\MobileDesigner.csproj", "{6D7DBE8A-D215-4F00-9438-DD412B50E48B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDesigner.Test", "Mobile Designer\MobileDesigner.Test\MobileDesigner.Test.csproj", "{DC0A927D-9ADA-423D-880B-304F4C4D7529}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHR.TestToLive", "OpenHR.TestToLive\OpenHR.TestToLive\OpenHR.TestToLive.csproj", "{F35ACD91-FCC6-48EA-B545-20DC3DA3F5BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHR.TestToLive.Tests", "OpenHR.TestToLive\OpenHR.TestToLive.Tests\OpenHR.TestToLive.Tests.csproj", "{0191546F-6288-41E0-B6C8-A4EA2EC2C6F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +55,40 @@ Global
 		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|Mixed Platforms.Build.0 = Release|x86
 		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|x86.ActiveCfg = Release|x86
 		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|x86.Build.0 = Release|x86
+		{FE4148DC-2FE2-462C-A43F-211996873995}.Debug|Any CPU.ActiveCfg = Debug
+		{FE4148DC-2FE2-462C-A43F-211996873995}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{FE4148DC-2FE2-462C-A43F-211996873995}.Debug|Mixed Platforms.Build.0 = Debug
+		{FE4148DC-2FE2-462C-A43F-211996873995}.Debug|x86.ActiveCfg = Debug
+		{FE4148DC-2FE2-462C-A43F-211996873995}.Debug|x86.Build.0 = Debug
+		{FE4148DC-2FE2-462C-A43F-211996873995}.Release|Any CPU.ActiveCfg = Release
+		{FE4148DC-2FE2-462C-A43F-211996873995}.Release|Any CPU.Build.0 = Release
+		{FE4148DC-2FE2-462C-A43F-211996873995}.Release|Mixed Platforms.ActiveCfg = Release
+		{FE4148DC-2FE2-462C-A43F-211996873995}.Release|Mixed Platforms.Build.0 = Release
+		{FE4148DC-2FE2-462C-A43F-211996873995}.Release|x86.ActiveCfg = Release
+		{FE4148DC-2FE2-462C-A43F-211996873995}.Release|x86.Build.0 = Release
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Debug|Any CPU.Build.0 = Debug|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Debug|x86.ActiveCfg = Debug|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Debug|x86.Build.0 = Debug|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|Any CPU.ActiveCfg = Release|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|Any CPU.Build.0 = Release|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|Mixed Platforms.Build.0 = Release|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|x86.ActiveCfg = Release|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|x86.Build.0 = Release|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|Any CPU.Build.0 = Debug|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|x86.ActiveCfg = Debug|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|x86.Build.0 = Debug|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|Any CPU.ActiveCfg = Release|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|Mixed Platforms.Build.0 = Release|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|x86.ActiveCfg = Release|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|x86.Build.0 = Release|x86
 		{F35ACD91-FCC6-48EA-B545-20DC3DA3F5BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F35ACD91-FCC6-48EA-B545-20DC3DA3F5BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F35ACD91-FCC6-48EA-B545-20DC3DA3F5BC}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -78,38 +112,6 @@ Global
 		{0191546F-6288-41E0-B6C8-A4EA2EC2C6F4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{0191546F-6288-41E0-B6C8-A4EA2EC2C6F4}.Release|x86.ActiveCfg = Release|Any CPU
 		{0191546F-6288-41E0-B6C8-A4EA2EC2C6F4}.Release|x86.Build.0 = Release|Any CPU
-		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Debug|x86.ActiveCfg = Debug|x86
-		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Debug|x86.Build.0 = Debug|x86
-		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|Any CPU.ActiveCfg = Release|x86
-		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|Any CPU.Build.0 = Release|x86
-		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|Mixed Platforms.Build.0 = Release|x86
-		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|x86.ActiveCfg = Release|x86
-		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|x86.Build.0 = Release|x86
-		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|x86.ActiveCfg = Debug|x86
-		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|x86.Build.0 = Debug|x86
-		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|Any CPU.ActiveCfg = Release|x86
-		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|Mixed Platforms.Build.0 = Release|x86
-		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|x86.ActiveCfg = Release|x86
-		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|x86.Build.0 = Release|x86
-		{FE4148DC-2FE2-462C-A43F-211996873995}.Debug|Any CPU.ActiveCfg = Debug
-		{FE4148DC-2FE2-462C-A43F-211996873995}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{FE4148DC-2FE2-462C-A43F-211996873995}.Debug|Mixed Platforms.Build.0 = Debug
-		{FE4148DC-2FE2-462C-A43F-211996873995}.Debug|x86.ActiveCfg = Debug
-		{FE4148DC-2FE2-462C-A43F-211996873995}.Debug|x86.Build.0 = Debug
-		{FE4148DC-2FE2-462C-A43F-211996873995}.Release|Any CPU.ActiveCfg = Release
-		{FE4148DC-2FE2-462C-A43F-211996873995}.Release|Any CPU.Build.0 = Release
-		{FE4148DC-2FE2-462C-A43F-211996873995}.Release|Mixed Platforms.ActiveCfg = Release
-		{FE4148DC-2FE2-462C-A43F-211996873995}.Release|Mixed Platforms.Build.0 = Release
-		{FE4148DC-2FE2-462C-A43F-211996873995}.Release|x86.ActiveCfg = Release
-		{FE4148DC-2FE2-462C-A43F-211996873995}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,20 +127,20 @@ Global
 		SccProjectUniqueName2 = Test\u0020Harness\\Test\u0020Harness.vbproj
 		SccProjectName2 = Test\u0020Harness
 		SccLocalPath2 = Test\u0020Harness
-		SccProjectUniqueName3 = ..\\OpenHR.TestToLive\\OpenHR.TestToLive\\OpenHR.TestToLive.csproj
-		SccProjectName3 = ../OpenHR.TestToLive/OpenHR.TestToLive
-		SccLocalPath3 = ..\\OpenHR.TestToLive\\OpenHR.TestToLive
-		SccProjectUniqueName4 = ..\\OpenHR.TestToLive\\OpenHR.TestToLive.Tests\\OpenHR.TestToLive.Tests.csproj
-		SccProjectName4 = ../OpenHR.TestToLive/OpenHR.TestToLive.Tests
-		SccLocalPath4 = ..\\OpenHR.TestToLive\\OpenHR.TestToLive.Tests
-		SccProjectUniqueName5 = ..\\Mobile\u0020Designer\\MobileDesigner\\MobileDesigner.csproj
-		SccProjectName5 = ../Mobile\u0020Designer/MobileDesigner
-		SccLocalPath5 = ..\\Mobile\u0020Designer\\MobileDesigner
-		SccProjectUniqueName6 = ..\\Mobile\u0020Designer\\MobileDesigner.Test\\MobileDesigner.Test.csproj
-		SccProjectName6 = ../Mobile\u0020Designer/MobileDesigner.Test
-		SccLocalPath6 = ..\\Mobile\u0020Designer\\MobileDesigner.Test
-		SccProjectUniqueName7 = Setup\\HR\u0020Pro\u0020Engine\u0020Setup.vdproj
-		SccProjectName7 = Setup
-		SccLocalPath7 = Setup
+		SccProjectUniqueName3 = Setup\\HR\u0020Pro\u0020Engine\u0020Setup.vdproj
+		SccProjectName3 = Setup
+		SccLocalPath3 = Setup
+		SccProjectUniqueName4 = Mobile\u0020Designer\\MobileDesigner\\MobileDesigner.csproj
+		SccProjectName4 = Mobile\u0020Designer/MobileDesigner
+		SccLocalPath4 = Mobile\u0020Designer\\MobileDesigner
+		SccProjectUniqueName5 = Mobile\u0020Designer\\MobileDesigner.Test\\MobileDesigner.Test.csproj
+		SccProjectName5 = Mobile\u0020Designer/MobileDesigner.Test
+		SccLocalPath5 = Mobile\u0020Designer\\MobileDesigner.Test
+		SccProjectUniqueName6 = OpenHR.TestToLive\\OpenHR.TestToLive\\OpenHR.TestToLive.csproj
+		SccProjectName6 = OpenHR.TestToLive/OpenHR.TestToLive
+		SccLocalPath6 = OpenHR.TestToLive\\OpenHR.TestToLive
+		SccProjectUniqueName7 = OpenHR.TestToLive\\OpenHR.TestToLive.Tests\\OpenHR.TestToLive.Tests.csproj
+		SccProjectName7 = OpenHR.TestToLive/OpenHR.TestToLive.Tests
+		SccLocalPath7 = OpenHR.TestToLive\\OpenHR.TestToLive.Tests
 	EndGlobalSection
 EndGlobal

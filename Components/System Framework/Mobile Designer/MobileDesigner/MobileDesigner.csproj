@@ -65,24 +65,24 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ConfOrm, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed8affdf01cbe4cf, processorArchitecture=MSIL">
-      <HintPath>..\..\System Framework\packages\ConfOrm.2.0.0.0\lib\Net35\ConfOrm.dll</HintPath>
+      <HintPath>..\..\packages\ConfOrm.2.0.0.0\lib\Net35\ConfOrm.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ConfOrm.Shop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=90b38bd64c76a74a, processorArchitecture=MSIL">
-      <HintPath>..\..\System Framework\packages\ConfOrm.2.0.0.0\lib\Net35\ConfOrm.Shop.dll</HintPath>
+      <HintPath>..\..\packages\ConfOrm.2.0.0.0\lib\Net35\ConfOrm.Shop.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Iesi.Collections">
-      <HintPath>..\..\lib\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
+      <HintPath>..\..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>..\..\lib\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+      <HintPath>..\..\..\Lib\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate">
-      <HintPath>..\..\lib\NHibernate.3.2.0.4000\lib\Net35\NHibernate.dll</HintPath>
+      <HintPath>..\..\packages\NHibernate.3.2.0.4000\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate.JetDriver">
-      <HintPath>..\..\lib\NHibernate.JetDriver.dll</HintPath>
+      <HintPath>..\..\..\Lib\NHibernate.JetDriver.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -280,8 +280,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="app.config" />
-    <None Include="packages.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -11,6 +11,7 @@ using NHibernate;
 using NHibernate.Linq;
 using MobileDesigner.Controls;
 using System.Runtime.InteropServices;
+using NHibernate.Util;
 
 namespace MobileDesigner
 {
