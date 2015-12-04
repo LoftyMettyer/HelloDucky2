@@ -652,6 +652,7 @@
     <Build Include="Views\ASRSysAllObjectNamesForOpenHRWeb.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRGetAllObjectNames.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRGetReportsAndUtilitiesSearchResult.sql" />
+    <Build Include="Views\ASRSysCategories.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

@@ -59,6 +59,35 @@ ErrorTrap:
 
 End Function
 
+Public Function DropView(viewName As String) As Boolean
+
+  On Error GoTo ErrorTrap
+  
+  Dim fOK As Boolean
+  Dim sSQL As String
+  
+  fOK = True
+  
+  sSQL = "IF EXISTS" & _
+    " (SELECT Name" & _
+    "   FROM sysobjects" & _
+    "   WHERE id = object_id('" & viewName & "')" & _
+    "     AND xtype = 'V')" & _
+    " DROP VIEW " & viewName
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+
+
+TidyUpAndExit:
+  DropView = fOK
+  Exit Function
+  
+ErrorTrap:
+  fOK = False
+  OutputError "Error dropping function '" & viewName & "'"
+  Resume TidyUpAndExit
+
+End Function
+
 
 Public Function UniqueSQLObjectName(strPrefix As String, intType As Integer) As String
 
@@ -76,17 +105,17 @@ Public Function UniqueSQLObjectName(strPrefix As String, intType As Integer) As 
   
     Set pmADO = .CreateParameter("Prefix", adVarChar, adParamInput, 255)
     .Parameters.Append pmADO
-    pmADO.Value = strPrefix
+    pmADO.value = strPrefix
     
     Set pmADO = .CreateParameter("Type", adInteger, adParamInput)
     .Parameters.Append pmADO
-    pmADO.Value = intType
+    pmADO.value = intType
     
     Set pmADO = Nothing
     
     .Execute
     
-    UniqueSQLObjectName = IIf(IsNull(.Parameters(0).Value), vbNullString, .Parameters(0).Value)
+    UniqueSQLObjectName = IIf(IsNull(.Parameters(0).value), vbNullString, .Parameters(0).value)
       
   End With
 
@@ -111,11 +140,11 @@ Public Function DropUniqueSQLObject(sSQLObjectName As String, iType As Integer) 
                 
       Set pmADO = .CreateParameter("UniqueObjectName", adVarChar, adParamInput, 255)
       .Parameters.Append pmADO
-      pmADO.Value = sSQLObjectName
+      pmADO.value = sSQLObjectName
       
       Set pmADO = .CreateParameter("Type", adInteger, adParamInput)
       .Parameters.Append pmADO
-      pmADO.Value = iType
+      pmADO.value = iType
       
       Set pmADO = Nothing
       

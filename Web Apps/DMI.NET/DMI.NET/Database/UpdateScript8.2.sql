@@ -16963,7 +16963,7 @@ BEGIN
 	BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
-		FROM [dbo].[tbuser_Object_Categories_Table]
+		FROM [dbo].[ASRSysCategories]
 		WHERE ID = @piCategoryID And _deleted = 'True'
 
 		IF @iCount = 1
@@ -40954,7 +40954,7 @@ BEGIN
 	BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
-		FROM [dbo].[tbuser_Object_Categories_Table]
+		FROM [dbo].[ASRSysCategories]
 		WHERE ID = @piCategoryID And _deleted = 'True'
 
 		IF @iCount = 1
@@ -45226,7 +45226,7 @@ BEGIN
 	BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
-		FROM [dbo].[tbuser_Object_Categories_Table]
+		FROM [dbo].[ASRSysCategories]
 		WHERE ID = @piCategoryID And _deleted = 'True'
 
 		IF @iCount = 1
@@ -45683,7 +45683,7 @@ BEGIN
 	BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
-		FROM [dbo].[tbuser_Object_Categories_Table]
+		FROM [dbo].[ASRSysCategories]
 		WHERE ID = @piCategoryID And _deleted = 'True'
 
 		IF @iCount = 1
@@ -46440,7 +46440,7 @@ BEGIN
 	BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
-		FROM [dbo].[tbuser_Object_Categories_Table]
+		FROM [dbo].[ASRSysCategories]
 		WHERE ID = @piCategoryID And _deleted = 'True'
 
 		IF @iCount = 1
