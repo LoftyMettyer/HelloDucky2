@@ -1,9 +1,3 @@
--- ==========================================================================================
--- Author:		Prashant Shah
--- Create date: 05/Nov/2015
--- Description:	This view used to gets the object type of reports/utilities.
--- ==========================================================================================
-
 CREATE VIEW [dbo].[ASRSysAllObjectAccessForOpenHRWeb]
 	AS
 		SELECT CASE b.[IsBatch] 

@@ -243,7 +243,7 @@ BEGIN
 				SET @strSQL = @strSQL  + ' (' + @sExtraWhereSQL + ')';
 			END
 
-			IF (@intCategoryID) > -1 
+			IF @intCategoryID > -1 
 			BEGIN
 			  
 				IF @fDoneWhere = 0

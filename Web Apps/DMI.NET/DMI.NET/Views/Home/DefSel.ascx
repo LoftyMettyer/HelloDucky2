@@ -646,7 +646,7 @@
 																			<%End If %>
                                         <div id="divOwner" style="display: inline-block; margin-right: 50px">
                                             <label>Owner :</label>
-                                            <select id="selectOwners" name="selectOwners" class="combo" style="margin-left: 4px;">
+                                            <select id="selectOwners" name="selectOwners" class="combo" style="margin-left: 4px; width: 200px">
                                                 <%
                                                 	If Len(sErrorDescription) = 0 Then
                                                 		Dim rstOwners = objDatabase.DB.GetDataTable("sp_ASRGetAllObjectNames", CommandType.StoredProcedure)
@@ -847,7 +847,7 @@
     	}
     	var defSelType = "<%:iDefSelType%>";		
 		
-    	if ( defSelType === "utlCustomReport" || defSelType === "utlCrossTab" || defSelType === "utlCalendarReport" || defSelType === "utlMailMerge" || defSelType == "utlNineBoxGrid")
+    	if ( defSelType === "utlCustomReport" || defSelType === "utlCrossTab" || defSelType === "utlCalendarReport" || defSelType === "utlMailMerge" || defSelType === "utlNineBoxGrid")
     	{
     		$("#divCategory").show();
     	}

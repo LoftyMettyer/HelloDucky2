@@ -1,9 +1,3 @@
--- ==========================================================================================
--- Author:		Prashant Shah
--- Create date: 05/Nov/2015
--- Description:	This view used to gets the username and description of reports/utilities.
--- ==========================================================================================
-
 CREATE VIEW [dbo].[ASRSysAllObjectNamesForOpenHRWeb]
 AS
 		SELECT 25 AS [objectType], [ID], [Name], '' AS Username, description FROM ASRSysWorkflows

@@ -39609,7 +39609,7 @@ BEGIN
 				SET @strSQL = @strSQL  + ' (' + @sExtraWhereSQL + ')';
 			END
 
-			IF (@intCategoryID) > -1 
+			IF @intCategoryID > -1 
 			BEGIN
 			  
 				IF @fDoneWhere = 0
@@ -62562,15 +62562,7 @@ BEGIN
 END
 GO
 
-/*-----------------------------------------------------------------------------------------*/
 /* New Procs and Views for the new requirements of Category Definition */
-/*-----------------------------------------------------------------------------------------*/
-
--- ==========================================================================================
--- Author:		Prashant Shah
--- Create date: 05/Nov/2015
--- Description:	This view used to gets the object type of reports/utilities.
--- ==========================================================================================
 IF EXISTS(SELECT * FROM sys.views WHERE object_id = object_id(N'[dbo].[ASRSysAllObjectAccessForOpenHRWeb]') AND [type] in (N'V'))
      DROP VIEW [dbo].[ASRSysAllObjectAccessForOpenHRWeb]
 GO
@@ -62622,11 +62614,7 @@ CREATE VIEW [dbo].[ASRSysAllObjectAccessForOpenHRWeb]
 		SELECT 20 AS [objectType], * FROM [ASRSysRecordProfileAccess]
 GO
 
--- ==========================================================================================
--- Author:		Prashant Shah
--- Create date: 05/Nov/2015
--- Description:	This view used to gets the username and description of reports/utilities.
--- ==========================================================================================
+
 IF EXISTS(SELECT * FROM sys.views WHERE object_id = object_id(N'[dbo].[ASRSysAllObjectNamesForOpenHRWeb]') AND [type] in (N'V'))
      DROP VIEW [dbo].[ASRSysAllObjectNamesForOpenHRWeb]
 GO
@@ -62684,11 +62672,7 @@ AS
 
 GO
 
--- ==========================================================================================
--- Author:		Prashant Shah
--- Create date: 05/Nov/2015
--- Description:	Gets the reports/utilities whose definition name mathches the search criteria.
--- ==========================================================================================
+
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRGetReportsAndUtilitiesSearchResult]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRGetReportsAndUtilitiesSearchResult]
 GO
@@ -62713,37 +62697,32 @@ BEGIN
 			@iActualUserGroupID OUTPUT;
 
 	SELECT 
-		ASRSysAllObjectNamesForOpenHRWeb.ID,
-		ASRSysAllObjectNamesForOpenHRWeb.objecttype,
-		ASRSysAllObjectNamesForOpenHRWeb.Name,
-		CASE ASRSysAllObjectNamesForOpenHRWeb.objecttype
-			WHEN 1 THEN 'CrossTab: ' + ASRSysAllObjectNamesForOpenHRWeb.name 
-			WHEN 2 THEN 'Custom Report: ' + ASRSysAllObjectNamesForOpenHRWeb.name 
-			WHEN 9 THEN 'Mail Merge: ' + ASRSysAllObjectNamesForOpenHRWeb.name 
-			WHEN 17 THEN 'Calender Report: ' + ASRSysAllObjectNamesForOpenHRWeb.name 
-			WHEN 35 THEN '9 Box Grid Report: ' + ASRSysAllObjectNamesForOpenHRWeb.name 
+		son.ID,
+		son.objecttype,
+		son.Name,
+		CASE son.objecttype
+			WHEN 1 THEN 'Cross Tab Report: ' + son.name 
+			WHEN 2 THEN 'Custom Report: ' + son.name 
+			WHEN 9 THEN 'Mail Merge: ' + son.name 
+			WHEN 17 THEN 'Calendar Report: ' + son.name 
+			WHEN 35 THEN '9-Box Grid Report: ' + son.name 
 		END TextToDisplay, 
-		ASRSysAllObjectNamesForOpenHRWeb.description AS [description],
+		son.description AS [description],
 		Access
-	FROM ASRSysAllObjectNamesForOpenHRWeb 
-		INNER JOIN ASRSysAllObjectAccessForOpenHRWeb ON 
-					ASRSysAllObjectNamesForOpenHRWeb.ID = ASRSysAllObjectAccessForOpenHRWeb.ID AND 
-					ASRSysAllObjectAccessForOpenHRWeb.groupname = @sRoleName AND 
-					(ASRSysAllObjectAccessForOpenHRWeb.access <> 'HD' OR ASRSysAllObjectNamesForOpenHRWeb.userName = SYSTEM_USER) 
-	WHERE	ASRSysAllObjectAccessForOpenHRWeb.objecttype = ASRSysAllObjectNamesForOpenHRWeb.objecttype AND 
-			ASRSysAllObjectNamesForOpenHRWeb.objecttype IN (1,2,9,17,35) AND 
-			ASRSysAllObjectNamesForOpenHRWeb.name LIKE '%' + @searchText + '%'
+	FROM ASRSysAllObjectNamesForOpenHRWeb  son
+	INNER JOIN ASRSysAllObjectAccessForOpenHRWeb soa ON 
+					  son.ID = soa.ID AND 
+					  soa.groupname = @sRoleName AND 
+					  (soa.access <> 'HD' OR son.userName = SYSTEM_USER) 
+	WHERE	soa.objecttype = son.objecttype AND 
+			  son.objecttype IN (1,2,9,17,35) AND 
+			  son.name LIKE '%' + @searchText + '%'
 	ORDER By TextToDisplay
 
 END
 
 GO
 
--- =======================================================
--- Author:		Amrit
--- Create date: 05/Nov/2015
--- Description:	Gets the report/utilities creator users.
--- =======================================================
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRGetAllObjectNames]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRGetAllObjectNames]
 GO

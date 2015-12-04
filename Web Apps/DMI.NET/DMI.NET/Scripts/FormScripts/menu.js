@@ -803,25 +803,25 @@ function menu_MenuClick(sTool) {
 
 		// Crosstab Reports
 		if (sToolName == "mnutoolCrossTabs") {
-			saveChangesPrompt("CROSSTABS", 'menu_loadDefSelPage(1, 0, 0, true, true)');
+			saveChangesPrompt("CROSSTABS", 'menu_loadDefSelPageForAllCategoryAndOwner(1, 0, 0, true, true)');
 			return false;
 		}
 
 	// Nine box grid Reports
 		if (sToolName == "mnutoolNineBox") {
-			saveChangesPrompt("NINEBOXGRID", 'menu_loadDefSelPage(35, 0, 0, true, true)');
+			saveChangesPrompt("NINEBOXGRID", 'menu_loadDefSelPageForAllCategoryAndOwner(35, 0, 0, true, true)');
 			return false;
 		}
 
 		// Custom Reports
 		if (sToolName == "mnutoolCustomReports") {
-			saveChangesPrompt("CUSTOMREPORTS", 'menu_loadDefSelPage(2, 0, 0, true, true)');
+			saveChangesPrompt("CUSTOMREPORTS", 'menu_loadDefSelPageForAllCategoryAndOwner(2, 0, 0, true, true)');
 			return false;
 		}
 		
 		// Calendar Reports
 		if (sToolName == "mnutoolCalendarReports") {
-			saveChangesPrompt("CALENDAR", 'menu_loadDefSelPage(17, 0, 0, true, true)');
+			saveChangesPrompt("CALENDAR", 'menu_loadDefSelPageForAllCategoryAndOwner(17, 0, 0, true, true)');
 			return false;
 		}
 		
@@ -841,7 +841,7 @@ function menu_MenuClick(sTool) {
 		// Utilities Menu -------------------------------------------------------------------------------------------------------------------
 
 		if (sToolName == "mnutoolMailMerge") {
-			saveChangesPrompt("MAILMERGE", 'menu_loadDefSelPage(9, 0, 0, true, true)');
+			saveChangesPrompt("MAILMERGE", 'menu_loadDefSelPageForAllCategoryAndOwner(9, 0, 0, true, true)');
 			return false;
 		}
 
@@ -859,17 +859,17 @@ function menu_MenuClick(sTool) {
 		// Utilities Menu -------------------------------------------------------------------------------------------------------------------
 		
 		if (sToolName == "mnutoolCalculations") {
-			saveChangesPrompt("CALCULATIONS", 'menu_loadDefSelPage(12, 0, 0, true, true)');
+			saveChangesPrompt("CALCULATIONS", 'menu_loadDefSelPageForAllCategoryAndOwner(12, 0, 0, true, true)');
 			return false;
 		}
 
 		if (sToolName == "mnutoolFilters") {
-			saveChangesPrompt("FILTERS", 'menu_loadDefSelPage(11, 0, 0, true, true)');
+			saveChangesPrompt("FILTERS", 'menu_loadDefSelPageForAllCategoryAndOwner(11, 0, 0, true, true)');
 			return false;
 		}
 
 		if (sToolName == "mnutoolPicklists") {
-			saveChangesPrompt("PICKLISTS", 'menu_loadDefSelPage(10, 0, 0, true, true)');
+			saveChangesPrompt("PICKLISTS", 'menu_loadDefSelPageForAllCategoryAndOwner(10, 0, 0, true, true)');
 			return false;
 		}
 
@@ -2601,7 +2601,7 @@ function menu_loadPage(psPage) {
 
 	}
 
-	function menu_loadDefSelPage(piDefSelType, piUtilID, piTableID, pfFromMenu, bResetSession) {
+	function menu_loadDefSelPageForAllCategoryAndOwner(piDefSelType, piUtilID, piTableID, pfFromMenu, bResetSession) {
 
 		// Load the required definition selection screen
 		var displayDiv = (pfFromMenu === true ? "workframe" : "optionframe");
@@ -5247,7 +5247,7 @@ function GetAccordianSearchResult(request, response, availableTags) {
 // On selection of search result itme, Either open the menu item OR run the report or mail merge.
 function SelectAccordianSearchResultItem(event, ui) {
 	if (GetCurrentAccordianMenuItem() == "ReportsAndMailMergeSearch") {
-		Run(ui.item.targetvalue);
+		RunReportsOrUtilities(ui.item.targetvalue);
 	} else {
 		menu_abMainMenu_Click(ui.item.targetvalue);
 	}
@@ -5256,8 +5256,8 @@ function SelectAccordianSearchResultItem(event, ui) {
 	this.value = "";
 }
 
-// Run the report or mail merge
-function Run(sTool) {
+// Run the report or Utilities
+function RunReportsOrUtilities(sTool) {
 
 	if (!sTool) return false;
 

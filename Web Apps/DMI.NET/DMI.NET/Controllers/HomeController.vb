@@ -5575,9 +5575,9 @@ Namespace Controllers
 						, New SqlParameter("@searchText", SqlDbType.VarChar, 255) With {.Value = value.SearchText}).Tables(0)
 
 				' Gets RUN permission for the logged in user
-				Dim isMailMeargeRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlMailMerge.ToSecurityPrefix, "RUN").ToString.ToLower
+				Dim isMailMergeRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlMailMerge.ToSecurityPrefix, "RUN").ToString.ToLower
 				Dim isCustomReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCustomReport.ToSecurityPrefix, "RUN").ToString.ToLower
-				Dim isCalenderReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCalendarReport.ToSecurityPrefix, "RUN").ToString.ToLower
+				Dim isCalendarReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCalendarReport.ToSecurityPrefix, "RUN").ToString.ToLower
 				Dim isCrossTabReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCrossTab.ToSecurityPrefix, "RUN").ToString.ToLower
 				Dim isNineBoxGridRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlNineBoxGrid.ToSecurityPrefix, "RUN").ToString.ToLower
 
@@ -5591,11 +5591,11 @@ Namespace Controllers
 
 					Select Case reportType
 						Case UtilityType.utlMailMerge
-							isRunAllowed = isMailMeargeRunPermitted
+							isRunAllowed = isMailMergeRunPermitted
 						Case UtilityType.utlCustomReport
 							isRunAllowed = isCustomReportRunPermitted
 						Case UtilityType.utlCalendarReport
-							isRunAllowed = isCalenderReportRunPermitted
+							isRunAllowed = isCalendarReportRunPermitted
 						Case UtilityType.utlCrossTab
 							isRunAllowed = isCrossTabReportRunPermitted
 						Case UtilityType.utlNineBoxGrid
