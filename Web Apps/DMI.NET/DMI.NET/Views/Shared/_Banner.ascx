@@ -39,8 +39,7 @@
 
 			$.connection.hub.start()
 					.done(function() {console.log('Now connected, connection ID=' + $.connection.hub.id);})
-					.fail(function () { console.log('Could not Connect!'); });
-
+					.fail(function (error) { console.log('Could not Connect! ' + error); });
 
 			// Activity Hub
 			var licenceHub = $.connection.LicenceHub;
