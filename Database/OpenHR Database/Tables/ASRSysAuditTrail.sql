@@ -12,7 +12,7 @@
 	[CMGCommitDate] [datetime] NULL,
 	[ColumnID] [int] NULL,
 	[Deleted] [bit] NULL,
-	[tableid] [bit] NULL,
+	[tableid] INT NULL,
  CONSTRAINT [PK_ASRSysAuditTrail] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC

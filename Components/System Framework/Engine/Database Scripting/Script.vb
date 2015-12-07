@@ -808,6 +808,7 @@ Namespace ScriptDB
               "    /* Audit Trail */" & vbNewLine &
               "{2}" & vbNewLine & vbNewLine &
               sSqlCodeAudit &
+              sSqlPostAuditCalcs &
               sValidation & vbNewLine &
               "    DELETE {5} WHERE [tablefromid] = {3};" & vbNewLine & vbNewLine &
               "{4}" & vbNewLine & vbNewLine &

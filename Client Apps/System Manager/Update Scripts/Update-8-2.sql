@@ -64,7 +64,16 @@ PRINT 'Step - Mail Merge additions'
 PRINT 'Step - Audit Changes'
 /* ------------------------------------------------------- */
 
-ALTER TABLE [ASRSysAuditAccess] ALTER COLUMN [ComputerName] varchar(255);
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_fieldlastchangedate]')AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_fieldlastchangedate];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_fieldchangedbetweentwodates]')AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_fieldchangedbetweentwodates];
+
+	IF EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysAuditTrail', 'U') AND name = 'TableID')
+		EXEC sp_executesql N'ALTER TABLE ASRSysAuditTrail ALTER COLUMN tableid integer NULL'
+
+	ALTER TABLE [ASRSysAuditAccess] ALTER COLUMN [ComputerName] varchar(255);
 
 
 /* ------------------------------------------------------- */
@@ -96,9 +105,7 @@ PRINT 'Step - Calculation Changes'
 		
 		END'
 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_fieldlastchangedate]')AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_fieldlastchangedate];
-
+	-- Previously dropped above
 	EXEC sp_executesql N'CREATE FUNCTION [dbo].[udfsys_fieldlastchangedate](
 			@colrefID	varchar(32),
 			@recordID	integer
@@ -123,6 +130,37 @@ PRINT 'Step - Calculation Changes'
 			RETURN @result;
 
 		END'
+
+	EXEC sp_executesql N'CREATE FUNCTION [dbo].[udfsys_fieldchangedbetweentwodates](
+		@colrefID	varchar(32),
+		@fromdate	datetime,
+		@todate		datetime,
+		@recordID	integer
+	)
+	RETURNS bit
+	WITH SCHEMABINDING
+	AS
+	BEGIN
+
+		DECLARE @result		bit,
+				@tableid	integer,
+				@columnid	integer;
+		
+		SET @tableid = SUBSTRING(@colrefID, 1, 8);
+		SET @columnid = SUBSTRING(@colrefID, 10, 8);
+		SET @fromdate = DATEADD(dd, 0, DATEDIFF(dd, 0, @fromdate));
+		SET @todate = DATEADD(dd, 0, DATEDIFF(dd, 0, @todate));
+
+		SELECT @result = CASE WHEN
+				EXISTS(SELECT [DateTimeStamp] FROM dbo.[ASRSysAuditTrail]
+					WHERE [ColumnID] = @columnid AND [TableID] = @tableID
+					AND @recordID = [RecordID] 
+					AND [DateTimeStamp] >= @fromdate AND DateTimeStamp < @todate + 1)
+				THEN 1 ELSE 0 END;
+
+		RETURN @result;
+
+	END';
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsysStringToTable]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsysStringToTable];
