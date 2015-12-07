@@ -2500,6 +2500,7 @@ PRINT 'Final Step - Updating Versions'
 	EXEC spsys_setsystemsetting 'server dll', 'minimum version', '3.4.0';
 	EXEC spsys_setsystemsetting '.NET Assembly', 'minimum version', '4.2.0';
 	EXEC spsys_setsystemsetting 'outlook service', 'minimum version', '5.0.0';
+	EXEC spsys_setsystemsetting 'outlook service 2', 'minimum version', '1.0.0';
 	EXEC spsys_setsystemsetting 'workflow service', 'minimum version', '5.0.0';
 	EXEC spsys_setsystemsetting 'system framework', 'version', '1.0.4268.21068';
 
