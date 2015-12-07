@@ -437,7 +437,7 @@ Public Class AbsenceCalendar
 								& " onclick=""ShowDetails('" & VB6.Format(mavAbsences(iIndexPM).StartDate, mstrClientDateFormat) & "','" & mavAbsences(iIndexPM).StartSession & "','" _
 								& VB6.Format(mavAbsences(iIndexPM).EndDate, mstrClientDateFormat) & "','" & mavAbsences(iIndexPM).EndSession & "','" & mavAbsences(iIndexPM).Duration _
 								& "','" & Replace(mastrAbsenceTypes(mavAbsences(iIndexPM).Type, 0), "'", "") & "','" & Replace(mastrAbsenceTypes(mavAbsences(iIndexPM).Type, 5), "'", "") _
-								& "','" & Replace(mastrAbsenceTypes(mavAbsences(iIndexPM).Type, 4), "'", "") & "','" & HttpUtility.HtmlEncode(Left(mavAbsences(iIndexPM).Reason, 100)) & "','" _
+								& "','" & Replace(mastrAbsenceTypes(mavAbsences(iIndexPM).Type, 4), "'", "") & "','" & HttpUtility.HtmlEncode(Left(mavAbsences(iIndexPM).Reason, 100)) & "','" & mavAbsences(iIndexPM).Region & "','"  _
 								& mavAbsences(iIndexPM).WorkingPattern & "'," & IIf(mavAbsences(iIndexPM).IsWorkingDay, "true", "false") & ")"">" & "<FONT SIZE='1'>" & mavAbsences(iIndexPM).Caption & "</FONT></TD>" & vbNewLine
 					Else
 						strHtmlCellString = "<TD name=DateID_" & LTrim(Str(iIndexPM)) & " id=DateID_" & LTrim(Str(iIndexPM)) & " class=""calendar_day"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP>&nbsp;</TD>"
