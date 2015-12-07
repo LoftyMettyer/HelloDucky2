@@ -5,10 +5,7 @@
 	@piBasePicklistID	integer, 
 	@piBaseFilterID 	integer, 
 	@piEmailGroupID 	integer,
-	
-	/* Category to check it exists in table or not */
-	@piCategoryID 		integer,
-	 
+	@piCategoryID 		integer, 
 	@psHiddenGroups 	varchar(MAX), 
 	@psErrorMsg			varchar(MAX)	OUTPUT,
 	@piErrorCode		varchar(MAX)	OUTPUT, /* 	0 = no errors, 
@@ -55,57 +52,57 @@ BEGIN
 			@sActualUserName		sysname,
 			@iUserGroupID			integer;
 
-	SET @fBatchJobsOK = 1
-	SET @sScheduledUserGroups = ''
-	SET @sScheduledJobDetails = ''
-	SET @iOwnedJobCount = 0
-	SET @sOwnedJobDetails = ''
-	SET @sOwnedJobIDs = ''
-	SET @sNonOwnedJobDetails = ''
+	SET @fBatchJobsOK = 1;
+	SET @sScheduledUserGroups = '';
+	SET @sScheduledJobDetails = '';
+	SET @iOwnedJobCount = 0;
+	SET @sOwnedJobDetails = '';
+	SET @sOwnedJobIDs = '';
+	SET @sNonOwnedJobDetails = '';
 
-	SELECT @sCurrentUser = SYSTEM_USER
-	SET @psErrorMsg = ''
-	SET @piErrorCode = 0
-	SET @psDeletedFilters = ''
-	SET @psHiddenFilters = ''
+	SELECT @sCurrentUser = SYSTEM_USER;
+	SET @psErrorMsg = '';
+	SET @piErrorCode = 0;
+	SET @psDeletedFilters = '';
+	SET @psHiddenFilters = '';
 
-	exec spASRIntSysSecMgr @fSysSecMgr OUTPUT
+	exec spASRIntSysSecMgr @fSysSecMgr OUTPUT;
 	
  	IF @piUtilID > 0
 	BEGIN
 		/* Check if this definition has been changed by another user. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysCrossTab
-		WHERE CrossTabID = @piUtilID
+		WHERE CrossTabID = @piUtilID;
 
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The 9-Box Grid has been deleted by another user. Save as a new definition ?'
-			SET @piErrorCode = 2
+			SET @psErrorMsg = 'The 9-Box Grid has been deleted by another user. Save as a new definition ?';
+			SET @piErrorCode = 2;
 		END
 		ELSE
 		BEGIN
 			SELECT @iTimestamp = convert(integer, timestamp), 
 				@sOwner = userName
 			FROM ASRSysCrossTab
-			WHERE CrossTabID = @piUtilID
+			WHERE CrossTabID = @piUtilID;
 
 			IF (@iTimestamp <>@piTimestamp)
 			BEGIN
 				exec spASRIntCurrentUserAccess 
 					1, 
 					@piUtilID,
-					@sAccess	OUTPUT
+					@sAccess	OUTPUT;
 		
 				IF (@sOwner <> @sCurrentUser) AND (@sAccess <> 'RW') AND (@iTimestamp <>@piTimestamp)
 				BEGIN
-					SET @psErrorMsg = 'The 9-Box Grid has been amended by another user and is now Read Only. Save as a new definition ?'
-					SET @piErrorCode = 2
+					SET @psErrorMsg = 'The 9-Box Grid has been amended by another user and is now Read Only. Save as a new definition ?';
+					SET @piErrorCode = 2;
 				END
 				ELSE
 				BEGIN
-					SET @psErrorMsg = 'The 9-Box Grid has been amended by another user. Would you like to overwrite this definition ?'
-					SET @piErrorCode = 3
+					SET @psErrorMsg = 'The 9-Box Grid has been amended by another user. Would you like to overwrite this definition ?';
+					SET @piErrorCode = 3;
 				END
 			END
 			
@@ -121,19 +118,19 @@ BEGIN
 			FROM ASRSYSCrossTab
 			WHERE name = @psUtilName
 				AND CrossTabID <> @piUtilID
-				AND CrossTabType = 4
+				AND CrossTabType = 4;
 		END
 		ELSE
 		BEGIN
 			SELECT @iCount = COUNT(*) 
 			FROM ASRSYSCrossTab
-			WHERE name = @psUtilName AND CrossTabType = 4
+			WHERE name = @psUtilName AND CrossTabType = 4;
 		END
 
 		IF @iCount > 0 
 		BEGIN
-			SET @psErrorMsg = 'A 9-Box Grid called ''' + @psUtilName + ''' already exists.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'A 9-Box Grid called ''' + @psUtilName + ''' already exists.';
+			SET @piErrorCode = 1;
 		END
 	END
 
@@ -142,24 +139,24 @@ BEGIN
 		/* Check that the Base table picklist exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysPicklistName 
-		WHERE picklistID = @piBasePicklistID
+		WHERE picklistID = @piBasePicklistID;
 
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The base table picklist has been deleted by another user.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'The base table picklist has been deleted by another user.';
+			SET @piErrorCode = 1;
 		END
 		ELSE
 		BEGIN
 			SELECT @sOwner = userName,
 				@sAccess = access
 			FROM ASRSysPicklistName 
-			WHERE picklistID = @piBasePicklistID
+			WHERE picklistID = @piBasePicklistID;
 
 			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @psErrorMsg = 'The base table picklist has been made hidden by another user.'
-				SET @piErrorCode = 1
+				SET @psErrorMsg = 'The base table picklist has been made hidden by another user.';
+				SET @piErrorCode = 1;
 			END
 		END
 	END
@@ -169,24 +166,24 @@ BEGIN
 		/* Check that the Base table filter exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysExpressions 
-		WHERE exprID = @piBaseFilterID
+		WHERE exprID = @piBaseFilterID;
 
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The base table filter has been deleted by another user.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'The base table filter has been deleted by another user.';
+			SET @piErrorCode = 1;
 		END
 		ELSE
 		BEGIN
 			SELECT @sOwner = userName,
 				@sAccess = access
 			FROM ASRSysExpressions 
-			WHERE exprID = @piBaseFilterID
+			WHERE exprID = @piBaseFilterID;
 
 			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @psErrorMsg = 'The base table filter has been made hidden by another user.'
-				SET @piErrorCode = 1
+				SET @psErrorMsg = 'The base table filter has been made hidden by another user.';
+				SET @piErrorCode = 1;
 			END
 		END
 	END
@@ -196,62 +193,58 @@ BEGIN
 		/* Check that the email group exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysEmailGroupName 
-		WHERE emailGroupID = @piEmailGroupID
+		WHERE emailGroupID = @piEmailGroupID;
 
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The email group has been deleted by another user.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'The email group has been deleted by another user.';
+			SET @piErrorCode = 1;
 		END
 	END
-
-	--//------------------------------------------------------------
 
 	IF (@piErrorCode = 0) AND (@piCategoryID > 0)
 	BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
-		FROM [dbo].[ASRSysCategories]
-		WHERE ID = @piCategoryID And _deleted = 'True'
+		FROM ASRSysCategories
+		WHERE id = @piCategoryID And _deleted = 1;
 
 		IF @iCount = 1
 		BEGIN
-			SET @psErrorMsg = 'The category has been deleted by another user.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'The category has been deleted by another user.';
+			SET @piErrorCode = 1;
 		END
 	END
-
-	--//------------------------------------------------------------
 
 	IF (@piErrorCode = 0) AND (@piUtilID > 0) AND (len(@psHiddenGroups) > 0)
 	BEGIN
 		SELECT @sOwner = userName
 		FROM ASRSysCrossTab
-		WHERE CrossTabID = @piUtilID
+		WHERE CrossTabID = @piUtilID;
 
 		IF (@sOwner = @sCurrentUser) 
 		BEGIN
 			EXEC spASRIntGetActualUserDetails
 				@sActualUserName OUTPUT,
 				@sCurrentUserGroup OUTPUT,
-				@iUserGroupID OUTPUT
+				@iUserGroupID OUTPUT;
 
-			DECLARE @HiddenGroups TABLE(groupName sysname, groupID integer)
-			SET @sHiddenGroupsList = substring(@psHiddenGroups, 2, len(@psHiddenGroups)-2)
+			DECLARE @HiddenGroups TABLE(groupName sysname, groupID integer);
+			SET @sHiddenGroupsList = substring(@psHiddenGroups, 2, len(@psHiddenGroups)-2);
 			WHILE LEN(@sHiddenGroupsList) > 0
 			BEGIN
 				IF CHARINDEX(char(9), @sHiddenGroupsList) > 0
 				BEGIN
-					SET @sHiddenGroup = LEFT(@sHiddenGroupsList, CHARINDEX(char(9), @sHiddenGroupsList) - 1)
-					SET @sHiddenGroupsList = RIGHT(@sHiddenGroupsList, LEN(@sHiddenGroupsList) - CHARINDEX(char(9), @sHiddenGroupsList))
+					SET @sHiddenGroup = LEFT(@sHiddenGroupsList, CHARINDEX(char(9), @sHiddenGroupsList) - 1);
+					SET @sHiddenGroupsList = RIGHT(@sHiddenGroupsList, LEN(@sHiddenGroupsList) - CHARINDEX(char(9), @sHiddenGroupsList));
 				END
 				ELSE
 				BEGIN
-					SET @sHiddenGroup = @sHiddenGroupsList
-					SET @sHiddenGroupsList = ''
+					SET @sHiddenGroup = @sHiddenGroupsList;
+					SET @sHiddenGroupsList = '';
 				END
 
-				INSERT INTO @HiddenGroups (groupName, groupID) (SELECT @sHiddenGroup, uid FROM sysusers WHERE name = @sHiddenGroup)
+				INSERT INTO @HiddenGroups (groupName, groupID) (SELECT @sHiddenGroup, uid FROM sysusers WHERE name = @sHiddenGroup);
 			END
 
 			DECLARE batchjob_cursor CURSOR LOCAL FAST_FORWARD FOR 
@@ -286,16 +279,16 @@ BEGIN
 				convert(integer, ASRSysBatchJobName.scheduled),
 				ASRSysBatchJobName.roleToPrompt,
 				ASRSysBatchJobName.Username,
-				ASRSysCrossTab.Name
+				ASRSysCrossTab.Name;
 
-			OPEN batchjob_cursor
+			OPEN batchjob_cursor;
 			FETCH NEXT FROM batchjob_cursor INTO @sBatchJobName, 
 				@iBatchJobID,
 				@iBatchJobScheduled,
 				@sBatchJobRoleToPrompt,
 				@iNonHiddenCount,
 				@sBatchJobUserName,
-				@sJobName	
+				@sJobName;
 			WHILE (@@fetch_status = 0)
 			BEGIN
 				SELECT @sCurrentUserAccess = 
@@ -321,7 +314,7 @@ BEGIN
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON (b.name = ASRSysBatchJobAccess.groupName
 					AND ASRSysBatchJobAccess.id = @iBatchJobID)
 				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobAccess.ID = ASRSysBatchJobName.ID
-				WHERE a.Name = @sActualUserName
+				WHERE a.Name = @sActualUserName;
 
 				IF @sBatchJobUserName = @sOwner
 				BEGIN
@@ -332,44 +325,44 @@ BEGIN
 						(CHARINDEX(char(9) + @sBatchJobRoleToPrompt + char(9), @psHiddenGroups) > 0)
 					BEGIN
 						/* Found a Batch Job which is scheduled for another user group to run. */
-						SET @fBatchJobsOK = 0
-						SET @sScheduledUserGroups = @sScheduledUserGroups + @sBatchJobRoleToPrompt + '<BR>'
+						SET @fBatchJobsOK = 0;
+						SET @sScheduledUserGroups = @sScheduledUserGroups + @sBatchJobRoleToPrompt + '<BR>';
 
 						IF @sCurrentUserAccess = 'HD'
 						BEGIN
-							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : <Hidden> by ' + @sBatchJobUserName + '<BR>'
+							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : <Hidden> by ' + @sBatchJobUserName + '<BR>';
 						END
 						ELSE
 						BEGIN
-							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : ' + @sBatchJobName + '<BR>'
+							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : ' + @sBatchJobName + '<BR>';
 						END
 					END
 					ELSE
 					BEGIN
 						IF @iNonHiddenCount > 0 
 						BEGIN
-							SET @iOwnedJobCount = @iOwnedJobCount + 1
-							SET @sOwnedJobDetails = @sOwnedJobDetails + 'Batch Job : ' + @sBatchJobName + ' (Contains 9-Box Grid ' + @sJobName + ')' + '<BR>'
+							SET @iOwnedJobCount = @iOwnedJobCount + 1;
+							SET @sOwnedJobDetails = @sOwnedJobDetails + 'Batch Job : ' + @sBatchJobName + ' (Contains 9-Box Grid ' + @sJobName + ')' + '<BR>';
 							SET @sOwnedJobIDs = @sOwnedJobIDs +
 								CASE 
 									WHEN Len(@sOwnedJobIDs) > 0 THEN ', '
 									ELSE ''
-								END +  convert(varchar(100), @iBatchJobID)
+								END +  convert(varchar(100), @iBatchJobID);
 						END
 					END
 				END			
 				ELSE
 				BEGIN
 					/* Found a Batch Job whose owner is not the same. */
-					SET @fBatchJobsOK = 0
+					SET @fBatchJobsOK = 0;
 	    
 					IF @sCurrentUserAccess = 'HD'
 					BEGIN
-						SET @sNonOwnedJobDetails = @sNonOwnedJobDetails + 'Batch Job : <Hidden> by ' + @sBatchJobUserName + '<BR>'
+						SET @sNonOwnedJobDetails = @sNonOwnedJobDetails + 'Batch Job : <Hidden> by ' + @sBatchJobUserName + '<BR>';
 					END
 					ELSE
 					BEGIN
-						SET @sNonOwnedJobDetails = @sNonOwnedJobDetails + 'Batch Job : ' + @sBatchJobName + '<BR>'
+						SET @sNonOwnedJobDetails = @sNonOwnedJobDetails + 'Batch Job : ' + @sBatchJobName + '<BR>';
 					END
 				END
 
@@ -379,43 +372,42 @@ BEGIN
 					@sBatchJobRoleToPrompt,
 					@iNonHiddenCount,
 					@sBatchJobUserName,
-					@sJobName	
+					@sJobName;
 			END
 
-			CLOSE batchjob_cursor
-			DEALLOCATE batchjob_cursor	
+			CLOSE batchjob_cursor;
+			DEALLOCATE batchjob_cursor;
 		END
 	END
 
 	IF @fBatchJobsOK = 0
 	BEGIN
-		SET @piErrorCode = 1
+		SET @piErrorCode = 1;
 
 		IF Len(@sScheduledJobDetails) > 0 
 		BEGIN
 			SET @psErrorMsg = 'This definition cannot be made hidden from the following user groups :'  + '<BR><BR>' +
 				@sScheduledUserGroups  +
 				'<BR>as it is used in the following batch jobs which are scheduled to be run by these user groups :<BR><BR>' +
-				@sScheduledJobDetails
+				@sScheduledJobDetails;
 		END
 		ELSE
 		BEGIN
 			SET @psErrorMsg = 'This definition cannot be made hidden as it is used in the following batch jobs of which you are not the owner :<BR><BR>' +
-				@sNonOwnedJobDetails
+				@sNonOwnedJobDetails;
 	      	END
 	END
 	ELSE
 	BEGIN
 	    	IF (@iOwnedJobCount > 0) 
 		BEGIN
-			SET @piErrorCode = 4
+			SET @piErrorCode = 4;
 			SET @psErrorMsg = 'Making this definition hidden to user groups will automatically make the following definition(s), of which you are the owner, hidden to the same user groups:<BR><BR>' +
 				@sOwnedJobDetails + '<BR><BR>' +
-				'Do you wish to continue ?'
+				'Do you wish to continue ?';
 		END
 	END
 
-	SET @psJobIDsToHide = @sOwnedJobIDs
+	SET @psJobIDsToHide = @sOwnedJobIDs;
 
 END
-

@@ -263,7 +263,7 @@ BEGIN
 	SET @piCategoryID = 0
 	SELECT @piCategoryID = ISNULL(categoryid,0)
 		FROM [dbo].[tbsys_objectcategories]
-		WHERE objectid = @piCalendarReportID AND objecttype = 17
+		WHERE objectid = @piCalendarReportID AND objecttype = 17;
 
 	-- Definition
 	SELECT @psReportName AS name, @psReportDesc AS [Description], @piCategoryID As CategoryID , @piBaseTableID AS baseTableID, @psReportOwner AS [Owner],

@@ -9,9 +9,7 @@ CREATE PROCEDURE [dbo].[spASRIntValidateCustomReport] (
 	@piParent1FilterID 			integer, 
 	@piParent2PicklistID		integer, 
 	@piParent2FilterID 			integer,
-	/* Category to check it exists in table or not */
-	@piCategoryID 				integer,
-	
+	@piCategoryID 				integer, 
 	@piChildFilterID 			varchar(100),			/* tab delimited string of child filter ids */ 
 	@psCalculations 			varchar(MAX), 
 	@psHiddenGroups 			varchar(MAX), 
@@ -28,7 +26,6 @@ CREATE PROCEDURE [dbo].[spASRIntValidateCustomReport] (
 	@psJobIDsToHide				varchar(MAX)	OUTPUT,
 	@psDeletedPicklists 		varchar(MAX)	OUTPUT,
 	@psHiddenPicklists 			varchar(MAX)	OUTPUT
-	
 )
 AS
 BEGIN
@@ -66,63 +63,62 @@ BEGIN
 			@sActualUserName		sysname,
 			@iUserGroupID			integer;
 
-	SET @fBatchJobsOK = 1
-	SET @sScheduledUserGroups = ''
-	SET @sScheduledJobDetails = ''
-	SET @iOwnedJobCount = 0
-	SET @sOwnedJobDetails = ''
-	SET @sOwnedJobIDs = ''
-	SET @sNonOwnedJobDetails = ''
+	SET @fBatchJobsOK = 1;
+	SET @sScheduledUserGroups = '';
+	SET @sScheduledJobDetails = '';
+	SET @iOwnedJobCount = 0;
+	SET @sOwnedJobDetails = '';
+	SET @sOwnedJobIDs = '';
+	SET @sNonOwnedJobDetails = '';
 
-	SELECT @sCurrentUser = SYSTEM_USER
-	SET @psErrorMsg = ''
-	SET @piErrorCode = 0
-	SET @psDeletedCalcs = ''
-	SET @psHiddenCalcs = ''
-	SET @psDeletedOrders = ''
-	SET @psDeletedFilters = ''
-	SET @psHiddenFilters = ''
-	SET @psDeletedPicklists = ''
-	SET @psHiddenPicklists = ''
-	--SET @psDeletedCategory = ''
+	SELECT @sCurrentUser = SYSTEM_USER;
+	SET @psErrorMsg = '';
+	SET @piErrorCode = 0;
+	SET @psDeletedCalcs = '';
+	SET @psHiddenCalcs = '';
+	SET @psDeletedOrders = '';
+	SET @psDeletedFilters = '';
+	SET @psHiddenFilters = '';
+	SET @psDeletedPicklists = '';
+	SET @psHiddenPicklists = '';
 
-	EXEC spASRIntSysSecMgr @fSysSecMgr OUTPUT
+	EXEC spASRIntSysSecMgr @fSysSecMgr OUTPUT;
 	
  	IF @piUtilID > 0
 	BEGIN
 		/* Check if this definition has been changed by another user. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysCustomReportsName
-		WHERE ID = @piUtilID
-
+		WHERE ID = @piUtilID;
+		
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The report has been deleted by another user. Save as a new definition ?'
-			SET @piErrorCode = 2
+			SET @psErrorMsg = 'The report has been deleted by another user. Save as a new definition ?';
+			SET @piErrorCode = 2;
 		END
 		ELSE
 		BEGIN
 			SELECT @iTimestamp = convert(integer, timestamp), 
 				@sOwner = userName
 			FROM ASRSysCustomReportsName
-			WHERE ID = @piUtilID
+			WHERE ID = @piUtilID;
 
 			IF (@iTimestamp <>@piTimestamp)
 			BEGIN
 				exec spASRIntCurrentUserAccess 
 					2, 
 					@piUtilID,
-					@sAccess	OUTPUT
+					@sAccess	OUTPUT;
 
 				IF (@sOwner <> @sCurrentUser) AND (@sAccess <> 'RW') AND (@iTimestamp <>@piTimestamp)
 				BEGIN
-					SET @psErrorMsg = 'The report has been amended by another user and is now Read Only. Save as a new definition ?'
-					SET @piErrorCode = 2
+					SET @psErrorMsg = 'The report has been amended by another user and is now Read Only. Save as a new definition ?';
+					SET @piErrorCode = 2;
 				END
 				ELSE
 				BEGIN
-					SET @psErrorMsg = 'The report has been amended by another user. Would you like to overwrite this definition ?'
-					SET @piErrorCode = 3
+					SET @psErrorMsg = 'The report has been amended by another user. Would you like to overwrite this definition ?';
+					SET @piErrorCode = 3;
 				END
 			END
 			
@@ -137,19 +133,19 @@ BEGIN
 			SELECT @iCount = COUNT(*) 
 			FROM ASRSYSCustomReportsName
 			WHERE name = @psUtilName
-				AND ID <> @piUtilID
+				AND ID <> @piUtilID;
 		END
 		ELSE
 		BEGIN
 			SELECT @iCount = COUNT(*) 
 			FROM ASRSYSCustomReportsName
-			WHERE name = @psUtilName
+			WHERE name = @psUtilName;
 		END
 
 		IF @iCount > 0 
 		BEGIN
-			SET @psErrorMsg = 'A report called ''' + @psUtilName + ''' already exists.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'A report called ''' + @psUtilName + ''' already exists.';
+			SET @piErrorCode = 1;
 		END
 	END
 
@@ -158,36 +154,36 @@ BEGIN
 		/* Check that the Base table picklist exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysPicklistName 
-		WHERE picklistID = @piBasePicklistID
+		WHERE picklistID = @piBasePicklistID;
 
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The base table picklist has been deleted by another user, and will be automatically removed from the report.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'The base table picklist has been deleted by another user, and will be automatically removed from the report.';
+			SET @piErrorCode = 1;
 
 			SET @psDeletedPicklists = @psDeletedPicklists +
 			CASE
 				WHEN LEN(@psDeletedPicklists) > 0 THEN ','
 				ELSE ''
-			END + convert(varchar(100), @piBasePicklistID)
+			END + convert(varchar(100), @piBasePicklistID);
 		END
 		ELSE
 		BEGIN
 			SELECT @sOwner = userName,
 				@sAccess = access
 			FROM ASRSysPicklistName 
-			WHERE picklistID = @piBasePicklistID
+			WHERE picklistID = @piBasePicklistID;
 
 			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @psErrorMsg = 'The base table picklist has been made hidden by another user, and will be automatically removed from the report.'
-				SET @piErrorCode = 1
+				SET @psErrorMsg = 'The base table picklist has been made hidden by another user, and will be automatically removed from the report.';
+				SET @piErrorCode = 1;
 
 				SET @psHiddenPicklists = @psHiddenPicklists +
 				CASE
 					WHEN LEN(@psHiddenPicklists) > 0 THEN ','
 					ELSE ''
-				END + convert(varchar(100), @piBasePicklistID)
+				END + convert(varchar(100), @piBasePicklistID);
 			END
 		END
 	END
@@ -197,36 +193,36 @@ BEGIN
 		/* Check that the Base table filter exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysExpressions 
-		WHERE exprID = @piBaseFilterID
+		WHERE exprID = @piBaseFilterID;
 
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The base table filter has been deleted by another user, and will be automatically removed from the report.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'The base table filter has been deleted by another user, and will be automatically removed from the report.';
+			SET @piErrorCode = 1;
 
 			SET @psDeletedFilters = @psDeletedFilters +
 			CASE
 				WHEN LEN(@psDeletedFilters) > 0 THEN ','
 				ELSE ''
-			END + convert(varchar(100), @piBaseFilterID)
+			END + convert(varchar(100), @piBaseFilterID);
 		END
 		ELSE
 		BEGIN
 			SELECT @sOwner = userName,
 				@sAccess = access
 			FROM ASRSysExpressions 
-			WHERE exprID = @piBaseFilterID
+			WHERE exprID = @piBaseFilterID;
 
 			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @psErrorMsg = 'The base table filter has been made hidden by another user, and will be automatically removed from the report.'
-				SET @piErrorCode = 1
+				SET @psErrorMsg = 'The base table filter has been made hidden by another user, and will be automatically removed from the report.';
+				SET @piErrorCode = 1;
 
 				SET @psHiddenFilters = @psHiddenFilters +
 				CASE
 					WHEN LEN(@psHiddenFilters) > 0 THEN ','
 					ELSE ''
-				END + convert(varchar(100), @piBaseFilterID)
+				END + convert(varchar(100), @piBaseFilterID);
 			END
 		END
 	END
@@ -236,68 +232,64 @@ BEGIN
 		/* Check that the email group exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysEmailGroupName 
-		WHERE emailGroupID = @piEmailGroupID
+		WHERE emailGroupID = @piEmailGroupID;
 
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The email group has been deleted by another user.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'The email group has been deleted by another user.';
+			SET @piErrorCode = 1;
 		END
 	END
-
-	--//------------------------------------------------------------
 
 	IF (@piErrorCode = 0) AND (@piCategoryID > 0)
 	BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
-		FROM [dbo].[ASRSysCategories]
-		WHERE ID = @piCategoryID And _deleted = 'True'
+		FROM ASRSysCategories
+		WHERE id = @piCategoryID And _deleted = 1;
 
 		IF @iCount = 1
 		BEGIN
-			SET @psErrorMsg = 'The category has been deleted by another user.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'The category has been deleted by another user.';
+			SET @piErrorCode = 1;
 		END
 	END
-
-	--//------------------------------------------------------------
 
 	IF (@piErrorCode = 0) AND (@piParent1PicklistID > 0)
 	BEGIN
 		/* Check that the Parent1 table picklist exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysPicklistName 
-		WHERE picklistID = @piParent1PicklistID
+		WHERE picklistID = @piParent1PicklistID;
 
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The first parent table picklist has been deleted by another user, and will be automatically removed from the report.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'The first parent table picklist has been deleted by another user, and will be automatically removed from the report.';
+			SET @piErrorCode = 1;
 
 			SET @psDeletedPicklists = @psDeletedPicklists +
 			CASE
 				WHEN LEN(@psDeletedPicklists) > 0 THEN ','
 				ELSE ''
-			END + convert(varchar(100), @piParent1PicklistID)
+			END + convert(varchar(100), @piParent1PicklistID);
 		END
 		ELSE
 		BEGIN
 			SELECT @sOwner = userName,
 				@sAccess = access
 			FROM ASRSysPicklistName 
-			WHERE picklistID = @piParent1PicklistID
+			WHERE picklistID = @piParent1PicklistID;
 
 			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @psErrorMsg = 'The first parent table picklist has been made hidden by another user, and will be automatically removed from the report.'
-				SET @piErrorCode = 1
+				SET @psErrorMsg = 'The first parent table picklist has been made hidden by another user, and will be automatically removed from the report.';
+				SET @piErrorCode = 1;
 
 				SET @psHiddenPicklists = @psHiddenPicklists +
 				CASE
 					WHEN LEN(@psHiddenPicklists) > 0 THEN ','
 					ELSE ''
-				END + convert(varchar(100), @piParent1PicklistID)
+				END + convert(varchar(100), @piParent1PicklistID);
 			END
 		END
 	END
@@ -307,36 +299,36 @@ BEGIN
 		/* Check that the Parent 1 table filter exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysExpressions 
-		WHERE exprID = @piParent1FilterID
-
+		WHERE exprID = @piParent1FilterID;
+		
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The parent 1 filter has been deleted by another user, and will be automatically removed from the report.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'The parent 1 filter has been deleted by another user, and will be automatically removed from the report.';
+			SET @piErrorCode = 1;
 
 			SET @psDeletedFilters = @psDeletedFilters +
 			CASE
 				WHEN LEN(@psDeletedFilters) > 0 THEN ','
 				ELSE ''
-			END + convert(varchar(100), @piParent1FilterID)
+			END + convert(varchar(100), @piParent1FilterID);
 		END
 		ELSE
 		BEGIN
 			SELECT @sOwner = userName,
 				@sAccess = access
 			FROM ASRSysExpressions 
-			WHERE exprID = @piParent1FilterID
+			WHERE exprID = @piParent1FilterID;
 
 			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @psErrorMsg = 'The parent 1 table filter has been made hidden by another user, and will be automatically removed from the report.'
-				SET @piErrorCode = 1
+				SET @psErrorMsg = 'The parent 1 table filter has been made hidden by another user, and will be automatically removed from the report.';
+				SET @piErrorCode = 1;
 
 				SET @psHiddenFilters = @psHiddenFilters +
 				CASE
 					WHEN LEN(@psHiddenFilters) > 0 THEN ','
 					ELSE ''
-				END + convert(varchar(100), @piParent1FilterID)
+				END + convert(varchar(100), @piParent1FilterID);
 			END
 		END
 	END
@@ -346,36 +338,36 @@ BEGIN
 		/* Check that the Parent1 table picklist exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysPicklistName 
-		WHERE picklistID = @piParent2PicklistID
+		WHERE picklistID = @piParent2PicklistID;
 
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The second parent table picklist has been deleted by another user, and will be automatically removed from the report.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'The second parent table picklist has been deleted by another user, and will be automatically removed from the report.';
+			SET @piErrorCode = 1;
 
 			SET @psDeletedPicklists = @psDeletedPicklists +
 			CASE
 				WHEN LEN(@psDeletedPicklists) > 0 THEN ','
 				ELSE ''
-			END + convert(varchar(100), @piParent2PicklistID)
+			END + convert(varchar(100), @piParent2PicklistID);
 		END
 		ELSE
 		BEGIN
 			SELECT @sOwner = userName,
 				@sAccess = access
 			FROM ASRSysPicklistName 
-			WHERE picklistID = @piParent2PicklistID
+			WHERE picklistID = @piParent2PicklistID;
 
 			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @psErrorMsg = 'The second parent table picklist has been made hidden by another user, and will be automatically removed from the report.'
-				SET @piErrorCode = 1
+				SET @psErrorMsg = 'The second parent table picklist has been made hidden by another user, and will be automatically removed from the report.';
+				SET @piErrorCode = 1;
 
 				SET @psHiddenPicklists = @psHiddenPicklists +
 				CASE
 					WHEN LEN(@psHiddenPicklists) > 0 THEN ','
 					ELSE ''
-				END + convert(varchar(100), @piParent2PicklistID)
+				END + convert(varchar(100), @piParent2PicklistID);
 			END
 		END
 	END
@@ -385,36 +377,36 @@ BEGIN
 		/* Check that the Parent 2 table filter exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysExpressions 
-		WHERE exprID = @piParent2FilterID
+		WHERE exprID = @piParent2FilterID;
 
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The parent 2 filter has been deleted by another user, and will be automatically removed from the report.'
-			SET @piErrorCode = 1
+			SET @psErrorMsg = 'The parent 2 filter has been deleted by another user, and will be automatically removed from the report.';
+			SET @piErrorCode = 1;
 
 			SET @psDeletedFilters = @psDeletedFilters +
 			CASE
 				WHEN LEN(@psDeletedFilters) > 0 THEN ','
 				ELSE ''
-			END + convert(varchar(100), @piParent2FilterID)
+			END + convert(varchar(100), @piParent2FilterID);
 		END
 		ELSE
 		BEGIN
 			SELECT @sOwner = userName,
 				@sAccess = access
 			FROM ASRSysExpressions 
-			WHERE exprID = @piParent2FilterID
+			WHERE exprID = @piParent2FilterID;
 
 			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @psErrorMsg = 'The parent 2 table filter has been made hidden by another user, and will be automatically removed from the report.'
-				SET @piErrorCode = 1
+				SET @psErrorMsg = 'The parent 2 table filter has been made hidden by another user, and will be automatically removed from the report.';
+				SET @piErrorCode = 1;
 
 				SET @psHiddenFilters = @psHiddenFilters +
 				CASE
 					WHEN LEN(@psHiddenFilters) > 0 THEN ','
 					ELSE ''
-				END + convert(varchar(100), @piParent2FilterID)
+				END + convert(varchar(100), @piParent2FilterID);
 			END
 		END
 	END
@@ -422,26 +414,26 @@ BEGIN
 	/* Check that the selected child filters exist and are not hidden. */
 	IF (@piErrorCode = 0) AND (LEN(@piChildFilterID) > 0)
 	BEGIN
-		SET @sTemp = @piChildFilterID
+		SET @sTemp = @piChildFilterID;
 
 		WHILE LEN(@sTemp) > 0
 		BEGIN
 			IF CHARINDEX(char(9), @sTemp) > 0
 			BEGIN
-				SET @sCurrentID = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1)
-				SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX(char(9), @sTemp))
+				SET @sCurrentID = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1);
+				SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX(char(9), @sTemp));
 			END
 			ELSE
 			BEGIN
-				SET @sCurrentID = @sTemp
-				SET @sTemp = ''
+				SET @sCurrentID = @sTemp;
+				SET @sTemp = '';
 			END
 			
 			IF @sCurrentID > 0 
 			BEGIN
 				SELECT @iCount = COUNT(*)
 				FROM ASRSysExpressions
-				WHERE exprID = convert(integer, @sCurrentID)
+				WHERE exprID = convert(integer, @sCurrentID);
 
 				IF @iCount = 0
 				BEGIN
@@ -460,15 +452,15 @@ BEGIN
 					CASE
 						WHEN LEN(@psDeletedFilters) > 0 THEN ','
 						ELSE ''
-					END + @sCurrentID
-					SET @piErrorCode = 1
+					END + @sCurrentID;
+					SET @piErrorCode = 1;
 			 	END
 				ELSE
 			  	BEGIN
 					SELECT @sOwner = userName,
 						@sAccess = access
 					FROM ASRSysExpressions
-					WHERE exprID = convert(integer, @sCurrentID)
+					WHERE exprID = convert(integer, @sCurrentID);
 
 					IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
@@ -487,9 +479,9 @@ BEGIN
 						CASE
 							WHEN LEN(@psHiddenFilters) > 0 THEN ','
 							ELSE ''
-						END + @sCurrentID
+						END + @sCurrentID;
 						
-						SET @piErrorCode = 1
+						SET @piErrorCode = 1;
 					END
 			  	END
 			END
@@ -499,26 +491,26 @@ BEGIN
 	/* Check that the selected child filters exist and are not hidden. */
 	IF (@piErrorCode = 0) AND (LEN(@psDeletedOrders) > 0)
 	BEGIN
-		SET @sTemp = @psDeletedOrders
+		SET @sTemp = @psDeletedOrders;
 
 		WHILE LEN(@sTemp) > 0
 		BEGIN
 			IF CHARINDEX(char(9), @sTemp) > 0
 			BEGIN
-				SET @sCurrentID = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1)
-				SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX(char(9), @sTemp))
+				SET @sCurrentID = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1);
+				SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX(char(9), @sTemp));
 			END
 			ELSE
 			BEGIN
-				SET @sCurrentID = @sTemp
-				SET @sTemp = ''
+				SET @sCurrentID = @sTemp;
+				SET @sTemp = '';
 			END
 			
 			IF @sCurrentID > 0 
 			BEGIN
 				SELECT @iCount = COUNT(*)
 				FROM ASRSysOrders
-				WHERE OrderID = convert(integer, @sCurrentID)
+				WHERE OrderID = convert(integer, @sCurrentID);
 
 				IF @iCount = 0
 				BEGIN
@@ -537,8 +529,8 @@ BEGIN
 					CASE
 						WHEN LEN(@psDeletedOrders) > 0 THEN ','
 						ELSE ''
-					END + @sCurrentID
-					SET @piErrorCode = 1
+					END + @sCurrentID;
+					SET @piErrorCode = 1;
 			 	END
 			END
 		END
@@ -547,24 +539,24 @@ BEGIN
 	/* Check that the selected runtime calculations exists. */
 	IF (@piErrorCode = 0) AND (LEN(@psCalculations) > 0)
 	BEGIN
-		SET @sTemp = @psCalculations
+		SET @sTemp = @psCalculations;
 
 		WHILE LEN(@sTemp) > 0
 		BEGIN
 			IF CHARINDEX(',', @sTemp) > 0
 			BEGIN
-				SET @sCurrentID = LEFT(@sTemp, CHARINDEX(',', @sTemp) - 1)
-				SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX(',', @sTemp))
+				SET @sCurrentID = LEFT(@sTemp, CHARINDEX(',', @sTemp) - 1);
+				SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX(',', @sTemp));
 			END
 			ELSE
 			BEGIN
-				SET @sCurrentID = @sTemp
-				SET @sTemp = ''
+				SET @sCurrentID = @sTemp;
+				SET @sTemp = '';
 			END
 			
 			SELECT @iCount = COUNT(*)
 			FROM ASRSysExpressions
-			 WHERE exprID = convert(integer, @sCurrentID)
+			 WHERE exprID = convert(integer, @sCurrentID);
 
 			IF @iCount = 0
 			BEGIN
@@ -583,15 +575,15 @@ BEGIN
 					CASE
 						WHEN LEN(@psDeletedCalcs) > 0 THEN ','
 						ELSE ''
-					END + @sCurrentID
-				SET @piErrorCode = 1
+					END + @sCurrentID;
+				SET @piErrorCode = 1;
 			END
 			ELSE
 			BEGIN
 				SELECT @sOwner = userName,
 					@sAccess = access
 				FROM ASRSysExpressions
-				WHERE exprID = convert(integer, @sCurrentID)
+				WHERE exprID = convert(integer, @sCurrentID);
 
 				IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 				BEGIN
@@ -610,9 +602,9 @@ BEGIN
 						CASE
 							WHEN LEN(@psHiddenCalcs) > 0 THEN ','
 							ELSE ''
-						END + @sCurrentID
+						END + @sCurrentID;
 						
-					SET @piErrorCode = 1
+					SET @piErrorCode = 1;
 				END
 			END
 		END
@@ -622,31 +614,31 @@ BEGIN
 	BEGIN
 		SELECT @sOwner = userName
 		FROM ASRSysCustomReportsName
-		WHERE ID = @piUtilID
+		WHERE ID = @piUtilID;
 
 		IF (@sOwner = @sCurrentUser) 
 		BEGIN
 			EXEC spASRIntGetActualUserDetails
 				@sActualUserName OUTPUT,
 				@sCurrentUserGroup OUTPUT,
-				@iUserGroupID OUTPUT
+				@iUserGroupID OUTPUT;
 
-			DECLARE @HiddenGroups TABLE(groupName sysname, groupID integer)
-			SET @sHiddenGroupsList = substring(@psHiddenGroups, 2, len(@psHiddenGroups)-2)
+			DECLARE @HiddenGroups TABLE(groupName sysname, groupID integer);
+			SET @sHiddenGroupsList = substring(@psHiddenGroups, 2, len(@psHiddenGroups)-2);
 			WHILE LEN(@sHiddenGroupsList) > 0
 			BEGIN
 				IF CHARINDEX(char(9), @sHiddenGroupsList) > 0
 				BEGIN
-					SET @sHiddenGroup = LEFT(@sHiddenGroupsList, CHARINDEX(char(9), @sHiddenGroupsList) - 1)
-					SET @sHiddenGroupsList = RIGHT(@sHiddenGroupsList, LEN(@sHiddenGroupsList) - CHARINDEX(char(9), @sHiddenGroupsList))
+					SET @sHiddenGroup = LEFT(@sHiddenGroupsList, CHARINDEX(char(9), @sHiddenGroupsList) - 1);
+					SET @sHiddenGroupsList = RIGHT(@sHiddenGroupsList, LEN(@sHiddenGroupsList) - CHARINDEX(char(9), @sHiddenGroupsList));
 				END
 				ELSE
 				BEGIN
-					SET @sHiddenGroup = @sHiddenGroupsList
-					SET @sHiddenGroupsList = ''
+					SET @sHiddenGroup = @sHiddenGroupsList;
+					SET @sHiddenGroupsList = '';
 				END
 
-				INSERT INTO @HiddenGroups (groupName, groupID) (SELECT @sHiddenGroup, uid FROM sysusers WHERE name = @sHiddenGroup)
+				INSERT INTO @HiddenGroups (groupName, groupID) (SELECT @sHiddenGroup, uid FROM sysusers WHERE name = @sHiddenGroup);
 			END
 
 			DECLARE batchjob_cursor CURSOR LOCAL FAST_FORWARD FOR 
@@ -681,16 +673,16 @@ BEGIN
 				convert(integer, ASRSysBatchJobName.scheduled),
 				ASRSysBatchJobName.roleToPrompt,
 				ASRSysBatchJobName.Username,
-				ASRSysCustomReportsName.Name
+				ASRSysCustomReportsName.Name;
 
-			OPEN batchjob_cursor
+			OPEN batchjob_cursor;
 			FETCH NEXT FROM batchjob_cursor INTO @sBatchJobName, 
 				@iBatchJobID,
 				@iBatchJobScheduled,
 				@sBatchJobRoleToPrompt,
 				@iNonHiddenCount,
 				@sBatchJobUserName,
-				@sJobName	
+				@sJobName;
 			WHILE (@@fetch_status = 0)
 			BEGIN
 				SELECT @sCurrentUserAccess = 
@@ -716,7 +708,7 @@ BEGIN
 				LEFT OUTER JOIN ASRSysBatchJobAccess ON (b.name = ASRSysBatchJobAccess.groupName
 					AND ASRSysBatchJobAccess.id = @iBatchJobID)
 				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobAccess.ID = ASRSysBatchJobName.ID
-				WHERE a.Name = @sActualUserName
+				WHERE a.Name = @sActualUserName;
 
 				IF @sBatchJobUserName = @sOwner
 				BEGIN
@@ -727,44 +719,44 @@ BEGIN
 						(CHARINDEX(char(9) + @sBatchJobRoleToPrompt + char(9), @psHiddenGroups) > 0)
 					BEGIN
 						/* Found a Batch Job which is scheduled for another user group to run. */
-						SET @fBatchJobsOK = 0
-						SET @sScheduledUserGroups = @sScheduledUserGroups + @sBatchJobRoleToPrompt + '<BR>'
+						SET @fBatchJobsOK = 0;
+						SET @sScheduledUserGroups = @sScheduledUserGroups + @sBatchJobRoleToPrompt + '<BR>';
 
 						IF @sCurrentUserAccess = 'HD'
 						BEGIN
-							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : <Hidden> by ' + @sBatchJobUserName + '<BR>'
+							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : <Hidden> by ' + @sBatchJobUserName + '<BR>';
 						END
 						ELSE
 						BEGIN
-							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : ' + @sBatchJobName + '<BR>'
+							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : ' + @sBatchJobName + '<BR>';
 						END
 					END
 					ELSE
 					BEGIN
 						IF @iNonHiddenCount > 0 
 						BEGIN
-							SET @iOwnedJobCount = @iOwnedJobCount + 1
-							SET @sOwnedJobDetails = @sOwnedJobDetails + 'Batch Job : ' + @sBatchJobName + ' (Contains Custom Report ' + @sJobName + ')' + '<BR>'
+							SET @iOwnedJobCount = @iOwnedJobCount + 1;
+							SET @sOwnedJobDetails = @sOwnedJobDetails + 'Batch Job : ' + @sBatchJobName + ' (Contains Custom Report ' + @sJobName + ')' + '<BR>';
 							SET @sOwnedJobIDs = @sOwnedJobIDs +
 								CASE 
 									WHEN Len(@sOwnedJobIDs) > 0 THEN ', '
 									ELSE ''
-								END +  convert(varchar(100), @iBatchJobID)
+								END +  convert(varchar(100), @iBatchJobID);
 						END
 					END
 				END			
 				ELSE
 				BEGIN
 					/* Found a Batch Job whose owner is not the same. */
-					SET @fBatchJobsOK = 0
+					SET @fBatchJobsOK = 0;
 	    
 					IF @sCurrentUserAccess = 'HD'
 					BEGIN
-						SET @sNonOwnedJobDetails = @sNonOwnedJobDetails + 'Batch Job : <Hidden> by ' + @sBatchJobUserName + '<BR>'
+						SET @sNonOwnedJobDetails = @sNonOwnedJobDetails + 'Batch Job : <Hidden> by ' + @sBatchJobUserName + '<BR>';
 					END
 					ELSE
 					BEGIN
-						SET @sNonOwnedJobDetails = @sNonOwnedJobDetails + 'Batch Job : ' + @sBatchJobName + '<BR>'
+						SET @sNonOwnedJobDetails = @sNonOwnedJobDetails + 'Batch Job : ' + @sBatchJobName + '<BR>';
 					END
 				END
 
@@ -774,45 +766,42 @@ BEGIN
 					@sBatchJobRoleToPrompt,
 					@iNonHiddenCount,
 					@sBatchJobUserName,
-					@sJobName	
+					@sJobName;
 			END
-			CLOSE batchjob_cursor
-			DEALLOCATE batchjob_cursor	
+			CLOSE batchjob_cursor;
+			DEALLOCATE batchjob_cursor;
 
 		END
 	END
 
 	IF @fBatchJobsOK = 0
 	BEGIN
-		SET @piErrorCode = 1
+		SET @piErrorCode = 1;
 
 		IF Len(@sScheduledJobDetails) > 0 
 		BEGIN
 			SET @psErrorMsg = 'This definition cannot be made hidden from the following user groups :'  + '<BR><BR>' +
 				@sScheduledUserGroups  +
 				'<BR>as it is used in the following batch jobs which are scheduled to be run by these user groups :<BR><BR>' +
-				@sScheduledJobDetails
+				@sScheduledJobDetails;
 		END
 		ELSE
 		BEGIN
 			SET @psErrorMsg = 'This definition cannot be made hidden as it is used in the following batch jobs of which you are not the owner :<BR><BR>' +
-				@sNonOwnedJobDetails
+				@sNonOwnedJobDetails;
 	      	END
 	END
 	ELSE
 	BEGIN
 	    	IF (@iOwnedJobCount > 0) 
 		BEGIN
-			SET @piErrorCode = 4
+			SET @piErrorCode = 4;
 			SET @psErrorMsg = 'Making this definition hidden to user groups will automatically make the following definition(s), of which you are the owner, hidden to the same user groups:<BR><BR>' +
 				@sOwnedJobDetails + '<BR><BR>' +
-				'Do you wish to continue ?'
+				'Do you wish to continue ?';
 		END
 	END
 
-	SET @psJobIDsToHide = @sOwnedJobIDs
+	SET @psJobIDsToHide = @sOwnedJobIDs;
 	
 END
-
-GO
-

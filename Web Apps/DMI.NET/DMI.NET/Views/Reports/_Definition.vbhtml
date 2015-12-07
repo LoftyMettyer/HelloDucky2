@@ -121,6 +121,11 @@
 
 <script type="text/javascript">
 
+	$(document).ajaxStop(function () {
+		$('#description').removeAttr('style');
+		$('#Name').removeAttr('style');
+	});
+
 	$(function () {
 		if ($("#txtReportType").val() == '@UtilityType.utlMailMerge') {
 			$(".displayTitleInReportHeader").hide();

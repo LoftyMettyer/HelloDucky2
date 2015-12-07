@@ -1,7 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[spASRIntGetNineBoxGridDefinition] (
 		@piReportID 			integer, 
-	@psCurrentUser			varchar(255),
-	@psAction				varchar(255))
+	  @psCurrentUser			varchar(255),
+	  @psAction				varchar(255))
 AS
 BEGIN
 
@@ -89,12 +89,12 @@ BEGIN
 	/* Check the report exists. */
 	SELECT @iCount = COUNT(*)
 	FROM ASRSysCrossTab
-	WHERE CrossTabID = @piReportID
+	WHERE CrossTabID = @piReportID;
 
 	IF @iCount = 0
 	BEGIN
-		SET @psErrorMsg = '9-Box Grid has been deleted by another user.'
-		RETURN
+		SET @psErrorMsg = '9-Box Grid has been deleted by another user.';
+		RETURN;
 	END
 
 	SELECT @psReportName = name, @psReportDesc	 = description, @psReportOwner = userName,
@@ -200,7 +200,7 @@ BEGIN
 	SET @piCategoryID = 0
 	SELECT @piCategoryID = ISNULL(categoryid,0)
 		FROM [dbo].[tbsys_objectcategories]
-		WHERE objectid = @piReportID AND objecttype = 35
+		WHERE objectid = @piReportID AND objecttype = 35;
 
 
 	SELECT @psErrorMsg AS ErrorMsg, @psReportName AS Name, @psReportOwner AS [Owner], @psReportDesc AS [Description]

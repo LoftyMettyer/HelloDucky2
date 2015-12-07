@@ -89,10 +89,10 @@ BEGIN
 	END
 
 	-- Get's the category id associated with the mail merge utility. Return 0 if not found
-	SET @piCategoryID = 0
+	SET @piCategoryID = 0;
 	SELECT @piCategoryID = ISNULL(categoryid,0)
 		FROM [dbo].[tbsys_objectcategories]
-		WHERE objectid = @piReportID AND objecttype = 9
+		WHERE objectid = @piReportID AND objecttype = 9;
 
 	-- Definition
 	SELECT @psReportName AS [Name], @piCategoryID As CategoryID, m.[description], @psReportOwner AS [owner],		
@@ -169,7 +169,7 @@ BEGIN
 	INNER JOIN ASRSysExpressions ON ASRSysMailMergeColumns.columnID = ASRSysExpressions.exprID		
 	WHERE ASRSysMailMergeColumns.MailMergeID = @piReportID		
 		AND ASRSysMailMergeColumns.type <> 'C'		
-		AND ((ASRSysExpressions.username = @psReportOwner)	OR (ASRSysExpressions.access <> 'HD'))		
+		AND ((ASRSysExpressions.username = @psReportOwner)	OR (ASRSysExpressions.access <> 'HD'));		
 
 	-- Orders
 	SELECT ASRSysMailMergeColumns.columnID AS [id],

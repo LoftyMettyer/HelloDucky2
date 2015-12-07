@@ -62,12 +62,12 @@ BEGIN
 	/* Check the report exists. */
 	SELECT @iCount = COUNT(*)
 	FROM ASRSysCrossTab
-	WHERE CrossTabID = @piReportID
+	WHERE CrossTabID = @piReportID;
 
 	IF @iCount = 0
 	BEGIN
-		SET @psErrorMsg = 'cross tab has been deleted by another user.'
-		RETURN
+		SET @psErrorMsg = 'cross tab has been deleted by another user.';
+		RETURN;
 	END
 
 	SELECT @psReportName = name, @psReportDesc	 = description, @psReportOwner = userName,
@@ -147,7 +147,7 @@ BEGIN
 	SET @piCategoryID = 0
 	SELECT @piCategoryID = ISNULL(categoryid,0)
 		FROM [dbo].[tbsys_objectcategories]
-		WHERE objectid = @piReportID AND objecttype = 1
+		WHERE objectid = @piReportID AND objecttype = 1;
 
 	SELECT @psErrorMsg AS ErrorMsg, @psReportName AS Name, @psReportOwner AS [Owner], @psReportDesc AS [Description]
 		, @piBaseTableID AS [BaseTableID],  @piCategoryID As CategoryID, @piSelection AS SelectionType

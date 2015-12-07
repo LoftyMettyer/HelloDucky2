@@ -194,7 +194,7 @@ BEGIN
 		-- Get the ID of the inserted record.
 		SELECT @piID = id FROM @outputTable;
 
-		Exec [dbo].[spsys_saveobjectcategories] 17 , @piID, @piCategoryID
+		Exec [dbo].[spsys_saveobjectcategories] 17 , @piID, @piCategoryID;
 
 	END
 	ELSE
@@ -244,7 +244,7 @@ BEGIN
 			OutputFileName = @psOutputFilename  
 			WHERE ID = @piID;
 		
-		Exec [dbo].[spsys_saveobjectcategories] 17 , @piID, @piCategoryID
+		Exec [dbo].[spsys_saveobjectcategories] 17 , @piID, @piCategoryID;
 
 		/* Delete existing report event details. */
 		DELETE FROM ASRSysCalendarReportEvents 
@@ -258,26 +258,26 @@ BEGIN
 	BEGIN
 		IF CHARINDEX('**', @sTemp) > 0
 		BEGIN
-			SET @sEventDefn = LEFT(@sTemp, CHARINDEX('**', @sTemp) - 1)
-			SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX('**', @sTemp) - 1)
+			SET @sEventDefn = LEFT(@sTemp, CHARINDEX('**', @sTemp) - 1);
+			SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX('**', @sTemp) - 1);
 
 			IF len(@sTemp) <= 7000
 			BEGIN
-				SET @sTemp = @sTemp + LEFT(@psEvents2, 1000)
+				SET @sTemp = @sTemp + LEFT(@psEvents2, 1000);
 				IF len(@psEvents2) > 1000
 				BEGIN
-					SET @psEvents2 = SUBSTRING(@psEvents2, 1001, len(@psEvents2) - 1000)
+					SET @psEvents2 = SUBSTRING(@psEvents2, 1001, len(@psEvents2) - 1000);
 				END
 				ELSE
 				BEGIN
-					SET @psEvents2 = ''
+					SET @psEvents2 = '';
 				END
 			END
 		END
 		ELSE
 		BEGIN
-			SET @sEventDefn = @sTemp
-			SET @sTemp = ''
+			SET @sEventDefn = @sTemp;
+			SET @sTemp = '';
 		END
 
 		/* Rip out the event definition parameters. */
@@ -305,13 +305,13 @@ BEGIN
 		BEGIN
 			IF CHARINDEX('||', @sEventDefn) > 0
 			BEGIN
-				SET @sEventParam = LEFT(@sEventDefn, CHARINDEX('||', @sEventDefn) - 1)
-				SET @sEventDefn = RIGHT(@sEventDefn, LEN(@sEventDefn) - CHARINDEX('||', @sEventDefn) - 1)
+				SET @sEventParam = LEFT(@sEventDefn, CHARINDEX('||', @sEventDefn) - 1);
+				SET @sEventDefn = RIGHT(@sEventDefn, LEN(@sEventDefn) - CHARINDEX('||', @sEventDefn) - 1);
 			END
 			ELSE
 			BEGIN
-				SET @sEventParam = @sEventDefn
-				SET @sEventDefn = ''
+				SET @sEventParam = @sEventDefn;
+				SET @sEventDefn = '';
 			END
 
 			IF @iCount = 0 SET @sEventKey = @sEventParam;

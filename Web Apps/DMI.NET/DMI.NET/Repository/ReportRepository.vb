@@ -610,7 +610,7 @@ Namespace Repository
 						, New SqlParameter("@psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()} _
 						, New SqlParameter("@psColumns", SqlDbType.VarChar, -1) With {.Value = sColumns} _
 						, New SqlParameter("@psColumns2", SqlDbType.VarChar, -1) With {.Value = ""} _
-						, New SqlParameter("piCategoryID", SqlDbType.Int) With {.Value = objModel.CategoryID} _
+						, New SqlParameter("@piCategoryID", SqlDbType.Int) With {.Value = objModel.CategoryID} _
 				, prmID)
 
 				_mailmerges.Remove(objModel)
@@ -1838,7 +1838,7 @@ Namespace Repository
 						, New SqlParameter("@piTimestamp", SqlDbType.Int) With {.Value = objModel.Timestamp} _
 						, New SqlParameter("@piBasePicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID} _
 						, New SqlParameter("@piBaseFilterID", SqlDbType.Int) With {.Value = objModel.FilterID} _
-						, New SqlParameter("piCategoryID", SqlDbType.Int) With {.Value = objModel.CategoryID} _
+						, New SqlParameter("@piCategoryID", SqlDbType.Int) With {.Value = objModel.CategoryID} _
 						, New SqlParameter("@psCalculations", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.Calculations} _
 						, New SqlParameter("@psHiddenGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()} _
 						, prmErrorMsg, prmErrorCode, prmDeletedCalcs, prmHiddenCalcs, prmJobIDsToHide)

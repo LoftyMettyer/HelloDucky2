@@ -607,7 +607,7 @@
                         <table width="90%" class="invisible">
                             <tr>
                                 <td>
-                                    <div id="Container" class="width100 floatleft">
+                                    <div id="Container" class="width100 floatleft" style="width:800px;">
 																			<%If notFromRecordEditscreen %>
                                         <div id="divCategory" style="display: inline-block; margin-right: 50px">
                                             <label>Category :</label>

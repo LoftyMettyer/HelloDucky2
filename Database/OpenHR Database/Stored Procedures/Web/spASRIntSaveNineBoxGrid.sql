@@ -82,10 +82,10 @@ BEGIN
 	DECLARE	@outputTable table (crossTabId int NOT NULL);
 
 	/* Clean the input string parameters. */
-	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''')
-	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''')
+	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''');
+	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''');
 
-	SET @fIsNew = 0
+	SET @fIsNew = 0;
 
 	/* Insert/update the report header. */
 	IF (@piID = 0)
@@ -223,14 +223,14 @@ BEGIN
 			@Description8,
 			@ColorDesc8,
 			@Description9,
-			@ColorDesc9)
+			@ColorDesc9);
 
-		SET @fIsNew = 1
+		SET @fIsNew = 1;
 		-- Get the ID of the inserted record.
 		SELECT @piID = crossTabId FROM @outputTable;
 	
 
-		Exec [dbo].[spsys_saveobjectcategories] 35, @piID, @piCategoryID
+		Exec [dbo].[spsys_saveobjectcategories] 35, @piID, @piCategoryID;
 
 	END
 	ELSE
@@ -297,13 +297,13 @@ BEGIN
 			ColorDesc8 = @ColorDesc8,
 			Description9 = @Description9,
 			ColorDesc9 = @ColorDesc9
-		WHERE CrossTabID = @piID
+		WHERE CrossTabID = @piID;
 
-		Exec [dbo].[spsys_saveobjectcategories] 35, @piID, @piCategoryID
+		Exec [dbo].[spsys_saveobjectcategories] 35, @piID, @piCategoryID;
 
 	END
 
-	DELETE FROM ASRSysCrossTabAccess WHERE ID = @piID
+	DELETE FROM ASRSysCrossTabAccess WHERE ID = @piID;
 
 	INSERT INTO ASRSysCrossTabAccess (ID, groupName, access)
 		(SELECT @piID, sysusers.name,
@@ -322,18 +322,18 @@ BEGIN
 		FROM sysusers
 		WHERE sysusers.uid = sysusers.gid
 			AND sysusers.name <> 'ASRSysGroup'
-			AND sysusers.uid <> 0)
+			AND sysusers.uid <> 0);
 
-	SET @sTemp = @psAccess
+	SET @sTemp = @psAccess;
 	WHILE LEN(@sTemp) > 0
 	BEGIN
 		IF CHARINDEX(char(9), @sTemp) > 0
 		BEGIN
-			SET @sGroup = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1)
-			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)))
+			SET @sGroup = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1);
+			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)));
 	
-			SET @sAccess = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1)
-			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)))
+			SET @sAccess = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1);
+			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)));
 	
 			IF EXISTS (SELECT * FROM ASRSysCrossTabAccess
 				WHERE ID = @piID
@@ -342,7 +342,7 @@ BEGIN
 				UPDATE ASRSysCrossTabAccess
 					SET access = @sAccess
 					WHERE ID = @piID
-						AND groupName = @sGroup
+						AND groupName = @sGroup;
 		END
 	END
 
@@ -351,7 +351,7 @@ BEGIN
 		/* Update the util access log. */
 		INSERT INTO ASRSysUtilAccessLog 
 			(type, utilID, createdBy, createdDate, createdHost, savedBy, savedDate, savedHost)
-		VALUES (35, @piID, system_user, getdate(), host_name(), system_user, getdate(), host_name())
+		VALUES (35, @piID, system_user, getdate(), host_name(), system_user, getdate(), host_name());
 	END
 	ELSE
 	BEGIN
@@ -360,13 +360,13 @@ BEGIN
 		SELECT @iCount = COUNT(*) 
 		FROM ASRSysUtilAccessLog
 		WHERE utilID = @piID
-			AND type = 35
+			AND type = 35;
 
 		IF @iCount = 0 
 		BEGIN
 			INSERT INTO ASRSysUtilAccessLog
  				(type, utilID, savedBy, savedDate, savedHost)
-			VALUES (35, @piID, system_user, getdate(), host_name())
+			VALUES (35, @piID, system_user, getdate(), host_name());
 		END
 		ELSE
 		BEGIN
@@ -375,17 +375,17 @@ BEGIN
 				savedDate = getdate(), 
 				savedHost = host_name() 
 			WHERE utilID = @piID
-				AND type = 35
+				AND type = 35;
 		END
 	END
 	
 	IF LEN(@psJobsToHide) > 0 
 	BEGIN
-		SET @psJobsToHideGroups = '''' + REPLACE(SUBSTRING(LEFT(@psJobsToHideGroups, LEN(@psJobsToHideGroups) - 1), 2, LEN(@psJobsToHideGroups)-1), char(9), ''',''') + ''''
+		SET @psJobsToHideGroups = '''' + REPLACE(SUBSTRING(LEFT(@psJobsToHideGroups, LEN(@psJobsToHideGroups) - 1), 2, LEN(@psJobsToHideGroups)-1), char(9), ''',''') + '''';
 		SET @sSQL = 'DELETE FROM ASRSysBatchJobAccess 
 			WHERE ID IN (' + @psJobsToHide + ')
-				AND groupName IN (' + @psJobsToHideGroups + ')'
-		EXEC sp_executesql @sSQL
+				AND groupName IN (' + @psJobsToHideGroups + ')';
+		EXEC sp_executesql @sSQL;
 
 		SET @sSQL = 'INSERT INTO ASRSysBatchJobAccess
 			(ID, groupName, access)
@@ -408,8 +408,8 @@ BEGIN
 			WHERE sysusers.uid = sysusers.gid
 				AND sysusers.uid <> 0
 				AND sysusers.name IN (' + @psJobsToHideGroups + ')
-				AND ASRSysBatchJobName.ID IN (' + @psJobsToHide + '))'
-		EXEC sp_executesql @sSQL
+				AND ASRSysBatchJobName.ID IN (' + @psJobsToHide + '))';
+		EXEC sp_executesql @sSQL;
 	END
 	
 END

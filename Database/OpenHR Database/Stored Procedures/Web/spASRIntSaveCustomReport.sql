@@ -80,10 +80,10 @@ BEGIN
 	DECLARE	@outputTable table (id int NOT NULL);
 
 	/* Clean the input string parameters. */
-	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''')
-	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''')
+	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''');
+	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''');
 
-	SET @fIsNew = 0
+	SET @fIsNew = 0;
 
 	/* Insert/update the report header. */
 	IF (@piID = 0)
@@ -152,13 +152,13 @@ BEGIN
  			@piParent1Picklist,
  			@pfParent2AllRecords,
  			@piParent2Picklist
-		)
+		);
 
-		SET @fIsNew = 1
+		SET @fIsNew = 1;
 		-- Get the ID of the inserted record.
 		SELECT @piID = id FROM @outputTable;
 
-		Exec [dbo].[spsys_saveobjectcategories] 2, @piID, @piCategoryID
+		Exec [dbo].[spsys_saveobjectcategories] 2, @piID, @piCategoryID;
 
 	END
 	ELSE
@@ -194,107 +194,107 @@ BEGIN
 			Parent1Picklist = @piParent1Picklist,
 			Parent2AllRecords = @pfParent2AllRecords,
 			Parent2Picklist = @piParent2Picklist
-		WHERE ID = @piID
+		WHERE ID = @piID;
 
-		Exec [dbo].[spsys_saveobjectcategories] 2, @piID, @piCategoryID
+		Exec [dbo].[spsys_saveobjectcategories] 2, @piID, @piCategoryID;
 
 		/* Delete existing report details. */
 		DELETE FROM ASRSysCustomReportsDetails 
-		WHERE customReportID = @piID
+		WHERE customReportID = @piID;
 	END
 
 	/* Create the details records. */
-	SET @sTemp = @psColumns
+	SET @sTemp = @psColumns;
 
 	WHILE LEN(@sTemp) > 0
 	BEGIN
 		IF CHARINDEX('**', @sTemp) > 0
 		BEGIN
-			SET @sColumnDefn = LEFT(@sTemp, CHARINDEX('**', @sTemp) - 1)
-			SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX('**', @sTemp) - 1)
+			SET @sColumnDefn = LEFT(@sTemp, CHARINDEX('**', @sTemp) - 1);
+			SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX('**', @sTemp) - 1);
 
 			IF len(@sTemp) <= 7000
 			BEGIN
-				SET @sTemp = @sTemp + LEFT(@psColumns2, 1000)
+				SET @sTemp = @sTemp + LEFT(@psColumns2, 1000);
 				IF len(@psColumns2) > 1000
 				BEGIN
-					SET @psColumns2 = SUBSTRING(@psColumns2, 1001, len(@psColumns2) - 1000)
+					SET @psColumns2 = SUBSTRING(@psColumns2, 1001, len(@psColumns2) - 1000);
 				END
 				ELSE
 				BEGIN
-					SET @psColumns2 = ''
+					SET @psColumns2 = '';
 				END
 			END
 		END
 		ELSE
 		BEGIN
-			SET @sColumnDefn = @sTemp
-			SET @sTemp = ''
+			SET @sColumnDefn = @sTemp;
+			SET @sTemp = '';
 		END
 
 		/* Rip out the column definition parameters. */
-		SET @iSequence = 0
-		SET @sType = ''
-		SET @iColExprID = 0
-		SET @sHeading = ''
-		SET @iSize = 0
-		SET @iDP = 0
-		SET @fIsNumeric = 0
-		SET @fAvge = 0
-		SET @fCnt = 0
-		SET @fTot = 0
-		SET @fHidden = 0
-		SET @fGroupWithNext = 0
-		SET @iSortOrderSequence = 0
-		SET @sSortOrder = ''
-		SET @fBOC = 0
-		SET @fPOC = 0
-		SET @fVOC = 0
-		SET @fSRV = 0
-		SET @fRepetition = 0
-		SET @iCount = 0
+		SET @iSequence = 0;
+		SET @sType = '';
+		SET @iColExprID = 0;
+		SET @sHeading = '';
+		SET @iSize = 0;
+		SET @iDP = 0;
+		SET @fIsNumeric = 0;
+		SET @fAvge = 0;
+		SET @fCnt = 0;
+		SET @fTot = 0;
+		SET @fHidden = 0;
+		SET @fGroupWithNext = 0;
+		SET @iSortOrderSequence = 0;
+		SET @sSortOrder = '';
+		SET @fBOC = 0;
+		SET @fPOC = 0;
+		SET @fVOC = 0;
+		SET @fSRV = 0;
+		SET @fRepetition = 0;
+		SET @iCount = 0;
 		
 		WHILE LEN(@sColumnDefn) > 0
 		BEGIN
 			IF CHARINDEX('||', @sColumnDefn) > 0
 			BEGIN
-				SET @sColumnParam = LEFT(@sColumnDefn, CHARINDEX('||', @sColumnDefn) - 1)
-				SET @sColumnDefn = RIGHT(@sColumnDefn, LEN(@sColumnDefn) - CHARINDEX('||', @sColumnDefn) - 1)
+				SET @sColumnParam = LEFT(@sColumnDefn, CHARINDEX('||', @sColumnDefn) - 1);
+				SET @sColumnDefn = RIGHT(@sColumnDefn, LEN(@sColumnDefn) - CHARINDEX('||', @sColumnDefn) - 1);
 			END
 			ELSE
 			BEGIN
-				SET @sColumnParam = @sColumnDefn
-				SET @sColumnDefn = ''
+				SET @sColumnParam = @sColumnDefn;
+				SET @sColumnDefn = '';
 			END
 
-			IF @iCount = 0 SET @iSequence = convert(integer, @sColumnParam)
-			IF @iCount = 1 SET @sType = @sColumnParam
-			IF @iCount = 2 SET @iColExprID = convert(integer, @sColumnParam)
-			IF @iCount = 3 SET @sHeading = @sColumnParam
-			IF @iCount = 4 SET @iSize = convert(integer, @sColumnParam)
-			IF @iCount = 5 SET @iDP = convert(integer, @sColumnParam)
-			IF @iCount = 6 SET @fIsNumeric = convert(bit, @sColumnParam)
-			IF @iCount = 7 SET @fAvge = convert(bit, @sColumnParam)
-			IF @iCount = 8 SET @fCnt = convert(bit, @sColumnParam)
-			IF @iCount = 9 SET @fTot = convert(bit, @sColumnParam)
-			IF @iCount = 10 SET @fHidden = convert(bit, @sColumnParam)
-			IF @iCount = 11 SET @fGroupWithNext = convert(bit, @sColumnParam)
-			IF @iCount = 12 SET @iSortOrderSequence = convert(integer, @sColumnParam)
-			IF @iCount = 13 SET @sSortOrder = @sColumnParam
-			IF @iCount = 14 SET @fBOC = convert(bit, @sColumnParam)
-			IF @iCount = 15 SET @fPOC = convert(bit, @sColumnParam)
-			IF @iCount = 16 SET @fVOC = convert(bit, @sColumnParam)
-			IF @iCount = 17 SET @fSRV = convert(bit, @sColumnParam)
-			IF @iCount = 18 SET @fRepetition = convert(integer, @sColumnParam)
+			IF @iCount = 0 SET @iSequence = convert(integer, @sColumnParam);
+			IF @iCount = 1 SET @sType = @sColumnParam;
+			IF @iCount = 2 SET @iColExprID = convert(integer, @sColumnParam);
+			IF @iCount = 3 SET @sHeading = @sColumnParam;
+			IF @iCount = 4 SET @iSize = convert(integer, @sColumnParam);
+			IF @iCount = 5 SET @iDP = convert(integer, @sColumnParam);
+			IF @iCount = 6 SET @fIsNumeric = convert(bit, @sColumnParam);
+			IF @iCount = 7 SET @fAvge = convert(bit, @sColumnParam);
+			IF @iCount = 8 SET @fCnt = convert(bit, @sColumnParam);
+			IF @iCount = 9 SET @fTot = convert(bit, @sColumnParam);
+			IF @iCount = 10 SET @fHidden = convert(bit, @sColumnParam);
+			IF @iCount = 11 SET @fGroupWithNext = convert(bit, @sColumnParam);
+			IF @iCount = 12 SET @iSortOrderSequence = convert(integer, @sColumnParam);
+			IF @iCount = 13 SET @sSortOrder = @sColumnParam;
+			IF @iCount = 14 SET @fBOC = convert(bit, @sColumnParam);
+			IF @iCount = 15 SET @fPOC = convert(bit, @sColumnParam);
+			IF @iCount = 16 SET @fVOC = convert(bit, @sColumnParam);
+			IF @iCount = 17 SET @fSRV = convert(bit, @sColumnParam);
+			IF @iCount = 18 SET @fRepetition = convert(integer, @sColumnParam);
 
-			SET @iCount = @iCount + 1
+			SET @iCount = @iCount + 1;
 		END
 
 		INSERT ASRSysCustomReportsDetails 
 			(customReportID, sequence, type, colExprID, heading, size, dp, isNumeric, avge, 
 			cnt, tot, hidden, GroupWithNextColumn, 	sortOrderSequence, sortOrder, boc, poc, voc, srv, repetition) 
 		VALUES (@piID, @iSequence, @sType, @iColExprID, @sHeading, @iSize, @iDP, @fIsNumeric, @fAvge, 
-			@fCnt, @fTot, @fHidden, @fGroupWithNext, @iSortOrderSequence, @sSortOrder, @fBOC, @fPOC, @fVOC, @fSRV, @fRepetition)
+			@fCnt, @fTot, @fHidden, @fGroupWithNext, @iSortOrderSequence, @sSortOrder, @fBOC, @fPOC, @fVOC, @fSRV, @fRepetition);
 
 	END
 
@@ -304,59 +304,59 @@ BEGIN
 	BEGIN
 		/* Delete existing report child tables. */
 		DELETE FROM ASRSysCustomReportsChildDetails 
-		WHERE customReportID = @piID
+		WHERE customReportID = @piID;
 	END
 
-	SET @sTemp = @psChildString
+	SET @sTemp = @psChildString;
 
 	WHILE LEN(@sTemp) > 0
 	BEGIN
 		IF CHARINDEX('**', @sTemp) > 0
 		BEGIN
-			SET @sChildDefn = LEFT(@sTemp, CHARINDEX('**', @sTemp) - 1)
-			SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX('**', @sTemp) - 1)
+			SET @sChildDefn = LEFT(@sTemp, CHARINDEX('**', @sTemp) - 1);
+			SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX('**', @sTemp) - 1);
 		END
 		ELSE
 		BEGIN
-			SET @sChildDefn = @sTemp
-			SET @sTemp = ''
+			SET @sChildDefn = @sTemp;
+			SET @sTemp = '';
 		END
 
 		/* Rip out the column definition parameters. */
-		SET @iChildTableID = 0
-		SET @iChildFilterID = 0
-		SET @iChildOrderID = 0
-		SET @iChildMaxRecords = 0
-		SET @iCount = 0
+		SET @iChildTableID = 0;
+		SET @iChildFilterID = 0;
+		SET @iChildOrderID = 0;
+		SET @iChildMaxRecords = 0;
+		SET @iCount = 0;
 		
 		WHILE LEN(@sChildDefn) > 0
 		BEGIN
 			IF CHARINDEX('||', @sChildDefn) > 0
 			BEGIN
-				SET @sChildParam = LEFT(@sChildDefn, CHARINDEX('||', @sChildDefn) - 1)
-				SET @sChildDefn = RIGHT(@sChildDefn, LEN(@sChildDefn) - CHARINDEX('||', @sChildDefn) - 1)
+				SET @sChildParam = LEFT(@sChildDefn, CHARINDEX('||', @sChildDefn) - 1);
+				SET @sChildDefn = RIGHT(@sChildDefn, LEN(@sChildDefn) - CHARINDEX('||', @sChildDefn) - 1);
 			END
 			ELSE
 			BEGIN
-				SET @sChildParam = @sChildDefn
-				SET @sChildDefn = ''
+				SET @sChildParam = @sChildDefn;
+				SET @sChildDefn = '';
 			END
 
-			IF @iCount = 0 SET @iChildTableID = convert(integer, @sChildParam)
-			IF @iCount = 1 SET @iChildFilterID = convert(integer, @sChildParam)
-			IF @iCount = 2 SET @iChildOrderID = convert(integer, @sChildParam)
-			IF @iCount = 3 SET @iChildMaxRecords = convert(integer, @sChildParam)
+			IF @iCount = 0 SET @iChildTableID = convert(integer, @sChildParam);
+			IF @iCount = 1 SET @iChildFilterID = convert(integer, @sChildParam);
+			IF @iCount = 2 SET @iChildOrderID = convert(integer, @sChildParam);
+			IF @iCount = 3 SET @iChildMaxRecords = convert(integer, @sChildParam);
 	
-			SET @iCount = @iCount + 1
+			SET @iCount = @iCount + 1;
 		END
 
 		INSERT ASRSysCustomReportsChildDetails 
 			(customReportID, childtable, childfilter, childorder, childmaxrecords) 
-		VALUES (@piID, @iChildTableID, @iChildFilterID, @iChildOrderID, @iChildMaxRecords)
+		VALUES (@piID, @iChildTableID, @iChildFilterID, @iChildOrderID, @iChildMaxRecords);
 
 	END
 
-	DELETE FROM ASRSysCustomReportAccess WHERE ID = @piID
+	DELETE FROM ASRSysCustomReportAccess WHERE ID = @piID;
 	INSERT INTO ASRSysCustomReportAccess (ID, groupName, access)
 		(SELECT @piID, sysusers.name,
 			CASE
@@ -374,19 +374,19 @@ BEGIN
 		FROM sysusers
 		WHERE sysusers.uid = sysusers.gid
 			AND sysusers.name <> 'ASRSysGroup'
-			AND sysusers.uid <> 0)
+			AND sysusers.uid <> 0);
 
-	SET @sTemp = @psAccess
+	SET @sTemp = @psAccess;
 	
 	WHILE LEN(@sTemp) > 0
 	BEGIN
 		IF CHARINDEX(char(9), @sTemp) > 0
 		BEGIN
-			SET @sGroup = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1)
-			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)))
+			SET @sGroup = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1);
+			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)));
 	
-			SET @sAccess = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1)
-			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)))
+			SET @sAccess = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1);
+			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)));
 	
 			IF EXISTS (SELECT * FROM ASRSysCustomReportAccess
 				WHERE ID = @piID
@@ -395,7 +395,7 @@ BEGIN
 				UPDATE ASRSysCustomReportAccess
 					SET access = @sAccess
 					WHERE ID = @piID
-						AND groupName = @sGroup
+						AND groupName = @sGroup;
 		END
 	END
 
@@ -404,7 +404,7 @@ BEGIN
 		/* Update the util access log. */
 		INSERT INTO ASRSysUtilAccessLog 
 			(type, utilID, createdBy, createdDate, createdHost, savedBy, savedDate, savedHost)
-		VALUES (2, @piID, system_user, getdate(), host_name(), system_user, getdate(), host_name())
+		VALUES (2, @piID, system_user, getdate(), host_name(), system_user, getdate(), host_name());
 	END
 	ELSE
 	BEGIN
@@ -413,13 +413,13 @@ BEGIN
 		SELECT @iCount = COUNT(*) 
 		FROM ASRSysUtilAccessLog
 		WHERE utilID = @piID
-			AND type = 2
+			AND type = 2;
 
 		IF @iCount = 0 
 		BEGIN
 			INSERT INTO ASRSysUtilAccessLog
  				(type, utilID, savedBy, savedDate, savedHost)
-			VALUES (2, @piID, system_user, getdate(), host_name())
+			VALUES (2, @piID, system_user, getdate(), host_name());
 		END
 		ELSE
 		BEGIN
@@ -428,18 +428,18 @@ BEGIN
 				savedDate = getdate(), 
 				savedHost = host_name() 
 			WHERE utilID = @piID
-				AND type = 2
+				AND type = 2;
 		END
 	END
 
 	IF LEN(@psJobsToHide) > 0 
 	BEGIN
-		SET @psJobsToHideGroups = '''' + REPLACE(SUBSTRING(LEFT(@psJobsToHideGroups, LEN(@psJobsToHideGroups) - 1), 2, LEN(@psJobsToHideGroups)-1), char(9), ''',''') + ''''
+		SET @psJobsToHideGroups = '''' + REPLACE(SUBSTRING(LEFT(@psJobsToHideGroups, LEN(@psJobsToHideGroups) - 1), 2, LEN(@psJobsToHideGroups)-1), char(9), ''',''') + '''' ;
 
 		SET @sSQL = 'DELETE FROM ASRSysBatchJobAccess 
 			WHERE ID IN (' +@psJobsToHide + ')
-				AND groupName IN (' + @psJobsToHideGroups + ')'
-		EXEC sp_executesql @sSQL
+				AND groupName IN (' + @psJobsToHideGroups + ')';
+		EXEC sp_executesql @sSQL;
 
 		SET @sSQL = 'INSERT INTO ASRSysBatchJobAccess
 			(ID, groupName, access)
@@ -462,7 +462,7 @@ BEGIN
 			WHERE sysusers.uid = sysusers.gid
 				AND sysusers.uid <> 0
 				AND sysusers.name IN (' + @psJobsToHideGroups + ')
-				AND ASRSysBatchJobName.ID IN (' + @psJobsToHide + '))'
-		EXEC sp_executesql @sSQL
+				AND ASRSysBatchJobName.ID IN (' + @psJobsToHide + '))';
+		EXEC sp_executesql @sSQL;
 	END
 END

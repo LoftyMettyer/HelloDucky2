@@ -390,7 +390,7 @@ BEGIN
 	SET @piCategoryID = 0
 	SELECT @piCategoryID = ISNULL(categoryid,0)
 		FROM [dbo].[tbsys_objectcategories]
-		WHERE objectid = @piReportID AND objecttype = 2
+		WHERE objectid = @piReportID AND objecttype = 2;
 
 
 	-- Definition
