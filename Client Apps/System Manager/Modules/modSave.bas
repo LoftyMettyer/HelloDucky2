@@ -2313,7 +2313,7 @@ Private Function ConfigureCategories() As Boolean
             "/* ---------------------------------------------------- */" & vbNewLine & _
             "CREATE VIEW dbo.[ASRSysCategories]" & vbNewLine & _
             "AS" & vbNewLine & _
-            "    SELECT ID, [" & sCategoryColumnName & "] AS Category_Name, ISNULL([_deleted], 0) FROM dbo.[tbuser_" & sCategoryTableName & "]"
+            "    SELECT ID, [" & sCategoryColumnName & "] AS Category_Name, ISNULL([_deleted], 0) AS [_deleted] FROM dbo.[tbuser_" & sCategoryTableName & "]"
   gADOCon.Execute sSQL, , adExecuteNoRecords
      
      
