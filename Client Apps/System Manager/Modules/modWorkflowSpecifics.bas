@@ -5438,6 +5438,7 @@ Public Function CreateSP_WorkflowGetValidLoginsForStep() As Boolean
   Dim sPersonnelTableName As String
   Dim sWorkEmailColumnName As String
   Dim sSelfServiceLoginColumnName As String
+  Dim bSetupOK As Boolean
  
   On Error GoTo ErrorTrap
   
@@ -5457,6 +5458,8 @@ Public Function CreateSP_WorkflowGetValidLoginsForStep() As Boolean
   
     bRequireAuthorization = GetModuleSetting(gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_REQUIRESAUTHORIZATION, 0)
   
+    bSetupOK = Len(sPersonnelTableName) > 0 And Len(sSelfServiceLoginColumnName) > 0 And Len(sWorkEmailColumnName)
+   
     strSPSQL = _
       "------------------------------------------------------" & vbNewLine & _
       "-- Workflow Web Form authentication stored procedure." & vbNewLine & _
@@ -5473,22 +5476,26 @@ Public Function CreateSP_WorkflowGetValidLoginsForStep() As Boolean
       "    SET NOCOUNT ON;" & vbNewLine & vbNewLine & _
       "    DECLARE @Email nvarchar(MAX);" & vbNewLine & vbNewLine
       
-    strSPSQL = strSPSQL & _
-      "    SELECT @Email = s.UserEmail + ';' + ISNULL(s.EmailCC, ''), @requiresAuthorization = ISNULL(e.RequiresAuthentication, 0)" & vbNewLine & _
-      "        FROM ASRSysWorkflowInstanceSteps s" & vbNewLine & _
-      "        INNER JOIN ASRSysWorkflowElements e ON e.ID = s.ElementID" & vbNewLine & _
-      "        WHERE s.elementid = @elementId AND s.instanceId = @instanceID;" & vbNewLine & vbNewLine
-      
-    If bRequireAuthorization Then
+    If bSetupOK Then
       strSPSQL = strSPSQL & _
-        "    IF LEN(@Email) > 1" & vbNewLine & _
-        "        SET @requiresAuthorization = 1;" & vbNewLine & vbNewLine
+        "    SELECT @Email = s.UserEmail + ';' + ISNULL(s.EmailCC, ''), @requiresAuthorization = ISNULL(e.RequiresAuthentication, 0)" & vbNewLine & _
+        "        FROM ASRSysWorkflowInstanceSteps s" & vbNewLine & _
+        "        INNER JOIN ASRSysWorkflowElements e ON e.ID = s.ElementID" & vbNewLine & _
+        "        WHERE s.elementid = @elementId AND s.instanceId = @instanceID;" & vbNewLine & vbNewLine
+        
+      If bRequireAuthorization Then
+        strSPSQL = strSPSQL & _
+          "    IF LEN(@Email) > 1" & vbNewLine & _
+          "        SET @requiresAuthorization = 1;" & vbNewLine & vbNewLine
+      End If
+        
+      strSPSQL = strSPSQL & _
+        "    SELECT l.SplitColumn AS [Email], p.[" & sSelfServiceLoginColumnName & "] AS [Login] FROM dbo.[udfsysStringToTable](@Email, ';') l" & vbNewLine & _
+        "       INNER JOIN [" & sPersonnelTableName & "] p ON p.[" & sWorkEmailColumnName & "] = l.SplitColumn" & vbNewLine & _
+        "       WHERE l.SplitColumn <> '' AND p.[" & sSelfServiceLoginColumnName & "] <> '';" & vbNewLine & vbNewLine
     End If
-      
+    
     strSPSQL = strSPSQL & _
-      "    SELECT l.SplitColumn AS [Email], p.[" & sSelfServiceLoginColumnName & "] AS [Login] FROM dbo.[udfsysStringToTable](@Email, ';') l" & vbNewLine & _
-      "       INNER JOIN [" & sPersonnelTableName & "] p ON p.[" & sWorkEmailColumnName & "] = l.SplitColumn" & vbNewLine & _
-      "       WHERE l.SplitColumn <> '' AND p.[" & sSelfServiceLoginColumnName & "] <> '';" & vbNewLine & vbNewLine & _
       " END"
     
      gADOCon.Execute strSPSQL, , adExecuteNoRecords
