@@ -287,38 +287,40 @@
                         Dim prmColumnSize As New SqlParameter("@piColumnSize", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
                         Dim prmColumnDecimals As New SqlParameter("@piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
                         Dim prmTotalRecCount As New SqlParameter("@piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-                        Dim prmFirstRecPos As New SqlParameter("@piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("firstRecPos"))}
-
+												Dim prmFirstRecPos As New SqlParameter("@piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("firstRecPos"))}
+												Dim prmIsValidFilterColumns As New SqlParameter("@bIsValidFilter", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+						
                         Dim filterDefForCurrentTable As String = IIf(IsNothing(Session("filterDef_" & Session("tableID"))), "", Session("filterDef_" & Session("tableID")))
 
-                        SPParameters = New SqlParameter() { _
-                                prmError, _
-                                prmSomeSelectable, _
-                                prmSomeNotSelectable, _
-                                prmRealSource, _
-                                prmInsertGranted, _
-                                prmDeleteGranted, _
-                                New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))}, _
-                                New SqlParameter("@piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}, _
-                                New SqlParameter("@piOrderID ", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))}, _
-                                New SqlParameter("@piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}, _
-                                New SqlParameter("@piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}, _
-                                New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = filterDefForCurrentTable}, _
-                                New SqlParameter("@piRecordsRequired", SqlDbType.Int) With {.Value = iNumberOfRecords}, _
-                                prmIsFirstPage, _
-                                prmIsLastPage, _
-                                New SqlParameter("@psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("locateValue")}, _
-                                prmColumnType, _
-                                prmColumnSize, _
-                                prmColumnDecimals, _
-                                New SqlParameter("@psAction", SqlDbType.VarChar) With {.Value = Session("action"), .Size = 255}, _
-                                prmTotalRecCount, _
-                                prmFirstRecPos, _
-                                New SqlParameter("@piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))}, _
-                                New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")}, _
-                                New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Platform.LocaleDateFormatForSQL()}, _
-                                New SqlParameter("@RecordID", SqlDbType.Int) With {.Value = -1} _
-                        }
+						SPParameters = New SqlParameter() { _
+										prmError, _
+										prmSomeSelectable, _
+										prmSomeNotSelectable, _
+										prmRealSource, _
+										prmInsertGranted, _
+										prmDeleteGranted, _
+										New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))}, _
+										New SqlParameter("@piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}, _
+										New SqlParameter("@piOrderID ", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))}, _
+										New SqlParameter("@piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}, _
+										New SqlParameter("@piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}, _
+										New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = filterDefForCurrentTable}, _
+										New SqlParameter("@piRecordsRequired", SqlDbType.Int) With {.Value = iNumberOfRecords}, _
+										prmIsFirstPage, _
+										prmIsLastPage, _
+										New SqlParameter("@psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("locateValue")}, _
+										prmColumnType, _
+										prmColumnSize, _
+										prmColumnDecimals, _
+										New SqlParameter("@psAction", SqlDbType.VarChar) With {.Value = Session("action"), .Size = 255}, _
+										prmTotalRecCount, _
+										prmFirstRecPos, _
+										New SqlParameter("@piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))}, _
+										New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")}, _
+										New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Platform.LocaleDateFormatForSQL()}, _
+										New SqlParameter("@RecordID", SqlDbType.Int) With {.Value = -1}, _
+										prmIsValidFilterColumns
+						}
                         'Parameter @RecordID = -1 above means "Return all records"
 
                         Try
@@ -632,7 +634,8 @@
                             Response.Write("<input type='hidden' id=txtCancelDateColumn name=txtCancelDateColumn value=" & fCancelDateColumn & ">" & vbCrLf)
                             Response.Write("<input type='hidden' id=txtGotoAction name=txtGotoAction value=" & Session("action") & ">" & vbCrLf)
                             Response.Write("<input type='hidden' id='txtThousandColumns' name='txtThousandColumns' value='" & sThousandColumns & "'>" & vbCrLf)
-                            Response.Write("<input type='hidden' id='txtBlankIfZeroColumns' name='txtBlankIfZeroColumns' value='" & sBlankIfZeroColumns & "'>" & vbCrLf)
+														Response.Write("<input type='hidden' id='txtBlankIfZeroColumns' name='txtBlankIfZeroColumns' value='" & sBlankIfZeroColumns & "'>" & vbCrLf)
+														Response.Write("<input type='hidden' id=txtIsValidFilter name=txtIsValidFilter value=" & prmIsValidFilterColumns.Value & ">" & vbCrLf)
 
                             Session("realSource") = prmRealSource.Value
 

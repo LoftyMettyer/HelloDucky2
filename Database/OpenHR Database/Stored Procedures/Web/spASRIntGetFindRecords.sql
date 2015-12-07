@@ -24,7 +24,8 @@ CREATE PROCEDURE [dbo].[spASRIntGetFindRecords] (
 	@piCurrentRecCount		integer,
 	@psDecimalSeparator		varchar(255),
 	@psLocaleDateFormat		varchar(255),
-	@RecordID				integer
+	@RecordID				integer,
+	@bIsValidFilter			Bit 			OUTPUT
 )
 AS
 BEGIN
@@ -98,7 +99,8 @@ BEGIN
 		@psOriginalAction		varchar(255),
 		@sThousandColumns		varchar(255),
 		@sBlankIfZeroColumns	varchar(255),
-		@sTableOrViewName varchar(255);
+		@sTableOrViewName varchar(255),
+		@bIsValidFilterColumn			integer = 0;
 
 	DECLARE @FindDefinition TABLE(tableID integer, columnID integer, columnName nvarchar(255), tableName nvarchar(255)
 									, ascending bit, type varchar(1), datatype integer, controltype integer, size integer, decimals integer, Use1000Separator bit, BlankIfZero bit, Editable bit
@@ -133,7 +135,7 @@ BEGIN
 	SET @sExecString = '';
 	SET @sFilterSQL = '';
 	SET @sTempLocateValue = '';
-	
+	SET @bIsValidFilter = 1
 	SET @psOriginalAction = @psAction;
 	
 	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 1000;
@@ -240,7 +242,12 @@ BEGIN
 				@sColumnName = columnName
 			FROM [dbo].[ASRSysColumns]
 			WHERE columnID = @iColumnID;
-							
+			
+			/* Checking columnName exists in respected table or not. */
+			Set @bIsValidFilterColumn = (SELECT count(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @psRealSource and column_name = @sColumnName)
+
+			If (@bIsValidFilterColumn > 0)
+			BEGIN
 			SET @sColumnName = @sRealSource + '.' + @sColumnName;
 			IF (@iDataType = -7) 
 			BEGIN
@@ -497,6 +504,10 @@ BEGIN
 				SET @sFilterSQL = @sFilterSQL + @sSubFilterSQL + ')';
 			END
 		END
+			Else
+			Set @bIsValidFilter = 0
+			END	
+			
 	END
 	/* Loop through the tables used in the order, getting the column permissions for each one. */
 	DECLARE tablesCursor CURSOR LOCAL FAST_FORWARD FOR 
@@ -939,7 +950,7 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		IF len(@sFilterSQL) > 0	SET @sTempExecString = @sTempExecString + ' WHERE ' + @sFilterSQL;
+			IF len(@sFilterSQL) > 0	SET @sTempExecString = @sTempExecString + ' WHERE ' + @sFilterSQL;
 	END
 	
 	SET @sTempParamDefinition = N'@recordCount integer OUTPUT';

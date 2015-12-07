@@ -876,6 +876,12 @@ function find_window_onload() {
 					OpenHR.messageBox("No records match the current filter.\nNo filter is applied.");
 					menu_clearFilter();
 				}
+
+				// If assinged filter does not exist for the current view screen then clear the filter
+				if (rowCount() > 0 && frmFindForm.txtFilterSQL.value.length > 0 && frmFindForm.txtIsValidFilter.value == "False") {
+					OpenHR.messageBox("Invalid filter(s) for the current view.\nNo filter is applied.");
+					menu_clearFilter();
+				}
 			}
 		}
 	}
