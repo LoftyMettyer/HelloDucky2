@@ -5681,6 +5681,7 @@ On Error GoTo ErrorTrap:
         "      @emailAddress nvarchar(255)," & vbNewLine & _
         "      @startDate datetime," & vbNewLine & _
         "      @leavingDate datetime," & vbNewLine & _
+        "      @todaysDate datetime = DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE()))," & vbNewLine & _
         "      @knownAs nvarchar(255)," & vbNewLine & _
         "      @sendEmail bit = " & IIf(gbLoginMaintSendEmail, 1, 0) & "," & vbNewLine & _
         "      @emailContent nvarchar(MAX) = ''," & vbNewLine & _
@@ -5718,8 +5719,9 @@ On Error GoTo ErrorTrap:
           "            VALUES ('System', GETDATE(), '" & gstrLoginMaintAutoAddGroup & "', @login, 'User Added')" & vbNewLine & vbNewLine
           
     sSQL = sSQL & _
-          "          IF @sendEmail = 1" & vbNewLine & _
+          "          IF @sendEmail = 1 AND @leavingDate >= @todaysDate" & vbNewLine & _
           "          BEGIN" & vbNewLine & _
+          "              IF @startDate < @todaysDate SET @startDate = @todaysDate;" & vbNewLine & _
           "              INSERT ASRSysEmailQueue(RecordDesc, ColumnValue, DateDue, UserName, [Immediate], RecalculateRecordDesc," & vbNewLine & _
           "                  RepTo, MsgText, WorkflowInstanceID, [Subject])" & vbNewLine & _
           "              VALUES ('', '', @startDate, 'OpenHR Web', 1, 0," & vbNewLine & _
