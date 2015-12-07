@@ -16,14 +16,19 @@ Public Class Startup
 	End Sub
 
 	Public Sub ConfigureOAuth(app As IAppBuilder)
-		Dim issuer As String, audience As String, secret As Byte()
+		Dim issuer As String, audience As String, audienceSecret As String, secret As Byte()
 
 		Try
 			issuer = ConfigurationManager.AppSettings("as:Issuer")
 			audience = ConfigurationManager.AppSettings("as:AudienceId")
-			secret = TextEncodings.Base64Url.Decode(ConfigurationManager.AppSettings("as:AudienceSecret"))
-		Catch ex As Exception
-			' Handle missing custom.config entries
+			audienceSecret = ConfigurationManager.AppSettings("as:AudienceSecret")
+
+			If issuer = vbNullString _
+				Or audience = vbNullString _
+				Or audienceSecret = vbNullString Then Exit Sub
+
+			secret = TextEncodings.Base64Url.Decode(audienceSecret)
+		Catch ex As Exception			
 			Exit Sub
 		End Try
 
