@@ -1,9 +1,9 @@
 VERSION 5.00
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
-Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "mschrt20.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCHRT20.OCX"
 Begin VB.Form frmSSIntranetLink 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Link"
@@ -2441,7 +2441,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub
@@ -3186,6 +3186,11 @@ Private Sub chkConditionalFormatting_Click()
   RefreshControls
 End Sub
 
+Private Sub chkDataGrid1000Separator_Click()
+  mfChanged = True
+  RefreshControls
+End Sub
+
 Private Sub chkDataGridUseFormatting_Click()
   mfChanged = True
   RefreshControls
@@ -3638,7 +3643,7 @@ Private Sub cmdCancel_Click()
   If mfChanged Then
     intAnswer = MsgBox("The link type definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
     If intAnswer = vbYes Then
-      Call cmdOk_Click
+      Call cmdOK_Click
       Exit Sub
     ElseIf intAnswer = vbCancel Then
       Exit Sub
@@ -3672,7 +3677,7 @@ Private Sub cmdIcon_Click()
 
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
 
   If ValidateLink Then
     Cancelled = False
@@ -3792,7 +3797,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
       Case vbCancel
         Cancel = True
       Case vbYes
-        cmdOk_Click
+        cmdOK_Click
         Cancel = True   'MH20021105 Fault 4694
     End Select
   End If
@@ -3934,6 +3939,11 @@ Private Sub txtDBValCFValue3_LostFocus()
 '    MsgBox "Value must be numeric.", vbOKOnly + vbExclamation, Application.Name
 '    txtDBValCFValue3.SetFocus
 '  End If
+End Sub
+
+Private Sub spnDataGridDecimals_Change()
+  mfChanged = True
+  RefreshControls
 End Sub
 
 Private Sub spnDBValueDecimals_Change()

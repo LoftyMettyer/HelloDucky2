@@ -643,47 +643,42 @@
 									%>
 									<tr>
 										<td class="bordered" style="width: 150px; text-align: left; white-space: nowrap">
-											<%If fMultiAxis Then%>
-											<%=Trim(Left(NullSafeString(objRow(1)), 50))%>
-											<%Else%>
-											<%=Trim(Left(NullSafeString(objRow(0)), 50))%>
-											<%End If%>
+											<%
+                        If fMultiAxis Then
+                          Response.Write(FormatLinkData(objRow(1), navlink, 50))
+                        Else
+                          Response.Write(FormatLinkData(objRow(0), navlink, 50))
+                        End If
+                      %>
 										</td>
 										<%If fMultiAxis Then%>
 										<td class="bordered" style="text-align: left; white-space: nowrap">
 											<div style="width: 150px; white-space: nowrap">
-												<%=Trim(Left(NullSafeString(objRow(3)), 50))%>
+												<%=FormatLinkData(objRow(3), navlink, 50)%>
 											</div>
 										</td>
 										<%End If%>
 										<td class="bordered" style="text-align: right; vertical-align: top; padding-bottom: 0; white-space: nowrap; overflow: hidden">
-											<%If fMultiAxis Then%>
-											<%If navlink.UseFormatting = True And (TryCast(objRow(4), String) <> "No Access" And TryCast(objRow(4), String) <> "No Data") Then%>
-											<%=FormatNumber(CDbl(Trim(Left(NullSafeString(objRow(4)), 50))), navlink.Formatting_DecimalPlaces, , , TriState.UseDefault)%>
-											<%Else%>
-											<%=Trim(Left(NullSafeString(objRow(4)), 50))%>
-											<%End If
-											Else
-												If navlink.UseFormatting = True And (TryCast(objRow(1), String) <> "No Access" And TryCast(objRow(1), String) <> "No Data") Then%>
-											<%=FormatNumber(CDbl(Trim(Left(NullSafeString(objRow(1)), 50))), navlink.Formatting_DecimalPlaces, , , TriState.UseDefault)%>
-											<%Else%>
-											<%=Trim(Left(NullSafeString(objRow(1)), 50))%>
 											<%
-											End If
-										End If%>
+                        If fMultiAxis Then
+                          Response.Write(FormatLinkData(objRow(4), navlink, 50))
+                        Else
+                          Response.Write(FormatLinkData(objRow(1), navlink, 50))
+                        End If
+                        %>
 										</td>
 									</tr>
 									<%    
-											
-									Next
+
+                  Next
 									%>
 										</tbody>
 									<%
-								End If
-							Else
-									If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then	'Put and icon in tile mode
-										Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size: smaller; text-align: center'>(No records4)</p>")
-									Else
+                End If
+              Else
+                If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then 'Put and icon in tile mode
+                  Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size: smaller; text-align: center'>(No records4)</p>")
+                Else
 									%>
 									<tr>
 										<td class="bordered" style="text-align: center;" rowspan="3">No matching records found</td>

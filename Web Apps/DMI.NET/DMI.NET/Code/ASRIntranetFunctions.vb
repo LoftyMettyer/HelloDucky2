@@ -12,6 +12,7 @@ Imports System.Net.Mail
 Imports System.Net.Mime
 Imports HR.Intranet.Server.Structures
 Imports System.Runtime.CompilerServices
+Imports HR.Intranet.Server.Metadata
 
 Public Module ASRIntranetFunctions
 
@@ -478,4 +479,30 @@ Public Module ASRIntranetFunctions
 
 		Return RetValue
 	End Function
+
+  public function FormatLinkData(value As object, link As Link, maxLength As integer) as string
+
+    Dim mask as string
+    Dim returnVal as string
+
+    If link.UseFormatting AndAlso IsNumeric(value) Then
+
+      if link.Formatting_Use1000Separator Then
+        mask = "{0:#,0." + New String("0", link.Formatting_DecimalPlaces) + "}"
+      Else 
+        mask = "{0:0." + New String("0", link.Formatting_DecimalPlaces) + "}"
+      End If
+
+      returnVal = string.Format(mask, value)
+
+    Else
+      returnVal = NullSafeString(value)
+    End If
+
+    Return Trim(Left(returnVal, maxLength))
+
+  End function
+
+
+
 End Module
