@@ -3026,7 +3026,7 @@ Namespace Controllers
 
 					For lngCount = lngLoopMin To lngLoopMax
 						If objCrossTab.PageBreakColumn = True Then
-							ClientDLL.AddPage(sOutputGridCaption, Left(objCrossTab.ColumnHeading(2, lngCount), 255))
+							ClientDLL.AddPage(sOutputGridCaption, HttpUtility.HtmlDecode(Left(objCrossTab.ColumnHeading(2, lngCount), 255)))
 						Else
 							If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
 								ClientDLL.AddPage(sOutputGridCaption, "Absence Breakdown")
