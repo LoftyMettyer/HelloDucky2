@@ -2557,29 +2557,30 @@ Namespace Controllers
 				Session("promptsvalue") = sPrompts
 				Session(sKey) = aPrompts
 
-			Catch ex As Exception
-				Throw
+        ' Act dependent on utility type
+        Select Case value.UtilType
+          Case UtilityType.utlDataTransfer
+            Dim message = RunDataTransfer(value.ID, Session("multipleRecordIDs"), aPrompts)
+            Return View("util_run_message", message)
+
+          Case Else
+            Return View("util_run", value)
+
+        End Select
+
+   			Catch ex As Exception
+				  Throw
 
 			End Try
 
-            ' Act dependent on utility type
-            Select Case value.UtilType
-                Case UtilityType.utlDataTransfer
-                    Dim message = RunDataTransfer(value.ID, Session("multipleRecordIDs"))
-                    Return View("util_run_message", message)
+    End Function
 
-                Case Else
-                    Return View("util_run", value)
-            End Select
-
-        End Function
-
-        Private Function RunDataTransfer(id As Integer, multipleRecordIds As String) As PostResponse
+        Private Function RunDataTransfer(id As Integer, multipleRecordIds As String, prompts(,) as string) As PostResponse
 
             Dim dataTransfer = New clsDataTransferRun
             dataTransfer.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-            '  dataTransfer.
+            dataTransfer.SetPromptedValues(prompts)
             dataTransfer.ExecuteDataTransfer(id, multipleRecordIds)
 
             Dim message As New PostResponse With {

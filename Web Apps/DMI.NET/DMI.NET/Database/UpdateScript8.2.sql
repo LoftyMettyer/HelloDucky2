@@ -50482,6 +50482,18 @@ BEGIN
 			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @piUtilID, @sAllComponents OUTPUT;
 	END
 
+	IF @piUtilType = 3
+	BEGIN
+
+		SELECT @iBaseFilter = filterID
+			FROM [dbo].ASRSysDataTransferName
+			WHERE DataTransferID = @piUtilID;
+
+		IF (NOT @iBaseFilter IS NULL) AND (@iBaseFilter > 0)
+			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @iBaseFilter, @sAllComponents OUTPUT;
+
+	END
+
 	IF @piUtilType = 15 OR @piUtilType = 16
 	BEGIN
 		/* Standard report (Absence Calendar or Bradford Factor) */
