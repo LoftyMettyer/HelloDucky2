@@ -408,7 +408,7 @@
 									</tr>
 
 									<tr height="10">
-										<td width="50" height="10">Value :
+										<td width="50" height="10" style="white-space:nowrap;">Value :
 										</td>
 										<td width="10" height="10"></td>
 										<td width="175" height="10">
