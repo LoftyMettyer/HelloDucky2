@@ -5686,7 +5686,7 @@ On Error GoTo ErrorTrap:
         "      @sendEmail bit = " & IIf(gbLoginMaintSendEmail, 1, 0) & "," & vbNewLine & _
         "      @emailContent nvarchar(MAX) = ''," & vbNewLine & _
         "      @defaultGroup nvarchar(255) = '" & gstrLoginMaintAutoAddGroup & "'," & vbNewLine & _
-        "      @initialPassword varchar(12) = 'password!123';" & vbNewLine & vbNewLine
+        "      @initialPassword varchar(12) = 'Password!123';" & vbNewLine & vbNewLine
 
   If gbLoginMaintAutoAdd Then
   
