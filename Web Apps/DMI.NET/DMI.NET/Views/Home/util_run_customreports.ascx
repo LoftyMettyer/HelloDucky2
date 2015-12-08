@@ -362,9 +362,9 @@ End If
 		ElseIf objItem.IsDateColumn Then
 			If objItem.GroupWithNextColumn Then
 				' two concatenated dates so remove date formatter
-				Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', edittype: 'date', align: 'center', formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true, width: '" & iColumnWidth.ToString() & "' }}")
+				Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', edittype: 'date', align: 'left', formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true, width: '" & iColumnWidth.ToString() & "' }}")
 			Else
-				Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', edittype: 'date', align: 'center',  formatter: 'date', formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true, width: '" & iColumnWidth.ToString() & "' }}")
+				Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', edittype: 'date', align: 'left',  formatter: 'date', formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true, width: '" & iColumnWidth.ToString() & "' }}")
 			End If
 		Else
 			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', width: '" & iColumnWidth.ToString() & "'}")
