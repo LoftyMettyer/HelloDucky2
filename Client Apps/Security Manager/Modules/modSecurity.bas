@@ -5719,7 +5719,7 @@ On Error GoTo ErrorTrap:
           "            VALUES ('System', GETDATE(), '" & gstrLoginMaintAutoAddGroup & "', @login, 'User Added')" & vbNewLine & vbNewLine
           
     sSQL = sSQL & _
-          "          IF @sendEmail = 1 AND @leavingDate >= @todaysDate" & vbNewLine & _
+          "          IF @sendEmail = 1 AND (@leavingDate >= @todaysDate OR @leavingDate IS NULL)" & vbNewLine & _
           "          BEGIN" & vbNewLine & _
           "              IF @startDate < @todaysDate SET @startDate = @todaysDate;" & vbNewLine & _
           "              INSERT ASRSysEmailQueue(RecordDesc, ColumnValue, DateDue, UserName, [Immediate], RecalculateRecordDesc," & vbNewLine & _
