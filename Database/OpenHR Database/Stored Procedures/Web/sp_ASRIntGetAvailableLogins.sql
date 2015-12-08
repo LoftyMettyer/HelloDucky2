@@ -10,6 +10,7 @@ BEGIN
 						WHERE sysusers.sid = sys.server_principals.sid)
 	AND TYPE IN ('S', 'U')
 	AND name != 'NT AUTHORITY\SYSTEM'
-	AND is_disabled = 0;
+	AND is_disabled = 0
+	ORDER BY name;
 
 END
