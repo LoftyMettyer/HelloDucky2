@@ -19,6 +19,7 @@ Begin VB.Form frmWorkflowEdit
    Icon            =   "frmWorkflowEdit.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   3870
@@ -171,6 +172,7 @@ Private mfLoading As Boolean
 Private mlngWorkflowID As Long
 
 Private mfChanged As Boolean
+Private mbLocked As Boolean
 
 Private mfSaveChanges As Boolean
 
@@ -204,6 +206,13 @@ Public Property Let Changed(ByVal pfNewValue As Boolean)
     mfChanged = pfNewValue
     RefreshScreen
   End If
+End Property
+
+Public Property Let Locked(ByVal pbNewValue As Boolean)
+  mbLocked = pbNewValue
+
+  
+  
 End Property
 
 Private Sub FormatScreen()

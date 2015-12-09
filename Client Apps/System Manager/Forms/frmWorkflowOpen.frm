@@ -205,6 +205,7 @@ Begin VB.Form frmWorkflowOpen
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9234
+            TextSave        =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -240,6 +241,7 @@ Private mlngBaseTableID As Long
 Private mlngPersModulePersonnelTableID As Long
 
 Private mblnWorkflowEnabled As Boolean
+Private mbLocked As Boolean
 
 Private Const MIN_FORM_HEIGHT = 5000
 Private Const MIN_FORM_WIDTH = 6000
@@ -1352,6 +1354,7 @@ Private Sub cmdProperties_Click()
       .InitiationType = miInitiationType
       Set .CallingForm = Me
       .WorkflowEnabled = mblnWorkflowEnabled
+      .Locked = mbLocked
       
       .Show vbModal
       fOK = Not .Cancelled
@@ -1613,9 +1616,9 @@ Public Property Let WorkflowID(plngWorkflowID As Long)
   mlngSelectedWorkflowID = plngWorkflowID
   
 End Property
+
 Private Sub RefreshControls()
   Dim fSelectionMade As Boolean
-  Dim bLocked As Boolean
   Dim iLoop As Integer
   Dim sDescription As String
   Dim bModified As Boolean
@@ -1628,7 +1631,7 @@ Private Sub RefreshControls()
     For iLoop = 1 To UBound(mavWorkflowInfo, 2)
       If CLng(mavWorkflowInfo(1, iLoop)) = CLng(lstItems.SelectedItem.Tag) Then
         sDescription = CStr(mavWorkflowInfo(2, iLoop))
-        bLocked = mavWorkflowInfo(4, iLoop)
+        mbLocked = mavWorkflowInfo(4, iLoop)
         mblnWorkflowEnabled = CBool(mavWorkflowInfo(3, iLoop))
         bModified = CBool(mavWorkflowInfo(5, iLoop))
         Exit For
@@ -1638,10 +1641,10 @@ Private Sub RefreshControls()
   
   ' Enable/disable controls depending on the state of other.
   cmdNew.Enabled = Not mblnReadOnly
-  cmdModify.Caption = IIf(bLocked, "&View...", "&Edit...")
+  cmdModify.Caption = IIf(mbLocked, "&View...", "&Edit...")
   cmdModify.Enabled = fSelectionMade
   cmdCopy.Enabled = fSelectionMade And Not mblnReadOnly
-  cmdDelete.Enabled = fSelectionMade And Not mblnReadOnly
+  cmdDelete.Enabled = fSelectionMade And Not mblnReadOnly And Not mbLocked
   cmdProperties.Enabled = fSelectionMade
   cmdPrint.Enabled = fSelectionMade
   cmdExport.Enabled = fSelectionMade And Not bModified And mblnWorkflowEnabled
@@ -1763,7 +1766,7 @@ Private Sub Form_Resize()
     cmdProperties.Left = cmdNew.Left
     cmdPrint.Left = cmdNew.Left
     cmdExport.Left = cmdNew.Left
-    cmdOK.Left = cmdNew.Left
+    cmdOk.Left = cmdNew.Left
   End With
   
   With lstItems
@@ -1771,7 +1774,7 @@ Private Sub Form_Resize()
     txtDesc.Top = .Top + .Height + YGAP
   End With
     
-  cmdOK.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOK.Height
+  cmdOk.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOk.Height
     
   ' Get rid of the icon off the form
   RemoveIcon Me
