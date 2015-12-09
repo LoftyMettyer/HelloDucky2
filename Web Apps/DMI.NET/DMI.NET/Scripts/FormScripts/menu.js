@@ -4190,11 +4190,9 @@ function menu_clearFilter() {
 				FilterSQL: "",
 				FilterDef: "",
 				SelectedRecordsInFindGrid: $("#txtSelectedRecordsInFindGrid").val(),
-				//SelectedRecordsInFindGrid: frmFindArea.txtSelectedRecordsInFindGrid.value,
 				__RequestVerificationToken: $("[name=__RequestVerificationToken]")[0].value
 			}
 			OpenHR.submitForm(null, "optionframe", null, postData, "filterselect_Submit");
-			menu_reloadFindPage("RELOAD", "");
 		}
 	}
 }

@@ -430,6 +430,7 @@ Namespace Controllers
 			Dim prmColumnDecimals As New SqlParameter("@piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 			Dim prmTotalRecCount As New SqlParameter("@piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 			Dim prmFirstRecPos As New SqlParameter("@piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("firstRecPos"))}
+			Dim prmIsValidFilterColumns As New SqlParameter("@bIsValidFilter", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 
 			Dim filterDefForCurrentTable As String = IIf(IsNothing(Session("filterDef_" & Session("tableID"))), "", Session("filterDef_" & Session("tableID")))
 
@@ -459,7 +460,8 @@ Namespace Controllers
 					New SqlParameter("@piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))}, _
 					New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")}, _
 					New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Platform.LocaleDateFormatForSQL()}, _
-					New SqlParameter("@RecordID", SqlDbType.Int) With {.Value = RecordID} _
+					New SqlParameter("@RecordID", SqlDbType.Int) With {.Value = RecordID}, _
+					prmIsValidFilterColumns
 					}
 			Try
 				resultDataSet = objDataAccess.GetDataSet("spASRIntGetFindRecords", SPParameters)
@@ -2016,10 +2018,10 @@ Namespace Controllers
 								Dim seriesNames As String = ""
 								'See Color Palette details here:http://blogs.msdn.com/b/alexgor/archive/2009/10/06/setting-chart-series-colors.aspx
 								Dim brightPastelColorPalette As Integer() = {15764545, 4306172, 671968, 9593861, 12566463, 6896410, 8578047, 14523410, 4942794, 14375936, 8966899, 8479568, 11057649, 689120, 12489592}
-                                Dim pointNum As Integer
+								Dim pointNum As Integer
 
-                                'Fill missing data
-                                Dim i As Integer
+								'Fill missing data
+								Dim i As Integer
 								Dim j As Integer
 								Dim r As DataRow
 
@@ -2077,19 +2079,19 @@ Namespace Controllers
 										Dim yVal As Double = objRow("Aggregate")
 										Dim pointBackColor As Color
 
-                                        pointNum = CInt(objRow("HORIZONTAL_ID"))
+										pointNum = CInt(objRow("HORIZONTAL_ID"))
 
-                                        If objRow("COLOUR") = 16777215 Then
-                                            pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
-                                        Else
-                                            Try
+										If objRow("COLOUR") = 16777215 Then
+											pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
+										Else
+											Try
 												pointBackColor = ColorTranslator.FromWin32(objRow("COLOUR"))
 											Catch ex As Exception
 												pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
 											End Try
 										End If
 
-                                        If Not seriesNames.Contains("<" & seriesName & ">") Then
+										If Not seriesNames.Contains("<" & seriesName & ">") Then
 											' Add the series - ONLY if not already added.
 											MultiAxisChart.Series.Add(seriesName)
 
@@ -2129,21 +2131,21 @@ Namespace Controllers
 											End Select
 										End If
 
-                                        If showLabels Then
-                                            MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
-                                                .YValues = New Double() {yVal},
-                                                .AxisLabel = columnName,
-                                                .Color = pointBackColor,
-                                                .IsEmpty = (yVal = 0)
-                             })
-                                        Else
-                                            MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
-                                                .Label = " ",
-                                                .YValues = New Double() {yVal},
-                                                .Color = pointBackColor,
-                                                .IsEmpty = (yVal = 0)
-                                                                                                                                                                             })
-                                        End If
+										If showLabels Then
+											MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
+													.YValues = New Double() {yVal},
+													.AxisLabel = columnName,
+													.Color = pointBackColor,
+													.IsEmpty = (yVal = 0)
+			 })
+										Else
+											MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
+													.Label = " ",
+													.YValues = New Double() {yVal},
+													.Color = pointBackColor,
+													.IsEmpty = (yVal = 0)
+																																																																											 })
+										End If
 
 										If showLegend = True Then
 											Dim legendAdded As Boolean = False
@@ -2158,10 +2160,10 @@ Namespace Controllers
 
 									End If
 
-                                Next
+								Next
 
-                                'For 2D pie charts with more than one series we need to add a chart area for each series
-                                Dim thisSeries As String
+								'For 2D pie charts with more than one series we need to add a chart area for each series
+								Dim thisSeries As String
 								For Each s As Series In MultiAxisChart.Series
 									'Add a chart area for the series and set its properties
 									thisSeries = s.Name
@@ -2512,7 +2514,7 @@ Namespace Controllers
 
 		<HttpPost()>
 <ValidateAntiForgeryToken>
-			Function util_run_promptedvalues_submit(value As PromptedValuesModel) As ActionResult
+		Function util_run_promptedvalues_submit(value As PromptedValuesModel) As ActionResult
 
 			Try
 
@@ -2557,43 +2559,43 @@ Namespace Controllers
 				Session("promptsvalue") = sPrompts
 				Session(sKey) = aPrompts
 
-        ' Act dependent on utility type
-        Select Case value.UtilType
-          Case UtilityType.utlDataTransfer
-            Dim message = RunDataTransfer(value.ID, Session("multipleRecordIDs"), aPrompts)
-            Return View("util_run_message", message)
+				' Act dependent on utility type
+				Select Case value.UtilType
+					Case UtilityType.utlDataTransfer
+						Dim message = RunDataTransfer(value.ID, Session("multipleRecordIDs"), aPrompts)
+						Return View("util_run_message", message)
 
-          Case Else
-            Return View("util_run", value)
+					Case Else
+						Return View("util_run", value)
 
-        End Select
+				End Select
 
-   			Catch ex As Exception
-				  Throw
+			Catch ex As Exception
+				Throw
 
 			End Try
 
-    End Function
+		End Function
 
-        Private Function RunDataTransfer(id As Integer, multipleRecordIds As String, prompts(,) as string) As PostResponse
+		Private Function RunDataTransfer(id As Integer, multipleRecordIds As String, prompts(,) As String) As PostResponse
 
-            Dim dataTransfer = New clsDataTransferRun
-            dataTransfer.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+			Dim dataTransfer = New clsDataTransferRun
+			dataTransfer.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-            dataTransfer.SetPromptedValues(prompts)
-            dataTransfer.ExecuteDataTransfer(id, multipleRecordIds)
+			dataTransfer.SetPromptedValues(prompts)
+			dataTransfer.ExecuteDataTransfer(id, multipleRecordIds)
 
-            Dim message As New PostResponse With {
-                .Message = dataTransfer.StatusMessage
-            }
+			Dim message As New PostResponse With {
+					.Message = dataTransfer.StatusMessage
+			}
 
-            Return message
+			Return message
 
-        End Function
-
-        <HttpPost>
-		<ValidateAntiForgeryToken>
-		Public Function util_run_crosstab_downloadoutput() As FilePathResult
+		End Function
+		
+		<HttpPost>
+<ValidateAntiForgeryToken>
+			Public Function util_run_crosstab_downloadoutput() As FilePathResult
 
 			Dim lngOutputFormat As OutputFormats = Request("txtFormat")
 			Dim bPreview As Boolean = Request("txtPreview")

@@ -48920,264 +48920,269 @@ BEGIN
 
 			If (@bIsValidFilterColumn > 0)
 			BEGIN
-			SET @sColumnName = @sRealSource + '.' + @sColumnName;
-			IF (@iDataType = -7) 
-			BEGIN
-				/* Logic column (must be the equals operator).	*/
-				SET @sSubFilterSQL = @sColumnName + ' = ';
-			
-				IF UPPER(@sValue) = 'TRUE'
-				BEGIN
-					SET @sSubFilterSQL = @sSubFilterSQL + '1';
-				END
-				ELSE
-				BEGIN
-					SET @sSubFilterSQL = @sSubFilterSQL + '0';
-				END
-			END
-			
-			IF ((@iDataType = 2) OR (@iDataType = 4)) 
-			BEGIN
-				/* Numeric/Integer column. */
-				/* Replace the locale decimal separator with '.' for SQL's benefit. */
-				SET @sValue = REPLACE(@sValue, @psDecimalSeparator, '.');
-				IF (@iOperatorID = 1) 
-				BEGIN
-					/* Equals. */
-					SET @sSubFilterSQL = @sColumnName + ' = ' + @sValue;
-					IF convert(float, @sValue) = 0
-					BEGIN
-						SET @sSubFilterSQL = @sSubFilterSQL + ' OR ' + @sColumnName + ' IS NULL';
-					END
-				END
+					SET @sColumnName = @sRealSource + '.' + @sColumnName;
 
-				IF (@iOperatorID = 2)
-				BEGIN
-					/* Not Equal To. */
-					SET @sSubFilterSQL = @sColumnName + ' <> ' + @sValue;
-					IF convert(float, @sValue) = 0
-					BEGIN
-						SET @sSubFilterSQL = @sSubFilterSQL + ' AND ' + @sColumnName + ' IS NOT NULL';
-					END
-				END
+							IF (@iDataType = -7) 
+							BEGIN
+									/* Logic column (must be the equals operator).	*/
+									SET @sSubFilterSQL = @sColumnName + ' = ';
+			
+									IF UPPER(@sValue) = 'TRUE'
+									BEGIN
+										SET @sSubFilterSQL = @sSubFilterSQL + '1';
+									END
+									ELSE
+									BEGIN
+										SET @sSubFilterSQL = @sSubFilterSQL + '0';
+									END
+							END
+			
+							IF ((@iDataType = 2) OR (@iDataType = 4)) 
+							BEGIN
+									/* Numeric/Integer column. */
+									/* Replace the locale decimal separator with '.' for SQL's benefit. */
+									SET @sValue = REPLACE(@sValue, @psDecimalSeparator, '.');
+
+									IF (@iOperatorID = 1) 
+									BEGIN
+										/* Equals. */
+										SET @sSubFilterSQL = @sColumnName + ' = ' + @sValue;
+										IF convert(float, @sValue) = 0
+										BEGIN
+											SET @sSubFilterSQL = @sSubFilterSQL + ' OR ' + @sColumnName + ' IS NULL';
+										END
+									END
+
+									IF (@iOperatorID = 2)
+									BEGIN
+										/* Not Equal To. */
+										SET @sSubFilterSQL = @sColumnName + ' <> ' + @sValue;
+										IF convert(float, @sValue) = 0
+										BEGIN
+											SET @sSubFilterSQL = @sSubFilterSQL + ' AND ' + @sColumnName + ' IS NOT NULL';
+										END
+									END
 				
-				IF (@iOperatorID = 3) 
-				BEGIN
-					/* Less than or Equal To. */
-					SET @sSubFilterSQL = @sColumnName + ' <= ' + @sValue;
-					IF convert(float, @sValue) = 0
-					BEGIN
-						SET @sSubFilterSQL = @sSubFilterSQL + ' OR ' + @sColumnName + ' IS NULL';
-					END
-				END
+									IF (@iOperatorID = 3) 
+									BEGIN
+										/* Less than or Equal To. */
+										SET @sSubFilterSQL = @sColumnName + ' <= ' + @sValue;
+										IF convert(float, @sValue) = 0
+										BEGIN
+											SET @sSubFilterSQL = @sSubFilterSQL + ' OR ' + @sColumnName + ' IS NULL';
+										END
+									END
         
-				IF (@iOperatorID = 4) 
-				BEGIN
-					/* Greater than or Equal To. */
-					SET @sSubFilterSQL = @sColumnName + ' >= ' + @sValue;
-					IF convert(float, @sValue) = 0
-					BEGIN
-						SET @sSubFilterSQL = @sSubFilterSQL + ' OR ' + @sColumnName + ' IS NULL';
-					END
-				END
-				IF (@iOperatorID = 5) 
-				BEGIN
-					/* Greater than. */
-					SET @sSubFilterSQL = @sColumnName + ' > ' + @sValue;
-					IF convert(float, @sValue) = 0
-					BEGIN
-						SET @sSubFilterSQL = @sSubFilterSQL + ' OR ' + @sColumnName + ' IS NULL';
-					END
-				END
-				IF (@iOperatorID = 6) 
-				BEGIN
-					/* Less than.*/
-					SET @sSubFilterSQL = @sColumnName + ' < ' + @sValue;
-					IF convert(float, @sValue) = 0
-					BEGIN
-						SET @sSubFilterSQL = @sSubFilterSQL + ' OR ' + @sColumnName + ' IS NULL';
-					END
-				END
-			END
-			IF (@iDataType = 11) 
-			BEGIN
-				/* Date column. */
-				IF LEN(@sValue) > 0
-				BEGIN
-					/* Convert the locale date into the SQL format. */
-					/* Note that the locale date has already been validated and formatted to match the locale format. */
-					SET @iIndex1 = CHARINDEX('mm', @psLocaleDateFormat);
-					SET @iIndex2 = CHARINDEX('dd', @psLocaleDateFormat);
-					SET @iIndex3 = CHARINDEX('yyyy', @psLocaleDateFormat);
+									IF (@iOperatorID = 4) 
+									BEGIN
+										/* Greater than or Equal To. */
+										SET @sSubFilterSQL = @sColumnName + ' >= ' + @sValue;
+										IF convert(float, @sValue) = 0
+										BEGIN
+											SET @sSubFilterSQL = @sSubFilterSQL + ' OR ' + @sColumnName + ' IS NULL';
+										END
+									END
+
+									IF (@iOperatorID = 5) 
+									BEGIN
+										/* Greater than. */
+										SET @sSubFilterSQL = @sColumnName + ' > ' + @sValue;
+										IF convert(float, @sValue) = 0
+										BEGIN
+											SET @sSubFilterSQL = @sSubFilterSQL + ' OR ' + @sColumnName + ' IS NULL';
+										END
+									END
+
+									IF (@iOperatorID = 6) 
+									BEGIN
+										/* Less than.*/
+										SET @sSubFilterSQL = @sColumnName + ' < ' + @sValue;
+										IF convert(float, @sValue) = 0
+										BEGIN
+											SET @sSubFilterSQL = @sSubFilterSQL + ' OR ' + @sColumnName + ' IS NULL';
+										END
+									END
+							END
+
+							IF (@iDataType = 11) 
+							BEGIN
+									/* Date column. */
+									IF LEN(@sValue) > 0
+									BEGIN
+										/* Convert the locale date into the SQL format. */
+										/* Note that the locale date has already been validated and formatted to match the locale format. */
+										SET @iIndex1 = CHARINDEX('mm', @psLocaleDateFormat);
+										SET @iIndex2 = CHARINDEX('dd', @psLocaleDateFormat);
+										SET @iIndex3 = CHARINDEX('yyyy', @psLocaleDateFormat);
 						
-					SET @sValue = SUBSTRING(@sValue, @iIndex1, 2) + '/' 
-						+ SUBSTRING(@sValue, @iIndex2, 2) + '/' 
-						+ SUBSTRING(@sValue, @iIndex3, 4);
-				END
+										SET @sValue = SUBSTRING(@sValue, @iIndex1, 2) + '/' 
+											+ SUBSTRING(@sValue, @iIndex2, 2) + '/' 
+											+ SUBSTRING(@sValue, @iIndex3, 4);
+									END
 
-				IF (@iOperatorID = 1) 
-				BEGIN
-					/* Equal To. */
-					IF LEN(@sValue) > 0
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' = ''' + @sValue + '''';
-					END
-					ELSE
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' IS NULL';
-					END
-				END
+									IF (@iOperatorID = 1) 
+									BEGIN
+										/* Equal To. */
+										IF LEN(@sValue) > 0
+										BEGIN
+											SET @sSubFilterSQL = @sColumnName + ' = ''' + @sValue + '''';
+										END
+										ELSE
+										BEGIN
+											SET @sSubFilterSQL = @sColumnName + ' IS NULL';
+										END
+									END
 
-				IF (@iOperatorID = 2)
-				BEGIN
-					/* Not Equal To. */
-					IF LEN(@sValue) > 0
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' <> ''' + @sValue + '''';
-					END
-					ELSE
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' IS NOT NULL';
-					END
-				END
+									IF (@iOperatorID = 2)
+									BEGIN
+										/* Not Equal To. */
+										IF LEN(@sValue) > 0
+										BEGIN
+											SET @sSubFilterSQL = @sColumnName + ' <> ''' + @sValue + '''';
+										END
+										ELSE
+										BEGIN
+											SET @sSubFilterSQL = @sColumnName + ' IS NOT NULL';
+										END
+									END
 
-				IF (@iOperatorID = 3) 
-				BEGIN
-					/* Less than or Equal To. */
-					IF LEN(@sValue) > 0 
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' <= ''' + @sValue + ''' OR ' + @sColumnName + ' IS NULL';
-					END
-					ELSE
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' IS NULL';
-					END
-				END
+									IF (@iOperatorID = 3) 
+									BEGIN
+										/* Less than or Equal To. */
+										IF LEN(@sValue) > 0 
+										BEGIN
+											SET @sSubFilterSQL = @sColumnName + ' <= ''' + @sValue + ''' OR ' + @sColumnName + ' IS NULL';
+										END
+										ELSE
+										BEGIN
+											SET @sSubFilterSQL = @sColumnName + ' IS NULL';
+										END
+									END
 
-				IF (@iOperatorID = 4) 
-				BEGIN
-					/* Greater than or Equal To. */
-					IF LEN(@sValue) > 0
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' >= ''' + @sValue + '''';
-					END
-					ELSE
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' IS NULL OR ' + @sColumnName + ' IS NOT NULL';
-					END
-				END
+									IF (@iOperatorID = 4) 
+									BEGIN
+										/* Greater than or Equal To. */
+										IF LEN(@sValue) > 0
+										BEGIN
+											SET @sSubFilterSQL = @sColumnName + ' >= ''' + @sValue + '''';
+										END
+										ELSE
+										BEGIN
+											SET @sSubFilterSQL = @sColumnName + ' IS NULL OR ' + @sColumnName + ' IS NOT NULL';
+										END
+									END
 				
-				IF (@iOperatorID = 5) 
-				BEGIN
-					/* Greater than. */
-					IF LEN(@sValue) > 0
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' > ''' + @sValue + '''';
-					END
-					ELSE
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' IS NOT NULL';
-					END
-				END
+									IF (@iOperatorID = 5) 
+									BEGIN
+										/* Greater than. */
+										IF LEN(@sValue) > 0
+										BEGIN
+											SET @sSubFilterSQL = @sColumnName + ' > ''' + @sValue + '''';
+										END
+										ELSE
+										BEGIN
+											SET @sSubFilterSQL = @sColumnName + ' IS NOT NULL';
+										END
+									END
 				
-				IF (@iOperatorID = 6)
-				BEGIN
-					/* Less than. */
-					IF LEN(@sValue) > 0
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' < ''' + @sValue + ''' OR ' + @sColumnName + ' IS NULL';
-					END
-					ELSE
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' IS NULL AND ' + @sColumnName + ' IS NOT NULL';
-					END
-				END
-			END
+									IF (@iOperatorID = 6)
+									BEGIN
+										/* Less than. */
+										IF LEN(@sValue) > 0
+										BEGIN
+											SET @sSubFilterSQL = @sColumnName + ' < ''' + @sValue + ''' OR ' + @sColumnName + ' IS NULL';
+										END
+										ELSE
+										BEGIN
+											SET @sSubFilterSQL = @sColumnName + ' IS NULL AND ' + @sColumnName + ' IS NOT NULL';
+										END
+									END
+							END
 			
-			IF ((@iDataType <> -7) AND (@iDataType <> 2) AND (@iDataType <> 4) AND (@iDataType <> 11)) 
-			BEGIN
-				/* Character/Working Pattern column. */
-				IF (@iOperatorID = 1) 
-				BEGIN
-					/* Equal To. */
-					IF LEN(@sValue) = 0
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' = '''' OR ' + @sColumnName + ' IS NULL';
-					END
-					ELSE
-					BEGIN
-						/* Replace the standard * and ? characters with the SQL % and _ characters. */
-						SET @sValue = replace(@sValue, '''', '''''');
-						SET @sValue = replace(@sValue, '*', '%');
-						SET @sValue = replace(@sValue, '?', '_');
-						SET @sSubFilterSQL = @sColumnName + ' LIKE ''' + @sValue + '''';
-					END
-				END
+							IF ((@iDataType <> -7) AND (@iDataType <> 2) AND (@iDataType <> 4) AND (@iDataType <> 11)) 
+							BEGIN
+										/* Character/Working Pattern column. */
+										IF (@iOperatorID = 1) 
+										BEGIN
+												/* Equal To. */
+												IF LEN(@sValue) = 0
+												BEGIN
+													SET @sSubFilterSQL = @sColumnName + ' = '''' OR ' + @sColumnName + ' IS NULL';
+												END
+												ELSE
+												BEGIN
+													/* Replace the standard * and ? characters with the SQL % and _ characters. */
+													SET @sValue = replace(@sValue, '''', '''''');
+													SET @sValue = replace(@sValue, '*', '%');
+													SET @sValue = replace(@sValue, '?', '_');
+													SET @sSubFilterSQL = @sColumnName + ' LIKE ''' + @sValue + '''';
+												END
+										END
 				
-				IF (@iOperatorID = 2) 
-				BEGIN
-					/* Not Equal To. */
-					IF LEN(@sValue) = 0
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' <> '''' AND ' + @sColumnName + ' IS NOT NULL';
-					END
-					ELSE
-					BEGIN
-						/* Replace the standard * and ? characters with the SQL % and _ characters. */
-						SET @sValue = replace(@sValue, '''', '''''');
-						SET @sValue = replace(@sValue, '*', '%');
-						SET @sValue = replace(@sValue, '?', '_');
-						SET @sSubFilterSQL = @sColumnName + ' NOT LIKE ''' + @sValue + '''';
-					END
-				END
+										IF (@iOperatorID = 2) 
+										BEGIN
+												/* Not Equal To. */
+												IF LEN(@sValue) = 0
+												BEGIN
+													SET @sSubFilterSQL = @sColumnName + ' <> '''' AND ' + @sColumnName + ' IS NOT NULL';
+												END
+												ELSE
+												BEGIN
+													/* Replace the standard * and ? characters with the SQL % and _ characters. */
+													SET @sValue = replace(@sValue, '''', '''''');
+													SET @sValue = replace(@sValue, '*', '%');
+													SET @sValue = replace(@sValue, '?', '_');
+													SET @sSubFilterSQL = @sColumnName + ' NOT LIKE ''' + @sValue + '''';
+												END
+										END
 
-				IF (@iOperatorID = 7)
-				BEGIN
-					/* Contains */
-					IF LEN(@sValue) = 0
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' IS NULL OR ' + @sColumnName + ' IS NOT NULL';
-					END
-					ELSE
-					BEGIN
-						/* Replace the standard * and ? characters with the SQL % and _ characters. */
-						SET @sValue = replace(@sValue, '''', '''''');
-						SET @sSubFilterSQL = @sColumnName + ' LIKE ''%' + @sValue + '%''';
-					END
-				END
+										IF (@iOperatorID = 7)
+										BEGIN
+												/* Contains */
+												IF LEN(@sValue) = 0
+												BEGIN
+													SET @sSubFilterSQL = @sColumnName + ' IS NULL OR ' + @sColumnName + ' IS NOT NULL';
+												END
+												ELSE
+												BEGIN
+													/* Replace the standard * and ? characters with the SQL % and _ characters. */
+													SET @sValue = replace(@sValue, '''', '''''');
+													SET @sSubFilterSQL = @sColumnName + ' LIKE ''%' + @sValue + '%''';
+												END
+										END
 				
-				IF (@iOperatorID = 8) 
-				BEGIN
-					/* Does Not Contain. */
-					IF LEN(@sValue) = 0
-					BEGIN
-						SET @sSubFilterSQL = @sColumnName + ' IS NULL AND ' + @sColumnName + ' IS NOT NULL';
-					END
-					ELSE
-					BEGIN
-						/* Replace the standard * and ? characters with the SQL % and _ characters. */
-						SET @sValue = replace(@sValue, '''', '''''');
-						SET @sSubFilterSQL = @sColumnName + ' NOT LIKE ''%' + @sValue + '%''';
-					END
-				END
-			END
+										IF (@iOperatorID = 8) 
+										BEGIN
+												/* Does Not Contain. */
+												IF LEN(@sValue) = 0
+												BEGIN
+													SET @sSubFilterSQL = @sColumnName + ' IS NULL AND ' + @sColumnName + ' IS NOT NULL';
+												END
+												ELSE
+												BEGIN
+													/* Replace the standard * and ? characters with the SQL % and _ characters. */
+													SET @sValue = replace(@sValue, '''', '''''');
+													SET @sSubFilterSQL = @sColumnName + ' NOT LIKE ''%' + @sValue + '%''';
+												END
+										END
+							END
 			
-			IF LEN(@sSubFilterSQL) > 0
-			BEGIN
-				/* Add the filter code for this grid record into the complete filter code. */
-				IF LEN(@sFilterSQL) > 0
-				BEGIN
-					SET @sFilterSQL = @sFilterSQL + ' AND (';
-				END
-				ELSE
-				BEGIN
-					SET @sFilterSQL = @sFilterSQL + '(';
-				END
-				SET @sFilterSQL = @sFilterSQL + @sSubFilterSQL + ')';
+							IF LEN(@sSubFilterSQL) > 0
+							BEGIN
+								/* Add the filter code for this grid record into the complete filter code. */
+								IF LEN(@sFilterSQL) > 0
+								BEGIN
+									SET @sFilterSQL = @sFilterSQL + ' AND (';
+								END
+								ELSE
+								BEGIN
+									SET @sFilterSQL = @sFilterSQL + '(';
+								END
+								SET @sFilterSQL = @sFilterSQL + @sSubFilterSQL + ')';
+							END
 			END
-		END
-			Else
-			Set @bIsValidFilter = 0
+			ELSE
+					SET @bIsValidFilter = 0
 			END	
 			
 	END
