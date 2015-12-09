@@ -51,6 +51,9 @@
                 <Component Id="cmpEB87EE68123BF0D6A0A3F626E1D0408D" Guid="*">
                     <File Id="fil9A78A5EB4A8F395F652060A1698CC8F7" KeyPath="yes" Source="SourceDir\bin\Microsoft.AspNet.SignalR.SystemWeb.dll" />
                 </Component>
+                <Component Id="cmp21D101F2D03C9FAB7FEABC059D48BBD4" Guid="*">
+                    <File Id="fil524A1D18B07DA103904FC983B3206CB2" KeyPath="yes" Source="SourceDir\bin\Microsoft.Owin.Cors.dll" />
+                </Component>
                 <Component Id="cmp55212C805D6FA2A5EE12A3EEFF5EC94E" Guid="*">
                     <File Id="fil82F7CFA6F9A6345FE1143DD988E7D8D4" KeyPath="yes" Source="SourceDir\bin\Microsoft.Owin.dll" />
                 </Component>
@@ -60,6 +63,12 @@
                 <Component Id="cmp31FAF349B59B83E92DBB948CAB419509" Guid="*">
                     <File Id="fil2EEB55464B2B332A7DEB32B0ED320252" KeyPath="yes" Source="SourceDir\bin\Microsoft.Owin.Security.dll" />
                 </Component>
+                <Component Id="cmp43EBB73A9300152E45BE88256582BDD5" Guid="*">
+                    <File Id="filBC5BFCD2F5DAED168AE9562032904532" KeyPath="yes" Source="SourceDir\bin\Microsoft.Owin.Security.Jwt.dll" />
+                </Component>
+                <Component Id="cmp9698768386B558597067271EA0D54C8F" Guid="*">
+                    <File Id="filD1670AB8D2E1F29085601A821D3AB47F" KeyPath="yes" Source="SourceDir\bin\Microsoft.Owin.Security.OAuth.dll" />
+                </Component>
                 <Component Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" Guid="*">
                     <File Id="fil4A13ABF803EECCA5885EFAE4997322B4" KeyPath="yes" Source="SourceDir\bin\Microsoft.Web.Infrastructure.dll" />
                 </Component>
@@ -68,6 +77,15 @@
                 </Component>
                 <Component Id="cmp8AB9E98812D4FF1396E72067FB9138E7" Guid="*">
                     <File Id="fil9369FF0D08849E97BCE6FBF835C04429" KeyPath="yes" Source="SourceDir\bin\Owin.dll" />
+                </Component>
+                <Component Id="cmpD4CDEC7C1AC12733FA38B6F82824DF0B" Guid="*">
+                    <File Id="fil48B01FCAA7C0F6456E6444A98B8C8F3A" KeyPath="yes" Source="SourceDir\bin\System.IdentityModel.Tokens.Jwt.dll" />
+                </Component>
+                <Component Id="cmpAEE8C660E33BAAABE81574A21E56902D" Guid="*">
+                    <File Id="fil26D8240C90B630D3E0F9672369D834D4" KeyPath="yes" Source="SourceDir\bin\System.Net.Http.Formatting.dll" />
+                </Component>
+                <Component Id="cmp582232504431329434B8578DF5733810" Guid="*">
+                    <File Id="fil27E8413411278BA565047996B7B4EE73" KeyPath="yes" Source="SourceDir\bin\System.Web.Cors.dll" />
                 </Component>
                 <Component Id="cmp703C2CA9CED6F3E7FDFB80ED8CC8013B" Guid="*">
                     <File Id="filB0554C99199765789F311022C5041355" KeyPath="yes" Source="SourceDir\bin\System.Web.Helpers.dll" />
@@ -328,14 +346,6 @@
                             <File Id="filA0890D5F4D8DB7DF1E18ED17C1770CB8" KeyPath="yes" Source="SourceDir\Content\images\OLEIcons\folder_64.png" />
                         </Component>
                     </Directory>
-                </Directory>
-                <Directory Id="dirDA897931448DD6CA7C0163560B7C41CE" Name="jquery.jqGrid">
-                    <Component Id="cmp10C340E9F788E0A51BE816B336B41C39" Guid="*">
-                        <File Id="fil7849FC0AB1BFEE22091F8A8578FA2F82" KeyPath="yes" Source="SourceDir\Content\jquery.jqGrid\ellipsis-xbl.xml" />
-                    </Component>
-                    <Component Id="cmp23DAA350F19A875D82AF7DB7CCC24223" Guid="*">
-                        <File Id="fil83C6790314ED64B841AF404D8D8C9AE4" KeyPath="yes" Source="SourceDir\Content\jquery.jqGrid\ui.jqgrid.css" />
-                    </Component>
                 </Directory>
                 <Directory Id="dirFFF94050180F100BA1EDF5A823401925" Name="Menu">
                     <Component Id="cmp8DE413E54FE92E0983140AFBC1E0383F" Guid="*">
@@ -3926,6 +3936,9 @@
                         <Component Id="cmpB6BC5F8B3101E36FED2A2D1BAF3E7A43" Guid="*">
                             <File Id="fil478C667613BD2CCBC752ACCDAAA9E2F3" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\cross64NORM.png" />
                         </Component>
+                        <Component Id="cmpD7D31661F5E51AA78820A06FE43CEE69" Guid="*">
+                            <File Id="filEA1F3F6E02AA98544269FBE06EE1CEC8" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\Data-Find.png" />
+                        </Component>
                         <Component Id="cmpE59E2E2A8E6AE06E913C71CA8D5EA3EA" Guid="*">
                             <File Id="filD65780E4BD5EB55A51E65936A3C42C10" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\DataTransfer64DIS.png" />
                         </Component>
@@ -3952,6 +3965,9 @@
                         </Component>
                         <Component Id="cmpDFF1656C575B23ED0C84008044DD161E" Guid="*">
                             <File Id="fil2DBBAFD2113F8EA43AE6DDD8B4DB0032" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\diskette64NORM.png" />
+                        </Component>
+                        <Component Id="cmpB951C46A00937F3217A397AA0BB10A18" Guid="*">
+                            <File Id="fil0BAB51151CEFDBA0C8B003D35CDCC61D" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\Document Find-WF.png" />
                         </Component>
                         <Component Id="cmp48BB876B83E0D2FB8D6852474C1B0647" Guid="*">
                             <File Id="fil0FB249FCE30F400569B0FB1084D0DBB0" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\Edit64DIS.png" />
@@ -4201,15 +4217,6 @@
                         </Component>
                         <Component Id="cmp1F0C0F6D747BBDF264AFA465A372B4AC" Guid="*">
                             <File Id="fil172F6D43CB8236D4FFE32B01EEE4D22A" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\sort64NORM.png" />
-                        </Component>
-                        <Component Id="cmp7048422FEF811849C11835A6A5E18335" Guid="*">
-                            <File Id="fil89FD095FB2325ABBFD53A5FA4C36296B" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\switch_windows64DIS.png" />
-                        </Component>
-                        <Component Id="cmp121C0A6E103F73E227914F0144E11E0A" Guid="*">
-                            <File Id="filCB98E519C4B47DBD8A6E5FA55BD068EE" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\switch_windows64HOVER.png" />
-                        </Component>
-                        <Component Id="cmpC84D508D3ADDE0EE1A13C641146112C2" Guid="*">
-                            <File Id="fil20D2E78453E22EE55D038598C7416C3C" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\switch_windows64NORM.png" />
                         </Component>
                         <Component Id="cmp510EBE756D221C719663764DC2AC8E8D" Guid="*">
                             <File Id="fil64FCE3AC61C72647C8C9EED46B595395" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\TransferBooking64DIS.png" />
@@ -4627,12 +4634,18 @@
             <ComponentRef Id="cmp4694065D67E87E6FC07799089F4CF157" />
             <ComponentRef Id="cmpD5C9472224ADD82443D4CD1070A6D6E8" />
             <ComponentRef Id="cmpEB87EE68123BF0D6A0A3F626E1D0408D" />
+            <ComponentRef Id="cmp21D101F2D03C9FAB7FEABC059D48BBD4" />
             <ComponentRef Id="cmp55212C805D6FA2A5EE12A3EEFF5EC94E" />
             <ComponentRef Id="cmp339B9888C380764349EC4713B4B37B06" />
             <ComponentRef Id="cmp31FAF349B59B83E92DBB948CAB419509" />
+            <ComponentRef Id="cmp43EBB73A9300152E45BE88256582BDD5" />
+            <ComponentRef Id="cmp9698768386B558597067271EA0D54C8F" />
             <ComponentRef Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" />
             <ComponentRef Id="cmpCBBD857B6884D163CDBADD7367F6EAB5" />
             <ComponentRef Id="cmp8AB9E98812D4FF1396E72067FB9138E7" />
+            <ComponentRef Id="cmpD4CDEC7C1AC12733FA38B6F82824DF0B" />
+            <ComponentRef Id="cmpAEE8C660E33BAAABE81574A21E56902D" />
+            <ComponentRef Id="cmp582232504431329434B8578DF5733810" />
             <ComponentRef Id="cmp703C2CA9CED6F3E7FDFB80ED8CC8013B" />
             <ComponentRef Id="cmp5FFDB77ADD8BE767FEDFE1EB9C1D96AA" />
             <ComponentRef Id="cmp6A31FB8007844E13E98BD2057F458827" />
@@ -4713,8 +4726,6 @@
             <ComponentRef Id="cmpFBD6415FC1AEE4D01510FAAB16C5C546" />
             <ComponentRef Id="cmpA3EE6A9999E5D25AC28F0AA0ACEAC739" />
             <ComponentRef Id="cmpC909FF261355DC261C2D04793EBC5A9B" />
-            <ComponentRef Id="cmp10C340E9F788E0A51BE816B336B41C39" />
-            <ComponentRef Id="cmp23DAA350F19A875D82AF7DB7CCC24223" />
             <ComponentRef Id="cmp8DE413E54FE92E0983140AFBC1E0383F" />
             <ComponentRef Id="cmpA06B6988BC11CD170DE7DD2E836E8E95" />
             <ComponentRef Id="cmp8F1623AB2129F5BAD5429C894F5F3026" />
@@ -5854,6 +5865,7 @@
             <ComponentRef Id="cmpDE6F1743F9A94DA1383DB1A9B8FBA86B" />
             <ComponentRef Id="cmp28FE6A18F0A76D5029242C7D55A41455" />
             <ComponentRef Id="cmpB6BC5F8B3101E36FED2A2D1BAF3E7A43" />
+            <ComponentRef Id="cmpD7D31661F5E51AA78820A06FE43CEE69" />
             <ComponentRef Id="cmpE59E2E2A8E6AE06E913C71CA8D5EA3EA" />
             <ComponentRef Id="cmp796997CFAE038A7980FFE5B2AB094366" />
             <ComponentRef Id="cmp57648B69ECBF8EFDACB4C3C7994B8C5E" />
@@ -5863,6 +5875,7 @@
             <ComponentRef Id="cmpD41C5F50B4BF72500B7F5138F6F14D02" />
             <ComponentRef Id="cmpC737B2AABCCFC23EBF327276B43D36A8" />
             <ComponentRef Id="cmpDFF1656C575B23ED0C84008044DD161E" />
+            <ComponentRef Id="cmpB951C46A00937F3217A397AA0BB10A18" />
             <ComponentRef Id="cmp48BB876B83E0D2FB8D6852474C1B0647" />
             <ComponentRef Id="cmp22D8380D4979BE10563E1D3B16D09026" />
             <ComponentRef Id="cmp2A9A89195287A97BA784BDBD13B18833" />
@@ -5946,9 +5959,6 @@
             <ComponentRef Id="cmpE1DD01D2238C5A978D9B5C3A14791E45" />
             <ComponentRef Id="cmpF1A2FF49E23614C33FC6EFBF6F0FC19C" />
             <ComponentRef Id="cmp1F0C0F6D747BBDF264AFA465A372B4AC" />
-            <ComponentRef Id="cmp7048422FEF811849C11835A6A5E18335" />
-            <ComponentRef Id="cmp121C0A6E103F73E227914F0144E11E0A" />
-            <ComponentRef Id="cmpC84D508D3ADDE0EE1A13C641146112C2" />
             <ComponentRef Id="cmp510EBE756D221C719663764DC2AC8E8D" />
             <ComponentRef Id="cmp7178A304D530444AE038B68689344800" />
             <ComponentRef Id="cmp13EDCD5E9082CD0E138A909184DBD796" />
