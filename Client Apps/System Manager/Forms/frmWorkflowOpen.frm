@@ -206,6 +206,7 @@ Begin VB.Form frmWorkflowOpen
             AutoSize        =   1
             Object.Width           =   9234
             TextSave        =   ""
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -1143,6 +1144,11 @@ Private Sub cmdExport_Click()
   If fOK And Len(sOutputFileName) > 0 Then
     objTestToLive.Connection gsUserName, gsPassword, gsDatabaseName, gsServerName
     sXML = objTestToLive.ExportDefinition(iWorkflowId, sOutputFileName)
+    
+    If Len(sXML) > 0 Then
+      MsgBox "Workflow successfully exported", vbInformation
+    End If
+    
   End If
 
 End Sub
@@ -1766,7 +1772,7 @@ Private Sub Form_Resize()
     cmdProperties.Left = cmdNew.Left
     cmdPrint.Left = cmdNew.Left
     cmdExport.Left = cmdNew.Left
-    cmdOk.Left = cmdNew.Left
+    cmdOK.Left = cmdNew.Left
   End With
   
   With lstItems
@@ -1774,7 +1780,7 @@ Private Sub Form_Resize()
     txtDesc.Top = .Top + .Height + YGAP
   End With
     
-  cmdOk.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOk.Height
+  cmdOK.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOK.Height
     
   ' Get rid of the icon off the form
   RemoveIcon Me
