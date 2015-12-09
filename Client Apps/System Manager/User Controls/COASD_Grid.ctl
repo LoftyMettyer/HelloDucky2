@@ -115,9 +115,9 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' Declare public events.
-Public Event MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
-Public Event MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
-Public Event MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Public Event MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Public Event MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Public Event MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 Public Event KeyDown(KeyCode As Integer, Shift As Integer)
 Public Event DblClick()
 
@@ -280,34 +280,34 @@ Private Sub UserControl_KeyDown(KeyCode As Integer, Shift As Integer)
   RaiseEvent KeyDown(KeyCode, Shift)
 End Sub
 
-Private Sub UserControl_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub UserControl_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Pass the MouseDown event to the parent form.
-  RaiseEvent MouseDown(Button, Shift, x, y)
+  RaiseEvent MouseDown(Button, Shift, X, Y)
 End Sub
 
-Private Sub UserControl_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub UserControl_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Pass the MouseMove event to the parent form.
-  RaiseEvent MouseMove(Button, Shift, x, y)
+  RaiseEvent MouseMove(Button, Shift, X, Y)
 End Sub
 
-Private Sub UserControl_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub UserControl_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Pass the MouseUp event to the parent form.
-  RaiseEvent MouseUp(Button, Shift, x, y)
+  RaiseEvent MouseUp(Button, Shift, X, Y)
 End Sub
 
-Private Sub grdGrid_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub grdGrid_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Pass the MouseDown event to the parent form.
-  RaiseEvent MouseDown(Button, Shift, x, y)
+  RaiseEvent MouseDown(Button, Shift, X, Y)
 End Sub
 
-Private Sub grdGrid_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub grdGrid_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Pass the MouseMove event to the parent form.
-  RaiseEvent MouseMove(Button, Shift, x, y)
+  RaiseEvent MouseMove(Button, Shift, X, Y)
 End Sub
 
-Private Sub grdGrid_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub grdGrid_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Pass the MouseUp event to the parent form.
-  RaiseEvent MouseUp(Button, Shift, x, y)
+  RaiseEvent MouseUp(Button, Shift, X, Y)
 End Sub
 
 Public Property Get ColumnHeaders() As Boolean
