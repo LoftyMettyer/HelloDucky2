@@ -5691,7 +5691,8 @@ On Error GoTo ErrorTrap:
   If gbLoginMaintAutoAdd Then
   
     sSQL = sSQL & _
-          "  DECLARE loginCursor CURSOR LOCAL FAST_FORWARD FOR SELECT [Login], [Email], [StartDate], [LeavingDate], [KnownAs] FROM @logins;" & vbNewLine & _
+          "  DECLARE loginCursor CURSOR LOCAL FAST_FORWARD FOR SELECT [Login], [Email], [StartDate], [LeavingDate], [KnownAs] FROM @logins" & vbNewLine & _
+          "      WHERE [Login] <> '' AND [Email] <> '';" & vbNewLine & _
           "  OPEN loginCursor;" & vbNewLine & _
           "  FETCH NEXT FROM loginCursor INTO @login, @emailAddress, @startDate, @leavingDate, @knownAs;" & vbNewLine & _
           "  WHILE @@FETCH_STATUS = 0" & vbNewLine & _
