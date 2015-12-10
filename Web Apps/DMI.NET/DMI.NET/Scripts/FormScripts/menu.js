@@ -2652,6 +2652,10 @@ function menu_loadPage(psPage) {
 	frmWorkArea.txtGotoScreenID.value = lngScreenID;
 	frmWorkArea.txtGotoOrderID.value = 0;
 	frmWorkArea.txtGotoRecordID.value = 0;
+
+	// Sets multi select mode off when loading record edit (when set to First record from user configuration) window from clicking tree menu item.
+	SetMultiSelectionModeOff();
+	frmWorkArea.txtSelectedRecordsInFindGrid.value = "";
 	
 	sToolKey = psToolName.substr(0, 3);
 	if (sToolKey == "HT_") {
