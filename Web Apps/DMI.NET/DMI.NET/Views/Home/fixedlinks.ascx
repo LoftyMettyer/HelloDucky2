@@ -577,16 +577,22 @@
 								</a>
 							</div>
 						</li>
-						<li id="mnuSectionRecordMailmerge"><span>Mail Merge</span>
+						<li id="mnuSectionRecordMailmerge"><span>Utilities</span>
 							<div id="mnutoolMailMergeRecord" class="button">
 								<a href="#" rel="table" title="Mail Merge">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/MailMerge64HOVER.png") %>"
 										alt="" />
 																		<i class="icon-MailMergeRecord"></i>
-									<h6>Mail<br />
-										Merge</h6>
+									<h6>Mail<br />Merge</h6>
 								</a>
 							</div>
+              <div id="mnutoolDataTransferRecord" class="button">
+                <a href="#" rel="table" title="Data Transfer">
+                  <img src="<%: Url.Content("~/Scripts/officebar/winkit/DataTransfer64HOVER.png") %>" alt="" />
+                  <i class="icon-DataTransferRecord"></i>
+                  <h6>Data<br />Transfer</h6>
+                </a>
+              </div>
 						</li>
 						<li id="mnuSectionPositionRecord"><span>Record Position</span>
 							<div id="mnutoolRecordPosition" class="textboxlist">

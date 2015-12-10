@@ -2562,7 +2562,15 @@ Namespace Controllers
 				' Act dependent on utility type
 				Select Case value.UtilType
 					Case UtilityType.utlDataTransfer
-						Dim message = RunDataTransfer(value.ID, Session("multipleRecordIDs"), aPrompts)
+
+            Dim filteredIds as string
+					  If CInt(Session("singleRecordID")) > 0 then
+              filteredIds =  Session("singleRecordID") 
+            Else
+					    filteredIds = Session("multipleRecordIDs")
+					  End If
+
+						Dim message = RunDataTransfer(value.ID, filteredIds, aPrompts)
 						Return View("util_run_message", message)
 
 					Case Else

@@ -778,7 +778,7 @@ function menu_MenuClick(sTool) {
 	}
 
     // Data Transfer (from record menu)
-	if (sToolName == "mnutoolDataTransferRecord") {
+	if (sToolName === "mnutoolDataTransferRecord") {
 	    saveChangesPrompt("DATATRANSFER", 'menu_loadRecordDefSelPage(3, 0, 0, true)');
 	    return false;
 	}
@@ -1324,6 +1324,7 @@ function menu_refreshMenu() {
 	var fCalendarReportsEnabled = false;
 	var fCanRunCalendarReports = false;
 	var fCanRunMailMerge = false;
+  var fCanRunDataTransfer = false;
 
 	var isDMIUser = ($("#txtIsDMIUser")[0].value == "True");
 
@@ -1337,6 +1338,10 @@ function menu_refreshMenu() {
 
 	var fMailMergeVisible = false;
 	var fMailMergeEnabled = false;
+
+	var fDataTransferVisible = false;
+	var fDataTransferEnabled = false;
+
 	var fMailMergeReports = false;
 	var fCanRunAbsenceCalendar = false;
 	var fCanRunAbsenceBreakdown = false;
@@ -1348,6 +1353,13 @@ function menu_refreshMenu() {
 			fCanRunMailMerge = true;
 			fMailMergeEnabled = false;
 		}
+	}
+	
+	if (window.txtSysPerm_DATATRANSFER_RUN != null) {
+	  if ((window.txtSysPerm_DATATRANSFER_RUN.value === "1") && isDMIUser) {
+	    fCanRunDataTransfer = true;
+	    fDataTransferEnabled = false;
+	  }
 	}
 	
 	fCancelCourseVisible = false;
@@ -1458,8 +1470,6 @@ function menu_refreshMenu() {
 		menu_setVisibletoolbarGroupById('mnuSectionRecordReports', true);
 		menu_setVisibletoolbarGroupById('mnuSectionRecordMailmerge', true);
 
-
-
 		//abMainMenu.Bands("mnubandMainToolBar").visible = true;
 		menu_setVisibleMenuItem("mnutoolRecord", false);
 
@@ -1564,6 +1574,9 @@ function menu_refreshMenu() {
 				(fMailMergeVisible) &&
 				(frmRecEdit.txtCurrentRecordID.value > 0));
 
+	  fDataTransferVisible = true;
+		fDataTransferEnabled = (fCanRunDataTransfer === true && fDataTransferVisible && frmRecEdit.txtCurrentRecordID.value > 0);
+
 		fStdRptAbsenceCalendarEnabled = ((fCanRunAbsenceCalendar == true) &&
 				(fStdRptAbsenceCalendarVisible) &&
 				(frmRecEdit.txtCurrentRecordID.value > 0));
@@ -1624,20 +1637,20 @@ function menu_refreshMenu() {
 				menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fCalendarReportsVisible);	//Menu Item - Calendar Reports
 				menu_toolbarEnableItem("mnutoolCalendarReportsRecord", fCalendarReportsEnabled);	//Toolbar Icon
 				//Hide Calendar Reports Group if all items are hidden.
-				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", (fCalendarReportsVisible || fStdRptAbsenceCalendarVisible || fStdRptAbsenceBreakdownVisible || fStdRptBradfordFactorVisible || fMailMergeVisible));
+				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", (fCalendarReportsVisible || fStdRptAbsenceCalendarVisible || fStdRptAbsenceBreakdownVisible || fStdRptBradfordFactorVisible || fMailMergeVisible || fDataTransferVisible));
 		}
 	
-		// Mail Merge (Toolbar!)
-		if (fMailMergeVisible && !menu_isSSIMode()) {
-				menu_setVisibleMenuItem("mnutoolMailMergeRecord", true);
+	  // Utilites (Toolbar!)
+		if (!menu_isSSIMode()) {
+		  menu_setVisibleMenuItem("mnutoolMailMergeRecord", fMailMergeVisible);
 				menu_toolbarEnableItem("mnutoolMailMergeRecord", fMailMergeEnabled);
+		  menu_setVisibleMenuItem("mnutoolDataTransferRecord", fDataTransferVisible);
+		  menu_toolbarEnableItem("mnutoolDataTransferRecord", fDataTransferEnabled);
 		} else {
 				menu_setVisibleMenuItem("mnutoolMailMergeRecord", false);
+		  menu_setVisibleMenuItem("mnutoolDataTransferRecord", false);
 				menu_setVisibletoolbarGroup("mnutoolMailMergeRecord", false);
-				//I think its safe to include not showing Record Position items here
-				// menu_setVisibletoolbarGroup("mnutoolRecordPosition", false);
 				menu_setVisibletoolbarGroup("mnutoolRecordPosition", true);
-
 		}
 			
 		//Toggle Mandatory Fields button
@@ -2308,6 +2321,7 @@ function menu_disableMenu() {
 		menu_toolbarEnableItem('mnutoolBradfordRecord', false);
 
 		menu_toolbarEnableItem('mnutoolMailMergeRecord', false);
+		menu_toolbarEnableItem('mnutoolDataTransferRecord', false);
 		menu_toolbarEnableItem('mnutoolMFRecord', false);
 	}
 
@@ -2652,7 +2666,7 @@ function menu_loadPage(psPage) {
 	frmWorkArea.txtGotoScreenID.value = lngScreenID;
 	frmWorkArea.txtGotoOrderID.value = 0;
 	frmWorkArea.txtGotoRecordID.value = 0;
-
+	
 	// Sets multi select mode off when loading record edit (when set to First record from user configuration) window from clicking tree menu item.
 	SetMultiSelectionModeOff();
 	frmWorkArea.txtSelectedRecordsInFindGrid.value = "";
