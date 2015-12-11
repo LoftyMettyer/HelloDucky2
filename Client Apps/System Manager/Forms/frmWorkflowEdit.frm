@@ -211,8 +211,11 @@ End Property
 Public Property Let Locked(ByVal pbNewValue As Boolean)
   mbLocked = pbNewValue
 
-  
-  
+  txtName.Enabled = Not mbLocked
+  txtDescription.Enabled = Not mbLocked
+  cmdPicture.Enabled = Not mbLocked
+  cmdPictureClear.Enabled = Not mbLocked
+
 End Property
 
 Private Sub FormatScreen()
@@ -285,7 +288,7 @@ Private Sub RefreshScreen()
     ControlsDisableAll Me
   End If
 
-  cmdOK.Enabled = mfChanged And (Not fReadOnly)
+  cmdOk.Enabled = mfChanged And (Not fReadOnly)
 
 End Sub
 
@@ -556,7 +559,7 @@ Private Sub Form_Activate()
       txtDescription.Text = msDescription
       txtURL.Text = IIf((Len(sURL) > 0) And (Len(msExternalInitiationQueryString) > 0), sURL & "?" & msExternalInitiationQueryString, "<undefined>")
       chkEnabled.value = IIf(mfEnabled, vbChecked, vbUnchecked)
-      Me.Caption = "Properties - " & msName
+      Me.Caption = "Properties - " & msName + IIf(mbLocked, " (Locked)", "")
     
     ElseIf WorkflowID > 0 Then
       With recWorkflowEdit
@@ -570,7 +573,7 @@ Private Sub Form_Activate()
           mlngPictureID = IIf(IsNull(.Fields("PictureID")), 0, .Fields("PictureID"))
           txtURL.Text = IIf((Len(sURL) >= 0) And (Len(Trim(.Fields("queryString"))) > 0), sURL & "?" & Trim(.Fields("queryString")), "<undefined>")
           chkEnabled.value = IIf(.Fields("enabled"), vbChecked, vbUnchecked)
-          Me.Caption = "Properties - " & Trim(.Fields("name"))
+          Me.Caption = "Properties - " & Trim(.Fields("name")) + IIf(mbLocked, " (Locked)", "")
         End If
       End With
       
@@ -620,7 +623,7 @@ Private Sub Form_Load()
   Next
   Set objControl = Nothing
 
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
   
   ' Position the form.
   UI.frmAtCenterOfParent Me, frmSysMgr
@@ -681,13 +684,13 @@ End Sub
 Private Sub txtDescription_GotFocus()
   ' Select the whole string.
   UI.txtSelText
-  cmdOK.Default = False
+  cmdOk.Default = False
 
 End Sub
 
 
 Private Sub txtDescription_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
@@ -791,7 +794,7 @@ Private Sub RefreshPictureControls()
     txtPicture.Text = ""
   End If
   
-  cmdPictureClear.Enabled = (mlngPictureID > 0) And (Not ReadOnly)
+  cmdPictureClear.Enabled = (mlngPictureID > 0) And (Not ReadOnly) And (Not mbLocked)
   
 End Sub
 
