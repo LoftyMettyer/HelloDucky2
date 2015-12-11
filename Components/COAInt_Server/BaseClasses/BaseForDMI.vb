@@ -137,6 +137,9 @@ Namespace BaseClasses
 
 		End Function
 
+		Protected Function IsFilterExist(varID As Integer) As String
+			Return IsSelectionValid(varID, "filter")
+		End Function
 
 #End Region
 

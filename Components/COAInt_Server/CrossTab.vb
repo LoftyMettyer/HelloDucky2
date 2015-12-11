@@ -739,6 +739,7 @@ Public Class CrossTab
 
 			mstrStatusMessage = IsPicklistValid(lngPicklistID)
 			If mstrStatusMessage <> vbNullString Then
+				fOK = False
 				Return False
 			End If
 
@@ -766,11 +767,11 @@ Public Class CrossTab
 
 		ElseIf lngFilterID > 0 Then
 
-			mstrStatusMessage = IsFilterValid(lngFilterID)
+			mstrStatusMessage = IsFilterExist(lngFilterID)
 			If mstrStatusMessage <> vbNullString Then
 				'mblnInvalidPicklistFilter = True
 				fOK = False
-				Exit Function
+				Return False
 			End If
 
 			'Get list of IDs from Filter

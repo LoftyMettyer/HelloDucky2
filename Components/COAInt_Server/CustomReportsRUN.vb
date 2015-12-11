@@ -4148,6 +4148,7 @@ Public Class Report
 			mlngCustomReportsParent2PickListID = 0
 
 			If Not IsRecordSelectionValid() Then
+				mblnNoRecords = True
 				Return False
 			End If
 
