@@ -863,6 +863,9 @@ Response.Write("				<input type='hidden' id=txtFilterSQL name=txtFilterSQL value
 Response.Write("				<input type='hidden' id='txtThousSepSummary' name='txtThousSepSummary' value='" & sThousSepSummaryFields & "'>" & vbCrLf)
 Response.Write("				<input type='hidden' id='txtMaxRequestLength' name='txtMaxRequestLength' value='" & Session("maxRequestLength") & "'>" & vbCrLf)
 Response.Write("				<input type='hidden' id=txtSelectedRecordsInFindGrid name=txtSelectedRecordsInFindGrid value=" & Session("OptionSelectedRecordIds") & ">" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtCurrentPageID name=txtCurrentPageID value=" & Session("currentPageID") & ">" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtCurrentPageSortColumn name=txtCurrentPageSortColumnName value=" & Session("CurrentPageSortColumn") & ">" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtCurrentPageSortOrder name=txtCurrentPageSortOrder value=" & Session("CurrentPageSortOrder") & ">" & vbCrLf)
 			
 End If
 

@@ -89,6 +89,8 @@ Namespace ViewModels.Home
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Property txtEL1stRecPos As String
 
+		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
+		Property txtGotoCurrentPageID As String
 
 	End Class
 End Namespace

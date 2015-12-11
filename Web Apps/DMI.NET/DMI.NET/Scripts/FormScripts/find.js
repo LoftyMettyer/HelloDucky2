@@ -862,6 +862,18 @@ function find_window_onload() {
 				// Select the current record in the grid if its there, else select the top record if there is one.
 				if (rowCount() > 0) {
 					if ((frmFindForm.txtCurrentRecordID.value > 0) && (frmFindForm.txtGotoAction.value != 'LOCATE')) {
+					
+						// Reload the grid, goto previously selected page and select the record
+						if (Number(frmFindForm.txtCurrentPageID.value) > 0) {
+
+							$('#findGridTable').jqGrid('setGridParam', {
+								sortname: frmFindForm.txtCurrentPageSortColumn.value,
+								sortorder: frmFindForm.txtCurrentPageSortOrder.value,
+								page: frmFindForm.txtCurrentPageID.value
+							});
+
+							$("#findGridTable").trigger("reloadGrid");
+						}
 						// Try to select the current record.
 						locateRecord(frmFindForm.txtCurrentRecordID.value, true);
 					} else {
@@ -911,6 +923,21 @@ function saveRowToDatabase(rowid) {
 /* Return the ID of the record selected in the find form. */
 function selectedRecordID() {
 	return $("#findGridTable").getGridParam('selrow');
+}
+
+/* Return the index of the selected page in the find form. */
+function selectedPageIndex() {
+	return $('#findGridTable').getGridParam('page');
+}
+
+/* Return the name of the selected sort column in the find form. */
+function selectedSortColumnName() {
+	return $('#findGridTable').jqGrid('getGridParam', 'sortname');
+}
+
+/* Return the name of the selected sort column order in the find form. */
+function selectedSortColumnOrder() {
+	return $('#findGridTable').jqGrid('getGridParam', 'sortorder');
 }
 
 /* Return the list of id's of the records selected in the find form. */

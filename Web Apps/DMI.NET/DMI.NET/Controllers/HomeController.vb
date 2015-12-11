@@ -823,6 +823,9 @@ Namespace Controllers
 				Session("screenID") = Request.Form("txtGotoScreenID")
 				Session("orderID") = Request.Form("txtGotoOrderID")
 				Session("recordID") = Request.Form("txtGotoRecordID")
+				Session("currentPageID") = Request.Form("txtGotoPageID")
+				Session("CurrentPageSortColumn") = Request.Form("txtGotoPageSortColumn")
+				Session("CurrentPageSortOrder") = Request.Form("txtGotoPageSortOrder")
 				Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
 				Session("currentRecCount") = Request.Form("txtGotoCurrentRecCount")
 				Session("parentTableID") = Request.Form("txtGotoParentTableID")
@@ -835,6 +838,9 @@ Namespace Controllers
 				Session("screenID") = ValidateIntegerValue(Request.Form("txtGotoScreenID"))
 				Session("orderID") = ValidateIntegerValue(Request.Form("txtGotoOrderID"))
 				Session("recordID") = ValidateIntegerValue(Request.Form("txtGotoRecordID"))
+				Session("currentPageID") = ValidateIntegerValue(Request.Form("txtGotoPageID"))
+				Session("CurrentPageSortColumn") = Request.Form("txtGotoPageSortColumn")
+				Session("CurrentPageSortOrder") = Request.Form("txtGotoPageSortOrder")
 				Session("parentTableID") = ValidateIntegerValue(Request.Form("txtGotoParentTableID"))
 				Session("parentRecordID") = ValidateIntegerValue(Request.Form("txtGotoParentRecordID"))
 				Session("realSource") = Request.Form("txtGotoRealSource")
@@ -1370,6 +1376,7 @@ Namespace Controllers
 			Dim sTBBookingStatusValue = dataViewModel.txtTBBookingStatusValue
 			Dim fUserChoice = dataViewModel.txtUserChoice
 
+			Session("currentPageID") = dataViewModel.txtGotoCurrentPageID
 
 			If dataViewModel.txtTBOverride = "" Then
 				fTBOverride = False
@@ -1393,6 +1400,7 @@ Namespace Controllers
 				lngRecordID = result.RecordID
 				sAction = result.Action
 				sErrorMsg = result.Message
+				Session("currentPageID") = 0
 
 			ElseIf sAction = "CANCELCOURSE" Then
 				Dim result = _controllerTraining.data_submit_CancelCourse(lngRecordID, sRealSource)

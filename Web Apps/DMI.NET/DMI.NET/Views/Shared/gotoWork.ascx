@@ -23,4 +23,7 @@
 <input type="hidden" id="txtStandardReportType" name="txtStandardReportType" value="">
 <input type="hidden" id="txtReset" name="txtReset" value="0">
 <input type="hidden" id="txtSelectedRecordsInFindGrid" name="txtSelectedRecordsInFindGrid">
+<input type="hidden" id="txtGotoPageID" name="txtGotoPageID">
+<input type="hidden" id="txtGotoPageSortColumn" name="txtGotoPageSortColumn">
+<input type="hidden" id="txtGotoPageSortOrder" name="txtGotoPageSortOrder">
 

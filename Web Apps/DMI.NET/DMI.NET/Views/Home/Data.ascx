@@ -39,7 +39,7 @@
 		// Do nothing if the menu controls are not yet instantiated.
 		if (frmMenuInfo != null) {
 			var sCurrentWorkPage = OpenHR.currentWorkPage();
-			
+
 			if (sCurrentWorkPage == "RECORDEDIT") {
 				try {
 					OpenHR.resetSession(); //try to reset session timeout counter in record edit
@@ -470,7 +470,7 @@
 					frmFindForm.txtRecordCount.value = frmFindForm.txtRecordCount.value - 1;
 					frmFindForm.txtTotalRecordCount.value = frmFindForm.txtTotalRecordCount.value - 1;
 					frmFindForm.txtCurrentRecCount.value = frmFindForm.txtCurrentRecCount.value - 1;
-					
+
 					// Get menu to refresh the menu.
 					menu_refreshMenu();		  
 				}
@@ -575,6 +575,8 @@
 	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtELAction)%>
 	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtELCurrRecCount)%>
 	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtEL1stRecPos)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtGotoCurrentPageID)%>
+	
 
 	<%=Html.AntiForgeryToken()%>
 	</form>
@@ -909,8 +911,8 @@
 				Response.Write("<input type='hidden' id='txtELTotalRecordCount' name='txtELTotalRecordCount' value='" & prmTotalRecCount.Value & "'>" & vbCrLf)
 				Response.Write("<input type='hidden' id='txtELFindRecords' name='txtELFindRecords' value='" & Session("findRecords") & "'>" & vbCrLf)
 				Response.Write("<input type='hidden' id='txtELFirstRecPos' name='txtELFirstRecPos' value='" & prmFirstRecPos.Value & "'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtELCurrentRecCount' name='txtELCurrentRecCount' value='" & lngRowCount & "'>" & vbCrLf)
-
+			Response.Write("<input type='hidden' id='txtELCurrentRecCount' name='txtELCurrentRecCount' value='" & lngRowCount & "'>" & vbCrLf)
+		
 		
 		Catch ex As Exception
 			sErrorDescription = "Error getting the event log records." & vbCrLf & FormatError(ex.Message)

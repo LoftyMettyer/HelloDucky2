@@ -289,6 +289,8 @@
 				dataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
 				dataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
 				dataForm.txtDefaultCalcCols.value = CalculatedDefaultColumns();
+
+				dataForm.txtGotoCurrentPageID.value = frmRecordEditForm.txtGotoCurrentPageID.value;
 				OpenHR.submitForm(dataForm);
 			}
 
@@ -655,7 +657,10 @@
                 Response.Write("<input type='hidden' id=txtCurrentRecPos name=txtCurrentRecPos value=" & Session("parentRecordID") & ">" & vbCrLf)
                 Response.Write("<input type='hidden' id=txtCopiedRecordID name=txtCopiedRecordID value=''>" & vbCrLf)
                 Response.Write("<input type='hidden' id=txtRecEditTimeStamp name=txtRecEditTimeStamp value=''>" & vbCrLf)
-
+								Response.Write("<input type='hidden' id=txtGotoCurrentPageID name=txtGotoCurrentPageID value=" & Session("CurrentPageID") & ">" & vbCrLf)
+								Response.Write("<input type='hidden' id=txtGotoCurrentPageSortColumn name=txtGotoCurrentPageSortColumn value=" & Session("CurrentPageSortColumn") & ">" & vbCrLf)
+								Response.Write("<input type='hidden' id=txtGotoCurrentPageSortOrder name=txtGotoCurrentPageSortOrder value=" & Session("CurrentPageSortOrder") & ">" & vbCrLf)
+				
                 If Len(sErrorDescription) = 0 Then
 
                     Try

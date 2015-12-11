@@ -2670,6 +2670,10 @@ function menu_loadPage(psPage) {
 	// Sets multi select mode off when loading record edit (when set to First record from user configuration) window from clicking tree menu item.
 	SetMultiSelectionModeOff();
 	frmWorkArea.txtSelectedRecordsInFindGrid.value = "";
+
+	frmWorkArea.txtGotoPageID.value = 0;
+	frmWorkArea.txtGotoPageSortColumn.value = "";
+	frmWorkArea.txtGotoPageSortOrder.value = "";
 	
 	sToolKey = psToolName.substr(0, 3);
 	if (sToolKey == "HT_") {
@@ -2752,7 +2756,7 @@ function menu_loadPage(psPage) {
 	function menu_loadFindPage() {
 	var frmWorkArea;
 	var frmRecEdit;
-		
+
 	menu_ShowWait("Loading find records...");
 	menu_disableMenu();   // HC: Is this correct? It will only disable RecEdit buttons
 	
@@ -2765,6 +2769,11 @@ function menu_loadPage(psPage) {
 	frmWorkArea.txtGotoScreenID.value = frmRecEdit.txtCurrentScreenID.value;
 	frmWorkArea.txtGotoOrderID.value = frmRecEdit.txtCurrentOrderID.value;
 	frmWorkArea.txtGotoRecordID.value = frmRecEdit.txtCurrentRecordID.value;
+
+	frmWorkArea.txtGotoPageID.value = frmRecEdit.txtGotoCurrentPageID.value;
+	frmWorkArea.txtGotoPageSortColumn.value = frmRecEdit.txtGotoCurrentPageSortColumn.value;
+	frmWorkArea.txtGotoPageSortOrder.value = frmRecEdit.txtGotoCurrentPageSortOrder.value;
+	
 	frmWorkArea.txtGotoFirstRecPos.value = 1;
 	frmWorkArea.txtGotoCurrentRecCount.value = 0;
 
@@ -2823,6 +2832,11 @@ function menu_loadPage(psPage) {
 	frmWorkArea.txtGotoScreenID.value = lngScreenID;
 	frmWorkArea.txtGotoOrderID.value = 0;
 	frmWorkArea.txtGotoRecordID.value = 0;
+
+	frmWorkArea.txtGotoPageID.value = 0;
+	frmWorkArea.txtGotoPageSortColumn.value = "";
+	frmWorkArea.txtGotoPageSortOrder.value = "";
+
 	frmWorkArea.txtGotoFirstRecPos.value = 1;
 	frmWorkArea.txtGotoCurrentRecCount.value = 0;
 
@@ -3202,13 +3216,17 @@ function menu_loadPage(psPage) {
 	
 	// Submit the current "workframe" form, and then load the required record Edit page.
 	var frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
-	
+
 	frmWorkArea.txtAction.value = psAction;
 	frmWorkArea.txtGotoTableID.value = frmFindForm.txtCurrentTableID.value;
 	frmWorkArea.txtGotoViewID.value = frmFindForm.txtCurrentViewID.value;
 	frmWorkArea.txtGotoScreenID.value = frmFindForm.txtCurrentScreenID.value;
 	frmWorkArea.txtGotoOrderID.value = frmFindForm.txtCurrentOrderID.value;
 	frmWorkArea.txtGotoRecordID.value = frmFindForm.txtCurrentRecordID.value;
+
+	frmWorkArea.txtGotoPageID.value = 0;
+	frmWorkArea.txtGotoPageSortColumn.value = "";
+	frmWorkArea.txtGotoPageSortOrder.value = "";
 
 	frmWorkArea.txtGotoFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
 	frmWorkArea.txtGotoCurrentRecCount.value = frmFindForm.txtCurrentRecCount.value;
@@ -3535,6 +3553,10 @@ function menu_pausecomp(millis) {
 			frmWorkArea.txtGotoParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
 			frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
 
+			frmWorkArea.txtGotoPageID.value = 0;
+			frmWorkArea.txtGotoPageSortColumn.value = "";
+			frmWorkArea.txtGotoPageSortOrder.value = "";
+
 			frmWorkArea.txtGotoPage.value = "recordEdit";
 			OpenHR.submitForm(frmWorkArea, "workframe");
 		}
@@ -3602,6 +3624,7 @@ function menu_pausecomp(millis) {
 	frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
 	frmWorkArea.txtGotoFilterDef.value = frmFindArea.txtFilterDef.value;
 	frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
+	frmWorkArea.txtGotoPageID.value = selectedPageIndex();
 
 	frmWorkArea.txtGotoPage.value = "recordEdit";
 	OpenHR.submitForm(frmWorkArea, "workframe");
@@ -3640,6 +3663,10 @@ function menu_editRecord() {
 	frmWorkArea.txtGotoFilterDef.value = frmFindArea.txtFilterDef.value;
 	frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
 
+	frmWorkArea.txtGotoPageID.value = selectedPageIndex();
+	frmWorkArea.txtGotoPageSortColumn.value = selectedSortColumnName();
+	frmWorkArea.txtGotoPageSortOrder.value = selectedSortColumnOrder();
+
 	frmWorkArea.txtGotoPage.value = "recordEdit";
 	//frmWorkArea.submit();
 	OpenHR.submitForm(frmWorkArea, "workframe");
@@ -3652,7 +3679,7 @@ function menu_editRecord() {
 	var frmRecEditArea;
 	var frmFindArea;
 	var lngRecordID;
-	
+
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
 	if (sCurrentWorkPage == "RECORDEDIT") {
@@ -3679,6 +3706,9 @@ function menu_editRecord() {
 	frmDataArea.txtDefaultCalcCols.value = CalculatedDefaultColumns();
 	frmDataArea.txtInsertUpdateDef.value = insertUpdateDef();
 	frmDataArea.txtTimestamp.value = $("#txtRecEditTimeStamp").val();	// frmRecEditArea.ctlRecordEdit.timestamp;
+
+	// Set goto current page id to 0
+	frmRecEditArea.txtGotoCurrentPageID.value = 0;
 
 	data_refreshData();
 }
@@ -3713,6 +3743,7 @@ function menu_editRecord() {
 	frmDataArea.txtDefaultCalcCols.value = "";
 	frmDataArea.txtInsertUpdateDef.value = "";
 	frmDataArea.txtTimestamp.value = 0;
+	frmDataArea.txtGotoCurrentPageID.value = 0;
 
 	data_refreshData();
 }
@@ -3801,6 +3832,10 @@ function menu_editRecord() {
 	frmWorkArea.txtGotoParentRecordID.value = lngParentRecordID;
 	frmWorkArea.txtGotoLineage.value = sLineage;
 
+	frmWorkArea.txtGotoPageID.value = selectedPageIndex();
+	frmWorkArea.txtGotoPageSortColumn.value = selectedSortColumnName();
+	frmWorkArea.txtGotoPageSortOrder.value = selectedSortColumnOrder();
+
 	frmWorkArea.txtGotoPage.value = "recordEdit";
 	OpenHR.submitForm(frmWorkArea, "workframe");
 }
@@ -3861,6 +3896,10 @@ function menu_editRecord() {
 	frmWorkArea.txtGotoParentRecordID.value = lngParentRecordID;
 	frmWorkArea.txtGotoLineage.value = sLineage;
 
+	frmWorkArea.txtGotoPageID.value = selectedPageIndex();
+	frmWorkArea.txtGotoPageSortColumn.value = selectedSortColumnName();
+	frmWorkArea.txtGotoPageSortOrder.value = selectedSortColumnOrder();
+
 	frmWorkArea.txtGotoPage.value = "recordEdit";
 	OpenHR.submitForm(frmWorkArea, "workframe");
 }
@@ -3893,6 +3932,10 @@ function menu_editRecord() {
 	frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
 	frmWorkArea.txtGotoFilterDef.value = frmFindArea.txtFilterDef.value;
 	frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
+
+	frmWorkArea.txtGotoPageID.value = selectedPageIndex();
+	frmWorkArea.txtGotoPageSortColumn.value = selectedSortColumnName();
+	frmWorkArea.txtGotoPageSortOrder.value = selectedSortColumnOrder();
 
 	frmWorkArea.txtGotoPage.value = "recordEdit";
 	OpenHR.submitForm(frmWorkArea, "workframe");
