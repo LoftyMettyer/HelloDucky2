@@ -733,7 +733,7 @@ Public Class Database
 
             Dim sql As String = "SELECT w.Id, w.Name, w.PictureID" &
                  " FROM tbsys_mobilegroupworkflows gw" &
-                 " INNER JOIN tbsys_workflows w on gw.WorkflowID = w.ID" &
+                 " INNER JOIN ASRSysWorkflows w on gw.WorkflowID = w.ID" &
                  " WHERE gw.UserGroupID = " & userGroupId & " AND w.enabled = 1 ORDER BY gw.Pos ASC"
 
             conn.Open()
