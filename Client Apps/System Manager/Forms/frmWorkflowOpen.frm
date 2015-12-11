@@ -1104,6 +1104,8 @@ End Sub
 
 Private Sub cmdExport_Click()
 
+  On Error GoTo LocalErr:
+
   Dim fOK As Boolean
   Dim iWorkflowId As Integer
   Dim objTestToLive As New OpenHRTestToLive.Repository
@@ -1117,11 +1119,11 @@ Private Sub cmdExport_Click()
     Dim WorkflowName As String
     WorkflowName = "Exported Workflow_" + lstItems.SelectedItem + ".xml"
   
-    sOutputFileName = WorkflowName
+    sOutputFileName = CleanName(WorkflowName)
   
     With CommonDialog1
       .FileName = sOutputFileName
-      .CancelError = False
+      .CancelError = True
       .DialogTitle = "Select a filename for your XML workflow export..."
       .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames + cdlOFNOverwritePrompt
       .Filter = "XML File (*.xml)|*.xml"
@@ -1149,6 +1151,13 @@ Private Sub cmdExport_Click()
       MsgBox "Workflow successfully exported", vbInformation
     End If
     
+  End If
+
+  Exit Sub
+
+LocalErr:
+  If Err.Number <> 32755 Then   '32755 = Cancel was selected.
+    MsgBox Err.Description, vbCritical
   End If
 
 End Sub
@@ -1772,7 +1781,7 @@ Private Sub Form_Resize()
     cmdProperties.Left = cmdNew.Left
     cmdPrint.Left = cmdNew.Left
     cmdExport.Left = cmdNew.Left
-    cmdOK.Left = cmdNew.Left
+    cmdOk.Left = cmdNew.Left
   End With
   
   With lstItems
@@ -1780,7 +1789,7 @@ Private Sub Form_Resize()
     txtDesc.Top = .Top + .Height + YGAP
   End With
     
-  cmdOK.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOK.Height
+  cmdOk.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOk.Height
     
   ' Get rid of the icon off the form
   RemoveIcon Me

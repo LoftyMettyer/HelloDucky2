@@ -5414,7 +5414,7 @@ Public Function GetViewName(lngViewID As Long) As String
     .Seek "=", lngViewID
       
     If Not .NoMatch Then
-      GetViewName = !ViewName
+      GetViewName = !viewName
     End If
   End With
     
@@ -6079,4 +6079,13 @@ ErrorTrap:
   bResult = False
   GoTo TidyUpAndExit
 
+End Function
+
+Public Function CleanName(sFileName As String) As String
+  Const sInvalidChars As String = "/\|<>:*?"""
+  Dim lCt As Long
+  CleanName = sFileName
+  For lCt = 1 To Len(sInvalidChars)
+    CleanName = Replace(CleanName, Mid(sInvalidChars, lCt, 1), "-")
+  Next lCt
 End Function
