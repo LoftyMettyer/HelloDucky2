@@ -79,6 +79,11 @@
 		
 		$('#tblMessage').removeClass('hidden');
 		showDefaultRibbon();
+		
+		// If current layout is tiles then hide searchBox for pending workflow steps screen.
+		if (window.currentLayout == "tiles") {
+			$('#searchBox').hide();
+		}
 		$("#toolbarWFPendingStepsFind").parent().show();
 		setTimeout('$("#toolbarWFPendingStepsFind").click()', 50);
 
