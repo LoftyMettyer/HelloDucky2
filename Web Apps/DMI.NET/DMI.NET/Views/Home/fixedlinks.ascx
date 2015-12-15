@@ -41,7 +41,7 @@
 
 		//add a little function to jQuery which allows case insensitive searches..
 		$.extend($.expr[":"], {
-			"MyCaseInsensitiveContains": function (elem, i, match, array) {
+			"MyCaseInsensitiveContains": function (elem, i, match, array) {				
 				return (elem.textContent || elem.innerText || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
 			}
 		});
@@ -89,20 +89,23 @@
 	});
 
 	function filterDashboard() {
-		//Dashboard search functionality - tiles only.
+		//Dashboard search functionality - tiles only.  
 		var searchString = $('#searchDashboardString').val();
 		if (searchString.length == 0) {
 			$('.pendingworkflowlinkcontent li').removeClass('dimmed');
 			$('.dropdownlinkcontent li').removeClass('dimmed');
 			$('.hypertextlinkcontent li').removeClass('dimmed');
 			$('.buttonlinkcontent li').removeClass('dimmed');
+			$('.docdisplaylinkcontent li').removeClass('dimmed');
 		} else {
 			$('.pendingworkflowlinkcontent li').addClass('dimmed');
 			$('.dropdownlinkcontent li').addClass('dimmed');
 			$('.hypertextlinkcontent li').addClass('dimmed');
 			$('.buttonlinkcontent li').addClass('dimmed');
+			$('.docdisplaylinkcontent li').addClass('dimmed');
 			$("span:MyCaseInsensitiveContains('" + searchString + "')").parent('li').removeClass('dimmed');
 			$("a:MyCaseInsensitiveContains('" + searchString + "')").parent('li').removeClass('dimmed');
+			$("p:MyCaseInsensitiveContains('" + searchString + "')").parent('li').removeClass('dimmed');
 		}
 	}
 
