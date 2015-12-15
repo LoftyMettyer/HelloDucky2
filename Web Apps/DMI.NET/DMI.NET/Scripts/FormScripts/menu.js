@@ -1761,9 +1761,11 @@ function menu_refreshMenu() {
 			menu_toolbarEnableItem("mnutoolAccessLinksFind", (menu_isSSIMode() && (lngRecordID > 0)));
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindNavigate", !(menu_isSSIMode() && ($("#mnutoolAccessLinksFind").hasClass("hidden"))));
 
-			if (menu_isSSIMode()) {
-				menu_setVisibletoolbarGroupById('mnuSectionRecordFindOrder', false);
-			}
+			menu_setVisibletoolbarGroupById('mnuSectionRecordFindOrder', !menu_isSSIMode());
+
+			// Hide multi selection ribbon buttons for SSI mode
+			menu_setVisibletoolbarGroupById('mnuSectionReportsAndUtility', !menu_isSSIMode());
+			ToggleSelectedRecordOption(!menu_isSSIMode());
 			
 			//TODO menu_setVisibleMenuItem("mnutoolLocateRecordsCaption", true);
 			//TODO menu_setVisibleMenuItem("mnutoolLocateRecords", (parseInt(frmFind.txtFirstColumnType.value) != -7));
