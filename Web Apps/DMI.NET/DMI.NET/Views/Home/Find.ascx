@@ -76,6 +76,13 @@
 
 			// Refresh find grid
 			RefreshFindGrid(!multifind, !thereIsAtLeastOneEditableColumn);
+
+			//Disable autofill for google chrome.
+			//Note: we do not offer auto fill on any other fields in OpenHR.. so disable the auto fill in 'search' field as well.
+			if (OpenHR.isChrome()) {
+				setTimeout(function () { $('.ui-search-toolbar input').prop('autocomplete', 'false'); }, 200);
+			}
+
 		}
 	}
 
