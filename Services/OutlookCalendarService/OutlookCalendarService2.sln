@@ -1,0 +1,57 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutlookCalendarService", "OutlookCalendarService\OutlookCalendarService.csproj", "{26D7EF52-B787-4C2A-8AA5-0E479D8E1E71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutlookCalendarLogic", "OutlookCalendarLogic\OutlookCalendarLogic.csproj", "{D293227A-7596-47A1-9F26-A51CD7038231}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutlookCalendarServiceTester", "OutlookCalendarServiceTester\OutlookCalendarServiceTester.csproj", "{ED5F0523-0FC4-4322-BD6A-B9C17FEAB9AA}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OutlookCalendarService2Setup", "OutlookCalendarService2Setup\OutlookCalendarService2Setup.vdproj", "{1525D57F-4950-4B4C-89C3-4B5E911450B2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{26D7EF52-B787-4C2A-8AA5-0E479D8E1E71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26D7EF52-B787-4C2A-8AA5-0E479D8E1E71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26D7EF52-B787-4C2A-8AA5-0E479D8E1E71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26D7EF52-B787-4C2A-8AA5-0E479D8E1E71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D293227A-7596-47A1-9F26-A51CD7038231}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D293227A-7596-47A1-9F26-A51CD7038231}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D293227A-7596-47A1-9F26-A51CD7038231}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D293227A-7596-47A1-9F26-A51CD7038231}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED5F0523-0FC4-4322-BD6A-B9C17FEAB9AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED5F0523-0FC4-4322-BD6A-B9C17FEAB9AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED5F0523-0FC4-4322-BD6A-B9C17FEAB9AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED5F0523-0FC4-4322-BD6A-B9C17FEAB9AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1525D57F-4950-4B4C-89C3-4B5E911450B2}.Debug|Any CPU.ActiveCfg = Debug
+		{1525D57F-4950-4B4C-89C3-4B5E911450B2}.Debug|Any CPU.Build.0 = Debug
+		{1525D57F-4950-4B4C-89C3-4B5E911450B2}.Release|Any CPU.ActiveCfg = Release
+		{1525D57F-4950-4B4C-89C3-4B5E911450B2}.Release|Any CPU.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = OutlookCalendarLogic\\OutlookCalendarLogic.csproj
+		SccProjectName1 = OutlookCalendarLogic
+		SccLocalPath1 = OutlookCalendarLogic
+		SccProjectUniqueName2 = OutlookCalendarService2Setup\\OutlookCalendarService2Setup.vdproj
+		SccProjectName2 = OutlookCalendarService2Setup
+		SccLocalPath2 = OutlookCalendarService2Setup
+		SccProjectUniqueName3 = OutlookCalendarService\\OutlookCalendarService.csproj
+		SccProjectName3 = OutlookCalendarService
+		SccLocalPath3 = OutlookCalendarService
+		SccProjectUniqueName4 = OutlookCalendarServiceTester\\OutlookCalendarServiceTester.csproj
+		SccProjectName4 = OutlookCalendarServiceTester
+		SccLocalPath4 = OutlookCalendarServiceTester
+	EndGlobalSection
+EndGlobal
