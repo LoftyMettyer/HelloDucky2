@@ -608,42 +608,7 @@
                             <tr>
                                 <td>
                                     <div id="Container" class="width100 floatleft" style="width:800px;">
-																			<%If notFromRecordEditscreen %>
-                                        <div id="divCategory" style="display: inline-block; margin-right: 50px">
-                                            <label>Category :</label>
-                                            <%
-                                            	Response.Write("<select id=selectCategories name=selectCategories class=combo style=margin-left: 4px; > ")
-                                            	If Len(sErrorDescription) = 0 Then
-                                            		Dim rstObjectCategories = objDatabase.DB.GetDataTable("spsys_getobjectcategories", CommandType.StoredProcedure _
-                                            										, New SqlParameter("utilityType", SqlDbType.Int) With {.Value = 0} _
-                                            										, New SqlParameter("UtilityID", SqlDbType.Int) With {.Value = 0} _
-                                            										, New SqlParameter("tableID", SqlDbType.Int) With {.Value = 0})
-												
-                                            		Dim categoryID = Session("defsel_categoryId_" & iDefSelType)
-                                            		
-                                            		Response.Write("<option value=-1 selected>All</option>" & vbCrLf)
-                                            		Response.Write("<option value=0")
-                                            		If Not categoryID Is Nothing AndAlso CInt(categoryID) = 0 Then
-                                            			Response.Write(" SELECTED")
-                                            		End If
-                                            		Response.Write(">None</option>" & vbCrLf)
-												
-                                            		For Each objRow As DataRow In rstObjectCategories.Rows
-                                            			Response.Write("<option value=" & objRow(0))
-                                            			If Not categoryID Is Nothing AndAlso CInt(objRow(0)) = CInt(categoryID) Then
-                                            				Response.Write(" SELECTED")
-                                            			End If
-                                            			Response.Write(">" & Replace(objRow(1).ToString(), """", "&quot;") & "</option>" & vbCrLf)
-                                            			
-                                            		Next
-                                            	
-                                            	End If
-                                            	
-                                            	Response.Write("  </select>")
-                                            
-                                            %>
-                                        </div>
-																			<%End If %>
+																			
                                         <div id="divOwner" style="display: inline-block; margin-right: 50px">
                                             <label>Owner :</label>
                                             <select id="selectOwners" name="selectOwners" class="combo" style="margin-left: 4px; width: 200px">
@@ -698,6 +663,44 @@
                                                 %>
                                             </select>
                                         </div>
+
+                                        <%If notFromRecordEditscreen %>
+                                        <div id="divCategory" style="display: inline-block; margin-right: 50px">
+                                            <label>Category :</label>
+                                            <%
+                                            	Response.Write("<select id=selectCategories name=selectCategories class=combo style=margin-left: 4px; > ")
+                                            	If Len(sErrorDescription) = 0 Then
+                                            		Dim rstObjectCategories = objDatabase.DB.GetDataTable("spsys_getobjectcategories", CommandType.StoredProcedure _
+                                            										, New SqlParameter("utilityType", SqlDbType.Int) With {.Value = 0} _
+                                            										, New SqlParameter("UtilityID", SqlDbType.Int) With {.Value = 0} _
+                                            										, New SqlParameter("tableID", SqlDbType.Int) With {.Value = 0})
+												
+                                            		Dim categoryID = Session("defsel_categoryId_" & iDefSelType)
+                                            		
+                                            		Response.Write("<option value=-1 selected>All</option>" & vbCrLf)
+                                            		Response.Write("<option value=0")
+                                            		If Not categoryID Is Nothing AndAlso CInt(categoryID) = 0 Then
+                                            			Response.Write(" SELECTED")
+                                            		End If
+                                            		Response.Write(">None</option>" & vbCrLf)
+												
+                                            		For Each objRow As DataRow In rstObjectCategories.Rows
+                                            			Response.Write("<option value=" & objRow(0))
+                                            			If Not categoryID Is Nothing AndAlso CInt(objRow(0)) = CInt(categoryID) Then
+                                            				Response.Write(" SELECTED")
+                                            			End If
+                                            			Response.Write(">" & Replace(objRow(1).ToString(), """", "&quot;") & "</option>" & vbCrLf)
+                                            			
+                                            		Next
+                                            	
+                                            	End If
+                                            	
+                                            	Response.Write("  </select>")
+                                            
+                                            %>
+                                        </div>
+										<%End If %>
+
                                         <% 							
                                         	If iDefSelType = UtilityType.utlPicklist Or iDefSelType = UtilityType.utlFilter Or iDefSelType = UtilityType.utlCalculation OR (Not notFromRecordEditscreen) Then
                                         %>
