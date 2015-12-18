@@ -756,50 +756,55 @@ Public Class clsDataTransferRun
     End Sub
 
 
-    Private Sub ProcessRecords()
+	Private Sub ProcessRecords()
 
-        Dim rsRecords As DataTable
-        Dim strSQL As String
-        Dim strRecordError As String
+		Dim rsRecords As DataTable
+		Dim strSQL As String
+		Dim strRecordError As String
 
-        rsRecords = GetRecordIDs()
+		rsRecords = GetRecordIDs()
 
-        If fOK = False Then
-            Exit Sub
-        End If
+		If fOK = False Then
+			Exit Sub
+		End If
 
-        'Run the stored procedure for each record id
-        mlngSuccessCount = 0
-        mlngFailCount = 0
-        For Each objRow As DataRow In rsRecords.Rows
+		'Run the stored procedure for each record id
+		mlngSuccessCount = 0
+		mlngFailCount = 0
+		For Each objRow As DataRow In rsRecords.Rows
 
-            Try
+			Try
 
-                Dim prmNewID = New SqlParameter("@piNewRecordID", SqlDbType.Int) With {.Value = 0, .Direction = ParameterDirection.Output}
-                strSQL = "EXEC " & mstrProcedureName & " " & objRow("ID").ToString
+				Dim prmNewID = New SqlParameter("@piNewRecordID", SqlDbType.Int) With {.Value = 0, .Direction = ParameterDirection.Output}
+				strSQL = "EXEC " & mstrProcedureName & " " & objRow("ID").ToString
 
-                DB.ExecuteSP("sp_ASRInsertNewRecord" _
-                    , prmNewID _
-                    , New SqlParameter("@psInsertString", SqlDbType.NVarChar, -1) With {.Value = strSQL})
+				DB.ExecuteSP("sp_ASRInsertNewRecord" _
+						, prmNewID _
+						, New SqlParameter("@psInsertString", SqlDbType.NVarChar, -1) With {.Value = strSQL})
 
-                mlngSuccessCount = mlngSuccessCount + 1
+				mlngSuccessCount = mlngSuccessCount + 1
 
-                If mbLoggingDTSuccess Then
-                    Logs.AddDetailEntry(GetRecordDesc(CInt(objRow("ID"))) & " transferred successfully")
-                End If
+				If mbLoggingDTSuccess Then
+					Logs.AddDetailEntry(GetRecordDesc(CInt(objRow("ID"))) & " transferred successfully")
+				End If
 
+			Catch sqlexception As SqlException
 
-            Catch ex As Exception
+				strRecordError = GetRecordDesc(CInt(objRow("ID"))) & vbNewLine & vbNewLine & sqlexception.Errors(0).Message
+				Call Logs.AddDetailEntry(strRecordError)
+				mlngFailCount += 1
 
-                strRecordError = GetRecordDesc(CInt(objRow("ID"))) & vbNewLine & vbNewLine & ex.Message
-                Call Logs.AddDetailEntry(strRecordError)
-                mlngFailCount += 1
+			Catch ex As Exception
 
-            End Try
+				strRecordError = GetRecordDesc(CInt(objRow("ID"))) & vbNewLine & vbNewLine & ex.Message
+				Call Logs.AddDetailEntry(strRecordError)
+				mlngFailCount += 1
 
-        Next
+			End Try
 
-    End Sub
+		Next
+
+	End Sub
 
 
     Private Function GetRecordIDs() As DataTable
