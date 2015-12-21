@@ -654,6 +654,9 @@
     <Build Include="Stored Procedures\Web\sp_ASRGetReportsAndUtilitiesSearchResult.sql" />
     <Build Include="Views\ASRSysCategories.sql" />
     <Build Include="User Defined Functions\udfsys_fieldchangedbetweentwodates.sql" />
+    <Build Include="Tables\ASRSysTalentReports.sql" />
+    <Build Include="Tables\ASRSysTalentReportColumns.sql" />
+    <Build Include="Tables\ASRSysTalentReportAccess.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
