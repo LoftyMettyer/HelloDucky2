@@ -83,6 +83,7 @@ Public Class clsNavigationLinks
 				objLink.URL = objRow("URL").ToString()
 				objLink.UtilityID = CInt(objRow("UtilityID"))
 				objLink.UtilityType = CShort(objRow("UtilityType"))
+				objLink.ViewID = CShort(objRow("ViewID"))
 				objLink.EmailAddress = objRow("EmailAddress").ToString()
 				objLink.EmailSubject = objRow("EmailSubject").ToString()
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'

@@ -9,7 +9,6 @@ Imports System.Drawing
 Imports DMI.NET.Classes
 Imports DMI.NET.Code
 Imports DMI.NET.ViewModels.Home
-Imports System.Runtime.Serialization.Formatters
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports DMI.NET.Models
@@ -18,7 +17,6 @@ Imports System.Net.Mail
 Imports System.Net
 Imports DMI.NET.ViewModels
 Imports System.Collections.ObjectModel
-Imports System.Security
 Imports DMI.NET.Code.Hubs
 Imports System.Web.Script.Serialization
 Imports Newtonsoft.Json
@@ -3904,6 +3902,12 @@ Namespace Controllers
 			Session("warningFlag") = ""
 			Session("previousAction") = ""
 			Session("orderID") = 0
+
+			If Session("isPortalLogin") = True Then
+				Session("SSILinkTableID") = Session("SingleRecordTableID")
+				Session("SSILinkViewID") = Session("SingleRecordViewID")
+				Session("TopLevelRecID") = 0
+			End If
 
 			Dim objDatabaseAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 

@@ -5,15 +5,16 @@ Imports DMI.NET.Code
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
+Imports System.Net
 Imports System.Reflection
+Imports System.Security.Claims
+Imports System.Threading
 Imports System.Web.Configuration
-Imports System.Web.Razor.Parser.SyntaxTree
 Imports System.Web.Script.Serialization
 Imports HR.Intranet.Server.Structures
 Imports HR.Intranet.Server.Extensions
 Imports DMI.NET.Models
 Imports DMI.NET.Code.Hubs
-Imports Microsoft.Ajax.Utilities
 
 Namespace Controllers
 	Public Class AccountController
@@ -256,7 +257,7 @@ Namespace Controllers
 			End Try
 
 			Dim objSerialize As New JavaScriptSerializer
-			Dim modelSerialized As String = objSerialize.Serialize(LoginViewModel)		
+			Dim modelSerialized As String = objSerialize.Serialize(LoginViewModel)
 			Dim objCrypt As New clsCrypt
 
 			Dim sEncryptedString = objCrypt.EncryptString(modelSerialized, sEncryptKey, True)
@@ -269,271 +270,369 @@ Namespace Controllers
 		End Function
 
 		'		Public Function ActualLogin(loginviewmodel As LoginViewModel, Optional isWidgetLogin As Boolean = False,
-		Public Function ActualLogin(linkRef As String) As ActionResult
+		Public Function ActualLogin(linkRef As String, Optional portalRedirectTo As String = "") As ActionResult
+            Try
 
-			Try
+                Dim objSerialize As New JavaScriptSerializer
+                Dim objCrypt As New clsCrypt
+                Dim loginviewmodel As LoginViewModel
 
-				Dim objSerialize As New JavaScriptSerializer
-				Dim objCrypt As New clsCrypt
-				Dim loginviewmodel As LoginViewModel
+                Session("isPortalLogin") = False
 
-				Try
-					Dim modelString = objCrypt.DecompactString(linkRef)
+                If linkRef Is Nothing Then
 
-					Dim encryptKey = Request.Cookies("ASP.NET_SessionId").Value.ToString()
-					modelString = objCrypt.DecryptString(modelString, encryptKey, True)
-					loginviewmodel = objSerialize.Deserialize(Of LoginViewModel)(modelString)
+                    Dim identity = TryCast(User.Identity, ClaimsIdentity)
 
-				Catch ex As Exception
-					Return New HttpStatusCodeResult(400, "Incorrect details.")
+                    ' NB: identity.IsAuthenticated does not mean openHR authenticated.
+                    If Not identity.IsAuthenticated Then 'Return New HttpStatusCodeResult(HttpStatusCode.Unauthorized)
+                        Dim objErrors = New ViewModels.Account.ConfigurationErrorsModel
+                        objErrors.Errors.Add(New ConfigurationError With {.Code = "0001",
+                                        .Message = "Authorization failed",
+                                        .Detail = ""})
+                        Return View("~/views/error/PermissionsError.vbhtml", objErrors)
+                    End If
 
-				End Try
+                    If portalRedirectTo = "testlogin" Then Return Json(User.Identity.Name, JsonRequestBehavior.AllowGet)
 
-				Dim sUserName As String
-				Dim sPassword As String
 
-				Dim sLocaleCultureName As String = "en-GB"
+                    loginviewmodel = New LoginViewModel()
 
-				Dim sLocaleDecimalSeparator As String
-				Dim sLocaleThousandSeparator As String
-				Dim bWindowsAuthentication As Boolean = False
+                    Dim claim As Claim = identity.Claims.FirstOrDefault(Function(c) c.Type = "ohr:username")    ' case sensitive
+                    If claim Is Nothing Then Return New HttpStatusCodeResult(HttpStatusCode.Unauthorized)
+                    loginviewmodel.UserName = claim.Value
 
-				' Read the User Name and Password from the Login form.
-				sUserName = loginviewmodel.UserName
-				sPassword = loginviewmodel.Password
-				If loginviewmodel.WindowsAuthentication Then
-					bWindowsAuthentication = True
-				End If
+                    claim = identity.Claims.FirstOrDefault(Function(c) c.Type = "ohr:password") ' case sensitive
+                    If claim Is Nothing Then Return New HttpStatusCodeResult(HttpStatusCode.Unauthorized)
+                    loginviewmodel.Password = claim.Value   ' TODO: decrypt claim.value if required (and when implemented)
 
-				sLocaleCultureName = loginviewmodel.txtLocaleCulture
-				sLocaleDecimalSeparator = loginviewmodel.txtLocaleDecimalSeparator
-				sLocaleThousandSeparator = loginviewmodel.txtLocaleThousandSeparator
+                    loginviewmodel.txtLocaleCulture = Thread.CurrentThread.CurrentCulture.ToString()
+                    loginviewmodel.txtLocaleDecimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator
+                    loginviewmodel.txtLocaleThousandSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator
+                    Session("isPortalLogin") = True                    
 
+                Else
 
-				Session("isMobileDevice") = (Platform.IsMobileDevice() = True)
+                    Try
+                        Dim modelString = objCrypt.DecompactString(linkRef)
 
-				' Store the username, for use in forcedchangepassword.
-				Session("Username") = LCase(sUserName)
+                        Dim encryptKey = Request.Cookies("ASP.NET_SessionId").Value.ToString()
+                        modelString = objCrypt.DecryptString(modelString, encryptKey, True)
+                        loginviewmodel = objSerialize.Deserialize(Of LoginViewModel)(modelString)
 
-				Dim objLogin As LoginInfo
-				Dim objServerSession As New SessionInfo
+                    Catch ex As Exception
+                        Return New HttpStatusCodeResult(400, "Incorrect details.")
 
-				Dim objDatabase As New Database
-				Dim objDataAccess As clsDataAccess
+                    End Try
+                End If
 
-				Try
+                Dim sUserName As String
+                Dim sPassword As String
 
-					' Read the database/server from the configuration
-					Dim systemConnection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
+                Dim sLocaleCultureName As String = "en-GB"
 
-					' Validate the login
-					objLogin = objServerSession.SessionLogin(sUserName, sPassword, systemConnection.Database, systemConnection.DataSource, bWindowsAuthentication, False)
+                Dim sLocaleDecimalSeparator As String
+                Dim sLocaleThousandSeparator As String
+                Dim bWindowsAuthentication As Boolean = False
 
-					' Valid login, but do we have any kind of access?
-					If Not (objLogin.IsSSIUser OrElse objLogin.IsDMIUser) Then
-						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, "You are not permitted to use OpenHR Web with this user name.")
-						Return View("login", loginviewmodel)
-					End If
+                ' Read the User Name and Password from the Login form.
+                sUserName = loginviewmodel.UserName
+                sPassword = loginviewmodel.Password
+                If loginviewmodel.WindowsAuthentication Then
+                    bWindowsAuthentication = True
+                End If
 
+                sLocaleCultureName = loginviewmodel.txtLocaleCulture
+                sLocaleDecimalSeparator = loginviewmodel.txtLocaleDecimalSeparator
+                sLocaleThousandSeparator = loginviewmodel.txtLocaleThousandSeparator
 
-					' User is allowed into OpenHR, now populate some metadata
-					objServerSession.RegionalSettings = Platform.PopulateRegionalSettings(sLocaleCultureName)
-					objServerSession.Initialise()
-					objServerSession.ReadModuleParameters()
 
-					Session("LocaleDecimalSeparator") = sLocaleDecimalSeparator
-					Session("LocaleThousandSeparator") = sLocaleThousandSeparator
-					Session("LocaleCultureName") = sLocaleCultureName
+                Session("isMobileDevice") = (Platform.IsMobileDevice() = True)
 
-					If sLocaleCultureName = "en-US" Or sLocaleCultureName = "en" Then
-						' Force 2-digit days and months
-						Session("LocaleDateFormat") = "MM/dd/yyyy"
-					Else
-						Session("LocaleDateFormat") = objServerSession.RegionalSettings.DateFormat.ShortDatePattern
-					End If
+                ' Store the username, for use in forcedchangepassword.
+                Session("Username") = LCase(sUserName)
 
-					objDataAccess = New clsDataAccess(objServerSession.LoginInfo)
-					Session("DatabaseFunctions") = objDatabase
-					Session("DatabaseAccess") = objDataAccess
-					Session("sessionContext") = objServerSession
+                Dim objLogin As LoginInfo
+                Dim objServerSession As New SessionInfo
 
-					If Licence.IsModuleLicenced(SoftwareModule.Workflow) Then
-						PopulateWorkflowSessionVariables()
-					End If
+                Dim objDatabase As New Database
+                Dim objDataAccess As clsDataAccess
 
-					If Licence.IsModuleLicenced(SoftwareModule.Training) Then
-						PopulateTrainingBookingSessionVariables()
-					End If
+                Try
 
-					' Get parameters for the single record
-					Dim prmTableID = New SqlParameter("piTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-					Dim prmViewID = New SqlParameter("piViewID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+                    ' Read the database/server from the configuration
+                    Dim systemConnection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
 
-					objDataAccess.ExecuteSP("spASRIntGetSingleRecordViewID", prmTableID, prmViewID)
-					Session("SingleRecordTableID") = CInt(prmTableID.Value)
-					Session("SingleRecordViewID") = CInt(prmViewID.Value)
-					Session("SSILinkTableID") = 0
-					Session("SSILinkViewID") = 0
-
-					'Store in Session the logged in user's RecordID
-					Session("LoggedInUserRecordID") = GetLoggedInUserRecordID(Session("SingleRecordViewID"))
-
-					objDatabase.SessionInfo = objServerSession
-
-				Catch ex As Exception
-					ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, ex.Message.RemoveSensitive())
-					Return View("login", loginviewmodel)
-
-				End Try
-
-				' Are we displaying the Workflow Out of Office Hyperlink for this view?
-				Dim fShowOOOHyperlink As Boolean = False
-
-				Dim prmTableID2 = New SqlParameter("piTableID", SqlDbType.Int)
-				prmTableID2.Value = Convert.ToInt16(Session("SingleRecordTableID"))
-
-				Dim prmViewID2 = New SqlParameter("piViewID", SqlDbType.Int)
-				prmViewID2.Value = Convert.ToInt16(Session("SingleRecordViewID"))
-
-				Dim prmDisplayHyperlink = New SqlParameter("pfDisplayHyperlink", SqlDbType.Bit)
-				prmDisplayHyperlink.Direction = ParameterDirection.Output
-				Try
-					objDataAccess.ExecuteSP("spASRIntShowOutOfOfficeHyperlink", prmTableID2, prmViewID2, prmDisplayHyperlink)
-					fShowOOOHyperlink = prmDisplayHyperlink.Value
-				Catch ex As Exception
-
-				End Try
-				Session("WF_ShowOutOfOffice") = fShowOOOHyperlink
-				Session("WinAuth") = bWindowsAuthentication
-				Session("UserGroup") = objServerSession.LoginInfo.UserGroup
-
-				' Successful login.
-				Dim dtSettings = objDataAccess.GetDataTable("spASRIntGetSessionSettings", CommandType.StoredProcedure)
-				Dim rowSettings = dtSettings.Rows(0)
-
-				Session("FindRecords") = CLng(rowSettings("BlockSize"))
-				Session("PrimaryStartMode") = CInt(rowSettings("PrimaryStartMode"))
-				Session("HistoryStartMode") = CInt(rowSettings("HistoryStartMode"))
-				Session("LookupStartMode") = CInt(rowSettings("LookupStartMode"))
-				Session("QuickAccessStartMode") = CInt(rowSettings("QuickAccessStartMode"))
-				Session("ExprColourMode") = CLng(rowSettings("ExprColourMode"))
-				Session("ExprNodeMode") = CLng(rowSettings("ExprNodeMode"))
-				Session("SupportTelNo") = rowSettings("SupportTelNo")
-				Session("SupportFax") = rowSettings("SupportFax")
-				Session("SupportEmail") = rowSettings("SupportEmail")
-				Session("SupportWebpage") = rowSettings("SupportWebpage")
-				Session("DesktopColour") = rowSettings("DesktopColour")
-
-				Session("WordFormats") = "Word Document (*.docx)|*.docx"
-				Session("ExcelFormats") = "Excel Workbook (*.xlsx)|*.xlsx|Web Page (*.html)|*.html"
-				Session("WordFormatDefaultIndex") = 1
-				Session("ExcelFormatDefaultIndex") = 1
-				Session("OfficeSaveAsValues") = ""
-
-				Dim lngSSIWelcomeColumnID = CLng(objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSSIWelcome"))
-				If lngSSIWelcomeColumnID <= 0 Then lngSSIWelcomeColumnID = 0
-
-				Dim lngSSIPhotographColumnID = CLng(objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSSIPhotograph"))
-				If lngSSIPhotographColumnID <= 0 Then lngSSIPhotographColumnID = 0
-
-
-				Dim maxRequestLength As Integer = (4096 * 1024)
-				Dim section As HttpRuntimeSection = TryCast(ConfigurationManager.GetSection("system.web/httpRuntime"), HttpRuntimeSection)
-				If section IsNot Nothing Then
-					Try
-						maxRequestLength = section.MaxRequestLength * 1024
-					Catch ex As Exception
-						' leave as default 4Mb
-					End Try
-				End If
-
-				Session("maxRequestLength") = maxRequestLength
-
-				Try
-
-					Dim prmWelcomeMessage = New SqlParameter("psWelcomeMessage", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-					Dim prmWelcomeMessageShort = New SqlParameter("psWelcomeMessageShort", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-					Dim prmSelfServiceWelcomeColumn = New SqlParameter("psSelfServiceWelcomeColumn", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-					Dim prmSelfServicePhotograph = New SqlParameter("psSelfServicePhotograph", SqlDbType.VarBinary, -1) With {.Direction = ParameterDirection.Output}
-
-					objDataAccess.ExecuteSP("spASRIntGetSSIWelcomeDetails" _
-							, New SqlParameter("piWelcomeColumnID", SqlDbType.Int) With {.Value = lngSSIWelcomeColumnID} _
-							, New SqlParameter("piPhotographColumnID", SqlDbType.Int) With {.Value = lngSSIPhotographColumnID} _
-							, New SqlParameter("piSingleRecordViewID", SqlDbType.Int) With {.Value = Session("SingleRecordViewID")} _
-							, New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = objLogin.Username} _
-							, prmWelcomeMessage _
-							, prmSelfServiceWelcomeColumn _
-							, prmSelfServicePhotograph _
-							, prmWelcomeMessageShort)
-
-
-					Session("welcomemessage") = prmWelcomeMessage.Value.ToString()
-					Session("welcomeMessageShort") = prmWelcomeMessageShort.Value.ToString()
-					Session("welcomeName") = prmSelfServiceWelcomeColumn.Value.ToString()
-					If Not IsDBNull(prmSelfServicePhotograph.Value) Then
-						Dim OLEType As Short = Val(Encoding.UTF8.GetString(prmSelfServicePhotograph.Value, 8, 2))
-						If OLEType = 2 Then	'Embeded
-							Dim abtImage = CType(prmSelfServicePhotograph.Value, Byte())
-							Dim binaryData As Byte() = New Byte(abtImage.Length - 400) {}
-							Try
-								Buffer.BlockCopy(abtImage, 400, binaryData, 0, abtImage.Length - 400)
-								'Create an image based on the embeded (Base64) image and resize it to 48x48
-								Dim img As Image = Base64StringToImage(Convert.ToBase64String(binaryData, 0, binaryData.Length))
-
-								'Resize Version 1: Throws out of memory exceptions sometimes
-								'img = img.GetThumbnailImage(48, 48, Nothing, IntPtr.Zero)
-
-								'Resize Version 2: Taken from http://stackoverflow.com/questions/27528057/c-sharp-out-of-memory-exception-in-getthumbnailimage-on-a-server
-								Dim iimg = New Bitmap(img, New Size(48, 48))
-
-								Session("SelfServicePhotograph_Src") = "data:image/jpeg;base64," & ImageToBase64String(iimg)
-							Catch exp As ArgumentNullException
-
-							End Try
-						ElseIf OLEType = 3 Then	'Link
-							Dim UNC As String = Trim(Encoding.UTF8.GetString(prmSelfServicePhotograph.Value, 290, 60))
-							Dim FileName As String = Trim(Path.GetFileName(Encoding.UTF8.GetString(prmSelfServicePhotograph.Value, 10, 70))).Replace("\", "/")
-							Dim FullPath As String = Trim(Encoding.UTF8.GetString(prmSelfServicePhotograph.Value, 80, 210)).Replace("\", "/")
-							Session("SelfServicePhotograph_src") = "file:///" & UNC & "/" & FullPath & "/" & FileName
-						End If
-					Else 'No picture is defined for user, use anonymous one
-						Session("SelfServicePhotograph_Src") = Url.Content("~/Content/images/anonymous.png")
-					End If
-
-				Catch ex As Exception
-					Session("welcomemessage") = "error: " & ex.Message & ". ID: " & CStr(lngSSIWelcomeColumnID)
-
-				End Try
-
-				Dim cookie = New HttpCookie("LoginScreenInitialValues")
-				cookie.Expires = DateTime.Now.AddYears(1)
-				cookie.HttpOnly = True
-				'Encrypt the User value before adding it to a cookie
-				cookie("User") = objCrypt.EncryptString(loginviewmodel.UserName, "UserCookieEncryptionKey", True)
-				cookie("WindowsAuthentication") = loginviewmodel.WindowsAuthentication
-				Response.Cookies.Add(cookie)
-
-				If objLogin.IsDMIUser And Not Session("isMobileDevice") Then
-					Session("SSIMode") = False
-				Else
-					Session("SSIMode") = True
-				End If
-
-				loginviewmodel.UserName = objLogin.Username
-				loginviewmodel.SecurityGroup = objLogin.UserGroup
-				loginviewmodel.SessionId = Session.SessionID
-
-				Session("sessionCurrentUser") = loginviewmodel
-
-				LicenceHub.AddAuthenticatedLogin(loginviewmodel)
-
-			Catch ex As Exception
-				Throw
-
-			End Try
-
-			' always main.
-			Return RedirectToAction("Main", "Home")
+                    ' Validate the login
+                    objLogin = objServerSession.SessionLogin(sUserName, sPassword, systemConnection.Database, systemConnection.DataSource, bWindowsAuthentication, False)
+
+                    ' Valid login, but do we have any kind of access?
+                    If Not (objLogin.IsSSIUser OrElse objLogin.IsDMIUser) Then
+                        ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, "You are not permitted to use OpenHR Web with this user name.")
+                        Return View("login", loginviewmodel)
+                    End If
+
+
+                    ' User is allowed into OpenHR, now populate some metadata
+                    objServerSession.RegionalSettings = Platform.PopulateRegionalSettings(sLocaleCultureName)
+                    objServerSession.Initialise()
+                    objServerSession.ReadModuleParameters()
+
+                    Session("LocaleDecimalSeparator") = sLocaleDecimalSeparator
+                    Session("LocaleThousandSeparator") = sLocaleThousandSeparator
+                    Session("LocaleCultureName") = sLocaleCultureName
+
+                    If sLocaleCultureName = "en-US" Or sLocaleCultureName = "en" Then
+                        ' Force 2-digit days and months
+                        Session("LocaleDateFormat") = "MM/dd/yyyy"
+                    Else
+                        Session("LocaleDateFormat") = objServerSession.RegionalSettings.DateFormat.ShortDatePattern
+                    End If
+
+                    objDataAccess = New clsDataAccess(objServerSession.LoginInfo)
+                    Session("DatabaseFunctions") = objDatabase
+                    Session("DatabaseAccess") = objDataAccess
+                    Session("sessionContext") = objServerSession
+
+                    If Licence.IsModuleLicenced(SoftwareModule.Workflow) Then
+                        PopulateWorkflowSessionVariables()
+                    End If
+
+                    If Licence.IsModuleLicenced(SoftwareModule.Training) Then
+                        PopulateTrainingBookingSessionVariables()
+                    End If
+
+                    ' Get parameters for the single record
+                    Dim prmTableID = New SqlParameter("piTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+                    Dim prmViewID = New SqlParameter("piViewID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+
+                    objDataAccess.ExecuteSP("spASRIntGetSingleRecordViewID", prmTableID, prmViewID)
+                    Session("SingleRecordTableID") = CInt(prmTableID.Value)
+                    Session("SingleRecordViewID") = CInt(prmViewID.Value)
+                    Session("SSILinkTableID") = 0
+                    Session("SSILinkViewID") = 0
+
+                    'Store in Session the logged in user's RecordID
+                    Session("LoggedInUserRecordID") = GetLoggedInUserRecordID(Session("SingleRecordViewID"))
+
+                    objDatabase.SessionInfo = objServerSession
+
+                Catch ex As Exception
+                    ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, ex.Message.RemoveSensitive())
+                    Return View("login", loginviewmodel)
+
+                End Try
+
+                ' Are we displaying the Workflow Out of Office Hyperlink for this view?
+                Dim fShowOOOHyperlink As Boolean = False
+
+                Dim prmTableID2 = New SqlParameter("piTableID", SqlDbType.Int)
+                prmTableID2.Value = Convert.ToInt16(Session("SingleRecordTableID"))
+
+                Dim prmViewID2 = New SqlParameter("piViewID", SqlDbType.Int)
+                prmViewID2.Value = Convert.ToInt16(Session("SingleRecordViewID"))
+
+                Dim prmDisplayHyperlink = New SqlParameter("pfDisplayHyperlink", SqlDbType.Bit)
+                prmDisplayHyperlink.Direction = ParameterDirection.Output
+                Try
+                    objDataAccess.ExecuteSP("spASRIntShowOutOfOfficeHyperlink", prmTableID2, prmViewID2, prmDisplayHyperlink)
+                    fShowOOOHyperlink = prmDisplayHyperlink.Value
+                Catch ex As Exception
+
+                End Try
+                Session("WF_ShowOutOfOffice") = fShowOOOHyperlink
+                Session("WinAuth") = bWindowsAuthentication
+                Session("UserGroup") = objServerSession.LoginInfo.UserGroup
+
+                ' Successful login.
+                Dim dtSettings = objDataAccess.GetDataTable("spASRIntGetSessionSettings", CommandType.StoredProcedure)
+                Dim rowSettings = dtSettings.Rows(0)
+
+                Session("FindRecords") = CLng(rowSettings("BlockSize"))
+                Session("PrimaryStartMode") = CInt(rowSettings("PrimaryStartMode"))
+                Session("HistoryStartMode") = CInt(rowSettings("HistoryStartMode"))
+                Session("LookupStartMode") = CInt(rowSettings("LookupStartMode"))
+                Session("QuickAccessStartMode") = CInt(rowSettings("QuickAccessStartMode"))
+                Session("ExprColourMode") = CLng(rowSettings("ExprColourMode"))
+                Session("ExprNodeMode") = CLng(rowSettings("ExprNodeMode"))
+                Session("SupportTelNo") = rowSettings("SupportTelNo")
+                Session("SupportFax") = rowSettings("SupportFax")
+                Session("SupportEmail") = rowSettings("SupportEmail")
+                Session("SupportWebpage") = rowSettings("SupportWebpage")
+                Session("DesktopColour") = rowSettings("DesktopColour")
+
+                Session("WordFormats") = "Word Document (*.docx)|*.docx"
+                Session("ExcelFormats") = "Excel Workbook (*.xlsx)|*.xlsx|Web Page (*.html)|*.html"
+                Session("WordFormatDefaultIndex") = 1
+                Session("ExcelFormatDefaultIndex") = 1
+                Session("OfficeSaveAsValues") = ""
+
+                Dim lngSSIWelcomeColumnID = CLng(objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSSIWelcome"))
+                If lngSSIWelcomeColumnID <= 0 Then lngSSIWelcomeColumnID = 0
+
+                Dim lngSSIPhotographColumnID = CLng(objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSSIPhotograph"))
+                If lngSSIPhotographColumnID <= 0 Then lngSSIPhotographColumnID = 0
+
+
+                Dim maxRequestLength As Integer = (4096 * 1024)
+                Dim section As HttpRuntimeSection = TryCast(ConfigurationManager.GetSection("system.web/httpRuntime"), HttpRuntimeSection)
+                If section IsNot Nothing Then
+                    Try
+                        maxRequestLength = section.MaxRequestLength * 1024
+                    Catch ex As Exception
+                        ' leave as default 4Mb
+                    End Try
+                End If
+
+                Session("maxRequestLength") = maxRequestLength
+
+                Try
+
+                    Dim prmWelcomeMessage = New SqlParameter("psWelcomeMessage", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+                    Dim prmWelcomeMessageShort = New SqlParameter("psWelcomeMessageShort", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+                    Dim prmSelfServiceWelcomeColumn = New SqlParameter("psSelfServiceWelcomeColumn", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+                    Dim prmSelfServicePhotograph = New SqlParameter("psSelfServicePhotograph", SqlDbType.VarBinary, -1) With {.Direction = ParameterDirection.Output}
+
+                    objDataAccess.ExecuteSP("spASRIntGetSSIWelcomeDetails" _
+                            , New SqlParameter("piWelcomeColumnID", SqlDbType.Int) With {.Value = lngSSIWelcomeColumnID} _
+                            , New SqlParameter("piPhotographColumnID", SqlDbType.Int) With {.Value = lngSSIPhotographColumnID} _
+                            , New SqlParameter("piSingleRecordViewID", SqlDbType.Int) With {.Value = Session("SingleRecordViewID")} _
+                            , New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = objLogin.Username} _
+                            , prmWelcomeMessage _
+                            , prmSelfServiceWelcomeColumn _
+                            , prmSelfServicePhotograph _
+                            , prmWelcomeMessageShort)
+
+
+                    Session("welcomemessage") = prmWelcomeMessage.Value.ToString()
+                    Session("welcomeMessageShort") = prmWelcomeMessageShort.Value.ToString()
+                    Session("welcomeName") = prmSelfServiceWelcomeColumn.Value.ToString()
+                    If Not IsDBNull(prmSelfServicePhotograph.Value) Then
+                        Dim OLEType As Short = Val(Encoding.UTF8.GetString(prmSelfServicePhotograph.Value, 8, 2))
+                        If OLEType = 2 Then 'Embeded
+                            Dim abtImage = CType(prmSelfServicePhotograph.Value, Byte())
+                            Dim binaryData As Byte() = New Byte(abtImage.Length - 400) {}
+                            Try
+                                Buffer.BlockCopy(abtImage, 400, binaryData, 0, abtImage.Length - 400)
+                                'Create an image based on the embeded (Base64) image and resize it to 48x48
+                                Dim img As Image = Base64StringToImage(Convert.ToBase64String(binaryData, 0, binaryData.Length))
+
+                                'Resize Version 1: Throws out of memory exceptions sometimes
+                                'img = img.GetThumbnailImage(48, 48, Nothing, IntPtr.Zero)
+
+                                'Resize Version 2: Taken from http://stackoverflow.com/questions/27528057/c-sharp-out-of-memory-exception-in-getthumbnailimage-on-a-server
+                                Dim iimg = New Bitmap(img, New Size(48, 48))
+
+                                Session("SelfServicePhotograph_Src") = "data:image/jpeg;base64," & ImageToBase64String(iimg)
+                            Catch exp As ArgumentNullException
+
+                            End Try
+                        ElseIf OLEType = 3 Then 'Link
+                            Dim UNC As String = Trim(Encoding.UTF8.GetString(prmSelfServicePhotograph.Value, 290, 60))
+                            Dim FileName As String = Trim(Path.GetFileName(Encoding.UTF8.GetString(prmSelfServicePhotograph.Value, 10, 70))).Replace("\", "/")
+                            Dim FullPath As String = Trim(Encoding.UTF8.GetString(prmSelfServicePhotograph.Value, 80, 210)).Replace("\", "/")
+                            Session("SelfServicePhotograph_src") = "file:///" & UNC & "/" & FullPath & "/" & FileName
+                        End If
+                    Else 'No picture is defined for user, use anonymous one
+                        Session("SelfServicePhotograph_Src") = Url.Content("~/Content/images/anonymous.png")
+                    End If
+
+                Catch ex As Exception
+                    Session("welcomemessage") = "error: " & ex.Message & ". ID: " & CStr(lngSSIWelcomeColumnID)
+
+                End Try
+
+                Dim cookie = New HttpCookie("LoginScreenInitialValues")
+                cookie.Expires = DateTime.Now.AddYears(1)
+                cookie.HttpOnly = True
+                'Encrypt the User value before adding it to a cookie
+                cookie("User") = objCrypt.EncryptString(loginviewmodel.UserName, "UserCookieEncryptionKey", True)
+                cookie("WindowsAuthentication") = loginviewmodel.WindowsAuthentication
+                Response.Cookies.Add(cookie)
+
+                If objLogin.IsDMIUser And Not Session("isMobileDevice") And Not Session("isPortalLogin") Then
+                    Session("SSIMode") = False
+                Else
+                    Session("SSIMode") = True
+                End If
+
+                loginviewmodel.UserName = objLogin.Username
+                loginviewmodel.SecurityGroup = objLogin.UserGroup
+                loginviewmodel.SessionId = Session.SessionID
+
+                Session("sessionCurrentUser") = loginviewmodel
+
+                LicenceHub.AddAuthenticatedLogin(loginviewmodel)
+
+            Catch ex As Exception
+                Throw
+
+            End Try
+
+            If Session("isPortalLogin") = True Then
+				' Calculate the real redirect here. 
+				' Using the passed in 'PortalRedirectTo' value and matching it to the
+				' Text value in self-service dashboard configuration
+                Dim objNavigation
+
+                If Session("NavigationLinks") Is Nothing Then
+                    objNavigation = New HR.Intranet.Server.clsNavigationLinks
+                    objNavigation.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
+                    objNavigation.ClearLinks()
+                    objNavigation.SSITableID = Session("SingleRecordTableID")
+                    objNavigation.SSIViewID = Session("SingleRecordViewID")
+                    objNavigation.LoadLinks()
+                    objNavigation.LoadNavigationLinks()
+
+                    If Not Licence.IsModuleLicenced(SoftwareModule.Workflow) Then
+                        objNavigation.ColLinks.RemoveAll(Function(m) m.UtilityType = UtilityType.utlWorkflow)
+                    End If
+
+                    If Not Licence.IsModuleLicenced(SoftwareModule.NineBoxGrid) Then
+                        objNavigation.ColLinks.RemoveAll(Function(m) m.UtilityType = UtilityType.utlNineBoxGrid)
+                    End If
+
+                    Session("NavigationLinks") = objNavigation
+                End If
+
+                objNavigation = CType(Session("NavigationLinks"), clsNavigationLinks)
+
+                Dim viewModel = New NavLinksViewModel With {.NavigationLinks = objNavigation.GetAllLinks, .NumberOfLinks = objNavigation.GetAllLinks.Count, .DocumentDisplayLinkCount = objNavigation.GetLinks(LinkType.DocumentDisplay).Count}
+
+                Dim sLinkKey As String = ""
+
+                For Each navlink In viewModel.NavigationLinks.FindAll(Function(n) n.ViewID = Session("SingleRecordViewID") And n.Text = portalRedirectTo)
+                    'If navlink.Text = portalRedirectTo Then
+                    If navlink.UtilityID > 0 Then
+                        Dim sUtilityType = CStr(navlink.UtilityType)
+                        Dim sUtilityID = CStr(navlink.UtilityID)
+                        Dim sUtilityBaseTable = CStr(navlink.BaseTableID)
+
+                        sLinkKey = "goUtility(" & sUtilityType & ", " & sUtilityID & ", '" & HttpUtility.JavaScriptStringEncode(navlink.Text) & "', " & sUtilityBaseTable & ")"
+                    Else
+                        sLinkKey = "recedit" & "_" & Session("LoggedInUserRecordID").ToString() & "_" & navlink.ID
+
+                        sLinkKey = "goScreen('" & sLinkKey & "')"
+                    End If
+
+                    Session("portalRedirectTo") = sLinkKey
+
+                    ' End If
+                Next
+
+                If sLinkKey = "" Then
+                    Dim objErrors = New ViewModels.Account.ConfigurationErrorsModel
+                    objErrors.Errors.Add(New ConfigurationError With {.Code = "0001",
+                                        .Message = "Page not found",
+                                        .Detail = "This resource has not been found"})
+                    Return View("~/views/error/PageNotFound.vbhtml", objErrors)
+
+                End If
+
+            End If
+
+            ' always main.
+            Return RedirectToAction("Main", "Home")
 
 		End Function
 

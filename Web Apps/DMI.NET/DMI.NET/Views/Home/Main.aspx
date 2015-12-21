@@ -117,8 +117,18 @@
 		//load menu for dmi, or linksmain for ssi
 		var SelfServiceUserType = '<%=Session("SSIMode")%>';
 
-		if (SelfServiceUserType == 'True') {
+	    if (SelfServiceUserType == 'True') {
 
+			<%If Session("isPortalLogin") = True Then%>
+
+	        try {
+		        var decoded = "<%:Html.Raw(HttpUtility.JavaScriptStringEncode(Session("portalRedirectTo").ToString()))%>";
+		        setTimeout(decoded, 50);
+            } catch (e) {
+                window.location.href = "<%=Url.Action("Login", "Account")%>";
+				}
+
+			<%Else%>
 			$.ajax({
 				url: 'linksMain',
 				dataType: 'html',
@@ -134,19 +144,16 @@
 					} catch(e) {
 					}
 
-
-					//$("#workframe").hide();
 					$("#workframe").html(html).show();
-
 
 					//final resize of the dashboard - for tiles, ensure width is sufficient
 					setTimeout('resizeDashboard()', 500); //site.master function.
-
 				},
 				error: function(req, status, errorObj) {
 
 				}
 			});
+			<%End If%>
 		} else {
 			$("#menuframe").fadeIn("slow");
 			$(".accordion").accordion("refresh");
@@ -188,6 +195,43 @@
 
 	});
 	
+		function goScreen(psScreenInfo) {
+
+			//check to see if we're completing a drag event
+			loadPartialView("recordEditMain", "home", "workframe", psScreenInfo);
+		}
+
+		function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
+
+			if (sUtilityType === utilityType.Workflow) {
+
+					// Workflow
+					var postData = {
+						ID: sUtilityID,
+						Name: sUtilityName,
+						__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+					}
+
+					OpenHR.submitForm(null, "divWorkflow", null, postData, "util_run_workflow");
+
+				} else {
+
+					//Not a workflow!
+					$('#SSILinksFrame').fadeOut();
+					$('#SSILinksFrame').promise().done(function () {
+
+						var postData = {
+							UtilType: sUtilityType,
+							ID: sUtilityID,
+							Name: sUtilityName,
+							__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+						};
+						OpenHR.submitForm(null, "workframe", null, postData, "util_run_promptedValues");
+
+						$('#workframe').fadeIn();
+					});
+				}
+		}
 
 	function resizedw(splitPos) {		
 		if (!(Number(splitPos) > 0)) {
@@ -207,7 +251,7 @@
 	}
 
 
-</script>
+    </script>
 
 
 

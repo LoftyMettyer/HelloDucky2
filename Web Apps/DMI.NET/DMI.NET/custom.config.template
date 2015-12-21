@@ -11,4 +11,9 @@
 	<add key="AdminRequiresIE" value="false" />
 
 	<add key="ValidFileExtensions" value="doc,dot,docx,dotx,xls,xlt,xlsx,xltx,ppt,pot,pps,pptx,potx,ppsx,sldx,pub,jpeg,jpg,gif,bmp,png,pdf"/>
+
+	<add key="as:Issuer" value=""/>
+	<add key="as:AudienceId" value="" />
+	<add key="as:AudienceSecret" value="" />
+
 </appSettings>

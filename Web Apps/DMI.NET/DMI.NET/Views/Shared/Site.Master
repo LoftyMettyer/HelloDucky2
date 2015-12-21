@@ -22,6 +22,8 @@
 			End If
 		End If
 		
+		if session("isPortalLogin") = true Then currentLayout = "tiles"
+		
 		Session("CurrentLayout") = Layout.winkit
 		%>
 

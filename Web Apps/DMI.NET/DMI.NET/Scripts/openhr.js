@@ -1472,36 +1472,36 @@
 
 	},
     resetSession = function () { //Some variables used in this function are global and declared in Site.Master
-            $.post('RefreshSession', { __RequestVerificationToken: window.top.$('[name="__RequestVerificationToken"]').val() }, function () { });
+            $.post('RefreshSession', { __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val() }, function () { });
 
-            window.top.timeoutSecondsLeft = window.top.originalTimeoutSeconds;
+            window.timeoutSecondsLeft = window.originalTimeoutSeconds;
 
-            if (!window.top.decrementFunctionIsSetup) {
+            if (!window.decrementFunctionIsSetup) {
                 var countdownTimer = setInterval(function() {
-                    window.top.currentMinutes = Math.floor(window.top.timeoutSecondsLeft / 60);
-                    window.top.currentSeconds = window.top.timeoutSecondsLeft % 60;
-                    if (window.top.currentSeconds <= 9) window.top.currentSeconds = "0" + window.top.currentSeconds;
-                    window.top.timeoutSecondsLeft--;
+                    window.currentMinutes = Math.floor(window.timeoutSecondsLeft / 60);
+                    window.currentSeconds = window.timeoutSecondsLeft % 60;
+                    if (window.currentSeconds <= 9) window.currentSeconds = "0" + window.currentSeconds;
+                    window.timeoutSecondsLeft--;
 
                     try {
-                        if (window.top.timeoutSecondsLeft < 300)
+                        if (window.timeoutSecondsLeft < 300)
                             $("#sessionWarning").show(); //show countdown for the last 5 minutes.
                         else
                             $("#sessionWarning").hide();
 
-                        if (window.top.timeoutSecondsLeft === 0) {
+                        if (window.timeoutSecondsLeft === 0) {
                             clearInterval(countdownTimer);
                             document.getElementById("timerText").innerHTML = "0:00";
                         }
 
-                        document.getElementById("timerText").innerHTML = window.top.currentMinutes + ":" + window.top.currentSeconds; //Set the element id you need the time put into.
+                        document.getElementById("timerText").innerHTML = window.currentMinutes + ":" + window.currentSeconds; //Set the element id you need the time put into.
                     } catch (e) {
                         //do nothing if this fails - we've probably navigated away and the elements no longer exist. That's the trouble with using 1 second delays.
                     }
                 }, 1000
                 );
 
-                window.top.decrementFunctionIsSetup = true;
+                window.decrementFunctionIsSetup = true;
             }
         }
 

@@ -218,16 +218,24 @@
 						
 						If Len(sErrorDescription) = 0 Then
 							Dim homelinkURL = "javascript:loadPartialView(""linksMain"", ""Home"", ""workframe"", null);"
-							Response.Write(String.Format("<div class='pageTitleDiv'><a onclick='{0}' title='Back'><i class='pageTitleIcon icon-circle-arrow-left'></i></a><span class='pageTitle'>" & _
-											Replace(prm_psTitle.Value.ToString, "_", " ") & "</span>" & vbCrLf, homelinkURL))
+
+							Response.Write("<div class='pageTitleDiv'>" & vbCrLf)
+							If Session("isPortalLogin") <> True Then Response.Write(String.Format("<a onclick='{0}' title='Back'><i class='pageTitleIcon icon-circle-arrow-left'></i></a>", homelinkURL) & vbCrLf)
+							Response.Write("<span class='pageTitle'>" & Replace(prm_psTitle.Value.ToString, "_", " ") & "</span>" & vbCrLf)
+							
 							response.write("<label id='txtRIE' style='float: right;'></label>")
 							Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & prm_pfQuickEntry.Value.ToString & "></div>" & vbCrLf)
 						End If
 					Else
 						' SSI View.
 						Dim homelinkURL = "javascript:loadPartialView(""linksMain"", ""Home"", ""workframe"", null);"
-						Response.Write(String.Format("<div class='pageTitleDiv'><a onclick='{0}' title='Back'><i class='pageTitleIcon icon-circle-arrow-left'></i></a><span class='pageTitle'>" & _
-								ViewBag.pageTitle & "</span>" & vbCrLf, homelinkURL))
+
+						Response.Write("<div class='pageTitleDiv'>" & vbCrLf)
+						If Session("isPortalLogin") <> True Then Response.Write(String.Format("<a onclick='{0}' title='Back'><i class='pageTitleIcon icon-circle-arrow-left'></i></a>", homelinkURL) & vbCrLf)
+						Response.Write("<span class='pageTitle'>" & ViewBag.pageTitle & "</span>" & vbCrLf)
+
+						
+						
 						Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & ViewBag.pageTitle & "></div>" & vbCrLf)
 					End If
 				%>
