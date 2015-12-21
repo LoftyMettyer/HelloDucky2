@@ -81,6 +81,18 @@ Namespace Controllers
 
         End Function
 
+            <HttpGet>
+        Function util_def_talentreport() As ActionResult
+
+            Dim iReportID As Integer = CInt(Session("utilid"))
+            Dim iAction = ActionToUtilityAction(Session("action").ToString)
+
+            Dim objModel = objReportRepository.LoadTalentReport(iReportID, iAction)
+
+            Return View(objModel)
+
+        End Function
+
         <HttpGet>
         Function util_def_calendarreport() As ActionResult
 
@@ -263,6 +275,47 @@ Namespace Controllers
 
         End Function
 
+            <HttpPost>
+        <ValidateAntiForgeryToken>
+        Function util_def_talentreport(objModel As TalentReportModel) As ActionResult
+
+            Dim objSaveWarning As SaveWarningModel
+            Dim deserializer = New JavaScriptSerializer()
+
+            objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.TalentReport)
+
+            If objModel.ColumnsAsString IsNot Nothing Then
+                If objModel.ColumnsAsString.Length > 0 Then
+                    objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
+                End If
+            End If
+
+            If objModel.SortOrdersString IsNot Nothing Then
+                If objModel.SortOrdersString.Length > 0 Then
+                    objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
+                End If
+            End If
+
+            If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
+
+                objReportRepository.SaveReportDefinition(objModel)
+                Session("utilid") = objModel.ID
+                Return RedirectToAction("Defsel", "Home")
+
+            Else
+
+                If ModelState.IsValid Then
+                    objSaveWarning = objReportRepository.ServerValidate(objModel)
+                Else
+                    objSaveWarning = ModelState.ToWebMessage
+                End If
+
+                Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
+
+            End If
+
+        End Function
+
         <HttpPost>
         <ValidateAntiForgeryToken>
         Function util_def_crosstab(objModel As CrossTabModel) As ActionResult
@@ -399,6 +452,15 @@ Namespace Controllers
             Return Json(objTables, JsonRequestBehavior.AllowGet)
 
         End Function
+
+        <HttpGet>
+        Function GetChildTables(parentTableId As integer) As JsonResult
+
+          Dim objTables = objReportRepository.GetChildTables(parentTableId, False)
+          Return Json(objTables, JsonRequestBehavior.AllowGet)
+
+        End Function
+
 
         <HttpPost>
         <ValidateAntiForgeryToken>

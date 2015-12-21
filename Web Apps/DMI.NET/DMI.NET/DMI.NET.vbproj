@@ -236,6 +236,7 @@
     <Compile Include="Infrastructure\AllowJWTAccessAttribute.vb" />
     <Compile Include="Infrastructure\ClaimsAuthorizationAttribute.vb" />
     <Compile Include="Models\DefinitionSearchResultModel.vb" />
+    <Compile Include="Models\TalentReportModel.vb" />
     <Compile Include="Models\UserModel.vb" />
     <Compile Include="Classes\jqGridHelper.vb" />
     <Compile Include="Classes\Licence.vb" />
@@ -1437,6 +1438,7 @@
     <Content Include="Views\Home\_showChart.ascx" />
     <Content Include="custom.config.template" />
     <Content Include="connectionStrings.config.template" />
+    <None Include="Views\Reports\Util_Def_TalentReport.vbhtml" />
     <Content Include="Web.config.diagnostics">
       <SubType>Designer</SubType>
     </Content>
@@ -1841,6 +1843,7 @@
     <Content Include="Views\Error\InternalServer.vbhtml" />
     <Content Include="Views\Error\PermissionsError.vbhtml" />
     <Content Include="Views\Home\util_run_message.vbhtml" />
+    <Content Include="Views\Home\util_run_talentreport.ascx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

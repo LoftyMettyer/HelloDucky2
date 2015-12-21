@@ -1155,22 +1155,24 @@ Namespace Controllers
 				 (Session("action") = "view") Or _
 				 (Session("action") = "copy") Then
 					Select Case Session("utiltype")
-						Case 1 ' CROSS TABS
+						Case UtilityType.utlCrossTab
 							Return RedirectToAction("util_def_crosstab", "reports")
-						Case 2 ' CUSTOM REPORTS
+						Case UtilityType.utlCustomReport
 							Return RedirectToAction("util_def_customreport", "reports")
-						Case 9 ' MAIL MERGE
+						Case UtilityType.utlMailMerge
 							Return RedirectToAction("util_def_mailmerge", "reports")
-						Case 10	' PICKLISTS
+						Case UtilityType.utlPicklist
 							Return RedirectToAction("util_def_picklist")
-						Case 11	' FILTERS
+						Case UtilityType.utlFilter
 							Return PartialView("util_def_expression")
-						Case 12	' CALCULATIONS
+						Case UtilityType.utlCalculation
 							Return PartialView("util_def_expression")
-						Case 17	' CALENDAR REPORTS
+						Case UtilityType.utlCalendarReport
 							Return RedirectToAction("util_def_calendarreport", "reports")
-						Case 35	' NINE BOX
+						Case UtilityType.utlNineBoxGrid
 							Return RedirectToAction("util_def_9boxgrid", "reports")
+						Case UtilityType.TalentReport
+							Return RedirectToAction("util_def_talentreport", "reports")
 					End Select
 
 				ElseIf Session("action") = "delete" Then

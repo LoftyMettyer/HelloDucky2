@@ -18,6 +18,7 @@ Namespace Repository
 		Private ReadOnly _crosstabs As New Collection(Of CrossTabModel)
 		Private ReadOnly _calendarreports As New Collection(Of CalendarReportModel)
 		Private ReadOnly _mailmerges As New Collection(Of MailMergeModel)
+		Private ReadOnly _talentreports As New Collection(Of TalentReportModel)
 		Private ReadOnly _nineboxgrids As New Collection(Of NineBoxGridModel)
 
 		Private ReadOnly Property _username As String
@@ -414,6 +415,108 @@ Namespace Repository
 			Return objModel
 
 		End Function
+
+    Public Function LoadTalentReport(ID As Integer, action As UtilityActionType) As TalentReportModel
+
+      
+			Dim objModel As New TalentReportModel
+
+			Try
+
+				objModel.Attach(_objSessionInfo)
+				objModel.ActionType = action
+
+				If action = UtilityActionType.New Then
+					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
+          objModel.MatchTableID = SettingsConfig.Personnel_EmpTableID ' Needs to be post at some point?
+					objModel.Owner = _username
+				Else
+
+					objModel.ID = ID
+
+					Dim dsDefinition = _objDataAccess.GetDataSet("spASRIntGetTalentReportDefinition" _
+						, New SqlParameter("@piReportID", SqlDbType.Int) With {.Value = objModel.ID} _
+						, New SqlParameter("@psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username} _
+						, New SqlParameter("@psAction", SqlDbType.VarChar, 255) With {.Value = action})
+
+					objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
+
+					PopulateDefintion(objModel, dsDefinition.Tables(0))
+
+					' Selected columns and expressions
+					PopulateColumns(objModel, dsDefinition.Tables(1))
+
+					' Orders
+					PopulateSortOrder(objModel, dsDefinition.Tables(2))
+
+					If dsDefinition.Tables(0).Rows.Count = 1 Then
+
+						Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
+
+	          objModel.BaseChildTableID = CInt(row("BaseChildTableID"))
+	          objModel.BaseChildColumnID = CInt(row("BaseChildColumnID"))
+	          objModel.BaseMinimumRatingColumnID = CInt(row("BaseMinimumRatingColumnID"))
+	          objModel.BasePreferredRatingColumnID = CInt(row("BasePreferredRatingColumnID"))
+            objModel.MatchTableID = CInt(row("MatchTableID"))
+	          objModel.MatchSelection = CInt(row("MatchSelection"))
+	          objModel.MatchPicklistID = CInt(row("MatchPicklistID"))
+	          objModel.MatchFilterID = CInt(row("MatchFilterID"))
+	          objModel.MatchChildTableID = CInt(row("MatchChildTableID"))
+	          objModel.MatchChildColumnID = CInt(row("MatchChildColumnID"))
+	          objModel.MatchChildRatingColumnID = CInt(row("MatchChildRatingColumnID"))
+	          objModel.MatchAgainstType = CInt(row("MatchAgainstType"))
+                   
+						'objModel.OutputFormat = CType(row("Format"), MailMergeOutputTypes)
+						'If (objModel.OutputFormat = MailMergeOutputTypes.WordDocument) Then
+						'	objModel.WordDocumentPrinter = row("PrinterName").ToString()
+						'ElseIf (objModel.OutputFormat = MailMergeOutputTypes.DocumentManagement) Then
+						'	objModel.DocumentManagementPrinter = row("PrinterName").ToString()
+						'End If
+						'objModel.DisplayOutputOnScreen = CBool(row("DisplayOutputOnScreen"))
+						'objModel.SendToPrinter = CBool(row("SendToPrinter"))
+						'objModel.SaveToFile = CBool(row("SaveToFile"))
+						'objModel.Filename = row("FileName").ToString
+						'objModel.EmailGroupID = CInt(row("EmailGroupID"))
+						'objModel.EmailSubject = row("EmailSubject").ToString()
+						'objModel.EmailAsAttachment = CBool(row("EmailAsAttachment"))
+						'objModel.EmailAttachmentName = row("EmailAttachmentName").ToString()
+
+						'objModel.SuppressBlankLines = CBool(row("SuppressBlankLines"))
+						'objModel.PauseBeforeMerge = CBool(row("PauseBeforeMerge"))
+
+						'If Not (TypeOf row.Item("UploadTemplate") Is DBNull) Then
+						'	objModel.UploadTemplate = CType(row.Item("UploadTemplate"), Byte())
+						'	objModel.UploadTemplateName = row.Item("UploadTemplateName").ToString
+						'End If
+
+					End If
+
+				End If
+
+				' if copy the defination then check if group access needs to be hidden
+				If objModel.ActionType = UtilityActionType.Copy Then
+					If objModel.BaseViewAccess = "HD" Or
+						objModel.DefinitionAccessBasedOnSelectedCalculationColumns = "HD" Then
+						objModel.IsGroupAccessHiddenWhenCopyTheDefinition = True
+					End If
+				End If
+
+				objModel.GroupAccess = GetUtilityAccess(objModel, action)
+				objModel.IsReadOnly = (action = UtilityActionType.View)
+				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
+				objModel.CategoryList = GetCategoryList()
+				_talentreports.Remove(objModel.ID)
+				_talentreports.Add(objModel)
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return objModel
+
+
+    End Function
 
 		Public Function LoadCalendarReport(ID As Integer, action As UtilityActionType) As CalendarReportModel
 
@@ -941,6 +1044,53 @@ Namespace Repository
 
 			Return True
 		End Function
+
+    
+		Public Function SaveReportDefinition(objModel As TalentReportModel) As Boolean
+
+			Try
+
+        Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
+				Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
+				Dim sColumns = MailMergeColumnsAsString(objModel.Columns, objModel.SortOrders)
+       
+				_objDataAccess.ExecuteSP("spASRIntSaveTalentReport", _
+								New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
+								New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description}, _
+								New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID}, _
+								New SqlParameter("piBaseSelection", SqlDbType.Int) With {.Value = objModel.SelectionType}, _
+								New SqlParameter("piBasePicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID}, _
+                New SqlParameter("piBaseFilterID", SqlDbType.Int) With {.Value = objModel.FilterID}, _
+	              New SqlParameter("piBaseChildTableID", SqlDbType.Int) With {.Value = objModel.BaseChildTableID}, _
+	              New SqlParameter("piBaseChildColumnID", SqlDbType.Int) With {.Value = objModel.BaseChildColumnID}, _
+	              New SqlParameter("piBaseMinimumRatingColumnID", SqlDbType.Int) With {.Value = objModel.BaseMinimumRatingColumnID}, _
+	              New SqlParameter("piBasePreferredRatingColumnID", SqlDbType.Int) With {.Value = objModel.BasePreferredRatingColumnID}, _
+	              New SqlParameter("piMatchTableID", SqlDbType.Int) With {.Value = objModel.MatchTableID}, _
+	              New SqlParameter("piMatchSelection", SqlDbType.Int) With {.Value = objModel.MatchSelection}, _
+	              New SqlParameter("piMatchPicklistID", SqlDbType.Int) With {.Value = objModel.MatchPicklistID}, _
+	              New SqlParameter("piMatchFilterID", SqlDbType.Int) With {.Value = objModel.MatchFilterID}, _
+	              New SqlParameter("piMatchChildTableID", SqlDbType.Int) With {.Value = objModel.MatchChildTableID}, _
+	              New SqlParameter("piMatchChildColumnID", SqlDbType.Int) With {.Value = objModel.MatchChildColumnID}, _
+	              New SqlParameter("piMatchChildRatingColumnID", SqlDbType.Int) With {.Value = objModel.MatchChildRatingColumnID}, _
+	              New SqlParameter("piMatchAgainstType", SqlDbType.Int) With {.Value = objModel.MatchAgainstType}, _
+								New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner}, _
+								New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess}, _
+								New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.JobIDsToHide}, _
+								New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()}, _
+								New SqlParameter("psColumns", SqlDbType.VarChar, -1) With {.Value = sColumns}, _
+								prmID,
+								New SqlParameter("piCategoryID", SqlDbType.Int) With {.Value = objModel.CategoryID})
+
+				_talentreports.Remove(objModel.ID)
+				objModel.ID = CInt(prmID.Value)
+
+			Catch ex As Exception
+        Throw
+
+			End Try
+
+    End Function
+
 
 		Private Function GetUtilityAccess(objModel As IReport, action As UtilityActionType) As Collection(Of GroupAccess)
 
@@ -1533,6 +1683,9 @@ Namespace Repository
 					Case UtilityType.utlNineBoxGrid
 						Return _nineboxgrids.Where(Function(m) m.ID = reportID).FirstOrDefault
 
+ 					Case UtilityType.TalentReport
+						Return _talentreports.Where(Function(m) m.ID = reportID).FirstOrDefault
+
 					Case Else
 						Return _customreports.Where(Function(m) m.ID = reportID).FirstOrDefault
 
@@ -1861,6 +2014,52 @@ Namespace Repository
 			Return objSaveMessage
 
 		End Function
+
+ 		Public Function ServerValidate(objModel As TalentReportModel) As SaveWarningModel
+
+ 			Dim objSaveMessage As SaveWarningModel
+
+			Try
+
+ 				Dim prmErrorMsg = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmErrorCode = New SqlParameter("piErrorCode", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmDeletedCalcs = New SqlParameter("psDeletedCalcs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmHiddenCalcs = New SqlParameter("psHiddenCalcs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmJobIDsToHide = New SqlParameter("psJobIDsToHide", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+
+        ' We need to add the match table picklist and filter to this
+        _objDataAccess.ExecuteSP("spASRIntValidateTalentReport" _
+            , New SqlParameter("@psUtilName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
+            , New SqlParameter("@piUtilID", SqlDbType.Int) With {.Value = objModel.ID} _
+            , New SqlParameter("@piTimestamp", SqlDbType.Int) With {.Value = objModel.Timestamp} _
+            , New SqlParameter("@piBasePicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID} _
+            , New SqlParameter("@piBaseFilterID", SqlDbType.Int) With {.Value = objModel.FilterID} _
+            , New SqlParameter("@piMatchPicklistID", SqlDbType.Int) With {.Value = objModel.MatchPicklistID} _
+            , New SqlParameter("@piMatchFilterID", SqlDbType.Int) With {.Value = objModel.MatchFilterID} _
+            , New SqlParameter("@piCategoryID", SqlDbType.Int) With {.Value = objModel.CategoryID} _
+            , New SqlParameter("@psCalculations", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.Calculations} _
+            , New SqlParameter("@psHiddenGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()} _
+            , prmErrorMsg, prmErrorCode, prmDeletedCalcs, prmHiddenCalcs, prmJobIDsToHide)
+
+        If prmJobIDsToHide.Value.ToString().Length > 0 Then
+          objModel.Dependencies.JobIDsToHide = vbTab + prmJobIDsToHide.Value.ToString() + vbTab
+        End If
+
+        objSaveMessage = New SaveWarningModel With {
+					.ReportType = objModel.ReportType,
+					.ID = objModel.ID,
+					.ErrorCode = CType(prmErrorCode.Value, ReportValidationStatus),
+					.ErrorMessage = prmErrorMsg.Value.ToString()}
+
+ 			Catch ex As Exception
+        Throw
+
+			End Try
+
+ 			Return objSaveMessage
+
+ 		End Function
+
 
 		' Approximation of the calculation as a column type (not a direct match because we cannot handle table lookups, and expressions don't return integers
 		Private Function CalculationAsColumnType(tableID As Integer, objectID As Integer) As ColumnDataType
