@@ -53,9 +53,55 @@ End Code
           Match Table : <select class="width70 floatright" name="MatchTableID" id="MatchTableID"></select>
         </fieldset>
 
-        All/Picklist/Filter goes here
+        <fieldset>
+          <div id="MatchTableAllRecordsDiv">
+            @Html.RadioButton("matchselectiontype", RecordSelectionType.AllRecords, Model.MatchSelectionType = RecordSelectionType.AllRecords,
+                                            New With {.id = "matchselectiontype_All", .onclick = "changeRecordOption('Match','ALL')"})
+            All Records
+          </div>
+
+          <div id="" class="tablerow">
+            <div class="stretchyfixed">
+              @Html.RadioButton("matchselectiontype", RecordSelectionType.Picklist, Model.MatchSelectionType = RecordSelectionType.Picklist,
+                                    New With {.id = "matchselectiontype_Picklist", .onclick = "changeRecordOption('Match','PICKLIST')"})
+              Picklist
+            </div>           
+            <div class="tablecell width100">
+              <input type="hidden" id="txtMatchPicklistID" name="MatchPicklistID" value="@Model.MatchPicklistID" />
+              <div class="ellipsistextbox">
+                @Html.TextBoxFor(Function(m) m.MatchPicklistName, New With {.id = "txtMatchPicklist", .readonly = "true", .class = "width80"})
+                @Html.ValidationMessageFor(Function(m) m.MatchPicklistID)
+              </div>
+              <div class="tablecell">
+                @Html.EllipseButton("cmdMatchPicklist", "selectMatchTablePicklist()", Model.SelectionType = RecordSelectionType.Picklist)
+              </div>
+            </div>
+          </div>
+
+          <div id="" class="tablerow">
+            <div class="stretchyfixed">
+              @Html.RadioButton("matchselectiontype", RecordSelectionType.Filter, Model.MatchSelectionType = RecordSelectionType.Filter,
+                                   New With {.id = "matchselectiontype_Filter", .onclick = "changeRecordOption('Match','FILTER')"})
+              Filter
+            </div>
+            <div class="tablecell width100">
+              <input type="hidden" id="txtMatchFilterID" name="MatchFilterID" value="@Model.MatchFilterID" />
+              @Html.TextBoxFor(Function(m) m.MatchFilterName, New With {.id = "txtMatchFilter", .readonly = "true", .class = "width80"})
+              @Html.ValidationMessageFor(Function(m) m.MatchFilterID)
+
+            </div>
+            <div class="tablecell">
+              @Html.EllipseButton("cmdMatchFilter", "selectMatchTableFilter()", Model.SelectionType = RecordSelectionType.Filter)
+            </div>
+
+          </div>
+
+        </fieldset>
+      </fieldset>
+
        <br/>
 
+      <fieldset>
         <fieldset class="">
           Match Child : <select class="width70 floatright" name="MatchChildTableID" id="MatchChildTableID" onchange="refreshTalentReportMatchColumns(event.target);"></select>
         </fieldset>
@@ -76,7 +122,7 @@ End Code
 
     <div id="report_definition_tab_columns">
       @Code
-        Html.RenderPartial("_ColumnSelection", Model)
+  Html.RenderPartial("_ColumnSelection", Model)
       End Code
     </div>
 
@@ -99,9 +145,61 @@ End Code
 
 <script type="text/javascript">
 
+  function selectMatchTablePicklist() {
+
+    var tableID = $("#MatchTableID").val();
+    var currentID = $("#txtMatchPicklistID").val();
+    var tableName = "matched";
+
+    OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
+      //If current user is System Manager/Security Manager, we allow them to add or edit the filter/picklist hidden by another user
+      if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && '@Model.CanEditSecurityGroups.ToString.ToLower' == "false") {
+        $("#txtMatchPicklistID").val(0);
+        $("#txtMatchPicklist").val('None');
+        OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+      }
+      else {
+        $("#txtMatchPicklistID").val(id);
+        $("#txtMatchPicklist").val(name);
+        //setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access, tableName);
+        enableSaveButton();
+      }
+    }, getPopupWidth(), getPopupHeight());
+
+  }
+
+  function selectMatchTableFilter() {
+
+    var tableID = $("#MatchTableID").val();
+    var currentID = $("#txtMatchFilterID").val();
+    var tableName = "matched";
+
+    OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
+      //If current user is System Manager/Security Manager, we allow them to add or edit the filter/picklist hidden by another user
+      if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && '@Model.CanEditSecurityGroups.ToString.ToLower' == "false") {
+        $("#txtMatchFilterID").val(0);
+        $("#txtMatchFilter").val('None');
+        OpenHR.modalMessage("The " + tableName + " table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+      }
+      else {
+        $("#txtMatchFilterID").val(id);
+        $("#txtMatchFilter").val(name);
+        //setViewAccess('FILTER', $("#Parent1ViewAccess"), access, tableName);
+        enableSaveButton();
+      }
+    }, getPopupWidth(), getPopupHeight());
+
+  }
+
+
   function setTalentDefinitionDetails() {
+
     $('#MatchTableID').val("@Model.MatchTableID");
+
     refreshTalentReportChildTables();
+    $('#MatchChildTableID').val("@Model.MatchChildTableID");
+
+
   }
 
   function refreshTalentReportChildTables() {
@@ -132,7 +230,7 @@ End Code
 
         var option = "";
         for (var i = 0; i < json.length; i++) {
-          option += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
+          option += "<option value='" + json[i].id + "'>" + json[i].Name + "</option>";
         }
         $("select#MatchChildTableID").html(option);
         $('#MatchChildTableID').val("@Model.MatchChildTableID");

@@ -17,7 +17,7 @@ Namespace Models
     Public Overrides Sub SetBaseTable(TableID As Integer)
     End Sub
 
-	  Public Property BaseSelection As Integer
+	  Public Property BaseSelection As RecordSelectionType
 	  Public Property BasePicklistID As Integer
 	  Public Property BaseFilterID As Integer
 	  Public Property BaseChildTableID As Integer
@@ -25,7 +25,7 @@ Namespace Models
 	  Public Property BaseMinimumRatingColumnID As Integer
 	  Public Property BasePreferredRatingColumnID As Integer
     Public Property MatchTableID As Integer
-	  Public Property MatchSelection  As Integer
+	  Public Property MatchSelectionType  As RecordSelectionType
 	  Public Property MatchPicklistID  As Integer
 	  Public Property MatchFilterID  As Integer
 	  Public Property MatchChildTableID As Integer
@@ -33,6 +33,8 @@ Namespace Models
 	  Public Property MatchChildRatingColumnID  As Integer
 	  Public Property MatchAgainstType  As Integer
  		Public Property Output As New ReportOutputModel
+    Public Property MatchPicklistName as String
+    public Property MatchFilterName As String
 
     Public Overrides Function GetAvailableTables() As IEnumerable(Of ReportTableItem)
 

@@ -458,7 +458,7 @@ Namespace Repository
 	          objModel.BaseMinimumRatingColumnID = CInt(row("BaseMinimumRatingColumnID"))
 	          objModel.BasePreferredRatingColumnID = CInt(row("BasePreferredRatingColumnID"))
             objModel.MatchTableID = CInt(row("MatchTableID"))
-	          objModel.MatchSelection = CInt(row("MatchSelection"))
+	          objModel.MatchSelectionType = CType(row("MatchSelection"), RecordSelectionType)
 	          objModel.MatchPicklistID = CInt(row("MatchPicklistID"))
 	          objModel.MatchFilterID = CInt(row("MatchFilterID"))
 	          objModel.MatchChildTableID = CInt(row("MatchChildTableID"))
@@ -1066,7 +1066,7 @@ Namespace Repository
 	              New SqlParameter("piBaseMinimumRatingColumnID", SqlDbType.Int) With {.Value = objModel.BaseMinimumRatingColumnID}, _
 	              New SqlParameter("piBasePreferredRatingColumnID", SqlDbType.Int) With {.Value = objModel.BasePreferredRatingColumnID}, _
 	              New SqlParameter("piMatchTableID", SqlDbType.Int) With {.Value = objModel.MatchTableID}, _
-	              New SqlParameter("piMatchSelection", SqlDbType.Int) With {.Value = objModel.MatchSelection}, _
+	              New SqlParameter("piMatchSelection", SqlDbType.Int) With {.Value = Cint(objModel.MatchSelectionType)}, _
 	              New SqlParameter("piMatchPicklistID", SqlDbType.Int) With {.Value = objModel.MatchPicklistID}, _
 	              New SqlParameter("piMatchFilterID", SqlDbType.Int) With {.Value = objModel.MatchFilterID}, _
 	              New SqlParameter("piMatchChildTableID", SqlDbType.Int) With {.Value = objModel.MatchChildTableID}, _
