@@ -628,7 +628,7 @@
 
 						<tr>
 							<td></td>
-							<td class="fontsmalltitle" colspan="6">Reports</td>
+							<td class="fontsmalltitle" colspan="6">Reports / Utilities</td>
 						</tr>
 
 						<tr>
@@ -697,7 +697,7 @@
 						</tr>
 						<tr>
 							<td></td>
-							<td class="fontsmalltitle" colspan="6">Utilities / Tools</td>
+							<td class="fontsmalltitle" colspan="6">Tools</td>
 						</tr>
 
 						<tr>
