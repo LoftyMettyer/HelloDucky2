@@ -19,6 +19,7 @@ Namespace Expressions
 		Private miReturnType As ExpressionValueTypes
 		Private miExpressionType As ExpressionTypes
 		Private mlngParentComponentID As Integer
+    Private mlngSecondTableID as Integer
 		Private msOwner As String
 		Private msAccess As String
 		Private msDescription As String
@@ -39,6 +40,15 @@ Namespace Expressions
 
 		' Array holding the User Defined functions that are needed for this expression
 		Private mastrUDFsRequired() As String
+    
+	Public Property SecondTableID() As Integer
+		Get
+			SecondTableID = mlngSecondTableID		
+		End Get
+		Set(ByVal Value As Integer)		
+      mlngSecondTableID = value
+		End Set
+	End Property
 
 		Public ReadOnly Property ComponentDescription() As String
 			Get
@@ -720,11 +730,14 @@ Namespace Expressions
 											avValues(2, iParameter1Index) = vbNullString
 										End If
 
-										If (miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMEFILTER) Or (miExpressionType = ExpressionTypes.giEXPR_LINKFILTER) Then
-											'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										If (miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION) _
+                      Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMEFILTER) _
+                      Or (miExpressionType = ExpressionTypes.giEXPR_MATCHJOINEXPRESSION) _
+                      Or (miExpressionType = ExpressionTypes.giEXPR_MATCHWHEREEXPRESSION) _
+                      Or (miExpressionType = ExpressionTypes.giEXPR_MATCHSCOREEXPRESSION) _
+                      Or (miExpressionType = ExpressionTypes.giEXPR_LINKFILTER) Then
+
 											If (.Component.ReturnType = ExpressionValueTypes.giEXPRVALUE_LOGIC) And ((.Component.OperatorID <> 5) And (.Component.OperatorID <> 6) And (.Component.OperatorID <> 13)) Then
-												'UPGRADE_WARNING: Couldn't resolve default property of object avValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												'UPGRADE_WARNING: Couldn't resolve default property of object avValues(2, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 												avValues(2, iLoop2) = "(CASE WHEN (" & avValues(2, iLoop2) & ") THEN 1 ELSE 0 END)"
 											End If
 										End If
@@ -820,81 +833,91 @@ Namespace Expressions
 				End If
 
 				If fOK Then
-					' Create an array of the tables related to the expression base table.
-					' Used when Joining any other tables/view used.
-					' Column 1 = 'parent' if the expression's base table is the parent of the other table
-					'            'child' if the expression's base table is the child of the other table
-					' Column 2 = ID of the other table
 
-					For Each objRelation In Relations.FindAll(Function(n) n.ParentID = mlngBaseTableID)
-						objTableRelation = New TableRelation
-						objTableRelation.RelationType = RelationType.Parent
-						objTableRelation.TableID = objRelation.ChildID
-						listRelatedTables.Add(objTableRelation)
-					Next
+           If miExpressionType = ExpressionTypes.giEXPR_MATCHJOINEXPRESSION Or _
+             miExpressionType = ExpressionTypes.giEXPR_MATCHWHEREEXPRESSION Or _
+             miExpressionType = ExpressionTypes.giEXPR_MATCHSCOREEXPRESSION Then
 
-					For Each objRelation In Relations.FindAll(Function(n) n.ChildID = mlngBaseTableID)
-						objTableRelation = New TableRelation
-						objTableRelation.RelationType = RelationType.Child
-						objTableRelation.TableID = objRelation.ParentID
-						listRelatedTables.Add(objTableRelation)
-					Next
+            sRuntimeFilterSQL = sWhereCode
+    
+          Else
+					  ' Create an array of the tables related to the expression base table.
+					  ' Used when Joining any other tables/view used.
+					  ' Column 1 = 'parent' if the expression's base table is the parent of the other table
+					  '            'child' if the expression's base table is the child of the other table
+					  ' Column 2 = ID of the other table
 
+					  For Each objRelation In Relations.FindAll(Function(n) n.ParentID = mlngBaseTableID)
+						  objTableRelation = New TableRelation
+						  objTableRelation.RelationType = RelationType.Parent
+						  objTableRelation.TableID = objRelation.ChildID
+						  listRelatedTables.Add(objTableRelation)
+					  Next
 
-					' Join any other tables/views used.
-					For iLoop1 = 1 To UBound(alngSourceTables, 2)
-						If alngSourceTables(1, iLoop1) = 0 Then
-							objTableView = gcoTablePrivileges.FindTableID(alngSourceTables(2, iLoop1))
-						Else
-							objTableView = gcoTablePrivileges.FindViewID(alngSourceTables(2, iLoop1))
-						End If
-
-						If objTableView.TableID = mlngBaseTableID Then
-							' Join a view on the base table.
-							If Not pfApplyPermissions Then
-								sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.TableName & " ON " & sBaseTableSource & ".id = " & objTableView.TableName & ".id" & vbNewLine
-							Else
-								sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.RealSource & " ON " & sBaseTableSource & ".id = " & objTableView.RealSource & ".id" & vbNewLine
-							End If
-						Else
-							' Join a table/view on a parent/child related to the base table.
-							For Each objTableRelation In listRelatedTables.FindAll(Function(n) n.TableID = objTableView.TableID)
+					  For Each objRelation In Relations.FindAll(Function(n) n.ChildID = mlngBaseTableID)
+						  objTableRelation = New TableRelation
+						  objTableRelation.RelationType = RelationType.Child
+						  objTableRelation.TableID = objRelation.ParentID
+						  listRelatedTables.Add(objTableRelation)
+					  Next
 
 
-								If Not pfApplyPermissions Then
-									'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									If objTableRelation.RelationType = RelationType.Parent Then
-										sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.TableName & " ON " & sBaseTableSource & ".id = " & objTableView.TableName & ".id_" & Trim(Str(mlngBaseTableID)) & " " & vbNewLine
-									Else
-										'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-										sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.TableName & " ON " & sBaseTableSource & ".id_" & Trim(Str(objTableRelation.TableID)) & " = " & objTableView.TableName & ".id " & vbNewLine
-									End If
-								Else
-									'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									If objTableRelation.RelationType = RelationType.Parent Then
-										sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.RealSource & " ON " & sBaseTableSource & ".id = " & objTableView.RealSource & ".id_" & Trim(Str(mlngBaseTableID)) & " " & vbNewLine
-									Else
-										'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-										sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.RealSource & " ON " & sBaseTableSource & ".id_" & Trim(Str(objTableRelation.TableID)) & " = " & objTableView.RealSource & ".id " & vbNewLine
-									End If
-								End If
+					  ' Join any other tables/views used.
+					  For iLoop1 = 1 To UBound(alngSourceTables, 2)
+						  If alngSourceTables(1, iLoop1) = 0 Then
+							  objTableView = gcoTablePrivileges.FindTableID(alngSourceTables(2, iLoop1))
+						  Else
+							  objTableView = gcoTablePrivileges.FindViewID(alngSourceTables(2, iLoop1))
+						  End If
 
-								Exit For
+						  If objTableView.TableID = mlngBaseTableID Then
+							  ' Join a view on the base table.
+							  If Not pfApplyPermissions Then
+								  sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.TableName & " ON " & sBaseTableSource & ".id = " & objTableView.TableName & ".id" & vbNewLine
+							  Else
+								  sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.RealSource & " ON " & sBaseTableSource & ".id = " & objTableView.RealSource & ".id" & vbNewLine
+							  End If
+						  Else
+							  ' Join a table/view on a parent/child related to the base table.
+							  For Each objTableRelation In listRelatedTables.FindAll(Function(n) n.TableID = objTableView.TableID)
 
-							Next
-						End If
 
-						'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-						objTableView = Nothing
-					Next iLoop1
+								  If Not pfApplyPermissions Then
+									  'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									  If objTableRelation.RelationType = RelationType.Parent Then
+										  sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.TableName & " ON " & sBaseTableSource & ".id = " & objTableView.TableName & ".id_" & Trim(Str(mlngBaseTableID)) & " " & vbNewLine
+									  Else
+										  'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										  sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.TableName & " ON " & sBaseTableSource & ".id_" & Trim(Str(objTableRelation.TableID)) & " = " & objTableView.TableName & ".id " & vbNewLine
+									  End If
+								  Else
+									  'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									  If objTableRelation.RelationType = RelationType.Parent Then
+										  sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.RealSource & " ON " & sBaseTableSource & ".id = " & objTableView.RealSource & ".id_" & Trim(Str(mlngBaseTableID)) & " " & vbNewLine
+									  Else
+										  'UPGRADE_WARNING: Couldn't resolve default property of object avRelatedTables(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										  sRuntimeFilterSQL = sRuntimeFilterSQL & "LEFT OUTER JOIN " & objTableView.RealSource & " ON " & sBaseTableSource & ".id_" & Trim(Str(objTableRelation.TableID)) & " = " & objTableView.RealSource & ".id " & vbNewLine
+									  End If
+								  End If
 
-					' Add the filter 'where' clause code.
-					If Len(sWhereCode) > 0 Then
-						sWhereCode = sWhereCode & " = 1"
+								  Exit For
 
-						sRuntimeFilterSQL = sRuntimeFilterSQL & "WHERE " & vbNewLine & sWhereCode & vbNewLine
-					End If
-				End If
+							  Next
+						  End If
+
+						  'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+						  objTableView = Nothing
+					  Next iLoop1
+
+					  ' Add the filter 'where' clause code.
+					  If Len(sWhereCode) > 0 Then
+						  sWhereCode = sWhereCode & " = 1"
+
+						  sRuntimeFilterSQL = sRuntimeFilterSQL & "WHERE " & vbNewLine & sWhereCode & vbNewLine
+					  End If
+				  End If
+
+        End If
 
 			Catch ex As Exception
 				fOK = False
@@ -1525,31 +1548,34 @@ Namespace Expressions
 					dsExpression = DB.GetDataSet("spASRIntGetExpressionAndComponents" _
 							, New SqlParameter("ExpressionID", mlngExpressionID), New SqlParameter("ExpressionType", miExpressionType))
 
-					Dim rowExpression = dsExpression.Tables(0).Rows(0)
+          fOK = (dsExpression.Tables(0).Rows.Count > 0 )
 
-					If rowExpression Is Nothing Then
-						InitialiseExpression()
-					Else
+          If fOK then
+					  Dim rowExpression = dsExpression.Tables(0).Rows(0)
 
-						msExpressionName = rowExpression("Name").ToString()
-						mlngBaseTableID = CInt(rowExpression("TableID"))
-						miReturnType = CType(rowExpression("ReturnType"), ExpressionValueTypes)
-						miExpressionType = CType(rowExpression("Type"), ExpressionTypes)
+					  If rowExpression Is Nothing Then
+						  InitialiseExpression()
+					  Else
 
-						If miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION Then
-							miReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
-						End If
+						  msExpressionName = rowExpression("Name").ToString()
+						  mlngBaseTableID = CInt(rowExpression("TableID"))
+						  miReturnType = CType(rowExpression("ReturnType"), ExpressionValueTypes)
+						  miExpressionType = CType(rowExpression("Type"), ExpressionTypes)
 
-						mlngParentComponentID = CInt(rowExpression("ParentComponentID"))
-						msOwner = rowExpression("Username").ToString()
-						msAccess = rowExpression("Access").ToString()
-						msDescription = rowExpression("Description").ToString()
-						mlngTimeStamp = CInt(rowExpression("intTimestamp"))
-						msBaseTableName = rowExpression("TableName").ToString()
-						mbViewInColour = CBool(rowExpression("ViewInColour"))
+						  If miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION Then
+							  miReturnType = ExpressionValueTypes.giEXPRVALUE_UNDEFINED
+						  End If
 
-					End If
+						  mlngParentComponentID = CInt(rowExpression("ParentComponentID"))
+						  msOwner = rowExpression("Username").ToString()
+						  msAccess = rowExpression("Access").ToString()
+						  msDescription = rowExpression("Description").ToString()
+						  mlngTimeStamp = CInt(rowExpression("intTimestamp"))
+						  msBaseTableName = rowExpression("TableName").ToString()
+						  mbViewInColour = CBool(rowExpression("ViewInColour"))
 
+					  End If
+          End If
 
 					If fOK Then
 						' Clear the expressions collection of components.
@@ -1623,11 +1649,13 @@ Namespace Expressions
 
 		End Sub
 
-		Public Function Initialise(plngBaseTableID As Integer, plngExpressionID As Integer, piType As ExpressionTypes, piReturnType As ExpressionValueTypes) As Boolean
+		Public Function Initialise(plngBaseTableID As Integer, plngExpressionID As Integer, piType As ExpressionTypes, piReturnType As ExpressionValueTypes, Optional ByRef plngSecondTableID As Integer = 0) As Boolean
 			BaseTableID = plngBaseTableID
 			ExpressionID = plngExpressionID
 			miExpressionType = piType
 			miReturnType = piReturnType
+   		SecondTableID = plngSecondTableID
+
 			Return True
 		End Function
 

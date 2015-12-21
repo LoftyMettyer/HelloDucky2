@@ -469,7 +469,7 @@ Namespace Expressions
 				objBaseColumns = GetColumnPrivileges((objBaseTable.TableName))
 				objBaseColumn = objBaseColumns.FindColumnID(mlngColumnID)
 
-				If mobjBaseComponent.ParentExpression.BaseTableID = mlngTableID Then
+				If mobjBaseComponent.ParentExpression.BaseTableID = mlngTableID Or mobjBaseComponent.ParentExpression.SecondTableID = mlngTableID Then
 					' The field is in the expression's base table.
 					If Not pfApplyPermissions Then
 						sCode = objBaseTable.TableName & "." & objBaseColumn.ColumnName

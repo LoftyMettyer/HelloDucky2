@@ -143,7 +143,11 @@ Namespace BaseClasses
 		End Function
 
 		Public Function DoesColumnUseSeparators(plngColumnID As Integer) As Boolean
-			Return Columns.GetById(plngColumnID).Use1000Separator
+      If plngColumnID > 0 Then
+			  Return Columns.GetById(plngColumnID).Use1000Separator
+      Else 
+        Return False
+       End If
 		End Function
 
 		Public Function GetDecimalsSize(plngColumnID As Integer) As Integer
