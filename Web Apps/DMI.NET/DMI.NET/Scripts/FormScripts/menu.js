@@ -813,6 +813,18 @@ function menu_MenuClick(sTool) {
 			return false;
 		}
 
+    // Talent Reports
+		if (sToolName === "mnutoolTalentReports") {
+		  saveChangesPrompt("TALENTREPORTS", 'menu_loadDefSelPageForAllCategoryAndOwner(38, 0, 0, true, true)');
+		  return false;
+		}
+
+    // Match Reports
+		if (sToolName === "mnutoolMatchReports") {
+		  saveChangesPrompt("MATCHREPORTS", 'menu_loadDefSelPageForAllCategoryAndOwner(14, 0, 0, true, true)');
+		  return false;
+		}
+
 		// Custom Reports
 		if (sToolName == "mnutoolCustomReports") {
 			saveChangesPrompt("CUSTOMREPORTS", 'menu_loadDefSelPageForAllCategoryAndOwner(2, 0, 0, true, true)');
@@ -934,6 +946,11 @@ function menu_MenuClick(sTool) {
 		if (sToolName == "mnutoolCalendarReportsFind") {
 			LoadReportOrUtilityScreen(17);
 			return false;
+		}
+
+		if (sToolName === "mnutoolTalentReportsFind") {
+      LoadReportOrUtilityScreen(38);
+      return false;
 		}
 
 		if (sToolName == "mnutoolMailMergeFind") {
@@ -1762,7 +1779,7 @@ function menu_refreshMenu() {
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindNavigate", !(menu_isSSIMode() && ($("#mnutoolAccessLinksFind").hasClass("hidden"))));
 
 			menu_setVisibletoolbarGroupById('mnuSectionRecordFindOrder', !menu_isSSIMode());
-
+			
 			// Hide multi selection ribbon buttons for SSI mode
 			menu_setVisibletoolbarGroupById('mnuSectionReportsAndUtility', !menu_isSSIMode());
 			ToggleSelectedRecordOption(!menu_isSSIMode());
@@ -2184,6 +2201,8 @@ function menu_refreshMenu() {
 	menu_enableMenuItem("mnutoolCustomReports", $("#txtCustomReportsGranted").val());
 	menu_enableMenuItem("mnutoolCrossTabs", $("#txtCrossTabsGranted").val());
 	menu_enableMenuItem("mnutoolNineBox", $("#txtNineBoxGridGranted").val());
+	menu_enableMenuItem("mnutoolTalentReports", $("#txtTalentReportsGranted").val());
+	menu_enableMenuItem("mnutoolMatchReports", $("#txtMatchReportsGranted").val());
 	menu_enableMenuItem("mnutoolCalendarReports", $("#txtCalendarReportsGranted").val());
 	menu_enableMenuItem("mnutoolMailMerge", $("#txtMailMergeGranted").val());
 	menu_enableMenuItem("mnutoolDataTransfer", $("#txtDataTransferGranted").val());
@@ -2492,6 +2511,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 					(sCurrentPage == "UTIL_DEF_CROSSTABS") ||
 					(sCurrentPage == "UTIL_DEF_9BOXGRID") ||
 					(sCurrentPage == "UTIL_DEF_CALENDARREPORT") ||
+    		  (sCurrentPage == "UTIL_DEF_TALENTREPORT") ||
 					(sCurrentPage == "UTIL_DEF_MAILMERGE")) {
 		iResult = saveReportDefinition(true);
 		}
@@ -2672,7 +2692,7 @@ function menu_loadPage(psPage) {
 	// Sets multi select mode off when loading record edit (when set to First record from user configuration) window from clicking tree menu item.
 	SetMultiSelectionModeOff();
 	frmWorkArea.txtSelectedRecordsInFindGrid.value = "";
-
+	
 	frmWorkArea.txtGotoPageID.value = 0;
 	frmWorkArea.txtGotoPageSortColumn.value = "";
 	frmWorkArea.txtGotoPageSortOrder.value = "";
@@ -2758,7 +2778,7 @@ function menu_loadPage(psPage) {
 	function menu_loadFindPage() {
 	var frmWorkArea;
 	var frmRecEdit;
-
+		
 	menu_ShowWait("Loading find records...");
 	menu_disableMenu();   // HC: Is this correct? It will only disable RecEdit buttons
 	
@@ -3218,7 +3238,7 @@ function menu_loadPage(psPage) {
 	
 	// Submit the current "workframe" form, and then load the required record Edit page.
 	var frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
-
+	
 	frmWorkArea.txtAction.value = psAction;
 	frmWorkArea.txtGotoTableID.value = frmFindForm.txtCurrentTableID.value;
 	frmWorkArea.txtGotoViewID.value = frmFindForm.txtCurrentViewID.value;
@@ -3681,7 +3701,7 @@ function menu_editRecord() {
 	var frmRecEditArea;
 	var frmFindArea;
 	var lngRecordID;
-
+	
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
 	if (sCurrentWorkPage == "RECORDEDIT") {
@@ -5167,6 +5187,7 @@ function RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGri
 	var canRunCalendarReports = false;
 	var canRunMailMerge = false;
 	var canRunDataTransfer = false;
+  var canRunTalentReports = false;
 	var isMultiSelectOn = IsMultiSelectionModeOn();
 	var frmFind = document.getElementById("frmFindForm");
 	var isDmiUser = ($("#txtIsDMIUser")[0].value == "True");
@@ -5187,11 +5208,16 @@ function RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGri
 		if (window.txtSysPerm_DATATRANSFER_RUN != null && window.txtSysPerm_DATATRANSFER_RUN.value == 1 && isDmiUser) {
 			canRunDataTransfer = true;
 		}
+
+		if (window.txtSysPerm_TALENTREPORTS_RUN != null && window.txtSysPerm_DATATRANSFER_RUN.value == 1 && isDmiUser) {
+		  canRunTalentReports = true;
+		}  
 	}
 
 	menu_toolbarEnableItem("mnutoolCustomReportsFind", isNonMultiFindLinkType && canRunCustomReports && frmFind.txtCustomReportGrantedForFindWindow.value.toUpperCase() === "TRUE");
 	menu_toolbarEnableItem("mnutoolMailMergeFind", isNonMultiFindLinkType && canRunMailMerge && frmFind.txtMailMergeGrantedForFindWindow.value.toUpperCase() === "TRUE");
 	menu_toolbarEnableItem("mnutoolCalendarReportsFind", isNonMultiFindLinkType && canRunCalendarReports && frmFind.txtCalendarReportGrantedForFindWindow.value.toUpperCase() === "TRUE");
+	menu_toolbarEnableItem("mnutoolTalentReportsFind", isNonMultiFindLinkType && canRunTalentReports && frmFind.txtTalentReportGrantedForFindWindow.value.toUpperCase() === "TRUE");
 	menu_toolbarEnableItem("mnutoolDataTransferFind", isNonMultiFindLinkType && canRunDataTransfer && frmFind.txtDataTransferGrantedForFindWindow.value.toUpperCase() === "TRUE");
 
 	// Enable multiselect button is multi find is false

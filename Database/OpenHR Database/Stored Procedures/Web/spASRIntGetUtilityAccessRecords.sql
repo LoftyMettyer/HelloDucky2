@@ -44,6 +44,14 @@ BEGIN
 		SET @sKey = 'dfltaccess MailMerge';
 	END
 
+	IF @piUtilityType = 38
+	BEGIN
+		/* Talent Report */
+		SET @sAccessTable = 'ASRSysTalentReportAccess';
+		SET @sKey = 'dfltaccess TalentReports';
+	END
+
+
 	IF LEN(@sAccessTable) > 0
 	BEGIN
 		IF (@piID = 0) OR (@piFromCopy = 1)

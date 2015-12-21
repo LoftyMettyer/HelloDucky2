@@ -11,6 +11,7 @@ BEGIN
 
 	/* Return a recordset of the prompted values for the given utililty. */
 	DECLARE	@iBaseFilter		integer,
+			@iBase2Filter		integer,
 			@iParent1Filter		integer,
 			@iParent2Filter		integer,
 			@iChildFilter		integer,
@@ -76,6 +77,58 @@ BEGIN
 			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @iBaseFilter, @sAllComponents OUTPUT;
 
 	END
+
+
+	IF @piUtilType = 14
+	BEGIN
+
+		SELECT @iBaseFilter = Table1filter, @iBase2Filter = Table2Filter
+			FROM [dbo].ASRSysMatchReportName
+			WHERE MatchReportID = @piUtilID;
+
+		IF (NOT @iBaseFilter IS NULL) AND (@iBaseFilter > 0)
+			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @iBaseFilter, @sAllComponents OUTPUT;
+
+		IF (NOT @iBase2Filter IS NULL) AND (@iBase2Filter > 0)
+			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @iBase2Filter, @sComponents OUTPUT;
+
+		IF LEN(@sComponents) > 0
+		BEGIN
+			SET @sAllComponents = @sAllComponents + 
+				CASE
+					WHEN LEN(@sAllComponents) > 0 THEN ','
+					ELSE ''
+				END + 
+				@sComponents
+		END
+
+	END
+
+	IF @piUtilType = 38
+	BEGIN
+
+		SELECT @iBaseFilter = BaseFilterID, @iBase2Filter = MatchFilterID
+			FROM [dbo].ASRSysTalentReports
+			WHERE ID = @piUtilID;
+
+		IF (NOT @iBaseFilter IS NULL) AND (@iBaseFilter > 0)
+			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @iBaseFilter, @sAllComponents OUTPUT;
+
+		IF (NOT @iBase2Filter IS NULL) AND (@iBase2Filter > 0)
+			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @iBase2Filter, @sComponents OUTPUT;
+
+		IF LEN(@sComponents) > 0
+		BEGIN
+			SET @sAllComponents = @sAllComponents + 
+				CASE
+					WHEN LEN(@sAllComponents) > 0 THEN ','
+					ELSE ''
+				END + 
+				@sComponents
+		END
+
+	END
+
 
 	IF @piUtilType = 15 OR @piUtilType = 16
 	BEGIN

@@ -32,7 +32,7 @@ BEGIN
 	SET @fDoneWhere = 0;
 	SET @strExplicitSQL = '';
 	
-	IF ((@intTableID <=0) OR (@intTableID IS null)) AND @intType <> 17 AND @intType <> 9 AND @intType <> 2 AND @intType <> 3
+	IF ((@intTableID <=0) OR (@intTableID IS null)) AND @intType <> 17 AND @intType <> 9 AND @intType <> 2 AND @intType <> 3 AND @intType <> 14 AND @intType <> 38
 	BEGIN
 		/* No table ID passed in, so use the first table alphabetically. */
 		SELECT TOP 1 @intTableID = tableID
@@ -107,7 +107,33 @@ BEGIN
 		SET @strIDName = 'exprID';
 		SET @sExtraWhereSQL = ' type = 10 AND (returnType = 0 OR type = 10) AND parentComponentID = 0	AND TableID = ' + convert(varchar(255), @intTableID);
 	END
+
+	IF @intType = 14 -- Match Reports
+	BEGIN
+		SET @strTableName = 'ASRSysMatchReportName';
+		SET @strIDName = 'MatchReportID';
+		SET @sRecordSourceWhere = 'ASRSysMatchReportName.MatchReportType = 0';
+		SET @fNewAccess = 1;
+		SET @sAccessTableName= 'ASRSysMatchReportAccess';
+		IF (@intTableID > 0)
+		BEGIN
+			SET @sExtraWhereSQL = 'ASRSysMatchReportName.Table1ID = ' + convert(varchar(255), @intTableID);
+		END
+	END
 	
+	IF @intType = 38 -- Talent Management Reports
+	BEGIN
+		SET @strTableName = 'ASRSysTalentReports';
+		SET @strIDName = 'ID';
+		SET @fNewAccess = 1;
+		SET @sExtraWhereSQL = '';
+		SET @sAccessTableName= 'ASRSysTalentReportAccess';
+		IF (@intTableID > 0)
+		BEGIN
+			SET @sExtraWhereSQL = 'ASRSysTalentReports.BaseTableID = ' + convert(varchar(255), @intTableID) + ' OR ASRSysTalentReports.MatchTableID = ' + convert(varchar(255), @intTableID);
+		END
+	END
+
 	IF @intType = 17 /*'calendarreports'*/
 	BEGIN
 		SET @strTableName = 'ASRSysCalendarReports';
@@ -326,7 +352,7 @@ BEGIN
 
 				SET @strSQL = @strSQL  + ' (' + @sRecordSourceWhere + ')';
 			END
-			
+
 			IF LEN(@sExtraWhereSQL) > 0 
 			BEGIN
 				IF @fDoneWhere = 0

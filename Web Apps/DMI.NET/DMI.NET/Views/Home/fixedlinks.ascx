@@ -365,6 +365,14 @@
 										Reports</h6>
 								</a>
 							</div>
+							<div id="mnutoolTalentReportsFind" class="button">
+								<a href="#" rel="table" title="Talent Management">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CalendarReports64HOVER.png") %>"
+										alt="" />
+									<h6>Talent<br />
+										Management</h6>
+								</a>
+							</div>
 							<div id="mnutoolMailMergeFind" class="button">
 								<a href="#" rel="table" title="Mail Merge">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/MailMerge64HOVER.png") %>"
@@ -569,6 +577,14 @@
 																		<i class="icon-AbsenceCalendarRecord"></i>
 									<h6>Absence<br />
 										Calendar</h6>
+								</a>
+							</div>
+							<div id="mnutoolTalentRecord" class="button">
+								<a href="#" rel="table" title="Talent Reports">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CalendarReports64HOVER.png") %>" alt="" />
+										<i class="icon-CalendarReportsRecord"></i>
+									<h6>Talent<br />
+										Reports</h6>
 								</a>
 							</div>
 							<div id="mnutoolBradfordRecord" class="button">

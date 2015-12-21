@@ -106,6 +106,12 @@
             if (frmDefSel.utiltype.value == 17) {
                 sCaption = "Calendar Report";
             }
+            if (frmDefSel.utiltype.value == 14) {
+              sCaption = "Match Report";
+            }
+            if (frmDefSel.utiltype.value == 38) {
+              sCaption = "Talent Report";
+            }
             if (frmDefSel.utiltype.value == 25) {
                 sCaption = " Workflow";
             }
@@ -586,6 +592,10 @@
                                     Response.Write("9-Box Grid Reports")
                                 ElseIf iDefSelType = UtilityType.utlDataTransfer Then
                                     Response.Write("Data Transfer")
+                              ElseIf iDefSelType = UtilityType.utlMatchReport Then
+                                Response.Write("Match Reports")
+                              ElseIf iDefSelType = UtilityType.TalentReport Then
+                                Response.Write("Talent Reports")
                                 End If
                             %>
                         </span>
@@ -608,7 +618,7 @@
                             <tr>
                                 <td>
                                     <div id="Container" class="width100 floatleft" style="width:800px;">
-																			
+												
                                         <div id="divOwner" style="display: inline-block; margin-right: 50px">
                                             <label>Owner :</label>
                                             <select id="selectOwners" name="selectOwners" class="combo" style="margin-left: 4px; width: 200px">

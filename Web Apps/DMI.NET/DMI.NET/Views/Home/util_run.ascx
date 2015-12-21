@@ -200,6 +200,10 @@
 					Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
 				ElseIf Model.UtilType = UtilityType.utlNineBoxGrid Then
 					Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
+				ElseIf Model.UtilType = UtilityType.TalentReport Then
+					Html.RenderPartial("~/Views/Home/util_run_talentreport.ascx")
+				ElseIf Model.UtilType = UtilityType.utlMatchReport Then
+					Html.RenderPartial("~/Views/Home/util_run_talentreport.ascx")
 				End If
 			%>
 		</div>
@@ -257,7 +261,7 @@
 	} 
 
 	else {
-		
+
 		if ($("#txtPreview").val() == "True") {
 
 			<%If Model.UtilType = UtilityType.utlCalendarReport Then%>

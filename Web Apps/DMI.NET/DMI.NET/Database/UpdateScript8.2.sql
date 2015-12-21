@@ -6590,10 +6590,6 @@ GO
 DROP PROCEDURE [dbo].[spASRIntGetUtilityName]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetUtilityAccessRecords]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntGetUtilityAccessRecords]
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetTimestamp]    Script Date: 23/07/2013 11:19:27 ******/
 DROP PROCEDURE [dbo].[spASRIntGetTimestamp]
 GO
@@ -10464,164 +10460,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetUtilityAccessRecords]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntGetUtilityAccessRecords] (
-	@piUtilityType		integer,
-	@piID				integer,
-	@piFromCopy			integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE
-		@sDefaultAccess	varchar(2),
-		@sAccessTable	sysname,
-		@sKey			varchar(255),
-		@sSQL			nvarchar(MAX);
-
-	SET @sAccessTable = '';
-
-	IF @piUtilityType = 17
-	BEGIN
-		/* Calendar Reports */
-		SET @sAccessTable = 'ASRSysCalendarReportAccess';
-		SET @sKey = 'dfltaccess CalendarReports';
-	END
-
-	IF @piUtilityType = 1
-	BEGIN
-		/* Cross Tabs */
-		SET @sAccessTable = 'ASRSysCrossTabAccess';
-		SET @sKey = 'dfltaccess CrossTabs';
-	END
-
-	IF @piUtilityType = 2
-	BEGIN
-		/* Custom Reports */
-		SET @sAccessTable = 'ASRSysCustomReportAccess';
-		SET @sKey = 'dfltaccess CustomReports';
-	END
-
-	IF @piUtilityType = 9
-	BEGIN
-		/* Mail Merge */
-		SET @sAccessTable = 'ASRSysMailMergeAccess';
-		SET @sKey = 'dfltaccess MailMerge';
-	END
-
-	IF LEN(@sAccessTable) > 0
-	BEGIN
-		IF (@piID = 0) OR (@piFromCopy = 1)
-		BEGIN
-			SELECT @sDefaultAccess = SettingValue 
-			FROM ASRSysUserSettings
-			WHERE UserName = system_user
-				AND Section = 'utils&reports'
-				AND SettingKey = @sKey;
-	
-			IF (@sDefaultAccess IS null)
-			BEGIN
-				SET @sDefaultAccess = 'RW';
-			END
-		END
-		ELSE
-		BEGIN
-			SET @sDefaultAccess = 'HD';
-		END
-		
-		SET @sSQL = 'SELECT sysusers.name + char(9) +
-				CASE WHEN	
-					CASE
-						WHEN (SELECT count(*)
-							FROM ASRSysGroupPermissions
-							INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-								AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
-								OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
-							INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-								AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
-							WHERE sysusers.Name = ASRSysGroupPermissions.groupname
-								AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''RW''
-						ELSE ';
-  
-		IF (@piID = 0) OR (@piFromCopy = 1)
-		BEGIN
-			SET @sSQL = @sSQL + ' ''' + @sDefaultAccess + '''';
-		END
-		ELSE
-		BEGIN
-			SET @sSQL = @sSQL + 
-				' CASE
-					WHEN ' + @sAccessTable + '.access IS null THEN ''' + @sDefaultAccess + '''
-					ELSE ' + @sAccessTable + '.access
-				END';
-		END
-
-		SET @sSQL = @sSQL + 
-			' END = ''RW'' THEN ''Read / Write''
-			 WHEN	CASE
-				WHEN (SELECT count(*)
-					FROM ASRSysGroupPermissions
-					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-						AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
-						OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
-					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-						AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
-					WHERE sysusers.Name = ASRSysGroupPermissions.groupname
-						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''RW''
-			ELSE '
-  
-		IF (@piID = 0) OR (@piFromCopy = 1)
-		BEGIN
-			SET @sSQL = @sSQL + ' ''' + @sDefaultAccess + '''';
-		END
-		ELSE
-		BEGIN
-			SET @sSQL = @sSQL + 
-				' CASE
-					WHEN ' + @sAccessTable + '.access IS null THEN ''' + @sDefaultAccess + '''
-					ELSE ' + @sAccessTable + '.access
-				END';
-		END
-
-		SET @sSQL = @sSQL + 
-			' END = ''RO'' THEN ''Read Only''
-			ELSE ''Hidden'' 
-			END + char(9) +
-			CASE
-				WHEN (SELECT count(*)
-					FROM ASRSysGroupPermissions
-					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-						AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
- 						OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
-					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-						AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
-					WHERE sysusers.Name = ASRSysGroupPermissions.groupName
-						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''1''
-				ELSE
-					''0''
-			END AS [accessDefinition]
-			FROM sysusers
-			LEFT OUTER JOIN ' + @sAccessTable + ' ON (sysusers.name = ' + @sAccessTable + '.groupName
-				AND ' + @sAccessTable + '.id = ' + convert(nvarchar(100), @piID) + ')
-			WHERE sysusers.uid = sysusers.gid
-				AND sysusers.uid <> 0 AND NOT (sysusers.name LIKE ''ASRSys%'') AND NOT (sysusers.name LIKE ''db_%'')
-			ORDER BY sysusers.name';
-
-			EXEC sp_executesql @sSQL;
-	END
-
-END
-GO
-
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetUtilityName]    Script Date: 23/07/2013 11:19:27 ******/
 SET ANSI_NULLS ON
 GO
@@ -10809,11 +10647,6 @@ GO
 /****** Object:  StoredProcedure [dbo].[spASRIntGetUtilityName]    Script Date: 13/09/2013 08:57:58 ******/
 DROP PROCEDURE [dbo].[spASRIntGetUtilityName]
 GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetUtilityAccessRecords]    Script Date: 13/09/2013 08:57:58 ******/
-DROP PROCEDURE [dbo].[spASRIntGetUtilityAccessRecords]
-GO
-
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetTimestamp]    Script Date: 13/09/2013 08:57:58 ******/
 DROP PROCEDURE [dbo].[spASRIntGetTimestamp]
@@ -15659,164 +15492,6 @@ END
 GO
 
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetUtilityAccessRecords]    Script Date: 13/09/2013 08:58:00 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[spASRIntGetUtilityAccessRecords] (
-	@piUtilityType		integer,
-	@piID				integer,
-	@piFromCopy			integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE
-		@sDefaultAccess	varchar(2),
-		@sAccessTable	sysname,
-		@sKey			varchar(255),
-		@sSQL			nvarchar(MAX);
-
-	SET @sAccessTable = '';
-
-	IF @piUtilityType = 17
-	BEGIN
-		/* Calendar Reports */
-		SET @sAccessTable = 'ASRSysCalendarReportAccess';
-		SET @sKey = 'dfltaccess CalendarReports';
-	END
-
-	IF @piUtilityType = 1
-	BEGIN
-		/* Cross Tabs */
-		SET @sAccessTable = 'ASRSysCrossTabAccess';
-		SET @sKey = 'dfltaccess CrossTabs';
-	END
-
-	IF @piUtilityType = 2
-	BEGIN
-		/* Custom Reports */
-		SET @sAccessTable = 'ASRSysCustomReportAccess';
-		SET @sKey = 'dfltaccess CustomReports';
-	END
-
-	IF @piUtilityType = 9
-	BEGIN
-		/* Mail Merge */
-		SET @sAccessTable = 'ASRSysMailMergeAccess';
-		SET @sKey = 'dfltaccess MailMerge';
-	END
-
-	IF LEN(@sAccessTable) > 0
-	BEGIN
-		IF (@piID = 0) OR (@piFromCopy = 1)
-		BEGIN
-			SELECT @sDefaultAccess = SettingValue 
-			FROM ASRSysUserSettings
-			WHERE UserName = system_user
-				AND Section = 'utils&reports'
-				AND SettingKey = @sKey;
-	
-			IF (@sDefaultAccess IS null)
-			BEGIN
-				SET @sDefaultAccess = 'RW';
-			END
-		END
-		ELSE
-		BEGIN
-			SET @sDefaultAccess = 'HD';
-		END
-		
-		SET @sSQL = 'SELECT sysusers.name + char(9) +
-				CASE WHEN	
-					CASE
-						WHEN (SELECT count(*)
-							FROM ASRSysGroupPermissions
-							INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-								AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
-								OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
-							INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-								AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
-							WHERE sysusers.Name = ASRSysGroupPermissions.groupname
-								AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''RW''
-						ELSE ';
-  
-		IF (@piID = 0) OR (@piFromCopy = 1)
-		BEGIN
-			SET @sSQL = @sSQL + ' ''' + @sDefaultAccess + '''';
-		END
-		ELSE
-		BEGIN
-			SET @sSQL = @sSQL + 
-				' CASE
-					WHEN ' + @sAccessTable + '.access IS null THEN ''' + @sDefaultAccess + '''
-					ELSE ' + @sAccessTable + '.access
-				END';
-		END
-
-		SET @sSQL = @sSQL + 
-			' END = ''RW'' THEN ''Read / Write''
-			 WHEN	CASE
-				WHEN (SELECT count(*)
-					FROM ASRSysGroupPermissions
-					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-						AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
-						OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
-					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-						AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
-					WHERE sysusers.Name = ASRSysGroupPermissions.groupname
-						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''RW''
-			ELSE '
-  
-		IF (@piID = 0) OR (@piFromCopy = 1)
-		BEGIN
-			SET @sSQL = @sSQL + ' ''' + @sDefaultAccess + '''';
-		END
-		ELSE
-		BEGIN
-			SET @sSQL = @sSQL + 
-				' CASE
-					WHEN ' + @sAccessTable + '.access IS null THEN ''' + @sDefaultAccess + '''
-					ELSE ' + @sAccessTable + '.access
-				END';
-		END
-
-		SET @sSQL = @sSQL + 
-			' END = ''RO'' THEN ''Read Only''
-			ELSE ''Hidden'' 
-			END + char(9) +
-			CASE
-				WHEN (SELECT count(*)
-					FROM ASRSysGroupPermissions
-					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-						AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
- 						OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
-					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-						AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
-					WHERE sysusers.Name = ASRSysGroupPermissions.groupName
-						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''1''
-				ELSE
-					''0''
-			END AS [accessDefinition]
-			FROM sysusers
-			LEFT OUTER JOIN ' + @sAccessTable + ' ON (sysusers.name = ' + @sAccessTable + '.groupName
-				AND ' + @sAccessTable + '.id = ' + convert(nvarchar(100), @piID) + ')
-			WHERE sysusers.uid = sysusers.gid
-				AND sysusers.uid <> 0 AND NOT (sysusers.name LIKE ''ASRSys%'') AND NOT (sysusers.name LIKE ''db_%'')
-			ORDER BY sysusers.name';
-
-			EXEC sp_executesql @sSQL;
-	END
-
-END
-
-GO
 
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetUtilityName]    Script Date: 13/09/2013 08:58:00 ******/
@@ -39368,7 +39043,7 @@ CREATE PROCEDURE [dbo].[sp_ASRIntPopulateDefsel] (
 	@intType int, 
 	@blnOnlyMine bit,
 	@intTableID	integer,
-	@intCategoryID integer =-1,
+	@intCategoryID integer = -1,
 	@strOwner varchar(255) = ''
 )
 AS
@@ -39398,7 +39073,7 @@ BEGIN
 	SET @fDoneWhere = 0;
 	SET @strExplicitSQL = '';
 	
-	IF ((@intTableID <=0) OR (@intTableID IS null)) AND @intType <> 17 AND @intType <> 9 AND @intType <> 2 AND @intType <> 3
+	IF ((@intTableID <=0) OR (@intTableID IS null)) AND @intType <> 17 AND @intType <> 9 AND @intType <> 2 AND @intType <> 3 AND @intType <> 14 AND @intType <> 38
 	BEGIN
 		/* No table ID passed in, so use the first table alphabetically. */
 		SELECT TOP 1 @intTableID = tableID
@@ -39473,7 +39148,33 @@ BEGIN
 		SET @strIDName = 'exprID';
 		SET @sExtraWhereSQL = ' type = 10 AND (returnType = 0 OR type = 10) AND parentComponentID = 0	AND TableID = ' + convert(varchar(255), @intTableID);
 	END
+
+	IF @intType = 14 -- Match Reports
+	BEGIN
+		SET @strTableName = 'ASRSysMatchReportName';
+		SET @strIDName = 'MatchReportID';
+		SET @sRecordSourceWhere = 'ASRSysMatchReportName.MatchReportType = 0';
+		SET @fNewAccess = 1;
+		SET @sAccessTableName= 'ASRSysMatchReportAccess';
+		IF (@intTableID > 0)
+		BEGIN
+			SET @sExtraWhereSQL = 'ASRSysMatchReportName.Table1ID = ' + convert(varchar(255), @intTableID);
+		END
+	END
 	
+	IF @intType = 38 -- Talent Management Reports
+	BEGIN
+		SET @strTableName = 'ASRSysTalentReports';
+		SET @strIDName = 'ID';
+		SET @fNewAccess = 1;
+		SET @sExtraWhereSQL = '';
+		SET @sAccessTableName= 'ASRSysTalentReportAccess';
+		IF (@intTableID > 0)
+		BEGIN
+			SET @sExtraWhereSQL = 'ASRSysTalentReports.BaseTableID = ' + convert(varchar(255), @intTableID) + ' OR ASRSysTalentReports.MatchTableID = ' + convert(varchar(255), @intTableID);
+		END
+	END
+
 	IF @intType = 17 /*'calendarreports'*/
 	BEGIN
 		SET @strTableName = 'ASRSysCalendarReports';
@@ -39692,7 +39393,7 @@ BEGIN
 
 				SET @strSQL = @strSQL  + ' (' + @sRecordSourceWhere + ')';
 			END
-			
+
 			IF LEN(@sExtraWhereSQL) > 0 
 			BEGIN
 				IF @fDoneWhere = 0
@@ -39945,7 +39646,6 @@ BEGIN
 	END		
 END
 GO
-
 	
 IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntDeleteCheck]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRIntDeleteCheck];
@@ -40634,6 +40334,14 @@ BEGIN
 		SET @sAccessTable = 'ASRSysMailMergeAccess';
 		SET @sKey = 'dfltaccess MailMerge';
 	END
+
+	IF @piUtilityType = 38
+	BEGIN
+		/* Talent Report */
+		SET @sAccessTable = 'ASRSysTalentReportAccess';
+		SET @sKey = 'dfltaccess TalentReports';
+	END
+
 
 	IF LEN(@sAccessTable) > 0
 	BEGIN
@@ -50433,6 +50141,7 @@ BEGIN
 
 	/* Return a recordset of the prompted values for the given utililty. */
 	DECLARE	@iBaseFilter		integer,
+			@iBase2Filter		integer,
 			@iParent1Filter		integer,
 			@iParent2Filter		integer,
 			@iChildFilter		integer,
@@ -50498,6 +50207,58 @@ BEGIN
 			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @iBaseFilter, @sAllComponents OUTPUT;
 
 	END
+
+
+	IF @piUtilType = 14
+	BEGIN
+
+		SELECT @iBaseFilter = Table1filter, @iBase2Filter = Table2Filter
+			FROM [dbo].ASRSysMatchReportName
+			WHERE MatchReportID = @piUtilID;
+
+		IF (NOT @iBaseFilter IS NULL) AND (@iBaseFilter > 0)
+			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @iBaseFilter, @sAllComponents OUTPUT;
+
+		IF (NOT @iBase2Filter IS NULL) AND (@iBase2Filter > 0)
+			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @iBase2Filter, @sComponents OUTPUT;
+
+		IF LEN(@sComponents) > 0
+		BEGIN
+			SET @sAllComponents = @sAllComponents + 
+				CASE
+					WHEN LEN(@sAllComponents) > 0 THEN ','
+					ELSE ''
+				END + 
+				@sComponents
+		END
+
+	END
+
+	IF @piUtilType = 38
+	BEGIN
+
+		SELECT @iBaseFilter = BaseFilterID, @iBase2Filter = MatchFilterID
+			FROM [dbo].ASRSysTalentReports
+			WHERE ID = @piUtilID;
+
+		IF (NOT @iBaseFilter IS NULL) AND (@iBaseFilter > 0)
+			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @iBaseFilter, @sAllComponents OUTPUT;
+
+		IF (NOT @iBase2Filter IS NULL) AND (@iBase2Filter > 0)
+			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @iBase2Filter, @sComponents OUTPUT;
+
+		IF LEN(@sComponents) > 0
+		BEGIN
+			SET @sAllComponents = @sAllComponents + 
+				CASE
+					WHEN LEN(@sAllComponents) > 0 THEN ','
+					ELSE ''
+				END + 
+				@sComponents
+		END
+
+	END
+
 
 	IF @piUtilType = 15 OR @piUtilType = 16
 	BEGIN
