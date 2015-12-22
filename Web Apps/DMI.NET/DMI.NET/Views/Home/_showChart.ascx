@@ -35,10 +35,10 @@
 
 <div id="popout_Wrapper" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
 	<div id="popout_chartDataDiv" style="width: 90%; height: 90%; display: none"></div>
-	<div id="popout_chartImageDiv" style="width: 100%; height: 100%;" >
+	<div id="popout_chartImageDiv" style="width: 90%; height: 90%;" >
 		<img id="popout_chartImage" src="" alt="Loading chart..." />
 	</div>
-	<div id="popout_Toolbar" style="position: absolute; bottom: 0">
+	<div id="popout_Toolbar" style="position: relative; bottom: 0;">
 		<table class="aligncenter" style="border: 1px solid; background-color: #ccc">
 			<tr style='font-family: Verdana; font-size: x-small'>
 				<td>

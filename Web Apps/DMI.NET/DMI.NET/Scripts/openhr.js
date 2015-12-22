@@ -1143,26 +1143,24 @@
 		//Creates a new window, copies the specified div contents to it and sends to printer.
 		var divToPrint = document.getElementById(divID);
 		var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
-		newWin.document.write('<sty');
-		newWin.document.write('le>');
 
+		//Add doctype, head, style
+		newWin.document.write("<!DOCTYPE html>");
+		newWin.document.write('<head>');
+		newWin.document.write('<style>');
 		if (cssObj) {
 			for (var i = 0; i < cssObj.length; i++) {
 				newWin.document.write(cssObj[i].toString());
 			}
 		}
+		newWin.document.write('</style>');
+		newWin.document.write('</head>');
 
-		newWin.document.write('</sty');
-		newWin.document.write('le>');
+		//Add body with content to print
+		newWin.document.write('<body onLoad="self.print();self.close();">');
 		newWin.document.write(divToPrint.innerHTML);
-		newWin.document.write('<scri');
-		newWin.document.write('pt type="text/javascript">');
-		newWin.document.write('</scri');
-		newWin.document.write('pt>');
+		newWin.document.write('</body></html>');
 		newWin.document.close();
-		newWin.focus();
-		newWin.print();
-		newWin.close();
 	},
 	nullsafeString = function(arg) {
 		var returnvalue = "";
