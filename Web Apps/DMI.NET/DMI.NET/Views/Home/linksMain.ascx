@@ -548,10 +548,10 @@
 								End If
 
 								If navlink.InitialDisplayMode = 0 Then%>
-							<div class="widgetplaceholder chart">
+							<div class="widgetplaceholder chart" style="<%:sTileForeColourStyle%>">
 								<%If fMultiAxis Then%>
 								<div>
-									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then Response.Write("<p title=\'" & navlink.Text & "\' class=\'linkspagebuttontileIcon\'><i class=\'icon-bar-chart\'></i></p><p style=\'font-size: smaller; text-align: center\'>" & navlink.Text & "<br/><br/>(No records)</p>") Else Response.Write("No matching records")%>');" 
+									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then Response.Write("<p title=\'" & navlink.Text & "\' class=\'linkspagebuttontileIcon\'><i class=\'icon-bar-chart\'></i></p><p style=\'text-align: center\'>" & navlink.Text & "<br/><br/>(No records)</p>") Else Response.Write("No matching records")%>');" 
 											 src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.Height = Height, .Width = Width, .ShowLegend = ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID, .ShowLabels = ShowLabels})%>"
 											 alt="Chart"
 											 title="<%:navlink.Text%>"
@@ -561,7 +561,7 @@
 								</div>
 								<%Else%>
 								<div>
-									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then Response.Write("<p title=\'" & navlink.Text & "\' class=\'linkspagebuttontileIcon\'><i class=\'icon-bar-chart\'></i></p><p style=\'font-size: smaller; text-align: center\'>" & navlink.Text & "<br/><br/>(No records)</p>") Else Response.Write("No matching records")%>');"
+									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then Response.Write("<p title=\'" & navlink.Text & "\' class=\'linkspagebuttontileIcon\'><i class=\'icon-bar-chart\'></i></p><p style=\'text-align: center\'>" & navlink.Text & "<br/><br/>(No records)</p>") Else Response.Write("No matching records")%>');"
 											 src="<%:Url.Action("GetChart", "Home", New With {.Height = Height, .Width = Width, .ShowLegend = ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID, .ShowLabels = ShowLabels})%>" 
 											 alt="Chart" 
 											 title="<%:navlink.Text%>"
@@ -612,7 +612,7 @@
 										Dim popuChartCallOnclick = "onclick=" & Chr(34) & popupChartCall & Chr(34)
 										Response.Write("<p " & popuChartCallOnclick & " title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p " & popupChartCall & " style='text-align: center; margin-top: 0'>" & navlink.Text & "</p>")
 									Else
-										Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size: smaller; text-align: center; margin: 0;'>(No records)</p>")
+										Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size:smaller; text-align: center; margin: 0'>(No records)</p>")
 									End If
 								End If
 								%>
@@ -677,7 +677,7 @@
                 End If
               Else
                 If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then 'Put and icon in tile mode
-                  Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size: smaller; text-align: center'>(No records4)</p>")
+                  Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size: smaller; text-align: center'>(No records)</p>")
                 Else
 									%>
 									<tr>
@@ -768,7 +768,7 @@
 							Dim sCFFontItalic = "" + Session("Config-linkspagebuttontext-italic")
 							Dim sCFVisible = True
 		
-							Dim fFormattingApplies = True
+						    Dim fFormattingApplies = True
 									
 							Dim sErrorDescription = ""
 							Dim sPrompt = navlink.Text
@@ -1674,16 +1674,16 @@
 			},
 			resize: function () {
 				var doit;				
-					clearTimeout(doit);
-					doit = setTimeout(loadChart, 100);				
+				clearTimeout(doit);
+				doit = setTimeout(loadChart, 100);				
 			},
 			buttons: {
-					"Close": function () {
-						$(this).dialog("close");
-					}
+				"Close": function () {
+					$(this).dialog("close");
+				}
 			},
 			minHeight: 300,
 			minWidth: 300
 		});		
-	}
+		}
 </script>
