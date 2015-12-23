@@ -621,21 +621,23 @@
 	
 			%>
 
+				<%If Session("isPortalLogin") <> True Then%>
 			<div class="pageTitleDiv">
 				<%--<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>--%>
-				<%If Session("isPortalLogin") <> True Then%>
 				<a href='#'
 					title='Back'
 					onclick="GoBack()">
 					<i class='pageTitleIcon icon-circle-arrow-left'></i>
 				</a>
-				<%End If%>
 				<span style="margin-left: 40px; margin-right: 20px" class="pageTitle" id="RecordEdit_PageTitle">
 					<%
 						Response.Write(Replace(prmTitle.Value.ToString(), "_", " "))
 					%>
 				</span>
 			</div>
+			<%Else %>
+						<% Response.Write("<span style='height: 20px;margin-left: 40px; font-size: 16px;'>" & Replace(prmTitle.Value.ToString(), "_", " ") & "</span>")%>
+				<%End If%>
 
 			<div id="ctlRecordEdit" class="ui-widget-content" style="margin: 0 auto;">
 				<ul id="tabHeaders">

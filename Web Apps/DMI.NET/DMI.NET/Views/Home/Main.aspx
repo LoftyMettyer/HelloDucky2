@@ -1,158 +1,136 @@
 ﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">	
-<%=DMI.NET.svrCleanup.GetPageTitle("") %>
+<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
+	<%=DMI.NET.svrCleanup.GetPageTitle("") %>
 </asp:Content>
 
 
 <asp:Content runat="server" ID="Content1a" ContentPlaceHolderID="FixedLinksContent">
-	<div id="fixedlinksframe" style="display: none;"><%	Html.RenderPartial("~/views/home/fixedlinks.ascx")%></div>	
+	<div id="fixedlinksframe" style="display: none;"><%	Html.RenderPartial("~/views/home/fixedlinks.ascx")%></div>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-	
+
 	<script> document.querySelector("body").classList.add("loading");</script>
-	
+
 	<script type="text/javascript">
-	
-	function handleAjaxError(html) {
 
-		//handle error
-		OpenHR.messageBox(html.ErrorMessage.replace("<p>", "\n\n"), 48, html.ErrorTitle);
+		function handleAjaxError(html) {
 
-		window.location.href = "<%=Url.Action("Login", "Account")%>";
-	}
+			//handle error
+			OpenHR.messageBox(html.ErrorMessage.replace("<p>", "\n\n"), 48, html.ErrorTitle);
 
-	
-
-	$(function () {
-
-		<% 
-	Response.Write("window.LocaleDateFormat = """ & Session("LocaleDateFormat") & """;")
-		%>
-
-			var SelfServiceUserType = '<%=Session("SSIMode")%>';
-
-			if (SelfServiceUserType == 'True') {
-				$("#workframeset").css("left", "0px");
-				$("#reportframeset").css("left", "0px");
-			}
-			else {
-				// ----  Apply jQuery functionality to the slide out CONTEXT MENU  ----
-				var contextMenuTab = {
-					speed: 300,
-					//containerWidth: $('#menuframe').outerWidth() - 30,
-					containerHeight: $('.ContextMenu-panel').outerHeight(),
-					tabWidth: $('.ContextMenu-tab').outerWidth(),
-					init: function () {
-						$('.ContextMenu-tab').click(function (event) {
-							var containerWidth = $('.ContextMenu-panel').outerWidth() - 30;
-
-							if ($('#menuframe').hasClass('open')) {
-								$('#menuframe').animate({ left: '-' + containerWidth }, contextMenuTab.speed)
-									.removeClass('open');
-								$("#workframeset").css("left", "30px");
-								// $("#reportframeset").css("left", "30px");
-								$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/expand.png") %>');
-
-							} else {
-								$('#menuframe').animate({ left: '0' }, contextMenuTab.speed)
-									.addClass('open');
-								$("#workframeset").css("left", containerWidth + 30);
-								// $("#reportframeset").css("left", "350px");
-								$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/retract.png") %>');
-							}
-							
-							//resize defsel/find screen accordingly.
-							$('#findGridTable').setGridWidth($('#findGridRow').width());
-							$('#DefSelRecords').setGridWidth($('#findGridRow').width());
-
-							event.preventDefault();
-						});
-						
-					}
-				};
-				contextMenuTab.init();
-			}
-		});
-
-	$(document).ready(function() {
-
-		var sMessage = '<%: HttpUtility.JavaScriptStringEncode(Session("WarningText").ToString)%>';
-		if (sMessage != '') {
-			OpenHR.displayServerMessage("Warning", sMessage, false, true);
+			window.location.href = "<%=Url.Action("Login", "Account")%>";
 		}
 
-		$("#fixedlinksframe").show();
-		$("#FixedLinksContent").fadeIn("slow");
 
-		$(".popup").dialog({
-			overflow: false,
-			autoOpen: false,
-			modal: true,
-			height: 550,
-			width: 800
-		});
-		
-		$('#divPopupReportDefinition').dialog({
-			overflow: false,
-			autoOpen: false,
-			width: 'auto',
-			height: 'auto',
-			resizable: false,
-			modal: true,
-			title: ''
-		});
 
-		$('#divExpressionSelection').dialog({
-			overflow: false,
-			autoOpen: false,
-			width: 'auto',
-			height: 'auto',
-			resizable: true,
-			modal: true,
-			title: ''
-		});
+		$(function () {
 
-		//load menu for dmi, or linksmain for ssi
+		<% 
+		Response.Write("window.LocaleDateFormat = """ & Session("LocaleDateFormat") & """;")
+		%>
+
 		var SelfServiceUserType = '<%=Session("SSIMode")%>';
 
-	    if (SelfServiceUserType == 'True') {
+		if (SelfServiceUserType == 'True') {
+			$("#workframeset").css("left", "0px");
+			$("#reportframeset").css("left", "0px");
+		}
+		else {
+			// ----  Apply jQuery functionality to the slide out CONTEXT MENU  ----
+			var contextMenuTab = {
+				speed: 300,
+				//containerWidth: $('#menuframe').outerWidth() - 30,
+				containerHeight: $('.ContextMenu-panel').outerHeight(),
+				tabWidth: $('.ContextMenu-tab').outerWidth(),
+				init: function () {
+					$('.ContextMenu-tab').click(function (event) {
+						var containerWidth = $('.ContextMenu-panel').outerWidth() - 30;
+
+						if ($('#menuframe').hasClass('open')) {
+							$('#menuframe').animate({ left: '-' + containerWidth }, contextMenuTab.speed)
+								.removeClass('open');
+							$("#workframeset").css("left", "30px");
+							// $("#reportframeset").css("left", "30px");
+							$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/expand.png") %>');
+
+						} else {
+							$('#menuframe').animate({ left: '0' }, contextMenuTab.speed)
+								.addClass('open');
+							$("#workframeset").css("left", containerWidth + 30);
+							// $("#reportframeset").css("left", "350px");
+							$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/retract.png") %>');
+							}
+
+						//resize defsel/find screen accordingly.
+						$('#findGridTable').setGridWidth($('#findGridRow').width());
+						$('#DefSelRecords').setGridWidth($('#findGridRow').width());
+
+						event.preventDefault();
+					});
+
+				}
+			};
+				contextMenuTab.init();
+			}
+	});
+
+		$(document).ready(function () {
+
+			var sMessage = '<%: HttpUtility.JavaScriptStringEncode(Session("WarningText").ToString)%>';
+			if (sMessage != '') {
+				OpenHR.displayServerMessage("Warning", sMessage, false, true);
+			}
+
+			$("#fixedlinksframe").show();
+			$("#FixedLinksContent").fadeIn("slow");
+
+			$(".popup").dialog({
+				overflow: false,
+				autoOpen: false,
+				modal: true,
+				height: 550,
+				width: 800
+			});
+
+			$('#divPopupReportDefinition').dialog({
+				overflow: false,
+				autoOpen: false,
+				width: 'auto',
+				height: 'auto',
+				resizable: false,
+				modal: true,
+				title: ''
+			});
+
+			$('#divExpressionSelection').dialog({
+				overflow: false,
+				autoOpen: false,
+				width: 'auto',
+				height: 'auto',
+				resizable: true,
+				modal: true,
+				title: ''
+			});
+
+			//load menu for dmi, or linksmain for ssi
+			var SelfServiceUserType = '<%=Session("SSIMode")%>';
+
+		if (SelfServiceUserType == 'True') {
 
 			<%If Session("isPortalLogin") = True Then%>
 
-	        try {
-		        var decoded = "<%:Html.Raw(HttpUtility.JavaScriptStringEncode(Session("portalRedirectTo").ToString()))%>";
-		        setTimeout(decoded, 50);
-            } catch (e) {
-                window.location.href = "<%=Url.Action("Login", "Account")%>";
-				}
+			try {
+				var decoded = "<%:Html.Raw(HttpUtility.JavaScriptStringEncode(Session("portalRedirectTo").ToString()))%>";
+	    		if (decoded === "loaddashboard") loadDashboard();
+	    		else setTimeout(decoded, 50);
+	    	} catch (e) {
+	    		window.location.href = "<%=Url.Action("Login", "Account")%>";
+	    	}
 
 			<%Else%>
-			$.ajax({
-				url: 'linksMain',
-				dataType: 'html',
-				type: 'POST',
-				data: { psScreenInfo: '<%=session("SingleRecordTableID")%>!<%=session("SingleRecordViewID")%>_0', __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val() },
-				success: function(html) {
-					try {
-						var jsonResponse = $.parseJSON(html);
-						if (jsonResponse.ErrorMessage.length > 0) {
-							handleAjaxError(jsonResponse);
-							return false;
-						}
-					} catch(e) {
-					}
-
-					$("#workframe").html(html).show();
-
-					//final resize of the dashboard - for tiles, ensure width is sufficient
-					setTimeout('resizeDashboard()', 500); //site.master function.
-				},
-				error: function(req, status, errorObj) {
-
-				}
-			});
+			loadDashboard();
 			<%End If%>
 		} else {
 			$("#menuframe").fadeIn("slow");
@@ -161,31 +139,31 @@
 			$('#officebar .button').addClass('ui-state-default');
 
 			$('#officebar .button').hover(
-				function() { if (!$(this).hasClass("disabled")) $(this).addClass('ui-state-hover'); },
-				function() { if (!$(this).hasClass("disabled")) $(this).removeClass('ui-state-hover'); }
+				function () { if (!$(this).hasClass("disabled")) $(this).addClass('ui-state-hover'); },
+				function () { if (!$(this).hasClass("disabled")) $(this).removeClass('ui-state-hover'); }
 			);
 
 		}
 
 
-		$('header').show();
-		var doit;
-		var minHeight = $('#menuframe').height();
-		$('.ContextMenu-panel').resizable({
-			handles: 'e,w',
-			resize: function() {
-				clearTimeout(doit);
-				doit = setTimeout(resizedw, 100);
+			$('header').show();
+			var doit;
+			var minHeight = $('#menuframe').height();
+			$('.ContextMenu-panel').resizable({
+				handles: 'e,w',
+				resize: function () {
+					clearTimeout(doit);
+					doit = setTimeout(resizedw, 100);
+				}
+			});
+
+			if (SelfServiceUserType == 'False') {
+				var splitFunc = 'resizedw(' + getCookie('Intranet_MenuWidth') + ')';
+				setTimeout(splitFunc, 50);
 			}
-		});
-
-		if (SelfServiceUserType == 'False') {
-			var splitFunc = 'resizedw(' + getCookie('Intranet_MenuWidth') + ')';
-			setTimeout(splitFunc, 50);
-		}
 
 
-		menu_setVisibleMenuItem('mnutoolFixedWorkflowOutOfOffice', "<%:ViewData("showOutOfOffice")%>");
+			menu_setVisibleMenuItem('mnutoolFixedWorkflowOutOfOffice', "<%:ViewData("showOutOfOffice")%>");
 
 		if (menu_isSSIMode() === false) {
 			//display welcome message
@@ -193,53 +171,82 @@
 		}
 
 
-	});
-	
-		function goScreen(psScreenInfo) {
+		});
 
-			//check to see if we're completing a drag event
-			loadPartialView("recordEditMain", "home", "workframe", psScreenInfo);
-		}
+	function loadDashboard() {
 
-		function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
-
-			if (sUtilityType === utilityType.Workflow) {
-
-					// Workflow
-					var postData = {
-						ID: sUtilityID,
-						Name: sUtilityName,
-						__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		$.ajax({
+			url: 'linksMain',
+			dataType: 'html',
+			type: 'POST',
+			data: { psScreenInfo: '<%=session("SingleRecordTableID")%>!<%=session("SingleRecordViewID")%>_0', __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val() },
+			success: function (html) {
+				try {
+					var jsonResponse = $.parseJSON(html);
+					if (jsonResponse.ErrorMessage.length > 0) {
+						handleAjaxError(jsonResponse);
+						return false;
 					}
-
-					OpenHR.submitForm(null, "divWorkflow", null, postData, "util_run_workflow");
-
-				} else {
-
-					//Not a workflow!
-					$('#SSILinksFrame').fadeOut();
-					$('#SSILinksFrame').promise().done(function () {
-
-						var postData = {
-							UtilType: sUtilityType,
-							ID: sUtilityID,
-							Name: sUtilityName,
-							__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
-						};
-						OpenHR.submitForm(null, "workframe", null, postData, "util_run_promptedValues");
-
-						$('#workframe').fadeIn();
-					});
+				} catch (e) {
 				}
-		}
 
-	function resizedw(splitPos) {		
+				$("#workframe").html(html).show();
+
+				//final resize of the dashboard - for tiles, ensure width is sufficient
+				setTimeout('resizeDashboard()', 500); //site.master function.
+			},
+			error: function (req, status, errorObj) {
+
+			}
+		});
+
+	}
+
+	function goScreen(psScreenInfo) {
+
+		//check to see if we're completing a drag event
+		loadPartialView("recordEditMain", "home", "workframe", psScreenInfo);
+	}
+
+	function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
+
+		if (sUtilityType === utilityType.Workflow) {
+
+			// Workflow
+			var postData = {
+				ID: sUtilityID,
+				Name: sUtilityName,
+				__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+			}
+
+			OpenHR.submitForm(null, "divWorkflow", null, postData, "util_run_workflow");
+
+		} else {
+
+			//Not a workflow!
+			$('#SSILinksFrame').fadeOut();
+			$('#SSILinksFrame').promise().done(function () {
+
+				var postData = {
+					UtilType: sUtilityType,
+					ID: sUtilityID,
+					Name: sUtilityName,
+					__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+				};
+				OpenHR.submitForm(null, "workframe", null, postData, "util_run_promptedValues");
+
+				$('#workframe').fadeIn();
+			});
+		}
+	}
+
+	function resizedw(splitPos) {
 		if (!(Number(splitPos) > 0)) {
 			splitPos = $('.ContextMenu-panel').width();
 		} else {
 			$('#menuframe').width(splitPos);
 		}
-		
+
 		$("#workframeset").css("left", splitPos);
 
 		//resize defsel/find screen accordingly.
@@ -251,11 +258,11 @@
 	}
 
 
-    </script>
+	</script>
 
 
 
-<%session("utilid")="" %>
+	<%session("utilid") = "" %>
 
 	<div id="menuframe" class="open" style="display: none;">
 		<div class="ContextMenu-panel">
@@ -270,7 +277,7 @@
 	</div>
 
 	<div id="mainframeset">
-	
+
 		<div id="workframeset" style="display: block;" class="ui-widget ui-widget-content">
 
 			<form action="WorkAreaRefresh" method="post" id="frmWorkAreaRefresh" name="frmWorkAreaRefresh">
@@ -291,7 +298,7 @@
 				<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
 				<%=Html.AntiForgeryToken()%>
 			</form>
-		
+
 			<div id="dataframe" data-framesource="data.asp" style="display: none"><%Html.RenderPartial("~/views/home/data.ascx")%></div>
 			<div id="optiondataframe" data-framesource="optionData.asp" style="display: none"><%Html.RenderPartial("~/views/home/optiondata.ascx")%></div>
 		</div>
@@ -301,13 +308,13 @@
 		</div>
 
 	</div>
-	
+
 	<div id="globals">
-		<input type="hidden" id="ValidFileExtensions" value="<%:Session("ValidFileExtensions")%>"/>
+		<input type="hidden" id="ValidFileExtensions" value="<%:Session("ValidFileExtensions")%>" />
 	</div>
 
-	<%Session("LoggingIn") = False%>	
-	
+	<%Session("LoggingIn") = False%>
+
 	<div class="ui-state-error ui-corner-bottom" id="sessionWarning">
 		<p style="font-size: small;">Your session will time-out in </p>
 		<p id="timerText"></p>
