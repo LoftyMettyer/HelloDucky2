@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DMI.NET", "DMI.NET\DMI.NET.vbproj", "{52FBD57B-87C8-40D3-A5DA-6A6174F4A871}"
 EndProject
@@ -16,30 +16,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayPilot", "..\..\Components\DayPilot\DayPilot.csproj", "{5D7983A4-CCFF-46F6-920F-F184A031D7E1}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = DMI.NET\\DMI.NET.vbproj
-		SccProjectName1 = DMI.NET
-		SccLocalPath1 = DMI.NET
-		SccProjectUniqueName2 = ..\\..\\Components\\COAInt_Server\\COAInt_Server.vbproj
-		SccProjectName2 = ../../Components/COAInt_Server
-		SccLocalPath2 = ..\\..\\Components\\COAInt_Server
-		SccProjectUniqueName3 = ..\\..\\Database\\OpenHR\u0020Database\\OpenHR\u0020Database.sqlproj
-		SccProjectName3 = ../../Database/OpenHR\u0020Database
-		SccLocalPath3 = ..\\..\\Database\\OpenHR\u0020Database
-		SccProjectUniqueName4 = OpenHR\u0020Installer\\OpenHR\u0020Installer.wixproj
-		SccProjectName4 = OpenHR\u0020Installer
-		SccLocalPath4 = OpenHR\u0020Installer
-		SccProjectUniqueName5 = OpenHR\u0020Wix\u0020Extensions\\OpenHR\u0020Wix\u0020Extensions.vbproj
-		SccProjectName5 = OpenHR\u0020Wix\u0020Extensions
-		SccLocalPath5 = OpenHR\u0020Wix\u0020Extensions
-		SccProjectUniqueName6 = ..\\..\\Components\\DayPilot\\DayPilot.csproj
-		SccProjectName6 = ../../Components/DayPilot
-		SccLocalPath6 = ..\\..\\Components\\DayPilot
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -96,5 +72,29 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 7
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = DMI.NET\\DMI.NET.vbproj
+		SccProjectName1 = DMI.NET
+		SccLocalPath1 = DMI.NET
+		SccProjectUniqueName2 = ..\\..\\Components\\COAInt_Server\\COAInt_Server.vbproj
+		SccProjectName2 = ../../Components/COAInt_Server
+		SccLocalPath2 = ..\\..\\Components\\COAInt_Server
+		SccProjectUniqueName3 = ..\\..\\Database\\OpenHR\u0020Database\\OpenHR\u0020Database.sqlproj
+		SccProjectName3 = ../../Database/OpenHR\u0020Database
+		SccLocalPath3 = ..\\..\\Database\\OpenHR\u0020Database
+		SccProjectUniqueName4 = OpenHR\u0020Installer\\OpenHR\u0020Installer.wixproj
+		SccProjectName4 = OpenHR\u0020Installer
+		SccLocalPath4 = OpenHR\u0020Installer
+		SccProjectUniqueName5 = OpenHR\u0020Wix\u0020Extensions\\OpenHR\u0020Wix\u0020Extensions.vbproj
+		SccProjectName5 = OpenHR\u0020Wix\u0020Extensions
+		SccLocalPath5 = OpenHR\u0020Wix\u0020Extensions
+		SccProjectUniqueName6 = ..\\..\\Components\\DayPilot\\DayPilot.csproj
+		SccProjectName6 = ../../Components/DayPilot
+		SccLocalPath6 = ..\\..\\Components\\DayPilot
 	EndGlobalSection
 EndGlobal
