@@ -548,7 +548,7 @@
 								End If
 
 								If navlink.InitialDisplayMode = 0 Then%>
-							<div class="widgetplaceholder chart" style="<%:sTileForeColourStyle%>">
+							<div class="widgetplaceholder chart linkspagebuttontext-font" style="<%:sTileForeColourStyle%>" >
 								<%If fMultiAxis Then%>
 								<div>
 									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then Response.Write("<p title=\'" & navlink.Text & "\' class=\'linkspagebuttontileIcon\'><i class=\'icon-bar-chart\'></i></p><p style=\'text-align: center\'>" & navlink.Text & "<br/><br/>(No records)</p>") Else Response.Write("No matching records")%>');" 
