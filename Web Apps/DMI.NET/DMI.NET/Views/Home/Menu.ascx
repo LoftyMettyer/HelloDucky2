@@ -433,7 +433,7 @@
 </div>
 <div class="ui-dialog-titlebar ui-widget-header" style="min-width:300px; font-size: 14pt; font-weight: normal; padding: 2px;">
 	<div style="width:300px;">
-		Search : <input id="menuSearch" style="font-size: small;" type="text" />
+		Search : <input id="menuSearch" style="font-size: small;width:50%" type="text" />
 		<img id="ReportsAndMailMergeSearch" class="searchBoxIcons ui-corner-all" src="<%: Url.Content("~/Scripts/officebar/winkit/Document Find-WF.png")%>" title="Run Report/Mail Merge" />
 		<img id="MenuItemSearch" class="searchBoxIcons ui-corner-all" src="<%: Url.Content("~/Scripts/officebar/winkit/Data-Find.png")%>" title="Menu" />
 	</div>
