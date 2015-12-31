@@ -8,6 +8,8 @@ Imports HR.Intranet.Server.Expressions
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.ReportOutput
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Structures
+Imports System.Linq
 
 Public Class MatchReportRun
   	Inherits BaseReport
@@ -35,14 +37,22 @@ Public Class MatchReportRun
   Private gsPersonnelEmployeeNumberColumnName as string
   Private gsPersonnelManagerStaffNoColumnName as string
 
-  private gblnReportPackMode as Boolean = False
 
   'LOFTY END HACK
+
+  ' Talent Report settings
+  Public Property Table1ColumnID As Integer
+  Public Property Table2ColumnID As Integer
+  Public Property Table1ChildTableID As Integer
+  Public Property Table2ChildTableID As Integer
+  
+
+  public Property UtilityType as UtilityType
 
 	Private mblnUserCancelled As Boolean
 	Private mstrTempTableName As String
 	
-	Private mcolColDetails As Collection
+	Private mcolColDetails As Collection(of DisplayColumn)
 	Private mcolRelations As Collection
   Private frmBreakDown As frmMatchRunBreakDown
 	Private mlngTableViews(,) As Integer
@@ -57,7 +67,6 @@ Public Class MatchReportRun
 	Private mlngMatchReportID As Integer
 	Private mlngMatchReportType As MatchReportType
 	Private mstrRecordSelectionName As String
-	Private mstrDescription As String
 	Private mlngNumRecords As Integer
 	Private mblnEqualGrade As Boolean
 	Private mblnReportingStructure As Boolean
@@ -70,7 +79,8 @@ Public Class MatchReportRun
 	Private mstrTable1Name As String
 	Private mstrTable1RealSource As String
 	Private mlngTable1RecDescExprID As Integer
-	Private mlngTable1AllRecords As Integer
+
+
 	Private mlngTable1PickListID As Integer
 	Private mlngTable1FilterID As Integer
 	Private mstrTable1Where As String
@@ -78,8 +88,6 @@ Public Class MatchReportRun
 	Private mlngTable2ID As Integer
 	Private mstrTable2Name As String
 	Private mstrTable2RealSource As String
-	Private mlngTable2RecDescExprID As Integer
-	Private mlngTable2AllRecords As Integer
 	Private mlngTable2PickListID As Integer
 	Private mlngTable2FilterID As Integer
 	Private mstrTable2Where As String
@@ -88,16 +96,14 @@ Public Class MatchReportRun
 	Private mstrSQLWhere As String
 	Private mstrSQLGroupBy As String
 	Private mstrSQLOrderBy As String
-	Private mstrSQLMatchScore As String
 	
 	Private mcolSQLSelect As Collection
 	Private mcolSQLJoin As Collection
 	Private mcolSQLWhere As Collection
 	Private mcolSQLOrderBy As Collection
 	Private mcolSQLMatchScore As Collection
-	'Private mcolSQLOrderBy As Collection
 	
-	Private mblnPreviewOnScreen As Boolean
+	Private mblnPreviewOnScreen As Boolean = True
 	
 	'New Default Output Variables
 	Private mlngOutputFormat As Integer
@@ -111,16 +117,7 @@ Public Class MatchReportRun
 	Private mlngOutputEmailAddr As Integer
 	Private mstrOutputEmailSubject As String
 	Private mstrOutputEmailAttachAs As String
-	'Private mlngOutputEmailFileFormat As Long ' May need in future
 	Private mstrOutputFileName As String
-	Private mblnChkPicklistFilter As Boolean 'might not need
-	Private mstrOutputTitlePage As String
-	Private mstrOutputReportPackTitle As String
-	Private mstrOutputOverrideFilter As String
-	Private mblnOutputTOC As Boolean
-	Private mlngOverrideFilterID As Integer
-	Private mblnOutputRetainPivotOrChart As Boolean
-	'Private mblnOutputRetainCharts As Boolean
 	
 	' Array holding the User Defined functions that are needed for this report
 	Private mastrUDFsRequired() As String
@@ -163,8 +160,7 @@ Public Class MatchReportRun
 		End Get
 	End Property
 	
-	Public Function RunMatchReport(optional plngTableID As Integer = 0, Optional plngRecordID As Integer = 0) As List(Of String)
-		Dim strUtilityName As String
+	Public Sub RunMatchReport(optional plngTableID As Integer = 0, Optional plngRecordID As Integer = 0)
 		
     Try
 
@@ -175,28 +171,34 @@ Public Class MatchReportRun
 		  End If
 		
 		  If fOK Then fOK = GetMatchReportDefinition
-		
-		  strUtilityName = "Match Report"
-		
-		  Select Case mlngMatchReportType
-			  Case MatchReportType.mrtNormal
-				  Logs.AddHeader(EventLog_Type.eltMatchReport, Name)
-			  Case MatchReportType.mrtSucession
-				  Logs.AddHeader(EventLog_Type.eltSuccessionPlanning, Name)
-				  strUtilityName = "Succession Planning Report"
-			  Case MatchReportType.mrtCareer
-				  Logs.AddHeader(EventLog_Type.eltCareerProgression, Name)
-				  strUtilityName = "Career Progression Report"
-		  End Select
-		
+			
+      If UtilityType = UtilityType.TalentReport Then
+        Logs.AddHeader(EventLog_Type.eltTalentReport, Name)
+      Else 
+
+		    Select Case mlngMatchReportType
+			    Case MatchReportType.mrtNormal
+				    Logs.AddHeader(EventLog_Type.eltMatchReport, Name)
+			    Case MatchReportType.mrtSucession
+				    Logs.AddHeader(EventLog_Type.eltSuccessionPlanning, Name)
+			    Case MatchReportType.mrtCareer
+				    Logs.AddHeader(EventLog_Type.eltCareerProgression, Name)
+		    End Select
+      End If
+      		
 		  If fOK Then fOK = GetDetailsRecordsets
 		  If fOK Then fOK = GetRelationRecordsets
 		  If fOK Then fOK = CheckModuleSetupPermissions
 		  If fOK Then fOK = GetDataRecordset(plngTableID, plngRecordID)
 
-      ReportDataTable.Columns.Add("talentchart", GetType(String))
-      DisplayColumns.Add(New DisplayColumn() With {.Name = "talentchart"})
-		
+      If UtilityType.TalentReport Then
+        ReportDataTable.Columns.Add("matchscore", GetType(String))
+        DisplayColumns.Add(New DisplayColumn() With {.Name = "matchscore"})
+
+        ReportDataTable.Columns.Add("talentchart", GetType(String))
+        DisplayColumns.Add(New DisplayColumn() With {.Name = "talentchart"})
+		  End If
+
 		  'UPGRADE_WARNING: Couldn't resolve default property of object InitialiseFormBreakdown. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		  If fOK Then fOK = InitialiseFormBreakdown
       If fOK Then fOK = PopulateGridMain
@@ -231,31 +233,29 @@ Public Class MatchReportRun
 			  mstrErrorMessage = "Failed." & vbCrLf & vbCrLf & mstrErrorMessage
 		  End If
 
-		  Return Data
 
 	  Catch ex As Exception
         fOK = False
         mstrErrorMessage = "Error whilst running this definition." & vbCrLf & ex.Message
-        Return Nothing
 
     End Try
 		
-	End Function
+	End Sub
 	
 	Private Function GetDetailsRecordsets() As Boolean
 				
 		Dim objColumn As DisplayColumn
 		Dim rsMatchReportsDetails As DataTable
 		Dim strTempSQL As String
-		Dim intTemp As Short
+		Dim intTemp As Integer
 		
 		Try
 
-		  strTempSQL = "SELECT ASRSysMatchReportDetails.*, " & "       ASRSysTables.TableID, ASRSysTables.TableName," & "       ASRSysColumns.ColumnName, ASRSysColumns.DataType " & "FROM ASRSysMatchReportDetails " & "LEFT OUTER JOIN   ASRSysColumns on ASRSysMatchReportDetails.colexprid = ASRSysColumns.columnid" & "                  and ASRSysMatchReportDetails.ColType = 'C' " & "LEFT OUTER JOIN   ASRSysTables on ASRSysColumns.TableID = ASRSysTables.TableID " & "WHERE  MatchReportID = " & CStr(mlngMatchReportID) & " " & "ORDER BY [ColSequence]"
+      Dim STablePrefix = If(UtilityType = UtilityType.TalentReport, "Talent", "Match")
+      strTempSQL = string.Format("SELECT * FROM ASRSys{0}ReportDetails WHERE {0}ReportID = {1} ORDER BY [ColSequence]", STablePrefix, mlngMatchReportID)	
+		  rsMatchReportsDetails = DB.GetDataTable(strTempSQL)
 		
-		  rsMatchReportsDetails = General.GetReadOnlyRecords(strTempSQL)
-		
-		  mcolColDetails = New Collection
+		  mcolColDetails = New Collection(Of DisplayColumn)
 		
 		  objColumn = New DisplayColumn
 		  objColumn.ColType = "C"
@@ -264,7 +264,7 @@ Public Class MatchReportRun
 		  objColumn.Name = "ID"
 		  objColumn.Hidden = True
 		  objColumn.Heading = "ID1"
-		  mcolColDetails.Add(objColumn, "ID1")
+		  mcolColDetails.Add(objColumn)
 		
 		  If mlngTable2ID > 0 Then
 			  objColumn = New DisplayColumn
@@ -274,16 +274,15 @@ Public Class MatchReportRun
 			  objColumn.Name = "ID"
 			  objColumn.Hidden = True
 			  objColumn.Heading = "ID2"
-			  mcolColDetails.Add(objColumn, "ID2")
+			  mcolColDetails.Add(objColumn)
 		  End If
 	
 		
 		  Dim objExpr As clsExprExpression
 		  With rsMatchReportsDetails
 			  If .Rows.Count = 0 Then
-				  GetDetailsRecordsets = False
 				  mstrErrorMessage = "No columns found in the specified definition." & vbCrLf & "Please remove this definition and create a new one."
-				  Exit Function
+				  Return False
 			  End If
 			
 			  intTemp = 0
@@ -295,22 +294,26 @@ Public Class MatchReportRun
 				  objColumn = New DisplayColumn
 
 				  objColumn.ColType = objRow("ColType").ToString
-				  objColumn.ID = objRow("ColExprID")
-				  objColumn.Size = objRow("ColSize")
-				  objColumn.Decimals = objRow("ColDecs")
+				  objColumn.ID = CInt(objRow("ColExprID"))
+				  objColumn.Size = CInt(objRow("ColSize"))
+				  objColumn.Decimals = CInt(objRow("ColDecs"))
 				  objColumn.Heading = objRow("ColHeading").ToString()
-				  objColumn.Sequence = objRow("ColSequence").ToString()
-				  objColumn.SortSeq = objRow("SortOrderSeq").ToString()
+				  objColumn.Sequence = CInt(IIf(IsDBNull(objRow("ColSequence")), 0, objRow("ColSequence")))
+				  objColumn.SortSeq = CInt(objRow("SortOrderSeq"))
 				  objColumn.SortDir = objRow("SortOrderDirection").ToString()
 				  objColumn.Use1000Separator = DoesColumnUseSeparators(CInt(objRow("ColExprID")))
 				
 				  If objColumn.ColType = "C" Then
-					  objColumn.TableID = CInt(objRow("TableID"))
-					  objColumn.TableName = objRow("TableName").ToString()
-					  objColumn.Name = objRow("ColumnName").ToString()
-					  objColumn.DataType = CInt(objRow("DataType"))
+
+            dim baseColumn = Columns.GetById(objColumn.ID)
+            dim baseTable = Tables.GetById(baseColumn.TableID)
+
+					  objColumn.TableID = baseTable.ID
+					  objColumn.TableName = baseTable.Name
+					  objColumn.Name = baseColumn.Name
+					  objColumn.DataType = baseColumn.DataType
 					
-					  Select Case CInt(objRow("DataType"))
+					  Select Case baseColumn.DataType
 						  Case ColumnDataType.sqlNumeric, ColumnDataType.sqlInteger
 							
 							  If objColumn.Decimals > 0 Then
@@ -334,7 +337,7 @@ Public Class MatchReportRun
 					  End Select
 					
 				  Else
-					  'MH20010307
+
 					  objExpr = New clsExprExpression(SessionInfo)
 					
 					  objExpr.ExpressionID = CInt(objRow("ColExprID"))
@@ -342,7 +345,7 @@ Public Class MatchReportRun
 					
 					  'JPD 20031212 Pass optional parameter to avoid creating the expression SQL code
 					  ' when all we need is the expression return type (time saving measure).
-					  objExpr.ValidateExpression(True) 'MH20010508
+					  objExpr.ValidateExpression(True)
 					
 					  objColumn.TableID = objExpr.BaseTableID
 					  objColumn.TableName = objExpr.BaseTableName
@@ -374,9 +377,8 @@ Public Class MatchReportRun
 					  objExpr = Nothing
 					
 				  End If
-				
-				  mcolColDetails.Add(objColumn, objColumn.ColType & CStr(objColumn.ID))
-				
+				  
+				  mcolColDetails.Add(objColumn)			
 
 			  Next 
 
@@ -396,22 +398,30 @@ Public Class MatchReportRun
 			
 		Dim objRelation As clsMatchRelation
 		Dim objColumn As DisplayColumn
-		Dim objBreakdownCols As Collection
+		Dim objBreakdownCols As Collection(Of DisplayColumn)
 		Dim rsMatchReportsDetails As DataTable
 		Dim rsMatchBreakdownColumns As DataTable
 		Dim strTempSQL As String
 				
     Try
 
-		strTempSQL = "SELECT ASRSysMatchReportTables.*," & "       a.TableName as Table1Name, b.TableName as Table2Name " & "FROM   ASRSysMatchReportTables " & "JOIN   ASRSysTables a on ASRSysMatchReportTables.Table1ID = a.TableID " & "LEFT OUTER JOIN   ASRSysTables b on ASRSysMatchReportTables.Table2ID = b.TableID " & "WHERE  MatchReportID = " & CStr(mlngMatchReportID) & "ORDER BY ASRSysMatchReportTables.MatchRelationID"
+      If UtilityType = UtilityType.TalentReport Then
+        strTempSQL = String.Format("SELECT BaseChildTableID AS Table1ID, MatchChildTableID AS Table2ID, " & _
+		      "0 AS RequiredExprID, 0 AS PreferredExprID, 0 AS MatchScoreExprID FROM ASRSysTalentReports WHERE ID = {0}", mlngMatchReportID)
+      Else 
+		    strTempSQL = "SELECT ASRSysMatchReportTables.*, a.TableName as Table1Name, b.TableName as Table2Name " & _
+            "FROM ASRSysMatchReportTables JOIN ASRSysTables a on ASRSysMatchReportTables.Table1ID = a.TableID " & _
+            "LEFT OUTER JOIN ASRSysTables b on ASRSysMatchReportTables.Table2ID = b.TableID WHERE MatchReportID = " & _
+            mlngMatchReportID & " ORDER BY ASRSysMatchReportTables.MatchRelationID"
+      End If
 		
-		rsMatchReportsDetails = General.GetReadOnlyRecords(strTempSQL)
+		rsMatchReportsDetails = DB.GetDataTable(strTempSQL)
 		If rsMatchReportsDetails.Rows.Count = 0 Then
 			mstrErrorMessage = "Cannot load the table relation information for this definition."
 			Return False
 		End If
-			
-		mcolRelations = New Collection()
+
+    mcolRelations = New Collection()
 		ReDim mlngTableViews(2, 0)
 		
 		With rsMatchReportsDetails
@@ -420,78 +430,96 @@ Public Class MatchReportRun
 				objRelation = New clsMatchRelation
 				
 				objRelation.Table1ID = CInt(objRow("Table1ID"))
-				objRelation.Table1Name = objRow("Table1Name").ToString()
+				objRelation.Table1Name = Tables.GetById(objRelation.Table1ID).Name
 							
-				If Not TablePermission( CInt(objRow("Table1ID"))) Then
-					mstrErrorMessage = "You do not have permission to read the '" & objRow("Table1Name").ToString() & "' table either directly or through any views."
-					GetRelationRecordsets = False
-					Exit Function
+				If Not TablePermission(objRelation.Table1ID) Then
+					mstrErrorMessage = "You do not have permission to read the '" & objRelation.Table1Name & "' table either directly or through any views."
+					Return False
 				End If
-				
-				If  CInt(objRow("Table2ID")) > 0 Then
-					If Not TablePermission( CInt(objRow("Table2ID"))) Then
-						mstrErrorMessage = "You do not have permission to read the '" & objRow("Table2Name").ToString() & "' table either directly or through any views."
-						GetRelationRecordsets = False
-						Exit Function
+
+				objRelation.Table2ID = CInt(objRow("Table2ID"))
+				If objRelation.Table2ID > 0 Then
+          objRelation.Table2Name = Tables.GetById(objRelation.Table2ID).Name
+
+					If Not TablePermission(objRelation.Table2ID) Then
+						mstrErrorMessage = "You do not have permission to read the '" & objRelation.Table2Name & "' table either directly or through any views."
+						Return False
 					End If
 				End If
-				
-				
+								
 				objRelation.Table1RealSource = gcoTablePrivileges.Item((objRelation.Table1Name)).RealSource
-				AddToJoinArray(0, CInt(objRow("Table1ID")))
-				
-				objRelation.Table2ID =  CInt(objRow("Table2ID"))
+				AddToJoinArray(0, objRelation.Table1ID)			
+
 				If objRelation.Table2ID > 0 Then
-					objRelation.Table2Name = objRow("Table2Name").ToString()
-					objRelation.Table2RealSource = gcoTablePrivileges.Item((objRelation.Table2Name)).RealSource
-					AddToJoinArray(0,  CInt(objRow("Table2ID")))
+					objRelation.Table2RealSource = gcoTablePrivileges.Item(objRelation.Table2Name).RealSource
+					AddToJoinArray(0, objRelation.Table2ID)
 				End If
 				
-				objRelation.RequiredExprID =  CInt(objRow("RequiredExprID"))
-				objRelation.PreferredExprID =  CInt(objRow("PreferredExprID"))
-				objRelation.MatchScoreID =  CInt(objRow("MatchScoreExprID"))
-											
-				strTempSQL = "SELECT   ASRSysMatchReportBreakdown.*, " & "         ASRSysTables.TableID, ASRSysTables.TableName, " & "         ASRSysColumns.ColumnName, ASRSysColumns.DataType " & "FROM     ASRSysMatchReportBreakdown " & "JOIN     ASRSysMatchReportTables " & "ON       ASRSysMatchReportBreakdown.MatchRelationID = ASRSysMatchReportTables.MatchRelationID " & "LEFT OUTER JOIN ASRSysColumns " & "ON       ASRSysMatchReportBreakdown.ColExprID = ASRSysColumns.ColumnID AND ASRSysMatchReportBreakdown.ColType = 'C' " & "LEFT OUTER JOIN ASRSysTables " & "ON       ASRSysColumns.TableID = ASRSysTables.TableID " & "WHERE    ASRSysMatchReportBreakdown.MatchReportID = " & CStr(mlngMatchReportID) & " " & "AND      ASRSysMatchReportTables.Table1ID = " & CStr(objRelation.Table1ID) & " " & "ORDER BY ColSequence"			
-				rsMatchBreakdownColumns = General.GetReadOnlyRecords(strTempSQL)
+				objRelation.RequiredExprID =  objRow("RequiredExprID")
+				objRelation.PreferredExprID =  objRow("PreferredExprID")
+				objRelation.MatchScoreID =  objRow("MatchScoreExprID")
+	
+        If UtilityType = UtilityType.TalentReport Then
+            strTempSQL = string.Format("SELECT ID, 'C' AS ColType, t.MatchChildRatingColumnID AS ColExprID, 3 AS [ColSize], 0 AS [ColDecs], 4 AS [ColSequence], 'ActualScore' AS ColHeading FROM ASRSysTalentReports t WHERE ID = {0}" & _
+               " UNION" & _
+               " SELECT ID, 'C' AS ColType, t.BaseMinimumRatingColumnID AS ColExprID, 3 AS [ColSize], 0 AS [ColDecs], 2 AS [ColSequence], 'MinScore' AS ColHeading FROM ASRSysTalentReports t WHERE ID = {0}" & _
+               " UNION" & _
+               " SELECT ID, 'C' AS ColType, t.BasePreferredRatingColumnID AS ColExprID, 3 AS [ColSize], 0 AS [ColDecs], 3 AS [ColSequence], 'PrefScore' AS ColHeading FROM ASRSysTalentReports t WHERE ID = {0}" & _
+               " UNION" & _
+               " SELECT ID, 'C' AS ColType, t.BaseChildColumnID AS ColExprID, 3 AS [ColSize], 0 AS [ColDecs], 1 AS [ColSequence], 'Competency' AS ColHeading FROM ASRSysTalentReports t WHERE ID = {0}" _
+               , mlngMatchReportID)
+
+        Else     
+			    strTempSQL = "SELECT   ASRSysMatchReportBreakdown.*" & _
+              "FROM     ASRSysMatchReportBreakdown JOIN ASRSysMatchReportTables ON ASRSysMatchReportBreakdown.MatchRelationID = ASRSysMatchReportTables.MatchRelationID " & _
+              "LEFT OUTER JOIN ASRSysColumns ON ASRSysMatchReportBreakdown.ColExprID = ASRSysColumns.ColumnID And ASRSysMatchReportBreakdown.ColType = 'C' " & _
+              "LEFT OUTER JOIN ASRSysTables ON ASRSysColumns.TableID = ASRSysTables.TableID WHERE ASRSysMatchReportBreakdown.MatchReportID = " & _
+              mlngMatchReportID & " AND ASRSysMatchReportTables.Table1ID = " & objRelation.Table1ID & " ORDER BY ColSequence"	
+        End If
+
+	
+				rsMatchBreakdownColumns = DB.GetDataTable(strTempSQL)
 				
-				objBreakdownCols = New Collection
+				objBreakdownCols = New Collection(Of DisplayColumn)
 				
 				With rsMatchBreakdownColumns
 					for each objBreakdownRow as DataRow In .Rows
 						objColumn = New DisplayColumn
-						
+					
 						objColumn.ColType = objBreakdownRow("ColType").ToString()
 						objColumn.ID = cint(objBreakdownRow("ColExprID"))
-						objColumn.Size = cint(objBreakdownRow("ColSize"))
-						objColumn.Decimals = cint(objBreakdownRow("ColDecs"))
+
+            Dim actualColumn = Columns.GetById(objColumn.ID)
+
+						objColumn.Size = actualColumn.Size
+						objColumn.Decimals = actualColumn.Decimals
 						objColumn.Heading = objBreakdownRow("ColHeading").ToString()
-						'objcolumn.Sequence = !ColSequence
-						'objColumn.SortSeq = !SortOrderSeq
-						'objColumn.SortDir = !SortOrderDirection
-						objColumn.Use1000Separator = DoesColumnUseSeparators(cint(objBreakdownRow("ColExprID")))
+						objColumn.Use1000Separator = actualColumn.Use1000Separator
 						
 						If objColumn.ColType = "C" Then
-							objColumn.DataType = cint(objBreakdownRow("DataType"))
-							objColumn.TableID = cint(objBreakdownRow("TableID"))
-							objColumn.TableName = objBreakdownRow("TableName").ToString()
-							objColumn.Name = objBreakdownRow("ColumnName").ToString()
+							objColumn.DataType = actualColumn.DataType
+							objColumn.TableID = actualColumn.TableID
+							objColumn.TableName = Tables.GetById(actualColumn.TableID).Name
+							objColumn.Name = actualColumn.Name
 						Else
 							objColumn.DataType = ColumnDataType.sqlNumeric
 						End If
 						
-						objBreakdownCols.Add(objColumn, objColumn.ColType & CStr(objColumn.ID))
+						objBreakdownCols.Add(objColumn)
 						
 					next 
 				End With
-				
-				objRelation.BreakdownColumns = objBreakdownCols
+
+
+        objRelation.BreakdownColumns = objBreakdownCols
 				mcolRelations.Add(objRelation, "T" & CStr(objRelation.Table1ID))
 				
 				'UPGRADE_NOTE: Object objBreakdownCols may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				objBreakdownCols = Nothing
 				'UPGRADE_NOTE: Object objRelation may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				objRelation = Nothing
-			
+
+
 			Next 
 		End With
 
@@ -638,7 +666,6 @@ Public Class MatchReportRun
 		
 		objRelation = mcolRelations.Item("T" & CStr(lngTableID))
 			
-		'MH20030909
 		'UPGRADE_WARNING: Couldn't resolve default property of object mcolSQLSelect(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		sBreakdownSQL = "SELECT " & mcolSQLSelect.Item("T" & CStr(lngTableID)) & vbCrLf & "FROM " & objRelation.Table1RealSource & vbCrLf
 		
@@ -673,36 +700,23 @@ Public Class MatchReportRun
 	
 	Private Function GenerateSQLMatchScore() As Boolean
 		
-		Dim objColumn As Column
-		Dim mobjColumnPrivileges As CColumnPrivileges
-		Dim mobjTableView As TablePrivilege
 		Dim objRelation As clsMatchRelation
 		
 		Dim blnOK As Boolean
-		Dim pblnColumnOK As Boolean
 		Dim iLoop1 As Short
-		Dim pblnNoSelect As Boolean
-		Dim pblnFound As Boolean
-		Dim lngScoreExpr As Integer
 		Dim strOutput As String
 		
-		Dim pintLoop As Short
 		Dim pstrColumnCode As String
 		Dim pstrColumnCount As String
-		Dim pstrSource As String
-		Dim pintNextIndex As Short
 		Dim strRealSource1 As String
 		Dim strRealSource2 As String
 		
 		Dim sFilterCode As String
 		Dim sCalcCode As String
 		Dim objCalcExpr As clsExprExpression
-		Dim lngCount As Integer
-		
-		
+			
 		pstrColumnCode = vbNullString
 		pstrColumnCount = vbNullString
-		lngCount = 0
 		mcolSQLMatchScore = New Collection
 		
 		For	Each objRelation In mcolRelations
@@ -712,12 +726,9 @@ Public Class MatchReportRun
 			If objRelation.MatchScoreID > 0 Then
 				
 				objCalcExpr = New clsExprExpression(SessionInfo)
-
 				
 				blnOK = objCalcExpr.Initialise(objRelation.Table1ID, (objRelation.MatchScoreID), ExpressionTypes.giEXPR_MATCHSCOREEXPRESSION, ExpressionValueTypes.giEXPRVALUE_LOGIC, objRelation.Table2ID)
         blnOK = objCalcExpr.Initialise(objRelation.Table1ID, objRelation.MatchScoreID, ExpressionTypes.giEXPR_MATCHSCOREEXPRESSION, ExpressionValueTypes.giEXPRVALUE_LOGIC)
-
-
 
         If blnOK Then
 					blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sCalcCode, mastrUDFsRequired, True, False, mvarPrompts)
@@ -760,18 +771,12 @@ Public Class MatchReportRun
 			End If
 			
 			If sCalcCode <> vbNullString Then
-				
-				objCalcExpr = New clsExprExpression(SessionInfo)
-				
-				If objRelation.PreferredExprID > 0 Then
+			
+				If objRelation.PreferredExprID > 0 Or UtilityType = UtilityType.TalentReport Then
+
+          objCalcExpr = GetPreferredCalculation(objRelation.Table1ID, objRelation.PreferredExprID, objRelation.Table2ID)
 					
-					'If objRelation.Table2ID > 0 Then
-					'  blnOK = objCalcExpr.Initialise(objRelation.Table2ID, objRelation.PreferredExprID, giEXPR_MATCHJOINEXPRESSION, giEXPRVALUE_LOGIC, objRelation.Table1ID)
-					'Else
-					blnOK = objCalcExpr.Initialise((objRelation.Table1ID), (objRelation.PreferredExprID), ExpressionTypes.giEXPR_MATCHJOINEXPRESSION, ExpressionValueTypes.giEXPRVALUE_LOGIC, objRelation.Table2ID)
-					'End If
-					
-					If blnOK Then
+					If objCalcExpr IsNot Nothing Then
 						blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sFilterCode, mastrUDFsRequired, True, False, mvarPrompts)
 					End If
 					
@@ -797,9 +802,7 @@ Public Class MatchReportRun
 					
 				End If
 				
-				'End If
-				
-				
+							
 				strRealSource1 = objRelation.Table1RealSource
 				
 				If objRelation.Table2ID > 0 Then
@@ -870,19 +873,18 @@ Public Class MatchReportRun
 		
 		
 		For	Each objRelation In mcolRelations
-			GetSelectStatement((objRelation.BreakdownColumns), (objRelation.Table1ID), (objRelation.Table1RealSource))
+			GetSelectStatement(objRelation.BreakdownColumns, objRelation.Table1ID, objRelation.Table1RealSource)
 			If mstrErrorMessage <> vbNullString Then
 				Exit Function
 			End If
-			
-			'mcolSQLSelect.Add strOutput, "T" & CStr(objRelation.Table1ID)
+
 		Next objRelation
 		
 		GenerateSQLSelect = True
 		
 	End Function
 		
-	Private Function GetSelectStatement(ByRef colColumns As Collection, ByRef lngTableID As Integer, ByRef strTable1RealSource As String) As String
+	Private Sub GetSelectStatement(colColumns As Collection(Of DisplayColumn), lngTableID As Integer, strTable1RealSource As String)
 		
 		Dim objColumn As DisplayColumn
 		Dim mobjColumnPrivileges As CColumnPrivileges
@@ -890,7 +892,6 @@ Public Class MatchReportRun
 		
 		Dim blnOK As Boolean
 		Dim pblnColumnOK As Boolean
-		Dim pblnNoSelect As Boolean
 		Dim pstrColumnCode As String
 		Dim pstrSource As String
 		Dim strRealSource As String
@@ -908,16 +909,17 @@ Public Class MatchReportRun
 		
 		' Set flags with their starting values
 		blnOK = True
-		pblnNoSelect = False
 
     Try
 		
 		  strSQLSelect = vbNullString
 		  pstrColumnCode = vbNullString
-		
-		  For	Each objColumn In colColumns
 
-        if Not objColumn.Name = "ID" then
+      if colColumns is Nothing Then Exit Sub
+
+      For	Each objColumn In colColumns
+
+        if Not objColumn.Hidden Then
 		      DisplayColumns.Add(objColumn)
           ReportDataTable.Columns.Add( string.format("{0}_{1}", objColumn.TableName, objColumn.Name), GetType(String))
         End If
@@ -948,10 +950,7 @@ Public Class MatchReportRun
 				  Else
 					
 					  ' this column cannot be read direct. If its from a parent, try parent views
-					  ' Loop thru the views on the table, seeing if any have read permis for the column
-					
-					  pblnNoSelect = True
-					  Dim mstrViews(0) As Object
+					  ' Loop thru the views on the table, seeing if any have read permis for the column				
 					  pstrColumnCode = vbNullString
 					
 					  For	Each mobjTableView In gcoTablePrivileges.Collection
@@ -982,7 +981,7 @@ Public Class MatchReportRun
 					  If pstrColumnCode = vbNullString Then
 						  strSQLSelect = vbNullString
 						  mstrErrorMessage = "You do not have permission to see the column '" & objColumn.Name & "' either directly or through any views."
-              Return False
+              Exit Sub
 						
 					  Else
 						  pstrColumnCode = "CASE" & pstrColumnCode & " ELSE NULL END"
@@ -991,7 +990,7 @@ Public Class MatchReportRun
 					
 					  If Not blnOK Then
 						  strSQLSelect = vbNullString
-						  Exit Function
+						  Exit Sub
 					  End If
 					
 				  End If
@@ -1037,16 +1036,13 @@ Public Class MatchReportRun
 		  mcolSQLSelect.Add(strSQLSelect, "T" & CStr(lngTableID))
 		  mcolSQLOrderBy.Add(strSQLOrderBy, "T" & CStr(lngTableID))
 		
-		  Return True
-
     Catch ex As Exception
 		  fOK = False
 		  mstrErrorMessage = "Error whilst generating SQL Select statement." & vbCrLf & ex.Message
-      Return False
 
     End Try
 		
-	End Function
+	End Sub
 	
 	Private Function GenerateSQLJoin() As Boolean
 			
@@ -1181,10 +1177,11 @@ Public Class MatchReportRun
 							  strOutputMain = strOutputMain & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & "(" & mstrTable2RealSource & ".ID = " & pobjTableView.RealSource & ".ID_" & CStr(mlngTable2ID) & vbCrLf & IIf(sCalcCode <> vbNullString, " AND " & sCalcCode, "") & ")" & vbCrLf
 						  End If
 						
-						  If objRelation.PreferredExprID > 0 Then
-							  objCalcExpr = New clsExprExpression(SessionInfo)
-							  fOK = objCalcExpr.Initialise(objRelation.Table1ID, objRelation.PreferredExprID, ExpressionTypes.giEXPR_MATCHJOINEXPRESSION, ExpressionValueTypes.giEXPRVALUE_LOGIC, objRelation.Table2ID)
-							  If fOK Then
+						  If objRelation.PreferredExprID > 0 Or UtilityType = UtilityType.TalentReport Then
+
+                objCalcExpr = GetPreferredCalculation(objRelation.Table1ID, objRelation.PreferredExprID, objRelation.Table2ID)
+
+							  If objCalcExpr IsNot Nothing Then
                   fOK = objCalcExpr.RuntimeFilterCode(sTemp, True, mastrUDFsRequired, False, mvarPrompts)
 							  End If
 							
@@ -1212,7 +1209,6 @@ Public Class MatchReportRun
 								  'MH20030909
 								  strOutputChildBreakdown = "FULL OUTER JOIN " & objRelation.Table2RealSource & " ON " & sCalcCode
 								  mcolSQLJoin.Add(strOutputChildBreakdown, "T" & CStr(objRelation.Table1ID))
-								  'mcolSQLJoin.Add sCalcCode, "T" & CStr(objRelation.Table1ID)
 							  End If
 						  End If
 						
@@ -1298,12 +1294,6 @@ Public Class MatchReportRun
 			
 			If objRelation.RequiredExprID > 0 Then
 				objCalcExpr = New clsExprExpression(SessionInfo)
-				'MH20030918 Fault 7005
-				'      If objRelation.Table2ID > 0 Then
-				'        fOK = objCalcExpr.Initialise(objRelation.Table2ID, objRelation.RequiredExprID, giEXPR_MATCHWHEREEXPRESSION, giEXPRVALUE_LOGIC, objRelation.Table1ID)
-				'      Else
-				'        fOK = objCalcExpr.Initialise(objRelation.Table1ID, objRelation.RequiredExprID, giEXPR_MATCHWHEREEXPRESSION, giEXPRVALUE_LOGIC, 0)
-				'      End If
 				fOK = objCalcExpr.Initialise((objRelation.Table1ID), (objRelation.RequiredExprID), ExpressionTypes.giEXPR_MATCHWHEREEXPRESSION, ExpressionValueTypes.giEXPRVALUE_LOGIC, objRelation.Table2ID)
 				
 				If fOK Then
@@ -1362,25 +1352,36 @@ Public Class MatchReportRun
 			
 		Dim rsTemp_Definition As DataTable
 		Dim strSQL As String
+    Dim objTable as Table
 		
     Try
    	
-		strSQL = "SELECT ASRSYSMatchReportName.*, a.TableName as 'Table1Name', a.RecordDescExprID as 'Table1RecDescExprID', b.TableName as 'Table2Name', " & "b.RecordDescExprID as 'Table2RecDescExprID' " & "FROM ASRSYSMatchReportName " & "JOIN ASRSysTables a ON ASRSysMatchReportName.Table1ID = a.TableID " & "LEFT OUTER JOIN ASRSysTables b ON ASRSysMatchReportName.Table2ID = b.TableID " & "WHERE MatchReportID = " & CStr(mlngMatchReportID)
-		
+      If UtilityType = UtilityType.TalentReport Then
+        Const sMissingColumns As String = ", BaseTableID AS Table1ID, BasePicklistID as Table1Picklist, BaseFilterID as Table1Filter" & _
+                                          ", MatchTableID AS Table2ID, MatchPicklistID as Table2Picklist, MatchFilterID as Table2Filter, 0 AS [NumRecords]" & _
+                                          ", BaseChildTableID AS Table1ChildTableID, BaseChildColumnID AS Table1ColumnID" & _
+                                          ", MatchChildTableID AS Table2ChildTableID, MatchChildColumnID AS Table2ColumnID" & _
+                                          ", 0 AS ScoreMode, 0 as ScoreCheck, 0 AS ScoreLimit, 0 AS EqualGrade, 0 AS ReportingStructure " & _
+                                          ", 0  AS [PrintFilterHeader]"
+        strSQL = string.Format("SELECT * {0} FROM ASRSysTalentReports base WHERE base.ID = {1}", sMissingColumns, mlngMatchReportID)
+      Else 
+		    strSQL = String.Format("SELECT *, 0 AS Table1ColumnID, 0 AS Table2ColumnID, 0 AS Table1ChildTableID, 0 AS Table2ChildTableID " & _
+                               "FROM ASRSysMatchReportName base WHERE base.MatchReportID = {0} " ,mlngMatchReportID)
+      End If
+	
 		rsTemp_Definition = DB.GetDataTable(strSQL)
 	    
 		With rsTemp_Definition
 			
 			If .Rows.Count = 0 Then
 				GetMatchReportDefinition = False
-				mstrErrorMessage = "Could not find specified definition !"
+				mstrErrorMessage = "Could Not find specified definition !"
 				Exit Function
 			End If
 			
       dim objRow = .Rows(0)
 
 			Name = objRow("Name").ToString()
-			mstrDescription = objRow("Description").ToString()
 			mlngNumRecords = CInt(objRow("NumRecords"))
 			
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -1393,21 +1394,20 @@ Public Class MatchReportRun
 			mblnEqualGrade = IIf(IsDbNull(objRow("EqualGrade")), False, CInt(objRow("EqualGrade")))
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			mblnReportingStructure = IIf(IsDbNull(objRow("ReportingStructure")), 0, CInt(objRow("ReportingStructure")))
-			
+		
 			mlngTable1ID = CInt(objRow("Table1ID"))
-			mstrTable1Name = objRow("Table1Name").ToString()
-			mlngTable1RecDescExprID = CInt(objRow("Table1RecDescExprID"))
-			mlngTable1AllRecords = CInt(objRow("Table1AllRecords"))
+
+      objTable = Tables.GetById(mlngTable1ID)
+			mstrTable1Name = objTable.Name
+			mlngTable1RecDescExprID = objTable.RecordDescExprID
+
 			mlngTable1PickListID = CInt(objRow("Table1Picklist"))
 			mlngTable1FilterID = CInt(objRow("Table1Filter"))
-			' Override filter and/or picklist if in Report pack mode
-			If mlngTable1ID = glngPersonnelTableID And gblnReportPackMode Then
-				mlngTable1FilterID = mlngOverrideFilterID
-				mlngTable1PickListID = 0
-			End If
-			
+      Table1ColumnID = CInt(objRow("Table1ColumnID"))
+      Table1ChildTableID = CInt(objRow("Table1ChildTableID"))
+
 			If Not TablePermission(CInt(objRow("Table1ID"))) Then
-				mstrErrorMessage = "You do not have permission to read the '" & objRow("Table1Name").ToString() & "' table either directly or through any views."
+				mstrErrorMessage = "You do Not have permission to read the '" & objRow("Table1Name").ToString() & "' table either directly or through any views."
 				GetMatchReportDefinition = False
 				Exit Function
 			End If
@@ -1425,18 +1425,14 @@ Public Class MatchReportRun
 			
 			mlngTable2ID = CInt(objRow("Table2ID"))
 			If mlngTable2ID > 0 Then
-				mstrTable2Name = objRow("Table2Name").ToString()
-				mlngTable2RecDescExprID = CInt(objRow("Table2RecDescExprID"))
-				mlngTable2AllRecords = CInt(objRow("Table2AllRecords"))
+        objTable = Tables.GetById(mlngTable2ID)
+				mstrTable2Name = objTable.Name
 				mlngTable2PickListID = CInt(objRow("Table2Picklist"))
 				mlngTable2FilterID = CInt(objRow("Table2Filter"))
-				
-				If mlngTable2ID = glngPersonnelTableID And gblnReportPackMode Then
-					mlngTable2FilterID = mlngOverrideFilterID
-					mlngTable2PickListID = 0
-				End If
-				
-				If Not TablePermission(CInt(objRow("Table2ID"))) Then
+        Table2ColumnID = objRow("Table2ColumnID")
+        Table2ChildTableID = objRow("Table2ChildTableID")
+							
+				If Not TablePermission(mlngTable2ID) Then
 					mstrErrorMessage = "You do not have permission to read the '" & objRow("Table2Name").ToString() & "' table either directly or through any views."
 					GetMatchReportDefinition = False
 					Exit Function
@@ -1446,24 +1442,22 @@ Public Class MatchReportRun
 			mbDefinitionOwner = (LCase(Trim(_login.Username)) = LCase(Trim(objRow("UserName").ToString())))
 			
 			'Change Output Options to Report Pack owning these Jobs if in Report Pack mode
-      Dim lblnReportPackMode = false
-			mblnPreviewOnScreen = IIf(lblnReportPackMode, mblnPreviewOnScreen, cbool(objRow("OutputPreview")))
-			mblnOutputScreen = IIf(lblnReportPackMode, mblnOutputScreen, CBool(objRow("OutputScreen")))
-			mlngOutputFormat = IIf(lblnReportPackMode, mlngOutputFormat, CInt(objRow("OutputFormat")))
-			mblnOutputPrinter = IIf(lblnReportPackMode, mblnOutputPrinter, CBool(objRow("OutputPrinter")))
-			mstrOutputPrinterName = IIf(lblnReportPackMode, mstrOutputPrinterName, objRow("OutputPrinterName").ToString())
-			mblnOutputSave = IIf(lblnReportPackMode, mblnOutputSave, CBool(objRow("OutputSave")))
-			mlngOutputSaveExisting = IIf(lblnReportPackMode, mlngOutputSaveExisting, CInt(objRow("OutputSaveExisting")))
-			mblnOutputEmail = IIf(lblnReportPackMode, mblnOutputEmail, CBool(objRow("OutputEmail")))
-			mlngOutputEmailAddr = IIf(lblnReportPackMode, mlngOutputEmailAddr, CInt(objRow("OutputEmailAddr")))
-			mstrOutputEmailSubject = IIf(lblnReportPackMode, mstrOutputEmailSubject, objRow("OutputEmailSubject").ToString())
-			mstrOutputEmailAttachAs = IIf(lblnReportPackMode, mstrOutputEmailAttachAs, objRow("OutputEmailAttachAs").ToString())
-			mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, objRow("OutputFilename").ToString())
-			mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
-			mblnOutputRetainPivotOrChart = IIf(lblnReportPackMode, mblnOutputRetainPivotOrChart, 0)
-			
-			mblnPreviewOnScreen = (mblnPreviewOnScreen Or (mlngOutputFormat = OutputFormats.DataOnly And mblnOutputScreen))
-			
+		  if UtilityType <> UtilityType.TalentReport Then
+			  mblnPreviewOnScreen = objRow("OutputPreview")
+			  mblnOutputScreen = CBool(objRow("OutputScreen"))
+			  mlngOutputFormat = CInt(objRow("OutputFormat"))
+			  mblnOutputPrinter = CBool(objRow("OutputPrinter"))
+			  mstrOutputPrinterName = objRow("OutputPrinterName").ToString()
+			  mblnOutputSave = CBool(objRow("OutputSave"))
+			  mlngOutputSaveExisting = CInt(objRow("OutputSaveExisting"))
+			  mblnOutputEmail = CBool(objRow("OutputEmail"))
+			  mlngOutputEmailAddr = CInt(objRow("OutputEmailAddr"))
+			  mstrOutputEmailSubject = objRow("OutputEmailSubject").ToString()
+			  mstrOutputEmailAttachAs = objRow("OutputEmailAttachAs").ToString()
+			  mstrOutputFileName = objRow("OutputFilename").ToString()		
+			  mblnPreviewOnScreen = (mblnPreviewOnScreen Or (mlngOutputFormat = OutputFormats.DataOnly And mblnOutputScreen))
+		  End If
+        			
 		End With
 		
 		If frmBreakDown Is Nothing Then
@@ -1547,7 +1541,7 @@ Public Class MatchReportRun
 	
 	Private Sub AddToJoinArray(lngTYPE As Integer, lngTableID As Integer)
 		
-		Dim lngIndex As Short
+		Dim lngIndex As Integer
 		
 		If lngTYPE = 0 Then 'Table
 			If lngTableID = mlngTable1ID Or lngTableID = mlngTable2ID Then
@@ -1576,21 +1570,14 @@ Public Class MatchReportRun
 	
 	Private Function GenerateSQLOrderBy() As Boolean
 		
-		Dim objColumn As DisplayColumn
-		Dim lngIndex As Integer
+    dim sorts as New ArrayList
 		
-		mstrSQLOrderBy = " ORDER BY "
-		For lngIndex = 1 To mcolColDetails.Count()
-			
-			For	Each objColumn In mcolColDetails
-				If objColumn.SortSeq = lngIndex Then
-					mstrSQLOrderBy = mstrSQLOrderBy & IIf(lngIndex > 1, ", ", "") & "[" & objColumn.Heading & "]" & IIf(objColumn.SortDir = "D", " DESC", "")
-				End If
-			Next objColumn
-			
-		Next 
-		
-		GenerateSQLOrderBy = True
+    For Each column in mcolColDetails.Where(Function(m) m.Sequence > 0)
+      sorts.Add("[" & column.Heading & "]" & IIf(column.SortDir = "D", " DESC", ""))
+    Next
+
+		mstrSQLOrderBy = " ORDER BY " & String.Join(", ",sorts.ToArray())
+		Return True
 		
 	End Function
 		
@@ -1624,17 +1611,16 @@ Public Class MatchReportRun
 	
 	Private Function PopulateGridMain() As Boolean
 		
-		PopulateGridMain = False		
+		Dim bOK as Boolean
 		mstrSQL = "SELECT DISTINCT * FROM [" & _login.Username & "].[" & mstrTempTableName & "]" & vbCrLf & "WHERE not (ID1 is null) " & mstrSQLOrderBy
 			
-		If PopulateGrid(mcolColDetails, False) Then		
-			PopulateGridMain = True				
-		End If
+		bOK = PopulateGrid(mcolColDetails, False)
+		Return bOK
 		
 	End Function
 	
 
-	Private Function PopulateGrid(ByRef colColumns As Collection, ByRef blnBreakdownOutput As Boolean) As Boolean
+	Private Function PopulateGrid(ByRef colColumns As Collection(Of DisplayColumn), blnBreakdownOutput As Boolean) As Boolean
 		
 		Dim objColumn As Column
 		Dim rsMatchReportsData As DataTable
@@ -1670,7 +1656,7 @@ Public Class MatchReportRun
 					  'strOutput = .Fields(0).Value & vbTab & .Fields(1).Value
 					  For lngIndex = 0 To .Columns.Count - 1
 						
-						  objColumn = colColumns.Item(lngIndex + 1)
+						  objColumn = colColumns.Item(lngIndex)
 						  'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 						  'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						  vData = IIf(IsDbNull(objRow(lngIndex)), vbNullString, objRow(lngIndex).ToString())
@@ -1758,10 +1744,6 @@ Public Class MatchReportRun
 						
 					  Next 
 					
-					  '          If mlngMatchReportType <> mrtNormal Then
-					  '            strOutput = strOutput & _
-					  ''                IIf(lngIndex > 0, vbTab, "") & "..."
-					  '          End If
 					
 					  If Not blnBreakdownOutput Then
 						  'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -1770,39 +1752,37 @@ Public Class MatchReportRun
 						  End If
 					  End If
 
-
-            ' LOFTY - HACK ALERT! -- Breakdown for this record
-            If 1 = 1 Then
+            If UtilityType = UtilityType.TalentReport Then
               Dim childTableId = mcolRelations(1).Table1ID
-              'cint(objRow(0)), cint(objRow(1))
-              dim breakdownSQL = GetRecordsetBreakdown(childTableId, cint(objRow(0)), cint(objRow(1)))
+              Dim breakdownSQL = GetRecordsetBreakdown(childTableId, objRow(0), objRow(1))
 
-              Dim breakdownData As DataTable
+              Dim scores = New List(Of Competency)
+              Dim competency As Competency
+
               Dim breakdownValue as String = ""
-              breakdownData = DB.GetDataTable(breakdownSQL)
-              With breakdownData
-                for Each objBreakdown as DataRow in .Rows
+             
+              Dim breakdownData = DB.GetDataTable(breakdownSQL)
 
-'                  breakdownValue = breakdownValue & String.Format("{0} {1}", objBreakdown(0),  objBreakdown(.Columns.Count - 1)) & vbNewLine
-'                  breakdownValue = breakdownValue & String.Format("{{""Competency"":""{0}"" {1}}}", objBreakdown(0),  objBreakdown(.Columns.Count - 1)) & vbNewLine
-                  Dim competency As String = IIf(IsDBNull(objBreakdown("Competency")), "", objBreakdown("Competency")).ToString()
-                  Dim minimumScore As Double = CDbl(IIf(IsDBNull(objBreakdown("MinScore")), 0, objBreakdown("MinScore")))
-                  Dim preferredScore As Double = CDbl(IIf(IsDBNull(objBreakdown("PrefScore")), 0, objBreakdown("PrefScore")))
-                  Dim actualScore As Double = CDbl(IIf(IsDBNull(objBreakdown("ActualScore")), 0, objBreakdown("ActualScore")))
+              for Each objBreakdown as DataRow in breakdownData.Rows
 
-                  breakdownValue &= IIf(Len(breakdownValue) > 0, ",", "") & _
-                    String.Format("{{""Competency"":""{0}"", ""MinScore"":{1}, ""PrefScore"":{2}, ""ActualScore"":{3}}}" _
-                    ,competency, minimumScore, preferredScore, actualScore)
+                competency = New Competency With {
+                  .Name = objBreakdown("Competency").ToString(),
+                  .Minimum =  CDbl(IIf(IsDBNull(objBreakdown("MinScore")), 0, objBreakdown("MinScore"))),
+                  .Preferred = CDbl(IIf(IsDBNull(objBreakdown("PrefScore")), 0, objBreakdown("PrefScore"))),
+                  .Actual = CDbl(IIf(IsDBNull(objBreakdown("ActualScore")), 0, objBreakdown("ActualScore")))
+                  }
+                breakdownValue &= IIf(Len(breakdownValue) > 0, ",", "") & competency.TalentGridJson
+                scores.Add(competency)
+              Next
 
-                Next
 
-                breakdownValue = IIf(Len(breakdownValue) > 0, "[" & breakdownValue & "]" , "") 
-              End With
+              breakdownValue = IIf(Len(breakdownValue) > 0, "[" & breakdownValue & "]" , "") 
 
-              ' Hack it into the last column
-              strOutput = strOutput & IIf(lngIndex > 0, vbTab, "") & breakdownValue
+              ' Add the talent values into the grid
+              strOutput = strOutput & IIf(lngIndex > 0, vbTab, "") & scores.MatchScore & vbTab & breakdownValue
               aryAddString.Add("")
               aryAddString.Add("")
+              aryAddString.Add(scores.MatchScore)
               aryAddString.Add(breakdownValue)
             End If
 
@@ -1962,7 +1942,7 @@ Public Class MatchReportRun
 	End Function
 	
 	
-	Private Function GetReportingStructure(ByRef lngSingleRecord As Integer) As String
+	Private Function GetReportingStructure(lngSingleRecord As Integer) As String
 		
 		Dim rsTemp As DataTable
 		Dim strSQL As String
@@ -2042,38 +2022,24 @@ Public Class MatchReportRun
 	End Function
 	
 	
-	Private Function GetJobTableID(ByRef lngRecordID As Integer) As Integer
-		
-		Dim mobjColumnPrivileges As CColumnPrivileges
-		
+	Private Function GetJobTableID(lngRecordID As Integer) As Integer
+			
 		Dim rsTemp As DataTable
-		Dim strSQL As String
-		Dim strJoin As String
-		
-		'If Not gcoTablePrivileges.Item(gsPersonnelTableName).AllowSelect Then
-		'  mstrErrorMessage = "Unable to run this report as you do not have access to the " & gsPersonnelTableName & " Table"
-		'  Exit Function
-		'End If
-		
-		'If Not gcoTablePrivileges.Item(gstrPostTableName).AllowSelect Then
-		'  mstrErrorMessage = "Unable to run this report as you do not have access to the " & gstrPostTableName & " Table"
-		'  Exit Function
-		'End If
-		
+		Dim strSQL As String	
 		
 		strSQL = GetSQLForColumn(glngPostTableID, gstrPostTableName, gstrJobTitleColumnName, 1) & " = (" & GetSQLForColumn(glngPersonnelTableID, gsPersonnelTableName, gsPersonnelJobTitleColumnName, 2) & " = " & CStr(lngRecordID) & ")"
 		rsTemp = DB.GetDataTable(strSQL)
 		
 		If rsTemp.Rows.Count > 0 Then
-			GetJobTableID = CInt(rsTemp.Rows(0)("ID"))
+			Return CInt(rsTemp.Rows(0)("ID"))
 		Else
-			GetJobTableID = 0
+			Return 0
 		End If	
 		
 	End Function
 	
 	
-	Private Function GetSQLForColumn(ByRef lngTableID As Integer, ByRef strTable As String, ByRef strColumn As String, ByRef intMode As Short) As String
+	Private Function GetSQLForColumn(lngTableID As Integer, strTable As String, strColumn As String, intMode As Short) As String
 		
 		Dim strSelect As String
 		Dim strJoin As String
@@ -2092,8 +2058,7 @@ Public Class MatchReportRun
 		
 	End Function
 	
-	
-	Private Sub GetSelectAndJoinForColumn(ByRef lngTableID As Integer, ByRef strTable As String, ByRef strColumn As String, ByRef strSelect As String, ByRef strJoin As String, ByRef strViewIDs As String)
+	Private Sub GetSelectAndJoinForColumn(lngTableID As Integer, strTable As String, strColumn As String, ByRef strSelect As String, ByRef strJoin As String, ByRef strViewIDs As String)
 		
 		Dim mobjColumnPrivileges As CColumnPrivileges
 		Dim mobjTableView As TablePrivilege
@@ -2145,7 +2110,7 @@ Public Class MatchReportRun
 		Dim objColumn As DisplayColumn
 		Dim strTempTable As String
 		Dim strError As String 
-		Dim strSQL As String
+		Dim strSQL As String = ""
 		Dim lngSize As Integer
 		
 		For	Each objColumn In mcolColDetails
@@ -2288,21 +2253,8 @@ Public Class MatchReportRun
 		mstrOutputEmailSubject = strOutputEmailSubject
 		mstrOutputEmailAttachAs = strOutputEmailAttachAs
 		mstrOutputFileName = strOutputFilename
-		mblnChkPicklistFilter = blnChkPicklistFilter
 		mblnPreviewOnScreen = (blnPreviewOnScreen Or (mlngOutputFormat = OutputFormats.DataOnly And mblnOutputScreen))
-		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-		mstrOutputTitlePage = IIf(IsNothing(strOutputTitlePage), ExpressionValueTypes.giEXPRVALUE_CHARACTER, strOutputTitlePage)
-		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-		mstrOutputReportPackTitle = IIf(IsNothing(strOutputReportPackTitle), ExpressionValueTypes.giEXPRVALUE_CHARACTER, strOutputReportPackTitle)
-		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-		mstrOutputOverrideFilter = IIf(IsNothing(strOutputOverrideFilter), ExpressionValueTypes.giEXPRVALUE_CHARACTER, strOutputOverrideFilter)
-		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-		mblnOutputTOC = IIf(IsNothing(blnOutputTOC), ExpressionValueTypes.giEXPRVALUE_CHARACTER, blnOutputTOC)
-		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-		mlngOverrideFilterID = IIf(IsNothing(lngOverrideFilterID), ExpressionValueTypes.giEXPRVALUE_CHARACTER, lngOverrideFilterID)
-		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
-		mblnOutputRetainPivotOrChart = IIf(IsNothing(blnOutputRetainPivotOrChart), ExpressionValueTypes.giEXPRVALUE_CHARACTER, blnOutputRetainPivotOrChart)
-		'mblnOutputRetainCharts = IIf(IsMissing(blnOutputRetainCharts), giEXPRVALUE_CHARACTER, blnOutputRetainCharts)
+
 	End Sub
 
 
@@ -2378,22 +2330,68 @@ Public Class MatchReportRun
 
     End Function
 
-  	Private Function AddItemToReportData(data As IEnumerable) As Boolean
+  	Private Sub AddItemToReportData(addData As IEnumerable)
 
 		Dim dr As DataRow
 		Dim iColumn As Integer = 0
 
 		dr = ReportDataTable.Rows.Add()
 
-		If Not data Is Nothing Then
-			For Each objData In data
+		If Not addData Is Nothing Then
+			For Each objData In addData
 				dr(iColumn) = objData
 				iColumn += 1
 			Next
 		End If
 
-		Return True
+	End Sub
 
-	End Function
+  Private Function GetPreferredCalculation(table1ID As Integer, preferredExpressionID As Integer, table2ID As integer) As clsExprExpression
+
+    Dim expression as clsExprExpression
+
+    If UtilityType = UtilityType.TalentReport Then
+
+      expression = New clsExprExpression(SessionInfo) With {
+        .BaseTableID = Table1ChildTableID,
+        .SecondTableID = Table2ChildTableID,
+        .ReturnType = ExpressionValueTypes.giEXPRVALUE_LOGIC,
+        .ExpressionType = ExpressionTypes.giEXPR_MATCHJOINEXPRESSION,
+        .Constructed = True
+        }
+    
+      expression.ClearComponents()
+
+      expression.AddComponent(New clsExprComponent(SessionInfo) With {
+        .ComponentType = ExpressionComponentTypes.giCOMPONENT_FIELD,
+        .Component = New clsExprField(SessionInfo) With {
+            .TableID = Table1ChildTableID,
+            .ColumnID = Table1ColumnID
+          }
+        })
+
+      expression.AddComponent(New clsExprComponent(SessionInfo) With {
+        .ComponentType = ExpressionComponentTypes.giCOMPONENT_OPERATOR,
+        .Component = New clsExprOperator(SessionInfo) With {
+            .OperatorID = 7
+          }
+        })
+
+      expression.AddComponent(New clsExprComponent(SessionInfo) With {
+        .ComponentType = ExpressionComponentTypes.giCOMPONENT_FIELD,
+        .Component = New clsExprField(SessionInfo) With {
+            .TableID = Table2ChildTableID,
+            .ColumnID = Table2ColumnID
+          }
+        })
+
+      Else
+        expression = New clsExprExpression(SessionInfo)
+				expression.Initialise(table1ID, preferredExpressionID, ExpressionTypes.giEXPR_MATCHJOINEXPRESSION, ExpressionValueTypes.giEXPRVALUE_LOGIC, table2ID)
+    End If
+
+    Return expression
+
+  End Function
 
 End Class

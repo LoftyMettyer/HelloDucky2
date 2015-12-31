@@ -272,12 +272,11 @@ Namespace Expressions
 			End Set
 		End Property
 
-		Public Sub ResetConstructedFlag(ByRef fValue As Boolean)
-
-			'UPGRADE_WARNING: Couldn't resolve default property of object fValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mfConstructed = fValue
-
-		End Sub
+		Public WriteOnly Property Constructed() as Boolean
+    	Set(ByVal Value As Boolean)
+				mfConstructed = Value
+			End Set
+		End Property
 
 		Public Sub New(ByVal Value As SessionInfo)
 
@@ -338,30 +337,27 @@ Namespace Expressions
 
 		End Function
 
-		Public Function AddComponent() As clsExprComponent
+    Public Function AddComponent() As clsExprComponent
+
+      ' Instantiate a component object.
+			Dim objComponent = New clsExprComponent(SessionInfo)
+      objComponent.NewComponent
+      Return AddComponent(objComponent)
+
+    End Function
+
+		Public Function AddComponent(objComponent As clsExprComponent) As clsExprComponent
 			' Add a new component to the expression.
 			' Returns the new component object.
 
 			Dim fOK As Boolean
-			Dim objComponent As clsExprComponent
 
 			Try
 
-				' Instantiate a component object.
-				objComponent = New clsExprComponent(SessionInfo)
-
 				' Initialse the new component's properties.
 				objComponent.ParentExpression = Me
-
-				' Get the new component to handle its own definition.
-				fOK = objComponent.NewComponent
-
-				If fOK Then
-					' If the component definition was confirmed then
-					' add the new component to the expression's component
-					' collection.
-					mcolComponents.Add(objComponent)
-				End If
+        objComponent.Component.BaseComponent = objComponent
+				mcolComponents.Add(objComponent)
 
 			Catch ex As Exception
 				Return Nothing

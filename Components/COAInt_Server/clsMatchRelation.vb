@@ -1,6 +1,9 @@
 ﻿Option Strict On
 Option Explicit On
 
+Imports System.Collections.ObjectModel
+Imports HR.Intranet.Server.Metadata
+
 Friend Class clsMatchRelation
 	
 	Private lngTable1ID As Integer
@@ -12,12 +15,12 @@ Friend Class clsMatchRelation
 	Private lngRequiredExprID As Integer
 	Private lngPreferredExprID As Integer
 	Private lngMatchScoreExprID As Integer
-	Private colBreakdownColumns As Collection
+	Private colBreakdownColumns As Collection(Of DisplayColumn)
 	
 	
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
-		colBreakdownColumns = New Collection
+		colBreakdownColumns = New Collection(Of DisplayColumn)
 	End Sub
 	Public Sub New()
 		MyBase.New()
@@ -125,11 +128,11 @@ Friend Class clsMatchRelation
 	End Property
 	
 	
-	Public Property BreakdownColumns() As Collection
+	Public Property BreakdownColumns() As Collection(Of DisplayColumn)
 		Get
 			BreakdownColumns = colBreakdownColumns
 		End Get
-		Set(ByVal Value As Collection)
+		Set(ByVal Value As Collection(Of DisplayColumn))
 			colBreakdownColumns = Value
 		End Set
 	End Property

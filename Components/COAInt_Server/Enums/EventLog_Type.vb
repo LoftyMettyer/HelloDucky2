@@ -26,5 +26,6 @@
 		eltAccordExport = 24
 		eltWorkflowRebuild = 25
 		elt9GridBox = 35
+    eltTalentReport = 38
 	End Enum
 End Namespace

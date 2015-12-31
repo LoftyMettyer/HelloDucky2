@@ -466,29 +466,6 @@ Namespace Repository
 	          objModel.MatchChildRatingColumnID = CInt(row("MatchChildRatingColumnID"))
 	          objModel.MatchAgainstType = CInt(row("MatchAgainstType"))
                    
-						'objModel.OutputFormat = CType(row("Format"), MailMergeOutputTypes)
-						'If (objModel.OutputFormat = MailMergeOutputTypes.WordDocument) Then
-						'	objModel.WordDocumentPrinter = row("PrinterName").ToString()
-						'ElseIf (objModel.OutputFormat = MailMergeOutputTypes.DocumentManagement) Then
-						'	objModel.DocumentManagementPrinter = row("PrinterName").ToString()
-						'End If
-						'objModel.DisplayOutputOnScreen = CBool(row("DisplayOutputOnScreen"))
-						'objModel.SendToPrinter = CBool(row("SendToPrinter"))
-						'objModel.SaveToFile = CBool(row("SaveToFile"))
-						'objModel.Filename = row("FileName").ToString
-						'objModel.EmailGroupID = CInt(row("EmailGroupID"))
-						'objModel.EmailSubject = row("EmailSubject").ToString()
-						'objModel.EmailAsAttachment = CBool(row("EmailAsAttachment"))
-						'objModel.EmailAttachmentName = row("EmailAttachmentName").ToString()
-
-						'objModel.SuppressBlankLines = CBool(row("SuppressBlankLines"))
-						'objModel.PauseBeforeMerge = CBool(row("PauseBeforeMerge"))
-
-						'If Not (TypeOf row.Item("UploadTemplate") Is DBNull) Then
-						'	objModel.UploadTemplate = CType(row.Item("UploadTemplate"), Byte())
-						'	objModel.UploadTemplateName = row.Item("UploadTemplateName").ToString
-						'End If
-
 					End If
 
 				End If
@@ -1052,7 +1029,7 @@ Namespace Repository
 
         Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
 				Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
-				Dim sColumns = MailMergeColumnsAsString(objModel.Columns, objModel.SortOrders)
+				Dim sColumns = MatchReportColumnsAsString(objModel.Columns, objModel.SortOrders)
        
 				_objDataAccess.ExecuteSP("spASRIntSaveTalentReport", _
 								New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
@@ -1163,6 +1140,31 @@ Namespace Repository
 
 				sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}**" _
 													, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Size, objItem.Decimals, objItem.IsNumeric, sOrderString)
+
+				iCount += 1
+			Next
+
+			Return sColumns
+
+		End Function
+
+		Private Function MatchReportColumnsAsString(objColumns As IEnumerable(Of ReportColumnItem), objSortColumns As List(Of SortOrderViewModel)) As String
+
+			Dim sColumns As String = ""
+			Dim sOrderString As String
+
+			Dim iCount As Integer = 1
+			For Each objItem In objColumns
+
+				' this could be improve with some linq or whatever! No panic because the whole function could be tidied up
+				sOrderString = "0||0||"
+        Dim itemId = objItem.ID
+				For Each objSortItem In objSortColumns.Where(function(m) m.ColumnID = itemId)
+					sOrderString = String.Format("{0}||{1}||", objSortItem.Sequence, IIf(objSortItem.Order = OrderType.Ascending, "A", "").ToString)
+				Next
+
+				sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}**" _
+													, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Size, objItem.Decimals, objItem.IsNumeric, sOrderString, objItem.Heading)
 
 				iCount += 1
 			Next

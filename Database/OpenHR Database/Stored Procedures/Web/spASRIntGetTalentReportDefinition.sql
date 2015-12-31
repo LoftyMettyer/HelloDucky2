@@ -112,15 +112,15 @@ BEGIN
 
 	
 	-- Columns
-	SELECT r.ColumnID AS [ID],
+	SELECT r.ColExprID AS [ID],
 		0 AS [IsExpression],
 		0 AS [accesshidden],
 		c.tableID,
 		t.tableName + '.' + c.columnName AS [name],
 		c.columnName AS [heading], 
 		c.DataType,
-		r.size,
-		r.decimals,
+		r.ColSize AS [Size],
+		r.ColDecs AS [Decimals],
 		'' AS Heading,
 		0 AS IsAverage,
 		0 AS IsCount,
@@ -128,23 +128,23 @@ BEGIN
 		0 AS IsHidden,
 		0 AS IsGroupWithNext,
 		0 AS IsRepeated,
-		r.SortOrderSequence AS [sequence]
-	FROM ASRSysTalentReportColumns r	
-	INNER JOIN ASRSysColumns c ON r.columnID = c.columnId		
+		r.SortOrderSeq AS [sequence]
+	FROM ASRSysTalentReportDetails r	
+	INNER JOIN ASRSysColumns c ON r.ColExprID = c.columnId		
 	INNER JOIN ASRSysTables t ON c.tableID = t.tableID		
 	WHERE r.TalentReportID = @piReportID;
 
 	-- Orders
-	SELECT r.columnID AS [id],
+	SELECT r.ColExprID AS [id],
 		convert(varchar(MAX), t.tableName + '.' + c.columnName) AS [name],
-		r.sortOrder AS [order],
+		r.SortOrderDirection AS [order],
 		t.tableID,
-		r.sortOrderSequence AS [sequence]
-	FROM ASRSysTalentReportColumns r		
-	INNER JOIN ASRSysColumns c ON r.columnid = c.columnId		
+		r.sortOrderSeq AS [sequence]
+	FROM ASRSysTalentReportDetails r		
+	INNER JOIN ASRSysColumns c ON r.ColExprID = c.columnId		
 	INNER JOIN ASRSysTables t ON c.tableID = t.tableID		
 	WHERE r.TalentReportID = @piReportID		
-		AND r.sortOrderSequence > 0		
+		AND r.sortOrderSeq > 0		
 	ORDER BY [sequence] ASC;
 
 END

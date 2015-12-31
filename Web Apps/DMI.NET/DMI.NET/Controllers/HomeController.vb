@@ -28,6 +28,7 @@ Imports DMI.NET.Models.Responses
 Imports HR.Intranet.Server.Structures
 Imports DMI.NET.Code.Attributes
 Imports DMI.NET.Infrastructure
+Imports HR.Intranet.Server.Metadata
 
 Namespace Controllers
 	Public Class HomeController
@@ -2592,6 +2593,39 @@ Namespace Controllers
 			End Try
 
 		End Function
+
+		Function GetTalentReportData() As ActionResult
+
+			Dim matchReport = New MatchReportRun
+			matchReport.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
+			Dim prompts = Session("Prompts_" & Session("utiltype") & "_" & Session("utilid"))
+
+			matchReport.UtilityType = CType(Session("utiltype"), UtilityType)
+			matchReport.SetPromptedValues(prompts)
+			matchReport.MatchReportID = CInt(Session("utilid"))
+			matchReport.RunMatchReport()
+
+			Dim rows As New List(Of Dictionary(Of String, Object))()
+			Dim row As Dictionary(Of String, Object)
+
+			For Each dr As DataRow In matchReport.ReportDataTable.Rows
+				row = New Dictionary(Of String, Object)()
+
+				For Each col As DataColumn In matchReport.ReportDataTable.Columns
+					row.Add(col.ColumnName, dr(col))
+				Next
+				rows.Add(row)
+			Next
+
+  		Dim colModel As List(Of Object) = JqGridColModel.CreateColModel(matchReport.ReportDataTable, "", "")
+
+			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = rows, .colmodel = colModel}
+			Return Json(results, JsonRequestBehavior.AllowGet)
+
+		End Function
+
+
 
 		Private Function RunDataTransfer(id As Integer, multipleRecordIds As String, prompts(,) As String) As PostResponse
 

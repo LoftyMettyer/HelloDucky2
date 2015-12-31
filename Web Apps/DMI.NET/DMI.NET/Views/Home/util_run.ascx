@@ -327,9 +327,9 @@
 
 			function resizeGrid() {
 				var newHeight = $('#reportworkframe').height();
-				var newWidth = window.innerWidth || document.body.clientWidth;
 				$('#gridReportData').setGridHeight(newHeight);
 				$('#gridReportData').setGridWidth($('#reportframe').width() * 0.95);
+				$('#gbox_gridReportData').css('margin', '0 auto'); //center grid in parent.
 			}
 			
 

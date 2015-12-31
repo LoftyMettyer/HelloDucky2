@@ -39765,15 +39765,15 @@ BEGIN
 
 	
 	-- Columns
-	SELECT r.ColumnID AS [ID],
+	SELECT r.ColExprID AS [ID],
 		0 AS [IsExpression],
 		0 AS [accesshidden],
 		c.tableID,
 		t.tableName + '.' + c.columnName AS [name],
 		c.columnName AS [heading], 
 		c.DataType,
-		r.size,
-		r.decimals,
+		r.ColSize AS [Size],
+		r.ColDecs AS [Decimals],
 		'' AS Heading,
 		0 AS IsAverage,
 		0 AS IsCount,
@@ -39781,203 +39781,27 @@ BEGIN
 		0 AS IsHidden,
 		0 AS IsGroupWithNext,
 		0 AS IsRepeated,
-		r.SortOrderSequence AS [sequence]
-	FROM ASRSysTalentReportColumns r	
-	INNER JOIN ASRSysColumns c ON r.columnID = c.columnId		
+		r.SortOrderSeq AS [sequence]
+	FROM ASRSysTalentReportDetails r	
+	INNER JOIN ASRSysColumns c ON r.ColExprID = c.columnId		
 	INNER JOIN ASRSysTables t ON c.tableID = t.tableID		
 	WHERE r.TalentReportID = @piReportID;
 
 	-- Orders
-	SELECT r.columnID AS [id],
+	SELECT r.ColExprID AS [id],
 		convert(varchar(MAX), t.tableName + '.' + c.columnName) AS [name],
-		r.sortOrder AS [order],
+		r.SortOrderDirection AS [order],
 		t.tableID,
-		r.sortOrderSequence AS [sequence]
-	FROM ASRSysTalentReportColumns r		
-	INNER JOIN ASRSysColumns c ON r.columnid = c.columnId		
+		r.sortOrderSeq AS [sequence]
+	FROM ASRSysTalentReportDetails r		
+	INNER JOIN ASRSysColumns c ON r.ColExprID = c.columnId		
 	INNER JOIN ASRSysTables t ON c.tableID = t.tableID		
 	WHERE r.TalentReportID = @piReportID		
-		AND r.sortOrderSequence > 0		
+		AND r.sortOrderSeq > 0		
 	ORDER BY [sequence] ASC;
 
 END
-GO
 
-	
-IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntDeleteCheck]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[spASRIntDeleteCheck];
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntDeleteCheck] (
-	@piUtilityType	integer,
-	@plngID			integer,
-	@pfDeleted		bit				OUTPUT,
-	@psAccess		varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE 
-		@sTableName			sysname,
-		@sAccessTableName	sysname,
-		@sIDColumnName		sysname,
-		@sSQL				nvarchar(MAX),
-		@sParamDefinition	nvarchar(500),
-		@fNewAccess			bit,
-		@iCount				integer,
-		@sAccess			varchar(MAX),
-		@fSysSecMgr			bit;
-
-	SET @sTableName = '';
-	SET @psAccess = 'HD';
-	SET @pfDeleted = 0;
-	SET @fNewAccess = 0;
-
-	IF @piUtilityType = 0 /* Batch Job */
-	BEGIN
-		SET @sTableName = 'ASRSysBatchJobName';
-		SET @sAccessTableName = 'ASRSysBatchJobAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
-  END
-
-	IF @piUtilityType = 17 /* Calendar Report */
-	BEGIN
-		SET @sTableName = 'ASRSysCalendarReports';
-		SET @sAccessTableName = 'ASRSysCalendarReportAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
-  END
-
-	IF @piUtilityType = 1 OR @piUtilityType = 35 /* Cross Tab or 9-Box Grid*/
-	BEGIN
-		SET @sTableName = 'ASRSysCrossTab';
-		SET @sAccessTableName = 'ASRSysCrossTabAccess';
-		SET @sIDColumnName = 'CrossTabID';
-		SET @fNewAccess = 1;
- 	END
-    
-	IF @piUtilityType = 2 /* Custom Report */
-	BEGIN
-		SET @sTableName = 'ASRSysCustomReportsName';
-		SET @sAccessTableName = 'ASRSysCustomReportAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
- 	END
-    
-	IF @piUtilityType = 3 /* Data Transfer */
-	BEGIN
-		SET @sTableName = 'ASRSysDataTransferName';
-		SET @sAccessTableName = 'ASRSysDataTransferAccess';
-		SET @sIDColumnName = 'DataTransferID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF @piUtilityType = 4 /* Export */
-	BEGIN
-		SET @sTableName = 'ASRSysExportName';
-		SET @sAccessTableName = 'ASRSysExportAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF (@piUtilityType = 5) OR (@piUtilityType = 6) OR (@piUtilityType = 7) /* Globals */
-	BEGIN
-		SET @sTableName = 'ASRSysGlobalFunctions';
-		SET @sAccessTableName = 'ASRSysGlobalAccess';
-		SET @sIDColumnName = 'functionID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF (@piUtilityType = 8) /* Import */
-	BEGIN
-		SET @sTableName = 'ASRSysImportName';
-		SET @sAccessTableName = 'ASRSysImportAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF (@piUtilityType = 9) OR (@piUtilityType = 18) /* Label or Mail Merge */
-	BEGIN
-		SET @sTableName = 'ASRSysMailMergeName';
-		SET @sAccessTableName = 'ASRSysMailMergeAccess';
-		SET @sIDColumnName = 'mailMergeID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF (@piUtilityType = 20) /* Record Profile */
-	BEGIN
-		SET @sTableName = 'ASRSysRecordProfileName';
-		SET @sAccessTableName = 'ASRSysRecordProfileAccess';
-		SET @sIDColumnName = 'recordProfileID';
-		SET @fNewAccess = 1
-  END
-    
-	IF (@piUtilityType = 14) OR (@piUtilityType = 23) OR (@piUtilityType = 24) /* Match Report, Succession, Career */
-	BEGIN
-		SET @sTableName = 'ASRSysMatchReportName';
-		SET @sAccessTableName = 'ASRSysMatchReportAccess';
-		SET @sIDColumnName = 'matchReportID';
-		SET @fNewAccess = 1;
-  END
-
-	IF (@piUtilityType = 11) OR (@piUtilityType = 12)  /* Filters/Calcs */
-	BEGIN
-		SET @sTableName = 'ASRSysExpressions';
-		SET @sIDColumnName = 'exprID';
-  END
-
-	IF (@piUtilityType = 10)  /* Picklists */
-	BEGIN
-		SET @sTableName = 'ASRSysPicklistName';
-		SET @sIDColumnName = 'picklistID';
-  END
-
-	IF len(@sTableName) > 0
-	BEGIN
-		SET @sSQL = 'SELECT @iCount = COUNT(*)
-				FROM ' + @sTableName + 
-				' WHERE ' + @sTableName + '.' + @sIDColumnName + ' = ' + convert(nvarchar(255), @plngID);
-		SET @sParamDefinition = N'@iCount integer OUTPUT';
-		EXEC sp_executesql @sSQL,  @sParamDefinition, @iCount OUTPUT;
-
-		IF @iCount = 0 
-		BEGIN
-			SET @pfDeleted = 1;
-		END
-		ELSE
-		BEGIN
-			IF @fNewAccess = 1
-			BEGIN
-				exec [dbo].[spASRIntCurrentUserAccess] @piUtilityType,	@plngID, @psAccess OUTPUT;
-			END
-			ELSE
-			BEGIN
-				exec [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT;
-				
-				IF @fSysSecMgr = 1 
-				BEGIN
-					SET @psAccess = 'RW';
-				END
-				ELSE
-				BEGIN
-					SET @sSQL = 'SELECT @sAccess = CASE 
-								WHEN userName = system_user THEN ''RW''
-								ELSE access
-							END
-							FROM ' + @sTableName + 
-							' WHERE ' + @sTableName + '.' + @sIDColumnName + ' = ' + convert(nvarchar(255), @plngID);
-					SET @sParamDefinition = N'@sAccess varchar(MAX) OUTPUT';
-					EXEC sp_executesql @sSQL,  @sParamDefinition, @sAccess OUTPUT;
-
-					SET @psAccess = @sAccess;
-				END
-			END
-		END
-	END
-END
 
 GO
 
@@ -44542,7 +44366,7 @@ BEGIN
 			MatchAgainstType = @piMatchAgainstType
 		WHERE ID = @piID;
 
-		DELETE FROM ASRSysTalentReportColumns
+		DELETE FROM ASRSysTalentReportDetails
 			WHERE TalentReportID = @piID;
 
 		EXEC [dbo].[spsys_saveobjectcategories] 38, @piID, @piCategoryID;
@@ -44598,12 +44422,13 @@ BEGIN
 			IF @iCount = 5 SET @fIsNumeric = convert(bit, @sColumnParam);
 			IF @iCount = 6 SET @iSortOrderSequence = convert(integer, @sColumnParam);
 			IF @iCount = 7 SET @sSortOrder = @sColumnParam;
+			IF @iCount = 9 SET @sHeading = @sColumnParam;
 
 			SET @iCount = @iCount + 1;
 		END
 
-		INSERT ASRSysTalentReportColumns (TalentReportID, Type, ColumnID, SortOrderSequence, SortOrder, Size, Decimals)
-			VALUES (@piID, @sType, @iColExprID, @iSortOrderSequence, @sSortOrder, @iSize, @iDP);
+		INSERT ASRSysTalentReportDetails (TalentReportID, ColType, ColExprID, ColSequence, SortOrderSeq, SortOrderDirection, ColSize, ColDecs, ColHeading)
+			VALUES (@piID, @sType, @iColExprID, @iSortOrderSequence, @iSortOrderSequence, @sSortOrder, @iSize, @iDP, @sHeading);
 
 	END
 
@@ -44619,7 +44444,7 @@ BEGIN
 						OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
 					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
-						WHERE sysusers.Name = ASRSysGroupPermissions.groupname
+					WHERE sysusers.Name = ASRSysGroupPermissions.groupname
 						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN 'RW'
 				ELSE 'HD'
 			END
@@ -44640,7 +44465,7 @@ BEGIN
 			SET @sAccess = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1);
 			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)));
 	
-			IF EXISTS (SELECT * FROM ASRSysCustomReportAccess
+			IF EXISTS (SELECT * FROM ASRSysTalentReportAccess
 				WHERE ID = @piID
 				AND groupName = @sGroup
 				AND access <> 'RW')
@@ -46972,7 +46797,7 @@ BEGIN
 	SET @psHiddenCalcs = '';
 
 	exec spASRIntSysSecMgr @fSysSecMgr OUTPUT;
-
+	
 	IF @piUtilID > 0
 	BEGIN
 		/* Check if this definition has been changed by another user. */

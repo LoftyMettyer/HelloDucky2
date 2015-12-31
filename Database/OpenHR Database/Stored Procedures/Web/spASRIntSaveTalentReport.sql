@@ -133,7 +133,7 @@ BEGIN
 			MatchAgainstType = @piMatchAgainstType
 		WHERE ID = @piID;
 
-		DELETE FROM ASRSysTalentReportColumns
+		DELETE FROM ASRSysTalentReportDetails
 			WHERE TalentReportID = @piID;
 
 		EXEC [dbo].[spsys_saveobjectcategories] 38, @piID, @piCategoryID;
@@ -189,12 +189,13 @@ BEGIN
 			IF @iCount = 5 SET @fIsNumeric = convert(bit, @sColumnParam);
 			IF @iCount = 6 SET @iSortOrderSequence = convert(integer, @sColumnParam);
 			IF @iCount = 7 SET @sSortOrder = @sColumnParam;
+			IF @iCount = 9 SET @sHeading = @sColumnParam;
 
 			SET @iCount = @iCount + 1;
 		END
 
-		INSERT ASRSysTalentReportColumns (TalentReportID, Type, ColumnID, SortOrderSequence, SortOrder, Size, Decimals)
-			VALUES (@piID, @sType, @iColExprID, @iSortOrderSequence, @sSortOrder, @iSize, @iDP);
+		INSERT ASRSysTalentReportDetails (TalentReportID, ColType, ColExprID, ColSequence, SortOrderSeq, SortOrderDirection, ColSize, ColDecs, ColHeading)
+			VALUES (@piID, @sType, @iColExprID, @iSortOrderSequence, @iSortOrderSequence, @sSortOrder, @iSize, @iDP, @sHeading);
 
 	END
 
@@ -231,7 +232,7 @@ BEGIN
 			SET @sAccess = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1);
 			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)));
 	
-			IF EXISTS (SELECT * FROM ASRSysCustomReportAccess
+			IF EXISTS (SELECT * FROM ASRSysTalentReportAccess
 				WHERE ID = @piID
 				AND groupName = @sGroup
 				AND access <> 'RW')

@@ -2606,18 +2606,17 @@ PRINT 'Step - Talent Management Reports'
 			[Access] [varchar](2) NOT NULL,
 			[ID] [int] NOT NULL)';
 
-		EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysTalentReportColumns](
+		EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysTalentReportDetails](
 			[ID] [int] IDENTITY(1,1) NOT NULL,
 			[TalentReportID] [int] NOT NULL,
-			[Type] varchar(1) NOT NULL,
-			[ColumnID] [int] NOT NULL,
-			[sortOrder] [varchar](4) NULL,
-			[SortOrderSequence] [int] NULL,
-			[Size] [int] NULL,
-			[Decimals] [int] NULL,
-			[ColumnOrder] [int] NULL,
-			[StartOnNewLine] [bit] NULL)';
-
+			[ColType] varchar(1) NOT NULL,
+			[ColExprID] [int] NOT NULL,
+			[ColSize] [int] NULL,
+			[ColDecs] [int] NULL,
+			[ColHeading] [varchar](255) NULL,
+			[ColSequence] [int] NULL,
+			[SortOrderSeq] [int] NULL,
+			[SortOrderDirection] [varchar](4) NULL)';
 		END
 
 
