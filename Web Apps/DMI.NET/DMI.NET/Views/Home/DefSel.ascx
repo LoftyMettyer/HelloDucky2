@@ -860,7 +860,7 @@
     	}
     	var defSelType = "<%:iDefSelType%>";		
 		
-    	if ( defSelType === "utlCustomReport" || defSelType === "utlCrossTab" || defSelType === "utlCalendarReport" || defSelType === "utlMailMerge" || defSelType === "utlNineBoxGrid")
+      if ( defSelType === "utlCustomReport" || defSelType === "utlCrossTab" || defSelType === "utlCalendarReport" || defSelType === "utlMailMerge" || defSelType === "utlNineBoxGrid" || defSelType === "TalentReport" || defSelType === "utlMatchReport")
     	{
     		$("#divCategory").show();
     	}

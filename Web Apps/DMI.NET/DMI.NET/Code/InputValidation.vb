@@ -162,6 +162,7 @@
 				.Add("UTLCOLUMN")
 				.Add("UTLNINEBOXGRID")
 				.Add("UTLABSENCEBREAKDOWNCONFIGURATION")
+        .Add("TALENT")
 			End With
 
 			ListOfCT_Modes = New List(Of String)
