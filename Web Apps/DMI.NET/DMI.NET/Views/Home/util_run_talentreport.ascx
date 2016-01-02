@@ -24,7 +24,8 @@
 		},
 		gridLoaded = function () {
 			setTimeout(function () {
-				var index = getColumnIndexByName('talentchart');
+
+			  var index = getColumnIndexByName('talentchart');
 
 				$('#gridReportData').find('tr.jqgrow td:nth-child(' + (index + 1) + ')').each(function () {
 					var ar;
@@ -84,6 +85,10 @@
 		sortname: 'matchscore',
 		viewrecords: true,
 		sortorder: "desc",
-		loadComplete: gridLoaded
+		loadComplete: gridLoaded,
+		loadError : function(xhr, st, err) {
+		  OpenHR.modalPrompt(xhr.responseJSON, 2, "", "");
+		  closeclick();
+		}
 	});
 </script>

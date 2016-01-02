@@ -218,11 +218,9 @@ Public Class MatchReportRun
 		  If mblnNoRecords Then
 			  Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			  Logs.AddDetailEntry(mstrErrorMessage)
-			  mstrErrorMessage = "Completed successfully." & vbCrLf & mstrErrorMessage
 			  fOK = True
 		  ElseIf fOK Then 
 			  Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
-			  mstrErrorMessage = "Completed successfully."
 		  ElseIf mblnUserCancelled Then 
 			  Logs.ChangeHeaderStatus(EventLog_Status.elsCancelled)
 			  mstrErrorMessage = "Cancelled by user."
@@ -230,9 +228,7 @@ Public Class MatchReportRun
 			  'Only details records for failures !
 			  Logs.AddDetailEntry(mstrErrorMessage)
 			  Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
-			  mstrErrorMessage = "Failed." & vbCrLf & vbCrLf & mstrErrorMessage
 		  End If
-
 
 	  Catch ex As Exception
         fOK = False
@@ -1407,9 +1403,8 @@ Public Class MatchReportRun
       Table1ChildTableID = CInt(objRow("Table1ChildTableID"))
 
 			If Not TablePermission(CInt(objRow("Table1ID"))) Then
-				mstrErrorMessage = "You do Not have permission to read the '" & objRow("Table1Name").ToString() & "' table either directly or through any views."
-				GetMatchReportDefinition = False
-				Exit Function
+				mstrErrorMessage = "You do not have permission to read the '" & objTable.Name & "' table either directly or through any views."
+				Return False
 			End If
 			
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -1433,9 +1428,8 @@ Public Class MatchReportRun
         Table2ChildTableID = objRow("Table2ChildTableID")
 							
 				If Not TablePermission(mlngTable2ID) Then
-					mstrErrorMessage = "You do not have permission to read the '" & objRow("Table2Name").ToString() & "' table either directly or through any views."
-					GetMatchReportDefinition = False
-					Exit Function
+					mstrErrorMessage = "You do not have permission to read the '" & objTable.Name & "' table either directly or through any views."
+					return False
 				End If
 			End If
 			

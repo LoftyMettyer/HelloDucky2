@@ -2611,22 +2611,30 @@ Namespace Controllers
 			matchReport.MatchReportID = CInt(Session("utilid"))
 			matchReport.RunMatchReport()
 
-			Dim rows As New List(Of Dictionary(Of String, Object))()
-			Dim row As Dictionary(Of String, Object)
+		  If len(matchReport.ErrorString) > 0 Then
+        Response.StatusCode = HttpStatusCode.BadRequest
+        Return Json(matchReport.ErrorString, JsonRequestBehavior.AllowGet)
+      Else
 
-			For Each dr As DataRow In matchReport.ReportDataTable.Rows
-				row = New Dictionary(Of String, Object)()
+			  Dim rows As New List(Of Dictionary(Of String, Object))()
+			  Dim row As Dictionary(Of String, Object)
 
-				For Each col As DataColumn In matchReport.ReportDataTable.Columns
-					row.Add(col.ColumnName, dr(col))
-				Next
-				rows.Add(row)
-			Next
+			  For Each dr As DataRow In matchReport.ReportDataTable.Rows
+				  row = New Dictionary(Of String, Object)()
 
-  		Dim colModel As List(Of Object) = JqGridColModel.CreateColModel(matchReport.ReportDataTable, "", "")
+				  For Each col As DataColumn In matchReport.ReportDataTable.Columns
+					  row.Add(col.ColumnName, dr(col))
+				  Next
+				  rows.Add(row)
+			  Next
 
-			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = rows, .colmodel = colModel}
-			Return Json(results, JsonRequestBehavior.AllowGet)
+  		  Dim colModel As List(Of Object) = JqGridColModel.CreateColModel(matchReport.ReportDataTable, "", "")
+
+			  Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = rows, .colmodel = colModel}
+			  Return Json(results, JsonRequestBehavior.AllowGet)
+        
+ 		  End If
+
 
 		End Function
 
