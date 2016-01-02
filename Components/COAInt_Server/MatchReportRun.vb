@@ -212,7 +212,7 @@ Public Class MatchReportRun
 		  End If
 		
 
-		  AccessLog.UtilUpdateLastRun(UtilityType.utlMatchReport, mlngMatchReportID)
+		  AccessLog.UtilUpdateLastRun(UtilityType, mlngMatchReportID)
 		  mblnUserCancelled = (InStr(LCase(mstrErrorMessage), "cancelled by user") > 0)
 		
 		  If mblnNoRecords Then

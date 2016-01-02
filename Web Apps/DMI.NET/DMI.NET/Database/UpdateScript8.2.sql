@@ -17263,10 +17263,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntDeleteUtility]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntCheckForUsage]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntCheckForUsage]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntCheckCanMakeHidden]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntCheckCanMakeHidden]
 GO
@@ -24926,73 +24922,6 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 			RETURN
 		END
 	END
-END
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntCheckForUsage]    Script Date: 13/09/2013 08:59:33 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntCheckForUsage]  
-(
-	@intType int, 
-	@intID int
-)
-AS
-BEGIN
-	DECLARE @strSQL varchar(500)
-	DECLARE @strType varchar(100)
-	IF @intType = 1
-	BEGIN
-		SET @strType = 'Cross Tab'
-		SET @strSQL = 'SELECT DISTINCT ''Batch Job: '', AsrSysBatchJobName.Name, AsrSysBatchJobName.UserName, AsrSysBatchJobName.Access, AsrSysBatchJobDetails.BatchJobNameID FROM ASRSysBatchJobDetails, AsrSysBatchJobName WHERE AsrSysBatchJobDetails.JobType = ''' +  @strType + ''' AND AsrSysBatchJobDetails.JobID = ' + convert(varchar(100), @intID) + 'AND AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID'
-	END
-	IF @intType = 2
-	BEGIN
-		SET @strType = 'Custom Report'
-		SET @strSQL = 'SELECT DISTINCT ''Batch Job: '', AsrSysBatchJobName.Name, AsrSysBatchJobName.UserName, AsrSysBatchJobName.Access, AsrSysBatchJobDetails.BatchJobNameID FROM ASRSysBatchJobDetails, AsrSysBatchJobName WHERE AsrSysBatchJobDetails.JobType = ''' +  @strType + ''' AND AsrSysBatchJobDetails.JobID = ' + convert(varchar(100), @intID) + 'AND AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID'
-	END
-	IF @intType = 3
-	BEGIN
-		SET @strType = 'Data Transfer'
-		SET @strSQL = 'SELECT DISTINCT ''Batch Job: '', AsrSysBatchJobName.Name, AsrSysBatchJobName.UserName, AsrSysBatchJobName.Access, AsrSysBatchJobDetails.BatchJobNameID FROM ASRSysBatchJobDetails, AsrSysBatchJobName WHERE AsrSysBatchJobDetails.JobType = ''' +  @strType + ''' AND AsrSysBatchJobDetails.JobID = ' + convert(varchar(100), @intID) + 'AND AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID'
-	END
-	IF @intType = 4
-	BEGIN
-		SET @strType = 'Export'
-		SET @strSQL = 'SELECT DISTINCT ''Batch Job: '', AsrSysBatchJobName.Name, AsrSysBatchJobName.UserName, AsrSysBatchJobName.Access, AsrSysBatchJobDetails.BatchJobNameID FROM ASRSysBatchJobDetails, AsrSysBatchJobName WHERE AsrSysBatchJobDetails.JobType = ''' +  @strType + ''' AND AsrSysBatchJobDetails.JobID = ' + convert(varchar(100), @intID) + 'AND AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID'
-	END
-	IF @intType = 5
-	BEGIN
-		SET @strType = 'Global Add'
-		SET @strSQL = 'SELECT DISTINCT ''Batch Job: '', AsrSysBatchJobName.Name, AsrSysBatchJobName.UserName, AsrSysBatchJobName.Access, AsrSysBatchJobDetails.BatchJobNameID FROM ASRSysBatchJobDetails, AsrSysBatchJobName WHERE AsrSysBatchJobDetails.JobType = ''' +  @strType + ''' AND AsrSysBatchJobDetails.JobID = ' + convert(varchar(100), @intID) + 'AND AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID'
-	END
-	IF @intType = 6
-	BEGIN
-		SET @strType = 'Global Update'
-		SET @strSQL = 'SELECT DISTINCT ''Batch Job: '', AsrSysBatchJobName.Name, AsrSysBatchJobName.UserName, AsrSysBatchJobName.Access, AsrSysBatchJobDetails.BatchJobNameID FROM ASRSysBatchJobDetails, AsrSysBatchJobName WHERE AsrSysBatchJobDetails.JobType = ''' +  @strType + ''' AND AsrSysBatchJobDetails.JobID = ' + convert(varchar(100), @intID) + 'AND AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID'
-	END
-	IF @intType = 7
-	BEGIN
-		SET @strType = 'Global Delete'
-		SET @strSQL = 'SELECT DISTINCT ''Batch Job: '', AsrSysBatchJobName.Name, AsrSysBatchJobName.UserName, AsrSysBatchJobName.Access, AsrSysBatchJobDetails.BatchJobNameID FROM ASRSysBatchJobDetails, AsrSysBatchJobName WHERE AsrSysBatchJobDetails.JobType = ''' +  @strType + ''' AND AsrSysBatchJobDetails.JobID = ' + convert(varchar(100), @intID) + 'AND AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID'
-	END
-	IF @intType = 8
-	BEGIN
-		SET @strType = 'Import'
-		SET @strSQL = 'SELECT DISTINCT ''Batch Job: '', AsrSysBatchJobName.Name, AsrSysBatchJobName.UserName, AsrSysBatchJobName.Access, AsrSysBatchJobDetails.BatchJobNameID FROM ASRSysBatchJobDetails, AsrSysBatchJobName WHERE AsrSysBatchJobDetails.JobType = ''' +  @strType + ''' AND AsrSysBatchJobDetails.JobID = ' + convert(varchar(100), @intID) + 'AND AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID'
-	END
-	IF @intType = 9
-	BEGIN
-		SET @strType = 'Mail Merge'
-		SET @strSQL = 'SELECT DISTINCT ''Batch Job: '', AsrSysBatchJobName.Name, AsrSysBatchJobName.UserName, AsrSysBatchJobName.Access, AsrSysBatchJobDetails.BatchJobNameID FROM ASRSysBatchJobDetails, AsrSysBatchJobName WHERE AsrSysBatchJobDetails.JobType = ''' +  @strType + ''' AND AsrSysBatchJobDetails.JobID = ' + convert(varchar(100), @intID) + 'AND AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID'
-	END
-	/* Repeat for all other types eventually*/
-	EXECUTE (@strSQL)
 END
 
 GO
@@ -39030,7 +38959,9 @@ IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASR
 	DROP PROCEDURE [dbo].[sp_ASRIntGetTablesInfo]
 GO
 
-
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntCheckForUsage]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntCheckForUsage]
+GO
 
 
 -- Functions we do want to keep
@@ -42102,19 +42033,9 @@ BEGIN
 					ASRSysCrossTabAccess.Access
 				FROM ASRSysCrossTab
 				INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID
-					AND ASRSysCrossTabAccess.groupname = @sRoleName					
+					AND ASRSysCrossTabAccess.groupname = @sRoleName
 				WHERE PickListID =@intID
 					AND ASRSysCrossTab.CrossTabType <> 4
-			UNION
-				SELECT DISTINCT '9-Box Grid Report', 
-					ASRSysCrossTab.Name, 
-					ASRSysCrossTab.UserName, 
-					ASRSysCrossTabAccess.Access
-				FROM ASRSysCrossTab
-				INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID
-					AND ASRSysCrossTabAccess.groupname = @sRoleName					
-				WHERE PickListID =@intID
-					AND ASRSysCrossTab.CrossTabType = 4
 			UNION
 				SELECT DISTINCT 'Data Transfer',
 					ASRSysDataTransferName.Name,
@@ -42124,6 +42045,22 @@ BEGIN
 				INNER JOIN ASRSysDataTransferAccess ON ASRSysDataTransferName.DataTransferID = ASRSysDataTransferAccess.ID
 					AND ASRSysDataTransferAccess.groupname = @sRoleName
 				WHERE ASRSysDataTransferName.pickListID = @intID
+			UNION
+				SELECT DISTINCT '9-Box Grid Report', 
+					ASRSysCrossTab.Name, 
+					ASRSysCrossTab.UserName, 
+					ASRSysCrossTabAccess.Access
+				FROM ASRSysCrossTab
+				INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID
+					AND ASRSysCrossTabAccess.groupname = @sRoleName
+				WHERE PickListID =@intID
+					AND ASRSysCrossTab.CrossTabType = 4
+			UNION
+				SELECT DISTINCT 'Talent Report', n.Name, n.UserName, a.Access
+				FROM ASRSysTalentReports n
+				INNER JOIN ASRSysTalentReportAccess a ON n.ID = a.ID
+					AND a.groupname = @sRoleName
+				WHERE n.BasePicklistID = @intID OR n.MatchPicklistID = @intID
 			UNION
 				SELECT DISTINCT 'Export',
 					ASRSysExportName.Name,
@@ -42257,9 +42194,15 @@ BEGIN
 					ASRSysCrossTabAccess.Access
 				FROM ASRSysCrossTab
 				INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID
-					AND ASRSysCrossTabAccess.groupname = @sRoleName					
+					AND ASRSysCrossTabAccess.groupname = @sRoleName
 				WHERE ASRSysCrossTab.FilterID = @intID
 					AND ASRSysCrossTab.CrossTabType = 4
+			UNION
+				SELECT DISTINCT 'Talent Report', n.Name, n.UserName, a.Access
+				FROM ASRSysTalentReports n
+				INNER JOIN ASRSysTalentReportAccess a ON n.ID = a.ID
+					AND a.groupname = @sRoleName
+				WHERE n.BaseFilterID = @intID OR n.MatchFilterID = @intID
 			UNION
 				SELECT DISTINCT 'Custom Report', 
 					ASRSysCustomReportsName.Name, 
@@ -44481,7 +44424,7 @@ BEGIN
 		/* Update the util access log. */
 		INSERT INTO ASRSysUtilAccessLog 
 			(type, utilID, createdBy, createdDate, createdHost, savedBy, savedDate, savedHost)
-		VALUES (2, @piID, system_user, getdate(), host_name(), system_user, getdate(), host_name());
+		VALUES (38, @piID, system_user, getdate(), host_name(), system_user, getdate(), host_name());
 	END
 	ELSE
 	BEGIN
@@ -44490,7 +44433,7 @@ BEGIN
 		SELECT @iCount = COUNT(*) 
 		FROM ASRSysUtilAccessLog
 		WHERE utilID = @piID
-			AND type = 2;
+			AND type = 38;
 
 		IF @iCount = 0 
 		BEGIN

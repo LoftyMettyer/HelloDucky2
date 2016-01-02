@@ -248,7 +248,7 @@ BEGIN
 		/* Update the util access log. */
 		INSERT INTO ASRSysUtilAccessLog 
 			(type, utilID, createdBy, createdDate, createdHost, savedBy, savedDate, savedHost)
-		VALUES (2, @piID, system_user, getdate(), host_name(), system_user, getdate(), host_name());
+		VALUES (38, @piID, system_user, getdate(), host_name(), system_user, getdate(), host_name());
 	END
 	ELSE
 	BEGIN
@@ -257,7 +257,7 @@ BEGIN
 		SELECT @iCount = COUNT(*) 
 		FROM ASRSysUtilAccessLog
 		WHERE utilID = @piID
-			AND type = 2;
+			AND type = 38;
 
 		IF @iCount = 0 
 		BEGIN

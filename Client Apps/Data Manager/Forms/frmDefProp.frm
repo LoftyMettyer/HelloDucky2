@@ -291,7 +291,7 @@ Private Sub Form_Resize()
   
 End Sub
 
-Public Sub PopulateUtil(utlType As UtilityType, lngID As Long)
+Public Sub PopulateUtil(utlType As utilityType, lngID As Long)
   
   Call GetData(utlType, lngID)
   Call DrawControls(utlType)
@@ -307,7 +307,7 @@ Public Sub PopulateUtil(utlType As UtilityType, lngID As Long)
 End Sub
 
 
-Private Sub GetData(utlType As UtilityType, lngID As Long)
+Private Sub GetData(utlType As utilityType, lngID As Long)
 
   Dim datData As clsDataAccess
   Dim rsTemp As Recordset
@@ -343,7 +343,7 @@ Private Sub GetData(utlType As UtilityType, lngID As Long)
 End Sub
 
 
-Private Sub DrawControls(utlType As UtilityType)
+Private Sub DrawControls(utlType As utilityType)
 
   Dim blnUsage As Boolean
   Dim blnLastRun As Boolean
@@ -444,7 +444,7 @@ Private Sub cmdOK_Click()
 End Sub
 
 
-Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boolean
+Public Function CheckForUseage(piType As utilityType, plngItemID As Long) As Boolean
   
   Dim strSQL As String
   Dim rsTemp As Recordset
@@ -539,6 +539,23 @@ Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boo
         "   AND ASRSysCrossTab.CrossTabType = 4")
     End If
     
+    'Talent Reports
+    If gfCurrentUserIsSysSecMgr Then
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT 'Talent Report'," & _
+        " n.Name, n.UserName," & _
+        " '" & ACCESS_READWRITE & "' AS access" & _
+        " FROM ASRSysTalentReports n" & _
+        " WHERE n.BasePicklistID = " & strID & " OR n.MatchPicklistID = " & strID)
+    Else
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT 'Talent Report'," & _
+        " n.Name, n.UserName, a.Access" & _
+        " FROM ASRSysCrossTab n" & _
+        " INNER JOIN ASRSysCrossTabAccess a ON n.ID = a.ID" & _
+        " INNER JOIN sysusers b ON a.groupname = b.name AND b.name = '" & gsUserGroup & "'" & _
+        " WHERE n.BasePicklistID = " & strID & " OR n.MatchPicklistID = " & strID)
+    End If
 
     'Data Transfer
     If gfCurrentUserIsSysSecMgr Then
@@ -773,6 +790,24 @@ Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boo
         "   AND b.name = '" & gsUserGroup & "'" & _
         " WHERE ASRSysCrossTab.FilterID = " & strID & _
         "   AND ASRSysCrossTab.CrossTabType <> 4")
+    End If
+
+    'Talent Reports
+    If gfCurrentUserIsSysSecMgr Then
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT 'Talent Report'," & _
+        " n.Name, n.UserName," & _
+        " '" & ACCESS_READWRITE & "' AS access" & _
+        " FROM ASRSysTalentReports n" & _
+        " WHERE n.BaseFilterID = " & strID & " OR n.MatchFilterID = " & strID)
+    Else
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT 'Talent Report'," & _
+        " n.Name, n.UserName, a.Access" & _
+        " FROM ASRSysCrossTab n" & _
+        " INNER JOIN ASRSysCrossTabAccess a ON n.ID = a.ID" & _
+        " INNER JOIN sysusers b ON a.groupname = b.name AND b.name = '" & gsUserGroup & "'" & _
+        " WHERE n.BaseFilterID = " & strID & " OR n.MatchFilterID = " & strID)
     End If
 
     '9 Box Grid
@@ -1726,11 +1761,11 @@ Private Sub GetNameWhereUsed(strSQL As String, Optional blnBatchJob As Boolean) 
   
   Do While Not rsTemp.EOF
     
-		blnHidden = (LCase(Trim(rsTemp!UserName)) <> LCase(Trim(datGeneral.UserNameForSQL)) _
-								And rsTemp!Access = ACCESS_HIDDEN)
+                blnHidden = (LCase(Trim(rsTemp!userName)) <> LCase(Trim(datGeneral.UserNameForSQL)) _
+                                                                And rsTemp!Access = ACCESS_HIDDEN)
     
     If blnHidden Then
-			strName = rsTemp(0) & ": <Hidden by " & StrConv(Trim(rsTemp!UserName), vbProperCase) & ">"
+                        strName = rsTemp(0) & ": <Hidden by " & StrConv(Trim(rsTemp!userName), vbProperCase) & ">"
     Else
       If blnBatchJob Then
         strName = Right("  " & CStr(rsTemp.Fields("JobOrder").Value + 1), 3) & _
@@ -1755,7 +1790,7 @@ Private Sub GetNameWhereUsed(strSQL As String, Optional blnBatchJob As Boolean) 
 End Sub
 
 
-Private Sub CheckModuleSetup(piType As UtilityType, plngItemID As Long)
+Private Sub CheckModuleSetup(piType As utilityType, plngItemID As Long)
   
   Dim rsResults As ADODB.Recordset
   Dim strSQL As String
@@ -1885,7 +1920,7 @@ Private Function GetExprRootIDs(strID As String, Optional blnOrders As Boolean =
 End Function
 
 
-Private Sub GetRecordCount(utlType As UtilityType, lngID As Long)
+Private Sub GetRecordCount(utlType As utilityType, lngID As Long)
 
   Dim rsTemp As Recordset
   Dim strSQL As String
@@ -1907,7 +1942,7 @@ Private Sub GetRecordCount(utlType As UtilityType, lngID As Long)
     End If
     
     strSQL = "SELECT COUNT(*) FROM " & _
-             gcoTablePrivileges.Item(objFilterExpr.BaseTableName).RealSource & _
+             gcoTablePrivileges.item(objFilterExpr.BaseTableName).RealSource & _
              " WHERE ID IN (" & strFilterCode & ")"
     Set rsTemp = datData.OpenRecordset(strSQL, adOpenForwardOnly, adLockReadOnly)
     

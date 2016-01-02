@@ -705,6 +705,24 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
         " OR ASRSysMatchReportName.Table2Filter = " & strID)
     End If
   
+    'Talent Reports
+    If gfCurrentUserIsSysSecMgr Then
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT 'Talent Report'," & _
+        " n.Name, n.UserName," & _
+        " '" & ACCESS_READWRITE & "' AS access" & _
+        " FROM ASRSysTalentReports n" & _
+        " WHERE n.BaseFilterID = " & strID & " OR n.MatchFilterID = " & strID)
+    Else
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT 'Talent Report'," & _
+        " n.Name, n.UserName, a.Access" & _
+        " FROM ASRSysCrossTab n" & _
+        " INNER JOIN ASRSysCrossTabAccess a ON n.ID = a.ID" & _
+        " INNER JOIN sysusers b ON a.groupname = b.name AND b.name = '" & gsUserGroup & "'" & _
+        " WHERE n.BaseFilterID = " & strID & " OR n.MatchFilterID = " & strID)
+    End If
+  
   Case "CALCULATION"
     
     strRootIDs = GetExprRootIDs(strID)

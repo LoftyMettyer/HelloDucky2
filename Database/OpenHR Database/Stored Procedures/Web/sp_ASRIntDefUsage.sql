@@ -153,6 +153,12 @@ BEGIN
 				WHERE PickListID =@intID
 					AND ASRSysCrossTab.CrossTabType = 4
 			UNION
+				SELECT DISTINCT 'Talent Report', n.Name, n.UserName, a.Access
+				FROM ASRSysTalentReports n
+				INNER JOIN ASRSysTalentReportAccess a ON n.ID = a.ID
+					AND a.groupname = @sRoleName
+				WHERE n.BasePicklistID = @intID OR n.MatchPicklistID = @intID
+			UNION
 				SELECT DISTINCT 'Export',
 					ASRSysExportName.Name,
 					ASRSysExportName.UserName,
@@ -288,6 +294,12 @@ BEGIN
 					AND ASRSysCrossTabAccess.groupname = @sRoleName
 				WHERE ASRSysCrossTab.FilterID = @intID
 					AND ASRSysCrossTab.CrossTabType = 4
+			UNION
+				SELECT DISTINCT 'Talent Report', n.Name, n.UserName, a.Access
+				FROM ASRSysTalentReports n
+				INNER JOIN ASRSysTalentReportAccess a ON n.ID = a.ID
+					AND a.groupname = @sRoleName
+				WHERE n.BaseFilterID = @intID OR n.MatchFilterID = @intID
 			UNION
 				SELECT DISTINCT 'Custom Report', 
 					ASRSysCustomReportsName.Name, 
