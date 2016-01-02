@@ -107,7 +107,7 @@ Namespace Controllers
 				'--------------------------------------------
 				' Save the DefSel 'only mine' settings.
 				'--------------------------------------------
-				For i = 0 To 21
+				For i = 0 To 22
 					Select Case i
 						Case 0
 							sType = "BatchJobs"
@@ -153,6 +153,8 @@ Namespace Controllers
 							sType = "SuccessionPlanning"
 						Case 21
 							sType = "NineBoxGrid"
+			      Case 22
+				      sType ="TalentReports"
 
 					End Select
 
@@ -1266,6 +1268,9 @@ Namespace Controllers
 
 				Case UtilityType.utlNineBoxGrid
 					sUtilTypeName = "9-box grid report"
+
+ 				Case UtilityType.TalentReport
+					sUtilTypeName = "talent report"
 
 			End Select
 
@@ -5639,6 +5644,7 @@ Namespace Controllers
 				Dim isCalendarReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCalendarReport.ToSecurityPrefix, "RUN").ToString.ToLower
 				Dim isCrossTabReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCrossTab.ToSecurityPrefix, "RUN").ToString.ToLower
 				Dim isNineBoxGridRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlNineBoxGrid.ToSecurityPrefix, "RUN").ToString.ToLower
+				Dim isTalentRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.TalentReport.ToSecurityPrefix, "RUN").ToString.ToLower
 
 				Dim isRunAllowed As Boolean = False
 				Dim reportType As UtilityType
@@ -5659,6 +5665,8 @@ Namespace Controllers
 							isRunAllowed = isCrossTabReportRunPermitted
 						Case UtilityType.utlNineBoxGrid
 							isRunAllowed = isNineBoxGridRunPermitted
+						Case UtilityType.TalentReport
+							isRunAllowed = isTalentRunPermitted
 					End Select
 
 					' If edit/view allowed for the MailMerge and RUN allowed for the customreport, calendarreport, crosstab and ninebox grid then 

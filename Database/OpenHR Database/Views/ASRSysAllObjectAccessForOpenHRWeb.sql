@@ -38,7 +38,10 @@ CREATE VIEW [dbo].[ASRSysAllObjectAccessForOpenHRWeb]
 				WHEN 1 THEN 23
 				WHEN 2 THEN 24 
 			END	AS [objectType], a.* FROM ASRSysMatchReportAccess a
-			INNER JOIN ASRSysMatchReportName m ON a.ID = m.MatchReportID			
+			INNER JOIN ASRSysMatchReportName m ON a.ID = m.MatchReportID
+		UNION
+		SELECT 38 AS [objectType], a.* FROM ASRSysTalentReportAccess a
+			INNER JOIN ASRSysTalentReports m ON a.ID = m.ID			
 		UNION
 		SELECT 17 AS [objectType], * FROM ASRSysCalendarReportAccess
 		UNION

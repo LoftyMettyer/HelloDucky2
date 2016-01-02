@@ -401,6 +401,9 @@ Public Sub Initialise(piAction As groupAction)
     .AddItem "Succession Planning" & _
       vbTab & AccessDescription(ACCESS_HIDDEN) & _
       vbTab & utlSuccession
+    .AddItem "Talent Report" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlTalent
     End With
     
     msAllAccessSetting = ACCESSDESC_HIDDEN

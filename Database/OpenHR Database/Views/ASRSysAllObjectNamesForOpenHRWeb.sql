@@ -47,7 +47,9 @@ AS
 		UNION
 		SELECT 30 AS [objectType], 0 AS ID, 'Turnover', '' AS Username, '' AS Description
 		UNION
-		SELECT 31 AS [objectType], 0 AS ID, 'Stability Index', '' AS Username, '' AS Description;		
+		SELECT 31 AS [objectType], 0 AS ID, 'Stability Index', '' AS Username, '' AS Description
+		UNION
+		SELECT 38 AS [objectType], ID, Name, Username, description FROM ASRSysTalentReports
 
 GO
 

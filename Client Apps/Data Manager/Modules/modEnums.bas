@@ -77,6 +77,7 @@ Public Enum UtilityType
   utlTable = 33
   utlColumn = 34
   utlNineBoxGrid = 35
+  utlTalent = 38
 End Enum
 
 ' Screen Types
@@ -248,7 +249,7 @@ Public Enum EventLog_Type
   eltAccordExport = 24
   eltWorkflowRebuild = 25
   elt9BoxGrid = 35
-  
+  eltTalentReport = 38
 End Enum
 
 Public Enum EventLog_Status

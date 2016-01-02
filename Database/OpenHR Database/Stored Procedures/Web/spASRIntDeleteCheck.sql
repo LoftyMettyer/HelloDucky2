@@ -48,6 +48,14 @@ BEGIN
 		SET @sIDColumnName = 'CrossTabID';
 		SET @fNewAccess = 1;
  	END
+
+	IF @piUtilityType = 38 /* Talent Management Report*/
+	BEGIN
+		SET @sTableName = 'ASRSysTalentReports';
+		SET @sAccessTableName = 'ASRSysTalentReportAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;
+ 	END
     
 	IF @piUtilityType = 2 /* Custom Report */
 	BEGIN

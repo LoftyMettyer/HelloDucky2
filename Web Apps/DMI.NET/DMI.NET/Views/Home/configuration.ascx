@@ -3,85 +3,87 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <%
-	Dim sTemp As String
-	
-	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
-		
-	' Get the DefSel 'only mine' settings.
-	For i = 0 To 21
-		sTemp = "onlymine "
+  Dim sTemp As String
 
-		Select Case i
-			Case 0
-				sTemp = sTemp & "BatchJobs"
-			Case 1
-				sTemp = sTemp & "Calculations"
-			Case 2
-				sTemp = sTemp & "CrossTabs"
-			Case 3
-				sTemp = sTemp & "CustomReports"
-			Case 4
-				sTemp = sTemp & "DataTransfer"
-			Case 5
-				sTemp = sTemp & "Export"
-			Case 6
-				sTemp = sTemp & "Filters"
-			Case 7
-				sTemp = sTemp & "GlobalAdd"
-			Case 8
-				sTemp = sTemp & "GlobalUpdate"
-			Case 9
-				sTemp = sTemp & "GlobalDelete"
-			Case 10
-				sTemp = sTemp & "Import"
-			Case 11
-				sTemp = sTemp & "MailMerge"
-			Case 12
-				sTemp = sTemp & "Picklists"
-			Case 13
-				sTemp = sTemp & "CalendarReports"
-			Case 14
-				sTemp = sTemp & "Labels"
-			Case 15
-				sTemp = sTemp & "LabelDefinition"
-			Case 16
-				sTemp = sTemp & "MatchReports"
-			Case 17
-				sTemp = sTemp & "CareerProgression"
-			Case 18
-				sTemp = sTemp & "EmailGroups"
-			Case 19
-				sTemp = sTemp & "RecordProfile"
-			Case 20
-				sTemp = sTemp & "SuccessionPlanning"
-			Case 21
-				sTemp = sTemp & "NineBoxGrid"
-		End Select
+  Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
-		Session(sTemp) = CLng(objDatabase.GetUserSetting("defsel", sTemp, 0))
+  ' Get the DefSel 'only mine' settings.
+  For i = 0 To 22
+    sTemp = "onlymine "
 
-	Next
+    Select Case i
+      Case 0
+        sTemp = sTemp & "BatchJobs"
+      Case 1
+        sTemp = sTemp & "Calculations"
+      Case 2
+        sTemp = sTemp & "CrossTabs"
+      Case 3
+        sTemp = sTemp & "CustomReports"
+      Case 4
+        sTemp = sTemp & "DataTransfer"
+      Case 5
+        sTemp = sTemp & "Export"
+      Case 6
+        sTemp = sTemp & "Filters"
+      Case 7
+        sTemp = sTemp & "GlobalAdd"
+      Case 8
+        sTemp = sTemp & "GlobalUpdate"
+      Case 9
+        sTemp = sTemp & "GlobalDelete"
+      Case 10
+        sTemp = sTemp & "Import"
+      Case 11
+        sTemp = sTemp & "MailMerge"
+      Case 12
+        sTemp = sTemp & "Picklists"
+      Case 13
+        sTemp = sTemp & "CalendarReports"
+      Case 14
+        sTemp = sTemp & "Labels"
+      Case 15
+        sTemp = sTemp & "LabelDefinition"
+      Case 16
+        sTemp = sTemp & "MatchReports"
+      Case 17
+        sTemp = sTemp & "CareerProgression"
+      Case 18
+        sTemp = sTemp & "EmailGroups"
+      Case 19
+        sTemp = sTemp & "RecordProfile"
+      Case 20
+        sTemp = sTemp & "SuccessionPlanning"
+      Case 21
+        sTemp = sTemp & "NineBoxGrid"
+			Case 22
+				sTemp = sTemp & "TalentReports"
+    End Select
 
-	' Get the Utility Warning settings.
-	For i = 0 To 4
-		sTemp = "warning "
+    Session(sTemp) = CLng(objDatabase.GetUserSetting("defsel", sTemp, 0))
 
-		Select Case i
-			Case 0
-				sTemp = sTemp & "DataTransfer"
-			Case 1
-				sTemp = sTemp & "GlobalAdd"
-			Case 2
-				sTemp = sTemp & "GlobalUpdate"
-			Case 3
-				sTemp = sTemp & "GlobalDelete"
-			Case 4
-				sTemp = sTemp & "Import"
-		End Select
-			
-		Session(sTemp) = CLng(objDatabase.GetUserSetting("warningmsg", sTemp, 1))
-		
-	Next
+  Next
+
+  ' Get the Utility Warning settings.
+  For i = 0 To 4
+    sTemp = "warning "
+
+    Select Case i
+      Case 0
+        sTemp = sTemp & "DataTransfer"
+      Case 1
+        sTemp = sTemp & "GlobalAdd"
+      Case 2
+        sTemp = sTemp & "GlobalUpdate"
+      Case 3
+        sTemp = sTemp & "GlobalDelete"
+      Case 4
+        sTemp = sTemp & "Import"
+    End Select
+
+    Session(sTemp) = CLng(objDatabase.GetUserSetting("warningmsg", sTemp, 1))
+
+  Next
 %>
 
 <script type="text/javascript">
@@ -113,7 +115,7 @@
 		frmConfiguration.chkOwner_Picklists.checked = (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1);
 		frmConfiguration.chkOwner_CalendarReports.checked = (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1);
 		frmConfiguration.chkOwner_DataTransfer.checked = (frmOriginalConfiguration.txtOnlyMineDataTransfer.value == 1);
-
+		frmConfiguration.chkOwner_TalentReports.checked = (frmOriginalConfiguration.txtOnlyMineTalentReports.value == 1);
 
 		display_Configuration_Page(1);
 
@@ -230,6 +232,7 @@
 		if (frmConfiguration.chkOwner_Picklists.checked == true) frmConfiguration.txtOwner_Picklists.value = 1;
 		if (frmConfiguration.chkOwner_CalendarReports.checked == true) frmConfiguration.txtOwner_CalendarReports.value = 1;
 		if (frmConfiguration.chkOwner_DataTransfer.checked == true) frmConfiguration.txtOwner_DataTransfer.value = 1;
+		if (frmConfiguration.chkOwner_TalentReports.checked == true) frmConfiguration.txtOwner_TalentReports.value = 1;
 
 		OpenHR.submitForm(frmConfiguration);
 
@@ -370,6 +373,7 @@
 		(frmConfiguration.chkOwner_Filters.checked != (frmOriginalConfiguration.txtOnlyMineFilters.value == 1)) ||
 		(frmConfiguration.chkOwner_MailMerge.checked != (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1)) ||
 		(frmConfiguration.chkOwner_Picklists.checked != (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1)) ||
+		(frmConfiguration.chkOwner_TalentReports.checked != (frmOriginalConfiguration.txtOnlyMineTalentReports.value == 1)) ||
 		(frmConfiguration.chkOwner_CalendarReports.checked != (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1))) {
 			return true;
 		}
@@ -404,6 +408,7 @@
 			frmConfiguration.chkOwner_Picklists.checked = false;
 			frmConfiguration.chkOwner_CalendarReports.checked = false;
 			frmConfiguration.chkOwner_DataTransfer.checked = false;
+		  frmConfiguration.chkOwner_TalentReports.checked = false;
 
 			enableSaveButton();
 		}
@@ -691,6 +696,16 @@
 							<td colspan="4"></td>
 						</tr>
 
+            <tr>
+							<td></td>
+							<td style="width: 20px"></td>
+							<td align="left" nowrap>
+								<input type="checkbox" id="chkOwner_TalentReports" name="chkOwner_TalentReports" />
+								<label for="chkOwner_TalentReports" class="checkbox">Talent Reports</label>
+							</td>
+							<td colspan="4"></td>
+						</tr>
+
 
 						<tr>
 							<td colspan="7" style="height: 10px"></td>
@@ -777,6 +792,7 @@
 	<input type="hidden" id="txtOwner_MatchReports" name="txtOwner_MatchReports" value="0">
 	<input type="hidden" id="txtOwner_RecordProfile" name="txtOwner_RecordProfile" value="0">
 	<input type="hidden" id="txtOwner_SuccessionPlanning" name="txtOwner_SuccessionPlanning" value="0">
+	<input type="hidden" id="txtOwner_TalentReports" name="txtOwner_TalentReports" value="0">
 
 	<input type="hidden" id="txtWarn_DataTransfer" name="txtWarn_DataTransfer" value="0">
 	<input type="hidden" id="txtWarn_GlobalAdd" name="txtWarn_GlobalAdd" value="0">
@@ -819,6 +835,7 @@
 	<input type="hidden" id="txtOnlyMineMatchReports" name="txtOnlyMineMatchReports" value='<%=session("onlyMine MatchReports")%>'>
 	<input type="hidden" id="txtOnlyMineRecordProfile" name="txtOnlyMineRecordProfile" value='<%=session("onlyMine RecordProfile")%>'>
 	<input type="hidden" id="txtOnlyMineSuccessionPlanning" name="txtOnlyMineSuccessionPlanning" value='<%=session("onlyMine SuccessionPlanning")%>'>
+	<input type="hidden" id="txtOnlyMineTalentReports" name="txtOnlyMineTalentReports" value='<%=session("onlyMine TalentReports")%>'>
 
 	<input type="hidden" id="txtUtilWarnDataTransfer" name="txtUtilWarnDataTransfer" value='<%=session("warning DataTransfer")%>'>
 	<input type="hidden" id="txtUtilWarnGlobalAdd" name="txtUtilWarnGlobalAdd" value='<%=session("warning GlobalAdd")%>'>

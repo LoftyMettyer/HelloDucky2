@@ -24,6 +24,13 @@ BEGIN
 		DELETE FROM ASRSysCrossTabAccess WHERE ID = @piUtilID;
 	END
 
+	IF @piUtilType = 38
+	BEGIN
+		/* Talent Reports*/
+		DELETE FROM ASRSysTalentReports WHERE ID = @piUtilID;
+		DELETE FROM ASRSysTalentReportAccess WHERE ID = @piUtilID;
+	END
+
 	IF @piUtilType = 2
 	BEGIN
 		/* Custom Reports. */

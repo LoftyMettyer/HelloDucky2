@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmEventLog 
    Caption         =   "Event Log"
@@ -93,6 +93,7 @@ Begin VB.Form frmEventLog
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   19844
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -545,7 +546,7 @@ Private Sub DeleteEvent()
       ReDim arrayBookmarks(nTotalSelRows)
       
       For intCount = 1 To nTotalSelRows
-        arrayBookmarks(intCount) = grdEventLog.SelBookmarks.Item(intCount - 1)
+        arrayBookmarks(intCount) = grdEventLog.SelBookmarks.item(intCount - 1)
       Next intCount
       
       For intCount = 1 To nTotalSelRows
@@ -800,8 +801,8 @@ Private Sub Form_Load()
   'Add all available functions to the Type combo
   With cboType
     .AddItem "<All>"
-		.AddItem "Cross Tab" : .ItemData(.NewIndex) = eltCrossTab
-		.AddItem "9-Box Grid" : .ItemData(.NewIndex) = elt9BoxGrid
+    .AddItem "Cross Tab": .ItemData(.NewIndex) = eltCrossTab
+    .AddItem "9-Box Grid": .ItemData(.NewIndex) = elt9BoxGrid
     .AddItem "Custom Report": .ItemData(.NewIndex) = eltCustomReport
     .AddItem "Data Transfer": .ItemData(.NewIndex) = eltDataTransfer
     .AddItem "Diary Rebuild": .ItemData(.NewIndex) = eltDiaryRebuild
@@ -822,6 +823,7 @@ Private Sub Form_Load()
     .AddItem "Record Profile": .ItemData(.NewIndex) = eltRecordProfile
     .AddItem "Succession Planning": .ItemData(.NewIndex) = eltSuccessionPlanning
     .AddItem "Career Progression": .ItemData(.NewIndex) = eltCareerProgression
+    .AddItem "Talent Report": .ItemData(.NewIndex) = eltTalentReport
     
     If gbWorkflowEnabled Then
       .AddItem "Workflow Rebuild": .ItemData(.NewIndex) = eltWorkflowRebuild
@@ -1025,10 +1027,10 @@ Private Function RefreshGrid() As Boolean
   ' Put the mode filter in...
   If cboMode.Text <> "<All>" Then
     Select Case cboMode.Text
-			Case "Batch" : pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[Mode] = " & 1 & " AND ([ASRSysEventLog].[ReportPack] = " & 0 & " OR [ASRSysEventLog].[ReportPack] IS NULL)"
+                        Case "Batch": pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[Mode] = " & 1 & " AND ([ASRSysEventLog].[ReportPack] = " & 0 & " OR [ASRSysEventLog].[ReportPack] IS NULL)"
       Case "Pack": pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[ReportPack] = " & 1
-			Case "Manual" : pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[Mode] = " & 0 & " AND ([ASRSysEventLog].[ReportPack] = " & 0 & " OR [ASRSysEventLog].[ReportPack] IS NULL)"
-		End Select
+                        Case "Manual": pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[Mode] = " & 0 & " AND ([ASRSysEventLog].[ReportPack] = " & 0 & " OR [ASRSysEventLog].[ReportPack] IS NULL)"
+                End Select
   End If
   
   'MH20030422
@@ -1546,7 +1548,7 @@ Private Function EmailEvent()
     ReDim arrayBookmarks(nTotalSelRows)
     
     For intCount = 1 To nTotalSelRows
-      arrayBookmarks(intCount) = grdEventLog.SelBookmarks.Item(intCount - 1)
+      arrayBookmarks(intCount) = grdEventLog.SelBookmarks.item(intCount - 1)
     Next intCount
 
     For intCount = 1 To nTotalSelRows
@@ -1608,7 +1610,7 @@ ErrorTrap:
 End Function
 
 'MH20030422
-Public Sub FilterIDs(ByVal strNewValue As String, utilType As utilityType)
+Public Sub FilterIDs(ByVal strNewValue As String, utilType As UtilityType)
   
   Dim lngIndex As Long
   

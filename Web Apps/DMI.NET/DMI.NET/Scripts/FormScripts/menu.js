@@ -5349,7 +5349,7 @@ function RunReportsOrUtilities(sTool) {
 	if (!sTool) return false;
 
 	// CrossTab 1, Custom Report 2, Calendar 17, 9-box grid 35, Mail merge
-	var reports = [1, 2, 17, 35, 9];
+	var reports = [1, 2, 17, 35, 9, 38];
 	var reportORutilityType = sTool.ReportType;
 
 	if (jQuery.inArray(reportORutilityType, reports) != -1) {

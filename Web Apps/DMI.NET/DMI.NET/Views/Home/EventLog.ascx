@@ -662,6 +662,12 @@
 										Response.Write("											<option value=25>Workflow Rebuild" & vbCrLf)
 									End If
 								End If
+
+								If Session("CurrentType") = EventLog_Type.eltTalentReport.ToString Then
+									Response.Write("											<option value=38 selected>Talent Report" & vbCrLf)
+								Else
+									Response.Write("											<option value=38>Talent Report" & vbCrLf)
+								End If
 		
 							%>
 						</select>

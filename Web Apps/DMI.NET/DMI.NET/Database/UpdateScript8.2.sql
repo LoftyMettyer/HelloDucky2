@@ -752,10 +752,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntExpressionHasHiddenComponents]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntDeleteUtility]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntDeleteUtility]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntCancelCoursePart2]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntCancelCoursePart2]
 GO
@@ -3614,147 +3610,8 @@ BEGIN
 
 	IF @piRootExprID IS null SET @piRootExprID = 0;
 END
-
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntDeleteUtility]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntDeleteUtility] (
-	@piUtilType	integer,
-	@piUtilID	integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iExprID	integer;
-
-	IF @piUtilType = 0
-	BEGIN
-		/* Batch Jobs */
-		DELETE FROM ASRSysBatchJobName WHERE ID = @piUtilID;
-		DELETE FROM AsrSysBatchJobDetails WHERE BatchJobNameID = @piUtilID;
-		DELETE FROM ASRSysBatchJobAccess WHERE ID = @piUtilID;
-	END
-
-	IF @piUtilType = 1
-	BEGIN
-		/* Cross Tabs */
-		DELETE FROM ASRSysCrossTab WHERE CrossTabID = @piUtilID;
-		DELETE FROM ASRSysCrossTabAccess WHERE ID = @piUtilID;
-	END
-
-	IF @piUtilType = 2
-	BEGIN
-		/* Custom Reports. */
-		DELETE FROM ASRSysCustomReportsName WHERE id = @piUtilID;
-		DELETE FROM ASRSysCustomReportsDetails WHERE customReportID= @piUtilID;
-		DELETE FROM ASRSysCustomReportAccess WHERE ID = @piUtilID;
-	END
-	
-	IF @piUtilType = 3
-	BEGIN
-		/* Data Transfer. */
-		DELETE FROM ASRSysDataTransferName WHERE DataTransferID = @piUtilID;
-		DELETE FROM ASRSysDataTransferAccess WHERE ID = @piUtilID;
-	END
-
-	IF @piUtilType = 4
-	BEGIN
-		/* Export. */
-		DELETE FROM ASRSysExportName WHERE ID = @piUtilID;
-		DELETE FROM AsrSysExportDetails WHERE ExportID = @piUtilID;
-		DELETE FROM ASRSysExportAccess WHERE ID = @piUtilID;
-	END
-
-	IF (@piUtilType = 5) OR (@piUtilType = 6) OR (@piUtilType = 7)
-	BEGIN
-		/* Globals. */
-		DELETE FROM ASRSysGlobalFunctions  WHERE FunctionID = @piUtilID;
-		DELETE FROM ASRSysGlobalAccess WHERE ID = @piUtilID;
-	END
-
-	IF @piUtilType = 8
-	BEGIN
-		/* Import. */
-		DELETE FROM ASRSysImportName  WHERE ID = @piUtilID;
-		DELETE FROM ASRSysImportDetails WHERE ImportID = @piUtilID;
-		DELETE FROM ASRSysImportAccess WHERE ID = @piUtilID;
-	END
-
-	IF (@piUtilType = 9) OR (@piUtilType = 18)
-	BEGIN
-		/* Mail Merge/ Envelopes & Labels. */
-		DELETE FROM AsrSysMailMergeName  WHERE MailMergeID = @piUtilID;
-		DELETE FROM ASRSysMailMergeColumns  WHERE MailMergeID = @piUtilID;
-		DELETE FROM ASRSysMailMergeAccess WHERE ID = @piUtilID;
-	END
-
-	IF @piUtilType = 10
-	BEGIN
-		/* Picklists. */
-		DELETE FROM ASRSysPickListName WHERE picklistID = @piUtilID;
-		DELETE FROM ASRSysPickListItems WHERE picklistID = @piUtilID;
-	END
-	
-	IF @piUtilType = 11 OR @piUtilType = 12
-	BEGIN
-		/* Filters and Calculations. */
-		DECLARE subExpressions_cursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT ASRSysExpressions.exprID
-			FROM ASRSysExpressions
-			INNER JOIN ASRSysExprComponents ON ASRSysExpressions.parentComponentID = ASRSysExprComponents.componentID
-			AND ASRSysExprComponents.exprID = @piUtilID;
-		OPEN subExpressions_cursor;
-		FETCH NEXT FROM subExpressions_cursor INTO @iExprID;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			exec [dbo].[sp_ASRIntDeleteUtility] @piUtilType, @iExprID;
-			
-			FETCH NEXT FROM subExpressions_cursor INTO @iExprID;
-		END
-		CLOSE subExpressions_cursor;
-		DEALLOCATE subExpressions_cursor;
-
-		DELETE FROM ASRSysExprComponents
-		WHERE exprID = @piUtilID;
-
-		DELETE FROM ASRSysExpressions WHERE exprID = @piUtilID;
-	END	
-
-	IF (@piUtilType = 14) OR (@piUtilType = 23) OR (@piUtilType = 24)
-	BEGIN
-		/* Match Reports/Succession Planning/Career Progression. */
-		DELETE FROM ASRSysMatchReportName WHERE MatchReportID = @piUtilID;
-		DELETE FROM ASRSysMatchReportAccess WHERE ID = @piUtilID;
-	END
-
-	IF @piUtilType = 17 
-	BEGIN
-		/*Calendar Reports*/
-		DELETE FROM ASRSysCalendarReports WHERE ID = @piUtilID;
-		DELETE FROM ASRSysCalendarReportEvents WHERE CalendarReportID = @piUtilID;
-		DELETE FROM ASRSysCalendarReportOrder WHERE CalendarReportID = @piUtilID;
-		DELETE FROM ASRSysCalendarReportAccess WHERE ID = @piUtilID;
-	END
-	
-	IF @piUtilType = 20 
-	BEGIN
-		/*Record Profile*/
-		DELETE FROM ASRSysRecordProfileName WHERE recordProfileID = @piUtilID;
-		DELETE FROM ASRSysRecordProfileDetails WHERE RecordProfileID = @piUtilID;
-		DELETE FROM ASRSysRecordProfileTables WHERE RecordProfileID = @piUtilID;
-		DELETE FROM ASRSysRecordProfileAccess WHERE ID = @piUtilID;
-	END
-	
-END
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntExpressionHasHiddenComponents]    Script Date: 23/07/2013 11:18:30 ******/
 SET ANSI_NULLS ON
@@ -6638,10 +6495,6 @@ GO
 DROP PROCEDURE [dbo].[spASRIntGetLinkInfo]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogRecords]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntGetEventLogRecords]
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogPurgeDetails]    Script Date: 23/07/2013 11:19:27 ******/
 DROP PROCEDURE [dbo].[spASRIntGetEventLogPurgeDetails]
 GO
@@ -6650,16 +6503,8 @@ GO
 DROP PROCEDURE [dbo].[spASRIntGetEventLogEmails]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogEmailInfo]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntGetEventLogEmailInfo]
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogDetails]    Script Date: 23/07/2013 11:19:27 ******/
 DROP PROCEDURE [dbo].[spASRIntGetEventLogDetails]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogBatchDetails]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntGetEventLogBatchDetails]
 GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetEmailGroupAddresses]    Script Date: 23/07/2013 11:19:27 ******/
@@ -6709,14 +6554,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntDeleteEventLogRecords]    Script Date: 23/07/2013 11:19:27 ******/
 DROP PROCEDURE [dbo].[spASRIntDeleteEventLogRecords]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntDeleteCheck]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntDeleteCheck]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntCurrentUserAccess]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntCurrentUserAccess]
 GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntClearEventLogPurge]    Script Date: 23/07/2013 11:19:27 ******/
@@ -6851,346 +6688,6 @@ BEGIN
 	SET NOCOUNT ON;
 
 	DELETE FROM [dbo].[ASRSysEventLogPurge];
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntCurrentUserAccess]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntCurrentUserAccess] (
-	@piUtilityType	integer,
-	@plngID			integer,
-	@psAccess		varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE 
-		@sTableName			sysname,
-		@sAccessTableName	sysname,
-		@sIDColumnName		sysname,
-		@sSQL				nvarchar(MAX),
-		@sParamDefinition	nvarchar(500),
-		@sRoleName			varchar(255),
-		@sActualUserName	sysname,
-		@iActualUserGroupID	integer,
-		@fEnabled			bit
-
-	SET @sTableName = '';
-	SET @psAccess = 'HD';
-
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sRoleName OUTPUT,
-		@iActualUserGroupID OUTPUT;
-					
-	IF @piUtilityType = 0 /* Batch Job */
-	BEGIN
-		SET @sTableName = 'ASRSysBatchJobName';
-		SET @sAccessTableName = 'ASRSysBatchJobAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-
-	IF @piUtilityType = 17 /* Calendar Report */
-	BEGIN
-		SET @sTableName = 'ASRSysCalendarReports';
-		SET @sAccessTableName = 'ASRSysCalendarReportAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-
-	IF @piUtilityType = 1 /* Cross Tab */
-	BEGIN
-		SET @sTableName = 'ASRSysCrossTab';
-		SET @sAccessTableName = 'ASRSysCrossTabAccess';
-		SET @sIDColumnName = 'CrossTabID';
- 	END
-    
-	IF @piUtilityType = 2 /* Custom Report */
-	BEGIN
-		SET @sTableName = 'ASRSysCustomReportsName';
-		SET @sAccessTableName = 'ASRSysCustomReportAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-    
-    
-	IF @piUtilityType = 3 /* Data Transfer */
-	BEGIN
-		SET @sTableName = 'ASRSysDataTransferName';
-		SET @sAccessTableName = 'ASRSysDataTransferAccess';
-		SET @sIDColumnName = 'DataTransferID';
- 	END
-    
-	IF @piUtilityType = 4 /* Export */
-	BEGIN
-		SET @sTableName = 'ASRSysExportName';
-		SET @sAccessTableName = 'ASRSysExportAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-    
-	IF (@piUtilityType = 5) OR (@piUtilityType = 6) OR (@piUtilityType = 7) /* Globals */
-	BEGIN
-		SET @sTableName = 'ASRSysGlobalFunctions';
-		SET @sAccessTableName = 'ASRSysGlobalAccess';
-		SET @sIDColumnName = 'functionID';
- 	END
-    
-	IF (@piUtilityType = 8) /* Import */
-	BEGIN
-		SET @sTableName = 'ASRSysImportName';
-		SET @sAccessTableName = 'ASRSysImportAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-    
-	IF (@piUtilityType = 9) OR (@piUtilityType = 18) /* Label or Mail Merge */
-	BEGIN
-		SET @sTableName = 'ASRSysMailMergeName';
-		SET @sAccessTableName = 'ASRSysMailMergeAccess';
-		SET @sIDColumnName = 'mailMergeID';
- 	END
-    
-	IF (@piUtilityType = 20) /* Record Profile */
-	BEGIN
-		SET @sTableName = 'ASRSysRecordProfileName';
-		SET @sAccessTableName = 'ASRSysRecordProfileAccess';
-		SET @sIDColumnName = 'recordProfileID';
- 	END
-    
-	IF (@piUtilityType = 14) OR (@piUtilityType = 23) OR (@piUtilityType = 24) /* Match Report, Succession, Career */
-	BEGIN
-		SET @sTableName = 'ASRSysMatchReportName';
-		SET @sAccessTableName = 'ASRSysMatchReportAccess';
-		SET @sIDColumnName = 'matchReportID';
- 	END
-
-	IF (@piUtilityType = 25) /* Workflow */
-	BEGIN
-		SELECT @fEnabled = enabled
-		FROM [dbo].[ASRSysWorkflows]
-		WHERE ID = @plngID;
-		
-		IF @fEnabled = 1
-		BEGIN
-			SET @psAccess = 'RW';
-		END
-	END
-
-	IF len(@sTableName) > 0
-	BEGIN
-		SET @sSQL = 'SELECT @sValue = 
-					CASE
-						WHEN (SELECT count(*)
-							FROM ASRSysGroupPermissions
-							INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-								AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
-								OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
-							INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-								AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
-							WHERE b.Name = ASRSysGroupPermissions.groupname
-								AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''RW''
-						WHEN ' + @sTableName + '.userName = system_user THEN ''RW''
-						ELSE
-							CASE
-								WHEN ' + @sAccessTableName + '.access IS null THEN ''HD''
-								ELSE ' + @sAccessTableName + '.access 
-							END
-						END
-					FROM sysusers b
-					INNER JOIN sysusers a ON b.uid = a.gid
-					LEFT OUTER JOIN ' + @sAccessTableName + ' ON (b.name = ' + @sAccessTableName + '.groupName
-						AND ' + @sAccessTableName + '.id = ' + convert(nvarchar(100), @plngID) + ')
-					INNER JOIN ' + @sTableName + ' ON ' + @sAccessTableName + '.ID = ' + @sTableName + '.' + @sIDColumnName + '
-					WHERE b.Name = ''' + @sRoleName + '''';
-
-		SET @sParamDefinition = N'@sValue varchar(MAX) OUTPUT';
-		EXEC sp_executesql @sSQL,  @sParamDefinition, @psAccess OUTPUT;
-	END
-
-	IF @psAccess IS null SET @psAccess = 'HD';
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntDeleteCheck]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntDeleteCheck] (
-	@piUtilityType	integer,
-	@plngID			integer,
-	@pfDeleted		bit				OUTPUT,
-	@psAccess		varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE 
-		@sTableName			sysname,
-		@sAccessTableName	sysname,
-		@sIDColumnName		sysname,
-		@sSQL				nvarchar(MAX),
-		@sParamDefinition	nvarchar(500),
-		@fNewAccess			bit,
-		@iCount				integer,
-		@sAccess			varchar(MAX),
-		@fSysSecMgr			bit;
-
-	SET @sTableName = '';
-	SET @psAccess = 'HD';
-	SET @pfDeleted = 0;
-	SET @fNewAccess = 0;
-
-	IF @piUtilityType = 0 /* Batch Job */
-	BEGIN
-		SET @sTableName = 'ASRSysBatchJobName';
-		SET @sAccessTableName = 'ASRSysBatchJobAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
-  END
-
-	IF @piUtilityType = 17 /* Calendar Report */
-	BEGIN
-		SET @sTableName = 'ASRSysCalendarReports';
-		SET @sAccessTableName = 'ASRSysCalendarReportAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
-  END
-
-	IF @piUtilityType = 1 /* Cross Tab */
-	BEGIN
-		SET @sTableName = 'ASRSysCrossTab';
-		SET @sAccessTableName = 'ASRSysCrossTabAccess';
-		SET @sIDColumnName = 'CrossTabID';
-		SET @fNewAccess = 1;
- 	END
-    
-	IF @piUtilityType = 2 /* Custom Report */
-	BEGIN
-		SET @sTableName = 'ASRSysCustomReportsName';
-		SET @sAccessTableName = 'ASRSysCustomReportAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
- 	END
-    
-	IF @piUtilityType = 3 /* Data Transfer */
-	BEGIN
-		SET @sTableName = 'ASRSysDataTransferName';
-		SET @sAccessTableName = 'ASRSysDataTransferAccess';
-		SET @sIDColumnName = 'DataTransferID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF @piUtilityType = 4 /* Export */
-	BEGIN
-		SET @sTableName = 'ASRSysExportName';
-		SET @sAccessTableName = 'ASRSysExportAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF (@piUtilityType = 5) OR (@piUtilityType = 6) OR (@piUtilityType = 7) /* Globals */
-	BEGIN
-		SET @sTableName = 'ASRSysGlobalFunctions';
-		SET @sAccessTableName = 'ASRSysGlobalAccess';
-		SET @sIDColumnName = 'functionID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF (@piUtilityType = 8) /* Import */
-	BEGIN
-		SET @sTableName = 'ASRSysImportName';
-		SET @sAccessTableName = 'ASRSysImportAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF (@piUtilityType = 9) OR (@piUtilityType = 18) /* Label or Mail Merge */
-	BEGIN
-		SET @sTableName = 'ASRSysMailMergeName';
-		SET @sAccessTableName = 'ASRSysMailMergeAccess';
-		SET @sIDColumnName = 'mailMergeID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF (@piUtilityType = 20) /* Record Profile */
-	BEGIN
-		SET @sTableName = 'ASRSysRecordProfileName';
-		SET @sAccessTableName = 'ASRSysRecordProfileAccess';
-		SET @sIDColumnName = 'recordProfileID';
-		SET @fNewAccess = 1
-  END
-    
-	IF (@piUtilityType = 14) OR (@piUtilityType = 23) OR (@piUtilityType = 24) /* Match Report, Succession, Career */
-	BEGIN
-		SET @sTableName = 'ASRSysMatchReportName';
-		SET @sAccessTableName = 'ASRSysMatchReportAccess';
-		SET @sIDColumnName = 'matchReportID';
-		SET @fNewAccess = 1;
-  END
-
-	IF (@piUtilityType = 11) OR (@piUtilityType = 12)  /* Filters/Calcs */
-	BEGIN
-		SET @sTableName = 'ASRSysExpressions';
-		SET @sIDColumnName = 'exprID';
-  END
-
-	IF (@piUtilityType = 10)  /* Picklists */
-	BEGIN
-		SET @sTableName = 'ASRSysPicklistName';
-		SET @sIDColumnName = 'picklistID';
-  END
-
-	IF len(@sTableName) > 0
-	BEGIN
-		SET @sSQL = 'SELECT @iCount = COUNT(*)
-				FROM ' + @sTableName + 
-				' WHERE ' + @sTableName + '.' + @sIDColumnName + ' = ' + convert(nvarchar(255), @plngID);
-		SET @sParamDefinition = N'@iCount integer OUTPUT';
-		EXEC sp_executesql @sSQL,  @sParamDefinition, @iCount OUTPUT;
-
-		IF @iCount = 0 
-		BEGIN
-			SET @pfDeleted = 1;
-		END
-		ELSE
-		BEGIN
-			IF @fNewAccess = 1
-			BEGIN
-				exec [dbo].[spASRIntCurrentUserAccess] @piUtilityType,	@plngID, @psAccess OUTPUT;
-			END
-			ELSE
-			BEGIN
-				exec [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT;
-				
-				IF @fSysSecMgr = 1 
-				BEGIN
-					SET @psAccess = 'RW';
-				END
-				ELSE
-				BEGIN
-					SET @sSQL = 'SELECT @sAccess = CASE 
-								WHEN userName = system_user THEN ''RW''
-								ELSE access
-							END
-							FROM ' + @sTableName + 
-							' WHERE ' + @sTableName + '.' + @sIDColumnName + ' = ' + convert(nvarchar(255), @plngID);
-					SET @sParamDefinition = N'@sAccess varchar(MAX) OUTPUT';
-					EXEC sp_executesql @sSQL,  @sParamDefinition, @sAccess OUTPUT;
-
-					SET @psAccess = @sAccess;
-				END
-			END
-		END
-	END
 END
 GO
 
@@ -7593,109 +7090,6 @@ END
 GO
 
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogBatchDetails]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntGetEventLogBatchDetails] (
-	@piBatchRunID 	integer,
-	@piEventID		integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-	
-	DECLARE @sExecString		nvarchar(MAX),
-			@sSelectString 		varchar(MAX),
-			@sFromString		varchar(MAX),
-			@sWhereString		varchar(MAX),
-			@sOrderString 		varchar(MAX);
-
-	SET @sSelectString = '';
-	SET @sFromString = '';
-	SET @sWhereString = '';
-	SET @sOrderString = '';
-
-	/* create SELECT statment string */
-	SET @sSelectString = 'SELECT 
-		 ID, 
-		 DateTime,
-		 EndTime,
-		 IsNull(Duration,-1) AS Duration,
-		 Username,
-		 CASE Type 
-						WHEN 0 THEN ''Unknown''
-						WHEN 1 THEN ''Cross Tab'' 
-						WHEN 2 THEN ''Custom Report'' 
-						WHEN 3 THEN ''Data Transfer'' 
-						WHEN 4 THEN ''Export'' 
-						WHEN 5 THEN ''Global Add'' 
-						WHEN 6 THEN ''Global Delete'' 
-						WHEN 7 THEN ''Global Update'' 
-						WHEN 8 THEN ''Import'' 
-						WHEN 9 THEN ''Mail Merge'' 
-						WHEN 10 THEN ''Diary Delete'' 
-						WHEN 11 THEN ''Diary Rebuild''
-						WHEN 12 THEN ''Email Rebuild''
-						WHEN 13 THEN ''Standard Report''
-						WHEN 14 THEN ''Record Editing''
-						WHEN 15 THEN ''System Error''
-						WHEN 16 THEN ''Match Report''
-						WHEN 17 THEN ''Calendar Report''
-						WHEN 18 THEN ''Envelopes & Labels''
-						WHEN 19 THEN ''Label Definition''
-						WHEN 20 THEN ''Record Profile''
-						WHEN 21	THEN ''Succession Planning''
-						WHEN 22 THEN ''Career Progression''
-						WHEN 25 THEN ''Workflow Rebuild''
-						ELSE ''Unknown''  
-		 END AS Type,
-		 Name,
-		 CASE Mode 
-			WHEN 1 THEN ''Batch''
-			WHEN 0 THEN ''Manual''
-			ELSE ''Unknown''
-		 END AS Mode, 
-		 CASE Status 
-				WHEN 0 THEN ''Pending''
-		   	WHEN 1 THEN ''Cancelled'' 
-				WHEN 2 THEN ''Failed'' 
-				WHEN 3 THEN ''Successful'' 
-				WHEN 4 THEN ''Skipped'' 
-				WHEN 5 THEN ''Error''
-				ELSE ''Unknown'' 
-		 END AS Status,
-		 IsNull(BatchName,'''') AS BatchName,
-		 IsNull(convert(varchar,SuccessCount), ''N/A'') AS SuccessCount,
-		 IsNull(convert(varchar,FailCount), ''N/A'') AS FailCount,
-		 IsNull(convert(varchar,BatchJobID), ''N/A'') AS BatchJobID,
-		 IsNull(convert(varchar,BatchRunID), ''N/A'') AS BatchRunID';
-
-	SET @sFromString = ' FROM ASRSysEventLog ';
-
-	IF @piBatchRunID > 0
-		BEGIN
-			SET @sWhereString = ' WHERE BatchRunID = ' + convert(varchar, @piBatchRunID);
-		END
-	ELSE
-		BEGIN
-			SET @sWhereString = ' WHERE ID = ' + convert(varchar, @piEventID);
-		END
-
-	SET @sOrderString = ' ORDER BY DateTime ASC ';
-
-	SET @sExecString = @sSelectString + @sFromString + @sWhereString + @sOrderString;
-
-	-- Run generated statement
-	EXEC sp_executeSQL @sExecString;
-	
-END
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogDetails]    Script Date: 23/07/2013 11:19:27 ******/
 SET ANSI_NULLS ON
 GO
@@ -7757,180 +7151,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogEmailInfo]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntGetEventLogEmailInfo] (
-	@psSelectedIDs	varchar(MAX),
-	@psSubject		varchar(MAX) OUTPUT,
-	@psOrderColumn	varchar(MAX),
-	@psOrderOrder	varchar(MAX)
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE	@sSelectString 	nvarchar(MAX),
-			@sOrderSQL		varchar(MAX);
-	
-	/* Clean the input string parameters. */
-	IF len(@psSelectedIDs) > 0 SET @psSelectedIDs = replace(@psSelectedIDs, '''', '''''');
-	IF len(@psOrderColumn) > 0 SET @psOrderColumn = replace(@psOrderColumn, '''', '''''');
-	IF len(@psOrderOrder) > 0 SET @psOrderOrder = replace(@psOrderOrder, '''', '''''');
-
-	SELECT @psSubject = IsNull(SettingValue,'<<Unknown Customer>>') + ' - Event Log' 
-	FROM ASRSysSystemSettings 
-	WHERE Lower(Section) = 'licence' 
-		AND Lower(SettingKey) = 'customer name';
-
-	SET @sSelectString = '';
-
-	/* create SELECT statment string */
-	SET @sSelectString = 'SELECT 	A.ID, 
-		A.Name, 
-		A.DateTime,
-		A.EndTime,
-		IsNull(A.Duration,-1) AS Duration, 
-		A.Username, 
-		CASE A.Mode 
-			WHEN 1 THEN ''Batch'' 
-			ELSE ''Manual'' 
-		END AS ''Mode'', 
-		CASE A.Status 
-			WHEN 0 THEN ''Pending''
-		  WHEN 1 THEN ''Cancelled'' 
-			WHEN 2 THEN ''Failed'' 
-			WHEN 3 THEN ''Successful'' 
-			WHEN 4 THEN ''Skipped'' 
-			WHEN 5 THEN ''Error''
-			ELSE ''Unknown'' 
-		END AS Status, 
-		CASE A.Type 
-			WHEN 0 THEN ''Unknown''
-			WHEN 1 THEN ''Cross Tab'' 
-			WHEN 2 THEN ''Custom Report'' 
-			WHEN 3 THEN ''Data Transfer'' 
-			WHEN 4 THEN ''Export'' 
-			WHEN 5 THEN ''Global Add'' 
-			WHEN 6 THEN ''Global Delete'' 
-			WHEN 7 THEN ''Global Update'' 
-			WHEN 8 THEN ''Import'' 
-			WHEN 9 THEN ''Mail Merge'' 
-			WHEN 10 THEN ''Diary Delete'' 
-			WHEN 11 THEN ''Diary Rebuild''
-			WHEN 12 THEN ''Email Rebuild''
-			WHEN 13 THEN ''Standard Report''
-			WHEN 14 THEN ''Record Editing''
-			WHEN 15 THEN ''System Error''
-			WHEN 16 THEN ''Match Report''
-			WHEN 17 THEN ''Calendar Report''
-			WHEN 18 THEN ''Envelopes & Labels''
-			WHEN 19 THEN ''Label Definition''
-			WHEN 20 THEN ''Record Profile''
-			WHEN 21	THEN ''Succession Planning''
-			WHEN 22 THEN ''Career Progression''
-			WHEN 25 THEN ''Workflow Rebuild''
-			ELSE ''Unknown''  
-		END AS Type,
-		CASE 
-			WHEN A.SuccessCount IS NULL THEN ''N/A''
-			ELSE CONVERT(varchar, A.SuccessCount)
-		END AS SuccessCount,
-		CASE
-			WHEN A.FailCount IS NULL THEN ''N/A''
-			ELSE CONVERT(varchar, A.FailCount)
-		END AS FailCount,
-		A.BatchName AS BatchName,
-		A.BatchJobID AS BatchJobID,
-		A.BatchRunID AS BatchRunID,
-		B.Notes, 
-		B.ID AS ''DetailsID'' ,
-		(SELECT count(ID) 
-			FROM ASRSysEventLogDetails C 
-			WHERE C.EventLogID = A.ID) as ''count''
-		FROM ASRSysEventLog A
-		LEFT OUTER JOIN ASRSysEventLogDetails B
-			ON A.ID = B.EventLogID
-		WHERE A.ID IN (' + @psSelectedIDs + ')';
-
-	SET @sOrderSQL = '';
-	
-	IF @psOrderColumn = 'Type'
-	BEGIN
-		SET @sOrderSQL = 
-			' CASE [Type] 
-				WHEN 1 THEN ''Cross Tab''
-				WHEN 2 THEN ''Custom Report''
-				WHEN 3 THEN ''Data Transfer''
-				WHEN 4 THEN ''Export''
-				WHEN 5 THEN ''Global Add''
-				WHEN 6 THEN ''Global Delete''
-				WHEN 7 THEN ''Global Update''
-				WHEN 8 THEN ''Import''
-				WHEN 9 THEN ''Mail Merge''
-				WHEN 10 THEN ''Diary Delete''
-				WHEN 11 THEN ''Diary Rebuild''
-				WHEN 12 THEN ''Email Rebuild''
-				WHEN 13 THEN ''Standard Report''
-				WHEN 14 THEN ''Record Editing''
-				WHEN 15 THEN ''System Error''
-				WHEN 16 THEN ''Match Report''
-				WHEN 17 THEN ''Calendar Report''
-				WHEN 18 THEN ''Envelopes & Labels''
-				WHEN 19 THEN ''Label Definition''
-				WHEN 20 THEN ''Record Profile''
-				WHEN 21 THEN ''Succession Planning''
-				WHEN 22 THEN ''Career Progression''
-				WHEN 25 THEN ''Workflow Rebuild''
-				ELSE ''Unknown''
-			END ';
-	END
-
-	IF @psOrderColumn = 'Mode'
-	BEGIN
-		SET @sOrderSQL = 
-			' CASE [Mode] 
-				WHEN 1 THEN ''Batch''
-				WHEN 0 THEN ''Manual''
-				ELSE ''Unknown''
-			END ';
-	END
-	
-	IF @psOrderColumn = 'Status'
-	BEGIN
-		SET @sOrderSQL = 
-			' CASE [Status] 
-				WHEN 0 THEN ''Pending''
-				WHEN 1 THEN ''Cancelled''
-				WHEN 2 THEN ''Failed''
-				WHEN 3 THEN ''Successful''
-				WHEN 4 THEN ''Skipped''
-				WHEN 5 THEN ''Error''
-				ELSE ''Unknown''
-			END ';
-	END
-	
-	IF len(@sOrderSQL) = 0
-	BEGIN
-		SET @sOrderSQL = @psOrderColumn;
-	END
-	
-	SET @sOrderSQL = @sOrderSQL + ' ' + @psOrderOrder;
-
-	IF LEN(LTRIM(RTRIM(@sOrderSQL))) > 0 
-	BEGIN
-		SET @sSelectString = @sSelectString + ' ORDER BY ' + @sOrderSQL;
-	END
-
-	EXEC sp_executeSQL @sSelectString;
-END
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogEmails]    Script Date: 23/07/2013 11:19:27 ******/
 SET ANSI_NULLS ON
 GO
@@ -7975,427 +7195,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogRecords]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntGetEventLogRecords] (
-	@pfError 						bit 				OUTPUT, 
-	@psFilterUser					varchar(MAX),
-	@piFilterType					integer,
-	@piFilterStatus					integer,
-	@piFilterMode					integer,
-	@psOrderColumn					varchar(MAX),
-	@psOrderOrder					varchar(MAX),
-	@piRecordsRequired				integer,
-	@pfFirstPage					bit					OUTPUT,
-	@pfLastPage						bit					OUTPUT,
-	@psAction						varchar(100),
-	@piTotalRecCount				integer				OUTPUT,
-	@piFirstRecPos					integer				OUTPUT,
-	@piCurrentRecCount				integer
-)
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	DECLARE	@sRealSource 			sysname,
-			@sSelectSQL				varchar(MAX),
-			@iTempCount 			integer,
-			@sExecString			nvarchar(MAX),
-			@sTempExecString		nvarchar(MAX),
-			@sTempParamDefinition	nvarchar(500),
-			@iCount					integer,
-			@iGetCount				integer,
-			@sFilterSQL				varchar(MAX),
-			@sOrderSQL				varchar(MAX),
-			@sReverseOrderSQL		varchar(MAX);
-			
-	/* Clean the input string parameters. */
-	IF len(@psAction) > 0 SET @psAction = replace(@psAction, '''', '''''');
-	IF len(@psFilterUser) > 0 SET @psFilterUser = replace(@psFilterUser, '''', '''''');
-	IF len(@psOrderColumn) > 0 SET @psOrderColumn = replace(@psOrderColumn, '''', '''''');
-	IF len(@psOrderOrder) > 0 SET @psOrderOrder = replace(@psOrderOrder, '''', '''''');
-
-	/* Initialise variables. */
-	SET @pfError = 0;
-	SET @sExecString = '';
-	SET @sRealSource = 'ASRSysEventLog';
-	SET @psAction = UPPER(@psAction);
-
-	IF (@psAction <> 'MOVEPREVIOUS') AND (@psAction <> 'MOVENEXT') AND (@psAction <> 'MOVELAST') 
-		BEGIN
-			SET @psAction = 'MOVEFIRST';
-		END
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 50;
-
-	/* Construct the filter SQL from ther input parameters. */
-	SET @sFilterSQL = '';
-	
-	SET @sFilterSQL = @sFilterSQL + ' Type NOT IN (23, 24) ';
-
-	IF @psFilterUser <> '-1' 
-	BEGIN
-		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
-		SET @sFilterSQL = @sFilterSQL + ' LOWER(username) = ''' + lower(@psFilterUser) + '''';
-	END
-	IF @piFilterType <> -1
-	BEGIN
-		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
-		SET @sFilterSQL = @sFilterSQL + ' Type = ' + convert(varchar(MAX), @piFilterType) + ' ';
-	END
-	IF @piFilterStatus <> -1
-	BEGIN
-		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
-		SET @sFilterSQL = @sFilterSQL + ' Status = ' + convert(varchar(MAX), @piFilterStatus) + ' ';
-	END
-	IF @piFilterMode <> -1
-	BEGIN
-		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
-		SET @sFilterSQL = @sFilterSQL + ' Mode = ' + convert(varchar(MAX), @piFilterMode) + ' ';
-	END
-	
-	/* Construct the order SQL from ther input parameters. */
-	SET @sOrderSQL = '';
-	IF @psOrderColumn = 'Type'
-	BEGIN
-		SET @sOrderSQL = 
-			' CASE [Type] 
-					WHEN 1 THEN ''Cross Tab''
-					WHEN 2 THEN ''Custom Report''
-					WHEN 3 THEN ''Data Transfer''
-					WHEN 4 THEN ''Export''
-					WHEN 5 THEN ''Global Add''
-					WHEN 6 THEN ''Global Delete''
-					WHEN 7 THEN ''Global Update''
-					WHEN 8 THEN ''Import''
-					WHEN 9 THEN ''Mail Merge''
-					WHEN 10 THEN ''Diary Delete''
-					WHEN 11 THEN ''Diary Rebuild''
-					WHEN 12 THEN ''Email Rebuild''
-					WHEN 13 THEN ''Standard Report''
-					WHEN 14 THEN ''Record Editing''
-					WHEN 15 THEN ''System Error''
-					WHEN 16 THEN ''Match Report''
-					WHEN 17 THEN ''Calendar Report''
-					WHEN 18 THEN ''Envelopes & Labels''
-					WHEN 19 THEN ''Label Definition''
-					WHEN 20 THEN ''Record Profile''
-					WHEN 21 THEN ''Succession Planning''
-					WHEN 22 THEN ''Career Progression''
-					WHEN 25 THEN ''Workflow Rebuild''
-					ELSE ''Unknown''
-				END ';
-	END
-	ELSE
-	BEGIN
-		IF @psOrderColumn = 'Mode'
-		BEGIN
-			SET @sOrderSQL =	
-				' CASE [Mode] 
-						WHEN 1 THEN ''Batch''
-						WHEN 0 THEN ''Manual''
-						ELSE ''Unknown''
-					END ';
-		END
-		ELSE 
-		BEGIN
-			IF @psOrderColumn = 'Status'
-			BEGIN
-				SET @sOrderSQL =	
-					' CASE [Status]
-							WHEN 0 THEN ''Pending''
-							WHEN 1 THEN ''Cancelled''
-							WHEN 2 THEN ''Failed''
-							WHEN 3 THEN ''Successful''
-							WHEN 4 THEN ''Skipped''
-							WHEN 5 THEN ''Error''
-							ELSE ''Unknown''
-						END ';
-			END
-			ELSE
-			BEGIN
-				SET @sOrderSQL = @psOrderColumn;
-			END
-		END
-	END
-	
-	SET @sReverseOrderSQL = @sOrderSQL;
-	if @psOrderOrder = 'DESC'
-	BEGIN
-		SET @sReverseOrderSQL = @sReverseOrderSQL + ' ASC ';
-	END
-	ELSE
-	BEGIN
-		SET @sReverseOrderSQL = @sReverseOrderSQL + ' DESC ';
-	END
-
-	SET @sOrderSQL = @sOrderSQL + ' ' + @psOrderOrder + ' ';
-
-
-	SET @sSelectSQL = '[DateTime],
-					[EndTime],
-					IsNull([Duration],-1) AS ''Duration'', 
-		 			CASE [Type] 
-						WHEN 0 THEN ''Unknown''
-						WHEN 1 THEN ''Cross Tab'' 
-						WHEN 2 THEN ''Custom Report'' 
-						WHEN 3 THEN ''Data Transfer'' 
-						WHEN 4 THEN ''Export'' 
-						WHEN 5 THEN ''Global Add'' 
-						WHEN 6 THEN ''Global Delete'' 
-						WHEN 7 THEN ''Global Update'' 
-						WHEN 8 THEN ''Import'' 
-						WHEN 9 THEN ''Mail Merge'' 
-						WHEN 10 THEN ''Diary Delete'' 
-						WHEN 11 THEN ''Diary Rebuild''
-						WHEN 12 THEN ''Email Rebuild''
-						WHEN 13 THEN ''Standard Report''
-						WHEN 14 THEN ''Record Editing''
-						WHEN 15 THEN ''System Error''
-						WHEN 16 THEN ''Match Report''
-						WHEN 17 THEN ''Calendar Report''
-						WHEN 18 THEN ''Envelopes & Labels''
-						WHEN 19 THEN ''Label Definition''
-						WHEN 20 THEN ''Record Profile''
-						WHEN 21	THEN ''Succession Planning''
-						WHEN 22 THEN ''Career Progression''
-						WHEN 25 THEN ''Workflow Rebuild''
-						ELSE ''Unknown''  
-					END + char(9) + 
-				 	[Name] + char(9) + 
-		 			CASE Status 
-						WHEN 0 THEN ''Pending''
-					  WHEN 1 THEN ''Cancelled'' 
-						WHEN 2 THEN ''Failed'' 
-						WHEN 3 THEN ''Successful'' 
-						WHEN 4 THEN ''Skipped'' 
-						WHEN 5 THEN ''Error''
-						ELSE ''Unknown'' 
-					END + char(9) +
-					CASE [Mode] 
-						WHEN 1 THEN ''Batch''
-						WHEN 0 THEN ''Manual''
-						ELSE ''Unknown''
-				 	END + char(9) + 
-					[Username] + char(9) + 
-					IsNull(convert(varchar, [BatchJobID]), ''0'') + char(9) +
-					IsNull(convert(varchar, [BatchRunID]), ''0'') + char(9) +
-					IsNull([BatchName],'''') + char(9) +
-					IsNull(convert(varchar, [SuccessCount]),''0'') + char(9) +
-					IsNull(convert(varchar, [FailCount]), ''0'') AS EventInfo ';
-
-		
-	
-	/****************************************************************************************************************************************/
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.ID) FROM ' + @sRealSource;
-
-	IF len(@sFilterSQL) > 0	SET @sTempExecString = @sTempExecString + ' WHERE ' + @sFilterSQL;
-
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT';
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT;
-	SET @piTotalRecCount = @iCount;
-	/****************************************************************************************************************************************/
-	
-	IF len(@sSelectSQL) > 0 
-		BEGIN
-			SET @sSelectSQL = @sRealSource + '.ID, ' + @sSelectSQL;
-			SET @sExecString = 'SELECT ' ;
-
-			IF @psAction = 'MOVEFIRST'
-				BEGIN
-					SET @sExecString = @sExecString + 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' ';
-					
-					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource ;
-
-					/* Add the filter code. */
-					IF len(@sFilterSQL) > 0
-						BEGIN
-							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
-						END
-					
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-
-					/* Set the position variables */
-					SET @piFirstRecPos = 1;
-					SET @pfFirstPage = 1;
-					SET @pfLastPage = 
-					CASE 
-						WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-						ELSE 0
-					END;
-				END
-		
-			IF (@psAction = 'MOVELAST')
-				BEGIN
-					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
-
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID FROM ' + @sRealSource;
-					
-					/* Add the filter code. */
-					IF len(@sFilterSQL) > 0
-						BEGIN
-							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
-						END
-
-					/* Add the reverse order code */
-					IF len(@sReverseOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL;
-						END
-
-					SET @sExecString = @sExecString + ')'
-
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-
-					/* Set the position variables */
-					SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1;
-					IF @piFirstRecPos < 1 SET @piFirstRecPos = 1;
-					SET @pfFirstPage = 	CASE 
-									WHEN @piFirstRecPos = 1 THEN 1
-									ELSE 0
-								END;
-					SET @pfLastPage = 1;
-
-				END
-
-			IF (@psAction = 'MOVENEXT') 
-				BEGIN
-					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
-
-					IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-						BEGIN
-							SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1);
-						END
-					ELSE
-						BEGIN
-							SET @iGetCount = @piRecordsRequired;
-						END
-
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID ' + 
-						' FROM ' + @sRealSource;
-
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sRealSource + '.ID ' + 
-						' FROM ' + @sRealSource;
-
-					/* Add the filter code. */
-					IF len(@sFilterSQL) > 0
-						BEGIN
-							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
-						END
-					
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-					
-					SET @sExecString = @sExecString + ')';
-
-					/* Add the reverse order code */
-					IF len(@sReverseOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL;
-						END
-
-					SET @sExecString = @sExecString + ')';
-
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-
-					/* Set the position variables */
-					SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount;
-					SET @pfFirstPage = 0
-					SET @pfLastPage = 	CASE 
-									WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-									ELSE 0
-								END;
-				END
-
-			IF @psAction = 'MOVEPREVIOUS'
-				BEGIN	
-					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
-
-					IF @piFirstRecPos <= @piRecordsRequired
-						BEGIN
-							SET @iGetCount = @piFirstRecPos - 1;
-						END
-					ELSE
-						BEGIN
-							SET @iGetCount = @piRecordsRequired;
-						END
-		
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID FROM ' + @sRealSource;
-
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID FROM ' + @sRealSource;
-				
-					/* Add the filter code. */
-					IF len(@sFilterSQL) > 0
-						BEGIN
-							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
-						END
-					
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-					
-					SET @sExecString = @sExecString + ')';
-
-					/* Add the reverse order code */
-					IF len(@sReverseOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL + ')';
-						END
-					
-					SET @sExecString = @sExecString
-
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-		
-					/* Set the position variables */
-					SET @piFirstRecPos = @piFirstRecPos - @iGetCount;
-					IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1;
-					SET @pfFirstPage = CASE WHEN @piFirstRecPos = 1 
-															THEN 1
-															ELSE 0
-														 END;
-					SET @pfLastPage = CASE WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount 
-															THEN 1
-															ELSE 0
-														END;
-				END
-
-		END
-
-	EXECUTE sp_executeSQL @sExecString;
-END
-GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetLinkInfo]    Script Date: 23/07/2013 11:19:27 ******/
 SET ANSI_NULLS ON
@@ -10718,10 +9517,6 @@ GO
 DROP PROCEDURE [dbo].[spASRIntGetEventLogUsers]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogRecords]    Script Date: 13/09/2013 08:57:58 ******/
-DROP PROCEDURE [dbo].[spASRIntGetEventLogRecords]
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogPurgeDetails]    Script Date: 13/09/2013 08:57:58 ******/
 DROP PROCEDURE [dbo].[spASRIntGetEventLogPurgeDetails]
 GO
@@ -10730,16 +9525,8 @@ GO
 DROP PROCEDURE [dbo].[spASRIntGetEventLogEmails]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogEmailInfo]    Script Date: 13/09/2013 08:57:58 ******/
-DROP PROCEDURE [dbo].[spASRIntGetEventLogEmailInfo]
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogDetails]    Script Date: 13/09/2013 08:57:58 ******/
 DROP PROCEDURE [dbo].[spASRIntGetEventLogDetails]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogBatchDetails]    Script Date: 13/09/2013 08:57:58 ******/
-DROP PROCEDURE [dbo].[spASRIntGetEventLogBatchDetails]
 GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetEmailGroupAddresses]    Script Date: 13/09/2013 08:57:58 ******/
@@ -10792,10 +9579,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntDeleteEventLogRecords]    Script Date: 13/09/2013 08:57:58 ******/
 DROP PROCEDURE [dbo].[spASRIntDeleteEventLogRecords]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntDeleteCheck]    Script Date: 13/09/2013 08:57:58 ******/
-DROP PROCEDURE [dbo].[spASRIntDeleteCheck]
 GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntCurrentUserAccess]    Script Date: 13/09/2013 08:57:58 ******/
@@ -11025,7 +9808,7 @@ BEGIN
 		SET @sIDColumnName = 'ID';
  	END
 
-	IF @piUtilityType = 1 /* Cross Tab */
+	IF @piUtilityType = 1 OR @piUtilityType = 35 /* Cross Tab */
 	BEGIN
 		SET @sTableName = 'ASRSysCrossTab';
 		SET @sAccessTableName = 'ASRSysCrossTabAccess';
@@ -11038,7 +9821,13 @@ BEGIN
 		SET @sAccessTableName = 'ASRSysCustomReportAccess';
 		SET @sIDColumnName = 'ID';
  	END
-    
+
+	IF @piUtilityType = 38 /* Talent Report*/
+	BEGIN
+		SET @sTableName = 'ASRSysTalentReports';
+		SET @sAccessTableName = 'ASRSysTalentReportAccess';
+		SET @sIDColumnName = 'ID';
+ 	END        
     
 	IF @piUtilityType = 3 /* Data Transfer */
 	BEGIN
@@ -11134,188 +9923,6 @@ BEGIN
 
 	IF @psAccess IS null SET @psAccess = 'HD';
 END
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntDeleteCheck]    Script Date: 13/09/2013 08:57:59 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[spASRIntDeleteCheck] (
-	@piUtilityType	integer,
-	@plngID			integer,
-	@pfDeleted		bit				OUTPUT,
-	@psAccess		varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE 
-		@sTableName			sysname,
-		@sAccessTableName	sysname,
-		@sIDColumnName		sysname,
-		@sSQL				nvarchar(MAX),
-		@sParamDefinition	nvarchar(500),
-		@fNewAccess			bit,
-		@iCount				integer,
-		@sAccess			varchar(MAX),
-		@fSysSecMgr			bit;
-
-	SET @sTableName = '';
-	SET @psAccess = 'HD';
-	SET @pfDeleted = 0;
-	SET @fNewAccess = 0;
-
-	IF @piUtilityType = 0 /* Batch Job */
-	BEGIN
-		SET @sTableName = 'ASRSysBatchJobName';
-		SET @sAccessTableName = 'ASRSysBatchJobAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
-  END
-
-	IF @piUtilityType = 17 /* Calendar Report */
-	BEGIN
-		SET @sTableName = 'ASRSysCalendarReports';
-		SET @sAccessTableName = 'ASRSysCalendarReportAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
-  END
-
-	IF @piUtilityType = 1 /* Cross Tab */
-	BEGIN
-		SET @sTableName = 'ASRSysCrossTab';
-		SET @sAccessTableName = 'ASRSysCrossTabAccess';
-		SET @sIDColumnName = 'CrossTabID';
-		SET @fNewAccess = 1;
- 	END
-    
-	IF @piUtilityType = 2 /* Custom Report */
-	BEGIN
-		SET @sTableName = 'ASRSysCustomReportsName';
-		SET @sAccessTableName = 'ASRSysCustomReportAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
- 	END
-    
-	IF @piUtilityType = 3 /* Data Transfer */
-	BEGIN
-		SET @sTableName = 'ASRSysDataTransferName';
-		SET @sAccessTableName = 'ASRSysDataTransferAccess';
-		SET @sIDColumnName = 'DataTransferID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF @piUtilityType = 4 /* Export */
-	BEGIN
-		SET @sTableName = 'ASRSysExportName';
-		SET @sAccessTableName = 'ASRSysExportAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF (@piUtilityType = 5) OR (@piUtilityType = 6) OR (@piUtilityType = 7) /* Globals */
-	BEGIN
-		SET @sTableName = 'ASRSysGlobalFunctions';
-		SET @sAccessTableName = 'ASRSysGlobalAccess';
-		SET @sIDColumnName = 'functionID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF (@piUtilityType = 8) /* Import */
-	BEGIN
-		SET @sTableName = 'ASRSysImportName';
-		SET @sAccessTableName = 'ASRSysImportAccess';
-		SET @sIDColumnName = 'ID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF (@piUtilityType = 9) OR (@piUtilityType = 18) /* Label or Mail Merge */
-	BEGIN
-		SET @sTableName = 'ASRSysMailMergeName';
-		SET @sAccessTableName = 'ASRSysMailMergeAccess';
-		SET @sIDColumnName = 'mailMergeID';
-		SET @fNewAccess = 1;
-  END
-    
-	IF (@piUtilityType = 20) /* Record Profile */
-	BEGIN
-		SET @sTableName = 'ASRSysRecordProfileName';
-		SET @sAccessTableName = 'ASRSysRecordProfileAccess';
-		SET @sIDColumnName = 'recordProfileID';
-		SET @fNewAccess = 1
-  END
-    
-	IF (@piUtilityType = 14) OR (@piUtilityType = 23) OR (@piUtilityType = 24) /* Match Report, Succession, Career */
-	BEGIN
-		SET @sTableName = 'ASRSysMatchReportName';
-		SET @sAccessTableName = 'ASRSysMatchReportAccess';
-		SET @sIDColumnName = 'matchReportID';
-		SET @fNewAccess = 1;
-  END
-
-	IF (@piUtilityType = 11) OR (@piUtilityType = 12)  /* Filters/Calcs */
-	BEGIN
-		SET @sTableName = 'ASRSysExpressions';
-		SET @sIDColumnName = 'exprID';
-  END
-
-	IF (@piUtilityType = 10)  /* Picklists */
-	BEGIN
-		SET @sTableName = 'ASRSysPicklistName';
-		SET @sIDColumnName = 'picklistID';
-  END
-
-	IF len(@sTableName) > 0
-	BEGIN
-		SET @sSQL = 'SELECT @iCount = COUNT(*)
-				FROM ' + @sTableName + 
-				' WHERE ' + @sTableName + '.' + @sIDColumnName + ' = ' + convert(nvarchar(255), @plngID);
-		SET @sParamDefinition = N'@iCount integer OUTPUT';
-		EXEC sp_executesql @sSQL,  @sParamDefinition, @iCount OUTPUT;
-
-		IF @iCount = 0 
-		BEGIN
-			SET @pfDeleted = 1;
-		END
-		ELSE
-		BEGIN
-			IF @fNewAccess = 1
-			BEGIN
-				exec [dbo].[spASRIntCurrentUserAccess] @piUtilityType,	@plngID, @psAccess OUTPUT;
-			END
-			ELSE
-			BEGIN
-				exec [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT;
-				
-				IF @fSysSecMgr = 1 
-				BEGIN
-					SET @psAccess = 'RW';
-				END
-				ELSE
-				BEGIN
-					SET @sSQL = 'SELECT @sAccess = CASE 
-								WHEN userName = system_user THEN ''RW''
-								ELSE access
-							END
-							FROM ' + @sTableName + 
-							' WHERE ' + @sTableName + '.' + @sIDColumnName + ' = ' + convert(nvarchar(255), @plngID);
-					SET @sParamDefinition = N'@sAccess varchar(MAX) OUTPUT';
-					EXEC sp_executesql @sSQL,  @sParamDefinition, @sAccess OUTPUT;
-
-					SET @psAccess = @sAccess;
-				END
-			END
-		END
-	END
-END
-
 GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntDeleteEventLogRecords]    Script Date: 13/09/2013 08:57:59 ******/
@@ -12133,113 +10740,8 @@ BEGIN
 	order by [Name];
 
 END
-
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogBatchDetails]    Script Date: 13/09/2013 08:57:59 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[spASRIntGetEventLogBatchDetails] (
-	@piBatchRunID 	integer,
-	@piEventID		integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-	
-	DECLARE @sExecString		nvarchar(MAX),
-			@sSelectString 		varchar(MAX),
-			@sFromString		varchar(MAX),
-			@sWhereString		varchar(MAX),
-			@sOrderString 		varchar(MAX);
-
-	SET @sSelectString = '';
-	SET @sFromString = '';
-	SET @sWhereString = '';
-	SET @sOrderString = '';
-
-	/* create SELECT statment string */
-	SET @sSelectString = 'SELECT 
-		 ID, 
-		 DateTime,
-		 EndTime,
-		 IsNull(Duration,-1) AS Duration,
-		 Username,
-		 CASE Type 
-						WHEN 0 THEN ''Unknown''
-						WHEN 1 THEN ''Cross Tab'' 
-						WHEN 2 THEN ''Custom Report'' 
-						WHEN 3 THEN ''Data Transfer'' 
-						WHEN 4 THEN ''Export'' 
-						WHEN 5 THEN ''Global Add'' 
-						WHEN 6 THEN ''Global Delete'' 
-						WHEN 7 THEN ''Global Update'' 
-						WHEN 8 THEN ''Import'' 
-						WHEN 9 THEN ''Mail Merge'' 
-						WHEN 10 THEN ''Diary Delete'' 
-						WHEN 11 THEN ''Diary Rebuild''
-						WHEN 12 THEN ''Email Rebuild''
-						WHEN 13 THEN ''Standard Report''
-						WHEN 14 THEN ''Record Editing''
-						WHEN 15 THEN ''System Error''
-						WHEN 16 THEN ''Match Report''
-						WHEN 17 THEN ''Calendar Report''
-						WHEN 18 THEN ''Envelopes & Labels''
-						WHEN 19 THEN ''Label Definition''
-						WHEN 20 THEN ''Record Profile''
-						WHEN 21	THEN ''Succession Planning''
-						WHEN 22 THEN ''Career Progression''
-						WHEN 25 THEN ''Workflow Rebuild''
-						ELSE ''Unknown''  
-		 END AS Type,
-		 Name,
-		 CASE Mode 
-			WHEN 1 THEN ''Batch''
-			WHEN 0 THEN ''Manual''
-			ELSE ''Unknown''
-		 END AS Mode, 
-		 CASE Status 
-				WHEN 0 THEN ''Pending''
-		   	WHEN 1 THEN ''Cancelled'' 
-				WHEN 2 THEN ''Failed'' 
-				WHEN 3 THEN ''Successful'' 
-				WHEN 4 THEN ''Skipped'' 
-				WHEN 5 THEN ''Error''
-				ELSE ''Unknown'' 
-		 END AS Status,
-		 IsNull(BatchName,'''') AS BatchName,
-		 IsNull(convert(varchar,SuccessCount), ''N/A'') AS SuccessCount,
-		 IsNull(convert(varchar,FailCount), ''N/A'') AS FailCount,
-		 IsNull(convert(varchar,BatchJobID), ''N/A'') AS BatchJobID,
-		 IsNull(convert(varchar,BatchRunID), ''N/A'') AS BatchRunID';
-
-	SET @sFromString = ' FROM ASRSysEventLog ';
-
-	IF @piBatchRunID > 0
-		BEGIN
-			SET @sWhereString = ' WHERE BatchRunID = ' + convert(varchar, @piBatchRunID);
-		END
-	ELSE
-		BEGIN
-			SET @sWhereString = ' WHERE ID = ' + convert(varchar, @piEventID);
-		END
-
-	SET @sOrderString = ' ORDER BY DateTime ASC ';
-
-	SET @sExecString = @sSelectString + @sFromString + @sWhereString + @sOrderString;
-
-	-- Run generated statement
-	EXEC sp_executeSQL @sExecString;
-	
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogDetails]    Script Date: 13/09/2013 08:57:59 ******/
 SET ANSI_NULLS ON
@@ -12301,183 +10803,6 @@ BEGIN
 	EXEC sp_executesql @sTempExecString;
 	
 END
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogEmailInfo]    Script Date: 13/09/2013 08:57:59 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[spASRIntGetEventLogEmailInfo] (
-	@psSelectedIDs	varchar(MAX),
-	@psSubject		varchar(MAX) OUTPUT,
-	@psOrderColumn	varchar(MAX),
-	@psOrderOrder	varchar(MAX)
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE	@sSelectString 	nvarchar(MAX),
-			@sOrderSQL		varchar(MAX);
-	
-	/* Clean the input string parameters. */
-	IF len(@psSelectedIDs) > 0 SET @psSelectedIDs = replace(@psSelectedIDs, '''', '''''');
-	IF len(@psOrderColumn) > 0 SET @psOrderColumn = replace(@psOrderColumn, '''', '''''');
-	IF len(@psOrderOrder) > 0 SET @psOrderOrder = replace(@psOrderOrder, '''', '''''');
-
-	SELECT @psSubject = IsNull(SettingValue,'<<Unknown Customer>>') + ' - Event Log' 
-	FROM ASRSysSystemSettings 
-	WHERE Lower(Section) = 'licence' 
-		AND Lower(SettingKey) = 'customer name';
-
-	SET @sSelectString = '';
-
-	/* create SELECT statment string */
-	SET @sSelectString = 'SELECT 	A.ID, 
-		A.Name, 
-		A.DateTime,
-		A.EndTime,
-		IsNull(A.Duration,-1) AS Duration, 
-		A.Username, 
-		CASE A.Mode 
-			WHEN 1 THEN ''Batch'' 
-			ELSE ''Manual'' 
-		END AS ''Mode'', 
-		CASE A.Status 
-			WHEN 0 THEN ''Pending''
-		  WHEN 1 THEN ''Cancelled'' 
-			WHEN 2 THEN ''Failed'' 
-			WHEN 3 THEN ''Successful'' 
-			WHEN 4 THEN ''Skipped'' 
-			WHEN 5 THEN ''Error''
-			ELSE ''Unknown'' 
-		END AS Status, 
-		CASE A.Type 
-			WHEN 0 THEN ''Unknown''
-			WHEN 1 THEN ''Cross Tab'' 
-			WHEN 2 THEN ''Custom Report'' 
-			WHEN 3 THEN ''Data Transfer'' 
-			WHEN 4 THEN ''Export'' 
-			WHEN 5 THEN ''Global Add'' 
-			WHEN 6 THEN ''Global Delete'' 
-			WHEN 7 THEN ''Global Update'' 
-			WHEN 8 THEN ''Import'' 
-			WHEN 9 THEN ''Mail Merge'' 
-			WHEN 10 THEN ''Diary Delete'' 
-			WHEN 11 THEN ''Diary Rebuild''
-			WHEN 12 THEN ''Email Rebuild''
-			WHEN 13 THEN ''Standard Report''
-			WHEN 14 THEN ''Record Editing''
-			WHEN 15 THEN ''System Error''
-			WHEN 16 THEN ''Match Report''
-			WHEN 17 THEN ''Calendar Report''
-			WHEN 18 THEN ''Envelopes & Labels''
-			WHEN 19 THEN ''Label Definition''
-			WHEN 20 THEN ''Record Profile''
-			WHEN 21	THEN ''Succession Planning''
-			WHEN 22 THEN ''Career Progression''
-			WHEN 25 THEN ''Workflow Rebuild''
-			ELSE ''Unknown''  
-		END AS Type,
-		CASE 
-			WHEN A.SuccessCount IS NULL THEN ''N/A''
-			ELSE CONVERT(varchar, A.SuccessCount)
-		END AS SuccessCount,
-		CASE
-			WHEN A.FailCount IS NULL THEN ''N/A''
-			ELSE CONVERT(varchar, A.FailCount)
-		END AS FailCount,
-		A.BatchName AS BatchName,
-		A.BatchJobID AS BatchJobID,
-		A.BatchRunID AS BatchRunID,
-		B.Notes, 
-		B.ID AS ''DetailsID'' ,
-		(SELECT count(ID) 
-			FROM ASRSysEventLogDetails C 
-			WHERE C.EventLogID = A.ID) as ''count''
-		FROM ASRSysEventLog A
-		LEFT OUTER JOIN ASRSysEventLogDetails B
-			ON A.ID = B.EventLogID
-		WHERE A.ID IN (' + @psSelectedIDs + ')';
-
-	SET @sOrderSQL = '';
-	
-	IF @psOrderColumn = 'Type'
-	BEGIN
-		SET @sOrderSQL = 
-			' CASE [Type] 
-				WHEN 1 THEN ''Cross Tab''
-				WHEN 2 THEN ''Custom Report''
-				WHEN 3 THEN ''Data Transfer''
-				WHEN 4 THEN ''Export''
-				WHEN 5 THEN ''Global Add''
-				WHEN 6 THEN ''Global Delete''
-				WHEN 7 THEN ''Global Update''
-				WHEN 8 THEN ''Import''
-				WHEN 9 THEN ''Mail Merge''
-				WHEN 10 THEN ''Diary Delete''
-				WHEN 11 THEN ''Diary Rebuild''
-				WHEN 12 THEN ''Email Rebuild''
-				WHEN 13 THEN ''Standard Report''
-				WHEN 14 THEN ''Record Editing''
-				WHEN 15 THEN ''System Error''
-				WHEN 16 THEN ''Match Report''
-				WHEN 17 THEN ''Calendar Report''
-				WHEN 18 THEN ''Envelopes & Labels''
-				WHEN 19 THEN ''Label Definition''
-				WHEN 20 THEN ''Record Profile''
-				WHEN 21 THEN ''Succession Planning''
-				WHEN 22 THEN ''Career Progression''
-				WHEN 25 THEN ''Workflow Rebuild''
-				ELSE ''Unknown''
-			END ';
-	END
-
-	IF @psOrderColumn = 'Mode'
-	BEGIN
-		SET @sOrderSQL = 
-			' CASE [Mode] 
-				WHEN 1 THEN ''Batch''
-				WHEN 0 THEN ''Manual''
-				ELSE ''Unknown''
-			END ';
-	END
-	
-	IF @psOrderColumn = 'Status'
-	BEGIN
-		SET @sOrderSQL = 
-			' CASE [Status] 
-				WHEN 0 THEN ''Pending''
-				WHEN 1 THEN ''Cancelled''
-				WHEN 2 THEN ''Failed''
-				WHEN 3 THEN ''Successful''
-				WHEN 4 THEN ''Skipped''
-				WHEN 5 THEN ''Error''
-				ELSE ''Unknown''
-			END ';
-	END
-	
-	IF len(@sOrderSQL) = 0
-	BEGIN
-		SET @sOrderSQL = @psOrderColumn;
-	END
-	
-	SET @sOrderSQL = @sOrderSQL + ' ' + @psOrderOrder;
-
-	IF LEN(LTRIM(RTRIM(@sOrderSQL))) > 0 
-	BEGIN
-		SET @sSelectString = @sSelectString + ' ORDER BY ' + @sOrderSQL;
-	END
-
-	EXEC sp_executeSQL @sSelectString;
-END
-
 GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogEmails]    Script Date: 13/09/2013 08:57:59 ******/
@@ -12525,432 +10850,8 @@ BEGIN
 
 	SELECT * FROM ASRSysEventLogPurge;
 END
-
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogRecords]    Script Date: 13/09/2013 08:57:59 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[spASRIntGetEventLogRecords] (
-	@pfError 						bit 				OUTPUT, 
-	@psFilterUser					varchar(MAX),
-	@piFilterType					integer,
-	@piFilterStatus					integer,
-	@piFilterMode					integer,
-	@psOrderColumn					varchar(MAX),
-	@psOrderOrder					varchar(MAX),
-	@piRecordsRequired				integer,
-	@pfFirstPage					bit					OUTPUT,
-	@pfLastPage						bit					OUTPUT,
-	@psAction						varchar(100),
-	@piTotalRecCount				integer				OUTPUT,
-	@piFirstRecPos					integer				OUTPUT,
-	@piCurrentRecCount				integer
-)
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	DECLARE	@sRealSource 			sysname,
-			@sSelectSQL				varchar(MAX),
-			@iTempCount 			integer,
-			@sExecString			nvarchar(MAX),
-			@sTempExecString		nvarchar(MAX),
-			@sTempParamDefinition	nvarchar(500),
-			@iCount					integer,
-			@iGetCount				integer,
-			@sFilterSQL				varchar(MAX),
-			@sOrderSQL				varchar(MAX),
-			@sReverseOrderSQL		varchar(MAX);
-			
-	/* Clean the input string parameters. */
-	IF len(@psAction) > 0 SET @psAction = replace(@psAction, '''', '''''');
-	IF len(@psFilterUser) > 0 SET @psFilterUser = replace(@psFilterUser, '''', '''''');
-	IF len(@psOrderColumn) > 0 SET @psOrderColumn = replace(@psOrderColumn, '''', '''''');
-	IF len(@psOrderOrder) > 0 SET @psOrderOrder = replace(@psOrderOrder, '''', '''''');
-
-	/* Initialise variables. */
-	SET @pfError = 0;
-	SET @sExecString = '';
-	SET @sRealSource = 'ASRSysEventLog';
-	SET @psAction = UPPER(@psAction);
-
-	IF (@psAction <> 'MOVEPREVIOUS') AND (@psAction <> 'MOVENEXT') AND (@psAction <> 'MOVELAST') 
-		BEGIN
-			SET @psAction = 'MOVEFIRST';
-		END
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 50;
-
-	/* Construct the filter SQL from ther input parameters. */
-	SET @sFilterSQL = '';
-	
-	SET @sFilterSQL = @sFilterSQL + ' Type NOT IN (23, 24) ';
-
-	IF @psFilterUser <> '-1' 
-	BEGIN
-		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
-		SET @sFilterSQL = @sFilterSQL + ' LOWER(username) = ''' + lower(@psFilterUser) + '''';
-	END
-	IF @piFilterType <> -1
-	BEGIN
-		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
-		SET @sFilterSQL = @sFilterSQL + ' Type = ' + convert(varchar(MAX), @piFilterType) + ' ';
-	END
-	IF @piFilterStatus <> -1
-	BEGIN
-		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
-		SET @sFilterSQL = @sFilterSQL + ' Status = ' + convert(varchar(MAX), @piFilterStatus) + ' ';
-	END
-	IF @piFilterMode <> -1
-	BEGIN
-		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
-		SET @sFilterSQL = @sFilterSQL + ' Mode = ' + convert(varchar(MAX), @piFilterMode) + ' ';
-	END
-	
-	/* Construct the order SQL from ther input parameters. */
-	SET @sOrderSQL = '';
-	IF @psOrderColumn = 'Type'
-	BEGIN
-		SET @sOrderSQL = 
-			' CASE [Type] 
-					WHEN 1 THEN ''Cross Tab''
-					WHEN 2 THEN ''Custom Report''
-					WHEN 3 THEN ''Data Transfer''
-					WHEN 4 THEN ''Export''
-					WHEN 5 THEN ''Global Add''
-					WHEN 6 THEN ''Global Delete''
-					WHEN 7 THEN ''Global Update''
-					WHEN 8 THEN ''Import''
-					WHEN 9 THEN ''Mail Merge''
-					WHEN 10 THEN ''Diary Delete''
-					WHEN 11 THEN ''Diary Rebuild''
-					WHEN 12 THEN ''Email Rebuild''
-					WHEN 13 THEN ''Standard Report''
-					WHEN 14 THEN ''Record Editing''
-					WHEN 15 THEN ''System Error''
-					WHEN 16 THEN ''Match Report''
-					WHEN 17 THEN ''Calendar Report''
-					WHEN 18 THEN ''Envelopes & Labels''
-					WHEN 19 THEN ''Label Definition''
-					WHEN 20 THEN ''Record Profile''
-					WHEN 21 THEN ''Succession Planning''
-					WHEN 22 THEN ''Career Progression''
-					WHEN 25 THEN ''Workflow Rebuild''
-					ELSE ''Unknown''
-				END ';
-	END
-	ELSE
-	BEGIN
-		IF @psOrderColumn = 'Mode'
-		BEGIN
-			SET @sOrderSQL =	
-				' CASE [Mode] 
-						WHEN 1 THEN ''Batch''
-						WHEN 0 THEN ''Manual''
-						ELSE ''Unknown''
-					END ';
-		END
-		ELSE 
-		BEGIN
-			IF @psOrderColumn = 'Status'
-			BEGIN
-				SET @sOrderSQL =	
-					' CASE [Status]
-							WHEN 0 THEN ''Pending''
-							WHEN 1 THEN ''Cancelled''
-							WHEN 2 THEN ''Failed''
-							WHEN 3 THEN ''Successful''
-							WHEN 4 THEN ''Skipped''
-							WHEN 5 THEN ''Error''
-							ELSE ''Unknown''
-						END ';
-			END
-			ELSE
-			BEGIN
-				SET @sOrderSQL = @psOrderColumn;
-			END
-		END
-	END
-	
-	SET @sReverseOrderSQL = @sOrderSQL;
-	if @psOrderOrder = 'DESC'
-	BEGIN
-		SET @sReverseOrderSQL = @sReverseOrderSQL + ' ASC ';
-	END
-	ELSE
-	BEGIN
-		SET @sReverseOrderSQL = @sReverseOrderSQL + ' DESC ';
-	END
-
-	SET @sOrderSQL = @sOrderSQL + ' ' + @psOrderOrder + ' ';
-
-
-	SET @sSelectSQL = '[DateTime],
-					[EndTime],
-					IsNull([Duration],-1) AS ''Duration'', 
-		 			CASE [Type] 
-						WHEN 0 THEN ''Unknown''
-						WHEN 1 THEN ''Cross Tab'' 
-						WHEN 2 THEN ''Custom Report'' 
-						WHEN 3 THEN ''Data Transfer'' 
-						WHEN 4 THEN ''Export'' 
-						WHEN 5 THEN ''Global Add'' 
-						WHEN 6 THEN ''Global Delete'' 
-						WHEN 7 THEN ''Global Update'' 
-						WHEN 8 THEN ''Import'' 
-						WHEN 9 THEN ''Mail Merge'' 
-						WHEN 10 THEN ''Diary Delete'' 
-						WHEN 11 THEN ''Diary Rebuild''
-						WHEN 12 THEN ''Email Rebuild''
-						WHEN 13 THEN ''Standard Report''
-						WHEN 14 THEN ''Record Editing''
-						WHEN 15 THEN ''System Error''
-						WHEN 16 THEN ''Match Report''
-						WHEN 17 THEN ''Calendar Report''
-						WHEN 18 THEN ''Envelopes & Labels''
-						WHEN 19 THEN ''Label Definition''
-						WHEN 20 THEN ''Record Profile''
-						WHEN 21	THEN ''Succession Planning''
-						WHEN 22 THEN ''Career Progression''
-						WHEN 25 THEN ''Workflow Rebuild''
-						ELSE ''Unknown''  
-					END + char(9) + 
-				 	[Name] + char(9) + 
-		 			CASE Status 
-						WHEN 0 THEN ''Pending''
-					  WHEN 1 THEN ''Cancelled'' 
-						WHEN 2 THEN ''Failed'' 
-						WHEN 3 THEN ''Successful'' 
-						WHEN 4 THEN ''Skipped'' 
-						WHEN 5 THEN ''Error''
-						ELSE ''Unknown'' 
-					END + char(9) +
-					CASE [Mode] 
-						WHEN 1 THEN ''Batch''
-						WHEN 0 THEN ''Manual''
-						ELSE ''Unknown''
-				 	END + char(9) + 
-					[Username] + char(9) + 
-					IsNull(convert(varchar, [BatchJobID]), ''0'') + char(9) +
-					IsNull(convert(varchar, [BatchRunID]), ''0'') + char(9) +
-					IsNull([BatchName],'''') + char(9) +
-					IsNull(convert(varchar, [SuccessCount]),''0'') + char(9) +
-					IsNull(convert(varchar, [FailCount]), ''0'') AS EventInfo ';
-
-		
-	
-	/****************************************************************************************************************************************/
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.ID) FROM ' + @sRealSource;
-
-	IF len(@sFilterSQL) > 0	SET @sTempExecString = @sTempExecString + ' WHERE ' + @sFilterSQL;
-
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT';
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT;
-	SET @piTotalRecCount = @iCount;
-	/****************************************************************************************************************************************/
-	
-	IF len(@sSelectSQL) > 0 
-		BEGIN
-			SET @sSelectSQL = @sRealSource + '.ID, ' + @sSelectSQL;
-			SET @sExecString = 'SELECT ' ;
-
-			IF @psAction = 'MOVEFIRST'
-				BEGIN
-					SET @sExecString = @sExecString + 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' ';
-					
-					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource ;
-
-					/* Add the filter code. */
-					IF len(@sFilterSQL) > 0
-						BEGIN
-							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
-						END
-					
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-
-					/* Set the position variables */
-					SET @piFirstRecPos = 1;
-					SET @pfFirstPage = 1;
-					SET @pfLastPage = 
-					CASE 
-						WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-						ELSE 0
-					END;
-				END
-		
-			IF (@psAction = 'MOVELAST')
-				BEGIN
-					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
-
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID FROM ' + @sRealSource;
-					
-					/* Add the filter code. */
-					IF len(@sFilterSQL) > 0
-						BEGIN
-							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
-						END
-
-					/* Add the reverse order code */
-					IF len(@sReverseOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL;
-						END
-
-					SET @sExecString = @sExecString + ')'
-
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-
-					/* Set the position variables */
-					SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1;
-					IF @piFirstRecPos < 1 SET @piFirstRecPos = 1;
-					SET @pfFirstPage = 	CASE 
-									WHEN @piFirstRecPos = 1 THEN 1
-									ELSE 0
-								END;
-					SET @pfLastPage = 1;
-
-				END
-
-			IF (@psAction = 'MOVENEXT') 
-				BEGIN
-					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
-
-					IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-						BEGIN
-							SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1);
-						END
-					ELSE
-						BEGIN
-							SET @iGetCount = @piRecordsRequired;
-						END
-
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID ' + 
-						' FROM ' + @sRealSource;
-
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sRealSource + '.ID ' + 
-						' FROM ' + @sRealSource;
-
-					/* Add the filter code. */
-					IF len(@sFilterSQL) > 0
-						BEGIN
-							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
-						END
-					
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-					
-					SET @sExecString = @sExecString + ')';
-
-					/* Add the reverse order code */
-					IF len(@sReverseOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL;
-						END
-
-					SET @sExecString = @sExecString + ')';
-
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-
-					/* Set the position variables */
-					SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount;
-					SET @pfFirstPage = 0
-					SET @pfLastPage = 	CASE 
-									WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-									ELSE 0
-								END;
-				END
-
-			IF @psAction = 'MOVEPREVIOUS'
-				BEGIN	
-					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
-
-					IF @piFirstRecPos <= @piRecordsRequired
-						BEGIN
-							SET @iGetCount = @piFirstRecPos - 1;
-						END
-					ELSE
-						BEGIN
-							SET @iGetCount = @piRecordsRequired;
-						END
-		
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID FROM ' + @sRealSource;
-
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID FROM ' + @sRealSource;
-				
-					/* Add the filter code. */
-					IF len(@sFilterSQL) > 0
-						BEGIN
-							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
-						END
-					
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-					
-					SET @sExecString = @sExecString + ')';
-
-					/* Add the reverse order code */
-					IF len(@sReverseOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL + ')';
-						END
-					
-					SET @sExecString = @sExecString
-
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-		
-					/* Set the position variables */
-					SET @piFirstRecPos = @piFirstRecPos - @iGetCount;
-					IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1;
-					SET @pfFirstPage = CASE WHEN @piFirstRecPos = 1 
-															THEN 1
-															ELSE 0
-														 END;
-					SET @pfLastPage = CASE WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount 
-															THEN 1
-															ELSE 0
-														END;
-				END
-
-		END
-
-	EXECUTE sp_executeSQL @sExecString;
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetEventLogUsers]    Script Date: 13/09/2013 08:57:59 ******/
 SET ANSI_NULLS ON
@@ -17257,10 +15158,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntExpressionHasHiddenComponents]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntExpressionHasHiddenComponents]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntDeleteUtility]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntDeleteUtility]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntCheckCanMakeHidden]    Script Date: 13/09/2013 08:59:32 ******/
@@ -24923,150 +22820,8 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 		END
 	END
 END
-
 GO
 
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntDeleteUtility]    Script Date: 13/09/2013 08:59:33 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntDeleteUtility] (
-	@piUtilType	integer,
-	@piUtilID	integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iExprID	integer;
-
-	IF @piUtilType = 0
-	BEGIN
-		/* Batch Jobs */
-		DELETE FROM ASRSysBatchJobName WHERE ID = @piUtilID;
-		DELETE FROM AsrSysBatchJobDetails WHERE BatchJobNameID = @piUtilID;
-		DELETE FROM ASRSysBatchJobAccess WHERE ID = @piUtilID;
-	END
-
-	IF @piUtilType = 1
-	BEGIN
-		/* Cross Tabs */
-		DELETE FROM ASRSysCrossTab WHERE CrossTabID = @piUtilID;
-		DELETE FROM ASRSysCrossTabAccess WHERE ID = @piUtilID;
-	END
-
-	IF @piUtilType = 2
-	BEGIN
-		/* Custom Reports. */
-		DELETE FROM ASRSysCustomReportsName WHERE id = @piUtilID;
-		DELETE FROM ASRSysCustomReportsDetails WHERE customReportID= @piUtilID;
-		DELETE FROM ASRSysCustomReportAccess WHERE ID = @piUtilID;
-	END
-	
-	IF @piUtilType = 3
-	BEGIN
-		/* Data Transfer. */
-		DELETE FROM ASRSysDataTransferName WHERE DataTransferID = @piUtilID;
-		DELETE FROM ASRSysDataTransferAccess WHERE ID = @piUtilID;
-	END
-
-	IF @piUtilType = 4
-	BEGIN
-		/* Export. */
-		DELETE FROM ASRSysExportName WHERE ID = @piUtilID;
-		DELETE FROM AsrSysExportDetails WHERE ExportID = @piUtilID;
-		DELETE FROM ASRSysExportAccess WHERE ID = @piUtilID;
-	END
-
-	IF (@piUtilType = 5) OR (@piUtilType = 6) OR (@piUtilType = 7)
-	BEGIN
-		/* Globals. */
-		DELETE FROM ASRSysGlobalFunctions  WHERE FunctionID = @piUtilID;
-		DELETE FROM ASRSysGlobalAccess WHERE ID = @piUtilID;
-	END
-
-	IF @piUtilType = 8
-	BEGIN
-		/* Import. */
-		DELETE FROM ASRSysImportName  WHERE ID = @piUtilID;
-		DELETE FROM ASRSysImportDetails WHERE ImportID = @piUtilID;
-		DELETE FROM ASRSysImportAccess WHERE ID = @piUtilID;
-	END
-
-	IF (@piUtilType = 9) OR (@piUtilType = 18)
-	BEGIN
-		/* Mail Merge/ Envelopes & Labels. */
-		DELETE FROM AsrSysMailMergeName  WHERE MailMergeID = @piUtilID;
-		DELETE FROM ASRSysMailMergeColumns  WHERE MailMergeID = @piUtilID;
-		DELETE FROM ASRSysMailMergeAccess WHERE ID = @piUtilID;
-	END
-
-	IF @piUtilType = 10
-	BEGIN
-		/* Picklists. */
-		DELETE FROM ASRSysPickListName WHERE picklistID = @piUtilID;
-		DELETE FROM ASRSysPickListItems WHERE picklistID = @piUtilID;
-	END
-	
-	IF @piUtilType = 11 OR @piUtilType = 12
-	BEGIN
-		/* Filters and Calculations. */
-		DECLARE subExpressions_cursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT ASRSysExpressions.exprID
-			FROM ASRSysExpressions
-			INNER JOIN ASRSysExprComponents ON ASRSysExpressions.parentComponentID = ASRSysExprComponents.componentID
-			AND ASRSysExprComponents.exprID = @piUtilID;
-		OPEN subExpressions_cursor;
-		FETCH NEXT FROM subExpressions_cursor INTO @iExprID;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			exec [dbo].[sp_ASRIntDeleteUtility] @piUtilType, @iExprID;
-			
-			FETCH NEXT FROM subExpressions_cursor INTO @iExprID;
-		END
-		CLOSE subExpressions_cursor;
-		DEALLOCATE subExpressions_cursor;
-
-		DELETE FROM ASRSysExprComponents
-		WHERE exprID = @piUtilID;
-
-		DELETE FROM ASRSysExpressions WHERE exprID = @piUtilID;
-	END	
-
-	IF (@piUtilType = 14) OR (@piUtilType = 23) OR (@piUtilType = 24)
-	BEGIN
-		/* Match Reports/Succession Planning/Career Progression. */
-		DELETE FROM ASRSysMatchReportName WHERE MatchReportID = @piUtilID;
-		DELETE FROM ASRSysMatchReportAccess WHERE ID = @piUtilID;
-	END
-
-	IF @piUtilType = 17 
-	BEGIN
-		/*Calendar Reports*/
-		DELETE FROM ASRSysCalendarReports WHERE ID = @piUtilID;
-		DELETE FROM ASRSysCalendarReportEvents WHERE CalendarReportID = @piUtilID;
-		DELETE FROM ASRSysCalendarReportOrder WHERE CalendarReportID = @piUtilID;
-		DELETE FROM ASRSysCalendarReportAccess WHERE ID = @piUtilID;
-	END
-	
-	IF @piUtilType = 20 
-	BEGIN
-		/*Record Profile*/
-		DELETE FROM ASRSysRecordProfileName WHERE recordProfileID = @piUtilID;
-		DELETE FROM ASRSysRecordProfileDetails WHERE RecordProfileID = @piUtilID;
-		DELETE FROM ASRSysRecordProfileTables WHERE RecordProfileID = @piUtilID;
-		DELETE FROM ASRSysRecordProfileAccess WHERE ID = @piUtilID;
-	END
-	
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntExpressionHasHiddenComponents]    Script Date: 13/09/2013 08:59:33 ******/
 SET ANSI_NULLS ON
@@ -38839,14 +36594,6 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntG
 	DROP PROCEDURE [dbo].[sp_ASRIntGetMailMergeDefinition];
 GO
 
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetEventLogRecords]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[spASRIntGetEventLogRecords];
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetEventLogBatchDetails]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].spASRIntGetEventLogBatchDetails;
-GO
-
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetCrossTabDefinition]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRIntGetCrossTabDefinition];
 GO
@@ -39766,6 +37513,13 @@ BEGIN
 		DELETE FROM ASRSysCrossTabAccess WHERE ID = @piUtilID;
 	END
 
+	IF @piUtilType = 38
+	BEGIN
+		/* Talent Reports*/
+		DELETE FROM ASRSysTalentReports WHERE ID = @piUtilID;
+		DELETE FROM ASRSysTalentReportAccess WHERE ID = @piUtilID;
+	END
+
 	IF @piUtilType = 2
 	BEGIN
 		/* Custom Reports. */
@@ -39870,7 +37624,6 @@ BEGIN
 	END
 	
 END
-
 GO
 
 IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntSaveCrossTab]') AND xtype in (N'P'))
@@ -47575,428 +45328,8 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE [dbo].[spASRIntGetEventLogRecords] (
-	@pfError 						bit 				OUTPUT, 
-	@psFilterUser					varchar(MAX),
-	@piFilterType					integer,
-	@piFilterStatus					integer,
-	@piFilterMode					integer,
-	@psOrderColumn					varchar(MAX),
-	@psOrderOrder					varchar(MAX),
-	@piRecordsRequired				integer,
-	@pfFirstPage					bit					OUTPUT,
-	@pfLastPage						bit					OUTPUT,
-	@psAction						varchar(100),
-	@piTotalRecCount				integer				OUTPUT,
-	@piFirstRecPos					integer				OUTPUT,
-	@piCurrentRecCount				integer
-)
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	DECLARE	@sRealSource 			sysname,
-			@sSelectSQL				varchar(MAX),
-			@iTempCount 			integer,
-			@sExecString			nvarchar(MAX),
-			@sTempExecString		nvarchar(MAX),
-			@sTempParamDefinition	nvarchar(500),
-			@iCount					integer,
-			@iGetCount				integer,
-			@sFilterSQL				varchar(MAX),
-			@sOrderSQL				varchar(MAX),
-			@sReverseOrderSQL		varchar(MAX);
-			
-	/* Clean the input string parameters. */
-	IF len(@psAction) > 0 SET @psAction = replace(@psAction, '''', '''''');
-	IF len(@psFilterUser) > 0 SET @psFilterUser = replace(@psFilterUser, '''', '''''');
-	IF len(@psOrderColumn) > 0 SET @psOrderColumn = replace(@psOrderColumn, '''', '''''');
-	IF len(@psOrderOrder) > 0 SET @psOrderOrder = replace(@psOrderOrder, '''', '''''');
-
-	/* Initialise variables. */
-	SET @pfError = 0;
-	SET @sExecString = '';
-	SET @sRealSource = 'ASRSysEventLog';
-	SET @psAction = UPPER(@psAction);
-
-	IF (@psAction <> 'MOVEPREVIOUS') AND (@psAction <> 'MOVENEXT') AND (@psAction <> 'MOVELAST') 
-		BEGIN
-			SET @psAction = 'MOVEFIRST';
-		END
-
-	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 50;
-
-	/* Construct the filter SQL from ther input parameters. */
-	SET @sFilterSQL = '';
-	
-	SET @sFilterSQL = @sFilterSQL + ' Type NOT IN (23, 24) ';
-
-	IF @psFilterUser <> '-1' 
-	BEGIN
-		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
-		SET @sFilterSQL = @sFilterSQL + ' LOWER(username) = ''' + lower(@psFilterUser) + '''';
-	END
-	IF @piFilterType <> -1
-	BEGIN
-		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
-		SET @sFilterSQL = @sFilterSQL + ' Type = ' + convert(varchar(MAX), @piFilterType) + ' ';
-	END
-	IF @piFilterStatus <> -1
-	BEGIN
-		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
-		SET @sFilterSQL = @sFilterSQL + ' Status = ' + convert(varchar(MAX), @piFilterStatus) + ' ';
-	END
-	IF @piFilterMode <> -1
-	BEGIN
-		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
-		--SET @sFilterSQL = @sFilterSQL + ' Mode = ' + convert(varchar(MAX), @piFilterMode) + ' ';
-		SET @sFilterSQL = @sFilterSQL + 
-			CASE @piFilterMode 
-				WHEN 1 THEN '[Mode] = 1 AND ([ReportPack] = 0 OR [ReportPack] IS NULL)'
-				WHEN 2 THEN '[ReportPack] = 1'
-				WHEN 0 THEN '[Mode] = 0 AND ([ReportPack] = 0 OR [ReportPack] IS NULL)'
-			END 
-	END
-	
-	/* Construct the order SQL from ther input parameters. */
-	SET @sOrderSQL = '';
-	IF @psOrderColumn = 'Type'
-	BEGIN
-		SET @sOrderSQL = 
-			' CASE [Type] 
-					WHEN 1 THEN ''Cross Tab''
-					WHEN 2 THEN ''Custom Report''
-					WHEN 3 THEN ''Data Transfer''
-					WHEN 4 THEN ''Export''
-					WHEN 5 THEN ''Global Add''
-					WHEN 6 THEN ''Global Delete''
-					WHEN 7 THEN ''Global Update''
-					WHEN 8 THEN ''Import''
-					WHEN 9 THEN ''Mail Merge''
-					WHEN 10 THEN ''Diary Delete''
-					WHEN 11 THEN ''Diary Rebuild''
-					WHEN 12 THEN ''Email Rebuild''
-					WHEN 13 THEN ''Standard Report''
-					WHEN 14 THEN ''Record Editing''
-					WHEN 15 THEN ''System Error''
-					WHEN 16 THEN ''Match Report''
-					WHEN 17 THEN ''Calendar Report''
-					WHEN 18 THEN ''Envelopes & Labels''
-					WHEN 19 THEN ''Label Definition''
-					WHEN 20 THEN ''Record Profile''
-					WHEN 21 THEN ''Succession Planning''
-					WHEN 22 THEN ''Career Progression''
-					WHEN 25 THEN ''Workflow Rebuild''
-					WHEN 35 THEN ''9-Box Grid Report''
-					ELSE ''Unknown''
-				END ';
-	END
-	ELSE
-	BEGIN
-		IF @psOrderColumn = 'Mode'
-		BEGIN
-			SET @sOrderSQL =	
-				' CASE ' + @piFilterMode + '
-						WHEN 1 THEN ''Batch''
-						WHEN 0 THEN ''Manual''
-						WHEN 2 THEN ''Pack''
-					END ';
-		END
-		ELSE 
-		BEGIN
-			IF @psOrderColumn = 'Status'
-			BEGIN
-				SET @sOrderSQL =	
-					' CASE [Status]
-							WHEN 0 THEN ''Pending''
-							WHEN 1 THEN ''Cancelled''
-							WHEN 2 THEN ''Failed''
-							WHEN 3 THEN ''Successful''
-							WHEN 4 THEN ''Skipped''
-							WHEN 5 THEN ''Error''
-							ELSE ''Unknown''
-						END ';
-			END
-			ELSE
-			BEGIN
-				SET @sOrderSQL = @psOrderColumn;
-			END
-		END
-	END
-	
-	SET @sReverseOrderSQL = @sOrderSQL;
-	if @psOrderOrder = 'DESC'
-	BEGIN
-		SET @sReverseOrderSQL = @sReverseOrderSQL + ' ASC ';
-	END
-	ELSE
-	BEGIN
-		SET @sReverseOrderSQL = @sReverseOrderSQL + ' DESC ';
-	END
-
-	SET @sOrderSQL = @sOrderSQL + ' ' + @psOrderOrder + ' ';
-
-
-	SET @sSelectSQL = '[DateTime],
-					[EndTime],
-					IsNull([Duration],-1) AS ''Duration'', 
-		 			CASE [Type] 
-						WHEN 0 THEN ''Unknown''
-						WHEN 1 THEN ''Cross Tab'' 
-						WHEN 2 THEN ''Custom Report'' 
-						WHEN 3 THEN ''Data Transfer'' 
-						WHEN 4 THEN ''Export'' 
-						WHEN 5 THEN ''Global Add'' 
-						WHEN 6 THEN ''Global Delete'' 
-						WHEN 7 THEN ''Global Update'' 
-						WHEN 8 THEN ''Import'' 
-						WHEN 9 THEN ''Mail Merge'' 
-						WHEN 10 THEN ''Diary Delete'' 
-						WHEN 11 THEN ''Diary Rebuild''
-						WHEN 12 THEN ''Email Rebuild''
-						WHEN 13 THEN ''Standard Report''
-						WHEN 14 THEN ''Record Editing''
-						WHEN 15 THEN ''System Error''
-						WHEN 16 THEN ''Match Report''
-						WHEN 17 THEN ''Calendar Report''
-						WHEN 18 THEN ''Envelopes & Labels''
-						WHEN 19 THEN ''Label Definition''
-						WHEN 20 THEN ''Record Profile''
-						WHEN 21	THEN ''Succession Planning''
-						WHEN 22 THEN ''Career Progression''
-						WHEN 25 THEN ''Workflow Rebuild''
-						WHEN 35 THEN ''9-Box Grid Report''
-						ELSE ''Unknown''  
-					END + char(9) + 
-				 	[Name] + char(9) + 
-		 			CASE Status 
-						WHEN 0 THEN ''Pending''
-					  WHEN 1 THEN ''Cancelled'' 
-						WHEN 2 THEN ''Failed'' 
-						WHEN 3 THEN ''Successful'' 
-						WHEN 4 THEN ''Skipped'' 
-						WHEN 5 THEN ''Error''
-						ELSE ''Unknown'' 
-					END + char(9) +
-					CASE 
-						WHEN [Mode] = 1 AND ([ReportPack] = 0 OR [ReportPack] IS NULL) THEN ''Batch''
-						WHEN [Mode] = 0 AND ([ReportPack] = 0 OR [ReportPack] IS NULL) THEN ''Manual''
-						ELSE ''Pack''
-				 	END + char(9) + 
-					[Username] + char(9) + 
-					IsNull(convert(varchar, [BatchJobID]), ''0'') + char(9) +
-					IsNull(convert(varchar, [BatchRunID]), ''0'') + char(9) +
-					IsNull([BatchName],'''') + char(9) +
-					IsNull(convert(varchar, [SuccessCount]),''0'') + char(9) +
-					IsNull(convert(varchar, [FailCount]), ''0'') AS EventInfo ';
-
-		
-	
-	/****************************************************************************************************************************************/
-	/* Get the total number of records. */
-	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.ID) FROM ' + @sRealSource;
-
-	IF len(@sFilterSQL) > 0	SET @sTempExecString = @sTempExecString + ' WHERE ' + @sFilterSQL;
-
-	SET @sTempParamDefinition = N'@recordCount integer OUTPUT';
-	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT;
-	SET @piTotalRecCount = @iCount;
-	/****************************************************************************************************************************************/
-	
-	IF len(@sSelectSQL) > 0 
-		BEGIN
-			SET @sSelectSQL = @sRealSource + '.ID, ' + @sSelectSQL;
-			SET @sExecString = 'SELECT ' ;
-
-			IF @psAction = 'MOVEFIRST'
-				BEGIN
-					SET @sExecString = @sExecString + 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' ';
-					
-					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource ;
-
-					/* Add the filter code. */
-					IF len(@sFilterSQL) > 0
-						BEGIN
-							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
-						END
-					
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-
-					/* Set the position variables */
-					SET @piFirstRecPos = 1;
-					SET @pfFirstPage = 1;
-					SET @pfLastPage = 
-					CASE 
-						WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
-						ELSE 0
-					END;
-				END
-		
-			IF (@psAction = 'MOVELAST')
-				BEGIN
-					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
-
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID FROM ' + @sRealSource;
-					
-					/* Add the filter code. */
-					IF len(@sFilterSQL) > 0
-						BEGIN
-							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
-						END
-
-					/* Add the reverse order code */
-					IF len(@sReverseOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL;
-						END
-
-					SET @sExecString = @sExecString + ')'
-
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-
-					/* Set the position variables */
-					SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1;
-					IF @piFirstRecPos < 1 SET @piFirstRecPos = 1;
-					SET @pfFirstPage = 	CASE 
-									WHEN @piFirstRecPos = 1 THEN 1
-									ELSE 0
-								END;
-					SET @pfLastPage = 1;
-
-				END
-
-			IF (@psAction = 'MOVENEXT') 
-				BEGIN
-					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
-
-					IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
-						BEGIN
-							SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1);
-						END
-					ELSE
-						BEGIN
-							SET @iGetCount = @piRecordsRequired;
-						END
-
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID ' + 
-						' FROM ' + @sRealSource;
-
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sRealSource + '.ID ' + 
-						' FROM ' + @sRealSource;
-
-					/* Add the filter code. */
-					IF len(@sFilterSQL) > 0
-						BEGIN
-							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
-						END
-					
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-					
-					SET @sExecString = @sExecString + ')';
-
-					/* Add the reverse order code */
-					IF len(@sReverseOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL;
-						END
-
-					SET @sExecString = @sExecString + ')';
-
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-
-					/* Set the position variables */
-					SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount;
-					SET @pfFirstPage = 0
-					SET @pfLastPage = 	CASE 
-									WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
-									ELSE 0
-								END;
-				END
-
-			IF @psAction = 'MOVEPREVIOUS'
-				BEGIN	
-					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
-
-					IF @piFirstRecPos <= @piRecordsRequired
-						BEGIN
-							SET @iGetCount = @piFirstRecPos - 1;
-						END
-					ELSE
-						BEGIN
-							SET @iGetCount = @piRecordsRequired;
-						END
-		
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID FROM ' + @sRealSource;
-
-					SET @sExecString = @sExecString + 
-						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID FROM ' + @sRealSource;
-				
-					/* Add the filter code. */
-					IF len(@sFilterSQL) > 0
-						BEGIN
-							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
-						END
-					
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-					
-					SET @sExecString = @sExecString + ')';
-
-					/* Add the reverse order code */
-					IF len(@sReverseOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL + ')';
-						END
-					
-					SET @sExecString = @sExecString
-
-					/* Add the order code */
-					IF len(@sOrderSQL) > 0 
-						BEGIN
-							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
-						END
-		
-					/* Set the position variables */
-					SET @piFirstRecPos = @piFirstRecPos - @iGetCount;
-					IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1;
-					SET @pfFirstPage = CASE WHEN @piFirstRecPos = 1 
-															THEN 1
-															ELSE 0
-														 END;
-					SET @pfLastPage = CASE WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount 
-															THEN 1
-															ELSE 0
-														END;
-				END
-
-		END
-
-	EXECUTE sp_executeSQL @sExecString;
-END
-
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetEventLogBatchDetails]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].spASRIntGetEventLogBatchDetails;
 GO
 
 CREATE PROCEDURE [dbo].[spASRIntGetEventLogBatchDetails] (
@@ -48052,6 +45385,7 @@ BEGIN
 						WHEN 22 THEN ''Career Progression''
 						WHEN 25 THEN ''Workflow Rebuild''
 						WHEN 35 THEN ''9-Box Grid Report''
+						WHEN 38 THEN ''Talent Report''
 						ELSE ''Unknown''  
 		 END AS Type,
 		 Name,
@@ -48172,6 +45506,7 @@ BEGIN
 			WHEN 22 THEN ''Career Progression''
 			WHEN 25 THEN ''Workflow Rebuild''
 			WHEN 35 THEN ''9-Box Grid Report''
+			WHEN 38 THEN ''Talent Report''
 			ELSE ''Unknown''  
 		END AS Type,
 		CASE 
@@ -48225,6 +45560,7 @@ BEGIN
 				WHEN 22 THEN ''Career Progression''
 				WHEN 25 THEN ''Workflow Rebuild''
 				WHEN 35 THEN ''9-Box Grid Report''
+				WHEN 38 THEN ''Talent Report''
 				ELSE ''Unknown''
 			END ';
 	END
@@ -48463,164 +45799,6 @@ BEGIN
 	ORDER BY [id]';
 	
 	EXECUTE sp_EXecuteSQL @sExecString;
-END
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntCurrentUserAccess]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[spASRIntCurrentUserAccess];
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntCurrentUserAccess] (
-	@piUtilityType	integer,
-	@plngID			integer,
-	@psAccess		varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE 
-		@sTableName			sysname,
-		@sAccessTableName	sysname,
-		@sIDColumnName		sysname,
-		@sSQL				nvarchar(MAX),
-		@sParamDefinition	nvarchar(500),
-		@sRoleName			varchar(255),
-		@sActualUserName	sysname,
-		@iActualUserGroupID	integer,
-		@fEnabled			bit
-
-	SET @sTableName = '';
-	SET @psAccess = 'HD';
-
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sRoleName OUTPUT,
-		@iActualUserGroupID OUTPUT;
-					
-	IF @piUtilityType = 0 /* Batch Job */
-	BEGIN
-		SET @sTableName = 'ASRSysBatchJobName';
-		SET @sAccessTableName = 'ASRSysBatchJobAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-
-	IF @piUtilityType = 17 /* Calendar Report */
-	BEGIN
-		SET @sTableName = 'ASRSysCalendarReports';
-		SET @sAccessTableName = 'ASRSysCalendarReportAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-
-	IF @piUtilityType = 1 OR @piUtilityType = 35 /* Cross Tab */
-	BEGIN
-		SET @sTableName = 'ASRSysCrossTab';
-		SET @sAccessTableName = 'ASRSysCrossTabAccess';
-		SET @sIDColumnName = 'CrossTabID';
- 	END
-    
-	IF @piUtilityType = 2 /* Custom Report */
-	BEGIN
-		SET @sTableName = 'ASRSysCustomReportsName';
-		SET @sAccessTableName = 'ASRSysCustomReportAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-    
-    
-	IF @piUtilityType = 3 /* Data Transfer */
-	BEGIN
-		SET @sTableName = 'ASRSysDataTransferName';
-		SET @sAccessTableName = 'ASRSysDataTransferAccess';
-		SET @sIDColumnName = 'DataTransferID';
- 	END
-    
-	IF @piUtilityType = 4 /* Export */
-	BEGIN
-		SET @sTableName = 'ASRSysExportName';
-		SET @sAccessTableName = 'ASRSysExportAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-    
-	IF (@piUtilityType = 5) OR (@piUtilityType = 6) OR (@piUtilityType = 7) /* Globals */
-	BEGIN
-		SET @sTableName = 'ASRSysGlobalFunctions';
-		SET @sAccessTableName = 'ASRSysGlobalAccess';
-		SET @sIDColumnName = 'functionID';
- 	END
-    
-	IF (@piUtilityType = 8) /* Import */
-	BEGIN
-		SET @sTableName = 'ASRSysImportName';
-		SET @sAccessTableName = 'ASRSysImportAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-    
-	IF (@piUtilityType = 9) OR (@piUtilityType = 18) /* Label or Mail Merge */
-	BEGIN
-		SET @sTableName = 'ASRSysMailMergeName';
-		SET @sAccessTableName = 'ASRSysMailMergeAccess';
-		SET @sIDColumnName = 'mailMergeID';
- 	END
-    
-	IF (@piUtilityType = 20) /* Record Profile */
-	BEGIN
-		SET @sTableName = 'ASRSysRecordProfileName';
-		SET @sAccessTableName = 'ASRSysRecordProfileAccess';
-		SET @sIDColumnName = 'recordProfileID';
- 	END
-    
-	IF (@piUtilityType = 14) OR (@piUtilityType = 23) OR (@piUtilityType = 24) /* Match Report, Succession, Career */
-	BEGIN
-		SET @sTableName = 'ASRSysMatchReportName';
-		SET @sAccessTableName = 'ASRSysMatchReportAccess';
-		SET @sIDColumnName = 'matchReportID';
- 	END
-
-	IF (@piUtilityType = 25) /* Workflow */
-	BEGIN
-		SELECT @fEnabled = enabled
-		FROM [dbo].[ASRSysWorkflows]
-		WHERE ID = @plngID;
-		
-		IF @fEnabled = 1
-		BEGIN
-			SET @psAccess = 'RW';
-		END
-	END
-
-	IF len(@sTableName) > 0
-	BEGIN
-		SET @sSQL = 'SELECT @sValue = 
-					CASE
-						WHEN (SELECT count(*)
-							FROM ASRSysGroupPermissions
-							INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-								AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
-								OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
-							INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-								AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
-							WHERE b.Name = ASRSysGroupPermissions.groupname
-								AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''RW''
-						WHEN ' + @sTableName + '.userName = system_user THEN ''RW''
-						ELSE
-							CASE
-								WHEN ' + @sAccessTableName + '.access IS null THEN ''HD''
-								ELSE ' + @sAccessTableName + '.access 
-							END
-						END
-					FROM sysusers b
-					INNER JOIN sysusers a ON b.uid = a.gid
-					LEFT OUTER JOIN ' + @sAccessTableName + ' ON (b.name = ' + @sAccessTableName + '.groupName
-						AND ' + @sAccessTableName + '.id = ' + convert(nvarchar(100), @plngID) + ')
-					INNER JOIN ' + @sTableName + ' ON ' + @sAccessTableName + '.ID = ' + @sTableName + '.' + @sIDColumnName + '
-					WHERE b.Name = ''' + @sRoleName + '''';
-
-		SET @sParamDefinition = N'@sValue varchar(MAX) OUTPUT';
-		EXEC sp_executesql @sSQL,  @sParamDefinition, @psAccess OUTPUT;
-	END
-
-	IF @psAccess IS null SET @psAccess = 'HD';
 END
 GO
 
@@ -63067,6 +60245,621 @@ BEGIN
 END
 GO
 
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRIntDeleteCheck]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[spASRIntDeleteCheck]
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntDeleteCheck] (
+	@piUtilityType	integer,
+	@plngID			integer,
+	@pfDeleted		bit				OUTPUT,
+	@psAccess		varchar(MAX)	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE 
+		@sTableName			sysname,
+		@sAccessTableName	sysname,
+		@sIDColumnName		sysname,
+		@sSQL				nvarchar(MAX),
+		@sParamDefinition	nvarchar(500),
+		@fNewAccess			bit,
+		@iCount				integer,
+		@sAccess			varchar(MAX),
+		@fSysSecMgr			bit;
+
+	SET @sTableName = '';
+	SET @psAccess = 'HD';
+	SET @pfDeleted = 0;
+	SET @fNewAccess = 0;
+
+	IF @piUtilityType = 0 /* Batch Job */
+	BEGIN
+		SET @sTableName = 'ASRSysBatchJobName';
+		SET @sAccessTableName = 'ASRSysBatchJobAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;
+  END
+
+	IF @piUtilityType = 17 /* Calendar Report */
+	BEGIN
+		SET @sTableName = 'ASRSysCalendarReports';
+		SET @sAccessTableName = 'ASRSysCalendarReportAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;
+  END
+
+	IF @piUtilityType = 1 OR @piUtilityType = 35 /* Cross Tab or 9-Box Grid*/
+	BEGIN
+		SET @sTableName = 'ASRSysCrossTab';
+		SET @sAccessTableName = 'ASRSysCrossTabAccess';
+		SET @sIDColumnName = 'CrossTabID';
+		SET @fNewAccess = 1;
+ 	END
+
+	IF @piUtilityType = 38 /* Talent Management Report*/
+	BEGIN
+		SET @sTableName = 'ASRSysTalentReports';
+		SET @sAccessTableName = 'ASRSysTalentReportAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;
+ 	END
+    
+	IF @piUtilityType = 2 /* Custom Report */
+	BEGIN
+		SET @sTableName = 'ASRSysCustomReportsName';
+		SET @sAccessTableName = 'ASRSysCustomReportAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;
+ 	END
+    
+	IF @piUtilityType = 3 /* Data Transfer */
+	BEGIN
+		SET @sTableName = 'ASRSysDataTransferName';
+		SET @sAccessTableName = 'ASRSysDataTransferAccess';
+		SET @sIDColumnName = 'DataTransferID';
+		SET @fNewAccess = 1;
+  END
+    
+	IF @piUtilityType = 4 /* Export */
+	BEGIN
+		SET @sTableName = 'ASRSysExportName';
+		SET @sAccessTableName = 'ASRSysExportAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;
+  END
+    
+	IF (@piUtilityType = 5) OR (@piUtilityType = 6) OR (@piUtilityType = 7) /* Globals */
+	BEGIN
+		SET @sTableName = 'ASRSysGlobalFunctions';
+		SET @sAccessTableName = 'ASRSysGlobalAccess';
+		SET @sIDColumnName = 'functionID';
+		SET @fNewAccess = 1;
+  END
+    
+	IF (@piUtilityType = 8) /* Import */
+	BEGIN
+		SET @sTableName = 'ASRSysImportName';
+		SET @sAccessTableName = 'ASRSysImportAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;
+  END
+    
+	IF (@piUtilityType = 9) OR (@piUtilityType = 18) /* Label or Mail Merge */
+	BEGIN
+		SET @sTableName = 'ASRSysMailMergeName';
+		SET @sAccessTableName = 'ASRSysMailMergeAccess';
+		SET @sIDColumnName = 'mailMergeID';
+		SET @fNewAccess = 1;
+  END
+    
+	IF (@piUtilityType = 20) /* Record Profile */
+	BEGIN
+		SET @sTableName = 'ASRSysRecordProfileName';
+		SET @sAccessTableName = 'ASRSysRecordProfileAccess';
+		SET @sIDColumnName = 'recordProfileID';
+		SET @fNewAccess = 1
+  END
+    
+	IF (@piUtilityType = 14) OR (@piUtilityType = 23) OR (@piUtilityType = 24) /* Match Report, Succession, Career */
+	BEGIN
+		SET @sTableName = 'ASRSysMatchReportName';
+		SET @sAccessTableName = 'ASRSysMatchReportAccess';
+		SET @sIDColumnName = 'matchReportID';
+		SET @fNewAccess = 1;
+  END
+
+	IF (@piUtilityType = 11) OR (@piUtilityType = 12)  /* Filters/Calcs */
+	BEGIN
+		SET @sTableName = 'ASRSysExpressions';
+		SET @sIDColumnName = 'exprID';
+  END
+
+	IF (@piUtilityType = 10)  /* Picklists */
+	BEGIN
+		SET @sTableName = 'ASRSysPicklistName';
+		SET @sIDColumnName = 'picklistID';
+  END
+
+	IF len(@sTableName) > 0
+	BEGIN
+		SET @sSQL = 'SELECT @iCount = COUNT(*)
+				FROM ' + @sTableName + 
+				' WHERE ' + @sTableName + '.' + @sIDColumnName + ' = ' + convert(nvarchar(255), @plngID);
+		SET @sParamDefinition = N'@iCount integer OUTPUT';
+		EXEC sp_executesql @sSQL,  @sParamDefinition, @iCount OUTPUT;
+
+		IF @iCount = 0 
+		BEGIN
+			SET @pfDeleted = 1;
+		END
+		ELSE
+		BEGIN
+			IF @fNewAccess = 1
+			BEGIN
+				exec [dbo].[spASRIntCurrentUserAccess] @piUtilityType,	@plngID, @psAccess OUTPUT;
+			END
+			ELSE
+			BEGIN
+				exec [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT;
+				
+				IF @fSysSecMgr = 1 
+				BEGIN
+					SET @psAccess = 'RW';
+				END
+				ELSE
+				BEGIN
+					SET @sSQL = 'SELECT @sAccess = CASE 
+								WHEN userName = system_user THEN ''RW''
+								ELSE access
+							END
+							FROM ' + @sTableName + 
+							' WHERE ' + @sTableName + '.' + @sIDColumnName + ' = ' + convert(nvarchar(255), @plngID);
+					SET @sParamDefinition = N'@sAccess varchar(MAX) OUTPUT';
+					EXEC sp_executesql @sSQL,  @sParamDefinition, @sAccess OUTPUT;
+
+					SET @psAccess = @sAccess;
+				END
+			END
+		END
+	END
+END
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetEventLogRecords]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetEventLogRecords];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetEventLogRecords] (
+	@pfError 						bit 				OUTPUT, 
+	@psFilterUser					varchar(MAX),
+	@piFilterType					integer,
+	@piFilterStatus					integer,
+	@piFilterMode					integer,
+	@psOrderColumn					varchar(MAX),
+	@psOrderOrder					varchar(MAX),
+	@piRecordsRequired				integer,
+	@pfFirstPage					bit					OUTPUT,
+	@pfLastPage						bit					OUTPUT,
+	@psAction						varchar(100),
+	@piTotalRecCount				integer				OUTPUT,
+	@piFirstRecPos					integer				OUTPUT,
+	@piCurrentRecCount				integer
+)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	DECLARE	@sRealSource 			sysname,
+			@sSelectSQL				varchar(MAX),
+			@iTempCount 			integer,
+			@sExecString			nvarchar(MAX),
+			@sTempExecString		nvarchar(MAX),
+			@sTempParamDefinition	nvarchar(500),
+			@iCount					integer,
+			@iGetCount				integer,
+			@sFilterSQL				varchar(MAX),
+			@sOrderSQL				varchar(MAX),
+			@sReverseOrderSQL		varchar(MAX);
+			
+	/* Clean the input string parameters. */
+	IF len(@psAction) > 0 SET @psAction = replace(@psAction, '''', '''''');
+	IF len(@psFilterUser) > 0 SET @psFilterUser = replace(@psFilterUser, '''', '''''');
+	IF len(@psOrderColumn) > 0 SET @psOrderColumn = replace(@psOrderColumn, '''', '''''');
+	IF len(@psOrderOrder) > 0 SET @psOrderOrder = replace(@psOrderOrder, '''', '''''');
+
+	/* Initialise variables. */
+	SET @pfError = 0;
+	SET @sExecString = '';
+	SET @sRealSource = 'ASRSysEventLog';
+	SET @psAction = UPPER(@psAction);
+
+	IF (@psAction <> 'MOVEPREVIOUS') AND (@psAction <> 'MOVENEXT') AND (@psAction <> 'MOVELAST') 
+		BEGIN
+			SET @psAction = 'MOVEFIRST';
+		END
+
+	IF @piRecordsRequired <= 0 SET @piRecordsRequired = 50;
+
+	/* Construct the filter SQL from ther input parameters. */
+	SET @sFilterSQL = '';
+	
+	SET @sFilterSQL = @sFilterSQL + ' Type NOT IN (23, 24) ';
+
+	IF @psFilterUser <> '-1' 
+	BEGIN
+		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
+		SET @sFilterSQL = @sFilterSQL + ' LOWER(username) = ''' + lower(@psFilterUser) + '''';
+	END
+	IF @piFilterType <> -1
+	BEGIN
+		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
+		SET @sFilterSQL = @sFilterSQL + ' Type = ' + convert(varchar(MAX), @piFilterType) + ' ';
+	END
+	IF @piFilterStatus <> -1
+	BEGIN
+		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
+		SET @sFilterSQL = @sFilterSQL + ' Status = ' + convert(varchar(MAX), @piFilterStatus) + ' ';
+	END
+	IF @piFilterMode <> -1
+	BEGIN
+		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
+		--SET @sFilterSQL = @sFilterSQL + ' Mode = ' + convert(varchar(MAX), @piFilterMode) + ' ';
+		SET @sFilterSQL = @sFilterSQL + 
+			CASE @piFilterMode 
+				WHEN 1 THEN '[Mode] = 1 AND ([ReportPack] = 0 OR [ReportPack] IS NULL)'
+				WHEN 2 THEN '[ReportPack] = 1'
+				WHEN 0 THEN '[Mode] = 0 AND ([ReportPack] = 0 OR [ReportPack] IS NULL)'
+			END 
+	END
+	
+	/* Construct the order SQL from ther input parameters. */
+	SET @sOrderSQL = '';
+	IF @psOrderColumn = 'Type'
+	BEGIN
+		SET @sOrderSQL = 
+			' CASE [Type] 
+					WHEN 1 THEN ''Cross Tab''
+					WHEN 2 THEN ''Custom Report''
+					WHEN 3 THEN ''Data Transfer''
+					WHEN 4 THEN ''Export''
+					WHEN 5 THEN ''Global Add''
+					WHEN 6 THEN ''Global Delete''
+					WHEN 7 THEN ''Global Update''
+					WHEN 8 THEN ''Import''
+					WHEN 9 THEN ''Mail Merge''
+					WHEN 10 THEN ''Diary Delete''
+					WHEN 11 THEN ''Diary Rebuild''
+					WHEN 12 THEN ''Email Rebuild''
+					WHEN 13 THEN ''Standard Report''
+					WHEN 14 THEN ''Record Editing''
+					WHEN 15 THEN ''System Error''
+					WHEN 16 THEN ''Match Report''
+					WHEN 17 THEN ''Calendar Report''
+					WHEN 18 THEN ''Envelopes & Labels''
+					WHEN 19 THEN ''Label Definition''
+					WHEN 20 THEN ''Record Profile''
+					WHEN 21 THEN ''Succession Planning''
+					WHEN 22 THEN ''Career Progression''
+					WHEN 25 THEN ''Workflow Rebuild''
+					WHEN 35 THEN ''9-Box Grid Report''
+					WHEN 38 THEN ''Talent Report''
+					ELSE ''Unknown''
+				END ';
+	END
+	ELSE
+	BEGIN
+		IF @psOrderColumn = 'Mode'
+		BEGIN
+			SET @sOrderSQL =	
+				' CASE ' + @piFilterMode + '
+						WHEN 1 THEN ''Batch''
+						WHEN 0 THEN ''Manual''
+						WHEN 2 THEN ''Pack''
+					END ';
+		END
+		ELSE 
+		BEGIN
+			IF @psOrderColumn = 'Status'
+			BEGIN
+				SET @sOrderSQL =	
+					' CASE [Status]
+							WHEN 0 THEN ''Pending''
+							WHEN 1 THEN ''Cancelled''
+							WHEN 2 THEN ''Failed''
+							WHEN 3 THEN ''Successful''
+							WHEN 4 THEN ''Skipped''
+							WHEN 5 THEN ''Error''
+							ELSE ''Unknown''
+						END ';
+			END
+			ELSE
+			BEGIN
+				SET @sOrderSQL = @psOrderColumn;
+			END
+		END
+	END
+	
+	SET @sReverseOrderSQL = @sOrderSQL;
+	if @psOrderOrder = 'DESC'
+	BEGIN
+		SET @sReverseOrderSQL = @sReverseOrderSQL + ' ASC ';
+	END
+	ELSE
+	BEGIN
+		SET @sReverseOrderSQL = @sReverseOrderSQL + ' DESC ';
+	END
+
+	SET @sOrderSQL = @sOrderSQL + ' ' + @psOrderOrder + ' ';
+
+
+	SET @sSelectSQL = '[DateTime],
+					[EndTime],
+					IsNull([Duration],-1) AS ''Duration'', 
+		 			CASE [Type] 
+						WHEN 0 THEN ''Unknown''
+						WHEN 1 THEN ''Cross Tab'' 
+						WHEN 2 THEN ''Custom Report'' 
+						WHEN 3 THEN ''Data Transfer'' 
+						WHEN 4 THEN ''Export'' 
+						WHEN 5 THEN ''Global Add'' 
+						WHEN 6 THEN ''Global Delete'' 
+						WHEN 7 THEN ''Global Update'' 
+						WHEN 8 THEN ''Import'' 
+						WHEN 9 THEN ''Mail Merge'' 
+						WHEN 10 THEN ''Diary Delete'' 
+						WHEN 11 THEN ''Diary Rebuild''
+						WHEN 12 THEN ''Email Rebuild''
+						WHEN 13 THEN ''Standard Report''
+						WHEN 14 THEN ''Record Editing''
+						WHEN 15 THEN ''System Error''
+						WHEN 16 THEN ''Match Report''
+						WHEN 17 THEN ''Calendar Report''
+						WHEN 18 THEN ''Envelopes & Labels''
+						WHEN 19 THEN ''Label Definition''
+						WHEN 20 THEN ''Record Profile''
+						WHEN 21	THEN ''Succession Planning''
+						WHEN 22 THEN ''Career Progression''
+						WHEN 25 THEN ''Workflow Rebuild''
+						WHEN 35 THEN ''9-Box Grid Report''
+						WHEN 38 THEN ''Talent Report''
+						ELSE ''Unknown''  
+					END + char(9) + 
+				 	[Name] + char(9) + 
+		 			CASE Status 
+						WHEN 0 THEN ''Pending''
+					  WHEN 1 THEN ''Cancelled'' 
+						WHEN 2 THEN ''Failed'' 
+						WHEN 3 THEN ''Successful'' 
+						WHEN 4 THEN ''Skipped'' 
+						WHEN 5 THEN ''Error''
+						ELSE ''Unknown'' 
+					END + char(9) +
+					CASE 
+						WHEN [Mode] = 1 AND ([ReportPack] = 0 OR [ReportPack] IS NULL) THEN ''Batch''
+						WHEN [Mode] = 0 AND ([ReportPack] = 0 OR [ReportPack] IS NULL) THEN ''Manual''
+						ELSE ''Pack''
+				 	END + char(9) + 
+					[Username] + char(9) + 
+					IsNull(convert(varchar, [BatchJobID]), ''0'') + char(9) +
+					IsNull(convert(varchar, [BatchRunID]), ''0'') + char(9) +
+					IsNull([BatchName],'''') + char(9) +
+					IsNull(convert(varchar, [SuccessCount]),''0'') + char(9) +
+					IsNull(convert(varchar, [FailCount]), ''0'') AS EventInfo ';
+
+		
+	
+	/****************************************************************************************************************************************/
+	/* Get the total number of records. */
+	SET @sTempExecString = 'SELECT @recordCount = COUNT(' + @sRealSource + '.ID) FROM ' + @sRealSource;
+
+	IF len(@sFilterSQL) > 0	SET @sTempExecString = @sTempExecString + ' WHERE ' + @sFilterSQL;
+
+	SET @sTempParamDefinition = N'@recordCount integer OUTPUT';
+	EXEC sp_executesql @sTempExecString, @sTempParamDefinition, @iCount OUTPUT;
+	SET @piTotalRecCount = @iCount;
+	/****************************************************************************************************************************************/
+	
+	IF len(@sSelectSQL) > 0 
+		BEGIN
+			SET @sSelectSQL = @sRealSource + '.ID, ' + @sSelectSQL;
+			SET @sExecString = 'SELECT ' ;
+
+			IF @psAction = 'MOVEFIRST'
+				BEGIN
+					SET @sExecString = @sExecString + 'TOP ' + convert(varchar(100), @piRecordsRequired) + ' ';
+					
+					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource ;
+
+					/* Add the filter code. */
+					IF len(@sFilterSQL) > 0
+						BEGIN
+							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
+						END
+					
+					/* Add the order code */
+					IF len(@sOrderSQL) > 0 
+						BEGIN
+							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
+						END
+
+					/* Set the position variables */
+					SET @piFirstRecPos = 1;
+					SET @pfFirstPage = 1;
+					SET @pfLastPage = 
+					CASE 
+						WHEN @piTotalRecCount <= @piRecordsRequired THEN 1
+						ELSE 0
+					END;
+				END
+		
+			IF (@psAction = 'MOVELAST')
+				BEGIN
+					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
+
+					SET @sExecString = @sExecString + 
+						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID FROM ' + @sRealSource;
+					
+					/* Add the filter code. */
+					IF len(@sFilterSQL) > 0
+						BEGIN
+							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
+						END
+
+					/* Add the reverse order code */
+					IF len(@sReverseOrderSQL) > 0 
+						BEGIN
+							SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL;
+						END
+
+					SET @sExecString = @sExecString + ')'
+
+					/* Add the order code */
+					IF len(@sOrderSQL) > 0 
+						BEGIN
+							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
+						END
+
+					/* Set the position variables */
+					SET @piFirstRecPos = @piTotalRecCount - @piRecordsRequired + 1;
+					IF @piFirstRecPos < 1 SET @piFirstRecPos = 1;
+					SET @pfFirstPage = 	CASE 
+									WHEN @piFirstRecPos = 1 THEN 1
+									ELSE 0
+								END;
+					SET @pfLastPage = 1;
+
+				END
+
+			IF (@psAction = 'MOVENEXT') 
+				BEGIN
+					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
+
+					IF (@piFirstRecPos +  @piCurrentRecCount + @piRecordsRequired - 1) > @piTotalRecCount
+						BEGIN
+							SET @iGetCount = @piTotalRecCount - (@piCurrentRecCount + @piFirstRecPos - 1);
+						END
+					ELSE
+						BEGIN
+							SET @iGetCount = @piRecordsRequired;
+						END
+
+					SET @sExecString = @sExecString + 
+						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID ' + 
+						' FROM ' + @sRealSource;
+
+					SET @sExecString = @sExecString + 
+						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos + @piCurrentRecCount + @piRecordsRequired - 1) + ' ' + @sRealSource + '.ID ' + 
+						' FROM ' + @sRealSource;
+
+					/* Add the filter code. */
+					IF len(@sFilterSQL) > 0
+						BEGIN
+							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
+						END
+					
+					/* Add the order code */
+					IF len(@sOrderSQL) > 0 
+						BEGIN
+							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
+						END
+					
+					SET @sExecString = @sExecString + ')';
+
+					/* Add the reverse order code */
+					IF len(@sReverseOrderSQL) > 0 
+						BEGIN
+							SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL;
+						END
+
+					SET @sExecString = @sExecString + ')';
+
+					/* Add the order code */
+					IF len(@sOrderSQL) > 0 
+						BEGIN
+							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
+						END
+
+					/* Set the position variables */
+					SET @piFirstRecPos = @piFirstRecPos + @piCurrentRecCount;
+					SET @pfFirstPage = 0
+					SET @pfLastPage = 	CASE 
+									WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount THEN 1
+									ELSE 0
+								END;
+				END
+
+			IF @psAction = 'MOVEPREVIOUS'
+				BEGIN	
+					SET @sExecString = @sExecString + @sSelectSQL + ' FROM ' + @sRealSource;
+
+					IF @piFirstRecPos <= @piRecordsRequired
+						BEGIN
+							SET @iGetCount = @piFirstRecPos - 1;
+						END
+					ELSE
+						BEGIN
+							SET @iGetCount = @piRecordsRequired;
+						END
+		
+					SET @sExecString = @sExecString + 
+						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @iGetCount) + ' ' + @sRealSource + '.ID FROM ' + @sRealSource;
+
+					SET @sExecString = @sExecString + 
+						' WHERE ' + @sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piFirstRecPos - 1) + ' ' + @sRealSource + '.ID FROM ' + @sRealSource;
+				
+					/* Add the filter code. */
+					IF len(@sFilterSQL) > 0
+						BEGIN
+							SET @sExecString = @sExecString + ' WHERE ' + @sFilterSQL;
+						END
+					
+					/* Add the order code */
+					IF len(@sOrderSQL) > 0 
+						BEGIN
+							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
+						END
+					
+					SET @sExecString = @sExecString + ')';
+
+					/* Add the reverse order code */
+					IF len(@sReverseOrderSQL) > 0 
+						BEGIN
+							SET @sExecString = @sExecString + ' ORDER BY ' + @sReverseOrderSQL + ')';
+						END
+					
+					SET @sExecString = @sExecString
+
+					/* Add the order code */
+					IF len(@sOrderSQL) > 0 
+						BEGIN
+							SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderSQL;
+						END
+		
+					/* Set the position variables */
+					SET @piFirstRecPos = @piFirstRecPos - @iGetCount;
+					IF @piFirstRecPos <= 0 SET @piFirstRecPos = 1;
+					SET @pfFirstPage = CASE WHEN @piFirstRecPos = 1 
+															THEN 1
+															ELSE 0
+														 END;
+					SET @pfLastPage = CASE WHEN @piTotalRecCount < @piFirstRecPos + @iGetCount 
+															THEN 1
+															ELSE 0
+														END;
+				END
+
+		END
+
+	EXECUTE sp_executeSQL @sExecString;
+END
+GO
+
+
 /* New Procs and Views for the new requirements of Category Definition */
 IF EXISTS(SELECT * FROM sys.views WHERE object_id = object_id(N'[dbo].[ASRSysAllObjectAccessForOpenHRWeb]') AND [type] in (N'V'))
      DROP VIEW [dbo].[ASRSysAllObjectAccessForOpenHRWeb]
@@ -63113,6 +60906,9 @@ CREATE VIEW [dbo].[ASRSysAllObjectAccessForOpenHRWeb]
 				WHEN 2 THEN 24 
 			END	AS [objectType], a.* FROM ASRSysMatchReportAccess a
 			INNER JOIN ASRSysMatchReportName m ON a.ID = m.MatchReportID			
+		UNION
+		SELECT 38 AS [objectType], a.* FROM ASRSysTalentReportAccess a
+			INNER JOIN ASRSysTalentReports m ON a.ID = m.ID			
 		UNION
 		SELECT 17 AS [objectType], * FROM ASRSysCalendarReportAccess
 		UNION
@@ -63173,7 +60969,9 @@ AS
 		UNION
 		SELECT 30 AS [objectType], 0 AS ID, 'Turnover', '' AS Username, '' AS Description
 		UNION
-		SELECT 31 AS [objectType], 0 AS ID, 'Stability Index', '' AS Username, '' AS Description;		
+		SELECT 31 AS [objectType], 0 AS ID, 'Stability Index', '' AS Username, '' AS Description
+		UNION
+		SELECT 38 AS [objectType], ID, Name, Username, description FROM ASRSysTalentReports;
 
 GO
 
@@ -63211,6 +61009,7 @@ BEGIN
 			WHEN 9 THEN 'Mail Merge: ' + son.name 
 			WHEN 17 THEN 'Calendar Report: ' + son.name 
 			WHEN 35 THEN '9-Box Grid Report: ' + son.name 
+			WHEN 38 THEN 'Talent Report: ' + son.name 
 		END TextToDisplay, 
 		son.description AS [description],
 		Access
@@ -63220,7 +61019,7 @@ BEGIN
 					  soa.groupname = @sRoleName AND 
 					  (soa.access <> 'HD' OR son.userName = SYSTEM_USER) 
 	WHERE	soa.objecttype = son.objecttype AND 
-			  son.objecttype IN (1,2,9,17,35) AND 
+			  son.objecttype IN (1,2,9,17,35,38) AND 
 			  son.name LIKE '%' + @searchText + '%'
 	ORDER By TextToDisplay
 

@@ -70,6 +70,7 @@ BEGIN
 			WHEN 22 THEN ''Career Progression''
 			WHEN 25 THEN ''Workflow Rebuild''
 			WHEN 35 THEN ''9-Box Grid Report''
+			WHEN 38 THEN ''Talent Report''
 			ELSE ''Unknown''  
 		END AS Type,
 		CASE 
@@ -123,6 +124,7 @@ BEGIN
 				WHEN 22 THEN ''Career Progression''
 				WHEN 25 THEN ''Workflow Rebuild''
 				WHEN 35 THEN ''9-Box Grid Report''
+				WHEN 38 THEN ''Talent Report''
 				ELSE ''Unknown''
 			END ';
 	END

@@ -665,7 +665,7 @@ TidyUpAndExit:
   
 ErrorTrap:
   COAMsgBox "Error checking if the database " & gsDatabaseName & " contains columns of the specified datatype." _
-          , vbExclamation + vbOKOnly, app.Title
+          , vbExclamation + vbOKOnly, app.title
   DBContains_DataType = False
   Resume TidyUpAndExit
   
@@ -1035,15 +1035,15 @@ Public Function GetScreens() As Boolean
       iFileMenuCount = iFileMenuCount + 1
       Do While Not rsTemp.EOF
         'First see if we have privileges to see this table
-        If gcoTablePrivileges.Item(rsTemp!TableName).AllowSelect _
-          And Not gcoTablePrivileges.Item(rsTemp!TableName).HideFromMenu Then
+        If gcoTablePrivileges.item(rsTemp!TableName).AllowSelect _
+          And Not gcoTablePrivileges.item(rsTemp!TableName).HideFromMenu Then
           Set objFileTool = .Tools.Add(iFileMenuCount, "TS" & rsTemp!TableID)
           iFileMenuCount = iFileMenuCount + 1
           objFileTool.Caption = RemoveUnderScores(rsTemp!TableName) & "..."
             If rsTemp!PictureID > 0 Then
               LoadMenuPicture rsTemp!PictureID, objFileTool
             Else
-              If gcoTablePrivileges.Item(rsTemp!TableName).TableType = tabLookup Then
+              If gcoTablePrivileges.item(rsTemp!TableName).TableType = tabLookup Then
                 objFileTool.SetPicture 0, LoadResPicture("LOOKUP_TABLE", 0), COL_GREY
               Else
                 ' objFileTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
@@ -1065,7 +1065,7 @@ Public Function GetScreens() As Boolean
     Set rsScreens = datGeneral.GetQuickEntryScreens
     Do While Not rsScreens.EOF
       'First see if we have privileges to see this table
-      If gcoTablePrivileges.Item(rsScreens!TableName).AllowSelect Then
+      If gcoTablePrivileges.item(rsScreens!TableName).AllowSelect Then
 
         ' Check that the current user has 'select' permission on at least one parent table,
         ' or at least one view of one parent table referenced by the quick entry screen.
@@ -1182,7 +1182,7 @@ Public Function GetHistoryScreens(plngScreenID As Long) As clsHistoryScreens
   
   Do While Not rsScreens.EOF
     ' Check the screen is for a readable table.
-    If gcoTablePrivileges.Item(rsScreens!RealSource).AllowSelect Then
+    If gcoTablePrivileges.item(rsScreens!RealSource).AllowSelect Then
       objHistoryScreens.Add rsScreens!ScreenID, rsScreens!Name, rsScreens!PictureID, _
         rsScreens!TableID, 0, "", rsScreens!TableName
       End If
@@ -2262,7 +2262,7 @@ Public Sub SetupTablesCollection()
         Set objTableView = gcoTablePrivileges.FindTableID(lngChildViewID)
       Else
         If gcoTablePrivileges.IsValid(sPermissionName) Then
-          Set objTableView = gcoTablePrivileges.Item(sPermissionName)
+          Set objTableView = gcoTablePrivileges.item(sPermissionName)
         End If
       End If
 
@@ -2295,7 +2295,7 @@ Public Sub SetupTablesCollection()
     Do While Not rsPermissions.EOF
       'JPD 20040109 Fault 7624
       If gcoTablePrivileges.IsValid(rsPermissions!TableName) Then
-        Set objTableView = gcoTablePrivileges.Item(rsPermissions!TableName)
+        Set objTableView = gcoTablePrivileges.item(rsPermissions!TableName)
         objTableView.HideFromMenu = rsPermissions!HideFromMenu
       End If
       rsPermissions.MoveNext
@@ -2336,7 +2336,7 @@ Public Sub SetupTablesCollection()
     Do While Not rsInfo.EOF
 
       sTableName = UCase(rsInfo.Fields("TableViewName").Value)
-      Set objColumnPrivileges = gcolColumnPrivilegesCollection.Item(sTableName)
+      Set objColumnPrivileges = gcolColumnPrivilegesCollection.item(sTableName)
 
       objColumnPrivileges.Add _
         fSysSecManager, _
@@ -2403,14 +2403,14 @@ Public Sub SetupTablesCollection()
           sTableViewName = rsInfo!TableViewName
         End If
 
-        Set objColumnPrivileges = gcolColumnPrivilegesCollection.Item(UCase(sTableViewName))
+        Set objColumnPrivileges = gcolColumnPrivilegesCollection.item(UCase(sTableViewName))
 
         intAction = rsInfo.Fields("Action").Value
 
         If intAction = 193 Then
-          objColumnPrivileges.Item(rsInfo!ColumnName).AllowSelect = rsInfo!Permission
+          objColumnPrivileges.item(rsInfo!ColumnName).AllowSelect = rsInfo!Permission
         ElseIf intAction = 197 Then
-          objColumnPrivileges.Item(rsInfo!ColumnName).AllowUpdate = rsInfo!Permission
+          objColumnPrivileges.item(rsInfo!ColumnName).AllowUpdate = rsInfo!Permission
         End If
 
         rsInfo.MoveNext
@@ -2460,7 +2460,7 @@ Private Function ViewQuickEntry(plngScreenID As Long) As Boolean
     ' Loop through parent tables, seeing if we have select permissions on these tables.
     Do While (Not .EOF) And (Not fCanView)
       ' Check if the current user has 'select' permission on the given table.
-      If gcoTablePrivileges.Item(!TableName).AllowSelect Then
+      If gcoTablePrivileges.item(!TableName).AllowSelect Then
         fCanView = True
       Else
         ' No select permissions, can we use a view instead ???
@@ -2468,7 +2468,7 @@ Private Function ViewQuickEntry(plngScreenID As Long) As Boolean
             
         'Loop through the views, and see if we have permission on these
         Do While (Not rsViews.EOF) And (Not fCanView)
-          If gcoTablePrivileges.Item(rsViews!ViewName).AllowSelect Then
+          If gcoTablePrivileges.item(rsViews!ViewName).AllowSelect Then
             'We have a view we can use, let's get outta here
             fCanView = True
           End If
@@ -2800,7 +2800,7 @@ Public Sub UtilityDefAmended(psTable As String, _
   
 Amended_ERROR:
   
-  COAMsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.Title
+  COAMsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.title
   blnContinueSave = False
   
 End Sub
@@ -3529,7 +3529,7 @@ Public Function ValidateGTMaskDate(dtTemp As GTMaskDate.GTMaskDate) As Boolean
         'COAMsgBox sometimes causes run time error but DoEvents prevents this!
         DoEvents
 
-        COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, app.Title
+        COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, app.title
         .ForeColor = vbWindowText
         .DateValue = Null
         If .Visible And .Enabled Then
@@ -3810,6 +3810,7 @@ Public Function GetUtilityType(pintID As Integer) As String
     Case eltAccordExport: GetUtilityType = "Payroll Transfer (Out)"
     Case eltWorkflowRebuild: GetUtilityType = "Workflow Rebuild"
     Case elt9BoxGrid: GetUtilityType = "9-Box Grid Report"
+    Case eltTalentReport: GetUtilityType = "Talent Report"
     Case Else: GetUtilityType = "Unknown"
   End Select
 

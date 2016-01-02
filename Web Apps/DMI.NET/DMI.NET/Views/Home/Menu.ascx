@@ -330,8 +330,8 @@
   Response.Write("<input type='hidden' id=txtCurrentUsersGranted name=txtCurrentUsersGranted value=" & iCurrentUsersGranted & ">")
   Response.Write("<input type='hidden' id=txtEventLogGranted name=txtEventLogGranted value=" & iEventLogGranted & ">")
   Response.Write("<input type='hidden' id=txtNineBoxGridGranted name=txtNineboxGridGranted value=" & iNineBoxGridGranted & ">")
-  Response.Write("<input type='hidden' id=txtTalentReportsGranted name=txtTalentReportsGranted value=" & iMatchReportsGranted & ">")
-  Response.Write("<input type='hidden' id=txtMatchReportsGranted name=txtMatchReportsGranted value=" & iTalentReportsGranted & ">")  
+  Response.Write("<input type='hidden' id=txtTalentReportsGranted name=txtTalentReportsGranted value=" & iTalentReportsGranted & ">")
+  Response.Write("<input type='hidden' id=txtMatchReportsGranted name=txtMatchReportsGranted value=" & iMatchReportsGranted & ">")  
   Response.Write("<input type='hidden' id=txtQuickAccessGranted name=txtQuickAccessGranted value=" & IIf(avQuickEntryMenuInfo.Count > 0, "1", "0").ToString & ">")
   Response.Write("<input type='hidden' id=txtEditableGridGranted name=txtEditableGridGranted value=" & IIf(bEditableGridEnabled, "1", "0") & ">")
 

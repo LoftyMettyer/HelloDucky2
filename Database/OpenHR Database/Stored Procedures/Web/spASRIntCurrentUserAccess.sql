@@ -54,7 +54,13 @@ BEGIN
 		SET @sAccessTableName = 'ASRSysCustomReportAccess';
 		SET @sIDColumnName = 'ID';
  	END
-    
+
+	IF @piUtilityType = 38 /* Talent Report*/
+	BEGIN
+		SET @sTableName = 'ASRSysTalentReports';
+		SET @sAccessTableName = 'ASRSysTalentReportAccess';
+		SET @sIDColumnName = 'ID';
+ 	END        
     
 	IF @piUtilityType = 3 /* Data Transfer */
 	BEGIN
