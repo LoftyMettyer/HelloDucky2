@@ -113,10 +113,13 @@ End Code
         </fieldset>
 
         <br />
-        Match Any / Match Against goes here
+        Match Against Type :
+        @Html.RadioButton("matchagainsttype", MatchAgainstType.All, Model.MatchAgainstType = MatchAgainstType.All, New With {.id = "matchagainsttype_all"})
+        All
+        @Html.RadioButton("matchagainsttype", MatchAgainstType.Any, Model.MatchAgainstType = MatchAgainstType.Any, New With {.id = "matchagainsttype_any"})
+        Any
 
       </fieldset>
-
 
     </div>
 

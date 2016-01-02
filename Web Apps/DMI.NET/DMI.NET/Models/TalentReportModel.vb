@@ -31,7 +31,7 @@ Namespace Models
 	  Public Property MatchChildTableID As Integer
 	  Public Property MatchChildColumnID As Integer
 	  Public Property MatchChildRatingColumnID  As Integer
-	  Public Property MatchAgainstType  As Integer
+	  Public Property MatchAgainstType  As MatchAgainstType
  		Public Property Output As New ReportOutputModel
     Public Property MatchPicklistName as String
     public Property MatchFilterName As String

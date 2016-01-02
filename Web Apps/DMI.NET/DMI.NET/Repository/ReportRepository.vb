@@ -464,7 +464,7 @@ Namespace Repository
 	          objModel.MatchChildTableID = CInt(row("MatchChildTableID"))
 	          objModel.MatchChildColumnID = CInt(row("MatchChildColumnID"))
 	          objModel.MatchChildRatingColumnID = CInt(row("MatchChildRatingColumnID"))
-	          objModel.MatchAgainstType = CInt(row("MatchAgainstType"))
+	          objModel.MatchAgainstType = CType(row("MatchAgainstType"), MatchAgainstType)
                    
 					End If
 

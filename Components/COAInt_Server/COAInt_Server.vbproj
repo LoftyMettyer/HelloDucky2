@@ -121,6 +121,7 @@
     <Compile Include="clsMatchRelation.vb" />
     <Compile Include="DataTransferRun.vb" />
     <Compile Include="Enums\ApplicationModule.vb" />
+    <Compile Include="Enums\MatchAgainstType.vb" />
     <Compile Include="Enums\MatchReportType.vb" />
     <Compile Include="Enums\OLEType.vb" />
     <Compile Include="Enums\OptionActionType.vb" />
