@@ -22,8 +22,17 @@ Friend Module MatchScoreExtension
       End If
 
       return score
-'			Return items.FirstOrDefault(Function(baseItem) (baseItem.TableName = name.ToUpper() And baseItem.IsTable = True) Or (baseItem.ViewName = name And baseItem.IsTable = False))
 		End Function
+
+    <Extension()>
+    Public Function MatchCount(Of T As Competency)(items As ICollection(Of T)) As Integer
+      Return items.Where(Function(i) i.Actual >= i.Minimum).Count()
+    End Function
+
+    <Extension()>
+    Public Function AllMatched(Of T As Competency)(items As ICollection(Of T)) As Boolean
+      Return Not items.Any(Function(i) i.Actual < i.Minimum)
+    End Function
 
   End Module
 

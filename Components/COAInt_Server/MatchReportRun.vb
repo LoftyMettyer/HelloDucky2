@@ -44,8 +44,8 @@ Public Class MatchReportRun
   Public Property Table1ColumnID As Integer
   Public Property Table2ColumnID As Integer
   Public Property Table1ChildTableID As Integer
-  Public Property Table2ChildTableID As Integer
-  
+  Public Property Table2ChildTableID As Integer  
+  Public Property MatchAgainstType As MatchAgainstType
 
   public Property UtilityType as UtilityType
 
@@ -1354,14 +1354,14 @@ Public Class MatchReportRun
    	
       If UtilityType = UtilityType.TalentReport Then
         Const sMissingColumns As String = ", BaseTableID AS Table1ID, BasePicklistID as Table1Picklist, BaseFilterID as Table1Filter" & _
-                                          ", MatchTableID AS Table2ID, MatchPicklistID as Table2Picklist, MatchFilterID as Table2Filter, 0 AS [NumRecords]" & _
+                                          ", MatchTableID AS Table2ID, MatchPicklistID as Table2Picklist, MatchFilterID as Table2Filter, 0 AS [NumRecords], [MatchAgainstType]" & _
                                           ", BaseChildTableID AS Table1ChildTableID, BaseChildColumnID AS Table1ColumnID" & _
                                           ", MatchChildTableID AS Table2ChildTableID, MatchChildColumnID AS Table2ColumnID" & _
                                           ", 0 AS ScoreMode, 0 as ScoreCheck, 0 AS ScoreLimit, 0 AS EqualGrade, 0 AS ReportingStructure " & _
                                           ", 0  AS [PrintFilterHeader]"
         strSQL = string.Format("SELECT * {0} FROM ASRSysTalentReports base WHERE base.ID = {1}", sMissingColumns, mlngMatchReportID)
       Else 
-		    strSQL = String.Format("SELECT *, 0 AS Table1ColumnID, 0 AS Table2ColumnID, 0 AS Table1ChildTableID, 0 AS Table2ChildTableID " & _
+		    strSQL = String.Format("SELECT *, 0 AS Table1ColumnID, 0 AS Table2ColumnID, 0 AS Table1ChildTableID, 0 AS Table2ChildTableID, 0 AS MatchAgainstType " & _
                                "FROM ASRSysMatchReportName base WHERE base.MatchReportID = {0} " ,mlngMatchReportID)
       End If
 	
@@ -1389,8 +1389,9 @@ Public Class MatchReportRun
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			mblnEqualGrade = IIf(IsDbNull(objRow("EqualGrade")), False, CInt(objRow("EqualGrade")))
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mblnReportingStructure = IIf(IsDbNull(objRow("ReportingStructure")), 0, CInt(objRow("ReportingStructure")))
-		
+			mblnReportingStructure = IIf(IsDbNull(objRow("ReportingStructure")), 0, CInt(objRow("ReportingStructure")))	
+      MatchAgainstType = CType(objRow("MatchAgainstType"), MatchAgainstType)
+
 			mlngTable1ID = CInt(objRow("Table1ID"))
 
       objTable = Tables.GetById(mlngTable1ID)
@@ -1624,6 +1625,7 @@ Public Class MatchReportRun
 		Dim lngIndex As Integer
 		Dim iCount As Short
 		Dim iCount2 As Short
+    Dim bAddToGrid As Boolean
 		
 		Dim aryAddString As ArrayList
 		
@@ -1644,6 +1646,7 @@ Public Class MatchReportRun
 			  If .Rows.Count > 0 Then
 				  for each objRow as DataRow in .Rows
 					
+            bAddToGrid = (UtilityType = UtilityType.utlMatchReport)
 					  strOutput = vbNullString
      				aryAddString = New ArrayList()
 
@@ -1778,11 +1781,23 @@ Public Class MatchReportRun
               aryAddString.Add("")
               aryAddString.Add(scores.MatchScore)
               aryAddString.Add(breakdownValue)
+
+              ' Only add to list if within match type
+              If scores.MatchCount > 0 Then
+                If MatchAgainstType = MatchAgainstType.Any And scores.MatchCount > 0 Then
+                  bAddToGrid = True
+                ElseIf MatchAgainstType = MatchAgainstType.All And scores.AllMatched() Then
+                  bAddToGrid = True
+						    End If
+              End If
+
             End If
 
-            Data.Add(strOutput)
-            AddItemToReportData(aryAddString)
-								
+				    If bAddToGrid Then
+              Data.Add(strOutput)
+              AddItemToReportData(aryAddString)
+				    End If
+
 				  Next 
 			  End If
 			
