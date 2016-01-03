@@ -2598,7 +2598,7 @@ Namespace Controllers
 			End Try
 
 		End Function
-
+    
 		Function GetTalentReportData() As ActionResult
 
 			Dim matchReport = New MatchReportRun
@@ -2630,7 +2630,7 @@ Namespace Controllers
 
   		  Dim colModel As List(Of Object) = JqGridColModel.CreateColModel(matchReport.ReportDataTable, "", "")
 
-			  Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = rows, .colmodel = colModel}
+			  Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = rows, .colModel = colModel}
 			  Return Json(results, JsonRequestBehavior.AllowGet)
         
  		  End If

@@ -14,12 +14,7 @@ Imports System.Linq
 Public Class MatchReportRun
   	Inherits BaseReport
 
-  public Data As New List(of String)
-
-  'LOFTY -- SECOND HACK FOR DISPLAY ASPX
   Public Property ReportCaption as String
-  Public Property DisplayColumns as New Collection(Of DisplayColumn)
-
  	Public Property ReportDataTable As New DataTable
 
   'LOFTY -- QUICK HACK - NEEDS SORTING
@@ -190,14 +185,6 @@ Public Class MatchReportRun
 		  If fOK Then fOK = GetRelationRecordsets
 		  If fOK Then fOK = CheckModuleSetupPermissions
 		  If fOK Then fOK = GetDataRecordset(plngTableID, plngRecordID)
-
-      If UtilityType.TalentReport Then
-        ReportDataTable.Columns.Add("matchscore", GetType(String))
-        DisplayColumns.Add(New DisplayColumn() With {.Name = "matchscore"})
-
-        ReportDataTable.Columns.Add("talentchart", GetType(String))
-        DisplayColumns.Add(New DisplayColumn() With {.Name = "talentchart"})
-		  End If
 
 		  'UPGRADE_WARNING: Couldn't resolve default property of object InitialiseFormBreakdown. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		  If fOK Then fOK = InitialiseFormBreakdown
@@ -867,7 +854,7 @@ Public Class MatchReportRun
 			Exit Function
 		End If
 		
-		
+	
 		For	Each objRelation In mcolRelations
 			GetSelectStatement(objRelation.BreakdownColumns, objRelation.Table1ID, objRelation.Table1RealSource)
 			If mstrErrorMessage <> vbNullString Then
@@ -875,8 +862,20 @@ Public Class MatchReportRun
 			End If
 
 		Next objRelation
-		
-		GenerateSQLSelect = True
+
+    ReportDataTable.Columns.Add("ID_1", GetType(String))
+    ReportDataTable.Columns.Add("ID_2", GetType(String))
+
+    For Each objColumn In mcolColDetails.Where(Function(c) Not c.Hidden)
+      ReportDataTable.Columns.Add( string.format("{0}_{1}", objColumn.TableName, objColumn.Name), GetType(String))
+    Next
+
+    If UtilityType = UtilityType.TalentReport Then
+      ReportDataTable.Columns.Add("matchscore", GetType(String))
+      ReportDataTable.Columns.Add("talentchart", GetType(String))
+		End If
+
+    Return True
 		
 	End Function
 		
@@ -914,11 +913,6 @@ Public Class MatchReportRun
       if colColumns is Nothing Then Exit Sub
 
       For	Each objColumn In colColumns
-
-        if Not objColumn.Hidden Then
-		      DisplayColumns.Add(objColumn)
-          ReportDataTable.Columns.Add( string.format("{0}_{1}", objColumn.TableName, objColumn.Name), GetType(String))
-        End If
 			
 			  ' If its a COLUMN then...
 			  If objColumn.ColType = "C" Then
@@ -1772,13 +1766,10 @@ Public Class MatchReportRun
                 scores.Add(competency)
               Next
 
-
               breakdownValue = IIf(Len(breakdownValue) > 0, "[" & breakdownValue & "]" , "") 
 
               ' Add the talent values into the grid
               strOutput = strOutput & IIf(lngIndex > 0, vbTab, "") & scores.MatchScore & vbTab & breakdownValue
-              aryAddString.Add("")
-              aryAddString.Add("")
               aryAddString.Add(scores.MatchScore)
               aryAddString.Add(breakdownValue)
 
@@ -1794,7 +1785,6 @@ Public Class MatchReportRun
             End If
 
 				    If bAddToGrid Then
-              Data.Add(strOutput)
               AddItemToReportData(aryAddString)
 				    End If
 
