@@ -2552,15 +2552,15 @@ PRINT 'Step - Talent Management Reports'
 		-- Clone existing security based on match report permissions
 		DELETE FROM ASRSysGroupPermissions WHERE itemid IN (169, 170, 171, 172, 173)
 		INSERT ASRSysGroupPermissions (itemID, groupName, permitted)
-			SELECT 169, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (101, 134, 139)
+			SELECT DISTINCT 169, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (101, 134, 139)
 			UNION
-			SELECT 170, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (102, 135, 140)
+			SELECT DISTINCT 170, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (102, 135, 140)
 			UNION
-			SELECT 171, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (103, 136, 141)
+			SELECT DISTINCT 171, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (103, 136, 141)
 			UNION
-			SELECT 172, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (104, 137, 142)
+			SELECT DISTINCT 172, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (104, 137, 142)
 			UNION
-			SELECT 173, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (105, 138, 143)
+			SELECT DISTINCT 173, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (105, 138, 143)
 	END
 
 
@@ -2600,11 +2600,13 @@ PRINT 'Step - Talent Management Reports'
 			[OutputScreen] [bit] NULL,
 			[OutputSave] [bit] NULL,
 			[OutputFilename] [varchar](255) NULL)';
+        EXEC sp_executesql N'GRANT SELECT, INSERT, UPDATE, DELETE ON [ASRSysTalentReports] TO [ASRSysGroup]';
 
 		EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysTalentReportAccess](
 			[GroupName] [varchar](256) NOT NULL,
 			[Access] [varchar](2) NOT NULL,
 			[ID] [int] NOT NULL)';
+        EXEC sp_executesql N'GRANT SELECT, INSERT, UPDATE, DELETE ON [ASRSysTalentReportAccess] TO [ASRSysGroup]';
 
 		EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysTalentReportDetails](
 			[ID] [int] IDENTITY(1,1) NOT NULL,
@@ -2617,7 +2619,11 @@ PRINT 'Step - Talent Management Reports'
 			[ColSequence] [int] NULL,
 			[SortOrderSeq] [int] NULL,
 			[SortOrderDirection] [varchar](4) NULL)';
+        EXEC sp_executesql N'GRANT SELECT, INSERT, UPDATE, DELETE ON [ASRSysTalentReportDetails] TO [ASRSysGroup]';
+
 		END
+
+        EXEC sp_executesql N'GRANT SELECT,INSERT,UPDATE,DELETE ON [ASRSysTalentReports] TO [ASRSysGroup]'
 
 
 
