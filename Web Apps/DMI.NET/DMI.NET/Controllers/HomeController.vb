@@ -5651,8 +5651,8 @@ Namespace Controllers
 				Dim isCustomReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCustomReport.ToSecurityPrefix, "RUN").ToString.ToLower
 				Dim isCalendarReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCalendarReport.ToSecurityPrefix, "RUN").ToString.ToLower
 				Dim isCrossTabReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCrossTab.ToSecurityPrefix, "RUN").ToString.ToLower
-				Dim isNineBoxGridRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlNineBoxGrid.ToSecurityPrefix, "RUN").ToString.ToLower
-				Dim isTalentRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.TalentReport.ToSecurityPrefix, "RUN").ToString.ToLower
+				Dim isNineBoxGridRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlNineBoxGrid.ToSecurityPrefix, "RUN").ToString.ToLower AndAlso Licence.IsModuleLicenced(SoftwareModule.NineBoxGrid)
+				Dim isTalentRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.TalentReport.ToSecurityPrefix, "RUN").ToString.ToLower AndAlso Licence.IsModuleLicenced(SoftwareModule.TalentReports)
 
 				Dim isRunAllowed As Boolean = False
 				Dim reportType As UtilityType

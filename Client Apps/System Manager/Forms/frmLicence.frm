@@ -670,8 +670,9 @@ Private Sub PopulateModules()
     .AddItem "OpenLMS Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "9-Box Grid Reports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Editable Grids": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
-                .AddItem "Power Customisation Pack": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
-                lngBit = lngBit * 2
+    .AddItem "Power Customisation Pack": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+    .AddItem "Talent Management Reports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+    lngBit = lngBit * 2
   End With
 
 End Sub

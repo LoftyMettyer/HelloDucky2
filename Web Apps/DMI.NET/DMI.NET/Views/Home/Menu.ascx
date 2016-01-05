@@ -300,7 +300,7 @@
     If Left(objPermission.CategoryKey, 9) = "CROSSTABS" And objPermission.IsPermitted Then iCrossTabsGranted = 1
     If Left(objPermission.CategoryKey, 15) = "CALENDARREPORTS" And objPermission.IsPermitted Then iCalendarReportsGranted = 1
     If Left(objPermission.CategoryKey, 12) = "MATCHREPORTS" And objPermission.IsPermitted Then iMatchReportsGranted = 1
-    If Left(objPermission.CategoryKey, 13) = "TALENTREPORTS" And objPermission.IsPermitted Then iTalentReportsGranted = 1
+    If Left(objPermission.CategoryKey, 13) = "TALENTREPORTS" And objPermission.IsPermitted AndAlso Licence.IsModuleLicenced(SoftwareModule.TalentReports) Then iTalentReportsGranted = 1
     If Left(objPermission.CategoryKey, 9) = "MAILMERGE" And objPermission.IsPermitted Then iMailMergeGranted = 1
     If Left(objPermission.CategoryKey, 8) = "WORKFLOW" And objPermission.IsPermitted Then iWorkflowGranted = 1
     If Left(objPermission.CategoryKey, 12) = "DATATRANSFER" And objPermission.IsPermitted Then iDataTransferGranted = 1

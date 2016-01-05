@@ -19,6 +19,7 @@
 		NineBoxGrid = 2 ^ 16
 		EditableGrids = 2 ^ 17
 		CustomisationPowerPack = 2 ^ 18
+    TalentReports = 2 ^ 19
 	End Enum
 End Namespace
 

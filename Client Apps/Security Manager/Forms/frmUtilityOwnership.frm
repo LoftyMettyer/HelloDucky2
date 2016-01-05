@@ -412,6 +412,16 @@ Private Function DoTransfer() As Boolean
     DoEvents
   End If
   
+  ' 9-Box Grid Reports
+  If IsModuleEnabled(modTalentReports) Then
+    Progress "Transferring Talent Reports..."
+    strCommand = "UPDATE ASRSysTalentReports SET Username = '" & strTo & "'"
+    If Not blnAll Then strCommand = strCommand & " AND Username = '" & strFrom & "'"
+  
+    gADOCon.Execute strCommand
+    DoEvents
+  End If
+    
   ' Custom Reports
   Progress "Transferring Custom Reports..."
   strCommand = "UPDATE ASRSysCustomReportsName SET Username = '" & strTo & "'"

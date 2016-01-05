@@ -31,6 +31,7 @@ Friend Class frmHRProLicence
 			.Items.Add(New VB6.ListBoxItem("9-Box Grid Reports", lngBit)) : lngBit = lngBit * 2
 			.Items.Add(New VB6.ListBoxItem("Editable Grids", lngBit)) : lngBit = lngBit * 2
 			.Items.Add(New VB6.ListBoxItem("Power Customisation Pack", lngBit)) : lngBit = lngBit * 2
+			.Items.Add(New VB6.ListBoxItem("Talent Management Reports", lngBit)) : lngBit = lngBit * 2
 		End With
 		
 	End Sub
@@ -129,12 +130,13 @@ Friend Class frmHRProLicence
                     'UPGRADE_NOTE: Text was upgraded to CtlText. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
                     txtExpiryDate.Text = .ExpiryDate
                 Else
-                    'UPGRADE_NOTE: Text was upgraded to CtlText. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-                    txtExpiryDate.Text = ""
+                    txtExpiryDate.Format = DateTimePickerFormat.Custom
+                    txtExpiryDate.CustomFormat = " "
+
                 End If
 
                 For lngCount = 0 To lstModules.Items.Count - 1
-                    lstModules.SetItemChecked(lngCount, (.Modules And VB6.GetItemData(lstModules, lngCount)))
+                    lstModules.SetItemChecked(lngCount, (.Modules And lstModules.Items(lngCount).ItemData))
                 Next
 
             End If
@@ -231,9 +233,9 @@ Friend Class frmHRProLicence
 		'Check with modules have been selected...
 		With lstModules
 			lngModules = 0
-			For lngCount = 0 To .Items.Count - 1
+			For lngCount = 0  To .Items.Count - 1
 				If .GetItemChecked(lngCount) Then
-					lngModules = lngModules + VB6.GetItemData(lstModules, lngCount)
+          lngModules = lngModules + lstModules.Items(lngCount).ItemData
 				End If
 			Next 
 			

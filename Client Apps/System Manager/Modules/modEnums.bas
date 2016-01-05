@@ -732,6 +732,7 @@ Public Enum enum_Module
   modNineBoxGrid = 65536
   modEditableGrids = 131072
   modCustomisationPowerPack = 2 ^ 18
+  modTalentReports = 2 ^ 19
 End Enum
 
 'System metrics constants
