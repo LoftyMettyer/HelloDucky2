@@ -194,6 +194,8 @@ BEGIN
 								WHEN @iUtilType = 2 THEN 'CUSTOMREPORTS'
 								WHEN @iUtilType = 25 THEN 'WORKFLOW'
 								WHEN @iUtilType = 35 THEN 'NINEBOXGRID'
+								WHEN @iUtilType = 38 THEN 'TALENTREPORTS'
+
 								ELSE ''
 							END
 					LEFT OUTER JOIN ASRSysGroupPermissions 
@@ -244,6 +246,11 @@ BEGIN
 					FROM ASRSysCrossTab
 					WHERE CrossTabID = @iUtilID
 					AND CrossTabType = 4;
+				END
+				IF @iUtilType = 38 -- Talent Reports
+				BEGIN				
+					SELECT @iBaseTableID = MatchTableID
+					FROM ASRSysTalentReports WHERE ID = @iUtilID;
 				END
 				/* Not check required for reports/utilities without a base table.
 				OR reports/utilities based on the top-level table if the user has read permission on the current view. */
@@ -395,6 +402,7 @@ BEGIN
 			WHEN ASRSysSSIntranetLinks.utilityType = 2 THEN ASRSysCustomReportsName.baseTable
 			WHEN ASRSysSSIntranetLinks.utilityType = 17 THEN ASRSysCalendarReports.baseTable
 			WHEN ASRSysSSIntranetLinks.utilityType = 35 THEN ASRSysCrossTab.TableID
+			WHEN ASRSysSSIntranetLinks.utilityType = 38 THEN ASRSysTalentReports.MatchTableID
 			WHEN ASRSysSSIntranetLinks.utilityType = 25 THEN 0
 			ELSE null
 		END AS [baseTable],
@@ -402,19 +410,17 @@ BEGIN
 		tvL.DrillDownHidden as [DrillDownHidden]
 	FROM ASRSysSSIntranetLinks
 			LEFT OUTER JOIN ASRSysMailMergeName 
-			ON ASRSysSSIntranetLinks.utilityID = ASRSysMailMergeName.MailMergeID
-				AND ASRSysSSIntranetLinks.utilityType = 9
+				ON ASRSysSSIntranetLinks.utilityID = ASRSysMailMergeName.MailMergeID AND ASRSysSSIntranetLinks.utilityType = 9
 			LEFT OUTER JOIN ASRSysCalendarReports 
-			ON ASRSysSSIntranetLinks.utilityID = ASRSysCalendarReports.ID
-				AND ASRSysSSIntranetLinks.utilityType = 17
+				ON ASRSysSSIntranetLinks.utilityID = ASRSysCalendarReports.ID	AND ASRSysSSIntranetLinks.utilityType = 17
 			LEFT OUTER JOIN ASRSysCrossTab 
-			ON ASRSysSSIntranetLinks.utilityID = ASRSysCrossTab.CrossTabID
-				AND ASRSysSSIntranetLinks.utilityType = 35
+				ON ASRSysSSIntranetLinks.utilityID = ASRSysCrossTab.CrossTabID AND ASRSysSSIntranetLinks.utilityType = 35
 			LEFT OUTER JOIN ASRSysCustomReportsName 
-			ON ASRSysSSIntranetLinks.utilityID = ASRSysCustomReportsName.ID
-				AND ASRSysSSIntranetLinks.utilityType = 2
+				ON ASRSysSSIntranetLinks.utilityID = ASRSysCustomReportsName.ID	AND ASRSysSSIntranetLinks.utilityType = 2
+			LEFT OUTER JOIN ASRSysTalentReports 
+				ON ASRSysSSIntranetLinks.utilityID = ASRSysTalentReports.ID AND ASRSysSSIntranetLinks.utilityType = 38
 			LEFT OUTER JOIN ASRSysColumns
-			ON ASRSysSSIntranetLinks.Chart_ColumnID = ASRSysColumns.columnId		
+				ON ASRSysSSIntranetLinks.Chart_ColumnID = ASRSysColumns.columnId		
 			LEFT OUTER JOIN @Links tvL
 			ON ASRSysSSIntranetLinks.ID = tvL.ID
 	WHERE ASRSysSSIntranetLinks.ID IN (SELECT ID FROM @Links)

@@ -83,6 +83,14 @@ BEGIN
 		SET @sAccessTableName = 'ASRSysMailMergeAccess';
 		SET @sIDColumnName = 'mailMergeID';
  	END
+
+	IF @piUtilityType = 38 -- Talent Reports
+	BEGIN
+		SET @sTableName = 'ASRSysTalentReports';
+		SET @sAccessTableName = 'ASRSysTalentReportAccess';
+		SET @sIDColumnName = 'ID';
+ 	END
+
     
 	IF (@piUtilityType = 20) /* Record Profile */
 	BEGIN

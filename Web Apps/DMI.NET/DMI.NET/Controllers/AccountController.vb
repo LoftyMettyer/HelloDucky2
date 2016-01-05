@@ -593,6 +593,10 @@ Namespace Controllers
 						objNavigation.ColLinks.RemoveAll(Function(m) m.UtilityType = UtilityType.utlNineBoxGrid)
 					End If
 
+					If Not Licence.IsModuleLicenced(SoftwareModule.TalentReports) Then
+						objNavigation.ColLinks.RemoveAll(Function(m) m.UtilityType = UtilityType.TalentReport)
+					End If
+
 					Session("NavigationLinks") = objNavigation
 				End If
 

@@ -1659,6 +1659,11 @@ Private Sub GetHRProUtilityTypes()
     .AddItem "Mail Merge"
     .ItemData(.NewIndex) = utlMailMerge
     
+    If IsModuleEnabled(modTalentReports) Then
+      .AddItem "Talent Reports"
+      .ItemData(.NewIndex) = utlTalent
+    End If
+       
     If ASRDEVELOPMENT Or Application.WorkflowModule Then
       .AddItem "Workflow"
       .ItemData(.NewIndex) = utlWorkflow
@@ -1796,6 +1801,11 @@ Private Sub GetHRProUtilities(pUtilityType As UtilityType)
        sTableName = "ASRSysCrossTab"
       sIDColumnName = "CrossTabID"
       sWhereSQL = "ASRSysCrossTab.CrossTabType = " & CStr(ctt9GridBox)
+      
+    Case utlTalent
+      sTableName = "ASRSysTalentReports"
+      sIDColumnName = "ID"
+     
       
   End Select
   
@@ -2441,7 +2451,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 
 End Sub

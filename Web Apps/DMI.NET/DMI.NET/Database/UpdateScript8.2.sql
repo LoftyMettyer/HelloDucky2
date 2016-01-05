@@ -225,10 +225,6 @@ IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRI
 	DROP PROCEDURE [dbo].[spASRIntGetLicenceInfo]
 GO
 
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRIntCurrentAccessForRole]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[spASRIntCurrentAccessForRole]
-GO
-
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRIntActivateModule]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [dbo].[spASRIntActivateModule]
 GO
@@ -7230,163 +7226,6 @@ BEGIN
 				ON ASRSysScreens.TableID = ASRSysTables.TableID
 	WHERE ID = @piLinkID;
 END
-GO
-
-
-
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[spASRIntCurrentAccessForRole] (
-	@psRoleName		sysname,
-	@piUtilityType	integer,
-	@plngID			integer,
-	@psAccess		varchar(2)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE 
-		@sTableName			sysname,
-		@sAccessTableName	sysname,
-		@sIDColumnName		sysname,
-		@sSQL				nvarchar(MAX),
-		@sParamDefinition	nvarchar(500),
-		@fEnabled			bit;
-
-	SET @sTableName = '';
-	SET @psAccess = 'HD';
-
-	IF @piUtilityType = 0 /* Batch Job */
-	BEGIN
-		SET @sTableName = 'ASRSysBatchJobName';
-		SET @sAccessTableName = 'ASRSysBatchJobAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-
-	IF @piUtilityType = 17 /* Calendar Report */
-	BEGIN
-		SET @sTableName = 'ASRSysCalendarReports';
-		SET @sAccessTableName = 'ASRSysCalendarReportAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-
-	IF @piUtilityType = 1 /* Cross Tab */
-	BEGIN
-		SET @sTableName = 'ASRSysCrossTab';
-		SET @sAccessTableName = 'ASRSysCrossTabAccess';
-		SET @sIDColumnName = 'CrossTabID';
- 	END
-    
-	IF @piUtilityType = 2 /* Custom Report */
-	BEGIN
-		SET @sTableName = 'ASRSysCustomReportsName';
-		SET @sAccessTableName = 'ASRSysCustomReportAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-    
-    
-	IF @piUtilityType = 3 /* Data Transfer */
-	BEGIN
-		SET @sTableName = 'ASRSysDataTransferName';
-		SET @sAccessTableName = 'ASRSysDataTransferAccess';
-		SET @sIDColumnName = 'DataTransferID';
- 	END
-    
-	IF @piUtilityType = 4 /* Export */
-	BEGIN
-		SET @sTableName = 'ASRSysExportName';
-		SET @sAccessTableName = 'ASRSysExportAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-    
-	IF (@piUtilityType = 5) OR (@piUtilityType = 6) OR (@piUtilityType = 7) /* Globals */
-	BEGIN
-		SET @sTableName = 'ASRSysGlobalFunctions';
-		SET @sAccessTableName = 'ASRSysGlobalAccess';
-		SET @sIDColumnName = 'functionID';
- 	END
-    
-	IF (@piUtilityType = 8) /* Import */
-	BEGIN
-		SET @sTableName = 'ASRSysImportName';
-		SET @sAccessTableName = 'ASRSysImportAccess';
-		SET @sIDColumnName = 'ID';
- 	END
-    
-	IF (@piUtilityType = 9) OR (@piUtilityType = 18) /* Label or Mail Merge */
-	BEGIN
-		SET @sTableName = 'ASRSysMailMergeName';
-		SET @sAccessTableName = 'ASRSysMailMergeAccess';
-		SET @sIDColumnName = 'mailMergeID';
- 	END
-    
-	IF (@piUtilityType = 20) /* Record Profile */
-	BEGIN
-		SET @sTableName = 'ASRSysRecordProfileName';
-		SET @sAccessTableName = 'ASRSysRecordProfileAccess';
-		SET @sIDColumnName = 'recordProfileID';
- 	END
-    
-	IF (@piUtilityType = 14) OR (@piUtilityType = 23) OR (@piUtilityType = 24) /* Match Report, Succession, Career */
-	BEGIN
-		SET @sTableName = 'ASRSysMatchReportName';
-		SET @sAccessTableName = 'ASRSysMatchReportAccess';
-		SET @sIDColumnName = 'matchReportID';
- 	END
-
-	IF (@piUtilityType = 25) /* Workflow */
-	BEGIN
-		SELECT @fEnabled = enabled
-		FROM [dbo].[ASRSysWorkflows]
-		WHERE ID = @plngID;
-		
-		IF @fEnabled = 1
-		BEGIN
-			SET @psAccess = 'RW';
-		END
-	END
-
-	IF len(@sTableName) > 0
-	BEGIN
-		SET @sSQL = 'SELECT @sValue = 
-					CASE
-						WHEN (SELECT count(*)
-							FROM ASRSysGroupPermissions
-							INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-								AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
-								OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
-							INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-								AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
-							WHERE b.Name = ASRSysGroupPermissions.groupname
-								AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''RW''
-						WHEN ' + @sTableName + '.userName = system_user THEN ''RW''
-						ELSE
-							CASE
-								WHEN ' + @sAccessTableName + '.access IS null THEN ''HD''
-								ELSE ' + @sAccessTableName + '.access 
-							END
-						END
-					FROM sysusers b
-					INNER JOIN sysusers a ON b.uid = a.gid
-					LEFT OUTER JOIN ' + @sAccessTableName + ' ON (b.name = ' + @sAccessTableName + '.groupName
-						AND ' + @sAccessTableName + '.id = ' + convert(nvarchar(100), @plngID) + ')
-					INNER JOIN ' + @sTableName + ' ON ' + @sAccessTableName + '.ID = ' + @sTableName + '.' + @sIDColumnName + '
-					WHERE b.Name = ''' + @psRoleName + ''''
-
-		SET @sParamDefinition = N'@sValue varchar(MAX) OUTPUT';
-		EXEC sp_executesql @sSQL,  @sParamDefinition, @psAccess OUTPUT;
-	END
-
-	IF @psAccess IS null SET @psAccess = 'HD';
-END
-
 GO
 
 
@@ -39215,14 +39054,6 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGe
 	DROP PROCEDURE [dbo].[spASRIntGetLinks];
 GO
 
-
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
 CREATE PROCEDURE [dbo].[spASRIntGetLinks] 
 (
 		@plngTableID	integer,
@@ -39419,6 +39250,8 @@ BEGIN
 								WHEN @iUtilType = 2 THEN 'CUSTOMREPORTS'
 								WHEN @iUtilType = 25 THEN 'WORKFLOW'
 								WHEN @iUtilType = 35 THEN 'NINEBOXGRID'
+								WHEN @iUtilType = 38 THEN 'TALENTREPORTS'
+
 								ELSE ''
 							END
 					LEFT OUTER JOIN ASRSysGroupPermissions 
@@ -39469,6 +39302,11 @@ BEGIN
 					FROM ASRSysCrossTab
 					WHERE CrossTabID = @iUtilID
 					AND CrossTabType = 4;
+				END
+				IF @iUtilType = 38 -- Talent Reports
+				BEGIN				
+					SELECT @iBaseTableID = MatchTableID
+					FROM ASRSysTalentReports WHERE ID = @iUtilID;
 				END
 				/* Not check required for reports/utilities without a base table.
 				OR reports/utilities based on the top-level table if the user has read permission on the current view. */
@@ -39620,6 +39458,7 @@ BEGIN
 			WHEN ASRSysSSIntranetLinks.utilityType = 2 THEN ASRSysCustomReportsName.baseTable
 			WHEN ASRSysSSIntranetLinks.utilityType = 17 THEN ASRSysCalendarReports.baseTable
 			WHEN ASRSysSSIntranetLinks.utilityType = 35 THEN ASRSysCrossTab.TableID
+			WHEN ASRSysSSIntranetLinks.utilityType = 38 THEN ASRSysTalentReports.MatchTableID
 			WHEN ASRSysSSIntranetLinks.utilityType = 25 THEN 0
 			ELSE null
 		END AS [baseTable],
@@ -39627,26 +39466,23 @@ BEGIN
 		tvL.DrillDownHidden as [DrillDownHidden]
 	FROM ASRSysSSIntranetLinks
 			LEFT OUTER JOIN ASRSysMailMergeName 
-			ON ASRSysSSIntranetLinks.utilityID = ASRSysMailMergeName.MailMergeID
-				AND ASRSysSSIntranetLinks.utilityType = 9
+				ON ASRSysSSIntranetLinks.utilityID = ASRSysMailMergeName.MailMergeID AND ASRSysSSIntranetLinks.utilityType = 9
 			LEFT OUTER JOIN ASRSysCalendarReports 
-			ON ASRSysSSIntranetLinks.utilityID = ASRSysCalendarReports.ID
-				AND ASRSysSSIntranetLinks.utilityType = 17
+				ON ASRSysSSIntranetLinks.utilityID = ASRSysCalendarReports.ID	AND ASRSysSSIntranetLinks.utilityType = 17
 			LEFT OUTER JOIN ASRSysCrossTab 
-			ON ASRSysSSIntranetLinks.utilityID = ASRSysCrossTab.CrossTabID
-				AND ASRSysSSIntranetLinks.utilityType = 35
+				ON ASRSysSSIntranetLinks.utilityID = ASRSysCrossTab.CrossTabID AND ASRSysSSIntranetLinks.utilityType = 35
 			LEFT OUTER JOIN ASRSysCustomReportsName 
-			ON ASRSysSSIntranetLinks.utilityID = ASRSysCustomReportsName.ID
-				AND ASRSysSSIntranetLinks.utilityType = 2
+				ON ASRSysSSIntranetLinks.utilityID = ASRSysCustomReportsName.ID	AND ASRSysSSIntranetLinks.utilityType = 2
+			LEFT OUTER JOIN ASRSysTalentReports 
+				ON ASRSysSSIntranetLinks.utilityID = ASRSysTalentReports.ID AND ASRSysSSIntranetLinks.utilityType = 38
 			LEFT OUTER JOIN ASRSysColumns
-			ON ASRSysSSIntranetLinks.Chart_ColumnID = ASRSysColumns.columnId		
+				ON ASRSysSSIntranetLinks.Chart_ColumnID = ASRSysColumns.columnId		
 			LEFT OUTER JOIN @Links tvL
 			ON ASRSysSSIntranetLinks.ID = tvL.ID
 	WHERE ASRSysSSIntranetLinks.ID IN (SELECT ID FROM @Links)
 	ORDER BY ASRSysSSIntranetLinks.linkOrder;
 	
 END
-
 GO
 
 
@@ -45892,6 +45728,14 @@ BEGIN
 		SET @sAccessTableName = 'ASRSysMailMergeAccess';
 		SET @sIDColumnName = 'mailMergeID';
  	END
+
+	IF @piUtilityType = 38 -- Talent Reports
+	BEGIN
+		SET @sTableName = 'ASRSysTalentReports';
+		SET @sAccessTableName = 'ASRSysTalentReportAccess';
+		SET @sIDColumnName = 'ID';
+ 	END
+
     
 	IF (@piUtilityType = 20) /* Record Profile */
 	BEGIN

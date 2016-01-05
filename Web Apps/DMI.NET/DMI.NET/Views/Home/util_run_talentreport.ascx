@@ -60,9 +60,22 @@
         });
       }, 100);
 
-      setTimeout(resizeGrid, 100);
+      if (menu_isSSIMode()) {
+        $(".ui-dialog-buttonpane #cmdClose").show();
+      } else {
+        $("#divReportButtons #cmdClose").hide();
+        setTimeout(resizeGrid, 100);
+      }
 
     };
+
+    var gridHeight;
+    if (menu_isSSIMode()) {
+      gridHeight = $('#reportworkframe').height() - 100;
+    } else {
+      gridHeight = 'auto';
+    }
+
 
     $.ajax({
       cache: false,
@@ -87,6 +100,8 @@
           viewrecords: true,
           sortorder: "desc",
           loadComplete: gridLoaded,
+          autowidth: true,
+          height: gridHeight,
           loadError: function(xhr, st, err) {
             OpenHR.modalPrompt(xhr.responseJSON, 2, "", "");
             closeclick();
