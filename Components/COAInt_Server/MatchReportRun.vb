@@ -1769,8 +1769,7 @@ Public Class MatchReportRun
               breakdownValue = IIf(Len(breakdownValue) > 0, "[" & breakdownValue & "]" , "") 
 
               ' Add the talent values into the grid
-              strOutput = strOutput & IIf(lngIndex > 0, vbTab, "") & scores.MatchScore & vbTab & breakdownValue
-              aryAddString.Add(scores.MatchScore)
+              aryAddString.Add(Math.Round(scores.MatchScore, 2))
               aryAddString.Add(breakdownValue)
 
               ' Only add to list if within match type
