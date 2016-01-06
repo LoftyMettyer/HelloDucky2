@@ -13,16 +13,12 @@ Friend Module MatchScoreExtension
 
       Dim score As Double = 0
 
-      For Each competency In items.Where(Function(m) m.Actual >= m.Minimum)
-
-        If competency.Actual >= Math.Max(competency.Minimum, competency.Preferred) Then
+      For Each competency In items
+        If competency.Actual >= competency.Preferred or competency.Minimum <= 0 Then
           score += 1
-        ElseIf competency.Actual < Math.Min(competency.Minimum, competency.Preferred)
-          score += 0
         Else 
-          score += (competency.Actual - competency.Minimum) / (competency.Preferred - competency.Minimum)
+          score += competency.Actual / competency.Preferred
         End If
-
       Next
 
       if items.Any() Then
