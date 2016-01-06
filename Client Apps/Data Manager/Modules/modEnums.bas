@@ -285,9 +285,7 @@ Public Enum Module
   modNineBoxGrid = 2 ^ 16
   modEditableGrids = 2 ^ 17
   modCustomisationPowerPack = 2 ^ 18
-  modTalentReports = 2 ^ 19
 End Enum
-
 
 ' ------------
 ' frmAccordViewTransfers

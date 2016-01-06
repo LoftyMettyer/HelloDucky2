@@ -1659,10 +1659,8 @@ Private Sub GetHRProUtilityTypes()
     .AddItem "Mail Merge"
     .ItemData(.NewIndex) = utlMailMerge
     
-    If IsModuleEnabled(modTalentReports) Then
-      .AddItem "Talent Reports"
-      .ItemData(.NewIndex) = utlTalent
-    End If
+    .AddItem "Talent Reports"
+    .ItemData(.NewIndex) = utlTalent
        
     If ASRDEVELOPMENT Or Application.WorkflowModule Then
       .AddItem "Workflow"
@@ -2451,7 +2449,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub

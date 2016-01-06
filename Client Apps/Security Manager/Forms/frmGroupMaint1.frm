@@ -4822,12 +4822,7 @@ Private Sub sstrvSystemPermissions_Initialise()
     If Not IsModuleEnabled(modNineBoxGrid) Then
       strSQLWhere = strSQLWhere & IIf(InStr(strSQLWhere, "WHERE") > 0, " AND ", " WHERE ") & "ASRSysPermissionCategories.categoryKey <> 'NINEBOXGRID'"
     End If
-    
-    ' Hide Talent Reports if module not enabled
-    If Not IsModuleEnabled(modTalentReports) Then
-      strSQLWhere = strSQLWhere & IIf(InStr(strSQLWhere, "WHERE") > 0, " AND ", " WHERE ") & "ASRSysPermissionCategories.categoryKey <> 'TALENTREPORTS'"
-    End If
-    
+        
     ' Add order by clause
     sSQL = sSQL & strSQLWhere & " ORDER BY listOrder, description"
     

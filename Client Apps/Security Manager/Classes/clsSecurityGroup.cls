@@ -319,7 +319,6 @@ Public Function PrintSecurity(piLevel As Integer) As Boolean
           'NHRD20100428 JIRA HRPRO 884
           If Not (sKey = "CMG" And Not IsModuleEnabled(modCMG)) _
             And Not (sKey = "NINEBOXGRID" And Not IsModuleEnabled(modNineBoxGrid)) _
-            And Not (sKey = "TALENTREPORTS" And Not IsModuleEnabled(modTalentReports)) _
             And Not (sKey = "WORKFLOW" And Not IsModuleEnabled(modWorkflow)) _
             And Not (sKey = "VERSION1" And Not IsModuleEnabled(modVersionOne)) _
             And Not (sKey = "ACCORD" And Not IsModuleEnabled(modAccord)) Then

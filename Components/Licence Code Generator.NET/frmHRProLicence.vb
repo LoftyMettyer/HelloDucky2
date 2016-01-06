@@ -31,7 +31,6 @@ Friend Class frmHRProLicence
 			.Items.Add(New VB6.ListBoxItem("9-Box Grid Reports", lngBit)) : lngBit = lngBit * 2
 			.Items.Add(New VB6.ListBoxItem("Editable Grids", lngBit)) : lngBit = lngBit * 2
 			.Items.Add(New VB6.ListBoxItem("Power Customisation Pack", lngBit)) : lngBit = lngBit * 2
-			.Items.Add(New VB6.ListBoxItem("Talent Management Reports", lngBit)) : lngBit = lngBit * 2
 		End With
 		
 	End Sub
