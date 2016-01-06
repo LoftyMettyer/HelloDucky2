@@ -871,8 +871,9 @@ Public Class MatchReportRun
     Next
 
     If UtilityType = UtilityType.TalentReport Then
-      ReportDataTable.Columns.Add("matchscore", GetType(String))
-      ReportDataTable.Columns.Add("talentchart", GetType(String))
+      ReportDataTable.Columns.Add("Match Score", GetType(String))
+      ReportDataTable.Columns.Add("Talent Chart", GetType(String))
+      ReportDataTable.Columns.Add("ID_TalentChartForExcel", GetType(String))
 		End If
 
     Return True
@@ -1622,7 +1623,9 @@ Public Class MatchReportRun
     Dim bAddToGrid As Boolean
 		
 		Dim aryAddString As ArrayList
-		
+    Dim scores As New List(Of Competency)
+    Dim breakdownValue as String = ""                		
+
     Try
 
 		  rsMatchReportsData = DB.GetDataTable(mstrSQL)
@@ -1747,13 +1750,12 @@ Public Class MatchReportRun
               Dim childTableId = mcolRelations(1).Table1ID
               Dim breakdownSQL = GetRecordsetBreakdown(childTableId, objRow(0), objRow(1))
 
-              Dim scores = New List(Of Competency)
               Dim competency As Competency
-
-              Dim breakdownValue as String = ""
-             
+              
               Dim breakdownData = DB.GetDataTable(breakdownSQL)
 
+              scores = New List(Of Competency)
+              breakdownValue = ""            
               for Each objBreakdown as DataRow in breakdownData.Rows
 
                 competency = New Competency With {
@@ -1768,10 +1770,6 @@ Public Class MatchReportRun
 
               breakdownValue = IIf(Len(breakdownValue) > 0, "[" & breakdownValue & "]" , "") 
 
-              ' Add the talent values into the grid
-              aryAddString.Add(Math.Round(scores.MatchScore, 2))
-              aryAddString.Add(breakdownValue)
-
               ' Only add to list if within match type
               If scores.MatchCount > 0 Then
                 If MatchAgainstType = MatchAgainstType.Any And scores.MatchCount > 0 Then
@@ -1783,7 +1781,11 @@ Public Class MatchReportRun
 
             End If
 
+            ' Add the talent values into the grid
 				    If bAddToGrid Then
+              aryAddString.Add(Math.Round(scores.MatchScore, 2))
+              aryAddString.Add(breakdownValue)
+              aryAddString.Add(scores.TalentChart)
               AddItemToReportData(aryAddString)
 				    End If
 

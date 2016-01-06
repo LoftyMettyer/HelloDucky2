@@ -486,7 +486,7 @@
 
 	}
 
-	function outputOptionsOKClick() {		
+	function outputOptionsOKClick() {
 
 		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
 

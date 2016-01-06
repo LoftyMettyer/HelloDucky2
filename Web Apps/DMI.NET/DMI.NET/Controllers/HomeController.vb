@@ -19,6 +19,7 @@ Imports DMI.NET.ViewModels
 Imports System.Collections.ObjectModel
 Imports DMI.NET.Code.Hubs
 Imports System.Web.Script.Serialization
+Imports Aspose.Cells
 Imports Newtonsoft.Json
 Imports HR.Intranet.Server.Expressions
 Imports HR.Intranet.Server.Extensions
@@ -380,13 +381,13 @@ Namespace Controllers
 						bOK = False
 
 					Case LicenceValidation.HeadcountWarning
-						If LicenceHub.DisplayWarningToUser(Session("Username").ToString(), WarningType.Headcount95Percent, 7) Then
+						If LicenceHub.DisplayWarningToUser(Session("Username").ToString(), Enums.WarningType.Headcount95Percent, 7) Then
 							Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
 						End If
 						bOK = True
 
 					Case LicenceValidation.ExpiryWarning, LicenceValidation.HeadcountAndExpiryWarning
-						If LicenceHub.DisplayWarningToUser(Session("Username").ToString(), WarningType.Licence5DayExpiry, 1) Then
+						If LicenceHub.DisplayWarningToUser(Session("Username").ToString(), Enums.WarningType.Licence5DayExpiry, 1) Then
 							Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
 						End If
 						bOK = True
@@ -1742,7 +1743,7 @@ Namespace Controllers
 								If Not String.IsNullOrEmpty(title) Then
 									chart1.Titles.Add("MainTitle")
 									chart1.Titles(0).Text = title
-									chart1.Titles(0).Font = New Font(chart1.Titles(0).Font.Name, 20) 'Set the font size without changing the font family
+									chart1.Titles(0).Font = New System.Drawing.Font(chart1.Titles(0).Font.Name, 20) 'Set the font size without changing the font family
 								End If
 
 								chart1.ChartAreas.Add("ChartArea1")
@@ -2026,7 +2027,7 @@ Namespace Controllers
 								If Not String.IsNullOrEmpty(title) Then
 									MultiAxisChart.Titles.Add("MainTitle")
 									MultiAxisChart.Titles(0).Text = title
-									MultiAxisChart.Titles(0).Font = New Font(MultiAxisChart.Titles(0).Font.Name, 20) 'Set the font size without changing the font family
+									MultiAxisChart.Titles(0).Font = New System.Drawing.Font(MultiAxisChart.Titles(0).Font.Name, 20) 'Set the font size without changing the font family
 								End If
 
 								Dim seriesNames As String = ""
@@ -2611,6 +2612,8 @@ Namespace Controllers
 			matchReport.MatchReportID = CInt(Session("utilid"))
 			matchReport.RunMatchReport()
 
+      Session("MatchReport") = matchReport
+
 		  If len(matchReport.ErrorString) > 0 Then
         Response.StatusCode = HttpStatusCode.BadRequest
         Return Json(matchReport.ErrorString, JsonRequestBehavior.AllowGet)
@@ -2638,7 +2641,71 @@ Namespace Controllers
 
 		End Function
 
+ 		<HttpPost>
+		<ValidateAntiForgeryToken>
+		Public Function util_run_talentreport_downloadoutput() As FilePathResult
 
+      Dim lngOutputFormat = CType(Request("txtFormat"), OutputFormats)
+			Dim downloadTokenValue As String = Request("download_token_value_id")
+      Dim objReportData As MatchReportRun = CType(Session("MatchReport"), MatchReportRun)
+      Dim outputFile = Path.GetTempFileName.Replace(".tmp", ".xlsx")
+
+      Dim strDownloadFileName = objReportData.DownloadFileName
+      
+      Dim objDocument As New Workbook
+			Dim objCellsLicense As New License
+			objCellsLicense.SetLicense("Aspose.Cells.lic")
+
+      objDocument.DefaultStyle.Font.Name = "Calibri"
+			objDocument.DefaultStyle.Font.Size += 1
+
+      Dim worksheet = objDocument.Worksheets(0)
+      worksheet.Name = "Data"
+
+      worksheet.Cells.ImportDataTable(objReportData.ReportDataTable, true, "A1")
+
+      worksheet.Cells.DeleteColumns(0,2, True)
+      For columnCount = 0 To worksheet.Cells.MaxDataColumn
+        worksheet.AutoFitColumn(columnCount)
+      Next
+
+      worksheet.Cells.DeleteColumns(worksheet.Cells.MaxDataColumn - 1, 1, True)
+
+      ' Build the talent chart column (.ApplyStyleColumn does not seem to work?!?!?)
+      Dim style As New Style With {.Number = 49, .IsTextWrapped = True}
+      For rowNumber = 0 To worksheet.Cells.MaxDataRow
+        worksheet.Cells(rowNumber, worksheet.Cells.MaxDataColumn).SetStyle(style)
+      Next
+
+      objDocument.Save(outputFile, SaveFormat.Xlsx)
+
+			' Download the file			
+			If IO.File.Exists(outputFile) Then
+				Try
+					Dim fileInfo As FileInfo = New FileInfo(outputFile)
+					Response.ContentType = "application/octet-stream"
+					Response.Clear()
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", vbNullString)) ' Clear error message response cookie
+					Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", strDownloadFileName))
+					Response.AddHeader("Content-Length", fileInfo.Length.ToString())
+					Response.WriteFile(fileInfo.FullName)
+					'Response.End()
+					Response.Flush()
+				Catch ex As Exception
+					' error generated - return error
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+				Finally
+					IO.File.Delete(outputFile)
+				End Try
+			Else
+				' No file generated - return error
+				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+				Response.AppendCookie(New HttpCookie("fileDownloadErrors", "No output file was generated. Check your data."))	' marks the download as complete on the client		
+			End If
+
+    End Function
 
 		Private Function RunDataTransfer(id As Integer, multipleRecordIds As String, prompts(,) As String) As PostResponse
 

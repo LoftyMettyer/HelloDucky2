@@ -128,6 +128,7 @@
     <Compile Include="Enums\SaveResponse.vb" />
     <Compile Include="Extensions\DateExtensions.vb" />
     <Compile Include="Extensions\MatchScoreExtension.vb" />
+    <Compile Include="Extensions\TalentChartExtensions.vb" />
     <Compile Include="Extensions\UtilityTypeExtension.vb" />
     <Compile Include="MatchReportRun.vb" />
     <Compile Include="Structures\Competency.vb" />

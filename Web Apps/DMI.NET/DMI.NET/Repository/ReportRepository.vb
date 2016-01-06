@@ -478,6 +478,10 @@ Namespace Repository
 					End If
 				End If
 
+        ' Basic output options
+        objModel.Output.Format = OutputFormats.ExcelWorksheet
+        objModel.Output.IsPreview = True
+
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
