@@ -18,7 +18,11 @@ Friend Module TalentChartExtensions
                                 competency.Name, competency.Preferred, competency.Minimum, competency.Actual) & vbNewLine
       Next
 
-      return output.Substring(0, output.Length - 1)
+      If output.Length > 0 Then
+        return output.Substring(0, output.Length - 1)
+      Else 
+        Return ""
+      End If
 
 		End Function
 

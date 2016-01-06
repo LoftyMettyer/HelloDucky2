@@ -41,6 +41,7 @@ Public Class MatchReportRun
   Public Property Table1ChildTableID As Integer
   Public Property Table2ChildTableID As Integer  
   Public Property MatchAgainstType As MatchAgainstType
+  Public Property PreferredColumnID As Integer
 
   public Property UtilityType as UtilityType
 
@@ -447,7 +448,7 @@ Public Class MatchReportRun
                " UNION" & _
                " SELECT ID, 'C' AS ColType, t.BaseMinimumRatingColumnID AS ColExprID, 3 AS [ColSize], 0 AS [ColDecs], 2 AS [ColSequence], 'MinScore' AS ColHeading FROM ASRSysTalentReports t WHERE ID = {0}" & _
                " UNION" & _
-               " SELECT ID, 'C' AS ColType, t.BasePreferredRatingColumnID AS ColExprID, 3 AS [ColSize], 0 AS [ColDecs], 3 AS [ColSequence], 'PrefScore' AS ColHeading FROM ASRSysTalentReports t WHERE ID = {0}" & _
+               " SELECT ID, 'C' AS ColType, CASE t.BasePreferredRatingColumnID WHEN 0 THEN t.BaseMinimumRatingColumnID ELSE t.BasePreferredRatingColumnID END AS ColExprID, 3 AS [ColSize], 0 AS [ColDecs], 3 AS [ColSequence], 'PrefScore' AS ColHeading FROM ASRSysTalentReports t WHERE ID = {0}" & _
                " UNION" & _
                " SELECT ID, 'C' AS ColType, t.BaseChildColumnID AS ColExprID, 3 AS [ColSize], 0 AS [ColDecs], 1 AS [ColSequence], 'Competency' AS ColHeading FROM ASRSysTalentReports t WHERE ID = {0}" _
                , mlngMatchReportID)
@@ -1016,7 +1017,7 @@ Public Class MatchReportRun
 			
 			  strSQLSelect = strSQLSelect & IIf(strSQLSelect <> vbNullString, ", ", "") & pstrColumnCode
 			
-			  strSQLOrderBy = strSQLOrderBy & IIf(strSQLOrderBy <> vbNullString, ", ", "") & strOrderColumn
+			  strSQLOrderBy = strSQLOrderBy & IIf(strSQLOrderBy <> vbNullString, ", ", "") & "[" & objColumn.Heading & "]"
 			
 		  Next objColumn
 		
@@ -1352,11 +1353,12 @@ Public Class MatchReportRun
                                           ", MatchTableID AS Table2ID, MatchPicklistID as Table2Picklist, MatchFilterID as Table2Filter, 0 AS [NumRecords], [MatchAgainstType]" & _
                                           ", BaseChildTableID AS Table1ChildTableID, BaseChildColumnID AS Table1ColumnID" & _
                                           ", MatchChildTableID AS Table2ChildTableID, MatchChildColumnID AS Table2ColumnID" & _
+                                          ", BasePreferredRatingColumnID" & _
                                           ", 0 AS ScoreMode, 0 as ScoreCheck, 0 AS ScoreLimit, 0 AS EqualGrade, 0 AS ReportingStructure " & _
                                           ", 0  AS [PrintFilterHeader]"
         strSQL = string.Format("SELECT * {0} FROM ASRSysTalentReports base WHERE base.ID = {1}", sMissingColumns, mlngMatchReportID)
       Else 
-		    strSQL = String.Format("SELECT *, 0 AS Table1ColumnID, 0 AS Table2ColumnID, 0 AS Table1ChildTableID, 0 AS Table2ChildTableID, 0 AS MatchAgainstType " & _
+		    strSQL = String.Format("SELECT *, 0 AS Table1ColumnID, 0 AS Table2ColumnID, 0 AS Table1ChildTableID, 0 AS Table2ChildTableID, 0 AS MatchAgainstType, 0 AS BasePreferredRatingColumnID, 0 AS BaseMinimumRatingColumnID " & _
                                "FROM ASRSysMatchReportName base WHERE base.MatchReportID = {0} " ,mlngMatchReportID)
       End If
 	
@@ -1386,6 +1388,7 @@ Public Class MatchReportRun
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			mblnReportingStructure = IIf(IsDbNull(objRow("ReportingStructure")), 0, CInt(objRow("ReportingStructure")))	
       MatchAgainstType = CType(objRow("MatchAgainstType"), MatchAgainstType)
+      PreferredColumnID = IIf(objRow("BasePreferredRatingColumnID") = 0, objRow("BaseMinimumRatingColumnID"), objRow("BasePreferredRatingColumnID"))
 
 			mlngTable1ID = CInt(objRow("Table1ID"))
 
@@ -1625,6 +1628,7 @@ Public Class MatchReportRun
 		Dim aryAddString As ArrayList
     Dim scores As New List(Of Competency)
     Dim breakdownValue as String = ""                		
+    Dim maxScore As Integer = 0
 
     Try
 
@@ -1636,7 +1640,14 @@ Public Class MatchReportRun
 			  fOK = False
 			  Return False
 		  End If
-				
+	
+      If UtilityType = UtilityType.TalentReport Then      
+        Dim relation =  CType(mcolRelations.Item("T" & Table1ChildTableID), clsMatchRelation)       
+        Dim sSQL = String.Format("SELECT MAX([{0}]) FROM {1}", Columns.GetById(PreferredColumnID).Name, relation.Table1RealSource)
+        Dim ranges = DB.GetDataTable(sSQL)
+        maxScore = ranges.Rows(0)(0)
+      End If
+      			
 	
 		  With rsMatchReportsData
 								
@@ -1762,6 +1773,7 @@ Public Class MatchReportRun
                   .Name = objBreakdown("Competency").ToString(),
                   .Minimum =  CDbl(IIf(IsDBNull(objBreakdown("MinScore")), 0, objBreakdown("MinScore"))),
                   .Preferred = CDbl(IIf(IsDBNull(objBreakdown("PrefScore")), 0, objBreakdown("PrefScore"))),
+                  .Maximum = maxScore,
                   .Actual = CDbl(IIf(IsDBNull(objBreakdown("ActualScore")), 0, objBreakdown("ActualScore")))
                   }
                 breakdownValue &= IIf(Len(breakdownValue) > 0, ",", "") & competency.TalentGridJson
@@ -1779,13 +1791,14 @@ Public Class MatchReportRun
 						    End If
               End If
 
+              aryAddString.Add(Math.Round(scores.MatchScore, 2))
+              aryAddString.Add(breakdownValue)
+              aryAddString.Add(scores.TalentChart)
+
             End If
 
             ' Add the talent values into the grid
 				    If bAddToGrid Then
-              aryAddString.Add(Math.Round(scores.MatchScore, 2))
-              aryAddString.Add(breakdownValue)
-              aryAddString.Add(scores.TalentChart)
               AddItemToReportData(aryAddString)
 				    End If
 

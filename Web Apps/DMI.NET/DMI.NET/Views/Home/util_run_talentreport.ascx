@@ -72,8 +72,8 @@
               $.each(ar, function (index, obj) {
                 var target = obj.PrefScore,
                   performance = obj.ActualScore,
-                  range1 = 100,
-                  range2 = target,
+                  range1 = obj.MaxScore,
+                  range2 = obj.MaxScore,
                   range3 = obj.MinScore;
                 var graphData = [target, performance, range1, range2, range3];
 

@@ -45,7 +45,7 @@ End Code
       </fieldset>
 
       <fieldset>
-        Preferred Taing : <select class="width70 floatright" name="BasePreferredRatingColumnID" id="BasePreferredRatingColumnID"></select>
+        Preferred Rating : <select class="width70 floatright" name="BasePreferredRatingColumnID" id="BasePreferredRatingColumnID"></select>
       </fieldset>
 
       <fieldset>
@@ -246,6 +246,8 @@ End Code
 
   function refreshTalentReportBaseColumns() {
 
+    var optionNone = "<option value='0' data-datatype='0' data-size='0' data-decimals='0'>None</option>";
+
     $.ajax({
       url: 'Reports/GetAvailableColumnsForTable?TableID=' + $("#BaseChildTableID").val(),
       datatype: 'json',
@@ -261,7 +263,7 @@ End Code
 
         $("select#BaseChildColumnID").html(option);
         $("select#BaseMinimumRatingColumnID").html(option);
-        $("select#BasePreferredRatingColumnID").html(option);
+        $("select#BasePreferredRatingColumnID").html(optionNone + option);
 
         $('#BaseChildColumnID').val("@Model.BaseChildColumnID");
         $('#BaseMinimumRatingColumnID').val("@Model.BaseMinimumRatingColumnID");
