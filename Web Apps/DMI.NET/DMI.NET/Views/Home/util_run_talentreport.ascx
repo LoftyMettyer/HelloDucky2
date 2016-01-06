@@ -115,6 +115,10 @@
     cache: false,
     url: '<%:Url.Action("getTalentReportData", "Home")%>',
     dataType: "json",
+    error: function(xhr, st, err) {
+      OpenHR.modalPrompt(xhr.responseJSON, 2, "", "");
+      closeclick();
+    },
     success: function(jsonData) {
       $("#gridReportData").jqGrid({
         datatype: "local",
@@ -135,12 +139,8 @@
         sortorder: "desc",
         loadComplete: gridLoaded,
         autowidth: true,
-        height: gridHeight,
-        loadError: function(xhr, st, err) {
-          OpenHR.modalPrompt(xhr.responseJSON, 2, "", "");
-          closeclick();
-        }
-      });
+        height: gridHeight
+      });    
     }
   });
 
