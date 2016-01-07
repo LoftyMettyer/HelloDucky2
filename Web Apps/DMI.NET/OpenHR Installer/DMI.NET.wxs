@@ -27,9 +27,6 @@
                 <Component Id="cmpA426106E50E83F038FBE746C1E09504B" Guid="*">
                     <File Id="fil2068C2DE7BA3DCB84001A0873DD12263" KeyPath="yes" Source="SourceDir\bin\Antlr3.Runtime.dll" />
                 </Component>
-                <Component Id="cmpA8340102E696FA4B812CDB729F523BB4" Guid="*">
-                    <File Id="fil5146CC084EBB2922488993FA8BDE9155" KeyPath="yes" Source="SourceDir\bin\Antlr3.Runtime.pdb" />
-                </Component>
                 <Component Id="cmp4620207BA46725D23ED359B68B7D53B2" Guid="*">
                     <File Id="fil6032E0DB758BE0255E00841B85B423F7" KeyPath="yes" Source="SourceDir\bin\Aspose.Cells.dll" />
                 </Component>
@@ -39,23 +36,14 @@
                 <Component Id="cmp2A46E0D12BEA4E31EA4C33088D9781E8" Guid="*">
                     <File Id="filFD80E32FE704C28FC365D003C78AAEFB" KeyPath="yes" Source="SourceDir\bin\DayPilot.dll" />
                 </Component>
-                <Component Id="cmp24E4E2307B5976B21552561D993B46EE" Guid="*">
-                    <File Id="fil41EB2F5A6033D5DC6C51E5107936ECC0" KeyPath="yes" Source="SourceDir\bin\DayPilot.pdb" />
-                </Component>
                 <Component Id="cmp2530B8FBE234E15C0B13889033DE8E28" Guid="*">
                     <File Id="filFBA339DE723337531A3D1177EC81A4A9" KeyPath="yes" Source="SourceDir\bin\DMI.NET.dll" />
-                </Component>
-                <Component Id="cmpA63257F92E731DAAC89032EC90850D25" Guid="*">
-                    <File Id="fil3ABE380E36D53D34ED7549F71FEBDCC8" KeyPath="yes" Source="SourceDir\bin\DMI.NET.pdb" />
                 </Component>
                 <Component Id="cmp10FA60423FCAC54DCF6B6B7D2150784B" Guid="*">
                     <File Id="fil6C0E761DB246FA512166123D417782CC" KeyPath="yes" Source="SourceDir\bin\Elmah.dll" />
                 </Component>
                 <Component Id="cmp4694065D67E87E6FC07799089F4CF157" Guid="*">
                     <File Id="fil1705838E4BA562F81356911BCACC6982" KeyPath="yes" Source="SourceDir\bin\HR.Intranet.Server.dll" />
-                </Component>
-                <Component Id="cmpAFCD90A2D60F43BC9EB3314537E7F876" Guid="*">
-                    <File Id="filD0D87E3FC34B3E62D9F6D8E068C27E5D" KeyPath="yes" Source="SourceDir\bin\HR.Intranet.Server.pdb" />
                 </Component>
                 <Component Id="cmpD5C9472224ADD82443D4CD1070A6D6E8" Guid="*">
                     <File Id="fil9EDE90BDBBFFAA75B3BCE050B38C9160" KeyPath="yes" Source="SourceDir\bin\Microsoft.AspNet.SignalR.Core.dll" />
@@ -89,6 +77,9 @@
                 </Component>
                 <Component Id="cmp8AB9E98812D4FF1396E72067FB9138E7" Guid="*">
                     <File Id="fil9369FF0D08849E97BCE6FBF835C04429" KeyPath="yes" Source="SourceDir\bin\Owin.dll" />
+                </Component>
+                <Component Id="cmp8E96E7E57E76B58F5ADBD2BA40691C26" Guid="*">
+                    <File Id="fil555EC47D5AA55A2E82FB3ECC07E6CA12" KeyPath="yes" Source="SourceDir\bin\RKIC.DebugHelpers.dll" />
                 </Component>
                 <Component Id="cmpD4CDEC7C1AC12733FA38B6F82824DF0B" Guid="*">
                     <File Id="fil48B01FCAA7C0F6456E6444A98B8C8F3A" KeyPath="yes" Source="SourceDir\bin\System.IdentityModel.Tokens.Jwt.dll" />
@@ -4531,6 +4522,9 @@
                     <Component Id="cmp2B4987C3DE3D560756DED90B0A40A490" Guid="*">
                         <File Id="filA3026F20FEC3D28268EF61ACCF7174E6" KeyPath="yes" Source="SourceDir\Views\Home\util_run_promptedvalues.ascx" />
                     </Component>
+                    <Component Id="cmp4FBFED149892B5FEB61F19CBBC032040" Guid="*">
+                        <File Id="fil30F4D89C68CCBFF2BD56A0B94E0D7710" KeyPath="yes" Source="SourceDir\Views\Home\util_run_talentreport.ascx" />
+                    </Component>
                     <Component Id="cmpBBA4164CCAFC981192B176558EF0E52F" Guid="*">
                         <File Id="fil1059020CA1AFCAD9DBA4D9981B464C7D" KeyPath="yes" Source="SourceDir\Views\Home\util_run_workflow.ascx" />
                     </Component>
@@ -4647,16 +4641,12 @@
             <ComponentRef Id="cmpFB33635B7D7AF5906B5DFB25D7E4F343" />
             <ComponentRef Id="cmp2935FCA0A9D8858C3B1B38AFB80A6D26" />
             <ComponentRef Id="cmpA426106E50E83F038FBE746C1E09504B" />
-            <ComponentRef Id="cmpA8340102E696FA4B812CDB729F523BB4" />
             <ComponentRef Id="cmp4620207BA46725D23ED359B68B7D53B2" />
             <ComponentRef Id="cmp9B3431215CA40ADB3D4192D5BFE1BBF8" />
             <ComponentRef Id="cmp2A46E0D12BEA4E31EA4C33088D9781E8" />
-            <ComponentRef Id="cmp24E4E2307B5976B21552561D993B46EE" />
             <ComponentRef Id="cmp2530B8FBE234E15C0B13889033DE8E28" />
-            <ComponentRef Id="cmpA63257F92E731DAAC89032EC90850D25" />
             <ComponentRef Id="cmp10FA60423FCAC54DCF6B6B7D2150784B" />
             <ComponentRef Id="cmp4694065D67E87E6FC07799089F4CF157" />
-            <ComponentRef Id="cmpAFCD90A2D60F43BC9EB3314537E7F876" />
             <ComponentRef Id="cmpD5C9472224ADD82443D4CD1070A6D6E8" />
             <ComponentRef Id="cmpEB87EE68123BF0D6A0A3F626E1D0408D" />
             <ComponentRef Id="cmp21D101F2D03C9FAB7FEABC059D48BBD4" />
@@ -4668,6 +4658,7 @@
             <ComponentRef Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" />
             <ComponentRef Id="cmpCBBD857B6884D163CDBADD7367F6EAB5" />
             <ComponentRef Id="cmp8AB9E98812D4FF1396E72067FB9138E7" />
+            <ComponentRef Id="cmp8E96E7E57E76B58F5ADBD2BA40691C26" />
             <ComponentRef Id="cmpD4CDEC7C1AC12733FA38B6F82824DF0B" />
             <ComponentRef Id="cmpAEE8C660E33BAAABE81574A21E56902D" />
             <ComponentRef Id="cmp582232504431329434B8578DF5733810" />
@@ -6080,6 +6071,7 @@
             <ComponentRef Id="cmp0C98C3616A0BADD0853E9C9429729668" />
             <ComponentRef Id="cmp2FABD96CE3A40870489F2113439E63EC" />
             <ComponentRef Id="cmp2B4987C3DE3D560756DED90B0A40A490" />
+            <ComponentRef Id="cmp4FBFED149892B5FEB61F19CBBC032040" />
             <ComponentRef Id="cmpBBA4164CCAFC981192B176558EF0E52F" />
             <ComponentRef Id="cmp79461378F4548E979BE7497AE958267A" />
             <ComponentRef Id="cmp6F943E21ABE7D8F3B521DC164BFBC85F" />

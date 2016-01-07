@@ -11,7 +11,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("OpenHR Web")> 
 <Assembly: AssemblyCompany("Advanced Computer Software Ltd.")> 
 <Assembly: AssemblyProduct("DMI.NET")> 
-<Assembly: AssemblyCopyright("Copyright © 2015")> 
+<Assembly: AssemblyCopyright("Copyright © 2016")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)> 
@@ -30,5 +30,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("8.2.7")> 
-<Assembly: AssemblyFileVersion("8.2.7")> 
+<Assembly: AssemblyVersion("8.2.8")> 
+<Assembly: AssemblyFileVersion("8.2.8")> 
