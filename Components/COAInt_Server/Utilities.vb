@@ -121,80 +121,6 @@ Public Class Utilities
 		End Get
 	End Property
 
-	Public Function GetPictures(ByRef plngScreenID As Integer, ByRef psTempPath As String) As Object
-		Dim avPictures(,) As Object
-		Dim sSQL As String
-		Dim rsTemp As DataTable
-		Dim sFileName As String
-
-		ReDim avPictures(2, 0)
-
-		sSQL = "SELECT DISTINCT ASRSysControls.pictureID, ASRSysPictures.name FROM ASRSysControls INNER JOIN ASRSysPictures ON ASRSysControls.pictureID = ASRSysPictures.pictureID" & _
-			" WHERE screenID = " & Trim(Str(plngScreenID)) & " AND controlType = " & Trim(Str(ControlTypes.ctlImage))
-		rsTemp = DB.GetDataTable(sSQL)
-
-		With rsTemp
-			For Each objRow As DataRow In rsTemp.Rows
-
-
-				sFileName = LoadScreenControlPicture(CInt(objRow("PictureID")), psTempPath, objRow("Name").ToString())
-
-				If Len(sFileName) > 0 Then
-					ReDim Preserve avPictures(2, UBound(avPictures, 2) + 1)
-					'UPGRADE_WARNING: Couldn't resolve default property of object avPictures(1, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					avPictures(1, UBound(avPictures, 2)) = CInt(objRow("PictureID"))
-					'UPGRADE_WARNING: Couldn't resolve default property of object avPictures(2, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					avPictures(2, UBound(avPictures, 2)) = Mid(sFileName, InStrRev(sFileName, "\") + 1)
-				End If
-
-			Next
-		End With
-
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object GetPictures. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		GetPictures = VB6.CopyArray(avPictures)
-
-	End Function
-
-	Public Function GetBackgroundPicture(ByRef psTempPath As String) As String
-
-		' We are not currently using this functionality - disbale. To review!
-		Return ""
-
-		'Dim sSQL As String
-		'Dim rsTemp As Recordset
-		'Dim sFileName As String = ""
-		'Dim lngPictureID As Short
-
-		'sSQL = "SELECT DISTINCT ASRSysSystemSettings.settingValue FROM ASRSysSystemSettings WHERE ASRSysSystemSettings.section = 'desktopsetting' " _
-		'		 & " AND  ASRSysSystemSettings.settingKey = 'bitmapid'"
-		'rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		'With rsTemp
-		'	If Not (.BOF And .EOF) Then
-		'		lngPictureID = .Fields("settingValue").Value
-		'	End If
-		'	.Close()
-		'End With
-		''UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		'rsTemp = Nothing
-
-		'sSQL = "SELECT DISTINCT ASRSysPictures.pictureID, ASRSysPictures.name" & " FROM ASRSysPictures " & " WHERE ASRSysPictures.pictureID = " & CStr(lngPictureID)
-		'rsTemp = mclsData.OpenRecordset(sSQL, CursorTypeEnum.adOpenForwardOnly, LockTypeEnum.adLockReadOnly)
-		'With rsTemp
-		'	If Not (.BOF And .EOF) Then
-		'		sFileName = LoadScreenControlPicture(.Fields("PictureID").Value, psTempPath, .Fields("Name").Value)
-		'	End If
-		'	.Close()
-		'End With
-		''UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		'rsTemp = Nothing
-
-		'GetBackgroundPicture = Mid(sFileName, InStrRev(sFileName, "\") + 1)
-
-	End Function
-
 	Public Function GetBackgroundPosition() As Integer
 
 		Const sSQL As String = "SELECT DISTINCT settingValue FROM ASRSysSystemSettings WHERE section = 'desktopsetting' AND settingKey = 'bitmaplocation'"
@@ -205,41 +131,6 @@ Public Class Utilities
 				Return 0
 			End If
 		End With
-
-	End Function
-
-	Private Function LoadScreenControlPicture(plngPictureID As Integer, psTempPath As String, psName As String) As String
-		' Read the given picture from the database.
-		Dim sTempName As String
-		Dim sPictureFile As String
-		Dim rsPictures As DataTable
-		Dim objRowData As DataRow
-		Dim sSQL As String
-
-		Try
-			sSQL = "SELECT picture FROM ASRSysPictures WHERE pictureID = " & Trim(Str(plngPictureID))
-			rsPictures = DB.GetDataTable(sSQL)
-
-			sPictureFile = ""
-
-			If rsPictures.Rows.Count > 0 Then
-
-				objRowData = rsPictures.Rows(0)
-				sTempName = psTempPath & "\" & psName
-
-				Dim fs = New FileStream(sTempName, FileMode.Create)
-				Dim objPicture As Byte() = objRowData(0)
-				fs.Write(objPicture, 0, objPicture.Length)
-				fs.Close()
-
-			End If
-
-		Catch ex As Exception
-			Throw
-
-		End Try
-
-		Return sPictureFile
 
 	End Function
 

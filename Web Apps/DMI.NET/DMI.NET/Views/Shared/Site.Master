@@ -9,7 +9,7 @@
 		<asp:ContentPlaceHolder ID="TitleContent" runat="server" />
 	</title>
 
-	<link rel="Icon" href="~/pictures/logo.ico" type="image/x-icon" />
+	<link rel="Icon" href="~/Content/images/Logo.ico" type="image/x-icon" />
 	
 	<%
 		' Mobiles. Fix as tiles display.

@@ -388,6 +388,7 @@
     <Content Include="Content\images\Chart_Popout.png" />
     <Content Include="Content\images\error.jpg" />
     <Content Include="Content\images\greenLightIcon.png" />
+    <Content Include="Content\images\Logo.ico" />
     <Content Include="Content\images\minus.gif" />
     <Content Include="Content\images\OLEIcons\delete-icon.png" />
     <Content Include="Content\images\OLEIcons\delete-iconDIS.png" />

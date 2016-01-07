@@ -1615,25 +1615,6 @@ Namespace Controllers
 			Return View(viewModel)
 		End Function
 
-		' TODO
-		Public Sub ShowPhoto(imageName As String)
-			'TODO fetch path from registry
-			Dim localImagesPath As String = HttpContext.Server.MapPath("~/pictures/profilephotos/")
-
-			'TODO fetch imagename from db
-			Dim file = localImagesPath & imageName
-			Dim fStream As New FileStream(file, FileMode.Open, FileAccess.Read)
-			Dim br As New BinaryReader(fStream)
-
-			' Show the number of bytes in the array.
-			br.Close()
-			fStream.Close()
-
-			Response.ContentType = "image/png"
-			Response.WriteFile(file)
-
-		End Sub
-
 		Public Sub ShowImageFromDb(imageID As String)
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
