@@ -2266,10 +2266,10 @@ Public Function ImportDefinitions() As Boolean
   status = objImport.ImportDefinitions(sOutputFileName)
 
   If status = RepositoryStatus_DefinitionsImported Then
-    sMessage = "Definitions imported successfully" & vbCrLf & vbCrLf & "System Manager will now reload"
+    sMessage = "Definition imported successfully." & vbCrLf & vbCrLf & "System Manager will now relaunch."
     bok = True
   Else
-    sMessage = "Error Importing Definition"
+    sMessage = "Error Importing Definition."
     bok = False
   End If
 
