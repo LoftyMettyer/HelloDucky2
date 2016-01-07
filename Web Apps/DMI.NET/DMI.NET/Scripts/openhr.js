@@ -1493,6 +1493,8 @@
                         }
 
                         document.getElementById("timerText").innerHTML = window.currentMinutes + ":" + window.currentSeconds; //Set the element id you need the time put into.
+                        if (window.currentMinutes == 0 && window.currentSeconds == "01") //window.currentSeconds needs to be compared to "01" and not 1 because in line 1481 we are adding a leading "0" to it
+                            OpenHR.SessionTimeout();
                     } catch (e) {
                         //do nothing if this fails - we've probably navigated away and the elements no longer exist. That's the trouble with using 1 second delays.
                     }
