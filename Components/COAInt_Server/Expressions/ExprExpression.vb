@@ -350,8 +350,6 @@ Namespace Expressions
 			' Add a new component to the expression.
 			' Returns the new component object.
 
-			Dim fOK As Boolean
-
 			Try
 
 				' Initialse the new component's properties.
@@ -364,11 +362,7 @@ Namespace Expressions
 
 			End Try
 
-			If fOK Then
-				Return objComponent
-			Else
-				Return Nothing
-			End If
+  		Return objComponent
 
 		End Function
 
