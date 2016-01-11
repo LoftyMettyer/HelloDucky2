@@ -139,7 +139,7 @@
 	<input type="hidden" id="txtAction" name="txtAction" value='<%:session("action")%>'>
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value='<%:CInt(Session("utiltype"))%>'>
 	<input type="hidden" id="txtLocaleDecimal" name="txtLocaleDecimal" value='<%:session("LocaleDecimalSeparator")%>'>
-	<input type="hidden" id="txtExprColourMode" name="txtExprColourMode" value='<%:session("ExprColourMode")%>'>
+	<input type="hidden" id="txtExprColourMode" name="txtExprColourMode" value="2">
 	<input type="hidden" id="txtExprNodeMode" name="txtExprNodeMode" value='<%:session("ExprNodeMode")%>'>	
 	<input type="hidden" id="txtFlag_To_Identify_Page_Source" name="txtFlag_To_Identify_Page_Source" value='<%: Session("IsLoadedFromReportDefinition")%>'>
   <input type="hidden" id="txtErrorDescription" name="txtErrorDescription" value="">	

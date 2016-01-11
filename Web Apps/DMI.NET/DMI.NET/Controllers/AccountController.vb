@@ -453,7 +453,7 @@ Namespace Controllers
 				Session("HistoryStartMode") = CInt(rowSettings("HistoryStartMode"))
 				Session("LookupStartMode") = CInt(rowSettings("LookupStartMode"))
 				Session("QuickAccessStartMode") = CInt(rowSettings("QuickAccessStartMode"))
-				Session("ExprColourMode") = CLng(rowSettings("ExprColourMode"))
+				Session("ExprColourMode") = "2"
 				Session("ExprNodeMode") = CLng(rowSettings("ExprNodeMode"))
 				Session("SupportTelNo") = rowSettings("SupportTelNo")
 				Session("SupportFax") = rowSettings("SupportFax")

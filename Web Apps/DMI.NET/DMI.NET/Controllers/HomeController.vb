@@ -73,6 +73,7 @@ Namespace Controllers
 				' Some XSS/Injection defiant checks.
 				Dim primary As String = NullSafeString(Request.Form("txtPrimaryStartMode"))
 				If primary <> "1" And primary <> "2" And primary <> "3" Then fOK = False
+				
 				Dim history As String = NullSafeString(Request.Form("txtHistoryStartMode"))
 				If history <> "1" And history <> "2" And history <> "3" Then fOK = False
 				Dim lookup As String = NullSafeString(Request.Form("txtLookupStartMode"))
@@ -80,8 +81,8 @@ Namespace Controllers
 				Dim quickaccess As String = NullSafeString(Request.Form("txtQuickAccessStartMode"))
 				If quickaccess <> "1" And quickaccess <> "2" And quickaccess <> "3" Then fOK = False
 
-				Dim viewcolours As String = NullSafeString(Request.Form("txtExprColourMode"))
-				If viewcolours <> "1" And viewcolours <> "2" Then fOK = False
+				Dim viewcolours As String = "2"  'Always colour in web 1=Mono.
+				'If viewcolours <> "1" And viewcolours <> "2" Then fOK = False
 				Dim nodesize As String = NullSafeString(Request.Form("txtExprNodeMode"))
 				If nodesize <> "1" And nodesize <> "2" And nodesize <> "4" Then fOK = False
 				Dim blocksize As String = NullSafeString(Request.Form("txtFindSize"))
@@ -101,7 +102,7 @@ Namespace Controllers
 				Session("HistoryStartMode") = history
 				Session("LookupStartMode") = lookup
 				Session("QuickAccessStartMode") = quickaccess
-				Session("ExprColourMode") = viewcolours
+				Session("ExprColourMode") = "2"
 				Session("ExprNodeMode") = nodesize
 				Session("FindRecords") = blocksize
 

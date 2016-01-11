@@ -101,7 +101,7 @@
 		setComboValue("HISTORY", frmOriginalConfiguration.txtHistoryStartMode.value);
 		setComboValue("LOOKUP", frmOriginalConfiguration.txtLookupStartMode.value);
 		setComboValue("QUICKACCESS", frmOriginalConfiguration.txtQuickAccessStartMode.value);
-		setComboValue("EXPRCOLOURMODE", frmOriginalConfiguration.txtExprColourMode.value);
+		setComboValue("EXPRCOLOURMODE", 2);  // always colour mode in web TFS20296.
 		setComboValue("EXPRNODEMODE", frmOriginalConfiguration.txtExprNodeMode.value);
 		frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtFindSize.value;
 
@@ -213,7 +213,7 @@
 		frmConfiguration.txtHistoryStartMode.value = frmConfiguration.cboHistoryTableDisplay.options[frmConfiguration.cboHistoryTableDisplay.options.selectedIndex].value;
 		frmConfiguration.txtLookupStartMode.value = frmConfiguration.cboLookupTableDisplay.options[frmConfiguration.cboLookupTableDisplay.options.selectedIndex].value;
 		frmConfiguration.txtQuickAccessStartMode.value = frmConfiguration.cboQuickAccessDisplay.options[frmConfiguration.cboQuickAccessDisplay.options.selectedIndex].value;
-		frmConfiguration.txtExprColourMode.value = frmConfiguration.cboViewInColour.options[frmConfiguration.cboViewInColour.options.selectedIndex].value;
+		frmConfiguration.txtExprColourMode.value = 2; //always colour in web 1=mono
 		frmConfiguration.txtExprNodeMode.value = frmConfiguration.cboExpandNodes.options[frmConfiguration.cboExpandNodes.options.selectedIndex].value;
 
 		menu_refreshMenu();
@@ -394,7 +394,7 @@
 			setComboValue("LOOKUP", 3);
 			setComboValue("QUICKACCESS", 1);
 
-			setComboValue("EXPRCOLOURMODE", 1);
+			setComboValue("EXPRCOLOURMODE", 2); // always colour mode in web TFS20296.
 			setComboValue("EXPRNODEMODE", 1);
 
 			frmConfiguration.txtFindSize.value = 1000;
@@ -527,7 +527,7 @@
 						<tr>
 							<td height="10" colspan="5"></td>
 						</tr>
-						<tr>
+						<tr style="display: none">
 							<td width="20"></td>
 							<td align="left" nowrap>View in Colour :
 							</td>
@@ -808,7 +808,7 @@
 	<input type="hidden" id="Hidden2" name="txtHistoryStartMode" value='<%=session("HistoryStartMode")%>'>
 	<input type="hidden" id="Hidden3" name="txtLookupStartMode" value='<%=session("LookupStartMode")%>'>
 	<input type="hidden" id="Hidden4" name="txtQuickAccessStartMode" value='<%=session("QuickAccessStartMode")%>'>
-	<input type="hidden" id="Hidden5" name="txtExprColourMode" value='<%=session("ExprColourMode")%>'>
+	<input type="hidden" id="Hidden5" name="txtExprColourMode" value="2">
 	<input type="hidden" id="Hidden6" name="txtExprNodeMode" value='<%=session("ExprNodeMode")%>'>
 	<input type="hidden" id="Hidden7" name="txtFindSize" value='<%=Session("FindRecords")%>'>
 	<input type="hidden" id="txtLastFindSize" name="txtLastFindSize" value='<%=session("FindRecords")%>'>

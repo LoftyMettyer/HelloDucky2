@@ -10,7 +10,7 @@ BEGIN
 			@HistoryStartMode		tinyint = 3,
 			@LookupStartMode		tinyint = 2,
 			@QuickAccessStartMode	tinyint = 1,
-			@ExprColourMode			integer	= 1,
+			@ExprColourMode			integer	= 2,
 			@ExprNodeMode			tinyint	= 1;
 
 	DECLARE @SupportTelNo			varchar(50) = '+44 (0)1582 714820',
@@ -40,10 +40,6 @@ BEGIN
 	SELECT @QuickAccessStartMode = settingValue
 		FROM ASRSysUserSettings
 		WHERE userName = SYSTEM_USER AND section = 'RecordEditing' AND settingKey = 'QuickAccess';
-
-	SELECT @ExprColourMode = settingValue
-		FROM ASRSysUserSettings
-		WHERE userName = SYSTEM_USER AND section = 'ExpressionBuilder' AND settingKey = 'ViewColours';
 
 	SELECT @ExprNodeMode = settingValue
 		FROM ASRSysUserSettings

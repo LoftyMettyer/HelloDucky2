@@ -445,13 +445,7 @@ function loadSubExpressionsNodes(piComponentID, pfVisible) {
 
 function getNodeColour(piLevel) {
 	var sColour;
-	var iModLevel;
-	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
-
-	sColour = 'rgb(0, 0, 0)'; //6697779;
-
-	if (frmUseful.txtExprColourMode.value == 2) {
-		iModLevel = piLevel % 7;
+	var iModLevel = piLevel % 7;
 
 		switch (iModLevel) {
 			case 0:
@@ -478,7 +472,6 @@ function getNodeColour(piLevel) {
 			default:
 				sColour = 'rgb(105,105,129)'; //8192125;
 		}
-	}
 	return sColour;
 }
 
@@ -2235,17 +2228,8 @@ function abExprMenu_Click(pTool) {
 			$('#SSTree1').jstree('close_all');
 			break;
 		case "ID_Colour":
-			if (frmUseful.txtExprColourMode.value == 2) {
-				frmUseful.txtExprColourMode.value = 1;
-			}
-			else {
-				frmUseful.txtExprColourMode.value = 2;
-			}
-
-			$('#SSTree1 li').not(':first').each(function () {
-				var colour = frmUseful.txtExprColourMode.value == 2 ? getNodeColour(tree_SelectedItemLevel("#" + $(this).attr('id'))) : 'rgb(0,0,0)';
-				$(this).find('a').css('color', colour);
-			});
+			var colour = getNodeColour(tree_SelectedItemLevel("#" + $(this).attr('id')));
+			$(this).find('a').css('color', colour);
 			break;
 		case "ID_OutputToPrinter":
 			printClick(true);
