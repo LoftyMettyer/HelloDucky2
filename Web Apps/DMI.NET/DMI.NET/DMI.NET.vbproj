@@ -1439,7 +1439,7 @@
     <Content Include="Views\Home\_showChart.ascx" />
     <Content Include="custom.config.template" />
     <Content Include="connectionStrings.config.template" />
-    <None Include="Views\Reports\Util_Def_TalentReport.vbhtml" />
+    <Content Include="Views\Reports\Util_Def_TalentReport.vbhtml" />
     <Content Include="Web.config.diagnostics">
       <SubType>Designer</SubType>
     </Content>
