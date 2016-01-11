@@ -179,7 +179,7 @@ Public Class clsDataTransferRun
         If fOK Then Call GetDataTransferDetails()
 
         mbLoggingDTSuccess = CBool(GetUserSetting("LogEvents", "Data_Transfer_Success", False))
-
+		
         If fOK Then fOK = CheckIfTransferIsValid()
 
         Logs.AddHeader(EventLog_Type.eltDataTransfer, mstrTransferName)
@@ -785,18 +785,19 @@ Public Class clsDataTransferRun
 				mlngSuccessCount = mlngSuccessCount + 1
 
 				If mbLoggingDTSuccess Then
-					Logs.AddDetailEntry(GetRecordDesc(CInt(objRow("ID"))) & " transferred successfully")
+					strRecordError =  GetDataTransferRecordDesc(CInt(objRow("ID")),mlngRecordDescExprID  ) & " -- transferred successfully"
+					Call Logs.AddDetailEntry(strRecordError)
 				End If
 
 			Catch sqlexception As SqlException
 
-				strRecordError = GetRecordDesc(CInt(objRow("ID"))) & vbNewLine & vbNewLine & sqlexception.Errors(0).Message
+				strRecordError = GetDataTransferRecordDesc(CInt(objRow("ID")), mlngRecordDescExprID) & vbNewLine & vbNewLine & sqlexception.Errors(0).Message
 				Call Logs.AddDetailEntry(strRecordError)
 				mlngFailCount += 1
 
 			Catch ex As Exception
 
-				strRecordError = GetRecordDesc(CInt(objRow("ID"))) & vbNewLine & vbNewLine & ex.Message
+				strRecordError = GetDataTransferRecordDesc(CInt(objRow("ID")), mlngRecordDescExprID) & vbNewLine & vbNewLine & ex.Message
 				Call Logs.AddDetailEntry(strRecordError)
 				mlngFailCount += 1
 
@@ -1015,7 +1016,20 @@ Public Class clsDataTransferRun
 
     End Function
 
+	
 
+	    Private Function GetDataTransferRecordDesc(lngRecordID As Integer, lngRecordDescExprID As Integer) As String
+
+        Dim prmRecordDesc = New SqlParameter("result", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+
+				If mlngRecordDescExprID < 1 Then return  "Record Description Undefined" 
+
+					DB.ExecuteSP("sp_ASRExpr_" + CStr(lngRecordDescExprID) _
+										 , New SqlParameter("id", SqlDbType.Int) With {.Value = lngRecordID, .Direction =  ParameterDirection.Input} _
+										 , prmRecordDesc)
+
+        Return prmRecordDesc.Value.ToString
+    End Function
     Private Function GetRecordDesc(lngRecordID As Integer) As String
 
         Dim prmRecordDesc = New SqlParameter("psRecDesc", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
