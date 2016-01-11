@@ -162,25 +162,24 @@ function onload2() {
 }
 
 function formatComponentTypeFrame() {
-	var sTypePValVisibility;
-	var sTypePValDisplay;
-	var sTypeCalcVisibility;
-	var sTypeCalcDisplay;
-	var sTypeFilterVisibility;
-	var sTypeFilterDisplay;
 
-	sTypePValVisibility = "visible";
-	sTypePValDisplay = "inline-block";
-	sTypeCalcVisibility = "visible";
-	sTypeCalcDisplay = "inline-block";
-	sTypeFilterVisibility = "visible";
-	sTypeFilterDisplay = "inline-block";
+	var sTypePValVisibility = "visible";
+	var sTypePValDisplay = "inline-block";
+	var sTypeCalcVisibility = "visible";
+	var sTypeCalcDisplay = "inline-block";
+	var sTypeFilterVisibility = "visible";
+	var sTypeFilterDisplay = "inline-block";
 
 	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 
 	switch (util_def_exprcomponent_frmUseful.txtExprType.value) {
 		case "10":
-			// Runtime Calculation
+		  // Runtime Calculation
+		  if (util_def_exprcomponent_frmUseful.txtTableID.value == 0) {
+		    $("#optType_Field").attr('disabled', 'disabled');
+		    $("#optType_Calculation").attr('disabled', 'disabled');
+		    $("#optType_Filter").attr('disabled', 'disabled');
+		  }
 			break;
 		case "11":
 			// Runtime Filter
@@ -197,7 +196,7 @@ function formatComponentTypeFrame() {
 			sTypeFilterDisplay = "none";
 			break;
 	}
-
+  
 	document.getElementById('trType_PVal').style.visibility = sTypePValVisibility;
 	document.getElementById('trType_PVal').style.display = sTypePValDisplay;
 

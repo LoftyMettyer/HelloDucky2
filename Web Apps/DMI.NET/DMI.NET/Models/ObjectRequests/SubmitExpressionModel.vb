@@ -23,5 +23,9 @@ Namespace Models.ObjectRequests
 
 		<AllowHtml>
 		Public Property txtSend_names As String
+
+    Public Property txtSend_ReturnType As ExpressionValueTypes
+    Public Property txtSend_ExpressionType as ExpressionTypes
+
 	End Class
 End Namespace

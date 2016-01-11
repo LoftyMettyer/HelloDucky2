@@ -1104,7 +1104,7 @@ Namespace Controllers
 			End If
 
 			Session("defseltype") = value.utiltype
-			Session("utilTableID") = IIf(value.txtTableID = 0, SettingsConfig.Personnel_EmpTableID, value.txtTableID)
+			Session("utilTableID") = IIf(value.txtTableID = -1, SettingsConfig.Personnel_EmpTableID, value.txtTableID)
 			Session("fromMenu") = IIf(value.txtGotoFromMenu, "1", "0") ' No idea what this is doing, just placed for backward compatability. Candidate for removal!
 			Session("singleRecordID") = value.RecordID
 			Session("multipleRecordIDs") = value.MultipleRecordIDs
@@ -3754,7 +3754,7 @@ Namespace Controllers
 
 			Dim objExpression As Expression
 			Dim iExprType As Integer
-			Dim iReturnType As Integer
+			Dim iReturnType As ExpressionValueTypes
 			Dim sUtilType As String
 			Dim fok As Boolean
 			Session("errorMessage") = ""
@@ -3764,12 +3764,12 @@ Namespace Controllers
 
 			Dim objContext = CType(Session("SessionContext"), SessionInfo)
 			If value.txtSend_type = UtilityType.utlFilter Then
-				iExprType = 11
-				iReturnType = 3
+				iExprType = ExpressionTypes.giEXPR_RUNTIMEFILTER
+				iReturnType = ExpressionValueTypes.giEXPRVALUE_LOGIC
 				sUtilType = "Filter"
 			Else
-				iExprType = 10
-				iReturnType = 0
+				iExprType = value.txtSend_ExpressionType
+				iReturnType = value.txtSend_ReturnType
 				sUtilType = "Calculation"
 			End If
 

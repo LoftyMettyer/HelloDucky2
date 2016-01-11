@@ -803,37 +803,37 @@ function menu_MenuClick(sTool) {
 
 		// Crosstab Reports
 		if (sToolName == "mnutoolCrossTabs") {
-			saveChangesPrompt("CROSSTABS", 'menu_loadDefSelPageForAllCategoryAndOwner(1, 0, 0, true, true)');
+			saveChangesPrompt("CROSSTABS", 'menu_loadDefSelPageForAllCategoryAndOwner(1, 0, -1, true, true)');
 			return false;
 		}
 
 	// Nine box grid Reports
 		if (sToolName == "mnutoolNineBox") {
-			saveChangesPrompt("NINEBOXGRID", 'menu_loadDefSelPageForAllCategoryAndOwner(35, 0, 0, true, true)');
+			saveChangesPrompt("NINEBOXGRID", 'menu_loadDefSelPageForAllCategoryAndOwner(35, 0, -1, true, true)');
 			return false;
 		}
 
     // Talent Reports
 		if (sToolName === "mnutoolTalentReports") {
-		  saveChangesPrompt("TALENTREPORTS", 'menu_loadDefSelPageForAllCategoryAndOwner(38, 0, 0, true, true)');
+		  saveChangesPrompt("TALENTREPORTS", 'menu_loadDefSelPageForAllCategoryAndOwner(38, 0, -1, true, true)');
 		  return false;
 		}
 
     // Match Reports
 		if (sToolName === "mnutoolMatchReports") {
-		  saveChangesPrompt("MATCHREPORTS", 'menu_loadDefSelPageForAllCategoryAndOwner(14, 0, 0, true, true)');
+		  saveChangesPrompt("MATCHREPORTS", 'menu_loadDefSelPageForAllCategoryAndOwner(14, 0, -1, true, true)');
 		  return false;
 		}
 
 		// Custom Reports
 		if (sToolName == "mnutoolCustomReports") {
-			saveChangesPrompt("CUSTOMREPORTS", 'menu_loadDefSelPageForAllCategoryAndOwner(2, 0, 0, true, true)');
+			saveChangesPrompt("CUSTOMREPORTS", 'menu_loadDefSelPageForAllCategoryAndOwner(2, 0, -1, true, true)');
 			return false;
 		}
 		
 		// Calendar Reports
 		if (sToolName == "mnutoolCalendarReports") {
-			saveChangesPrompt("CALENDAR", 'menu_loadDefSelPageForAllCategoryAndOwner(17, 0, 0, true, true)');
+			saveChangesPrompt("CALENDAR", 'menu_loadDefSelPageForAllCategoryAndOwner(17, 0, -1, true, true)');
 			return false;
 		}
 		
@@ -853,7 +853,7 @@ function menu_MenuClick(sTool) {
 		// Utilities Menu -------------------------------------------------------------------------------------------------------------------
 
 		if (sToolName == "mnutoolMailMerge") {
-			saveChangesPrompt("MAILMERGE", 'menu_loadDefSelPageForAllCategoryAndOwner(9, 0, 0, true, true)');
+			saveChangesPrompt("MAILMERGE", 'menu_loadDefSelPageForAllCategoryAndOwner(9, 0, -1, true, true)');
 			return false;
 		}
 
@@ -871,17 +871,17 @@ function menu_MenuClick(sTool) {
 		// Utilities Menu -------------------------------------------------------------------------------------------------------------------
 		
 		if (sToolName == "mnutoolCalculations") {
-			saveChangesPrompt("CALCULATIONS", 'menu_loadDefSelPageForAllCategoryAndOwner(12, 0, 0, true, true)');
+			saveChangesPrompt("CALCULATIONS", 'menu_loadDefSelPageForAllCategoryAndOwner(12, 0, -1, true, true)');
 			return false;
 		}
 
 		if (sToolName == "mnutoolFilters") {
-			saveChangesPrompt("FILTERS", 'menu_loadDefSelPageForAllCategoryAndOwner(11, 0, 0, true, true)');
+			saveChangesPrompt("FILTERS", 'menu_loadDefSelPageForAllCategoryAndOwner(11, 0, -1, true, true)');
 			return false;
 		}
 
 		if (sToolName == "mnutoolPicklists") {
-			saveChangesPrompt("PICKLISTS", 'menu_loadDefSelPageForAllCategoryAndOwner(10, 0, 0, true, true)');
+			saveChangesPrompt("PICKLISTS", 'menu_loadDefSelPageForAllCategoryAndOwner(10, 0, -1, true, true)');
 			return false;
 		}
 
@@ -5057,9 +5057,10 @@ function LoadToolsScreen(utilityType) {
 
 // Loads Tools screen (Piclist/Filter/Calculation) into tools frame based on its type. 
 function LoadToolsScreenInToolsFrame(utilityType) {
-	var displayDiv = "ToolsFrame";
+
+  var displayDiv = "ToolsFrame";
 	var postData = {
-		txtTableID: 0,
+		txtTableID: -1,
 		utiltype: utilityType,
 		utilID: 0,
 		txtGotoFromMenu: true,

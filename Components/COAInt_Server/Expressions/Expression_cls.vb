@@ -24,7 +24,7 @@ Namespace Expressions
 		End Sub
 
 
-		Public Function Initialise(plngBaseTableID As Integer, plngExpressionID As Integer, piType As Short, piReturnType As ExpressionValueTypes) As Boolean
+		Public Function Initialise(plngBaseTableID As Integer, plngExpressionID As Integer, piType As ExpressionTypes, piReturnType As ExpressionValueTypes) As Boolean
 
 			mlngBaseTableID = plngBaseTableID
 			mlngExpressionID = plngExpressionID

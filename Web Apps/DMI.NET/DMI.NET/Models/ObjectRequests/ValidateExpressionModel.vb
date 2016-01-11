@@ -20,6 +20,8 @@ Namespace Models.ObjectRequests
 
 		Public Property validateBaseTableID As Integer
 		Public Property validateOriginalAccess As String
+    Public Property validateReturnType As ExpressionValueTypes
+    Public Property validateExpressionType as ExpressionTypes
 
 	End Class
 End Namespace

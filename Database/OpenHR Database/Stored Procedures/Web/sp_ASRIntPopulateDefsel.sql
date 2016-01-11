@@ -32,14 +32,6 @@ BEGIN
 	SET @fDoneWhere = 0;
 	SET @strExplicitSQL = '';
 	
-	IF ((@intTableID <=0) OR (@intTableID IS null)) AND @intType <> 17 AND @intType <> 9 AND @intType <> 2 AND @intType <> 3 AND @intType <> 14 AND @intType <> 38
-	BEGIN
-		/* No table ID passed in, so use the first table alphabetically. */
-		SELECT TOP 1 @intTableID = tableID
-		FROM [dbo].[ASRSysTables]
-		ORDER BY tableName;
-	END
-	
 	IF @intType = 1 /*'crosstabs'*/
 	BEGIN
 		SET @strTableName = 'ASRSysCrossTab';
@@ -98,7 +90,7 @@ BEGIN
 	BEGIN
 		SET @strTableName = 'ASRSysExpressions';
 		SET @strIDName = 'exprID';
-		SET @sExtraWhereSQL = ' type = 11 AND (returnType = 3 OR type = 10) AND parentComponentID = 0	AND TableID = ' + convert(varchar(255), @intTableID);
+		SET @sExtraWhereSQL = ' (type = 11 AND (returnType = 3 OR type = 10) AND parentComponentID = 0	AND TableID = ' + convert(varchar(255), @intTableID) + ')';
 	END
 
 	IF @intType = 12 /*'calculations'*/

@@ -1348,7 +1348,10 @@ Namespace Expressions
 
 				ReDim avDummyPrompts(1, 0)
 
-				If ((Not ExprDeleted(ExpressionID)) Or (mlngExpressionID = 0)) And ((miExpressionType = ExpressionTypes.giEXPR_VIEWFILTER) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMEFILTER) Or (miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION)) Then
+				If ((Not ExprDeleted(ExpressionID)) Or (mlngExpressionID = 0)) And _
+          ((miExpressionType = ExpressionTypes.giEXPR_VIEWFILTER) Or _
+          (miExpressionType = ExpressionTypes.giEXPR_RUNTIMEFILTER) Or _
+          (miExpressionType = ExpressionTypes.giEXPR_RUNTIMECALCULATION)) Then
 
 					mfConstructed = True
 

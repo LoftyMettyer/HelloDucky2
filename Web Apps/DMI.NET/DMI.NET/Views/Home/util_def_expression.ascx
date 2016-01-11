@@ -142,16 +142,7 @@
 	<input type="hidden" id="txtExprColourMode" name="txtExprColourMode" value='<%:session("ExprColourMode")%>'>
 	<input type="hidden" id="txtExprNodeMode" name="txtExprNodeMode" value='<%:session("ExprNodeMode")%>'>	
 	<input type="hidden" id="txtFlag_To_Identify_Page_Source" name="txtFlag_To_Identify_Page_Source" value='<%: Session("IsLoadedFromReportDefinition")%>'>
-
-	<%
-		Dim sErrorDescription As String
-				
-		Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
-	
-		Dim sTableName = objDatabase.GetTableName(CInt(Session("utiltableid")))	
-		Response.Write("<input type='hidden' id='txtTableName' name='txtTableName' value=""" & sTableName & """>" & vbCrLf)
-	
-	%>
+  <input type="hidden" id="txtErrorDescription" name="txtErrorDescription" value="">	
 	<input type="hidden" id="txtCanDelete" name="txtCanDelete" value="0">
 	<input type="hidden" id="txtCanInsert" name="txtCanInsert" value="0">
 	<input type="hidden" id="txtCanCut" name="txtCanCut" value="0">
@@ -176,6 +167,8 @@
 	<input type="hidden" id="txtSend_reaction" name="txtSend_reaction">
 	<input type="hidden" id="txtSend_tableID" name="txtSend_tableID" value='<%:session("utiltableid")%>'>
 	<input type="hidden" id="txtSend_names" name="txtSend_names" value="">
+ 	<input type="hidden" id="txtSend_ReturnType" name="txtSend_ReturnType">
+	<input type="hidden" id="txtSend_ExpressionType" name="txtSend_ExpressionType">
 	<%=Html.AntiForgeryToken()%>
 </form>
 
