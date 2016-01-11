@@ -2080,6 +2080,7 @@ PRINT 'Step - Branding'
 
 	EXEC sp_executesql N'UPDATE ASRSysPermissionCategories SET [description] = ''OpenHR Web'' WHERE categoryID = 19';
 	EXEC sp_executesql N'UPDATE ASRSysPermissionItems SET [description] = ''OpenHR Web'' WHERE itemID = 4';
+	EXEC spsys_setsystemsetting 'support', 'email', 'ohrsupport@advancedcomputersoftware.com';
 
 
 /* ------------------------------------------------------- */

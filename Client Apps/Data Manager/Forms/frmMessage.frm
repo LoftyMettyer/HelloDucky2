@@ -963,8 +963,8 @@ Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
   ElseIf KeyCode = 44 And FromErrorMessage Then
     If COAMsgBox("Would you like to email details of this error to the helpdesk?", vbQuestion + vbYesNo, "Email Error") = vbYes Then
       frmEmailSel.SendEmail _
-        GetSystemSetting("support", "email", "service.delivery@coasolutions.com"), _
-        App.Title & " Error", _
+        GetSystemSetting("support", "email", "ohrsupport@advancedcomputersoftware.com"), _
+        app.Title & " Error", _
         Me.txtDetails, False, True
       Set frmEmailSel = Nothing
     End If
