@@ -31,7 +31,7 @@
 		<br/>
 		<label>Email :</label>
 		<%If Session("SupportEmail") = "" Then%>
-		<a href="mailto://service.delivery@advancedcomputersoftware.com?subject=OpenHR Support Query - Web Login" class="hypertext">service.delivery@advancedcomputersoftware.com</a>
+		<a href="mailto://ohrsupport@advancedcomputersoftware.com?subject=OpenHR Support Query - Web Login" class="hypertext">ohrsupport@advancedcomputersoftware.com</a>
 		<%Else%>
 		<a href="mailto://<%:session("SupportEmail") %>?subject=OpenHR Support Query - Web Login" class="hypertext"><%:session("SupportEmail") %></a>
 		<%End If%>

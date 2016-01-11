@@ -35907,7 +35907,7 @@ BEGIN
 
 	DECLARE @SupportTelNo			varchar(50) = '+44 (0)1582 714820',
 			@SupportFax				varchar(50) = '+44 (0)1582 714814',
-			@SupportEmail			varchar(50) = 'service.delivery@advancedcomputersoftware.com',
+			@SupportEmail			varchar(50) = 'ohrsupport@advancedcomputersoftware.com',
 			@SupportWebpage			varchar(50)	= 'http://webfirst.advancedcomputersoftware.com',
 			@DesktopColour			varchar(20) = 2147483660;
 
