@@ -1,41 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OpenHRWorkflowInstaller", "OpenHRWorkflowInstaller\OpenHRWorkflowInstaller.vbproj", "{1371B89A-9495-484C-816F-DEE9025335E0}"
-	ProjectSection(ProjectDependencies) = postProject
-		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6} = {FC85112C-FF7D-4539-8F0C-785C8AA08AD6}
-	EndProjectSection
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenHRWorkflowSetup", "OpenHRWorkflowSetup\HRProWorkflowWebSetup.vdproj", "{84B3579F-B5F3-4AFC-986A-3A5197FD9101}"
-EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OpenHRWorkflow", "OpenHRWorkflow\OpenHRWorkflow.vbproj", "{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
-		SccProjectUniqueName0 = OpenHRWorkflowInstaller\\OpenHRWorkflowInstaller.vbproj
-		SccProjectName0 = .
-		SccAuxPath0 = http://harptfs01:8080/tfs/defaultcollection
-		SccLocalPath0 = .
-		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectFilePathRelativizedFromConnection0 = OpenHRWorkflowInstaller\\
-		SccProjectUniqueName1 = OpenHRWorkflowSetup\\HRProWorkflowWebSetup.vdproj
-		SccProjectName1 = .
-		SccAuxPath1 = http://harptfs01:8080/tfs/defaultcollection
-		SccLocalPath1 = .
-		SccProvider1 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectFilePathRelativizedFromConnection1 = OpenHRWorkflowSetup\\
-		SccProjectUniqueName2 = OpenHRWorkflow\\OpenHRWorkflow.vbproj
-		SccProjectName2 = .
-		SccAuxPath2 = http://harptfs01:8080/tfs/defaultcollection
-		SccLocalPath2 = .
-		SccProvider2 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectFilePathRelativizedFromConnection2 = OpenHRWorkflow\\
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
 		Debug|Any CPU = Debug|Any CPU
@@ -45,25 +15,6 @@ Global
 		Release|Mixed Platforms = Release|Mixed Platforms
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1371B89A-9495-484C-816F-DEE9025335E0}.Debug|.NET.ActiveCfg = Debug|Any CPU
-		{1371B89A-9495-484C-816F-DEE9025335E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1371B89A-9495-484C-816F-DEE9025335E0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1371B89A-9495-484C-816F-DEE9025335E0}.Release|.NET.ActiveCfg = Release|Any CPU
-		{1371B89A-9495-484C-816F-DEE9025335E0}.Release|.NET.Build.0 = Release|Any CPU
-		{1371B89A-9495-484C-816F-DEE9025335E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1371B89A-9495-484C-816F-DEE9025335E0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1371B89A-9495-484C-816F-DEE9025335E0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1371B89A-9495-484C-816F-DEE9025335E0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Debug|.NET.ActiveCfg = Debug
-		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Debug|.NET.Build.0 = Debug
-		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Debug|Any CPU.ActiveCfg = Debug
-		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Release|.NET.ActiveCfg = Release
-		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Release|.NET.Build.0 = Release
-		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Release|Any CPU.ActiveCfg = Release
-		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Release|Any CPU.Build.0 = Release
-		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Release|Mixed Platforms.ActiveCfg = Release
-		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Release|Mixed Platforms.Build.0 = Release
 		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}.Debug|.NET.ActiveCfg = Debug|Any CPU
 		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
@@ -77,6 +28,17 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 1
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
+		SccProjectUniqueName0 = OpenHRWorkflow\\OpenHRWorkflow.vbproj
+		SccProjectName0 = .
+		SccAuxPath0 = http://harptfs01:8080/tfs/defaultcollection
+		SccLocalPath0 = .
+		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProjectFilePathRelativizedFromConnection0 = OpenHRWorkflow\\
 	EndGlobalSection
 	GlobalSection(TextTemplating) = postSolution
 		TextTemplating = 1
