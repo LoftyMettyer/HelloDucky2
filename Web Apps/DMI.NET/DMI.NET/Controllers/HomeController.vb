@@ -2038,7 +2038,7 @@ Namespace Controllers
 								Dim MaxHorizontalID As Integer = Convert.ToInt32(mrstChartData.Compute("max(HORIZONTAL_ID)", String.Empty))	'Get the maximum horizontal ID
 								For i = MinHorizontalID To MaxHorizontalID
 									r = mrstChartData.Select("HORIZONTAL_ID = " & i).FirstOrDefault
-									MultiAxisChartHorizontals.Add(New MultiAxisChartHorizontal With {.Horizontal_ID = r("HORIZONTAL_ID"), .Horizontal = r("HORIZONTAL"), .Colour = r("COLOUR")})
+									MultiAxisChartHorizontals.Add(New MultiAxisChartHorizontal With {.Horizontal_ID = r("HORIZONTAL_ID"), .Horizontal = iif(isdbnull(r("HORIZONTAL")), "", r("HORIZONTAL")), .Colour = r("COLOUR")})
 								Next
 
 								'Compare and fill the gaps
@@ -2066,12 +2066,16 @@ Namespace Controllers
 								Dim dv As DataView = mrstChartData.AsDataView	'Copy the datatable to a dataview so we can sort it
 								dv.Sort = "VERTICAL_ID DESC, HORIZONTAL_ID ASC"	'Sort
 								For Each objRow As DataRow In dv.ToTable.Rows	'Loop over the dataview's rows
+
+									Dim safeHorizontalString As string = iif(isdbnull(objRow("HORIZONTAL")), "", objRow("HORIZONTAL").tostring())
+									Dim safeVerticalString As string = iif(isdbnull(objRow("VERTICAL")), "", objRow("VERTICAL").tostring())
+									
 									If TryCast(objRow("HORIZONTAL_ID"), String) <> "No Access" And TryCast(objRow("HORIZONTAL_ID"), String) <> "No Data" Then
-										seriesName = objRow("VERTICAL").ToString()
+										seriesName = safeVerticalString
 										If seriesName = "" Then
 											seriesName = "(No name)"
 										End If
-										Dim columnName As String = objRow("HORIZONTAL").ToString()
+										Dim columnName As String = safeHorizontalString
 										Dim yVal As Double = objRow("Aggregate")
 										Dim pointBackColor As Color
 
@@ -2146,11 +2150,11 @@ Namespace Controllers
 										If showLegend = True Then
 											Dim legendAdded As Boolean = False
 											For Each legItem As LegendItem In MultiAxisChart.Legends("Default").CustomItems
-												If legItem.Name = objRow("HORIZONTAL") Then legendAdded = True
+												If legItem.Name = safeHorizontalString Then legendAdded = True
 											Next
 
 											If Not legendAdded Then
-												MultiAxisChart.Legends("Default").CustomItems.Add(New LegendItem(objRow("HORIZONTAL"), pointBackColor, ""))
+												MultiAxisChart.Legends("Default").CustomItems.Add(New LegendItem(safeHorizontalString, pointBackColor, ""))
 											End If
 										End If
 
