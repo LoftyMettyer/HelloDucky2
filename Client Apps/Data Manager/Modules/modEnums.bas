@@ -353,7 +353,7 @@ Public Enum OutputFormats
   fmtFixedLengthFile = 7
   fmtCMGFile = 8
   fmtXML = 9
-  fmtSQLTable = 99
+  fmtSQLTable = 10
 End Enum
 
 Public Enum OutputDestinations

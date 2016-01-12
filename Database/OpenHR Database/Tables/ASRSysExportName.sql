@@ -55,5 +55,8 @@
     [XSDFileName] NVARCHAR(255) NULL, 
     [PreserveTransformPath] BIT NULL, 
     [PreserveXSDPath] BIT NULL, 
-    [SplitXMLNodesFile] BIT NULL
+    [SplitXMLNodesFile] BIT NULL, 
+    [LinkedServer] NVARCHAR(255) NULL, 
+    [LinkedCatalog] NVARCHAR(255) NULL,
+		[LinkedTable] NVARCHAR(255) NULL
 ) ON [PRIMARY]

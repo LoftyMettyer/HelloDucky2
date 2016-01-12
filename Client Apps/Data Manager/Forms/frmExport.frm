@@ -9,7 +9,7 @@ Begin VB.Form frmExport
    ClientHeight    =   6060
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   9630
+   ClientWidth     =   9600
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -27,7 +27,7 @@ Begin VB.Form frmExport
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   6060
-   ScaleWidth      =   9630
+   ScaleWidth      =   9600
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin VB.CommandButton cmdCancel 
@@ -58,7 +58,6 @@ Begin VB.Form frmExport
       _Version        =   393216
       Style           =   1
       Tabs            =   6
-      Tab             =   5
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -72,16 +71,18 @@ Begin VB.Form frmExport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmExport.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraBase"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraInformation"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraParent1"
+      Tab(1).Control(0)=   "fraChild"
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(2)=   "fraChild"
+      Tab(1).Control(2)=   "fraParent1"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmExport.frx":0044
@@ -97,13 +98,11 @@ Begin VB.Form frmExport
       TabPicture(4)   =   "frmExport.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraHeaderOptions"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraDateOptions"
-      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
-      Tab(5).ControlEnabled=   -1  'True
+      Tab(5).ControlEnabled=   0   'False
       Tab(5).Control(0)=   "fraCMGFile"
       Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "fraDelimFile"
@@ -114,13 +113,68 @@ Begin VB.Form frmExport
       Tab(5).Control(3).Enabled=   0   'False
       Tab(5).Control(4)=   "fraXML"
       Tab(5).Control(4).Enabled=   0   'False
-      Tab(5).ControlCount=   5
+      Tab(5).Control(5)=   "fraTableOutput"
+      Tab(5).Control(5).Enabled=   0   'False
+      Tab(5).ControlCount=   6
+      Begin VB.Frame fraTableOutput 
+         Caption         =   "Table Output Options :"
+         Height          =   1950
+         Left            =   -74850
+         TabIndex        =   146
+         Top             =   3285
+         Width           =   9180
+         Begin VB.TextBox txtLinkedTable 
+            Height          =   315
+            Left            =   1800
+            TabIndex        =   152
+            Top             =   1200
+            Width           =   2670
+         End
+         Begin VB.TextBox txtLinkedCatalog 
+            Height          =   315
+            Left            =   1800
+            TabIndex        =   151
+            Top             =   750
+            Width           =   2670
+         End
+         Begin VB.TextBox txtLinkedServer 
+            Height          =   315
+            Left            =   1800
+            TabIndex        =   150
+            Top             =   315
+            Width           =   2670
+         End
+         Begin VB.Label lblLinkedTable 
+            Caption         =   "Table :"
+            Height          =   165
+            Left            =   255
+            TabIndex        =   149
+            Top             =   1275
+            Width           =   960
+         End
+         Begin VB.Label lblLinkedCatalog 
+            Caption         =   "Catalog :"
+            Height          =   255
+            Left            =   255
+            TabIndex        =   148
+            Top             =   825
+            Width           =   1170
+         End
+         Begin VB.Label lblLinkedServer 
+            Caption         =   "Server :"
+            Height          =   300
+            Left            =   255
+            TabIndex        =   147
+            Top             =   390
+            Width           =   1365
+         End
+      End
       Begin VB.Frame fraXML 
          Caption         =   "XML Options :"
          Height          =   1950
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   128
-         Top             =   3270
+         Top             =   3285
          Width           =   9180
          Begin VB.CheckBox chkSplitXMLNodesFile 
             Caption         =   "&Split nodes into individual files"
@@ -271,7 +325,7 @@ Begin VB.Form frmExport
       End
       Begin VB.Frame fraInformation 
          Height          =   2355
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   121
          Top             =   400
          Width           =   9180
@@ -475,7 +529,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputType 
          Caption         =   "Output Format :"
          Height          =   2835
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   82
          Top             =   405
          Width           =   2400
@@ -526,20 +580,19 @@ Begin VB.Form frmExport
             Width           =   1200
          End
          Begin VB.OptionButton optOutputFormat 
-            Caption         =   "SQL &Table"
+            Caption         =   "Lin&ked Server"
             Height          =   195
-            Index           =   99
+            Index           =   10
             Left            =   200
             TabIndex        =   87
             Top             =   2400
-            Visible         =   0   'False
-            Width           =   1200
+            Width           =   1560
          End
       End
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   2835
-         Left            =   2655
+         Left            =   -72345
          TabIndex        =   88
          Top             =   405
          Width           =   6675
@@ -888,9 +941,9 @@ Begin VB.Form frmExport
             RecordSelectors =   0   'False
             Col.Count       =   11
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -902,9 +955,9 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmExport.frx":0181
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -1560,7 +1613,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
          Height          =   2115
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   0
          Top             =   2850
          Width           =   9180
@@ -1731,7 +1784,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraDelimFile 
          Caption         =   "Delimited File Options :"
          Height          =   1665
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   103
          Top             =   3285
          Width           =   9180
@@ -1833,7 +1886,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraCMGFile 
          Caption         =   "CMG Options :"
          Height          =   1665
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   111
          Top             =   3285
          Width           =   9180
@@ -2019,6 +2072,7 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
   
   CheckIfCMGEnabled
   optOutputFormat(fmtXML).Enabled = gbXMLExportEnabled
+  optOutputFormat(fmtSQLTable).Enabled = gbTableExportEnabled
   
   mblnLoading = True
  
@@ -3200,19 +3254,6 @@ Private Sub optOutputFormat_Click(Index As Integer)
   
   cmdAddAllColumns.Enabled = (Index <> fmtXML)
   
-  'Select Case Index
-  'Case fmtCSV
-  '  TextOptionsStatus "D"
-  'Case fmtFixedLengthFile
-  '  TextOptionsStatus "F"
-  'Case fmtExcelWorksheet
-  '  TextOptionsStatus "X"
-  'Case fmtCMGFile
-  '  TextOptionsStatus "C"
-  'Case fmtSQLTable
-  '  TextOptionsStatus "S"
-  'End Select
-
 End Sub
 
 Private Sub chkDestination_Click(Index As Integer)
@@ -3373,10 +3414,20 @@ Private Sub txtFilename_Change()
   Changed = True
 End Sub
 
-Private Sub txtName_Change()
-
+Private Sub txtLinkedCatalog_Change()
   Changed = True
+End Sub
 
+Private Sub txtLinkedServer_Change()
+  Changed = True
+End Sub
+
+Private Sub txtLinkedTable_Change()
+  Changed = True
+End Sub
+
+Private Sub txtName_Change()
+  Changed = True
 End Sub
 
 Private Sub txtName_GotFocus()
@@ -3394,9 +3445,7 @@ Private Sub txtDesc_GotFocus()
 End Sub
 
 Private Sub txtDesc_Change()
-
   Changed = True
-
 End Sub
 
 Private Sub GetPicklist(ctlSource As Control, ctlTarget As Control)
@@ -4560,38 +4609,44 @@ Private Sub TextOptionsStatus(intFormat As Integer)
 
   fraCMGFile.Visible = (intFormat = fmtCMGFile)
   EnableFrame fraCMGFile, (intFormat = fmtCMGFile)
+  
+  fraTableOutput.Visible = (intFormat = fmtSQLTable)
+  EnableFrame fraTableOutput, (intFormat = fmtSQLTable)
 
   fraXML.Visible = (intFormat = fmtXML)
   EnableFrame fraXML, (intFormat = fmtXML)
   EnableControl txtXSDFilename, False
   EnableControl txtTransformFile, False
       
-  If intFormat = fmtXML Then
-    EnableControl lblHeaderLine, False
-    EnableControl cboHeaderOptions, False
-    cboHeaderOptions.ListIndex = 2
-    EnableControl txtCustomHeader, True
-    EnableControl lblFooterLine, False
-    EnableControl cboFooterOptions, False
-    EnableControl lblCustomFooter, False
-    EnableControl txtCustomFooter, False
-    EnableControl chkOmitHeader, False
-    EnableControl chkForceHeader, False
-  Else
-  
-    EnableControl cboHeaderOptions, True
-    EnableControl lblHeaderLine, True
-    EnableControl lblCustomHeader, True
-    EnableControl txtCustomHeader, Not cboHeaderOptions.ListIndex = 1
+  Select Case intFormat
+      
+    Case fmtXML
+      EnableControl lblHeaderLine, False
+      EnableControl cboHeaderOptions, False
+      cboHeaderOptions.ListIndex = 2
+      EnableControl txtCustomHeader, True
+      EnableControl lblFooterLine, False
+      EnableControl cboFooterOptions, False
+      EnableControl lblCustomFooter, False
+      EnableControl txtCustomFooter, False
+      EnableControl chkOmitHeader, False
+      EnableControl chkForceHeader, False
     
-    EnableControl cboFooterOptions, True
-    EnableControl lblFooterLine, True
-    EnableControl lblCustomFooter, True
-    EnableControl txtCustomFooter, Not cboFooterOptions.ListIndex = 1
-    
-    EnableControl chkOmitHeader, True
-    EnableControl chkForceHeader, True
-  End If
+    Case Else
+      EnableControl cboHeaderOptions, True
+      EnableControl lblHeaderLine, True
+      EnableControl lblCustomHeader, True
+      EnableControl txtCustomHeader, Not cboHeaderOptions.ListIndex = 1
+      
+      EnableControl cboFooterOptions, True
+      EnableControl lblFooterLine, True
+      EnableControl lblCustomFooter, True
+      EnableControl txtCustomFooter, Not cboFooterOptions.ListIndex = 1
+      
+      EnableControl chkOmitHeader, True
+      EnableControl chkForceHeader, True
+      
+  End Select
   
   EnableFrame fraDateOptions, (intFormat <> fmtXML)
   
@@ -4676,7 +4731,7 @@ Public Sub EnableDisableTabControls()
   fraExportOrder.Enabled = (SSTab1.Tab = 3)
 
   fraDateOptions.Enabled = (SSTab1.Tab = 4)
-  fraHeaderOptions.Enabled = (SSTab1.Tab = 4)
+  fraHeaderOptions.Enabled = (SSTab1.Tab = 4 And Not optOutputFormat(fmtSQLTable).Value)
   
   ' TAB 5 CONTROLS
   'fraOutput.Enabled = (SSTab1.Tab = 5)
@@ -4925,6 +4980,17 @@ Private Function ValidateDefinition() As Boolean
 
   End If
   
+  ' SQL Table specific
+  If optOutputFormat(fmtSQLTable).Value = True Then
+    If txtLinkedServer.Text = "" Or txtLinkedCatalog.Text = "" Or txtLinkedTable.Text = "" Then
+      COAMsgBox "You must specify all options for output to SQL Table.", vbExclamation + vbOKOnly, "Export"
+      SSTab1.Tab = 5
+      ValidateDefinition = False
+      Exit Function
+    End If
+  End If
+  
+  
   ' Check that at least 1 column has been defined as the export order
   If grdExportOrder.Rows = 0 Then
     COAMsgBox "You must select at least 1 column to order the export by.", vbExclamation + vbOKOnly, "Export"
@@ -4944,11 +5010,12 @@ Private Function ValidateDefinition() As Boolean
   End If
   
   
-  If Not mobjOutputDef.ValidDestination Then
-    SSTab1.Tab = 5
-    Exit Function
+  If Not optOutputFormat(fmtSQLTable).Value = True Then
+    If Not mobjOutputDef.ValidDestination Then
+      SSTab1.Tab = 5
+      Exit Function
+    End If
   End If
-  
   
   
   ' Check that only tables selected in the combos are in the grid.
@@ -5267,6 +5334,12 @@ Private Function SaveDefinition() As Boolean
               & "SplitXMLNodesFile = " & IIf(chkSplitXMLNodesFile.Value = vbChecked, "1", "0") & ", "
     End If
        
+    If optOutputFormat(fmtSQLTable).Value = True Then
+      strSQL = strSQL & "LinkedServer = '" & Replace(txtLinkedServer.Text, "'", "''") & "'," _
+              & "LinkedCatalog = '" & Replace(txtLinkedCatalog.Text, "'", "''") & "'," _
+              & "LinkedTable = '" & Replace(txtLinkedTable.Text, "'", "''") & "',"
+    End If
+       
     strSQL = strSQL & "Quotes = " & IIf(Me.chkQuotes.Value, 1, 0) & "," & _
                   "StripDelimiterFromData = " & IIf(Me.chkStripDelimiter.Value, 1, 0) & "," & _
                   "SplitFile = " & IIf(Me.chkSplitFile.Value, 1, 0) & "," & _
@@ -5316,8 +5389,9 @@ Private Function SaveDefinition() As Boolean
            "CMGExportFileCode, CMGExportUpdateAudit, CMGExportRecordID," & _
            "Parent1AllRecords, Parent1Picklist, Parent2AllRecords, Parent2Picklist, " & _
            "AuditChangesOnly, OmitHeader, ForceHeader, OutputFormat, OutputSave, " & _
-           "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFilename," & _
-           "TransformFile, XMLDataNodeName, XSDFilename, PreserveTransformPath, PreserveXSDPath, SplitXMLNodesFile) "
+           "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFilename, " & _
+           "TransformFile, XMLDataNodeName, XSDFilename, PreserveTransformPath, PreserveXSDPath, SplitXMLNodesFile, " & _
+           "LinkedServer, LinkedCatalog, LinkedTable)"
                      
     strSQL = strSQL & _
            "Values('" & _
@@ -5406,7 +5480,12 @@ Private Function SaveDefinition() As Boolean
         "'" & Replace(txtXSDFilename.Text, "'", "''") & "'," & _
         IIf(chkPreserveTransformPath.Value = vbChecked, "1", "0") & ", " & _
         IIf(chkPreserveXSDPath.Value = vbChecked, "1", "0") & ", " & _
-        IIf(chkSplitXMLNodesFile.Value = vbChecked, "1", "0") & ")"
+        IIf(chkSplitXMLNodesFile.Value = vbChecked, "1", "0") & ", "
+          
+    strSQL = strSQL & _
+      "'" & Replace(txtLinkedServer.Text, "'", "''") & "'," & _
+      "'" & Replace(txtLinkedCatalog.Text, "'", "''") & "'," & _
+      "'" & Replace(txtLinkedTable.Text, "'", "''") & "')"
           
     If IsRecordSelectionValid = False Then
       SaveDefinition = False
@@ -5722,18 +5801,6 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
     RetrieveExportDetails = False
     Exit Function
   End If
-  
-  
-  If rsTemp!OutputFormat = fmtSQLTable Then
-    'If Not mblnEnableSQLTable Then
-      COAMsgBox "This Export definition is invalid as export to SQL Table is no longer supported.", vbExclamation + vbOKOnly, "Export"
-      Set rsTemp = Nothing
-      RetrieveExportDetails = False
-      mblnDeleted = True
-      Exit Function
-    'End If
-  End If
-
 
   ' Set name, username, access etc
   If FromCopy Then
@@ -5842,54 +5909,6 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
       spnSplitFileSize.Value = IIf(IsNull(rsTemp!SplitFileSize), 0, rsTemp!SplitFileSize)
     End If
   End If
-  
-  'chkOmitHeader.Enabled = (rsTemp!OutputSaveExisting = 4) 'chkAppendToFile.Value
-  
-'  ' Set output info
-'  Select Case rsTemp!outputtype
-'
-'    Case "D"
-'      optOutputFormat(fmtCSV).Value = True
-'      txtFilename.Text = rsTemp!OutputFilename
-'      SetComboText cboDelimiter, rsTemp!delimiter
-'      grdColumns.Columns(4).ForeColor = vbWindowText
-'      grdColumns.Columns(4).HeadForeColor = vbWindowText
-''      grdColumns.Columns(4).ForeColor = vbBlack
-''      grdColumns.Columns(4).HeadForeColor = vbBlack
-'      TextOptionsStatus "D"
-'
-'    Case "F"
-'      optOutputFormat(fmtFixedLengthFile).Value = True
-'      txtFilename.Text = rsTemp!OutputFilename
-'      grdColumns.Columns(4).ForeColor = vbWindowText
-'      grdColumns.Columns(4).HeadForeColor = vbWindowText
-'      TextOptionsStatus "F"
-'
-'    Case "C"
-'      optOutputFormat(fmtCMGFile).Value = True
-'      txtFilename.Text = rsTemp!OutputFilename
-'      grdColumns.Columns(4).ForeColor = vbWindowText
-'      grdColumns.Columns(4).HeadForeColor = vbWindowText
-'      TextOptionsStatus "C"
-'
-'    Case "S"
-'      optOutputFormat(fmtSQLTable).Value = True
-'      txtSQLTableName.Text = rsTemp!OutputFilename
-'
-'      'TM20010823 Fault 2389
-'      'Could not see the text in the length column.
-'      grdColumns.Columns(4).ForeColor = vbWindowText
-'      grdColumns.Columns(4).HeadForeColor = vbWindowText
-''      grdColumns.Columns(4).ForeColor = vbButtonFace
-''      grdColumns.Columns(4).HeadForeColor = vbButtonShadow
-'      TextOptionsStatus "S"
-'
-'    Case "X"
-'      optOutputFormat(fmtExcelWorksheet).Value = True
-'      txtSQLTableName.Text = rsTemp!OutputFilename
-'      TextOptionsStatus "X"
-'
-'  End Select
 
   mblnLoading = True
 
@@ -5898,7 +5917,6 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
 
   optOutputFormat(rsTemp!OutputFormat).Value = True
   optOutputFormat_Click rsTemp!OutputFormat
-  'TextOptionsStatus rsTemp!OutputFormat
 
   chkDestination(desSave).Value = IIf(rsTemp!OutputSave, vbChecked, vbUnchecked)
   mobjOutputDef.DestinationClick desSave
@@ -5964,6 +5982,11 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   End If
 
   chkAuditChangesOnly.Value = IIf(rsTemp!AuditChangesOnly = True, vbChecked, vbUnchecked)
+
+  ' SQL Table specifics
+  If Not IsNull(rsTemp!LinkedServer) Then txtLinkedServer.Text = rsTemp!LinkedServer
+  If Not IsNull(rsTemp!LinkedCatalog) Then txtLinkedCatalog.Text = rsTemp!LinkedCatalog
+  If Not IsNull(rsTemp!LinkedTable) Then txtLinkedTable.Text = rsTemp!LinkedTable
 
   ' Set Date Format
   SetComboText cboDateFormat, rsTemp!DateFormat
@@ -7187,12 +7210,7 @@ Public Sub PrintDef(lExportID As Long)
         
         Case fmtExcelWorksheet
           .PrintNormal "Output Format : Excel Worksheet"
-        
-        'Case fmtSQLTable
-        '  .PrintNormal "Output Format : SQL Table"
-        '  .PrintNormal "Table name : " & rsTemp!OutputFilename
-        '  .PrintNormal
-        
+                
         Case fmtCMGFile
           .PrintNormal "Output Type : CMG File"
           .PrintNormal "File Export Code : " & rsTemp!CMGExportFileCode
@@ -7208,6 +7226,12 @@ Public Sub PrintDef(lExportID As Long)
           .PrintNormal "XML Transformation File : " & IIf(rsTemp!TransformFile = "", "<None>", rsTemp!TransformFile)
           .PrintNormal "XML Transformation File Preserve Path : " & IIf(rsTemp!PreserveTransformPath, "True", "False")
           .PrintNormal "Split nodes into individual files : " & IIf(rsTemp!chkSplitXMLNodesFile, "True", "False")
+
+        Case fmtSQLTable
+            .PrintNormal "Output Type : Linked Server"
+            .PrintNormal "Server : " & rsTemp!LinkedServer
+            .PrintNormal "Catalog : " & rsTemp!LinkedCatalog
+            .PrintNormal "Table : " & rsTemp!LinkedTable
 
         End Select
         
@@ -7583,7 +7607,19 @@ Private Sub ShowRelevantColumns()
     grdColumns.Columns(3).Width = lng_DataCOLUMNWIDTH
     grdColumns.Columns(6).Width = lng_AuditCOLUMNWIDTH
     grdColumns.Columns(8).Width = (lng_LengthCOLUMNWIDTH + lng_DecimalCOLUMNWIDTH) + lng_AuditCOLUMNWIDTH
+  
+  ElseIf optOutputFormat(fmtSQLTable).Value Then
+    grdColumns.Columns(4).Visible = False
+    grdColumns.Columns(5).Visible = False
+    grdColumns.Columns(6).Visible = False
+    grdColumns.Columns(7).Visible = False
+    grdColumns.Columns(8).Visible = True
     
+    lng_DataCOLUMNWIDTH = 4105.236
+    
+    grdColumns.Columns(3).Width = lng_DataCOLUMNWIDTH
+    grdColumns.Columns(8).Width = (lng_LengthCOLUMNWIDTH + lng_DecimalCOLUMNWIDTH) + lng_AuditCOLUMNWIDTH
+  
   Else
     lng_DataCOLUMNWIDTH = 5045.236
   
@@ -7684,3 +7720,7 @@ End Sub
 Private Sub txtXMLDataNodeName_Change()
   Changed = True
 End Sub
+
+
+
+

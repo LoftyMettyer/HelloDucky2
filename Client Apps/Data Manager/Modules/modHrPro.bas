@@ -1925,6 +1925,7 @@ Public Sub InitialiseModules()
   'gbCMGEnabled = datGeneral.IsCMGEnabled
   gbCMGEnabled = IsModuleEnabled(modCMG)
   gbXMLExportEnabled = IsModuleEnabled(modXMLExport)
+  gbTableExportEnabled = IsModuleEnabled(modCustomisationPowerPack)
 
   ' Payroll Integration Module
   gbAccordEnabled = IsModuleEnabled(modAccord)

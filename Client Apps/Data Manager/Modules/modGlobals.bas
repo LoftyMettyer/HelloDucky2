@@ -93,6 +93,7 @@ Public gbActivateJobServer As Boolean       ' Allow the Data Manager to run the 
 Public gbAccordEnabled As Boolean           ' Is the Payroll Transfer module enabled
 Public gbCMGEnabled As Boolean              ' Is the CMG module enabled
 Public gbXMLExportEnabled As Boolean        ' Are XML exports licensed
+Public gbTableExportEnabled As Boolean      ' Are exports direct to tables licensed
 Public gstrDefaultPrinterName As String     ' Default printer device name
 
 Public gobjErrorStack As clsErrorStack      ' Standard Error Handler

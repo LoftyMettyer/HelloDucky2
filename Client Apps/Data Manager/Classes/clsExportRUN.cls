@@ -86,6 +86,10 @@ Private mlngExportParent1PickListID As Long
 Private mlngExportParent2AllRecords As Long
 Private mlngExportParent2PickListID As Long
 
+Private mstrLinkedServer As String
+Private mstrLinkedCatalog As String
+Private mstrLinkedTable As String
+
 ' Recordsets to store the definition/column information and the final output data
 Private mrstExportDetails As New Recordset
 Private mrstExportOutput As New Recordset
@@ -690,27 +694,14 @@ Private Function GetExportDefinition() As Boolean
       mstrXMLDataNodeName = IIf(Len(mstrXMLDataNodeName) = 0, mstrExportBaseTableName, mstrXMLDataNodeName)
     End If
    
-'    'If mstrExportOutputType = "S" Then
-'    If mlngOutputFormat = fmtSQLTable Then
-'      Set rsTemp = datGeneral.GetReadOnlyRecords("SELECT TableName FROM ASRSysTables WHERE TableName = '" & mstrOutputFilename & "'")
-'      If Not (rsTemp.BOF And rsTemp.EOF) Then
-'        mstrErrorString = "A table called '" & mstrOutputFilename & "' already exists."
-'        GetExportDefinition = False
-'        Exit Function
-'      End If
-'    End If
-    If prstTemp_Definition!OutputFormat = fmtSQLTable Then
-      GetExportDefinition = False
-      mstrErrorString = "This Export definition is invalid as export to SQL Table is no longer supported."
-      prstTemp_Definition.Close
-      Set prstTemp_Definition = Nothing
-      Exit Function
-    End If
-
     mstrTransformFile = IIf(IsNull(!TransformFile), "", !TransformFile)
     mstrXSDFilename = IIf(IsNull(!XSDFilename), "", !XSDFilename)
     mbPreserveTransformPath = IIf(IsNull(!PreserveTransformPath), False, !PreserveTransformPath)
     mbPreserveXSDPath = IIf(IsNull(!PreserveXSDPath), False, !PreserveXSDPath)
+
+    mstrLinkedServer = IIf(IsNull(!LinkedServer), "", !LinkedServer)
+    mstrLinkedCatalog = IIf(IsNull(!LinkedCatalog), "", !LinkedCatalog)
+    mstrLinkedTable = IIf(IsNull(!LinkedTable), "", !LinkedTable)
 
     mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!userName)))
     mbAuditChangesOnly = IIf(IsNull(!AuditChangesOnly), False, !AuditChangesOnly)
@@ -2231,6 +2222,9 @@ Private Function ExportData() As Boolean
     Case fmtCMGFile
       ExportData = ExportData_CMGfile
 
+    Case fmtSQLTable
+      ExportData = ExportData_SQLTable
+
     Case Else
       If ReadDataIntoArray Then
         ExportData = SendArrayToOutputOptions
@@ -2725,6 +2719,53 @@ Private Function ExportData_XML() As Boolean
 
 End Function
 
+Private Function ExportData_SQLTable() As Boolean
+
+  On Error GoTo ErrorTrap
+
+  Dim rstMatchingColumns As Recordset
+  Dim sSQL As String
+  Dim bOK As Boolean
+  Dim sInsertString As String
+  
+  bOK = True
+  sInsertString = ""
+
+  sSQL = "SELECT t.Column_Name" & _
+    " FROM [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].INFORMATION_SCHEMA.COLUMNS t" & _
+    " INNER JOIN ASRSysExportDetails s ON s.Heading = t.COLUMN_NAME COLLATE DATABASE_DEFAULT" & _
+    " WHERE t.TABLE_NAME = 'People' AND s.ExportID = " & mlngExportID
+  Set rstMatchingColumns = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
+
+  With rstMatchingColumns
+    
+    If .BOF And .EOF Then
+      ExportData_SQLTable = False
+      mstrErrorString = "No matching columns found in the specified Export definition." & vbCrLf & "Please ensure your column names are correct."
+      Exit Function
+    End If
+    
+    Do Until .EOF
+      sInsertString = sInsertString & IIf(Len(sInsertString) > 0, ", ", "") & "[" & .Fields("Column_Name").Value & "]"
+      .MoveNext
+    Loop
+  End With
+
+  ' Open the export table as a recordset.
+  sSQL = "INSERT [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].dbo.[" & mstrLinkedTable & "] (" & _
+    sInsertString & ") SELECT " & sInsertString & " FROM [" & mstrTempTableName & "]"
+  mclsData.ExecuteSql sSQL
+  
+  
+TidyUpAndExit:
+  ExportData_SQLTable = bOK
+  Exit Function
+
+ErrorTrap:
+  bOK = False
+  GoTo TidyUpAndExit
+
+End Function
 
 Private Function ExportData_CMGfile() As Boolean
 

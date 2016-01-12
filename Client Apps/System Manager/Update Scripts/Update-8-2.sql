@@ -214,6 +214,15 @@ PRINT 'Step - Export additions'
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'SplitFileSize')
 		EXEC sp_executesql N'ALTER TABLE ASRSysExportName ADD SplitFileSize int;';
 
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'LinkedServer')
+		EXEC sp_executesql N'ALTER TABLE ASRSysExportName ADD LinkedServer nvarchar(255);';
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'LinkedCatalog')
+		EXEC sp_executesql N'ALTER TABLE ASRSysExportName ADD LinkedCatalog nvarchar(255);';
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'LinkedTable')
+		EXEC sp_executesql N'ALTER TABLE ASRSysExportName ADD LinkedTable nvarchar(255);';
+
 
 /* ------------------------------------------------------- */
 PRINT 'Step - Workflow additions'
