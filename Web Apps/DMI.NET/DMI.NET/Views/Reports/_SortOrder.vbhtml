@@ -6,10 +6,11 @@
 
 @Html.HiddenFor(Function(m) m.SortOrdersString, New With {.id = "txtSOAAS"})
 @Html.HiddenFor(Function(m) m.SortOrdersAvailable, New With {.id = "SortOrdersAvailable"})
+@Html.HiddenFor(Function(m) m.ReportType, New With {.id = "txtReportType"})
 
 <div id="sortOrderContainer">
 	<fieldset>
-		<legend class="fontsmalltitle">Sort Order :</legend>
+		<legend class="fontsmalltitle">Sort Order :<span></span></legend>
 
 		<div id="divSortOrderDiv" class="stretchyfill">
 			<table id="SortOrders"></table>
@@ -53,7 +54,12 @@
 		}
 
 		$(function () {
-			attachGrid();
+		    attachGrid();
+
+		    if ($("#txtReportType").val() === '@UtilityType.TalentReport') {
+		        $("#sortOrderContainer legend span").html(' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Report will always be sorted by Match Score (Descending) as the first parameter');
+		    }
+
 		})
 
 		function removeSortOrder() {

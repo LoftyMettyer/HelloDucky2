@@ -595,7 +595,7 @@
                               ElseIf iDefSelType = UtilityType.utlMatchReport Then
                                 Response.Write("Match Reports")
                               ElseIf iDefSelType = UtilityType.TalentReport Then
-                                Response.Write("Talent Reports")
+                                Response.Write("Talent Management Reports")
                                 End If
                             %>
                         </span>
@@ -726,10 +726,6 @@
 																						End If
 																						
                                                     Try
-
-                                                        If iDefSelType = UtilityType.utlCalculation Then
-                                                          Response.Write("<option value=0>None</option>")
-                                                        End If
 
                                                         For Each objTable In objSession.Tables.OrderBy(Function(t) t.Name) 'Order by table name
 																												

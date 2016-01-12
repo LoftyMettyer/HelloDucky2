@@ -40,12 +40,12 @@
 	<fieldset id="DataRecordsPermissions" class="floatleft overflowhidden width50">
 		<legend class="fontsmalltitle">Data :</legend>
 		<div class="inner">
-			<fieldset class="">
-				Base Table :
-				<select class="width70 floatright" name="BaseTableID" id="BaseTableID" onchange="requestChangeReportBaseTable(event.target);"></select>
-				<input type="hidden" id="OriginalBaseTableID" />
-				<input type="hidden" id="IsBaseTableChange" value="False" />
-			</fieldset>
+            <fieldset id="BaseTableText" class="">
+                <span>Base Table :</span>
+                <select class="width70 floatright" name="BaseTableID" id="BaseTableID" onchange="requestChangeReportBaseTable(event.target);"></select>
+                <input type="hidden" id="OriginalBaseTableID" />
+                <input type="hidden" id="IsBaseTableChange" value="False" />
+            </fieldset>
 
 			<div>
 				<fieldset id="selectiontypeallrecords" class="">
@@ -130,6 +130,11 @@
 		if ($("#txtReportType").val() == '@UtilityType.utlMailMerge') {
 			$(".displayTitleInReportHeader").hide();
 		}
+
+	    if ($("#txtReportType").val() === '@UtilityType.TalentReport') {
+	        $(".displayTitleInReportHeader").hide();
+	        $("#BaseTableText span").html('Role Table :');
+	    }
 
 		ShowHideToolsButtons();
 		EnableDisableToolsButtons();
@@ -603,7 +608,7 @@
 			resetParentDetails();
 		}
 
-	  if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge' || $("#txtReportType").val() == '@UtilityType.TalentReport') {
+	  if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge' || $("#txtReportType").val() === '@UtilityType.TalentReport') {
 			removeAllSelectedColumns(false);
 			setDefinitionAccessBasedOnSelectedCalculationColumns();
 			if ($("#txtReportType").val() == '@UtilityType.utlMailMerge') {
@@ -622,7 +627,7 @@
 			refreshCrossTabColumnsAvailable();
 		}
 
-	  if ($("#txtReportType").val() == '@UtilityType.TalentReport') {
+	  if ($("#txtReportType").val() === '@UtilityType.TalentReport') {
 	    refreshTalentReportChildTables(true);
 	  }
 

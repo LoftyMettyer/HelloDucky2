@@ -590,7 +590,7 @@ select.readonly {
 #cmdEmailGroup, #cmdCustomStart, #cmdCustomEnd,
 #cmdFilename,
 #cmdBaseStartDateCalc,#cmdBaseEndDateCalc,
-#btnGoLinkOrder, #btnGoLinkView {
+#btnGoLinkOrder, #btnGoLinkView, #cmdMatchPicklist, #cmdMatchFilter {
 	float: left;
 	padding: 2px 11px;
 }
@@ -652,7 +652,7 @@ select.readonly {
 	/*margin-bottom: -4px;*/
  }
 
-#txtBaseFilter {
+#txtBaseFilter, #txtMatchFilter {
 	margin-top: 2px;
 	float: left;
 }

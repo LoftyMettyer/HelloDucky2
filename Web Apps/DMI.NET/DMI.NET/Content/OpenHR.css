@@ -1262,7 +1262,7 @@ div.displaytable {
 
 #tabs-1 #AccessPermissions label { padding-top: 2px;}
 
-#cmdBasePicklist, #cmdBaseFilter, #cmdBaseStartDateCalc, #cmdBaseEndDateCalc {
+#cmdBasePicklist, #cmdBaseFilter, #cmdBaseStartDateCalc, #cmdBaseEndDateCalc, #cmdMatchPicklist, #cmdMatchFilter {
 	float: right;
 }
 

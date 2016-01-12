@@ -1438,7 +1438,9 @@
     <Content Include="Views\Home\util_run_bradford_factor.ascx" />
     <Content Include="Views\Home\_showChart.ascx" />
     <Content Include="custom.config.template" />
-    <Content Include="connectionStrings.config.template" />
+    <Content Include="connectionStrings.config.template">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\Reports\Util_Def_TalentReport.vbhtml" />
     <Content Include="Web.config.diagnostics">
       <SubType>Designer</SubType>
@@ -1845,6 +1847,8 @@
     <Content Include="Views\Error\PermissionsError.vbhtml" />
     <Content Include="Views\Home\util_run_message.vbhtml" />
     <Content Include="Views\Home\util_run_talentreport.ascx" />
+    <Content Include="Views\Reports\_MatchTables.vbhtml" />
+    <Content Include="Views\Reports\_OutputTalentReport.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
