@@ -104,17 +104,11 @@ Begin VB.Form frmExport
       TabPicture(5)   =   "frmExport.frx":0098
       Tab(5).ControlEnabled=   0   'False
       Tab(5).Control(0)=   "fraCMGFile"
-      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "fraDelimFile"
-      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).Control(2)=   "fraOutputDestination"
-      Tab(5).Control(2).Enabled=   0   'False
       Tab(5).Control(3)=   "fraOutputType"
-      Tab(5).Control(3).Enabled=   0   'False
       Tab(5).Control(4)=   "fraXML"
-      Tab(5).Control(4).Enabled=   0   'False
       Tab(5).Control(5)=   "fraTableOutput"
-      Tab(5).Control(5).Enabled=   0   'False
       Tab(5).ControlCount=   6
       Begin VB.Frame fraTableOutput 
          Caption         =   "Table Output Options :"
@@ -4955,7 +4949,7 @@ Private Function ValidateDefinition() As Boolean
   '  Check that a delimiter is specified if the file format is ASCII Delimited
   If optOutputFormat(fmtCSV) Then
     If cboDelimiter.Text = "<Other>" And Trim(txtDelimiter.Text) = "" Then
-      COAMsgBox "You must specify a delimiter for delimited files.", vbExclamation + vbOKOnly, "Import"
+      COAMsgBox "You must specify a delimiter for delimited files.", vbExclamation + vbOKOnly, "Export"
       ValidateDefinition = False
       Exit Function
     End If
