@@ -2734,7 +2734,7 @@ Private Function ExportData_SQLTable() As Boolean
   sSQL = "SELECT t.Column_Name" & _
     " FROM [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].INFORMATION_SCHEMA.COLUMNS t" & _
     " INNER JOIN ASRSysExportDetails s ON s.Heading = t.COLUMN_NAME COLLATE DATABASE_DEFAULT" & _
-    " WHERE t.TABLE_NAME = 'People' AND s.ExportID = " & mlngExportID
+    " WHERE t.TABLE_NAME = '" & mstrLinkedTable & "' AND s.ExportID = " & mlngExportID
   Set rstMatchingColumns = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
 
   With rstMatchingColumns
