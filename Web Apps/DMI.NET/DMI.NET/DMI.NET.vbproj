@@ -233,6 +233,7 @@
     <Compile Include="App_Start\RouteConfig.vb" />
     <Compile Include="App_Start\SettingsConfig.vb" />
     <Compile Include="App_Start\Startup.vb" />
+    <Compile Include="Code\EncryptionService.vb" />
     <Compile Include="Infrastructure\AllowJWTAccessAttribute.vb" />
     <Compile Include="Infrastructure\ClaimsAuthorizationAttribute.vb" />
     <Compile Include="Models\DefinitionSearchResultModel.vb" />

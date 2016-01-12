@@ -304,7 +304,7 @@ Namespace Controllers
 
 					claim = identity.Claims.FirstOrDefault(Function(c) c.Type = "ohr:password") ' case sensitive
 					If claim Is Nothing Then Return New HttpStatusCodeResult(HttpStatusCode.Unauthorized)
-					loginviewmodel.Password = claim.Value   ' TODO: decrypt claim.value if required (and when implemented)
+					loginviewmodel.Password = EncryptionService.DecryptString(claim.Value, vbNullString)
 
 					loginviewmodel.txtLocaleCulture = Thread.CurrentThread.CurrentCulture.ToString()
 					loginviewmodel.txtLocaleDecimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator
