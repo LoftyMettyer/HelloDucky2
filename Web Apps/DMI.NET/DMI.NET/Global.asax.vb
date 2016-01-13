@@ -69,6 +69,13 @@ Public Class MvcApplication
 			Session("ui-admin-theme") = "redmond-segoe"
 		End If
 
+		' get list of available themes
+		Dim arrThemes as new List(Of String)
+			For Each dir As String In Directory.GetDirectories(Server.MapPath("~/Content/themes/"))
+				arrThemes.Add(dir.Remove(0,Server.MapPath("~/Content/themes/").Length))
+    	Next
+		Session("ui-dynamic-themes") = arrThemes
+
 		' get the TILES theme out of web config.
 		Session("ui-tiles-theme") = ApplicationSettings.UI_Tiles_Theme
 		If Session("ui-tiles-theme") Is Nothing Or Len(Session("ui-tiles-theme")) <= 0 Then Session("ui-tiles-theme") = "start"

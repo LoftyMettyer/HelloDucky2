@@ -8,7 +8,6 @@
 		var currentFontWeight = "normal";
 		if ($(".ui-state-default").css("font-weight") > 400) currentFontWeight = "bold";
 
-
 		//Set theme editor options to existing stylesheet		
 		$("#fwDefault").val(currentFontWeight);
 		$("#fsDefault").val($(".ui-widget").css("font-size"));  //note: always shown in px :S
@@ -45,9 +44,6 @@
 
 		$("input[type=submit], input[type=button], button, input[type=file]").button();
 
-		//Apply accordion functionality
-		//$("#themeeditoraccordion").accordion({ heightStyle: "content" });
-		
 		if (window.cookieapplyWireframeTheme == "true") $('#chkAppywireframetheme').prop('checked', true);
 
 	});
@@ -123,59 +119,34 @@
 	<div class="application">
 		<div id="themeeditoraccordion" style="margin: 30px;">
 			<p>Choose a predefined theme:</p>
-			<span>Layout:<select id="cmbLayout" style="width: 150px; margin-left: 40px;" onChange="toggleCombos()"><option></option>
+			<span>Layout:<select id="cmbLayout" style="width: 150px; margin-left: 40px;" onchange="toggleCombos()"><option></option>
 				<option value="wireframe">wireframe</option>
 				<option value="winkit">winkit</option>
 				<option value="tiles">tiles</option>
 			</select></span>
-			<br />
-			<br />
-			<span>Theme:<select  id="cmbTheme" style="width: 150px; margin-left: 40px;"  onChange="toggleCombos()"><option></option>
-				<option value="ABS">ABS</option>
-				<option value="activeX">ActiveX</option>
-				<option value="black-tie">Black-Tie</option>
-				<option value="blitzer">Blitzer</option>
-				<option value="cupertino">Cupertino</option>
-				<option value="dark-hive">Dark-Hive</option>
-				<option value="dot-luv">Dot-Luv</option>
-				<option value="eggplant">Eggplant</option>
-				<option value="excite-bike">Excite-Bike</option>
-				<option value="flick">Flick</option>
-				<option value="hot-sneaks">Hot-Sneaks</option>
-				<option value="humanity">Humanity</option>
-				<option value="le-frog">le-Frog</option>
-				<option value="mint-choc">Mint-Choc</option>
-				<option value="overcast">Overcast</option>
-				<option value="pepper-grinder">Pepper-Grinder</option>
-				<option value="pink-pip">Pink-Pip</option>
-				<option value="redmond">Redmond</option>
-				<option value="redmond-segoe">Redmond-Segoe</option>
-				<option value="smoothness">Smoothness</option>
-				<option value="south-street">South-Street</option>
-				<option value="start">Start</option>
-				<option value="sunny">Sunny</option>
-				<option value="swanky-purse">Swanky-Purse</option>
-				<option value="trontastic">Trontastic</option>
-				<option value="ui-darkness">ui-Darkness</option>
-				<option value="ui-lightness">ui-Lightness</option>
-				<option value="vader">Vader</option>
+			
+			<br /><br />
+
+			<span>Theme:<select id="cmbTheme" style="width: 150px; margin-left: 40px;" onchange="toggleCombos()"><option></option>
+				<%
+					for each strTheme in Session("ui-dynamic-themes")
+						Response.Write("<OPTION VALUE = " & """" & strTheme & """" & ">" & strTheme & "</OPTION>")
+					Next
+				%>
 			</select>
-			<br />
-				
 			</span>
+			
+			<br /><br /><br />
 			<hr />
 			
-						<div id ="divSaveButtons" style="text-align:right">
-							
-								<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" onclick="saveLayoutandTheme()" />	
-								<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" onclick="themeEditor_cancelClick()"/>
-						
-								</div>
+			<div id="divSaveButtons" style="text-align: right">
+				<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" onclick="saveLayoutandTheme()" />
+				<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" onclick="themeEditor_cancelClick()" />
+			</div>
 		</div>
 	</div>
 	<%=Html.AntiForgeryToken()%>
 </form>
-<!-- /themeroller -->
 
 <script type="text/javascript">
 		themeEditor_window_onload();
