@@ -121,19 +121,6 @@ Public Class Utilities
 		End Get
 	End Property
 
-	Public Function GetBackgroundPosition() As Integer
-
-		Const sSQL As String = "SELECT DISTINCT settingValue FROM ASRSysSystemSettings WHERE section = 'desktopsetting' AND settingKey = 'bitmaplocation'"
-		With DB.GetDataTable(sSQL)
-			If .Rows.Count > 0 Then
-				Return CInt(.Rows(0)(0))
-			Else
-				Return 0
-			End If
-		End With
-
-	End Function
-
 	Public Sub OfficeInitialise(ByRef intWordVer As Short, ByRef intExcelVer As Short)
 
 		OfficeGetCommonDialogFormats("Word", intWordVer)
