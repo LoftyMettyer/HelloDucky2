@@ -711,56 +711,56 @@ Public Class clsDataTransferRun
     End Sub
 
 
-    Private Sub CreateStoredProcedure()
+	Private Sub CreateStoredProcedure()
 
-        Dim strSQL As String
-        Dim intCount As Integer
+		Dim strSQL As String
+		Dim intCount As Integer
 
-        strSQL = "/* ------------------------------------- */" & vbNewLine & "/* OpenHR Data Transfer stored procedure. */" & vbNewLine & "/* ------------------------------------- */" & vbNewLine & "CREATE PROCEDURE " & mstrProcedureName & "(@RecordID int)" & vbNewLine & "AS" & vbNewLine & "BEGIN" & vbNewLine & vbNewLine
+		strSQL = "/* ------------------------------------- */" & vbNewLine & "/* OpenHR Data Transfer stored procedure. */" & vbNewLine & "/* ------------------------------------- */" & vbNewLine & "CREATE PROCEDURE " & mstrProcedureName & "(@RecordID int)" & vbNewLine & "AS" & vbNewLine & "BEGIN" & vbNewLine & vbNewLine
 
 
-        Try
+		Try
 
-            strSQL = strSQL & "IF NOT EXISTS(SELECT ID FROM " & mstrSQLFrom & " WHERE ID = @RecordID)" & vbNewLine & "BEGIN" & vbNewLine & "  RAISERROR('Record not found', 16, 1)" & vbNewLine & "  RETURN 1" & vbNewLine & "END" & vbNewLine & vbNewLine
+			strSQL = strSQL & "IF NOT EXISTS(SELECT ID FROM " & mstrSQLFrom & " WHERE ID = @RecordID)" & vbNewLine & "BEGIN" & vbNewLine & "  RAISERROR('Record not found', 16, 1)" & vbNewLine & "  RETURN 1" & vbNewLine & "END" & vbNewLine & vbNewLine
 
-            If UBound(mstrSQLTable) > 0 Then
-                'More then one table to insert to
+			If UBound(mstrSQLTable) > 0 Then
+				'More then one table to insert to
 
-                strSQL = strSQL & "DECLARE @MaxID int" & vbNewLine & vbNewLine & "BEGIN TRANSACTION" & vbNewLine & vbNewLine
+				strSQL = strSQL & "DECLARE @MaxID int" & vbNewLine & vbNewLine & "BEGIN TRANSACTION" & vbNewLine & vbNewLine
 
-                ' JPD20030314 Fault 5159
-                strSQL = strSQL & mstrSQLTable(0) & vbNewLine & vbNewLine & "/* -------------------------------------------------- */" & vbNewLine & "/* Get max id from primary table to ensure that child */" & vbNewLine & "/* tables correctly reference the parent table        */" & vbNewLine & "/* -------------------------------------------------- */" & vbNewLine & "EXEC spASRMaxID " & Trim(Str(mlngToTableID)) & ", @MaxID OUTPUT" & vbNewLine
-                '"SELECT @MaxID = MAX(ID) FROM " & mstrGetMaxID & vbNewLine
+				' JPD20030314 Fault 5159
+				strSQL = strSQL & mstrSQLTable(0) & vbNewLine & vbNewLine & "/* -------------------------------------------------- */" & vbNewLine & "/* Get max id from primary table to ensure that child */" & vbNewLine & "/* tables correctly reference the parent table        */" & vbNewLine & "/* -------------------------------------------------- */" & vbNewLine & "EXEC spASRMaxID " & Trim(Str(mlngToTableID)) & ", @MaxID OUTPUT" & vbNewLine
+				'"SELECT @MaxID = MAX(ID) FROM " & mstrGetMaxID & vbNewLine
 
-                For intCount = 1 To UBound(mstrSQLTable)
-                    strSQL = strSQL & mstrSQLTable(intCount) & vbNewLine & vbNewLine
-                Next
+				For intCount = 1 To UBound(mstrSQLTable)
+					strSQL = strSQL & mstrSQLTable(intCount) & vbNewLine & vbNewLine
+				Next
 
-                strSQL = strSQL & "COMMIT TRANSACTION" & vbNewLine & vbNewLine
+				strSQL = strSQL & "COMMIT TRANSACTION" & vbNewLine & vbNewLine
 
-            Else
-                'Simple insert on a single table
-                strSQL = strSQL & mstrSQLTable(0) & vbNewLine & vbNewLine
+			Else
+				'Simple insert on a single table
+				strSQL = strSQL & mstrSQLTable(0) & vbNewLine & vbNewLine
 
-            End If
+			End If
 
-            strSQL = strSQL & "END"
-            DB.ExecuteSql(strSQL)
+			strSQL = strSQL & "END"
+			DB.ExecuteSql(strSQL)
 
-        Catch ex As Exception
-            mstrStatusMessage = "Error creating stored procedure"
-            fOK = False
+		Catch ex As Exception
+			mstrStatusMessage = "Error creating stored procedure"
+			fOK = False
 
-        End Try
+		End Try
 
-    End Sub
+	End Sub
 
 
 	Private Sub ProcessRecords()
 
 		Dim rsRecords As DataTable
 		Dim strSQL As String
-		Dim strRecordError As String
+		Dim strRecordError = ""
 
 		rsRecords = GetRecordIDs()
 
@@ -775,6 +775,7 @@ Public Class clsDataTransferRun
 
 			Try
 
+				strRecordError = GetDataTransferRecordDesc(CInt(objRow("ID")), mlngRecordDescExprID)
 				Dim prmNewID = New SqlParameter("@piNewRecordID", SqlDbType.Int) With {.Value = 0, .Direction = ParameterDirection.Output}
 				strSQL = "EXEC " & mstrProcedureName & " " & objRow("ID").ToString
 
@@ -785,20 +786,15 @@ Public Class clsDataTransferRun
 				mlngSuccessCount = mlngSuccessCount + 1
 
 				If mbLoggingDTSuccess Then
-					strRecordError =  GetDataTransferRecordDesc(CInt(objRow("ID")),mlngRecordDescExprID  ) & " -- transferred successfully"
-					Call Logs.AddDetailEntry(strRecordError)
+					Call Logs.AddDetailEntry(strRecordError & " -- transferred successfully")
 				End If
 
 			Catch sqlexception As SqlException
-
-				strRecordError = GetDataTransferRecordDesc(CInt(objRow("ID")), mlngRecordDescExprID) & vbNewLine & vbNewLine & sqlexception.Errors(0).Message
-				Call Logs.AddDetailEntry(strRecordError)
+				Call Logs.AddDetailEntry(strRecordError & vbNewLine & vbNewLine & sqlexception.Errors(0).Message)
 				mlngFailCount += 1
 
 			Catch ex As Exception
-
-				strRecordError = GetDataTransferRecordDesc(CInt(objRow("ID")), mlngRecordDescExprID) & vbNewLine & vbNewLine & ex.Message
-				Call Logs.AddDetailEntry(strRecordError)
+				Call Logs.AddDetailEntry(strRecordError & vbNewLine & vbNewLine & ex.Message)
 				mlngFailCount += 1
 
 			End Try
@@ -808,7 +804,7 @@ Public Class clsDataTransferRun
 	End Sub
 
 
-    Private Function GetRecordIDs() As DataTable
+	Private Function GetRecordIDs() As DataTable
 
         Dim objTableView As TablePrivilege
         Dim rsTemp As DataTable
