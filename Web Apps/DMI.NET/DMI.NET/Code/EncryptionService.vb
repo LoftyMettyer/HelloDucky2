@@ -17,7 +17,7 @@ Namespace Code
 
 			Dim initVectorBytes As Byte() = Encoding.UTF8.GetBytes(initVector)
 			Dim plainTextBytes As Byte() = Encoding.UTF8.GetBytes(plainText)
-			Dim password As New PasswordDeriveBytes(passPhrase, Nothing)
+			Dim password As New Rfc2898DeriveBytes(passPhrase, initVectorBytes)
 			Dim keyBytes As Byte() = password.GetBytes(Keysize / 8)
 			Dim symmetricKey As New RijndaelManaged()
 			symmetricKey.Mode = CipherMode.CBC
@@ -39,7 +39,7 @@ Namespace Code
 
 			Dim initVectorBytes As Byte() = Encoding.ASCII.GetBytes(InitVector)
 			Dim cipherTextBytes As Byte() = Convert.FromBase64String(cipherText)
-			Dim password As New PasswordDeriveBytes(passPhrase, Nothing)
+			Dim password As New Rfc2898DeriveBytes(passPhrase, initVectorBytes)
 			Dim keyBytes As Byte() = password.GetBytes(Keysize / 8)
 			Dim symmetricKey As New RijndaelManaged()
 			symmetricKey.Mode = CipherMode.CBC

@@ -281,35 +281,40 @@ Namespace Controllers
 				Session("isPortalLogin") = False
 
 				If linkRef Is Nothing Then
+					Try
 
-					Dim identity = TryCast(User.Identity, ClaimsIdentity)
+						Dim identity = TryCast(User.Identity, ClaimsIdentity)
 
-					' NB: identity.IsAuthenticated does not mean openHR authenticated.
-					If Not identity.IsAuthenticated Then 'Return New HttpStatusCodeResult(HttpStatusCode.Unauthorized)
-						Dim objErrors = New ViewModels.Account.ConfigurationErrorsModel
-						objErrors.Errors.Add(New ConfigurationError With {.Code = "0001",
+						' NB: identity.IsAuthenticated does not mean openHR authenticated.
+						If Not identity.IsAuthenticated Then
+							Dim objErrors = New ViewModels.Account.ConfigurationErrorsModel
+							objErrors.Errors.Add(New ConfigurationError With {.Code = "0001",
 																				.Message = "Authorization failed",
 																				.Detail = ""})
-						Return View("~/views/error/PermissionsError.vbhtml", objErrors)
-					End If
+							Return View("~/views/error/PermissionsError.vbhtml", objErrors)
+						End If
 
-					If portalRedirectTo = "testlogin" Then Return Json(User.Identity.Name, JsonRequestBehavior.AllowGet)
+						If portalRedirectTo = "testlogin" Then Return Json(User.Identity.Name, JsonRequestBehavior.AllowGet)
 
+						loginviewmodel = New LoginViewModel()
 
-					loginviewmodel = New LoginViewModel()
+						Dim claim As Claim = identity.Claims.FirstOrDefault(Function(c) c.Type = "ohr:username")    ' case sensitive
+						If claim Is Nothing Then Return New HttpStatusCodeResult(HttpStatusCode.Unauthorized)
+						loginviewmodel.UserName = claim.Value
 
-					Dim claim As Claim = identity.Claims.FirstOrDefault(Function(c) c.Type = "ohr:username")    ' case sensitive
-					If claim Is Nothing Then Return New HttpStatusCodeResult(HttpStatusCode.Unauthorized)
-					loginviewmodel.UserName = claim.Value
+						claim = identity.Claims.FirstOrDefault(Function(c) c.Type = "ohr:password") ' case sensitive
+						If claim Is Nothing Then Return New HttpStatusCodeResult(HttpStatusCode.Unauthorized)
+						loginviewmodel.Password = EncryptionService.DecryptString(claim.Value, vbNullString)
 
-					claim = identity.Claims.FirstOrDefault(Function(c) c.Type = "ohr:password") ' case sensitive
-					If claim Is Nothing Then Return New HttpStatusCodeResult(HttpStatusCode.Unauthorized)
-					loginviewmodel.Password = EncryptionService.DecryptString(claim.Value, vbNullString)
+						loginviewmodel.txtLocaleCulture = Thread.CurrentThread.CurrentCulture.ToString()
+						loginviewmodel.txtLocaleDecimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator
+						loginviewmodel.txtLocaleThousandSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator
+						Session("isPortalLogin") = True
 
-					loginviewmodel.txtLocaleCulture = Thread.CurrentThread.CurrentCulture.ToString()
-					loginviewmodel.txtLocaleDecimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator
-					loginviewmodel.txtLocaleThousandSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator
-					Session("isPortalLogin") = True
+					Catch ex As Exception
+						Return New HttpStatusCodeResult(400, "Incorrect details.")
+
+					End Try
 
 				Else
 
