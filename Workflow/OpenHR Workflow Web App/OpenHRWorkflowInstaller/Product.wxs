@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+	 xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension"
+	 xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+	 xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+
+	<!-- Define variables -->
+	<?define publishDir="..\OpenHRWorkflow\obj\Release\Package\PackageTmp\"?>
+	<?define MyWebResourceDir="."?>
+	<?define OpenHRWorkflow_DLL="..\OpenHRWorkflow\obj\Release\OpenHRWorkflow.dll"?>
+	<?define MajorAndMinorProductVersion="$(fileVersion.MajorAndMinorProductVersion($(var.OpenHRWorkflow_DLL)))"?>	
+	<?define FullProductVersion="$(fileVersion.FullProductVersion($(var.OpenHRWorkflow_DLL)))"?>
+
+	<Product Id="*"
+		 Name="OpenHR Workflow Web Site $(var.MajorAndMinorProductVersion)"
+		 Language="1033"
+		 Version="$(var.FullProductVersion)"
+		 Manufacturer="Advanced Computer Software"
+		 UpgradeCode="{136FAEC5-B444-4C24-A6D1-35CC864F5F1B}" >
+
+		<Package Id="0F659B6E-66F0-454D-AEE6-988659D82C23" InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<Media Id="1" Cabinet="OpenHRWorkflowInstaller.cab" EmbedCab="yes" />
+
+		<!-- Application icon -->
+		<Icon Id="COA_Icon" SourceFile="COA.ico" />
+		<Property Id="ARPPRODUCTICON" Value="COA_Icon" />
+
+		<!-- Configurable install location -->
+		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
+
+		<!-- Set some properties for the MSI installer -->
+		<Property Id="ARPHELPLINK">http://webfirst.advancedcomputersoftware.com</Property> <!-- This property appears as the "Help link" in the "Programs and Features" Windows screen -->
+		<Property Id="ARPURLINFOABOUT">http://www.advancedcomputersoftware.com/abs</Property> <!-- This property appears as the "Support link" in the "Programs and Features" Windows screen -->
+		
+		<!-- Creating directories -->
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="WindowsVolume" Name="WindowsVolume">
+				<Directory Id="INETPUB" Name="Inetpub" ComponentGuidGenerationSeed="AA2947F48AF64C0DBB4A852C78F50D6E">
+					<Directory Id="WWWROOT" Name="wwwroot" ComponentGuidGenerationSeed="1CC8B5398CBE420CBE6FBFB702B1CAA9">
+						<!-- This is the folder where the website content will be located -->
+						<Directory Id="INSTALLLOCATION" Name="OpenHRWorkflow" ComponentGuidGenerationSeed="9043A1FAFBB0448994F411A58269E43A">
+						</Directory>
+					</Directory>
+				</Directory>
+			</Directory>
+		</Directory>
+
+		<!-- Complete feature which will be installed. -->
+		<Feature Id="Complete"
+						 Title="OpenHRWorkflow"
+						 Level="1"
+						 Display="expand"
+						 ConfigurableDirectory="INSTALLLOCATION">
+
+			<!-- Main content of the Complete feature. -->
+			<Feature Id="MainContent"
+					 Title="OpenHRWorkflow"
+					 Description="The website content"
+					 Level="1">
+
+				<!-- Include IIS Configuration. -->
+				<ComponentGroupRef Id="WebIssConfiguration" />
+
+				<!-- Include web content. -->
+				<ComponentGroupRef Id="OpenHRWorkflow_Project" />
+
+				<!-- Perform changes in the custom.config.template file. -->
+				<ComponentRef Id="ConnectionStringsConfigOperations" />
+
+			</Feature>
+		</Feature>
+
+		<DirectoryRef Id="INSTALLLOCATION">
+			<!-- Component handling the custom.config.template -->
+			<Component Id="ConnectionStringsConfigOperations" Guid="">
+				<!-- Copy custom.config.template to website folder. -->
+				<File Id="CustomConfigFile" KeyPath="yes" Source="$(var.publishDir)\connectionStrings.config.template" Vital="yes" />
+			</Component>
+		</DirectoryRef>
+
+		<!-- Check if IIS is installed -->
+		<PropertyRef Id="IISMAJORVERSION" />
+		<Condition Message="OpenHR Workflow Web Site requires IIS 7 or above; as part of the IIS installation, if the Server is Microsoft Server 2008, please also install support for ASP.NET; if the Server is Microsoft Server 2012, make sure ASP.NET 3.5 and ASP.NET 4.5 are also installed">
+			<![CDATA[Installed OR (IISMAJORVERSION AND (IISMAJORVERSION = "#7" OR IISMAJORVERSION = "#8"))]]>
+		</Condition>
+
+		<!-- Check if .NET 4.5.1 is installed -->
+		<PropertyRef Id="NETFRAMEWORK45" />
+		<Condition Message="OpenHR Workflow Web Site requires .NET Framework 4.5.1. Please download it from http://www.microsoft.com/en-gb/download/details.aspx?id=40779">
+			<![CDATA[Installed OR NETFRAMEWORK45]]>
+		</Condition>
+
+		<Property Id="SQLCLIENT10INSTALLED" Value="0">
+			<RegistrySearch Id="SQLClient10Installed"
+											Key="SOFTWARE\Microsoft\Microsoft SQL Server Native Client 10.0"
+											Name="CurrentVersion"
+											Root="HKLM"
+											Type="raw" />
+		</Property>
+		<Property Id="SQLCLIENT11INSTALLED" Value="0">
+			<RegistrySearch Id="SQLClient11Installed"
+											Key="SOFTWARE\Microsoft\Microsoft SQL Server Native Client 11.0"
+											Name="CurrentVersion"
+											Root="HKLM"
+											Type="raw" />
+		</Property>
+		<Condition Message="OpenHR Workflow Web Site requires SQL Server client; please install it and then re-run the OpenHR Workflow Web Site setup">
+			<![CDATA[Installed OR (SQLCLIENT10INSTALLED > "#0" OR SQLCLIENT11INSTALLED > "#0"]]>
+		</Condition>
+
+		<!-- License -->
+		<!--<WixVariable Id="WixUILicenseRtf" Value="$(var.MyWebResourceDir)\License.rtf" />-->
+
+		<!-- Images for the UI -->
+		<WixVariable Id="WixUIBannerBmp" Value="COA_Logo_Small.jpg" />
+		<WixVariable Id="WixUIDialogBmp" Value="COA_Background.jpg" />
+		
+		<!-- Specify UI -->
+		<UIRef Id="WixUI_OpenHRWorkflow" />
+
+		<!-- Upgrade settings -->
+		<MajorUpgrade
+			Schedule="afterInstallInitialize"
+			DowngradeErrorMessage="A newer version of [ProductName] is already installed. Setup will now exit." />
+
+		<!-- Set the installation directory to the value entered by the user -->
+		<SetDirectory Id="INSTALLLOCATION" Value="[WWWROOT][VIRTUAL_DIR_VAL]" Sequence="execute" />
+	</Product>
+</Wix>

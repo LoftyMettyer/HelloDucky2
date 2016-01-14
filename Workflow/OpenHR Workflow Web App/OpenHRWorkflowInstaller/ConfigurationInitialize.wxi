@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+	<!-- Virtual directory name -->
+	<Property Id="VIRTUAL_DIR_VAL" Value="OpenHRWorkflow" />
+
+	<!-- Website pool name -->
+	<Property Id="POOL_NAME" Value="DefaultAppPool" />
+</Include>
