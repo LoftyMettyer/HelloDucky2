@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>3.10</ProductVersion>
+    <ProjectGuid>178ab263-c771-41fc-a1b4-6087d112f6a7</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>OpenHR Workflow Website installer</OutputName>
+    <OutputType>Package</OutputType>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug</DefineConstants>
+    <SuppressPdbOutput>True</SuppressPdbOutput>
+    <SuppressValidation>True</SuppressValidation>
+    <CompilerAdditionalOptions>-ext "..\OpenHRWorkflow Wix Extensions\bin\Release\OpenHRWorkflow Wix Extensions.dll"</CompilerAdditionalOptions>
+    <LinkerAdditionalOptions>-ext "..\OpenHRWorkflow Wix Extensions\bin\Release\OpenHRWorkflow Wix Extensions.dll"</LinkerAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <SuppressValidation>True</SuppressValidation>
+    <SuppressPdbOutput>True</SuppressPdbOutput>
+    <CompilerAdditionalOptions>-ext "..\OpenHRWorkflow Wix Extensions\bin\Release\OpenHRWorkflow Wix Extensions.dll"</CompilerAdditionalOptions>
+    <LinkerAdditionalOptions>-ext "..\OpenHRWorkflow Wix Extensions\bin\Release\OpenHRWorkflow Wix Extensions.dll"</LinkerAdditionalOptions>
+    <SuppressValidation>True</SuppressValidation>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="IisConfiguration.wxs" />
+    <Compile Include="OpenHRWorkflow.wxs" />
+    <Compile Include="Product.wxs" />
+    <Compile Include="UIDialogs.wxs" />
+    <Compile Include="WixUI_OpenHRWorkflow.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AdvancedPrivateCertificate.pfx" />
+    <Content Include="COA.ico" />
+    <Content Include="COA_Background.jpg" />
+    <Content Include="COA_Logo_Small.jpg" />
+    <Content Include="ConfigurationInitialize.wxi" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenHRWorkflow\OpenHRWorkflow.vbproj">
+      <Name>OpenHRWorkflow</Name>
+      <Project>{fc85112c-ff7d-4539-8f0c-785c8aa08ad6}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>
+      </RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+      <WebProject>True</WebProject>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="WixUtilExtension">
+      <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
+      <Name>WixUtilExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixUIExtension">
+      <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
+      <Name>WixUIExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixNetFxExtension">
+      <HintPath>$(WixExtDir)\WixNetFxExtension.dll</HintPath>
+      <Name>WixNetFxExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixIIsExtension">
+      <HintPath>$(WixExtDir)\WixIIsExtension.dll</HintPath>
+      <Name>WixIIsExtension</Name>
+    </WixExtension>
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+  <Target Name="BeforeBuild">
+    <MSBuild Projects="%(ProjectReference.FullPath)" Targets="Package" Properties="Configuration=$(Configuration);Platform=AnyCPU" Condition="'%(ProjectReference.WebProject)'=='True'" />
+    <ItemGroup>
+      <LinkerBindInputPaths Include="%(ProjectReference.RootDir)%(ProjectReference.Directory)obj\$(Configuration)\Package\PackageTmp\" />
+    </ItemGroup>
+    <HeatDirectory OutputFile="%(ProjectReference.Filename).wxs" Directory="%(ProjectReference.RootDir)%(ProjectReference.Directory)obj\$(Configuration)\Package\PackageTmp\" DirectoryRefId="INSTALLLOCATION" ComponentGroupName="%(ProjectReference.Filename)_Project" AutogenerateGuids="true" SuppressCom="true" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" ToolPath="$(WixToolPath)" Condition="'%(ProjectReference.WebProject)'=='True'" />
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>"c:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /f "$(ProjectDir)AdvancedPrivateCertificate.pfx" /p fowler /t http://timestamp.verisign.com/scripts/timstamp.dll /d "$(TargetFileName)" "$(TargetDir)$(TargetFileName)"</PostBuildEvent>
+  </PropertyGroup>
+</Project>
