@@ -4108,12 +4108,15 @@ Private Sub txtPrompt_GotFocus()
 End Sub
 
 Private Sub txtText_Change()
-  'txtLinkSeparator.Text = Text
-  
   If Not mfLoading Then
+    If InStr(txtText.Text, "'") > 0 Then
+      MsgBox "This Link Text cannot contain apostrophes.", vbOKOnly + vbExclamation, Application.Name
+      txtText.SetFocus
+    End If
+
     mfChanged = True
     RefreshControls
-  End If
+ End If
 End Sub
 
 Private Sub txtText_GotFocus()
