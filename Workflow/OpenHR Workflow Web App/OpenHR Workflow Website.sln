@@ -66,15 +66,19 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 1
+		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
 		SccProjectUniqueName0 = OpenHRWorkflow\\OpenHRWorkflow.vbproj
-		SccProjectName0 = .
-		SccAuxPath0 = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath0 = .
-		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccProjectFilePathRelativizedFromConnection0 = OpenHRWorkflow\\
+		SccProjectUniqueName1 = OpenHRWorkflowInstaller\\OpenHRWorkflowInstaller.wixproj
+		SccProjectName1 = OpenHRWorkflowInstaller
+		SccLocalPath1 = OpenHRWorkflowInstaller
+		SccLocalPath2 = .
+		SccProjectUniqueName3 = OpenHRWorkflow\u0020Wix\u0020Extensions\\OpenHRWorkflow\u0020Wix\u0020Extensions.vbproj
+		SccProjectName3 = OpenHRWorkflow\u0020Wix\u0020Extensions
+		SccLocalPath3 = OpenHRWorkflow\u0020Wix\u0020Extensions
 	EndGlobalSection
 	GlobalSection(TextTemplating) = postSolution
 		TextTemplating = 1
