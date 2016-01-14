@@ -225,6 +225,20 @@ PRINT 'Step - Export additions'
 
 
 /* ------------------------------------------------------- */
+PRINT 'Step - Import additions'
+/* ------------------------------------------------------- */
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysImportName', 'U') AND name = 'LinkedServer')
+		EXEC sp_executesql N'ALTER TABLE ASRSysImportName ADD LinkedServer nvarchar(255);';
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysImportName', 'U') AND name = 'LinkedCatalog')
+		EXEC sp_executesql N'ALTER TABLE ASRSysImportName ADD LinkedCatalog nvarchar(255);';
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysImportName', 'U') AND name = 'LinkedTable')
+		EXEC sp_executesql N'ALTER TABLE ASRSysImportName ADD LinkedTable nvarchar(255);';
+
+
+/* ------------------------------------------------------- */
 PRINT 'Step - Workflow additions'
 /* ------------------------------------------------------- */
 

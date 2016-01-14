@@ -1,15 +1,15 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmImport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Import Definition"
-   ClientHeight    =   5490
+   ClientHeight    =   6300
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   9915
+   ClientWidth     =   9900
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -26,18 +26,18 @@ Begin VB.Form frmImport
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   5490
-   ScaleWidth      =   9915
+   ScaleHeight     =   6300
+   ScaleWidth      =   9900
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin TabDlg.SSTab tabImport 
-      Height          =   4755
-      Left            =   90
-      TabIndex        =   51
-      Top             =   90
+      Height          =   5625
+      Left            =   105
+      TabIndex        =   46
+      Top             =   75
       Width           =   9705
       _ExtentX        =   17119
-      _ExtentY        =   8387
+      _ExtentY        =   9922
       _Version        =   393216
       Style           =   1
       TabHeight       =   520
@@ -62,27 +62,102 @@ Begin VB.Form frmImport
       TabPicture(1)   =   "frmImport.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraColumns"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "O&ptions"
       TabPicture(2)   =   "frmImport.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraOptions"
-      Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraFileDetails"
-      Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).ControlCount=   2
+      Tab(2).Control(0)=   "fraSource"
+      Tab(2).Control(1)=   "fraOptions"
+      Tab(2).Control(2)=   "fraTableDetails"
+      Tab(2).Control(3)=   "fraFileDetails"
+      Tab(2).ControlCount=   4
+      Begin VB.Frame fraSource 
+         Caption         =   "Data Source :"
+         Height          =   1485
+         Left            =   -74850
+         TabIndex        =   53
+         Top             =   400
+         Width           =   9400
+         Begin VB.CommandButton cmdFilter 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   4650
+            TabIndex        =   62
+            Top             =   960
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.OptionButton optAllRecords 
+            Caption         =   "&All"
+            Height          =   195
+            Left            =   1575
+            TabIndex        =   61
+            Top             =   705
+            Value           =   -1  'True
+            Width           =   800
+         End
+         Begin VB.OptionButton optFilter 
+            Caption         =   "&Filter"
+            Height          =   315
+            Left            =   1575
+            TabIndex        =   60
+            Top             =   960
+            Width           =   800
+         End
+         Begin VB.TextBox txtFilter 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   2400
+            Locked          =   -1  'True
+            TabIndex        =   56
+            Tag             =   "0"
+            Top             =   960
+            Width           =   2250
+         End
+         Begin VB.ComboBox cboFileFormat 
+            Height          =   315
+            ItemData        =   "frmImport.frx":0060
+            Left            =   2415
+            List            =   "frmImport.frx":0062
+            Style           =   2  'Dropdown List
+            TabIndex        =   54
+            Top             =   285
+            Width           =   2550
+         End
+         Begin VB.Label lblFileRecords 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Filter :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   63
+            Top             =   705
+            Width           =   555
+         End
+         Begin VB.Label lblFileType 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Format :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   55
+            Top             =   345
+            Width           =   900
+         End
+      End
       Begin VB.Frame fraInformation 
          Height          =   2355
          Left            =   150
-         TabIndex        =   54
+         TabIndex        =   47
          Top             =   400
-         Width           =   9180
+         Width           =   9405
          Begin VB.TextBox txtUserName 
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            Left            =   5625
+            Left            =   5805
             MaxLength       =   30
             TabIndex        =   4
             Top             =   300
@@ -116,7 +191,7 @@ Begin VB.Form frmImport
          End
          Begin SSDataWidgets_B.SSDBGrid grdAccess 
             Height          =   1485
-            Left            =   5625
+            Left            =   5805
             TabIndex        =   5
             Top             =   705
             Width           =   3405
@@ -139,7 +214,7 @@ Begin VB.Form frmImport
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmImport.frx":0060
+            stylesets(0).Picture=   "frmImport.frx":0064
             stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
@@ -153,7 +228,7 @@ Begin VB.Form frmImport
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmImport.frx":007C
+            stylesets(1).Picture=   "frmImport.frx":0080
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -231,8 +306,8 @@ Begin VB.Form frmImport
             BackStyle       =   0  'Transparent
             Caption         =   "Owner :"
             Height          =   195
-            Left            =   4770
-            TabIndex        =   59
+            Left            =   4950
+            TabIndex        =   52
             Top             =   360
             Width           =   810
          End
@@ -242,7 +317,7 @@ Begin VB.Form frmImport
             Caption         =   "Name :"
             Height          =   195
             Left            =   195
-            TabIndex        =   58
+            TabIndex        =   51
             Top             =   360
             Width           =   690
          End
@@ -252,7 +327,7 @@ Begin VB.Form frmImport
             Caption         =   "Description :"
             Height          =   195
             Left            =   195
-            TabIndex        =   57
+            TabIndex        =   50
             Top             =   1155
             Width           =   1080
          End
@@ -261,8 +336,8 @@ Begin VB.Form frmImport
             BackStyle       =   0  'Transparent
             Caption         =   "Access :"
             Height          =   195
-            Left            =   4770
-            TabIndex        =   56
+            Left            =   4950
+            TabIndex        =   49
             Top             =   765
             Width           =   825
          End
@@ -270,16 +345,16 @@ Begin VB.Form frmImport
             Caption         =   "Category :"
             Height          =   240
             Left            =   195
-            TabIndex        =   55
+            TabIndex        =   48
             Top             =   765
             Width           =   1005
          End
       End
       Begin VB.Frame fraColumns 
-         Height          =   4170
+         Height          =   5055
          Left            =   -74850
          TabIndex        =   8
-         Top             =   405
+         Top             =   400
          Width           =   9400
          Begin VB.CommandButton cmdMoveDown 
             Caption         =   "Move Do&wn"
@@ -335,7 +410,7 @@ Begin VB.Form frmImport
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid grdColumns 
-            Height          =   3405
+            Height          =   4590
             Left            =   210
             TabIndex        =   9
             Top             =   315
@@ -358,7 +433,7 @@ Begin VB.Form frmImport
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmImport.frx":0098
+            stylesets(0).Picture=   "frmImport.frx":009C
             stylesets(1).Name=   "ssetActive"
             stylesets(1).ForeColor=   16777215
             stylesets(1).BackColor=   8388608
@@ -372,7 +447,7 @@ Begin VB.Form frmImport
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmImport.frx":00B4
+            stylesets(1).Picture=   "frmImport.frx":00B8
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -455,7 +530,7 @@ Begin VB.Form frmImport
             Columns(7).Style=   2
             TabNavigation   =   1
             _ExtentX        =   13361
-            _ExtentY        =   6006
+            _ExtentY        =   8096
             _StockProps     =   79
             BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -477,70 +552,173 @@ Begin VB.Form frmImport
             EndProperty
          End
       End
+      Begin VB.Frame fraOptions 
+         Caption         =   "Records :"
+         Height          =   1335
+         Left            =   -74850
+         TabIndex        =   35
+         Top             =   4125
+         Width           =   9400
+         Begin VB.Frame Frame1 
+            BorderStyle     =   0  'None
+            Caption         =   "Frame1"
+            Height          =   1110
+            Left            =   5550
+            TabIndex        =   43
+            Top             =   120
+            Width           =   3600
+            Begin VB.OptionButton optDontUpdateAny 
+               Caption         =   "Update &None"
+               Height          =   195
+               Left            =   1320
+               TabIndex        =   41
+               Top             =   825
+               Width           =   2430
+            End
+            Begin VB.OptionButton optUpdateAll 
+               Caption         =   "&Update All"
+               Height          =   195
+               Left            =   1320
+               TabIndex        =   40
+               Top             =   510
+               Value           =   -1  'True
+               Width           =   1845
+            End
+            Begin VB.Label lblDupRecordsReturned 
+               AutoSize        =   -1  'True
+               BackStyle       =   0  'Transparent
+               Caption         =   "If key field(s) return multiple records :"
+               Height          =   195
+               Left            =   -15
+               TabIndex        =   39
+               Top             =   195
+               Width           =   3330
+            End
+         End
+         Begin VB.OptionButton optImportType 
+            Caption         =   "Create new records onl&y (ignore key fields on base table)"
+            Height          =   195
+            Index           =   0
+            Left            =   240
+            TabIndex        =   38
+            Top             =   945
+            Width           =   5760
+         End
+         Begin VB.OptionButton optImportType 
+            Caption         =   "Update &records and create new where not matched"
+            Height          =   195
+            Index           =   2
+            Left            =   240
+            TabIndex        =   36
+            Top             =   315
+            Value           =   -1  'True
+            Width           =   4815
+         End
+         Begin VB.OptionButton optImportType 
+            Caption         =   "Update &existing records only"
+            Height          =   195
+            Index           =   1
+            Left            =   240
+            TabIndex        =   37
+            Top             =   630
+            Width           =   3375
+         End
+      End
+      Begin VB.Frame fraData 
+         Caption         =   "Data :"
+         Height          =   2565
+         Left            =   150
+         TabIndex        =   0
+         Top             =   2895
+         Width           =   9405
+         Begin VB.ComboBox cboBaseTable 
+            Height          =   315
+            Left            =   1620
+            Style           =   2  'Dropdown List
+            TabIndex        =   7
+            Top             =   360
+            Width           =   3000
+         End
+         Begin VB.Label lblBaseTable 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Base Table :"
+            Height          =   195
+            Left            =   225
+            TabIndex        =   6
+            Top             =   420
+            Width           =   885
+         End
+      End
+      Begin VB.Frame fraTableDetails 
+         Caption         =   "Source Table :"
+         Height          =   2070
+         Left            =   -74850
+         TabIndex        =   64
+         Top             =   1965
+         Width           =   9400
+         Begin VB.TextBox txtLinkedServer 
+            Height          =   315
+            Left            =   1620
+            TabIndex        =   57
+            Top             =   315
+            Width           =   3350
+         End
+         Begin VB.TextBox txtLinkedCatalog 
+            Height          =   315
+            Left            =   1620
+            TabIndex        =   58
+            Top             =   750
+            Width           =   3350
+         End
+         Begin VB.TextBox txtLinkedTable 
+            Height          =   315
+            Left            =   1620
+            TabIndex        =   59
+            Top             =   1200
+            Width           =   3350
+         End
+         Begin VB.Label lblLinkedServer 
+            Caption         =   "Server :"
+            Height          =   300
+            Left            =   255
+            TabIndex        =   67
+            Top             =   390
+            Width           =   1365
+         End
+         Begin VB.Label lblLinkedCatalog 
+            Caption         =   "Catalog :"
+            Height          =   255
+            Left            =   255
+            TabIndex        =   66
+            Top             =   825
+            Width           =   1170
+         End
+         Begin VB.Label lblLinkedTable 
+            Caption         =   "Table :"
+            Height          =   165
+            Left            =   255
+            TabIndex        =   65
+            Top             =   1275
+            Width           =   960
+         End
+      End
       Begin VB.Frame fraFileDetails 
          Caption         =   "File :"
-         Height          =   2775
+         Height          =   2070
          Left            =   -74850
          TabIndex        =   16
-         Top             =   405
+         Top             =   1965
          Width           =   9400
-         Begin VB.ComboBox cboFileFormat 
-            Height          =   315
-            ItemData        =   "frmImport.frx":00D0
-            Left            =   2400
-            List            =   "frmImport.frx":00D2
-            Style           =   2  'Dropdown List
-            TabIndex        =   53
-            Top             =   300
-            Width           =   2550
-         End
-         Begin VB.TextBox txtFilter 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   2400
-            Locked          =   -1  'True
-            TabIndex        =   52
-            Tag             =   "0"
-            Top             =   2215
-            Width           =   2250
-         End
          Begin VB.ComboBox cboDateSeparator 
             Height          =   315
             ItemData        =   "frmImport.frx":00D4
             Left            =   6795
             List            =   "frmImport.frx":00E4
             Style           =   2  'Dropdown List
-            TabIndex        =   39
+            TabIndex        =   34
             Top             =   1500
             Width           =   1275
-         End
-         Begin VB.OptionButton optFilter 
-            Caption         =   "&Filter"
-            Height          =   315
-            Left            =   1470
-            TabIndex        =   27
-            Top             =   2215
-            Width           =   800
-         End
-         Begin VB.OptionButton optAllRecords 
-            Caption         =   "&All"
-            Height          =   195
-            Left            =   1470
-            TabIndex        =   26
-            Top             =   1960
-            Value           =   -1  'True
-            Width           =   800
-         End
-         Begin VB.CommandButton cmdFilter 
-            Caption         =   "..."
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   4650
-            TabIndex        =   28
-            Top             =   2215
-            UseMaskColor    =   -1  'True
-            Width           =   330
          End
          Begin VB.ComboBox cboDelimiter 
             Height          =   315
@@ -548,7 +726,7 @@ Begin VB.Form frmImport
             Left            =   6795
             List            =   "frmImport.frx":0106
             Style           =   2  'Dropdown List
-            TabIndex        =   30
+            TabIndex        =   25
             Top             =   300
             Width           =   1275
          End
@@ -557,18 +735,17 @@ Begin VB.Form frmImport
             Enabled         =   0   'False
             Height          =   315
             Left            =   2400
-            Locked          =   -1  'True
-            TabIndex        =   19
+            TabIndex        =   18
             TabStop         =   0   'False
-            Top             =   700
+            Top             =   300
             Width           =   2250
          End
          Begin VB.CommandButton cmdFilename 
             Caption         =   "..."
             Height          =   315
             Left            =   4650
-            TabIndex        =   20
-            Top             =   700
+            TabIndex        =   19
+            Top             =   300
             UseMaskColor    =   -1  'True
             Width           =   330
          End
@@ -578,7 +755,7 @@ Begin VB.Form frmImport
             Height          =   315
             Left            =   8895
             MaxLength       =   1
-            TabIndex        =   32
+            TabIndex        =   27
             Top             =   300
             Width           =   300
          End
@@ -587,7 +764,7 @@ Begin VB.Form frmImport
             Height          =   315
             Left            =   6795
             MaxLength       =   1
-            TabIndex        =   34
+            TabIndex        =   29
             Text            =   """"
             Top             =   700
             Width           =   300
@@ -598,14 +775,14 @@ Begin VB.Form frmImport
             Left            =   6795
             List            =   "frmImport.frx":012D
             Style           =   2  'Dropdown List
-            TabIndex        =   36
+            TabIndex        =   31
             Top             =   1100
             Width           =   1275
          End
          Begin COASpinner.COA_Spinner spnHeaderLines 
             Height          =   315
             Left            =   2400
-            TabIndex        =   22
+            TabIndex        =   21
             Top             =   1080
             Width           =   810
             _ExtentX        =   1429
@@ -626,7 +803,7 @@ Begin VB.Form frmImport
          Begin COASpinner.COA_Spinner spnFooterLines 
             Height          =   315
             Left            =   2400
-            TabIndex        =   24
+            TabIndex        =   23
             Top             =   1500
             Width           =   810
             _ExtentX        =   1429
@@ -650,7 +827,7 @@ Begin VB.Form frmImport
             Caption         =   "Footer Lines to Ignore :"
             Height          =   195
             Left            =   225
-            TabIndex        =   23
+            TabIndex        =   22
             Top             =   1560
             Width           =   1710
          End
@@ -660,7 +837,7 @@ Begin VB.Form frmImport
             Caption         =   "Header Lines to Ignore :"
             Height          =   195
             Left            =   225
-            TabIndex        =   21
+            TabIndex        =   20
             Top             =   1155
             Width           =   2070
          End
@@ -670,19 +847,9 @@ Begin VB.Form frmImport
             Caption         =   "Separator :"
             Height          =   195
             Left            =   5175
-            TabIndex        =   38
+            TabIndex        =   33
             Top             =   1560
             Width           =   960
-         End
-         Begin VB.Label lblFileRecords 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "File Records :"
-            Height          =   195
-            Left            =   225
-            TabIndex        =   25
-            Top             =   1965
-            Width           =   1200
          End
          Begin VB.Label lblOtherDelimiter 
             AutoSize        =   -1  'True
@@ -690,7 +857,7 @@ Begin VB.Form frmImport
             Caption         =   "Other :"
             Height          =   195
             Left            =   8205
-            TabIndex        =   31
+            TabIndex        =   26
             Top             =   360
             Width           =   525
          End
@@ -700,19 +867,9 @@ Begin VB.Form frmImport
             Caption         =   "File name :"
             Height          =   195
             Left            =   225
-            TabIndex        =   18
-            Top             =   760
-            Width           =   780
-         End
-         Begin VB.Label lblFileType 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Format :"
-            Height          =   195
-            Left            =   225
             TabIndex        =   17
             Top             =   360
-            Width           =   615
+            Width           =   1095
          End
          Begin VB.Label lblDelimiter 
             AutoSize        =   -1  'True
@@ -720,7 +877,7 @@ Begin VB.Form frmImport
             Caption         =   "Delimiter :"
             Height          =   195
             Left            =   5175
-            TabIndex        =   29
+            TabIndex        =   24
             Top             =   360
             Width           =   915
          End
@@ -730,7 +887,7 @@ Begin VB.Form frmImport
             Caption         =   "Data enclosed in :"
             Height          =   195
             Left            =   5175
-            TabIndex        =   33
+            TabIndex        =   28
             Top             =   765
             Width           =   1605
          End
@@ -739,7 +896,7 @@ Begin VB.Form frmImport
             BackStyle       =   0  'Transparent
             Height          =   195
             Left            =   7400
-            TabIndex        =   47
+            TabIndex        =   42
             Top             =   750
             Width           =   45
          End
@@ -749,7 +906,7 @@ Begin VB.Form frmImport
             Caption         =   "Date format :"
             Height          =   195
             Left            =   5175
-            TabIndex        =   35
+            TabIndex        =   30
             Top             =   1155
             Width           =   1110
          End
@@ -759,108 +916,10 @@ Begin VB.Form frmImport
             Caption         =   "(No Separator)"
             Height          =   195
             Left            =   8050
-            TabIndex        =   37
+            TabIndex        =   32
             Top             =   1155
             Visible         =   0   'False
             Width           =   1350
-         End
-      End
-      Begin VB.Frame fraOptions 
-         Caption         =   "Records :"
-         Height          =   1350
-         Left            =   -74850
-         TabIndex        =   40
-         Top             =   3220
-         Width           =   9400
-         Begin VB.Frame Frame1 
-            BorderStyle     =   0  'None
-            Caption         =   "Frame1"
-            Height          =   1200
-            Left            =   5550
-            TabIndex        =   48
-            Top             =   120
-            Width           =   3600
-            Begin VB.OptionButton optDontUpdateAny 
-               Caption         =   "Update &None"
-               Height          =   195
-               Left            =   1320
-               TabIndex        =   46
-               Top             =   825
-               Width           =   2430
-            End
-            Begin VB.OptionButton optUpdateAll 
-               Caption         =   "&Update All"
-               Height          =   195
-               Left            =   1320
-               TabIndex        =   45
-               Top             =   510
-               Value           =   -1  'True
-               Width           =   1845
-            End
-            Begin VB.Label lblDupRecordsReturned 
-               AutoSize        =   -1  'True
-               BackStyle       =   0  'Transparent
-               Caption         =   "If key field(s) return multiple records :"
-               Height          =   195
-               Left            =   -15
-               TabIndex        =   44
-               Top             =   195
-               Width           =   3330
-            End
-         End
-         Begin VB.OptionButton optImportType 
-            Caption         =   "Create new records onl&y (ignore key fields on base table)"
-            Height          =   195
-            Index           =   0
-            Left            =   240
-            TabIndex        =   43
-            Top             =   945
-            Width           =   5760
-         End
-         Begin VB.OptionButton optImportType 
-            Caption         =   "Update &records and create new where not matched"
-            Height          =   195
-            Index           =   2
-            Left            =   240
-            TabIndex        =   41
-            Top             =   315
-            Value           =   -1  'True
-            Width           =   4815
-         End
-         Begin VB.OptionButton optImportType 
-            Caption         =   "Update &existing records only"
-            Height          =   195
-            Index           =   1
-            Left            =   240
-            TabIndex        =   42
-            Top             =   630
-            Width           =   3375
-         End
-      End
-      Begin VB.Frame fraData 
-         Caption         =   "Data :"
-         Height          =   1680
-         Left            =   150
-         TabIndex        =   0
-         Top             =   2895
-         Width           =   9400
-         Begin VB.ComboBox cboBaseTable 
-            Height          =   315
-            Left            =   1620
-            Style           =   2  'Dropdown List
-            TabIndex        =   7
-            Top             =   360
-            Width           =   3000
-         End
-         Begin VB.Label lblBaseTable 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Base Table :"
-            Height          =   195
-            Left            =   225
-            TabIndex        =   6
-            Top             =   420
-            Width           =   885
          End
       End
    End
@@ -869,8 +928,8 @@ Begin VB.Form frmImport
       Default         =   -1  'True
       Height          =   375
       Left            =   7335
-      TabIndex        =   49
-      Top             =   4965
+      TabIndex        =   44
+      Top             =   5835
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
@@ -878,13 +937,13 @@ Begin VB.Form frmImport
       Caption         =   "&Cancel"
       Height          =   375
       Left            =   8590
-      TabIndex        =   50
-      Top             =   4965
+      TabIndex        =   45
+      Top             =   5835
       Width           =   1200
    End
    Begin MSComDlg.CommonDialog CDialog 
-      Left            =   120
-      Top             =   4800
+      Left            =   75
+      Top             =   5730
       _ExtentX        =   847
       _ExtentY        =   847
       _Version        =   393216
@@ -905,7 +964,7 @@ Private mblnReadOnly As Boolean
 Private mlngTimeStamp As Long
 Private mblnDefinitionCreator As Boolean
 Private mstrBaseTable As String
-Private mintCurrentFileFormat As Integer
+Private mintCurrentFileFormat As ImportType
 Private mlngOriginalFilterID As Long
 
 Private Function ColumnInFilter(plngColumnID, plngFilterID As Long) As Boolean
@@ -960,7 +1019,7 @@ Public Property Get SelectedID() As Long
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -994,7 +1053,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Private Sub cboBaseTable_Click()
@@ -1062,7 +1121,7 @@ Private Sub cboFileFormat_Click()
   
   ' Set the delimiter/encapsulator as required
   Select Case cboFileFormat.ItemData(cboFileFormat.ListIndex)
-    Case 0: 'Delimited File/CSV File
+    Case ImportType.DelimitedFile:
       'If selected then Delimited and Encapsulation needs to be visible/enabled
       cboDelimiter.Enabled = True
       cboDelimiter.BackColor = &H80000005
@@ -1081,7 +1140,7 @@ Private Sub cboFileFormat_Click()
         txtDelimiter.BackColor = &H80000005
       End If
       
-    Case 1: 'Fixed Length
+    Case ImportType.FixedLengthFile
       SetComboText cboDelimiter, ","
       cboDelimiter.Enabled = False
       cboDelimiter.BackColor = &H8000000F
@@ -1100,7 +1159,7 @@ Private Sub cboFileFormat_Click()
         txtDelimiter.Text = ""
       End If
       
-    Case 2: 'Excel Worksheet
+    Case ImportType.ExcelWorksheet
       SetComboText cboDelimiter, ","
       cboDelimiter.Enabled = False
       cboDelimiter.BackColor = &H8000000F
@@ -1118,48 +1177,21 @@ Private Sub cboFileFormat_Click()
         txtDelimiter.BackColor = &H8000000F
         txtDelimiter.Text = ""
       End If
+        
   End Select
-
-'TM20011218 Fault 3039 - No longer need to show this message we now show the column
-'sizes for all file types. BUT can only change the length for "Fixed Length Files".
-'  ' If user changes to fixed length and columns already defined, remind them that
-'  ' they will need to enter the size of the columns on the 2nd tab before saving.
-'  If Me.grdColumns.Rows > 0 And cboFileFormat.ItemData(cboFileFormat.ListIndex) = 1 Then
-'    If COAMsgBox("You have changed the file format to fixed length, but already have columns defined" & vbCrLf & _
-'      "in the definition. Do you wish to continue ?", vbQuestion + vbYesNo + vbDefaultButton1, "Import") = vbNo Then
-'        cboFileFormat.ListIndex = mintCurrentFileFormat
-'        Exit Sub
-'    End If
-'  End If
-  
+ 
   ' Store the selected fileformat - needed for the first line of this sub
   mintCurrentFileFormat = cboFileFormat.ItemData(cboFileFormat.ListIndex)
-  
+      
   'AE20071105 Fault #12553
   txtFilename.Text = vbNullString
-  
-  'DisableLengthColumn (mintCurrentFileFormat)
 
   ResetFillers (mintCurrentFileFormat)
+  RefreshOptionsFrame
   
   Changed = True
   
 End Sub
-
-
-'MH20071003
-'Private Sub chkIgnoreFirstLine_Click()
-'
-'  Changed = True
-'
-'End Sub
-'Private Sub chkIgnoreLastLine_Click()
-'
-'  Changed = True
-'
-'End Sub
-
-
 
 Private Sub cmdCancel_Click()
   Dim objExpression As clsExprExpression
@@ -1348,11 +1380,9 @@ End Sub
 Private Sub cmdFileName_Click()
 
   'Purpose : Show common dialog box to allow user to select a file to import
- 
   With CDialog
   
-    ' If there is a filename already select it, try and set the cdialog directory and
-    ' filename property to match it.
+    ' If there is a filename already select it, try and set the cdialog directory and filename property to match it.
     If Len(Trim(txtFilename.Text)) = 0 Then
       .InitDir = gsDocumentsPath
     Else
@@ -1363,24 +1393,15 @@ Private Sub cmdFileName_Click()
     .CancelError = False
     .DialogTitle = "File To Import..."
     .Flags = &H200806
-    
-'''    ' Set filter depending on the FileFormat selected.
-'''    ' JPD20010907 No Fault - Added the ability to selet any file type when the
-'''    ' format is Comma Delimited or Fixed Length.
-'''    Select Case cboFileFormat.ItemData(cboFileFormat.ListIndex)
-'''      'NHRD - 15042003 - Fault 4902 Reset the CASE 0 statement so that .csv is the default search pattern
-'''      Case 0: .Filter = "Comma Delimited (*.csv)|Text (*.txt)|*.txt|*.csv|All Files|*.*"
-'''      Case 1: .Filter = "Text (*.txt)|*.txt|All Files|*.*"
-'''      Case 2: .Filter = "Excel Spreadsheet (*.xls)|*.xls"
-'''    End Select
+
     Select Case cboFileFormat.ItemData(cboFileFormat.ListIndex)
-    Case 0
-      .Filter = "Comma Separated Values (*.csv)|*.csv|Text (*.txt)|*.txt|All Files|*.*"
-    Case 1
-      .Filter = "Text (*.txt)|*.txt|All Files|*.*"
-    Case 2
-      '.Filter = "Excel Worksheet (*.xls)|*.xls"
-      InitialiseCommonDialogFormats CDialog, "Excel", GetOfficeExcelVersion, DirectionInput
+      Case 0
+        .Filter = "Comma Separated Values (*.csv)|*.csv|Text (*.txt)|*.txt|All Files|*.*"
+      Case 1
+        .Filter = "Text (*.txt)|*.txt|All Files|*.*"
+      Case 2
+
+        InitialiseCommonDialogFormats CDialog, "Excel", GetOfficeExcelVersion, DirectionInput
     End Select
     
     
@@ -1455,6 +1476,7 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
   mlngOriginalFilterID = txtFilter.Tag
   
   PopulateAccessGrid
+  RefreshOptionsFrame
     
   'Reset pointer so copy will be saved as new
   If mblnFromCopy Then
@@ -1508,23 +1530,21 @@ Private Sub LoadCombos()
   End With
 
   With cboFileFormat
-    '.AddItem "ASCII Delimited"
+    
     .AddItem "Delimited File"
     .ItemData(.NewIndex) = 0
-    '.AddItem "ASCII Fixed Length"
+
     .AddItem "Fixed Length File"
     .ItemData(.NewIndex) = 1
+    
     .AddItem "Excel Worksheet"
     .ItemData(.NewIndex) = 2
+        
+    .AddItem "Linked Server"
+    .ItemData(.NewIndex) = 3
+    
     .ListIndex = 0
   End With
-  
-'  With cboDelimiter
-'    .AddItem ","
-'    .AddItem "<Tab>"
-'    .AddItem "<Other>"
-'    .ListIndex = 0
-'  End With
   
   pstrSQL = vbNullString
   Set prstTables = Nothing
@@ -2051,59 +2071,6 @@ End Sub
 
 Private Sub tabImport_Click(PreviousTab As Integer)
 
-'  Select Case tabImport.Tab
-'
-'    Case 0
-'
-'      fraColumns.Enabled = False
-'      fraOptions.Enabled = False
-'      fraDefinition(0).Enabled = True
-'      fraData.Enabled = True
-'      fraFileDetails.Enabled = False
-'
-'    Case 1
-'
-'      fraDefinition(0).Enabled = False
-'      fraData.Enabled = False
-'      fraFileDetails.Enabled = False
-'      fraOptions.Enabled = False
-'      fraColumns.Enabled = True
-'      'UpdateButtonStatus
-'
-'      If cboFileFormat.ItemData(cboFileFormat.ListIndex) = 1 Then
-'        grdColumns.Columns("Size").Visible = True
-'      'Else
-'      '  grdColumns.Columns("Size").Visible = False
-'      End If
-'
-'      'If grdColumns.VisibleRows < Me.grdColumns.Rows Then
-'      '  If grdColumns.Columns("Size").Visible = True Then
-'      '    grdColumns.Columns("Size").Width = 630  '600
-'      '  Else
-'      '    grdColumns.Columns("Key").Width = 509
-'      '  End If
-'      '  grdColumns.ScrollBars = ssScrollBarsAutomatic
-'      'Else
-'      '  If grdColumns.Columns("Size").Visible = True Then
-'      '    grdColumns.Columns("Size").Width = 890  '835
-'      '  Else
-'      '    grdColumns.Columns("Key").Width = 524 + 835
-'      '  End If
-'      '    grdColumns.ScrollBars = ssScrollBarsAutomatic
-'      'End If
-'      UpdateButtonStatus
-'
-'    Case 2
-'
-'      fraDefinition(0).Enabled = False
-'      fraData.Enabled = False
-'      fraColumns.Enabled = False
-'      fraFileDetails.Enabled = True
-'      fraOptions.Enabled = True
-'
-'  End Select
-
-
   Dim ctl As Control
 
   If Not mblnReadOnly Then
@@ -2118,9 +2085,7 @@ Private Sub tabImport_Click(PreviousTab As Integer)
 End Sub
 
 Private Sub txtDelimiter_Change()
-
   Changed = True
-  
 End Sub
 
 Private Sub txtDelimiter_GotFocus()
@@ -2133,9 +2098,7 @@ Private Sub txtDelimiter_GotFocus()
 End Sub
 
 Private Sub txtDesc_Change()
-
   Changed = True
-  
 End Sub
 
 Private Sub txtDesc_GotFocus()
@@ -2145,13 +2108,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
 
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -2177,10 +2140,20 @@ Private Sub txtEncapsulator_GotFocus()
   
 End Sub
 
-Private Sub txtName_Change()
-
+Private Sub txtLinkedCatalog_Change()
   Changed = True
-  
+End Sub
+
+Private Sub txtLinkedServer_Change()
+  Changed = True
+End Sub
+
+Private Sub txtLinkedTable_Change()
+  Changed = True
+End Sub
+
+Private Sub txtName_Change()
+  Changed = True
 End Sub
 
 Private Sub txtName_GotFocus()
@@ -2330,40 +2303,13 @@ Private Function ValidateDefinition() As Boolean
   End If
   
   ' Check a filename has been selected
-  If Len(Trim(txtFilename.Text)) = 0 Then
+  If Len(Trim(txtFilename.Text)) = 0 And cboFileFormat.ItemData(cboFileFormat.ListIndex) <> ImportType.SQLTable Then
     tabImport.Tab = 2
     COAMsgBox "You must select the file you wish to use with this import definition.", vbExclamation + vbOKOnly, "Import"
     cmdFilename.SetFocus
     ValidateDefinition = False
     Exit Function
   End If
-  
-''  ' Check the filename is of the correct type for the file format selected
-''  Select Case cboFileFormat.ItemData(cboFileFormat.ListIndex)
-''    Case 0:
-''    'JPD20011003 No longer want to limit csv length files to be .txt or .csv files.
-'''      If (LCase(Right(txtFilename.Text, 4)) <> ".txt") And (LCase(Right(txtFilename.Text, 4)) <> ".csv") Then
-'''        COAMsgBox "Delimited files must have a '.txt' or '.csv' extension.", vbExclamation + vbOKOnly, "Import"
-'''        txtFilename = ""
-'''        ValidateDefinition = False
-'''        Exit Function
-'''      End If
-''    Case 1:
-''    'JPD20011003 No longer want to limit fixed length files to be .txt files.
-'''      If (LCase(Right(txtFilename.Text, 4)) <> ".txt") Then
-'''        COAMsgBox "Fixed length files must have a '.txt' extension.", vbExclamation + vbOKOnly, "Import"
-'''        txtFilename = ""
-'''        ValidateDefinition = False
-'''        Exit Function
-'''      End If
-''    Case 2:
-''      If (LCase(Right(txtFilename.Text, 4)) <> ".xls") Then
-''        tabImport.Tab = 2
-''        COAMsgBox "Excel worksheet files must have a '.xls' extension.", vbExclamation + vbOKOnly, "Import"
-''        ValidateDefinition = False
-''        Exit Function
-''      End If
-''  End Select
   
   ' Check that there are columns defined in the definition
   If grdColumns.Rows = 0 Then
@@ -2374,7 +2320,7 @@ Private Function ValidateDefinition() As Boolean
   End If
   
   '  Check that a delimiter is specified if the file format is ASCII Delimited
-  If cboFileFormat.ItemData(cboFileFormat.ListIndex) = 0 Then
+  If cboFileFormat.ItemData(cboFileFormat.ListIndex) = ImportType.DelimitedFile Then
     If cboDelimiter.Text = "<Other>" And Trim(txtDelimiter.Text) = "" Then
       tabImport.Tab = 2
       COAMsgBox "You must specify a delimiter for delimited files.", vbExclamation + vbOKOnly, "Import"
@@ -2385,7 +2331,7 @@ Private Function ValidateDefinition() As Boolean
 
   ' Check that if the file format is defined as Fixed Length, that there is a size
   ' defined for each column in the import definition.
-  If cboFileFormat.ItemData(cboFileFormat.ListIndex) = 1 Then
+  If cboFileFormat.ItemData(cboFileFormat.ListIndex) = ImportType.FixedLengthFile Then
     ' Loop thru the import grid, checking for size
     With grdColumns
       .MoveFirst
@@ -2402,6 +2348,16 @@ Private Function ValidateDefinition() As Boolean
         pintLoop = pintLoop + 1
       Loop
     End With
+  End If
+
+  ' SQL Table specific
+  If cboFileFormat.ItemData(cboFileFormat.ListIndex) = ImportType.SQLTable Then
+    If txtLinkedServer.Text = "" Or txtLinkedCatalog.Text = "" Or txtLinkedTable.Text = "" Then
+      COAMsgBox "You must specify all options for importing from a linked table.", vbExclamation + vbOKOnly, "Export"
+      tabImport.Tab = 3
+      ValidateDefinition = False
+      Exit Function
+    End If
   End If
 
   ' Now check that there is at least 1 key field defined.
@@ -2656,16 +2612,12 @@ Private Function SaveDefinition() As Boolean
              "MultipleRecordAction = " & IIf(Me.optUpdateAll.Value, 1, 0) & "," & _
              "HeaderLines = " & CStr(spnHeaderLines.Value) & "," & _
              "FooterLines = " & CStr(spnFooterLines.Value) & "," & _
-             "FilterID = " & IIf(optFilter.Value, txtFilter.Tag, 0) '& "," & _
-             "CreateNewOnly = " & IIf(Me.chkCreateNewOnly.Value, 1, 0) & "," & _
-              "Access = '" & pstrAccess & "' " & _
-              "WHERE ID = " & mlngImportID
-      
-             '"IgnoreFirstLine = " & IIf(Me.chkIgnoreFirstLine.Value, 1, 0) & "," & _
-             '"IgnoreLastLine = " & IIf(Me.chkIgnoreLastLine.Value, 1, 0) & "," & _
-
-      
-      
+             "FilterID = " & IIf(optFilter.Value, txtFilter.Tag, 0) & ","
+            
+    sSQL = sSQL & "LinkedServer = '" & Replace(txtLinkedServer.Text, "'", "''") & "'," & _
+             "LinkedCatalog = '" & Replace(txtLinkedCatalog.Text, "'", "''") & "'," & _
+             "LinkedTable = '" & Replace(txtLinkedTable.Text, "'", "''") & "'"
+            
     'TM20020726 Fault 2123 - Upadte the DateSeparator column.
     'MH20010816 Fault 2017
     sSQL = sSQL & "," & _
@@ -2685,7 +2637,7 @@ Private Function SaveDefinition() As Boolean
            "FileType, FileName, Delimiter, OtherDelimiter, DateFormat, " & _
            "Encapsulator, MultipleRecordAction, " & _
            "HeaderLines, FooterLines, ImportType, " & _
-           "UserName, FilterID, DateSeparator) "
+           "UserName, FilterID, DateSeparator, LinkedServer, LinkedCatalog, LinkedTable) "
     
     sSQL = sSQL & _
            "Values('" & _
@@ -2706,7 +2658,10 @@ Private Function SaveDefinition() As Boolean
     sSQL = sSQL & ", " & CStr(lngImportType)
     sSQL = sSQL & ", '" & datGeneral.UserNameForSQL & "'"
     sSQL = sSQL & ", " & txtFilter.Tag
-    sSQL = sSQL & ", '" & cboDateSeparator.Text & "')"
+    sSQL = sSQL & ", '" & cboDateSeparator.Text & "'"
+    sSQL = sSQL & ", '" & Replace(txtLinkedServer.Text, "'", "''") & "'"
+    sSQL = sSQL & ", '" & Replace(txtLinkedCatalog.Text, "'", "''") & "'"
+    sSQL = sSQL & ", '" & Replace(txtLinkedTable.Text, "'", "''") & "')"
 
     mlngImportID = InsertImport(sSQL)
 
@@ -2942,7 +2897,7 @@ Private Function InsertImport(pstrSQL As String) As Long
               
     If Not fSavedOK Then
       COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
-        Err.Description, vbOKOnly + vbExclamation, App.ProductName
+        Err.Description, vbOKOnly + vbExclamation, app.ProductName
         InsertImport = 0
         Set cmADO = Nothing
         Exit Function
@@ -3049,9 +3004,10 @@ Private Function RetrieveImportDetails(plngImportID As Long) As Boolean
   GetObjectCategories cboCategory, utlImport, plngImportID
   
   Select Case rsTemp!filetype
-    Case 0: SetComboText cboFileFormat, "Delimited File"
-    Case 1: SetComboText cboFileFormat, "Fixed Length File"
-    Case 2: SetComboText cboFileFormat, "Excel Worksheet"
+    Case ImportType.DelimitedFile: SetComboText cboFileFormat, "Delimited File"
+    Case ImportType.FixedLengthFile: SetComboText cboFileFormat, "Fixed Length File"
+    Case ImportType.ExcelWorksheet: SetComboText cboFileFormat, "Excel Worksheet"
+    Case ImportType.SQLTable: SetComboText cboFileFormat, "Linked Server"
   End Select
   
   ''TM20011219 Fault 3039 - disable the length column if required.
@@ -3088,6 +3044,9 @@ Private Function RetrieveImportDetails(plngImportID As Long) As Boolean
   'If rsTemp!CreateNewOnly Then chkCreateNewOnly.Value = 1
   optImportType(rsTemp!ImportType).Value = True
   
+  txtLinkedServer.Text = IIf(IsNull(rsTemp!LinkedServer), "", rsTemp!LinkedServer)
+  txtLinkedCatalog.Text = IIf(IsNull(rsTemp!LinkedCatalog), "", rsTemp!LinkedCatalog)
+  txtLinkedTable.Text = IIf(IsNull(rsTemp!LinkedTable), "", rsTemp!LinkedTable)
   
   ' Set name, username, access etc
   If mblnFromCopy Then
@@ -3096,8 +3055,8 @@ Private Function RetrieveImportDetails(plngImportID As Long) As Boolean
     mblnDefinitionCreator = True
   Else
     txtName.Text = rsTemp!Name
-    txtUserName = StrConv(rsTemp!UserName, vbProperCase)
-    mblnDefinitionCreator = (LCase$(rsTemp!UserName) = LCase$(gsUserName))
+    txtUserName = StrConv(rsTemp!userName, vbProperCase)
+    mblnDefinitionCreator = (LCase$(rsTemp!userName) = LCase$(gsUserName))
   End If
   
   mblnReadOnly = Not datGeneral.SystemPermission("IMPORT", "EDIT")
@@ -3202,6 +3161,15 @@ Load_ERROR:
   Set rsTemp = Nothing
 
 End Function
+
+Private Sub RefreshOptionsFrame()
+
+  Dim outType As ImportType
+  outType = cboFileFormat.ItemData(cboFileFormat.ListIndex)
+
+  fraTableDetails.Visible = (outType = ImportType.SQLTable)
+  fraFileDetails.Visible = Not fraTableDetails.Visible
+End Sub
 
 Private Sub PopulateAccessGrid()
   ' Populate the access grid.
@@ -3422,7 +3390,7 @@ Public Sub PrintDef(lImportID As Long)
     
         .PrintNormal "Category : " & GetObjectCategory(utlImport, mlngImportID)
         .PrintNormal "Description : " & rsTemp!Description
-        .PrintNormal "Owner : " & rsTemp!UserName
+        .PrintNormal "Owner : " & rsTemp!userName
         
         ' Access section --------------------------------------------------------
         .PrintTitle "Access"
@@ -3470,45 +3438,54 @@ Public Sub PrintDef(lImportID As Long)
         .PrintTitle "Options"
         
         Select Case rsTemp!filetype
-          Case 0: .PrintNormal "File Type : Delimited File"
-          Case 1: .PrintNormal "File Type : Fixed Length File"
-          Case 2: .PrintNormal "File Type : Excel Worksheet"
+          Case ImportType.DelimitedFile: .PrintNormal "Import Type : Delimited File"
+          Case ImportType.FixedLengthFile: .PrintNormal "Import Type : Fixed Length File"
+          Case ImportType.ExcelWorksheet: .PrintNormal "Import Type : Excel Worksheet"
+          Case ImportType.SQLTable: .PrintNormal "Import Type : Linked Server"
         End Select
         
-        .PrintNormal "File Name : " & rsTemp!FileName
-        
-        If rsTemp!filetype = 0 Then
-          .PrintNormal "Delimiter : " & IIf(rsTemp!delimiter = "<Other>", rsTemp!otherdelimiter, rsTemp!delimiter)
+
+        If rsTemp!filetype = ImportType.SQLTable Then
+          .PrintNormal "Server : " & rsTemp!LinkedServer
+          .PrintNormal "Catalog : " & rsTemp!LinkedCatalog
+          .PrintNormal "Table : " & rsTemp!LinkedTable
         Else
-          .PrintNormal "Delimiter : " & "<None>"
-        End If
         
-        If Len(rsTemp!encapsulator) > 0 Then
-          If rsTemp!encapsulator = Chr(34) Then
-            If rsTemp!filetype = 0 Then
-              .PrintNormal "Data Enclosed In : " & Chr(34)
+          .PrintNormal "File Name : " & rsTemp!FileName
+          
+          If rsTemp!filetype = 0 Then
+            .PrintNormal "Delimiter : " & IIf(rsTemp!delimiter = "<Other>", rsTemp!otherdelimiter, rsTemp!delimiter)
+          Else
+            .PrintNormal "Delimiter : " & "<None>"
+          End If
+          
+          If Len(rsTemp!encapsulator) > 0 Then
+            If rsTemp!encapsulator = Chr(34) Then
+              If rsTemp!filetype = 0 Then
+                .PrintNormal "Data Enclosed In : " & Chr(34)
+              Else
+                .PrintNormal "Data Enclosed In : <None>"
+              End If
             Else
-              .PrintNormal "Data Enclosed In : <None>"
+              If rsTemp!filetype = 0 Then
+                .PrintNormal "Data Enclosed In : " & IIf(rsTemp!encapsulator = "", "<None>", rsTemp!encapsulator)
+              Else
+                .PrintNormal "Data Enclosed In : <None>"
+              End If
             End If
           Else
-            If rsTemp!filetype = 0 Then
-              .PrintNormal "Data Enclosed In : " & IIf(rsTemp!encapsulator = "", "<None>", rsTemp!encapsulator)
-            Else
-              .PrintNormal "Data Enclosed In : <None>"
-            End If
+            .PrintNormal "Data Enclosed In : <None>"
           End If
-        Else
-          .PrintNormal "Data Enclosed In : <None>"
+          
+          .PrintNormal "Date Format : " & IIf(IsNull(rsTemp!DateFormat), "(Not Specified)", rsTemp!DateFormat)
+          
+          .PrintNormal "Date Separator : " & IIf(IsNull(rsTemp!dateseparator), "(Not Specified)", rsTemp!dateseparator)
+          
+          'MH20071003
+          .PrintNormal "Header Lines To Ignore : " & IIf(IsNull(rsTemp!HeaderLines), 0, rsTemp!HeaderLines)
+          .PrintNormal "Footer Lines To Ignore : " & IIf(IsNull(rsTemp!FooterLines), 0, rsTemp!FooterLines)
+        
         End If
-        
-        .PrintNormal "Date Format : " & IIf(IsNull(rsTemp!DateFormat), "(Not Specified)", rsTemp!DateFormat)
-        
-        .PrintNormal "Date Separator : " & IIf(IsNull(rsTemp!dateseparator), "(Not Specified)", rsTemp!dateseparator)
-        
-        'MH20071003
-        .PrintNormal "Header Lines To Ignore : " & IIf(IsNull(rsTemp!HeaderLines), 0, rsTemp!HeaderLines)
-        .PrintNormal "Footer Lines To Ignore : " & IIf(IsNull(rsTemp!FooterLines), 0, rsTemp!FooterLines)
-        
         
         If rsTemp!FilterID > 0 Then
           .PrintNormal "File Records : '" & datGeneral.GetFilterName(rsTemp!FilterID) & "' filter"
@@ -3519,7 +3496,7 @@ Public Sub PrintDef(lImportID As Long)
         'MH20010816 Fault 2017
         '.PrintNormal "Create New Records Only : " & IIf(rsTemp!CreateNewOnly = True, "Yes", "No")
         '.PrintNormal "Mulitple Record Action : " & IIf(rsTemp!MultipleRecordAction = True, "Create/Update all records found", "Dont create/update any records")
-        .PrintNormal "Import Type : " & Replace(Me.optImportType(rsTemp!ImportType).Caption, "&", "")
+        .PrintNormal "Type : " & Replace(Me.optImportType(rsTemp!ImportType).Caption, "&", "")
         If rsTemp!ImportType <> 0 Then
           .PrintNormal "Mulitple Record Action : " & IIf(rsTemp!MultipleRecordAction = True, "Update All", "Update None")
         End If

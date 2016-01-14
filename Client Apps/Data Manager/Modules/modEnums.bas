@@ -451,3 +451,10 @@ Public Enum WarningType
   Headcount95Percent = 0
   Licence5DayExpiry = 1
 End Enum
+
+Public Enum ImportType
+  DelimitedFile = 0
+  FixedLengthFile = 1
+  ExcelWorksheet = 2
+  SQLTable = 3
+End Enum

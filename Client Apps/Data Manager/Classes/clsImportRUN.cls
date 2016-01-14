@@ -45,7 +45,7 @@ Private mstrImportParent2TableName As String
 Private mstrParent2TableRealSource As String
 Private mstrParent2TableRealSources() As String
 Private mstrParent2ViewJoins As String
-Private mintImportFileType As Integer
+Private mintImportFileType As ImportType
 Private mstrImportFileName As String
 Private mstrImportDelimiter As String
 Private mstrImportOtherDelimiter As String
@@ -53,11 +53,12 @@ Private mstrDateFormat As String
 Private mstrImportEncapsulator As String
 Private mblnImportMultipleRecordAction As Boolean
 
-'MH20071003
-'Private mblnImportIgnoreFirstLine As Boolean
-'Private mblnImportIgnoreLastLine As Boolean
 Private mintImportHeaderLines As Integer
 Private mintImportFooterLines As Integer
+
+Private mstrLinkedServer As String
+Private mstrLinkedCatalog As String
+Private mstrLinkedTable As String
 
 Private mblnImportCreateNewOnly As Boolean
 Private mlngFilterID As Long
@@ -66,7 +67,6 @@ Private mstrDateSeparator As String
 Private mstrParent1Where As String
 Private mstrParent2Where As String
 
-'MH20010816 Fault 2017
 Private mlngImportType As Long
     
 ' Store progress/status of imported records
@@ -309,6 +309,11 @@ Public Function RunImport() As Boolean
     gADOCon.Execute strSQL, , adExecuteNoRecords
   End If
   
+  ' Because the whole import is tied to read row by row we need to fudge a file from the datasource
+  If mintImportFileType = ImportType.SQLTable Then
+    fOK = ReadSQLTableInToFile
+  End If
+  
   If fOK Then fOK = ProcessFile
   
   If mbBypassTrigger Then
@@ -316,6 +321,9 @@ Public Function RunImport() As Boolean
     gADOCon.Execute strSQL, , adExecuteNoRecords
   End If
  
+  If fOK And mintImportFileType = ImportType.SQLTable Then
+    Kill mstrImportFileName
+  End If
   
   If Not gblnBatchMode Then gobjProgress.CloseProgress
   
@@ -492,35 +500,45 @@ Private Function GetImportDefinition() As Boolean
     mstrImportDescription = !Description
     mlngImportBaseTable = !BaseTable
     mstrImportBaseTableName = datGeneral.GetTableName(mlngImportBaseTable)
+    mlngImportType = !ImportType
     mintImportFileType = !filetype
     mstrImportFileName = !FileName
-    mstrImportDelimiter = !delimiter
-    mstrImportOtherDelimiter = !otherdelimiter
-    mstrDateFormat = IIf(IsNull(!DateFormat), "", !DateFormat)
-    mstrImportEncapsulator = IIf(IsNull(!encapsulator), "", !encapsulator)
-    mblnImportMultipleRecordAction = !MultipleRecordAction
     
-    'MH20071003
-    'mblnImportIgnoreFirstLine = !ignorefirstline
-    'mblnImportIgnoreLastLine = !ignorelastline
-    mintImportHeaderLines = IIf(IsNull(!HeaderLines), 0, !HeaderLines)
-    mintImportFooterLines = IIf(IsNull(!FooterLines), 0, !FooterLines)
+    If mintImportFileType = ImportType.SQLTable Then
+      mstrImportDelimiter = ","
+      mstrImportOtherDelimiter = ""
+      mstrDateFormat = "dmy"
+      mstrImportEncapsulator = Chr(34)
+      mintImportHeaderLines = 0
+      mintImportFooterLines = 0
+    Else
+      mstrImportDelimiter = !delimiter
+      mstrImportOtherDelimiter = !otherdelimiter
+      mstrDateFormat = IIf(IsNull(!DateFormat), "", !DateFormat)
+      mstrImportEncapsulator = IIf(IsNull(!encapsulator), "", !encapsulator)
+      mintImportHeaderLines = IIf(IsNull(!HeaderLines), 0, !HeaderLines)
+      mintImportFooterLines = IIf(IsNull(!FooterLines), 0, !FooterLines)
+    End If
+    
+    mblnImportMultipleRecordAction = !MultipleRecordAction
 
     mlngRecordDescExprID = datGeneral.GetRecDescExprID(mlngImportBaseTable)
     mbBypassTrigger = IIf(IsNull(!BypassTrigger), False, !BypassTrigger)
 
-    'MH20010816 Fault 2017
-    'mblnImportCreateNewOnly = !CreateNewOnly
-    mlngImportType = !ImportType
     mblnImportCreateNewOnly = (mlngImportType = 0)
 
     mlngFilterID = IIf(IsNull(!FilterID), 0, !FilterID)
     
     mstrDateSeparator = IIf(IsNull(!dateseparator) Or (!dateseparator = "<None>"), "", !dateseparator)
+    
+    mstrLinkedServer = IIf(IsNull(!LinkedServer), "", !LinkedServer)
+    mstrLinkedCatalog = IIf(IsNull(!LinkedCatalog), "", !LinkedCatalog)
+    mstrLinkedTable = IIf(IsNull(!LinkedTable), "", !LinkedTable)
+    
   End With
 
   
-  If mintImportFileType = 2 Then
+  If mintImportFileType = ImportType.ExcelWorksheet Then
     gobjProgress.AVI = dbText
   End If
   
@@ -774,10 +792,10 @@ Private Function GetRealSource(plngTableID As Long) As Boolean
             
             ' If its the base table, check INSERT privilege
             If plngTableID = mlngImportBaseTable Then
-              pblnAllowed = pobjColumnPrivileges.Item(mvarColDetails(4, pintTemp)).AllowUpdate
+              pblnAllowed = pobjColumnPrivileges.item(mvarColDetails(4, pintTemp)).AllowUpdate
               If Not pblnAllowed Then mstrErrorString = mvarColDetails(2, pintTemp) & "." & mvarColDetails(4, pintTemp) & " : No update permission"
             Else ' Otherwise just check the select privilege
-              pblnAllowed = pobjColumnPrivileges.Item(mvarColDetails(4, pintTemp)).AllowSelect
+              pblnAllowed = pobjColumnPrivileges.item(mvarColDetails(4, pintTemp)).AllowSelect
               If Not pblnAllowed Then mstrErrorString = mvarColDetails(2, pintTemp) & "." & mvarColDetails(4, pintTemp) & " : No read permission"
             End If
             
@@ -991,7 +1009,7 @@ Private Function ProcessFile() As Boolean
   
   ' If we are importing an excel spreadsheet, open it in excel, save as csv,
   ' then treat as a comma delimited file from here on (!)
-  If mintImportFileType = 2 Then
+  If mintImportFileType = ImportType.ExcelWorksheet Then
     If Not ConvertExcelFile Then
       ProcessFile = False
       Exit Function
@@ -1095,11 +1113,9 @@ Private Function ProcessFile() As Boolean
       End If
       
       Select Case mintImportFileType
-        Case 0, 1 ' Delimited or Fixed Length
-          'NPG20090713 Fault HRPRO-39
-          ' If lngLineCount = mlngTotalRecords Then Exit Do
+        Case ImportType.DelimitedFile, ImportType.FixedLengthFile, ImportType.SQLTable
           If lngLineCount = (mlngTotalRecords + mintImportHeaderLines) Then Exit Do
-        Case 2    ' Excel
+        Case ImportType.ExcelWorksheet
           'See code line page-up with 'ConvertExcelFile' most import files are
           'converted to CSVs so this part of code is rarely run
           If lngLineCount >= mlngTotalRecords Then Exit Do
@@ -1789,7 +1805,7 @@ Private Function GetSpecificKeyData(pintToken As Integer) As Variant
   ' Read the data depending on the file type
   Select Case mintImportFileType
   
-    Case 0, 2: ' Delimited, Excel
+    Case ImportType.DelimitedFile, ImportType.ExcelWorksheet, ImportType.SQLTable
         
       ' Check delimiter. Ie, if Tab selected, replace "<Tab>" with a vbtab
       Select Case LCase(mstrImportDelimiter)
@@ -1828,15 +1844,6 @@ Private Function GetSpecificKeyData(pintToken As Integer) As Variant
         pstrToken = IIf((sTemp = "F") Or (sTemp = "N") Or (sTemp = "0") Or (sTemp = ""), "0", "1")
       Else
       
-'        ' Trimming (if any)
-'        Select Case mvarColDetails(10, pintToken)
-'          Case giTRIMMING_LEFTRIGHT
-'            pstrToken = Trim(pstrToken)
-'          Case giTRIMMING_LEFTONLY
-'            pstrToken = LTrim(pstrToken)
-'          Case giTRIMMING_RIGHTONLY
-'            pstrToken = RTrim(pstrToken)
-'        End Select
       
         pstrToken = "'" & Replace(pstrToken, "'", "''") & "'"
       
@@ -1844,7 +1851,8 @@ Private Function GetSpecificKeyData(pintToken As Integer) As Variant
 
       GetSpecificKeyData = pstrToken
 
-    Case 1: ' Fixed Length
+
+    Case ImportType.FixedLengthFile:
     
       pintCurrentPos = 1
       For pintCounter = 1 To UBound(mvarColDetails, 2)
@@ -2086,11 +2094,11 @@ ErrTrap:
   
 End Function
 
-Private Sub GetFileLineCount(pintFileType As Integer)
+Private Sub GetFileLineCount(pintFileType As ImportType)
 
   Select Case pintFileType
 
-    Case 0, 1 ' Delimited or Fixed Length
+    Case ImportType.DelimitedFile, ImportType.FixedLengthFile, ImportType.SQLTable
 
       'MH20071003
       'mlngTotalRecords = FileLineCount(mstrImportFileName) - IIf(mblnImportIgnoreFirstLine = True, 1, 0)
@@ -2101,7 +2109,7 @@ Private Sub GetFileLineCount(pintFileType As Integer)
       mlngTotalRecords = ProcessUploadFile(mstrImportFileName)
       mlngTotalRecords = mlngTotalRecords - (mintImportHeaderLines + mintImportFooterLines)
 
-    Case 2: ' Excel spreadsheet
+    Case ImportType.ExcelWorksheet
 
       With mobjExcelApp
         .Workbooks.Open mstrImportFileName, , True
@@ -2167,7 +2175,7 @@ ErrTrap:
   
 End Function
 
-Private Function GetDataToImport(pintFileType As Integer) As String
+Private Function GetDataToImport(pintFileType As ImportType) As String
 
   ' Purpose : This function retrieves data from the import file
   ' Input   : File Type (Delimited or Fixed Length).
@@ -2193,7 +2201,7 @@ Private Function GetDataToImport(pintFileType As Integer) As String
   ' Read the data depending on the file type
   Select Case pintFileType
   
-    Case 0: ' Delimited
+    Case ImportType.DelimitedFile, ImportType.SQLTable:
         
       ' Check delimiter. Ie, if Tab selected, replace "<Tab>" with a vbtab
       Select Case LCase(mstrImportDelimiter)
@@ -2262,7 +2270,7 @@ Private Function GetDataToImport(pintFileType As Integer) As String
         End If
       Next pintCounter
     
-    Case 1: ' Fixed Length
+    Case ImportType.FixedLengthFile
     
       Dim pintCurrentPos As Integer
       pintCurrentPos = 1
@@ -2390,7 +2398,7 @@ Private Function GetDataToImport(pintFileType As Integer) As String
     gobjErrorStack.Disable
     
     'JPD 20040319 Fault 8306
-    Set objTableView = gcoTablePrivileges.Item(mstrImportParent2TableName)
+    Set objTableView = gcoTablePrivileges.item(mstrImportParent2TableName)
     If objTableView.TableType = tabChild Then
       strSQL = "SELECT " & mstrParent2TableRealSources(0) & ".ID FROM " & mstrParent2TableRealSources(0) & _
         mstrParent2ViewJoins & " " & pstrParentWhereSQL
@@ -2431,7 +2439,7 @@ Private Function GetDataToImport(pintFileType As Integer) As String
 
     prstParentFind.Close
     Set prstParentFind = Nothing
-    gobjErrorStack.Enable
+    gobjErrorStack.enable
 '}
     
     
@@ -2487,7 +2495,7 @@ Private Function GetDataToImport(pintFileType As Integer) As String
     gobjErrorStack.Disable
     
     'JPD 20040319 Fault 8306
-    Set objTableView = gcoTablePrivileges.Item(mstrImportParent1TableName)
+    Set objTableView = gcoTablePrivileges.item(mstrImportParent1TableName)
     If objTableView.TableType = tabChild Then
       strSQL = "SELECT " & mstrParent1TableRealSources(0) & ".ID FROM " & mstrParent1TableRealSources(0) & _
         mstrParent1ViewJoins & " " & pstrParentWhereSQL
@@ -2524,7 +2532,7 @@ Private Function GetDataToImport(pintFileType As Integer) As String
 
     prstParentFind.Close
     Set prstParentFind = Nothing
-    gobjErrorStack.Enable
+    gobjErrorStack.enable
 
   End If
 
@@ -3191,7 +3199,7 @@ Private Function FindMatchingRecord() As Boolean
     'strSQL = "SELECT " & mstrImportParent1TableName & ".ID " & _
              "FROM " & mstrImportParent1TableName & _
              mstrParent1ViewJoins & " WHERE " & mstrParent1Where
-    Set objTableView = gcoTablePrivileges.Item(mstrImportParent1TableName)
+    Set objTableView = gcoTablePrivileges.item(mstrImportParent1TableName)
     If objTableView.TableType = tabChild Then
       strSQL = "SELECT " & mstrParent1TableRealSources(0) & ".ID" & _
         " FROM " & mstrParent1TableRealSources(0) & _
@@ -3215,7 +3223,7 @@ Private Function FindMatchingRecord() As Boolean
     'strSQL = "SELECT " & mstrImportParent2TableName & ".ID " & _
              "FROM " & mstrImportParent2TableName & _
              mstrParent2ViewJoins & " WHERE " & mstrParent2Where
-    Set objTableView = gcoTablePrivileges.Item(mstrImportParent2TableName)
+    Set objTableView = gcoTablePrivileges.item(mstrImportParent2TableName)
     If objTableView.TableType = tabChild Then
       strSQL = "SELECT " & mstrParent2TableRealSources(0) & ".ID" & _
         " FROM " & mstrParent2TableRealSources(0) & _
@@ -3333,7 +3341,7 @@ Private Function AddToWhere(ByRef strWhereSQL As String, strRealSources() As Str
       Set pobjColumnPrivileges = GetColumnPrivileges(strRealSources(lngIndex))
 
       If pobjColumnPrivileges.IsValid(strColumnName) Then
-        If pobjColumnPrivileges.Item(strColumnName).AllowSelect Then
+        If pobjColumnPrivileges.item(strColumnName).AllowSelect Then
           strWhereSQL = strWhereSQL & vbCrLf & _
               " WHEN NOT " & strRealSources(lngIndex) & "." & mvarColDetails(4, intCounter) & _
               " IS NULL THEN " & strRealSources(lngIndex) & "." & mvarColDetails(4, intCounter)
@@ -3412,3 +3420,123 @@ Private Function CheckIfNumeric(strInput As String) As Boolean
 
 End Function
 
+Private Function ReadSQLTableInToFile() As Boolean
+
+  ' Read the defined data source and create a temporary file for import.
+  ' I'm sorry this is not a good way to design an import, but time pressures and existing code constraints make this the quickest route
+  Dim sSQL As String
+  Dim sSelectString As String
+  Dim sOutputLine As String
+  Dim rsDataTable As Recordset
+  Dim rsColumns As Recordset
+  Dim bOK As Boolean
+  Dim pintFileNo As Integer
+  Dim iFieldCount As Integer
+  Dim bFirstRow As Boolean
+
+  bOK = True
+    
+  On Error GoTo ErrorTrap
+    
+  If Not CheckLinkedServerIsValid Then
+    mstrErrorString = "Error establishing connection to the linked server." & vbCrLf
+    ReadSQLTableInToFile = False
+    Exit Function
+  End If
+    
+  sSQL = "SELECT t.Column_Name" & _
+    " FROM [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].INFORMATION_SCHEMA.COLUMNS t" & _
+    " WHERE t.TABLE_NAME = '" & mstrLinkedTable & "' ORDER BY ORDINAL_POSITION"
+  Set rsColumns = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
+
+  With rsColumns
+    
+    If .BOF And .EOF Then
+      ReadSQLTableInToFile = False
+      Return
+    End If
+
+    Do Until .EOF
+      sSelectString = sSelectString & IIf(Len(sSelectString) > 0, ", ", "") & "[" & .Fields("Column_Name").Value & "]"
+      .MoveNext
+    Loop
+
+  End With
+  
+  ' Now go grab the data
+  sSQL = "SELECT " & sSelectString & " FROM [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].dbo.[" & mstrLinkedTable & "]"
+  Set rsDataTable = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
+
+  With rsDataTable
+
+    If .BOF And .EOF Then
+      ReadSQLTableInToFile = False
+      mstrErrorString = "No data found in the specified linked server and table." & vbCrLf & "Please ensure your definition is correct."
+      Exit Function
+    End If
+
+    pintFileNo = FreeFile
+    mstrImportFileName = GetTmpFName
+    bFirstRow = True
+    Open mstrImportFileName For Output As pintFileNo
+
+    Do Until .EOF
+    
+      sOutputLine = ""
+      For iFieldCount = 0 To .Fields.Count - 1
+        sOutputLine = sOutputLine & IIf(Len(sOutputLine) > 0, ",", "") & Chr(34) & .Fields(iFieldCount).Value & Chr(34)
+      Next
+       
+      Print #pintFileNo, sOutputLine
+      bFirstRow = False
+      .MoveNext
+    Loop
+
+  End With
+
+  Set rsColumns = Nothing
+  Set rsDataTable = Nothing
+
+  Close #pintFileNo
+  ReadSQLTableInToFile = bOK
+
+TidyUpAndExit:
+  ReadSQLTableInToFile = bOK
+  Exit Function
+
+ErrorTrap:
+  mstrErrorString = "Error whilst reading linked table." & vbCrLf & "(" & Err.Description & ")"
+  bOK = False
+  GoTo TidyUpAndExit
+
+End Function
+
+Private Function CheckLinkedServerIsValid() As Boolean
+
+  Dim sSQL As String
+  Dim rsTemp As Recordset
+  Dim bOK As Boolean
+
+  bOK = True
+  sSQL = "SELECT * FROM sys.sysservers WHERE srvname = '" & mstrLinkedServer & "'"
+  
+  Set rsTemp = datGeneral.GetRecords(sSQL)
+  bOK = Not (rsTemp.EOF And rsTemp.BOF)
+  
+  If bOK Then
+    sSQL = "SELECT * FROM [" & mstrLinkedServer & "].master.sys.databases WHERE name = '" & mstrLinkedCatalog & "'"
+    Set rsTemp = datGeneral.GetRecords(sSQL)
+    bOK = Not (rsTemp.EOF And rsTemp.BOF)
+  End If
+  
+  If bOK Then
+    sSQL = "SELECT * FROM [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].sys.tables WHERE name = '" & mstrLinkedTable & "'"
+    Set rsTemp = datGeneral.GetRecords(sSQL)
+    bOK = Not (rsTemp.EOF And rsTemp.BOF)
+  End If
+  
+  CheckLinkedServerIsValid = bOK
+  rsTemp.Close
+  Set rsTemp = Nothing
+  
+End Function
