@@ -35,7 +35,7 @@ Begin VB.Form frmExport
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   8325
-      TabIndex        =   119
+      TabIndex        =   122
       Top             =   5550
       Width           =   1200
    End
@@ -43,14 +43,14 @@ Begin VB.Form frmExport
       Caption         =   "&OK"
       Height          =   400
       Left            =   7050
-      TabIndex        =   118
+      TabIndex        =   121
       Top             =   5550
       Width           =   1200
    End
    Begin TabDlg.SSTab SSTab1 
       Height          =   5385
       Left            =   45
-      TabIndex        =   120
+      TabIndex        =   123
       Top             =   45
       Width           =   9480
       _ExtentX        =   16722
@@ -104,37 +104,43 @@ Begin VB.Form frmExport
       TabPicture(5)   =   "frmExport.frx":0098
       Tab(5).ControlEnabled=   0   'False
       Tab(5).Control(0)=   "fraCMGFile"
+      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "fraDelimFile"
+      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).Control(2)=   "fraOutputDestination"
+      Tab(5).Control(2).Enabled=   0   'False
       Tab(5).Control(3)=   "fraOutputType"
+      Tab(5).Control(3).Enabled=   0   'False
       Tab(5).Control(4)=   "fraXML"
+      Tab(5).Control(4).Enabled=   0   'False
       Tab(5).Control(5)=   "fraTableOutput"
+      Tab(5).Control(5).Enabled=   0   'False
       Tab(5).ControlCount=   6
       Begin VB.Frame fraTableOutput 
          Caption         =   "Table Output Options :"
          Height          =   1950
          Left            =   -74850
-         TabIndex        =   146
+         TabIndex        =   149
          Top             =   3285
          Width           =   9180
          Begin VB.TextBox txtLinkedTable 
             Height          =   315
             Left            =   1800
-            TabIndex        =   152
+            TabIndex        =   105
             Top             =   1200
             Width           =   2670
          End
          Begin VB.TextBox txtLinkedCatalog 
             Height          =   315
             Left            =   1800
-            TabIndex        =   151
+            TabIndex        =   104
             Top             =   750
             Width           =   2670
          End
          Begin VB.TextBox txtLinkedServer 
             Height          =   315
             Left            =   1800
-            TabIndex        =   150
+            TabIndex        =   103
             Top             =   315
             Width           =   2670
          End
@@ -142,7 +148,7 @@ Begin VB.Form frmExport
             Caption         =   "Table :"
             Height          =   165
             Left            =   255
-            TabIndex        =   149
+            TabIndex        =   152
             Top             =   1275
             Width           =   960
          End
@@ -150,7 +156,7 @@ Begin VB.Form frmExport
             Caption         =   "Catalog :"
             Height          =   255
             Left            =   255
-            TabIndex        =   148
+            TabIndex        =   151
             Top             =   825
             Width           =   1170
          End
@@ -158,7 +164,7 @@ Begin VB.Form frmExport
             Caption         =   "Server :"
             Height          =   300
             Left            =   255
-            TabIndex        =   147
+            TabIndex        =   150
             Top             =   390
             Width           =   1365
          End
@@ -167,14 +173,14 @@ Begin VB.Form frmExport
          Caption         =   "XML Options :"
          Height          =   1950
          Left            =   -74850
-         TabIndex        =   128
+         TabIndex        =   131
          Top             =   3285
          Width           =   9180
          Begin VB.CheckBox chkSplitXMLNodesFile 
             Caption         =   "&Split nodes into individual files"
             Height          =   210
             Left            =   5925
-            TabIndex        =   142
+            TabIndex        =   145
             Top             =   1665
             Width           =   3030
          End
@@ -182,7 +188,7 @@ Begin VB.Form frmExport
             Caption         =   "Preser&ve transformation path"
             Height          =   270
             Left            =   5925
-            TabIndex        =   141
+            TabIndex        =   144
             Top             =   1215
             Width           =   2865
          End
@@ -190,7 +196,7 @@ Begin VB.Form frmExport
             Caption         =   "Preserve XSD pat&h"
             Height          =   270
             Left            =   5925
-            TabIndex        =   136
+            TabIndex        =   139
             Top             =   780
             Width           =   2355
          End
@@ -199,7 +205,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   315
             Left            =   5115
-            TabIndex        =   134
+            TabIndex        =   137
             Top             =   750
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -218,7 +224,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   5460
             MaskColor       =   &H000000FF&
-            TabIndex        =   135
+            TabIndex        =   138
             ToolTipText     =   "Clear Path"
             Top             =   750
             UseMaskColor    =   -1  'True
@@ -229,7 +235,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   315
             Left            =   2115
-            TabIndex        =   139
+            TabIndex        =   142
             Top             =   750
             Width           =   3000
          End
@@ -237,7 +243,7 @@ Begin VB.Form frmExport
             Caption         =   "Only &include audited changes"
             Height          =   210
             Left            =   5940
-            TabIndex        =   133
+            TabIndex        =   136
             Top             =   360
             Width           =   3030
          End
@@ -245,7 +251,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   2115
             MaxLength       =   50
-            TabIndex        =   132
+            TabIndex        =   135
             Top             =   315
             Width           =   3000
          End
@@ -263,7 +269,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   5460
             MaskColor       =   &H000000FF&
-            TabIndex        =   140
+            TabIndex        =   143
             ToolTipText     =   "Clear Path"
             Top             =   1200
             UseMaskColor    =   -1  'True
@@ -274,7 +280,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   315
             Left            =   5115
-            TabIndex        =   138
+            TabIndex        =   141
             Top             =   1200
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -286,7 +292,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   2115
             Locked          =   -1  'True
-            TabIndex        =   130
+            TabIndex        =   133
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   1200
@@ -296,7 +302,7 @@ Begin VB.Form frmExport
             Caption         =   "XSD File :"
             Height          =   210
             Left            =   240
-            TabIndex        =   137
+            TabIndex        =   140
             Top             =   825
             Width           =   1410
          End
@@ -304,7 +310,7 @@ Begin VB.Form frmExport
             Caption         =   "Custom Node Name : "
             Height          =   285
             Left            =   225
-            TabIndex        =   131
+            TabIndex        =   134
             Top             =   390
             Width           =   1845
          End
@@ -312,7 +318,7 @@ Begin VB.Form frmExport
             Caption         =   "Transformation File :"
             Height          =   255
             Left            =   225
-            TabIndex        =   129
+            TabIndex        =   132
             Top             =   1275
             Width           =   1815
          End
@@ -320,7 +326,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraInformation 
          Height          =   2355
          Left            =   150
-         TabIndex        =   121
+         TabIndex        =   124
          Top             =   400
          Width           =   9180
          Begin VB.ComboBox cboCategory 
@@ -475,7 +481,7 @@ Begin VB.Form frmExport
             Caption         =   "Category :"
             Height          =   240
             Left            =   195
-            TabIndex        =   126
+            TabIndex        =   129
             Top             =   765
             Width           =   1005
          End
@@ -485,7 +491,7 @@ Begin VB.Form frmExport
             Caption         =   "Access :"
             Height          =   195
             Left            =   4770
-            TabIndex        =   125
+            TabIndex        =   128
             Top             =   765
             Width           =   825
          End
@@ -495,7 +501,7 @@ Begin VB.Form frmExport
             Caption         =   "Description :"
             Height          =   195
             Left            =   195
-            TabIndex        =   124
+            TabIndex        =   127
             Top             =   1155
             Width           =   1080
          End
@@ -505,7 +511,7 @@ Begin VB.Form frmExport
             Caption         =   "Name :"
             Height          =   195
             Left            =   195
-            TabIndex        =   123
+            TabIndex        =   126
             Top             =   360
             Width           =   690
          End
@@ -515,7 +521,7 @@ Begin VB.Form frmExport
             Caption         =   "Owner :"
             Height          =   195
             Left            =   4770
-            TabIndex        =   122
+            TabIndex        =   125
             Top             =   360
             Width           =   810
          End
@@ -532,7 +538,7 @@ Begin VB.Form frmExport
             Height          =   195
             Index           =   9
             Left            =   200
-            TabIndex        =   127
+            TabIndex        =   130
             Top             =   1600
             Width           =   1200
          End
@@ -752,7 +758,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   315
             Left            =   4800
-            TabIndex        =   144
+            TabIndex        =   147
             Top             =   1485
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -762,7 +768,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   315
             Left            =   4800
-            TabIndex        =   143
+            TabIndex        =   146
             Top             =   705
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1779,13 +1785,13 @@ Begin VB.Form frmExport
          Caption         =   "Delimited File Options :"
          Height          =   1665
          Left            =   -74850
-         TabIndex        =   103
+         TabIndex        =   106
          Top             =   3285
          Width           =   9180
          Begin COASpinner.COA_Spinner spnSplitFileSize 
             Height          =   300
             Left            =   7920
-            TabIndex        =   109
+            TabIndex        =   112
             Top             =   330
             Width           =   1095
             _ExtentX        =   1931
@@ -1808,7 +1814,7 @@ Begin VB.Form frmExport
             Caption         =   "Split file in &blocks"
             Height          =   300
             Left            =   4710
-            TabIndex        =   108
+            TabIndex        =   111
             Top             =   315
             Width           =   1875
          End
@@ -1816,7 +1822,7 @@ Begin VB.Form frmExport
             Caption         =   "Strip delimiter from d&ata"
             Height          =   240
             Left            =   4710
-            TabIndex        =   112
+            TabIndex        =   115
             Top             =   1125
             Visible         =   0   'False
             Width           =   2475
@@ -1827,7 +1833,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   3420
             MaxLength       =   1
-            TabIndex        =   107
+            TabIndex        =   110
             Top             =   300
             Width           =   345
          End
@@ -1835,7 +1841,7 @@ Begin VB.Form frmExport
             Caption         =   "Enclose in &quotes"
             Height          =   195
             Left            =   4710
-            TabIndex        =   110
+            TabIndex        =   113
             Top             =   750
             Width           =   1875
          End
@@ -1845,7 +1851,7 @@ Begin VB.Form frmExport
             Left            =   1455
             List            =   "frmExport.frx":02B3
             Style           =   2  'Dropdown List
-            TabIndex        =   105
+            TabIndex        =   108
             Top             =   300
             Width           =   1095
          End
@@ -1853,7 +1859,7 @@ Begin VB.Form frmExport
             Caption         =   "Block Size :"
             Height          =   300
             Left            =   6810
-            TabIndex        =   145
+            TabIndex        =   148
             Top             =   360
             Width           =   1035
          End
@@ -1863,7 +1869,7 @@ Begin VB.Form frmExport
             Caption         =   "Other :"
             Height          =   210
             Left            =   2730
-            TabIndex        =   106
+            TabIndex        =   109
             Top             =   360
             Width           =   585
          End
@@ -1872,7 +1878,7 @@ Begin VB.Form frmExport
             Caption         =   "Delimiter :"
             Height          =   195
             Left            =   315
-            TabIndex        =   104
+            TabIndex        =   107
             Top             =   360
             Width           =   915
          End
@@ -1881,14 +1887,14 @@ Begin VB.Form frmExport
          Caption         =   "CMG Options :"
          Height          =   1665
          Left            =   -74850
-         TabIndex        =   111
+         TabIndex        =   114
          Top             =   3285
          Width           =   9180
          Begin VB.CheckBox chkUpdateAuditPointer 
             Caption         =   "Commit &after run"
             Height          =   195
             Left            =   5500
-            TabIndex        =   117
+            TabIndex        =   120
             Top             =   360
             Width           =   2055
          End
@@ -1896,7 +1902,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   1995
             MaxLength       =   10
-            TabIndex        =   116
+            TabIndex        =   119
             Top             =   700
             Width           =   1000
          End
@@ -1904,7 +1910,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   2000
             Style           =   2  'Dropdown List
-            TabIndex        =   114
+            TabIndex        =   117
             Top             =   300
             Width           =   3000
          End
@@ -1912,7 +1918,7 @@ Begin VB.Form frmExport
             Caption         =   "File Export Code :"
             Height          =   195
             Left            =   195
-            TabIndex        =   115
+            TabIndex        =   118
             Top             =   765
             Width           =   1605
          End
@@ -1920,7 +1926,7 @@ Begin VB.Form frmExport
             Caption         =   "Record Identifier :"
             Height          =   195
             Left            =   195
-            TabIndex        =   113
+            TabIndex        =   116
             Top             =   360
             Width           =   1635
          End
@@ -1999,7 +2005,7 @@ Public Property Let FormPrint(ByVal bPrint As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -2039,7 +2045,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
