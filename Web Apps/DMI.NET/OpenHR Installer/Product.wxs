@@ -146,13 +146,17 @@
 											Root="HKLM"
 											Type="raw" />
 		</Property>
-		<Condition Message="OpenHR requires SQL Server client; please install it an then re-run the OpenHR setup">
+		<Condition Message="OpenHR requires SQL Server client; please install it and then re-run the OpenHR setup">
 			<![CDATA[Installed OR (SQLCLIENT10INSTALLED > "#0" OR SQLCLIENT11INSTALLED > "#0"]]>
 		</Condition>
 
-		<!-- License and images -->
+		<!-- License -->
 		<WixVariable Id="WixUILicenseRtf" Value="$(var.MyWebResourceDir)\License.rtf" />
-
+		
+		<!-- Images for the UI -->
+		<WixVariable Id="WixUIBannerBmp" Value="COA_Logo_Small.jpg" />
+		<WixVariable Id="WixUIDialogBmp" Value="COA_Background.jpg" />
+		
 		<!-- Specify UI -->
 		<UIRef Id="WixUI_OpenHR" />
 

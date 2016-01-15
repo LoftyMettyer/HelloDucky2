@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AdvancedPrivateCertificate.pfx" />
+    <Content Include="COA_Background.jpg" />
+    <Content Include="COA_Logo_Small.jpg" />
     <Content Include="ConfigurationInitialize.wxi" />
     <Content Include="License.rtf" />
   </ItemGroup>
