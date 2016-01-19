@@ -2649,6 +2649,9 @@ PRINT 'Step - Talent Management Reports'
 
         EXEC sp_executesql N'GRANT SELECT,INSERT,UPDATE,DELETE ON [ASRSysTalentReports] TO [ASRSysGroup]'
 
+		IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysTalentReports', 'U') AND name = 'OutputEmail')
+			EXEC sp_executesql N'ALTER TABLE ASRSysTalentReports ADD OutputEmail bit;';
+
 
 
 
