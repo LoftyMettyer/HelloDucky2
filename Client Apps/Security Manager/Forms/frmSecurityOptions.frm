@@ -67,8 +67,8 @@ Begin VB.Form frmSecurityOptions
       TabCaption(1)   =   "&Advanced"
       TabPicture(1)   =   "frmSecurityOptions.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraOrphanedAccounts"
-      Tab(1).Control(1)=   "frmWindowsAuth"
+      Tab(1).Control(0)=   "frmWindowsAuth"
+      Tab(1).Control(1)=   "fraOrphanedAccounts"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Login Maintenance"
       TabPicture(2)   =   "frmSecurityOptions.frx":0044
@@ -83,12 +83,20 @@ Begin VB.Form frmSecurityOptions
          TabIndex        =   32
          Top             =   405
          Width           =   6375
+         Begin VB.CheckBox chkOverrideSecurity 
+            Caption         =   "&Use specific security group :"
+            Height          =   210
+            Left            =   135
+            TabIndex        =   35
+            Top             =   945
+            Width           =   2775
+         End
          Begin VB.CheckBox chkEmailWorkAddress 
             Caption         =   "Send login details to wor&k email address"
             Height          =   225
             Left            =   135
             TabIndex        =   31
-            Top             =   1815
+            Top             =   2010
             Width           =   3975
          End
          Begin VB.CheckBox chkDisableLoginsOnLeaveDate 
@@ -96,7 +104,7 @@ Begin VB.Form frmSecurityOptions
             Height          =   255
             Left            =   135
             TabIndex        =   30
-            Top             =   1245
+            Top             =   1455
             Width           =   3210
          End
          Begin VB.CheckBox chkAutoAddFromSelfService 
@@ -110,11 +118,11 @@ Begin VB.Form frmSecurityOptions
          Begin VB.ComboBox cboAutoAddSelfServiceGroup 
             Height          =   315
             ItemData        =   "frmSecurityOptions.frx":0060
-            Left            =   2835
+            Left            =   3000
             List            =   "frmSecurityOptions.frx":0062
             Style           =   2  'Dropdown List
             TabIndex        =   33
-            Top             =   795
+            Top             =   900
             Width           =   2805
          End
          Begin VB.Label Label2 
@@ -122,17 +130,9 @@ Begin VB.Form frmSecurityOptions
             ForeColor       =   &H000000FF&
             Height          =   900
             Left            =   405
-            TabIndex        =   35
-            Top             =   2175
-            Width           =   5625
-         End
-         Begin VB.Label Label1 
-            Caption         =   "Default Security Group : "
-            Height          =   270
-            Left            =   405
             TabIndex        =   34
-            Top             =   840
-            Width           =   2220
+            Top             =   2370
+            Width           =   5625
          End
       End
       Begin VB.Frame frmWindowsAuth 
@@ -554,6 +554,7 @@ Private Function LoadSecuritySettings() As Boolean
   
   ' Login maintenance
   chkAutoAddFromSelfService.Value = IIf(gbLoginMaintAutoAdd, vbChecked, vbUnchecked)
+  chkOverrideSecurity.Value = IIf(gbOverrideSecurityGroup, vbChecked, vbUnchecked)
   SetComboText cboAutoAddSelfServiceGroup, gstrLoginMaintAutoAddGroup
   chkDisableLoginsOnLeaveDate.Value = IIf(gbLoginMaintDisableOnLeave, vbChecked, vbUnchecked)
   chkEmailWorkAddress.Value = IIf(gbLoginMaintSendEmail, vbChecked, vbUnchecked)
@@ -632,6 +633,9 @@ Private Function SaveSecuritySettings() As Boolean
   ' Login Maintenance
   gbLoginMaintAutoAdd = IIf(chkAutoAddFromSelfService.Value = vbChecked, True, False)
   SaveSystemSetting "LoginMaintenance", "AUTOADD", gbLoginMaintAutoAdd
+  
+  gbOverrideSecurityGroup = IIf(chkOverrideSecurity.Value = vbChecked, True, False)
+  SaveSystemSetting "LoginMaintenance", "OVERRIDEGROUP", gbOverrideSecurityGroup
   
   gstrLoginMaintAutoAddGroup = cboAutoAddSelfServiceGroup.Text
   SaveSystemSetting "LoginMaintenance", "AUTOADDGROUP", gstrLoginMaintAutoAddGroup
@@ -810,6 +814,11 @@ Private Sub chkMinimumPasswordLength_Click()
   
   Changed = True
   
+End Sub
+
+Private Sub chkOverrideSecurity_Click()
+  Changed = True
+  RefreshButtons
 End Sub
 
 Private Sub chkPasswordsRemembered_Click()
@@ -993,6 +1002,8 @@ Private Sub RefreshButtons()
     spnAttempts.BackColor = IIf(chkPCLockout.Enabled, vbWindowBackground, vbButtonFace)
     spnResetTime.BackColor = IIf(chkPCLockout.Enabled, vbWindowBackground, vbButtonFace)
     spnLockoutDuration.BackColor = IIf(chkPCLockout.Enabled, vbWindowBackground, vbButtonFace)
+  
+    cboAutoAddSelfServiceGroup.Enabled = (chkOverrideSecurity.Value = vbChecked)
   
   End If
   

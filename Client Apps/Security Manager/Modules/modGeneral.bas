@@ -6,6 +6,8 @@ Public Const gsPARAMETERKEY_SURNAME = "Param_FieldsSurname"
 Public Const gsPARAMETERKEY_LOGINNAME = "Param_FieldsLoginName"
 Public Const gsPARAMETERKEY_SECONDLOGINNAME = "Param_FieldsSecondLoginName"
 Public Const gsPARAMETERKEY_LEAVINGDATE = "Param_FieldsLeavingDate"
+Public Const gsPARAMETERKEY_SECURITYGROUP = "Param_FieldsSecurityGroup"
+
 
 ' HIERARCHY MODULE CONSTANTS
 Public Const gsMODULEKEY_HIERARCHY = "MODULE_HIERARCHY"

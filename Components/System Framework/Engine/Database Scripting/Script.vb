@@ -1505,18 +1505,20 @@ Namespace ScriptDB
           Dim leavingDateColumn = ModuleSetup.Setting("MODULE_PERSONNEL", "Param_FieldsLeavingDate").Column
           Dim knownAsColumn = ModuleSetup.Setting("MODULE_PERSONNEL", "Param_FieldsSSIWelcome").Column
           Dim startDateColumn = ModuleSetup.Setting("MODULE_PERSONNEL", "Param_FieldsStartDate").Column
+          Dim securityGroupColumn = ModuleSetup.Setting("MODULE_PERSONNEL", "Param_FieldsSecurityGroup").Column
 
-          If selfServiceColumn IsNot Nothing Then
+          If selfServiceColumn IsNot Nothing And securityGroupColumn IsNot Nothing Then
+
             sCode &= String.Format(vbNewLine & vbNewLine & "    -- Maintain logins from self service column" & vbNewLine _
                   & "    IF UPDATE([{0}])" & vbNewLine _
                   & "    BEGIN" & vbNewLine _
                   & "        DECLARE @logins AS SelfServiceType;" & vbNewLine _
                   & "        INSERT @logins" & vbNewLine _
-                  & "        SELECT i.[{0}], i.[{1}], i.[{2}], i.[{3}], i.[{4}] FROM inserted i" & vbNewLine _
+                  & "        SELECT i.[{0}], i.[{1}], i.[{2}], i.[{3}], i.[{4}], i.[{5}] FROM inserted i" & vbNewLine _
                   & "            INNER JOIN deleted d ON d.id = i.id" & vbNewLine _
                   & "            WHERE ISNULL(i.[{0}], '') <> ISNULL(d.[{0}], '');" & vbNewLine _
                   & "        EXECUTE dbo.spASRGenerateSelfServiceLogins @logins;" & vbNewLine _
-                  & "    END", selfServiceColumn.Name, workEmailColumn.Name, startDateColumn.Name, leavingDateColumn.Name, knownAsColumn.Name)
+                  & "    END", selfServiceColumn.Name, workEmailColumn.Name, startDateColumn.Name, leavingDateColumn.Name, knownAsColumn.Name, securityGroupColumn.Name)
 
           End If
 

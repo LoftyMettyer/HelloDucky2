@@ -5657,14 +5657,15 @@ On Error GoTo ErrorTrap:
   Dim sURL As String
   Dim sSelfServiceColumn As String
   Dim sLeavingDateColumn As String
+  Dim sSecurityGroupColumn As String
   Dim sPersonnelTable As String
-  
-  
+    
   bOK = True
   sURL = GetSystemSetting("Web", "SiteAddress", "")
   sPersonnelTable = GetTableName(glngPersonnelTableID)
   sSelfServiceColumn = GetColumnName(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LOGINNAME))
   sLeavingDateColumn = GetColumnName(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LEAVINGDATE))
+  sSecurityGroupColumn = GetColumnName(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SECURITYGROUP))
  
   sSQL = "/* --------------------------------------------------- */" & vbNewLine & _
         "/* Login Maintenance stored procedure.                 */" & vbNewLine & _
@@ -5678,6 +5679,7 @@ On Error GoTo ErrorTrap:
         "  DECLARE @hResult int," & vbNewLine & _
         "      @sCode nvarchar(MAX) = ''," & vbNewLine & _
         "      @login nvarchar(255)," & vbNewLine & _
+        "      @securityGroup nvarchar(255)," & vbNewLine & _
         "      @emailAddress nvarchar(255)," & vbNewLine & _
         "      @startDate datetime," & vbNewLine & _
         "      @leavingDate datetime," & vbNewLine & _
@@ -5685,21 +5687,25 @@ On Error GoTo ErrorTrap:
         "      @knownAs nvarchar(255)," & vbNewLine & _
         "      @sendEmail bit = " & IIf(gbLoginMaintSendEmail, 1, 0) & "," & vbNewLine & _
         "      @emailContent nvarchar(MAX) = ''," & vbNewLine & _
-        "      @defaultGroup nvarchar(255) = '" & gstrLoginMaintAutoAddGroup & "'," & vbNewLine & _
         "      @initialPassword varchar(12) = 'Password!123';" & vbNewLine & vbNewLine
 
   If gbLoginMaintAutoAdd Then
   
     sSQL = sSQL & _
-          "  DECLARE loginCursor CURSOR LOCAL FAST_FORWARD FOR SELECT [Login], [Email], [StartDate], [LeavingDate], [KnownAs] FROM @logins" & vbNewLine & _
+          "  DECLARE loginCursor CURSOR LOCAL FAST_FORWARD FOR SELECT [Login], [Email], [StartDate], [LeavingDate], [KnownAs], [SecurityGroup] FROM @logins" & vbNewLine & _
           "      WHERE [Login] <> '' AND [Email] <> '';" & vbNewLine & _
           "  OPEN loginCursor;" & vbNewLine & _
-          "  FETCH NEXT FROM loginCursor INTO @login, @emailAddress, @startDate, @leavingDate, @knownAs;" & vbNewLine & _
+          "  FETCH NEXT FROM loginCursor INTO @login, @emailAddress, @startDate, @leavingDate, @knownAs, @securityGroup;" & vbNewLine & _
           "  WHILE @@FETCH_STATUS = 0" & vbNewLine & _
           "  BEGIN" & vbNewLine & vbNewLine
   
+    If gbOverrideSecurityGroup Then
+      sSQL = sSQL & _
+          "      SET @securityGroup = '" & gstrLoginMaintAutoAddGroup & "';" & vbNewLine & vbNewLine
+    End If
+  
     sSQL = sSQL & _
-          "      IF NOT EXISTS (SELECT loginname FROM sys.syslogins WHERE name = @login)" & vbNewLine & _
+          "      IF NOT EXISTS (SELECT loginname FROM sys.syslogins WHERE name = @login) AND EXISTS(SELECT Name FROM ASRSysGroups WHERE Name = @securityGroup)" & vbNewLine & _
           "      BEGIN" & vbNewLine & _
           "          IF @sendEmail = 1" & vbNewLine & _
           "              SET @initialPassword = LOWER(SUBSTRING(CONVERT(varchar(255), NEWID()), 1, 5)) + 'a!3' + LOWER(SUBSTRING(CONVERT(varchar(255), NEWID()), 1, 3));" & vbNewLine & vbNewLine & _
@@ -5712,12 +5718,12 @@ On Error GoTo ErrorTrap:
           "          SET @sCode = 'CREATE LOGIN [' + @login + '] WITH PASSWORD = ''' + @initialPassword + ''' MUST_CHANGE, CHECK_POLICY=ON, CHECK_EXPIRATION=ON; " & vbNewLine & _
           "              CREATE USER [' + @login + '] FOR LOGIN [' + @login + '];" & vbNewLine & _
           "              EXEC sp_addrolemember ''ASRSysGroup'', ''' + @login + ''';" & vbNewLine & _
-          "              EXEC sp_addrolemember ''' + @defaultGroup + ''', ''' + @login + '''';" & vbNewLine & vbNewLine & _
+          "              EXEC sp_addrolemember ''' + @securityGroup + ''', ''' + @login + '''';" & vbNewLine & vbNewLine & _
           "          EXEC sp_executeSQL @sCode;" & vbNewLine & vbNewLine
           
     sSQL = sSQL & _
           "        INSERT ASRSysAuditGroup(UserName, DateTimeStamp, GroupName, UserLogin, [Action])" & vbNewLine & _
-          "            VALUES ('System', GETDATE(), '" & gstrLoginMaintAutoAddGroup & "', @login, 'User Added')" & vbNewLine & vbNewLine
+          "            VALUES ('System', GETDATE(), @securityGroup, @login, 'User Added')" & vbNewLine & vbNewLine
           
     sSQL = sSQL & _
           "          IF @sendEmail = 1 AND (@leavingDate >= @todaysDate OR @leavingDate IS NULL)" & vbNewLine & _
@@ -5730,7 +5736,7 @@ On Error GoTo ErrorTrap:
           "              EXECUTE dbo.spASREmailImmediate 'OpenHR Web';" & vbNewLine & _
           "          END" & vbNewLine & _
           "      END" & vbNewLine & _
-          "      FETCH NEXT FROM loginCursor INTO @login, @emailAddress, @startDate, @leavingDate, @knownAs;" & vbNewLine
+          "      FETCH NEXT FROM loginCursor INTO @login, @emailAddress, @startDate, @leavingDate, @knownAs, @securityGroup;" & vbNewLine
     
       sSQL = sSQL & _
           "  END" & vbNewLine & _

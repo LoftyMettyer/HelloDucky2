@@ -4,7 +4,7 @@ Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmPersonnelSetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Personnel"
-   ClientHeight    =   9000
+   ClientHeight    =   9165
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   5880
@@ -21,21 +21,22 @@ Begin VB.Form frmPersonnelSetup
    Icon            =   "frmPersonnelSetup.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   9000
+   ScaleHeight     =   9165
    ScaleWidth      =   5880
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin TabDlg.SSTab SSTab1 
-      Height          =   8190
+      Height          =   8415
       Left            =   120
       TabIndex        =   0
       TabStop         =   0   'False
       Top             =   120
       Width           =   5670
       _ExtentX        =   10001
-      _ExtentY        =   14446
+      _ExtentY        =   14843
       _Version        =   393216
       Style           =   1
       TabHeight       =   520
@@ -49,13 +50,17 @@ Begin VB.Form frmPersonnelSetup
       TabPicture(1)   =   "frmPersonnelSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraRegion"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraWorkingPattern"
+      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Hierarchy"
       TabPicture(2)   =   "frmPersonnelSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraHierarchyTable"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraPostAllocationTable"
+      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       Begin VB.Frame fraPostAllocationTable 
          Caption         =   "Post Allocation Table :"
@@ -409,11 +414,19 @@ Begin VB.Form frmPersonnelSetup
       End
       Begin VB.Frame fraTableDefinition 
          Caption         =   "Personnel Records :"
-         Height          =   7530
+         Height          =   7890
          Left            =   120
          TabIndex        =   38
          Top             =   400
-         Width           =   5400
+         Width           =   5415
+         Begin VB.ComboBox cboSecurityGroup 
+            Height          =   315
+            Left            =   2715
+            Style           =   2  'Dropdown List
+            TabIndex        =   73
+            Top             =   7365
+            Width           =   2505
+         End
          Begin VB.ComboBox cboSSIPhotograph 
             Height          =   315
             ItemData        =   "frmPersonnelSetup.frx":0060
@@ -561,6 +574,14 @@ Begin VB.Form frmPersonnelSetup
             Width           =   5000
             _ExtentX        =   8811
             _ExtentY        =   53
+         End
+         Begin VB.Label lblSecurityGroup 
+            Caption         =   "Security Group :"
+            Height          =   300
+            Left            =   210
+            TabIndex        =   74
+            Top             =   7395
+            Width           =   1935
          End
          Begin VB.Label lblIntranetPhotograph 
             BackStyle       =   0  'Transparent
@@ -725,7 +746,7 @@ Begin VB.Form frmPersonnelSetup
       Height          =   400
       Left            =   3315
       TabIndex        =   36
-      Top             =   8460
+      Top             =   8655
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
@@ -734,7 +755,7 @@ Begin VB.Form frmPersonnelSetup
       Height          =   400
       Left            =   4575
       TabIndex        =   37
-      Top             =   8460
+      Top             =   8655
       Width           =   1200
    End
 End
@@ -764,6 +785,8 @@ Private mvar_lngSecondLoginNameID As Long
 Private mvar_lngGradeID As Long
 Private mvar_lngManagerStaffNoID As Long
 Private mvar_lngJobTitleID As Long
+Private mvar_lngSecurityGroupID As Long
+
 ' Career Change Tab
 Private mvar_lngRegionID As Long
 Private mvar_lngHRegionTableID As Long
@@ -804,7 +827,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  If Not mbLoading Then cmdOK.Enabled = True
+  If Not mbLoading Then cmdOk.Enabled = True
 End Property
 
 Private Sub cboGrade_Click()
@@ -899,6 +922,12 @@ Private Sub cboPostAllocationTable_Click()
   Changed = True
 End Sub
 
+Private Sub cboSecurityGroup_Click()
+  With cboSecurityGroup
+    mvar_lngSecurityGroupID = .ItemData(.ListIndex)
+  End With
+  Changed = True
+End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 Select Case KeyCode
@@ -917,7 +946,7 @@ Private Sub Form_Load()
   SSTab1.Tab = 0
     
   mbLoading = True
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
   'Changed = False
   
   ' Only display the Hierarchy tab if UDFs are enabled.
@@ -1214,6 +1243,7 @@ Private Sub RefreshPersonnelColumnControls()
   Dim iJobTitleListIndex As Integer
   Dim iSSIWelcomeListIndex As Integer
   Dim iSSIPhotographListIndex As Integer
+  Dim iSecurityGroupIndex As Integer
   Dim objctl As Control
   
   iEmployeeNumberListIndex = 0
@@ -1230,6 +1260,7 @@ Private Sub RefreshPersonnelColumnControls()
   iGradeListIndex = 0
   iManagerStaffNoListIndex = 0
   iJobTitleListIndex = 0
+  iSecurityGroupIndex = 0
 
   UI.LockWindow Me.hWnd
   
@@ -1373,6 +1404,15 @@ Private Sub RefreshPersonnelColumnControls()
               iManagerStaffNoListIndex = cboManagerStaffNo.NewIndex
             End If
           End If
+                    
+          ' Security Group
+          If !DataType = dtVARCHAR Then
+            cboSecurityGroup.AddItem !ColumnName
+            cboSecurityGroup.ItemData(cboSecurityGroup.NewIndex) = !ColumnID
+            If !ColumnID = mvar_lngSecurityGroupID Then
+              iSecurityGroupIndex = cboSecurityGroup.NewIndex
+            End If
+          End If
           
           ' Photograph column combo for SSI
           If !DataType = dtVARBINARY And !OLEType = 2 And !MaxOLESizeEnabled Then
@@ -1407,6 +1447,7 @@ Private Sub RefreshPersonnelColumnControls()
   cboJobTitle.ListIndex = iJobTitleListIndex
   cboSSIWelcome.ListIndex = iSSIWelcomeListIndex
   cboSSIPhotograph.ListIndex = iSSIPhotographListIndex
+  cboSecurityGroup.ListIndex = iSecurityGroupIndex
 
   RefreshLoginColumnControls
   
@@ -2218,6 +2259,8 @@ Private Function SaveChanges() As Boolean
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SECONDLOGINNAME, gsPARAMETERTYPE_COLUMNID, mvar_lngSecondLoginNameID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_GRADE, gsPARAMETERTYPE_COLUMNID, mvar_lngGradeID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_MANAGERSTAFFNO, gsPARAMETERTYPE_COLUMNID, mvar_lngManagerStaffNoID
+  SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SECURITYGROUP, gsPARAMETERTYPE_COLUMNID, mvar_lngSecurityGroupID
+  
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_JOBTITLE, gsPARAMETERTYPE_COLUMNID, mvar_lngJobTitleID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_REGION, gsPARAMETERTYPE_COLUMNID, mvar_lngRegionID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_HREGIONTABLE, gsPARAMETERTYPE_TABLEID, mvar_lngHRegionTableID
@@ -2458,6 +2501,7 @@ Private Sub ReadParameters()
   
   mvar_lngGradeID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_GRADE, 0)
   mvar_lngManagerStaffNoID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_MANAGERSTAFFNO, 0)
+  mvar_lngSecurityGroupID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SECURITYGROUP, 0)
   mvar_lngJobTitleID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_JOBTITLE, 0)
   mvar_lngRegionID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_REGION, 0)
   mvar_lngHRegionTableID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_HREGIONTABLE, 0)

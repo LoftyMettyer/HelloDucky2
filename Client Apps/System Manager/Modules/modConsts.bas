@@ -150,6 +150,7 @@ Public Const gsPARAMETERKEY_SECONDLOGINNAME = "Param_FieldsSecondLoginName"
 Public Const gsPARAMETERKEY_GRADE = "Param_FieldsGrade"
 Public Const gsPARAMETERKEY_MANAGERSTAFFNO = "Param_FieldsManagerStaffNo"
 Public Const gsPARAMETERKEY_JOBTITLE = "Param_FieldsJobTitle"
+Public Const gsPARAMETERKEY_SECURITYGROUP = "Param_FieldsSecurityGroup"
 
 'Region Constants - The following key is used for static region field
 Public Const gsPARAMETERKEY_REGION = "Param_FieldsRegion"

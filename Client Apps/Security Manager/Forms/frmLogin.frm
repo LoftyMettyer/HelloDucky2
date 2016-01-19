@@ -857,6 +857,7 @@ Private Sub Login()
   
   ' Login Maintenance
   gbLoginMaintAutoAdd = GetSystemSetting("LoginMaintenance", "AUTOADD", False)
+  gbOverrideSecurityGroup = GetSystemSetting("LoginMaintenance", "OVERRIDEGROUP", False)
   gstrLoginMaintAutoAddGroup = GetSystemSetting("LoginMaintenance", "AUTOADDGROUP", "")
   gbLoginMaintDisableOnLeave = GetSystemSetting("LoginMaintenance", "DISABLEONLEAVE", False)
   gbLoginMaintSendEmail = GetSystemSetting("LoginMaintenance", "SENDEMAIL", False)

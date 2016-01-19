@@ -100,6 +100,7 @@ Public gbDeleteOrphanWindowsLogins As Boolean
 Public gbDeleteOrphanUsers As Boolean
 
 Public gbLoginMaintAutoAdd As Boolean
+Public gbOverrideSecurityGroup As Boolean
 Public gstrLoginMaintAutoAddGroup As String
 Public gbLoginMaintDisableOnLeave As Boolean
 Public gbLoginMaintSendEmail As Boolean
