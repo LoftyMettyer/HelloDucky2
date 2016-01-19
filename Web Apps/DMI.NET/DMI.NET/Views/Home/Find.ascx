@@ -610,21 +610,14 @@
                                 , New SqlParameter("intTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = baseTableId})
                             Response.Write("<input type='hidden' id=txtCustomReportGrantedForFindWindow name=txtCustomReportGrantedForFindWindow value=" & (rstDefSelRecords.Rows.Count > 0) & ">" & vbCrLf)
 
-                            ' Sets the txtCalendarReportGrantedForFindWindow value
-                            rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure _
-                                        , New SqlParameter("intType", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = UtilityType.utlCalendarReport} _
-                                        , New SqlParameter("blnOnlyMine", SqlDbType.Bit) With {.Direction = ParameterDirection.Input, .Value = False} _
-                                        , New SqlParameter("intTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = baseTableId})
-                            Response.Write("<input type='hidden' id=txtCalendarReportGrantedForFindWindow name=txtCalendarReportGrantedForFindWindow value=" & (rstDefSelRecords.Rows.Count > 0) & ">" & vbCrLf)
+														' Sets the txtCalendarReportGrantedForFindWindow value
+														rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure _
+																, New SqlParameter("intType", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = UtilityType.utlCalendarReport} _
+																, New SqlParameter("blnOnlyMine", SqlDbType.Bit) With {.Direction = ParameterDirection.Input, .Value = False} _
+																, New SqlParameter("intTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = baseTableId})
+														Response.Write("<input type='hidden' id=txtCalendarReportGrantedForFindWindow name=txtCalendarReportGrantedForFindWindow value=" & (rstDefSelRecords.Rows.Count > 0) & ">" & vbCrLf)
 
-                            ' Sets the txtTalentReportGrantedForFindWindow value
-                            rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure _
-                                        , New SqlParameter("intType", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = UtilityType.TalentReport} _
-                                        , New SqlParameter("blnOnlyMine", SqlDbType.Bit) With {.Direction = ParameterDirection.Input, .Value = False} _
-                                        , New SqlParameter("intTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = baseTableId})
-                            Response.Write("<input type='hidden' id=txtTalentReportGrantedForFindWindow name=txtTalentReportGrantedForFindWindow value=" & (rstDefSelRecords.Rows.Count > 0) & ">" & vbCrLf)
-
-                            ' Sets the txtMailMergeGrantedForFindWindow value
+														' Sets the txtMailMergeGrantedForFindWindow value
                             rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure _
                                                 , New SqlParameter("intType", SqlDbType.Int) With {.Direction = ParameterDirection.Input, .Value = UtilityType.utlMailMerge} _
                                                 , New SqlParameter("blnOnlyMine", SqlDbType.Bit) With {.Direction = ParameterDirection.Input, .Value = False} _

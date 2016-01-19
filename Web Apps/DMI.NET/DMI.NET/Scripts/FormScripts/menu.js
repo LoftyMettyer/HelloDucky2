@@ -783,6 +783,12 @@ function menu_MenuClick(sTool) {
 	    return false;
 	}
 
+	// Talent Reports
+	if (sToolName === "mnutoolTalentRecord") {
+		saveChangesPrompt("TALENTREPORTS", 'menu_loadRecordDefSelPage(38, 0, 0, true)');
+		return false;
+	}
+
 		// Course Booking
 	if (sToolName == "mnutoolCancelCourseRecord") {
 		OpenHR.modalPrompt("Are you sure you want to cancel this course?", 4, "Confirm").then(function(answer) {
@@ -948,10 +954,6 @@ function menu_MenuClick(sTool) {
 			return false;
 		}
 
-		if (sToolName === "mnutoolTalentReportsFind") {
-      LoadReportOrUtilityScreen(38);
-      return false;
-		}
 
 		if (sToolName == "mnutoolMailMergeFind") {
 			LoadReportOrUtilityScreen(9);
@@ -1341,7 +1343,9 @@ function menu_refreshMenu() {
 	var fCalendarReportsEnabled = false;
 	var fCanRunCalendarReports = false;
 	var fCanRunMailMerge = false;
-  var fCanRunDataTransfer = false;
+	var fCanRunDataTransfer = false;
+	var fTalentReportsEnabled = false;
+	var fCanRunTalentReports = false;
 
 	var isDMIUser = ($("#txtIsDMIUser")[0].value == "True");
 
@@ -1379,6 +1383,13 @@ function menu_refreshMenu() {
 	  }
 	}
 	
+	if (window.txtSysPerm_TALENTREPORTS_RUN != null) {
+		if ((window.txtSysPerm_TALENTREPORTS_RUN.value === "1") && isDMIUser) {
+			fCanRunTalentReports = true;
+			fTalentReportsEnabled = false;
+		}
+	}
+
 	fCancelCourseVisible = false;
 	fCancelCourseEnabled = false;
 	fBookCourseVisible = false;
@@ -1584,6 +1595,10 @@ function menu_refreshMenu() {
 				(fCalendarReportsVisible) &&
 				(frmRecEdit.txtCurrentRecordID.value > 0));
 
+		// Talent Report (Record Menu)
+		fTalentReportsEnabled = ((fCanRunTalentReports == true) &&
+			(frmRecEdit.txtCurrentRecordID.value > 0));
+
 		//Mail Merge (Record Menu)
 		//fMailMergeVisible = ((frmRecEdit.txtQuickEntry.value.toUpperCase() != "TRUE"));
 		fMailMergeVisible = true;
@@ -1653,8 +1668,12 @@ function menu_refreshMenu() {
 				menu_toolbarEnableItem("mnutoolBradfordRecord", fStdRptBradfordFactorEnabled);	//Toolbar Icon
 				menu_setVisibleMenuItem("mnutoolCalendarReportsRecord", fCalendarReportsVisible);	//Menu Item - Calendar Reports
 				menu_toolbarEnableItem("mnutoolCalendarReportsRecord", fCalendarReportsEnabled);	//Toolbar Icon
+
 				//Hide Calendar Reports Group if all items are hidden.
 				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", (fCalendarReportsVisible || fStdRptAbsenceCalendarVisible || fStdRptAbsenceBreakdownVisible || fStdRptBradfordFactorVisible || fMailMergeVisible || fDataTransferVisible));
+
+			 // Enabled/Disabled Talent Report based on the RUN access rights for logged in user for talent reports
+				menu_toolbarEnableItem("mnutoolTalentRecord", fTalentReportsEnabled);	//Toolbar Icon
 		}
 	
 	  // Utilites (Toolbar!)
@@ -5210,15 +5229,12 @@ function RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGri
 			canRunDataTransfer = true;
 		}
 
-		if (window.txtSysPerm_TALENTREPORTS_RUN != null && window.txtSysPerm_DATATRANSFER_RUN.value == 1 && isDmiUser) {
-		  canRunTalentReports = true;
-		}  
+
 	}
 
 	menu_toolbarEnableItem("mnutoolCustomReportsFind", isNonMultiFindLinkType && canRunCustomReports && frmFind.txtCustomReportGrantedForFindWindow.value.toUpperCase() === "TRUE");
 	menu_toolbarEnableItem("mnutoolMailMergeFind", isNonMultiFindLinkType && canRunMailMerge && frmFind.txtMailMergeGrantedForFindWindow.value.toUpperCase() === "TRUE");
 	menu_toolbarEnableItem("mnutoolCalendarReportsFind", isNonMultiFindLinkType && canRunCalendarReports && frmFind.txtCalendarReportGrantedForFindWindow.value.toUpperCase() === "TRUE");
-	menu_toolbarEnableItem("mnutoolTalentReportsFind", isNonMultiFindLinkType && canRunTalentReports && frmFind.txtTalentReportGrantedForFindWindow.value.toUpperCase() === "TRUE");
 	menu_toolbarEnableItem("mnutoolDataTransferFind", isNonMultiFindLinkType && canRunDataTransfer && frmFind.txtDataTransferGrantedForFindWindow.value.toUpperCase() === "TRUE");
 
 	// Enable multiselect button is multi find is false
