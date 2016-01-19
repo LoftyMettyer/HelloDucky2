@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
@@ -41,23 +41,24 @@ Begin VB.Form frmBatchJob
       _ExtentY        =   9895
       _Version        =   393216
       Style           =   1
-      Tab             =   2
       TabHeight       =   520
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmBatchJob.frx":000C
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraInfo"
-      Tab(0).Control(1)=   "fraScheduling"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "fraScheduling"
+      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).Control(1)=   "fraInfo"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraJobs"
-      Tab(1).Control(1)=   "fraEMailNotify"
+      Tab(1).Control(0)=   "fraEMailNotify"
+      Tab(1).Control(1)=   "fraJobs"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmBatchJob.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraOptions"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraDest"
@@ -67,7 +68,7 @@ Begin VB.Form frmBatchJob
       Tab(2).ControlCount=   3
       Begin VB.Frame fraInfo 
          Height          =   2355
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   0
          Top             =   450
          Width           =   9525
@@ -277,7 +278,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame fraOutput 
          Caption         =   "Output Format :"
          Height          =   3000
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   40
          Top             =   420
          Width           =   2265
@@ -313,7 +314,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame fraDest 
          Caption         =   "Output Destination(s) :"
          Height          =   3000
-         Left            =   2515
+         Left            =   -72485
          TabIndex        =   44
          Top             =   420
          Width           =   7110
@@ -664,11 +665,15 @@ Begin VB.Form frmBatchJob
             GroupHeaders    =   0   'False
             Col.Count       =   5
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
-            stylesets(0).HasFont=   -1  'True
-            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Picture=   "frmBatchJob.frx":0098
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
+            stylesets(1).HasFont=   -1  'True
+            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
@@ -677,10 +682,6 @@ Begin VB.Form frmBatchJob
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmBatchJob.frx":0098
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmBatchJob.frx":00B4
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -789,7 +790,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame fraScheduling 
          Caption         =   "Scheduling :"
          Height          =   2595
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   11
          Top             =   2895
          Width           =   9525
@@ -936,7 +937,6 @@ Begin VB.Form frmBatchJob
             EndProperty
             Enabled         =   0   'False
             MaximumValue    =   999
-            MinimumValue    =   1
             Text            =   "1"
          End
          Begin GTMaskDate.GTMaskDate cboEndDate 
@@ -1050,7 +1050,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame fraOptions 
          Caption         =   "Report Options :"
          Height          =   2020
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   64
          Top             =   3420
          Width           =   9470
@@ -2122,8 +2122,8 @@ Private Function RetrieveBatchJobDetails() As Boolean
     mblnDefinitionCreator = True
   Else
     txtName.Text = prstTemp!Name
-    txtUserName.Text = StrConv(prstTemp!UserName, vbProperCase)
-    mblnDefinitionCreator = (LCase(prstTemp!UserName) = LCase(gsUserName))
+    txtUserName.Text = StrConv(prstTemp!userName, vbProperCase)
+    mblnDefinitionCreator = (LCase(prstTemp!userName) = LCase(gsUserName))
   End If
   
   GetObjectCategories cboCategory, iUtilityType, mlngBatchJobID
@@ -3529,9 +3529,9 @@ Private Function ValidDestination() As Boolean
   With chkDestination
     blnDestination = False
     'blnDestination = (blnDestination Or .Item(desScreen).Value = vbChecked)
-    blnDestination = (blnDestination Or .Item(desPrinter).Value = vbChecked)
-    blnDestination = (blnDestination Or .Item(desSave).Value = vbChecked)
-    blnDestination = (blnDestination Or .Item(desEmail).Value = vbChecked)
+    blnDestination = (blnDestination Or .item(desPrinter).Value = vbChecked)
+    blnDestination = (blnDestination Or .item(desSave).Value = vbChecked)
+    blnDestination = (blnDestination Or .item(desEmail).Value = vbChecked)
   End With
 
   If Not blnDestination Then
@@ -4546,7 +4546,7 @@ Public Sub PrintDef(lBatchJobID As Long)
         .PrintNormal "Category : " & GetObjectCategory(iUtilityType, mlngBatchJobID)
         .PrintNormal "Description : " & IIf(rsTemp!Description <> vbNullString, rsTemp!Description, "N/A")
         .PrintNormal
-        .PrintNormal "Owner : " & rsTemp!UserName
+        .PrintNormal "Owner : " & rsTemp!userName
         .PrintNormal
         .PrintNormal "Scheduled : " & IIf(rsTemp!scheduled = True, "Yes", "No")
         

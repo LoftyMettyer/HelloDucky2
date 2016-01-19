@@ -1446,6 +1446,12 @@ Public Function CheckBatchNeedsRunning2(lBatchJobNameID As Long, sBatchJobName A
     bRunOnce = .Fields("RunOnce")
   End With
   
+  ' Always run
+  If blnRequiresRunning = 0 Then
+    CheckBatchNeedsRunning2 = vbNullString
+    Exit Function
+  End If
+  
   
   'Start checking dates from the start date
   dTestDate = dStartDate
