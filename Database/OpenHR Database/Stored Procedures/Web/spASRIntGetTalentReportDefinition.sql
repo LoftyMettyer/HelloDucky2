@@ -9,7 +9,7 @@ BEGIN
 
 	DECLARE	@iCount		integer,		
 			@sTempHidden	varchar(MAX),		
-			@sAccess 		varchar(MAX),		
+			@sAccess 		varchar(MAX),	
 			@fSysSecMgr		bit;		
 
 	DECLARE @psErrorMsg			varchar(MAX) = '',	
@@ -99,11 +99,14 @@ BEGIN
 	  ISNULL(m.MatchChildColumnID, 0) AS MatchChildColumnID,
 	  ISNULL(m.MatchChildRatingColumnID, 0) AS MatchChildRatingColumnID,
 	  ISNULL(m.MatchAgainstType, 0) AS MatchAgainstType,
+	  m.OutputEmail AS [SendToEmail],
 		m.outputformat AS [Format],		
 		m.outputsave AS [SaveToFile],		
 		m.outputfilename AS [Filename],		
-		m.emailAddrID AS [EmailGroupID],		
+		m.emailAddrID AS [EmailGroupID],	
+		(SELECT Name FROM [dbo].[ASRSysEmailGroupName] WHERE EmailGroupID = m.emailAddrID) AS EmailGroupName,	
 		m.emailSubject,		
+		m.EmailAttachmentName,	
 		m.outputscreen AS [DisplayOutputOnScreen],		
 		CONVERT(integer, m.[timestamp]) AS [Timestamp],
 		CASE WHEN @pfPicklistHidden = 1 OR @pfFilterHidden = 1 THEN 'HD' ELSE '' END AS [BaseViewAccess]

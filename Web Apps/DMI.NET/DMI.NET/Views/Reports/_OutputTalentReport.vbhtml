@@ -1,6 +1,5 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
-
 @Code
 	Html.EnableClientValidation()
 End Code
@@ -11,7 +10,7 @@ End Code
 	<legend class="fontsmalltitle">Output Formats</legend>
 	<fieldset id="outputformats">
 		@Html.RadioButton("Output.Format", 0, Model.Format = OutputFormats.DataOnly, New With {.onchange = "changeOutputType('DataOnly')"})
-		Data Only
+		Preview
 		<br />
 
 		@Html.RadioButton("Output.Format", 4, Model.Format = OutputFormats.ExcelWorksheet, New With {.onchange = "changeOutputType('ExcelWorksheet')"})
@@ -25,14 +24,14 @@ End Code
 <fieldset id="outputdestinatonfieldset" class="border0 floatleft width70">
 	<legend class="fontsmalltitle">Output Destinations</legend>
 
-	<fieldset class="border0 reportdefpreview">
+	<fieldset class="border0 reportdefpreview" style="display:none">
 		<div>
 			@Html.CheckBoxFor(Function(m) m.IsPreview, New With {Key .Name = "Output.IsPreview"})
 			@Html.LabelFor(Function(m) m.IsPreview)
 		</div>
 	</fieldset>
 
-	<fieldset class="border0 reportdefscreen">
+	<fieldset class="border0 reportdefscreen" style="display:none">
 		<div>
 			@Html.CheckBoxFor(Function(m) m.ToScreen, New With {Key .Name = "Output.ToScreen"})
 			@Html.LabelFor(Function(m) m.ToScreen)
@@ -68,26 +67,11 @@ End Code
 	@Html.ValidationMessage("Output.EmailGroupID")		<br />
 	@Html.ValidationMessage("Output.EmailSubject")		<br />
 	@Html.ValidationMessage("Output.EmailAttachmentName")		<br />
-	@Html.ValidationMessage("Output.FileName")		<br />
 </fieldset>
 
 <script type="text/javascript">
 
-	function setOutputToFile() {
-
-		var bSelected = $("#SaveToFile").prop('checked');
-
-		$(".reportdeffile").children().prop("readonly", !bSelected);
-
-		if (!bSelected) {
-			$("#Filename").val("");
-		}
-
-		saveToFileChecked();
-
-	}
-
-	function setOutputToEmail() {		
+	function setOutputToEmail() {
 		var bSelected = $("#SendToEmail").prop('checked');
 		var bReadOnly = isDefinitionReadOnly();
 
@@ -112,39 +96,21 @@ End Code
 			$("#txtEmailGroupID").val(id);
 			$("#txtEmailGroup").val(name);
 			enableSaveButton();
-		},400,400);
+		}, 400, 400);
 
 	}
 
-	function selectOutputType(type) {		
-
-		$(".reportdefpreview").children().prop("readonly", false);
-		$(".reportdefscreen").children().prop("readonly", false);
-		$(".reportdeffile").children().prop("readonly", true);
+	function selectOutputType(type) {
 
 		switch (type) {
 
 			case "DataOnly":
-				$(".reportdefpreview").children().prop("readonly", true);
+				$(".reportdefemail").children().prop("readonly", true);
 				break;
-
-			case "CSV":
-				$(".reportdefscreen").children().prop("readonly", true);
-				$(".reportdeffile").children().prop("readonly", false);
-				break;
-
-			case "HTML": case "WordDoc":
-				$(".reportdeffile").children().prop("readonly", false);
+			case "ExcelWorksheet": 
 				$(".reportdefemail").children().prop("readonly", false);
 				break;
-
-			case "ExcelWorksheet": case "ExcelGraph": case "ExcelPivotTable":
-				$(".reportdeffile").children().prop("readonly", false);
-				$(".reportdefemail").children().prop("readonly", false);
-				break;
-
 		}
-
 	}
 
 	function refreshOutputOptions() {
@@ -153,48 +119,18 @@ End Code
 		var type = $('#outputformats :checked').val();
 		var bSendToEmail = $("#SendToEmail").prop('checked');
 
-		$(".reportdefpreview").children().prop("readonly", false);
-		$(".reportdefscreen").children().prop("readonly", false);
-		$(".reportdeffile").children().prop("readonly", false);
 		$(".reportdefemail").children().prop("readonly", false);
 
-		$(".reportdefpreview :checkbox").prop("disabled", (type == "0") || bReadOnly);
 		$(".reportdefemail :checkbox").prop("disabled", (type == "0") || bReadOnly);
 		$('#cmdEmailGroup').prop('disabled', (type == "0") || bReadOnly || !bSendToEmail);
-		$(".reportdeffile :checkbox").prop("disabled", (type == "0") || bReadOnly);
-
-		$(".reportdefscreen :checkbox").prop("disabled", (type == "1") || bReadOnly);
-		$(".reportdefprinter :checkbox").prop("disabled", (type == "1" || type == "2" || bReadOnly));
 
 		if (type == "0") {
-			$(".reportdefpreview").children().prop("readonly", true);
-			$(".reportdeffile").children().prop("readonly", true);
 			$(".reportdefemail").children().prop("readonly", true);
+  		$(".reportdefemail").css("color", "#A59393");
 
-			$(".reportdefpreview").css("color", "#A59393");
-			$(".reportdefemail").css("color", "#A59393");
-			$(".reportdeffile").css("color", "#A59393");		
 		} else {
-			$(".reportdefpreview").css("color", "#000000");
 			$(".reportdefemail").css("color", "#000000");
-			$(".reportdeffile").css("color", "#000000");
 		}
-
-		if (type == "1") {
-			$(".reportdefpreview").children().prop("readonly", true);
-			$(".reportdefscreen").children().prop("readonly", true);
-			$(".reportdefscreen").css("color", "#A59393");
-			$(".reportdefprinter").css("color", "#A59393");
-		} else {
-			$(".reportdefscreen").css("color", "#000000");
-			$(".reportdefprinter").css("color", "#000000");
-		}
-
-		if (type == "2") {
-			$(".reportdefprinter").children().prop("readonly", true);
-			$(".reportdefprinter").css("color", "#A59393");
-		}
-
 	}
 
 	function changeOutputType(type) {
@@ -207,39 +143,19 @@ End Code
 		$("#SaveToFile").prop('checked', false);
 		$("#Filename").val("");
 		$("#SendToEmail").prop('checked', false);
-		
+
 		switch (type) {
 
 			case "DataOnly":
 				$("#IsPreview").prop('checked', false);
 				break;
-
-			case "CSV":
-				$("#ToScreen").prop('checked', false);
-				$("#SaveToFile").prop('checked', true);
-				break;
-
 			default:
 				break;
 		}
 
 		refreshOutputOptions();
 		setOutputToEmail();
-		setOutputToFile();
 
-	}
-
-	function saveToFileChecked() {
-
-		var isChecked = $("#SaveToFile").prop('checked');
-		$("#SaveExisting").prop("disabled", !isChecked);
-		$("#Filename").prop("readonly", false);
-		if (isChecked) {
-			$(".display-label_file").css("color", "#ff0000");
-		} else {
-			$("#Filename").prop("readonly", true);
-			$(".display-label_file").css("color", "#A59393");
-		}
 	}
 
 	function sendAsEmailChecked() {
@@ -260,20 +176,16 @@ End Code
 		} else {
 			$(".display-label_emails").css("color", "#000000");
 			$(".display-textbox-emails").css("background", "#ffffff");
-			$("#txtEmailGroup").val('None');
+			//$("#txtEmailGroup").val('None');
 		}
 
 	}
 
 	$(function () {
 
-		if ('@Model.ReportType' == '@UtilityType.utlCalendarReport') {
-			$(".hideforcalendarreport").hide();
-		}
-
 		selectOutputType('@Model.Format');
 		refreshOutputOptions();
-		saveToFileChecked();
+		sendAsEmailChecked()
 
 	});
 </script>

@@ -37257,11 +37257,14 @@ BEGIN
 	  ISNULL(m.MatchChildColumnID, 0) AS MatchChildColumnID,
 	  ISNULL(m.MatchChildRatingColumnID, 0) AS MatchChildRatingColumnID,
 	  ISNULL(m.MatchAgainstType, 0) AS MatchAgainstType,
+	  m.OutputEmail AS [SendToEmail],
 		m.outputformat AS [Format],		
 		m.outputsave AS [SaveToFile],		
 		m.outputfilename AS [Filename],		
-		m.emailAddrID AS [EmailGroupID],		
+		m.emailAddrID AS [EmailGroupID],	
+		(SELECT Name FROM [dbo].[ASRSysEmailGroupName] WHERE EmailGroupID = m.emailAddrID) AS EmailGroupName,	
 		m.emailSubject,		
+		m.EmailAttachmentName,	
 		m.outputscreen AS [DisplayOutputOnScreen],		
 		CONVERT(integer, m.[timestamp]) AS [Timestamp],
 		CASE WHEN @pfPicklistHidden = 1 OR @pfFilterHidden = 1 THEN 'HD' ELSE '' END AS [BaseViewAccess]
@@ -41776,7 +41779,13 @@ CREATE PROCEDURE [dbo].[spASRIntSaveTalentReport] (
 	@psJobsToHideGroups		varchar(MAX),
 	@psColumns						varchar(MAX),
 	@piID									integer					OUTPUT,
-	@piCategoryID					integer
+	@piCategoryID					integer,
+	@piOutputFormat		integer,
+	@pfOutputScreen		bit,
+	@pfOutputEmail		bit,
+	@piOutputEmailAddr	integer,
+	@psOutputEmailSubject	varchar(MAX),
+	@psOutputEmailAttachAs	varchar(MAX)
 )
 AS
 BEGIN
@@ -41832,7 +41841,13 @@ BEGIN
 			MatchChildColumnID,
 			MatchChildRatingColumnID,
 			MatchAgainstType,
- 			UserName)
+			UserName,
+			OutputFormat,
+			OutputScreen,
+			OutputEmail,
+			EmailAddrID,
+			EmailSubject,
+			EmailAttachmentName)
 		OUTPUT inserted.ID INTO @outputTable
  		VALUES (
  			@psName,
@@ -41853,7 +41868,13 @@ BEGIN
 			@piMatchChildColumnID,
 			@piMatchChildRatingColumnID,
 			@piMatchAgainstType,
- 			@psUserName);
+			@psUserName,
+			@piOutputFormat,
+			@pfOutputScreen,
+			@pfOutputEmail,
+			@piOutputEmailAddr,
+			@psOutputEmailSubject,
+			@psOutputEmailAttachAs);
 
 		SET @fIsNew = 1;
 		-- Get the ID of the inserted record.
@@ -41883,7 +41904,13 @@ BEGIN
 			MatchChildTableID = @piMatchChildTableID,
 			MatchChildColumnID = @piMatchChildColumnID,
 			MatchChildRatingColumnID = @piMatchChildRatingColumnID,
-			MatchAgainstType = @piMatchAgainstType
+			MatchAgainstType = @piMatchAgainstType,
+			OutputFormat = @piOutputFormat,
+			OutputScreen = @pfOutputScreen,
+			OutputEmail = @pfOutputEmail,
+			EmailAddrID = @piOutputEmailAddr,
+			EmailSubject = @psOutputEmailSubject,
+			EmailAttachmentName = @psOutputEmailAttachAs
 		WHERE ID = @piID;
 
 		DELETE FROM ASRSysTalentReportDetails

@@ -430,6 +430,8 @@ Namespace Repository
 					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
           objModel.MatchTableID = SettingsConfig.Personnel_EmpTableID ' Needs to be post at some point?
 					objModel.Owner = _username
+					objModel.Output.Format = OutputFormats.DataOnly
+					objModel.Output.IsPreview = True
 				Else
 
 					objModel.ID = ID
@@ -464,8 +466,23 @@ Namespace Repository
 	          objModel.MatchChildTableID = CInt(row("MatchChildTableID"))
 	          objModel.MatchChildColumnID = CInt(row("MatchChildColumnID"))
 	          objModel.MatchChildRatingColumnID = CInt(row("MatchChildRatingColumnID"))
-	          objModel.MatchAgainstType = CType(row("MatchAgainstType"), MatchAgainstType)
-                   
+						objModel.MatchAgainstType = CType(row("MatchAgainstType"), MatchAgainstType)
+
+						' Output Tab
+						objModel.Output.Format = CType(row("Format"), OutputFormats)
+						objModel.Output.ToScreen = CBool(row("DisplayOutputOnScreen"))
+
+						If objModel.Output.Format = OutputFormats.ExcelWorksheet Then
+							objModel.Output.IsPreview = False
+							objModel.Output.ToScreen = False
+						End If
+
+						objModel.Output.SendToEmail = CBool(row("SendToEmail"))
+						objModel.Output.EmailGroupID = CInt(row("EmailGroupID"))
+						objModel.Output.EmailGroupName = row("EmailGroupName").ToString()
+						objModel.Output.EmailSubject = row("EmailSubject").ToString()
+						objModel.Output.EmailAttachmentName = row("EmailAttachmentName").ToString()
+
 					End If
 
 				End If
@@ -477,10 +494,6 @@ Namespace Repository
 						objModel.IsGroupAccessHiddenWhenCopyTheDefinition = True
 					End If
 				End If
-
-        ' Basic output options
-        objModel.Output.Format = OutputFormats.ExcelWorksheet
-        objModel.Output.IsPreview = True
 
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
@@ -1041,26 +1054,32 @@ Namespace Repository
 								New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID}, _
 								New SqlParameter("piBaseSelection", SqlDbType.Int) With {.Value = objModel.SelectionType}, _
 								New SqlParameter("piBasePicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID}, _
-                New SqlParameter("piBaseFilterID", SqlDbType.Int) With {.Value = objModel.FilterID}, _
-	              New SqlParameter("piBaseChildTableID", SqlDbType.Int) With {.Value = objModel.BaseChildTableID}, _
-	              New SqlParameter("piBaseChildColumnID", SqlDbType.Int) With {.Value = objModel.BaseChildColumnID}, _
-	              New SqlParameter("piBaseMinimumRatingColumnID", SqlDbType.Int) With {.Value = objModel.BaseMinimumRatingColumnID}, _
-	              New SqlParameter("piBasePreferredRatingColumnID", SqlDbType.Int) With {.Value = objModel.BasePreferredRatingColumnID}, _
-	              New SqlParameter("piMatchTableID", SqlDbType.Int) With {.Value = objModel.MatchTableID}, _
-	              New SqlParameter("piMatchSelection", SqlDbType.Int) With {.Value = Cint(objModel.MatchSelectionType)}, _
-	              New SqlParameter("piMatchPicklistID", SqlDbType.Int) With {.Value = objModel.MatchPicklistID}, _
-	              New SqlParameter("piMatchFilterID", SqlDbType.Int) With {.Value = objModel.MatchFilterID}, _
-	              New SqlParameter("piMatchChildTableID", SqlDbType.Int) With {.Value = objModel.MatchChildTableID}, _
-	              New SqlParameter("piMatchChildColumnID", SqlDbType.Int) With {.Value = objModel.MatchChildColumnID}, _
-	              New SqlParameter("piMatchChildRatingColumnID", SqlDbType.Int) With {.Value = objModel.MatchChildRatingColumnID}, _
-	              New SqlParameter("piMatchAgainstType", SqlDbType.Int) With {.Value = objModel.MatchAgainstType}, _
+								New SqlParameter("piBaseFilterID", SqlDbType.Int) With {.Value = objModel.FilterID}, _
+								New SqlParameter("piBaseChildTableID", SqlDbType.Int) With {.Value = objModel.BaseChildTableID}, _
+								New SqlParameter("piBaseChildColumnID", SqlDbType.Int) With {.Value = objModel.BaseChildColumnID}, _
+								New SqlParameter("piBaseMinimumRatingColumnID", SqlDbType.Int) With {.Value = objModel.BaseMinimumRatingColumnID}, _
+								New SqlParameter("piBasePreferredRatingColumnID", SqlDbType.Int) With {.Value = objModel.BasePreferredRatingColumnID}, _
+								New SqlParameter("piMatchTableID", SqlDbType.Int) With {.Value = objModel.MatchTableID}, _
+								New SqlParameter("piMatchSelection", SqlDbType.Int) With {.Value = CInt(objModel.MatchSelectionType)}, _
+								New SqlParameter("piMatchPicklistID", SqlDbType.Int) With {.Value = objModel.MatchPicklistID}, _
+								New SqlParameter("piMatchFilterID", SqlDbType.Int) With {.Value = objModel.MatchFilterID}, _
+								New SqlParameter("piMatchChildTableID", SqlDbType.Int) With {.Value = objModel.MatchChildTableID}, _
+								New SqlParameter("piMatchChildColumnID", SqlDbType.Int) With {.Value = objModel.MatchChildColumnID}, _
+								New SqlParameter("piMatchChildRatingColumnID", SqlDbType.Int) With {.Value = objModel.MatchChildRatingColumnID}, _
+								New SqlParameter("piMatchAgainstType", SqlDbType.Int) With {.Value = objModel.MatchAgainstType}, _
 								New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner}, _
 								New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess}, _
 								New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.JobIDsToHide}, _
 								New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()}, _
 								New SqlParameter("psColumns", SqlDbType.VarChar, -1) With {.Value = sColumns}, _
 								prmID,
-								New SqlParameter("piCategoryID", SqlDbType.Int) With {.Value = objModel.CategoryID})
+								New SqlParameter("piCategoryID", SqlDbType.Int) With {.Value = objModel.CategoryID}, _
+								New SqlParameter("piOutputFormat", SqlDbType.Int) With {.Value = objModel.Output.Format}, _
+								New SqlParameter("pfOutputScreen", SqlDbType.Bit) With {.Value = objModel.Output.ToScreen}, _
+								New SqlParameter("pfOutputEmail", SqlDbType.Bit) With {.Value = objModel.Output.SendToEmail}, _
+								New SqlParameter("piOutputEmailAddr", SqlDbType.Int) With {.Value = objModel.Output.EmailGroupID}, _
+								New SqlParameter("psOutputEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailSubject}, _
+								New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailAttachmentName})
 
 				_talentreports.Remove(objModel.ID)
 				objModel.ID = CInt(prmID.Value)
