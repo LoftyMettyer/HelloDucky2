@@ -121,9 +121,17 @@ namespace OpenHRTestToLive
         // Disable all imported workflows
         foreach (var workflow in importObjects.AllWorkflows)
         {
+          var isDuplicate = liveDb.ASRSysWorkflows.Any(w => w.name == workflow.name);
+
+          while (isDuplicate)
+          {
+            workflow.name = "Copy of " + workflow.name;
+            isDuplicate = liveDb.ASRSysWorkflows.Any(w => w.name == workflow.name);           
+          }
+
           workflow.enabled = false;
         }
-
+      
         // Assign the data lists back to the EF structures
         liveDb.ASRSysWorkflows.Add(importObjects.AllWorkflows.First());
         liveDb.ASRSysWorkflowLinks.AddRange(importObjects.AllLinks);
