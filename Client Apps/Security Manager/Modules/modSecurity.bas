@@ -5708,7 +5708,7 @@ On Error GoTo ErrorTrap:
           "      IF NOT EXISTS (SELECT loginname FROM sys.syslogins WHERE name = @login) AND EXISTS(SELECT Name FROM ASRSysGroups WHERE Name = @securityGroup)" & vbNewLine & _
           "      BEGIN" & vbNewLine & _
           "          IF @sendEmail = 1" & vbNewLine & _
-          "              SET @initialPassword = LOWER(SUBSTRING(CONVERT(varchar(255), NEWID()), 1, 5)) + 'a!3' + LOWER(SUBSTRING(CONVERT(varchar(255), NEWID()), 1, 3));" & vbNewLine & vbNewLine & _
+          "              SET @initialPassword = LOWER(SUBSTRING(CONVERT(varchar(255), NEWID()), 1, 5)) + 'A!3' + LOWER(SUBSTRING(CONVERT(varchar(255), NEWID()), 1, 4));" & vbNewLine & vbNewLine & _
           "          SET @emailContent = 'Dear ' + @knownAs + ',' + CHAR(13) + 'Your login details for OpenHR Self-service are as follows:' + CHAR(13) + CHAR(13) +" & vbNewLine & _
           "              'Username : ' + @login + CHAR(13) +" & vbNewLine & _
           "              'Password : ' + @initialPassword + CHAR(13) + CHAR(13) +" & vbNewLine & _

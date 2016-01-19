@@ -717,6 +717,12 @@ Private Function ValidateSecuritySettings() As Boolean
     End If
   End If
   
+  If glngDomainMinimumLength > 12 And chkAutoAddFromSelfService.Value = vbChecked Then
+    MsgBox "You cannot use automatic add logins with a minimum password length of greater than 12.", vbExclamation + vbOKOnly, App.Title
+    ValidateSecuritySettings = False
+    Exit Function
+  End If
+  
   ValidateSecuritySettings = True
   
 End Function
