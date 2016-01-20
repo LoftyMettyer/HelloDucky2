@@ -704,8 +704,6 @@ function find_window_onload() {
 									indicateThatRowWasModified();
 									lastRowEdited = "0";
 								} else {
-									//just editing existing row, so don't indicate that the row was modified.
-									rowWasModified = false;
 									lastRowEdited = rowid;
 								}
 								return editFindGridRow(rowid);
