@@ -35,12 +35,12 @@ namespace OpenHRTestToLive.Tests
         public void TestImport()
         {
             var import = new Repository();
-            import.Connection("sa", "asr", "openhr81pe", ".\\sql2014");
+            import.Connection("sa", "asr", "lms", ".\\sql2014");
       //import.Connection("sa", "asr", "npg_openhr8_2", "HARPDEV02");
-      import.Connection("sa", "Password1", "func8.2_dev", "qasrvr04");
+      //import.Connection("sa", "Password1", "func8.2_dev", "qasrvr04");
 
       //var inputFile = "c:\\dev\\absdef1.xml";
-      var inputFile = "C:\\WorkflowExports\\Exported Workflow_eRecruitment.xml";
+      var inputFile = "C:\\WorkflowExports\\Exported Workflow_Record New Starter.xml";
 
       var result = import.ImportDefinitions(inputFile);
 

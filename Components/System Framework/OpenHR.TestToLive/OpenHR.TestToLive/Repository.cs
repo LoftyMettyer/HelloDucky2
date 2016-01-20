@@ -438,9 +438,9 @@ namespace OpenHRTestToLive
     //-------------------------------------------------------------------------------------------------------------------------------------
 
     private static int GetMaxWFId(npg_openhr8_2Entities db)
-		{
-            int MaxId = db.ASRSysWorkflows.Max(x => x.id);
-			return MaxId;
+    {
+      int MaxId = db.ASRSysWorkflows.DefaultIfEmpty().Max(x => x == null ? 0 : x.id);
+      return MaxId;
 		}
 
 		private static void ExtractAll(T2LClass t2l, npg_openhr8_2Entities db, int WFkey)
