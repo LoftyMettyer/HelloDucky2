@@ -14890,10 +14890,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntGetPicklistDefinition]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetPersonnelParameters]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetPersonnelParameters]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetOrders]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetOrders]
 GO
@@ -24874,71 +24870,8 @@ BEGIN
 	FROM #orderInfo 
 	ORDER BY orderName
 END
-
 GO
 
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetPersonnelParameters]    Script Date: 13/09/2013 08:59:34 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetPersonnelParameters] (
-	@piEmployeeTableID	integer	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the given screen's definition and table permission info. */
-	DECLARE @fOK			bit,
-		@fSysSecMgr			bit,
-		@iUserGroupID		integer,
-		@sUserGroupName		sysname,
-		@sActualUserName	sysname;
-
-	/* Personnel information. */
-	SET @fOK = 1;
-	SET @piEmployeeTableID = 0;
-
-	/* Get the current user's group id. */
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	/* Check if the current user is a System or Security manager. */
-	SELECT @fSysSecMgr = CASE WHEN count(*) > 0 THEN 1 ELSE 0 END
-	FROM ASRSysGroupPermissions
-	INNER JOIN ASRSysPermissionItems ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
-	INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-	INNER JOIN sysusers ON ASRSysGroupPermissions.groupName = sysusers.name
-	WHERE sysusers.uid = @iUserGroupID
-	AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
-	OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
-	AND ASRSysGroupPermissions.permitted = 1
-	AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS';
-
-	-- Activate module
-	EXEC [dbo].[spASRIntActivateModule] 'PERSONNEL', @fOK OUTPUT;
-
-	/* Get the required training booking module paramaters. */
-	IF @fOK = 1
-	BEGIN
-		/* Get the EMPLOYEE table information. */
-		SELECT @piEmployeeTableID = convert(integer, parameterValue)
-		FROM ASRSysModuleSetup
-		WHERE moduleKey = 'MODULE_PERSONNEL'
-			AND parameterKey = 'Param_TablePersonnel';
-		IF @piEmployeeTableID IS NULL SET @piEmployeeTableID = 0;
-	END
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetPicklistDefinition]    Script Date: 13/09/2013 08:59:34 ******/
 SET ANSI_NULLS ON
@@ -36545,6 +36478,10 @@ IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASR
 	DROP PROCEDURE [dbo].[sp_ASRIntCheckForUsage]
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetPersonnelParameters]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetPersonnelParameters];
+GO
+
 
 -- Functions we do want to keep
 
@@ -37261,7 +37198,7 @@ BEGIN
 		m.outputformat AS [Format],		
 		m.outputsave AS [SaveToFile],		
 		m.outputfilename AS [Filename],		
-		m.emailAddrID AS [EmailGroupID],	
+		m.emailAddrID AS [EmailGroupID],		
 		(SELECT Name FROM [dbo].[ASRSysEmailGroupName] WHERE EmailGroupID = m.emailAddrID) AS EmailGroupName,	
 		m.emailSubject,		
 		m.EmailAttachmentName,	
@@ -44749,28 +44686,6 @@ BEGIN
 END
 GO
 
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetPersonnelParameters]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[sp_ASRIntGetPersonnelParameters];
-GO
-CREATE PROCEDURE [dbo].[sp_ASRIntGetPersonnelParameters] (
-	@piEmployeeTableID	integer	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	SET @piEmployeeTableID = 0;
-
-	-- Get the EMPLOYEE table information.
-	SELECT @piEmployeeTableID = convert(integer, parameterValue)
-	FROM ASRSysModuleSetup
-	WHERE moduleKey = 'MODULE_PERSONNEL'
-		AND parameterKey = 'Param_TablePersonnel';
-	IF @piEmployeeTableID IS NULL SET @piEmployeeTableID = 0;
-
-END
-GO
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetTrainingBookingParameters]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRIntGetTrainingBookingParameters];

@@ -356,4 +356,25 @@ Public Class clsDataAccess
 
 	End Function
 
+  public Function GetModuleSetting(ModuleKey As String, ParameterKey As String, ParameterType As String) As String
+
+ 		Dim prmValue = New SqlParameter("parameterValue", SqlDbType.NVarChar, -1) With {.Direction = ParameterDirection.Output}
+
+    Try
+
+      ExecuteSP("spsys_getmodulesetting" _
+			  , New SqlParameter("moduleKey", SqlDbType.VarChar, 50) With {.Value = ModuleKey} _
+			  , New SqlParameter("parameterKey", SqlDbType.VarChar, 50) With {.Value = ParameterKey} _
+			  , New SqlParameter("paramterType", SqlDbType.VarChar, 50) With {.Value = ParameterType} _
+			  , prmValue)
+
+      Return prmValue.Value.ToString()
+
+    Catch ex As Exception
+      Return ""
+
+    End Try
+
+  End Function
+
 End Class

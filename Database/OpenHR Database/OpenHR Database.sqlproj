@@ -129,7 +129,6 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetModuleParameter.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetOrders.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetOrderSQL.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetPersonnelParameters.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetPicklistDefinition.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetRecord.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetRecordDescription.sql" />

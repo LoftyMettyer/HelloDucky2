@@ -3,36 +3,30 @@ Option Explicit On
 
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server
-Imports System.Data.SqlClient
 
 ' Register the module parameters
 Public Class SettingsConfig
 
 	Public Shared Personnel_EmpTableID As Integer
+  public Shared Post_TableID as Integer
 	
 	Public Shared Sub Register()
 
-		If Licence.IsModuleLicenced(SoftwareModule.Personnel) Then
-			PopulatePersonnelSessionVariables()
-		End If
+    Try
 
-	End Sub
+      Dim objDataAccess As New clsDataAccess(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
 
-	Private Shared Sub PopulatePersonnelSessionVariables()
+ 		  If Licence.IsModuleLicenced(SoftwareModule.Personnel) Then
+        Personnel_EmpTableID = CInt(objDataAccess.GetModuleSetting("MODULE_PERSONNEL", "Param_TablePersonnel", "PType_TableID"))
+		  End If
 
-		Dim objDataAccess As New clsDataAccess(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
-		Dim prmEmpTableID = New SqlParameter("piEmployeeTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+      Post_TableID = CInt(objDataAccess.GetModuleSetting("MODULE_POST", "Param_PostTable", "PType_TableID"))
 
-		Try
-			objDataAccess.ExecuteSP("sp_ASRIntGetPersonnelParameters", prmEmpTableID)
-			Personnel_EmpTableID = CInt(prmEmpTableID.Value)
+    Catch ex As Exception
+      Throw
 
-		Catch ex As Exception
-			Throw
+    End Try
 
-		End Try
-
-	End Sub
-
+	End Sub  
 
 End Class
