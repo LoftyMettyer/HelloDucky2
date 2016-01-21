@@ -24,6 +24,7 @@ Begin VB.Form frmSSIntranetLink
    Icon            =   "frmSSIntranetLink.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   12660
@@ -1659,7 +1660,7 @@ Private Sub GetHRProUtilityTypes()
     .AddItem "Mail Merge"
     .ItemData(.NewIndex) = utlMailMerge
     
-    .AddItem "Talent Reports"
+    .AddItem "Talent Report"
     .ItemData(.NewIndex) = utlTalent
        
     If ASRDEVELOPMENT Or Application.WorkflowModule Then
