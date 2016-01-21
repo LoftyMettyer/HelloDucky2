@@ -58,15 +58,22 @@ Public Class [Default]
             If _db.IsSystemLocked() Then
                 message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE003)."
             End If
+
+            If Not _db.ServiceLoginIsValid() Then
+               message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE004)."
+            End If
+
         End If
 
         ' Authentication options
-        Dim thisStep = _db.StepAuthenticationDetails(_url.InstanceId, _url.ElementId)
+        If message.IsNullOrEmpty() Then
+            Dim thisStep = _db.StepAuthenticationDetails(_url.InstanceId, _url.ElementId)
 
-        If thisStep.RequiresAuthorization Then
-            If Not HttpContext.Current.User.Identity.IsAuthenticated Then
-                Session("ValidLogins") = thisStep.AuthorizedUsers
-                FormsAuthentication.RedirectToLoginPage()
+            If thisStep.RequiresAuthorization Then
+                If Not HttpContext.Current.User.Identity.IsAuthenticated Then
+                    Session("ValidLogins") = thisStep.AuthorizedUsers
+                    FormsAuthentication.RedirectToLoginPage()
+                End If
             End If
         End If
 
