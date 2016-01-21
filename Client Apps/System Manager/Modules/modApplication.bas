@@ -1934,9 +1934,9 @@ Public Function CreateQueryDefs() As Boolean
   On Error GoTo ErrorTrap
 
   Dim sSQL As String
-  Dim bok As Boolean
+  Dim bOK As Boolean
 
-  bok = True
+  bOK = True
 
   ' spadmin_gettables
   sSQL = "SELECT t.tableid AS ID" & _
@@ -2092,11 +2092,11 @@ Public Function CreateQueryDefs() As Boolean
   daoDb.CreateQueryDef "spadmin_getmasks", sSQL
 
 TidyUpAndExit:
-  CreateQueryDefs = bok
+  CreateQueryDefs = bOK
   Exit Function
   
 ErrorTrap:
-  bok = False
+  bOK = False
   MsgBox "Error creating spadmin functions on the TempDB"
   Resume TidyUpAndExit
 
@@ -2173,14 +2173,14 @@ End Sub
 
 Public Sub AttemptReLogin()
 
-  Dim bok As Boolean
+  Dim bOK As Boolean
   Dim iRetryCount As Integer
   Dim iAnswer As Integer
  
   iRetryCount = 0
-  bok = False
+  bOK = False
 
-  Do While Not bok
+  Do While Not bOK
     iRetryCount = iRetryCount + 1
     iAnswer = MsgBox("Your network connectivity has been lost." & vbCrLf & vbCrLf _
       & "Would you like to attempt to automatically relogin? " & vbCrLf & vbCrLf _
@@ -2189,7 +2189,7 @@ Public Sub AttemptReLogin()
     , vbCritical + vbYesNo, App.Title)
     
     If iAnswer = 6 Then
-      bok = AttemptConnection
+      bOK = AttemptConnection
     Else
       GoTo Quit
     End If
@@ -2235,7 +2235,7 @@ Public Function ImportDefinitions() As Boolean
   Dim status As OpenHRTestToLive.RepositoryStatus
   Dim sOutputFileName As String
   Dim sMessage As String
-  Dim bok As Boolean
+  Dim bOK As Boolean
   Dim bCancel As Boolean
   
   ' Validation to only enable if theer are no pending changes
@@ -2262,21 +2262,25 @@ Public Function ImportDefinitions() As Boolean
 
   If Len(sOutputFileName) = 0 Then Exit Function
 
+  If MsgBox("Please ensure this database is the same OpenHR version and has the same table/column structure as the database" & _
+    " you are importing the definition from." & vbNewLine & vbNewLine & _
+    "Do you wish to continue?", vbQuestion + vbYesNo, App.Title) = vbNo Then Exit Function
+
   objImport.Connection gsUserName, gsPassword, gsDatabaseName, gsServerName
   status = objImport.ImportDefinitions(sOutputFileName)
 
   If status = RepositoryStatus_DefinitionsImported Then
     sMessage = "Definition imported successfully." & vbCrLf & vbCrLf & "System Manager will now relaunch."
-    bok = True
+    bOK = True
   Else
     sMessage = "Error Importing Definition."
-    bok = False
+    bOK = False
   End If
 
   MsgBox sMessage, vbOKOnly & vbInformation, "OpenHR System Manager"
 
   ' Now log back out and in again to update all the access tables
-  If bok Then
+  If bOK Then
     UnLoad frmSysMgr
     ' Close the temporary database.
     If Forms.Count < 1 Then
