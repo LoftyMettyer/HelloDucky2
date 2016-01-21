@@ -843,7 +843,12 @@ Public Class Database
             End While
 
             dr.Close()
-            thisStep.RequiresAuthorization = CBool(prmRequiresAuthorization.Value)
+
+            If IsDBNull(prmRequiresAuthorization.Value) Then
+              thisStep.RequiresAuthorization = False
+            Else 
+              thisStep.RequiresAuthorization = CBool(prmRequiresAuthorization.Value) 
+            End If
 
         End Using
 
