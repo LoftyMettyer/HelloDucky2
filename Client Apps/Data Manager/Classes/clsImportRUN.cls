@@ -3469,12 +3469,6 @@ Private Function ReadSQLTableInToFile() As Boolean
 
   With rsDataTable
 
-    If .BOF And .EOF Then
-      ReadSQLTableInToFile = False
-      mstrErrorString = "No data found in the specified linked server and table." & vbCrLf & "Please ensure your definition is correct."
-      Exit Function
-    End If
-
     pintFileNo = FreeFile
     mstrImportFileName = GetTmpFName
     bFirstRow = True
