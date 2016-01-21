@@ -73,7 +73,7 @@ BEGIN
 			FROM [dbo].ASRSysDataTransferName
 			WHERE DataTransferID = @piUtilID;
 
-		IF (NOT @iBaseFilter IS NULL) AND (@iBaseFilter > 0)
+		IF (NOT @iBaseFilter IS NULL) AND @iBaseFilter > 0 AND @piMultipleRecords = 0
 			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @iBaseFilter, @sAllComponents OUTPUT;
 
 	END
