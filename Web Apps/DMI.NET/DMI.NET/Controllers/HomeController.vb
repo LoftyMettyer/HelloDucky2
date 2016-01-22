@@ -2651,24 +2651,33 @@ Namespace Controllers
 			objDocument.DefaultStyle.Font.Size += 1
 
       Dim worksheet = objDocument.Worksheets(0)
-      worksheet.Name = "Data"
+			worksheet.Name = "Data"
+
+			'Sort output in DESC mode by Match Score column
+			Dim dataView As New DataView(objReportData.ReportDataTable)
+			dataView.Sort = "Match Score DESC"
+			objReportData.ReportDataTable = dataView.ToTable
+
+			' Rename last column with the second last column. (Second last column bullet graph would be removed)
+			Dim colCount = objReportData.ReportDataTable.Columns.Count
+			objReportData.ReportDataTable.Columns(colCount - 1).Caption = objReportData.ReportDataTable.Columns(colCount - 2).Caption
 
       worksheet.Cells.ImportDataTable(objReportData.ReportDataTable, true, "A1")
 
       worksheet.Cells.DeleteColumns(0,2, True)
       For columnCount = 0 To worksheet.Cells.MaxDataColumn
-        worksheet.AutoFitColumn(columnCount)
+				worksheet.AutoFitColumn(columnCount)
       Next
 
-      worksheet.Cells.DeleteColumns(worksheet.Cells.MaxDataColumn - 1, 1, True)
+			worksheet.Cells.DeleteColumns(worksheet.Cells.MaxDataColumn - 1, 1, True)
 
-      ' Build the talent chart column (.ApplyStyleColumn does not seem to work?!?!?)
-      Dim style As New Style With {.Number = 49, .IsTextWrapped = True}
+			' Build the talent chart column (.ApplyStyleColumn does not seem to work?!?!?)
+			Dim style As New Style With {.Number = 49, .IsTextWrapped = True}
       For rowNumber = 0 To worksheet.Cells.MaxDataRow
         worksheet.Cells(rowNumber, worksheet.Cells.MaxDataColumn).SetStyle(style)
-      Next
+			Next
 
-      objDocument.Save(outputFile, SaveFormat.Xlsx)
+			objDocument.Save(outputFile, SaveFormat.Xlsx)
 
 			' Send email
 			If blnEmail And lngEmailGroupId > 0 Then

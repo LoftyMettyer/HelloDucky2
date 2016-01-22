@@ -361,7 +361,7 @@ Public Class MatchReportRun
 					  objExpr = Nothing
 					
 				  End If
-				  
+
 				  mcolColDetails.Add(objColumn)			
 
 			  Next 
@@ -867,14 +867,15 @@ Public Class MatchReportRun
     ReportDataTable.Columns.Add("ID_1", GetType(String))
     ReportDataTable.Columns.Add("ID_2", GetType(String))
 
-    For Each objColumn In mcolColDetails.Where(Function(c) Not c.Hidden)
-      ReportDataTable.Columns.Add( string.format("{0}_{1}", objColumn.TableName, objColumn.Name), GetType(String))
-    Next
+		For Each objColumn In mcolColDetails.Where(Function(c) Not c.Hidden)
+			' Replace _ with space for the column name.
+			ReportDataTable.Columns.Add(String.Format("{0} {1}", objColumn.TableName.Replace("_", " "), objColumn.Name.Replace("_", " ")), GetType(String))
+		Next
 
     If UtilityType = UtilityType.TalentReport Then
       ReportDataTable.Columns.Add("Match Score", GetType(String))
       ReportDataTable.Columns.Add("Talent Chart", GetType(String))
-      ReportDataTable.Columns.Add("ID_TalentChartForExcel", GetType(String))
+			ReportDataTable.Columns.Add("ID_TalentChartForExcel", GetType(String))
 		End If
 
     Return True

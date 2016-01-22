@@ -10,7 +10,7 @@
 
 	<fieldset class="">
 		Role Match Table :
-		<select class=" width70 floatright" name=" basechildtableid" id="BaseChildTableID" onchange="refreshTalentReportBaseColumns(event.target);"></select>
+		<select class="width70 floatright" name="BaseChildTableID" id="BaseChildTableID" onchange="refreshTalentReportBaseColumns(event.target);"></select>
 	</fieldset>
 
 	<fieldset>
@@ -27,7 +27,7 @@
 
 	<br />
 	<fieldset class="">
-		Person Match Child : <select class="width70 floatright" name="MatchChildTableID" id="MatchChildTableID" onchange="refreshTalentReportMatchColumns(event.target);"></select>
+		Person Match Table : <select class="width70 floatright" name="MatchChildTableID" id="MatchChildTableID" onchange="refreshTalentReportMatchColumns(event.target);"></select>
 	</fieldset>
 	<fieldset class="">
 		Match Column : <select class="width70 floatright" name="MatchChildColumnID" id="MatchChildColumnID"></select>
@@ -38,10 +38,11 @@
 
 	<br />
 	<div class="width70 floatright">
+        &nbsp;Match Against : 
 		@Html.RadioButton("matchagainsttype", MatchAgainstType.Any, Model.MatchAgainstType = MatchAgainstType.Any, New With {.id = "matchagainsttype_any"})
-		Match Against Any
+		Any
 		@Html.RadioButton("matchagainsttype", MatchAgainstType.All, Model.MatchAgainstType = MatchAgainstType.All, New With {.id = "matchagainsttype_all"})
-		Match Against All
+		All
 	</div>
 
 
