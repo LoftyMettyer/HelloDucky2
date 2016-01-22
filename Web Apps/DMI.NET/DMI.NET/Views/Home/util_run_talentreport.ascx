@@ -7,10 +7,8 @@
 
 <%
   dim repository As New ReportRepository
-
-  Dim objReport = repository.LoadTalentReport(1, UtilityActionType.Edit)
-  
-   %>
+	Dim objReport = repository.LoadTalentReport(CInt(Session("utilid")), UtilityActionType.Edit)
+%>
 
 <div id="reportworkframe" data-framesource="util_run_talentreport" style="display: inline-block; width:100%; height: 100%;">
 	<table id="gridReportData"></table>
@@ -19,6 +17,8 @@
 <div id="outputoptions" data-framesource="util_run_outputoptions" style="display: none;">
 		<% Html.RenderPartial("~/Views/Home/util_run_outputoptions.ascx")%>
 </div>
+
+<input type='hidden' id="txtDefn_Name" name="txtDefn_Name" value="<%:objReport.Name.ToString()%>">
 
 <form action="util_run_talentreport_downloadoutput" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
 	<input type="hidden" id="txtPreview" name="txtPreview" value="<%=objReport.Output.IsPreview%>">
@@ -45,7 +45,6 @@
 
 
 <script>
-  
   var grid = $("#gridReportData"),
     getColumnIndexByName = function (columnName) {
       var cm = grid.jqGrid('getGridParam', 'colModel');

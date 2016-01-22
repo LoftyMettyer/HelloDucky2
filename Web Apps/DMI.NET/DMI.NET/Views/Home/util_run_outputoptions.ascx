@@ -73,7 +73,6 @@
 	}
 
 	function outputOptionsFormatClick(index) {
-		
 		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
 		
 		frmOutputDef.chkDestination0.checked = false;
@@ -544,7 +543,6 @@
 
 		// If no export format is chosen, default to 'Preview on screen', i.e. direct to Excel.
 		frmOutputDef.chkDestination1.checked = !(frmOutputDef.chkDestination2.checked || frmOutputDef.chkDestination3.checked);
-
 		doExport();
 	}
 
@@ -853,7 +851,7 @@
 									<td colspan=4></td>
 								</tr>
 																									
-<% ElseIf Session("utilType") <> 35 Then 'Don't show for 9-box grid %>
+<% ElseIf Session("utilType") <> 35 AndAlso Session("utilType") <> 38 Then	'Don't show for 9-box grid & talent report  %>
 								<tr height=5>
 									<td width=5>&nbsp</td>
 									<td align=left width=15>
@@ -939,7 +937,7 @@
 								<tr height=10 class="hidden"> 
 									<td colspan=8></td>
 								</tr>
-<%If Session("utilType") <> 35 Then	'Don't show for 9-box grid %>
+<%If Session("utilType") <> 35 AndAlso Session("utilType") <> 38 Then	'Don't show for 9-box grid & talent report  %>
 								<tr height=20>
 									<td width=5>&nbsp</td>
 									<td align=left nowrap>
@@ -1072,7 +1070,7 @@
 	<input type="hidden" id="txtExcelFormatDefaultIndex" name="txtExcelFormatDefaultIndex" value="<%=Session("ExcelFormatDefaultIndex")%>">
 	<input type="hidden" id="txtOfficeSaveAsFormats" name="txtOfficeSaveAsFormats" value="<%=Session("OfficeSaveAsValues")%>">
 
-	<%If Session("utilType") = 35 Then	'For 9-box grids we need here the fields that are not needed for it but need to be present for the run-time engine to work%>
+	<%If Session("utilType") = 35 Or Session("utilType") = 38 Then	'For 9-box grids & talent report, we need here the fields that are not needed for it but need to be present for the run-time engine to work%>
 	<input name="chkDestination2" id="chkDestination2" type="hidden" value="false">
 	<input id="txtFilename" name="txtFilename" type="hidden" value="">
 	<input type="hidden" id="cmdFilename" name="cmdFilename" value="...">

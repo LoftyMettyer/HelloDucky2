@@ -2612,7 +2612,7 @@ Namespace Controllers
 				  row = New Dictionary(Of String, Object)()
 
 				  For Each col As DataColumn In matchReport.ReportDataTable.Columns
-					  row.Add(col.ColumnName, dr(col))
+						row.Add(col.ColumnName, dr(col))
 				  Next
 				  rows.Add(row)
 			  Next
@@ -2631,14 +2631,19 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 		Public Function util_run_talentreport_downloadoutput() As FilePathResult
 
-      Dim lngOutputFormat = CType(Request("txtFormat"), OutputFormats)
+			Dim lngOutputFormat = CType(Request("txtFormat"), OutputFormats)
+			Dim bPreview As Boolean = Request("txtPreview")
+			Dim blnEmail As Boolean = Request("txtEmail")
+			Dim lngEmailGroupId As Integer = Request("txtEmailAddr")
+			Dim strEmailSubject As String = Request("txtEmailSubject")
+			Dim strEmailAttachAs As String = Request("txtEmailAttachAs")
 			Dim downloadTokenValue As String = Request("download_token_value_id")
       Dim objReportData As MatchReportRun = CType(Session("MatchReport"), MatchReportRun)
       Dim outputFile = Path.GetTempFileName.Replace(".tmp", ".xlsx")
 
-      Dim strDownloadFileName = objReportData.DownloadFileName
-      
-      Dim objDocument As New Workbook
+			Dim strDownloadFileName = objReportData.DownloadFileName
+
+			Dim objDocument As New Workbook
 			Dim objCellsLicense As New License
 			objCellsLicense.SetLicense("Aspose.Cells.lic")
 
@@ -2665,33 +2670,64 @@ Namespace Controllers
 
       objDocument.Save(outputFile, SaveFormat.Xlsx)
 
-			' Download the file			
-			If IO.File.Exists(outputFile) Then
+			' Send email
+			If blnEmail And lngEmailGroupId > 0 Then
+				Dim sEmailAddresses = GetEmailAddressesForGroup(lngEmailGroupId)
+
+				Dim downloadedDoc As New FileStream(outputFile, FileMode.Open)
 				Try
-					Dim fileInfo As FileInfo = New FileInfo(outputFile)
-					Response.ContentType = "application/octet-stream"
-					Response.Clear()
-					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
-					Response.AppendCookie(New HttpCookie("fileDownloadErrors", vbNullString)) ' Clear error message response cookie
-					Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", strDownloadFileName))
-					Response.AddHeader("Content-Length", fileInfo.Length.ToString())
-					Response.WriteFile(fileInfo.FullName)
-					'Response.End()
-					Response.Flush()
+					If IO.File.Exists(outputFile) Then
+						SendMailWithAttachment(strEmailSubject, downloadedDoc, sEmailAddresses, strEmailAttachAs)
+						Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Email sent successfully."))	' Send completion message	
+					End If
 				Catch ex As Exception
 					' error generated - return error
-					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
-					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+					Dim errMessage As String
+					If ex.InnerException Is Nothing Then
+						errMessage = ""
+					Else
+						errMessage = ex.InnerException.Message
+					End If
+
+					Dim strErrors = String.Format("The following error occured when emailing your document:" _
+						& "{0}{0}{1}{0}{0}{2}{0}{0}Please check with your administrator for further details.", "<br/>", _
+						ex.Message, errMessage)
+
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", strErrors))	' marks the download as complete on the client		
 				Finally
-					IO.File.Delete(outputFile)
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
 				End Try
-			Else
-				' No file generated - return error
-				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
-				Response.AppendCookie(New HttpCookie("fileDownloadErrors", "No output file was generated. Check your data."))	' marks the download as complete on the client		
 			End If
 
-    End Function
+			' Download the file			
+			If (lngOutputFormat = OutputFormats.ExcelWorksheet And Not blnEmail) Then
+				If IO.File.Exists(outputFile) Then
+					Try
+						Dim fileInfo As FileInfo = New FileInfo(outputFile)
+						Response.ContentType = "application/octet-stream"
+						Response.Clear()
+						Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
+						Response.AppendCookie(New HttpCookie("fileDownloadErrors", vbNullString))	' Clear error message response cookie
+						Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", strDownloadFileName))
+						Response.AddHeader("Content-Length", fileInfo.Length.ToString())
+						Response.WriteFile(fileInfo.FullName)
+						'Response.End()
+						Response.Flush()
+					Catch ex As Exception
+						' error generated - return error
+						Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+						Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+					Finally
+						IO.File.Delete(outputFile)
+					End Try
+				Else
+					' No file generated - return error
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", "No output file was generated. Check your data."))	' marks the download as complete on the client		
+				End If
+			End If
+
+		End Function
 
 		Private Function RunDataTransfer(id As Integer, multipleRecordIds As String, prompts(,) As String) As PostResponse
 
