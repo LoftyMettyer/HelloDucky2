@@ -454,7 +454,7 @@ Public Class [Default]
                                     .Text = General.ConvertSqlDateToLocale(formItem.Value)
                                 End If
                             Case Else   'Text
-                                .Text = formItem.Value
+                                .Text = HttpUtility.HtmlEncode(formItem.Value)
                         End Select
 
                     End With
@@ -1579,6 +1579,7 @@ Public Class [Default]
                 End Select
 
                 If value IsNot Nothing Then
+                    value = HttpUtility.HtmlDecode(value) 'Decode the value; this works regardless of the value being actually encoded or not
                     valueString += idString & vbTab & value & vbTab
                 End If
             Next
@@ -1897,4 +1898,43 @@ Public Class [Default]
         Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(cult)
     End Sub
 
+	Public Overrides Sub ProcessRequest(context As HttpContext)
+		Try
+			'The line below will throw an HttpRequestValidationException if any of the fields in the Form contain
+			'"potentially dangerous" characters, in which case we need to catch the exception and then encode the fields
+			Dim formItemsCount = context.Request.Form.Count
+		Catch ex As HttpRequestValidationException
+			EncodeOrDecodeFormFields(True)
+		Catch e As Exception
+			'Ignore other errors
+		End Try
+
+		'Regardless of an exception having been thrown above, call the base method (this is normal behaviour)
+		MyBase.ProcessRequest(context)
+	End Sub
+
+	Private Sub Page_Load() Handles Me.Load
+		'Decode form fields when loading the form so the user doesn't see the encoded values but the actual values
+		EncodeOrDecodeFormFields(False)
+	End Sub
+
+	Private Sub EncodeOrDecodeFormFields(encode As Boolean)
+		'This collection is read only, so before we encode its values we need to make it writable
+		Dim collection = HttpContext.Current.Request.Form
+		Dim propInfo = collection.GetType().GetProperty("IsReadOnly", BindingFlags.Instance Or BindingFlags.NonPublic)
+
+		'Set the 'IsReadOnly' property of the collection to false
+		propInfo.SetValue(collection, False, New Object() {})
+
+		For Each k As String In collection.AllKeys
+			If encode Then
+				collection.Set(k, HttpUtility.HtmlEncode(collection(k))) 'Encode each item
+			Else
+				collection.Set(k, HttpUtility.HtmlDecode(collection(k))) 'Encode each item
+			End If
+		Next
+
+		'Set the 'IsReadOnly' property of the collection back to true
+		propInfo.SetValue(collection, True, New Object() {})
+	End Sub
 End Class
