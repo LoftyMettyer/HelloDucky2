@@ -905,8 +905,8 @@
 		menu_setVisibleMenuItem("mnutoolPicklistReport", true);
 		menu_setVisibleMenuItem("mnutoolFilterReport", true);
 
-		// Set the calculation ribbon button to visible false when report type is crosstab OR 9-box grid, true otherwise
-		if ('@Model.ReportType' == '@UtilityType.utlCrossTab' || '@Model.ReportType' == '@UtilityType.utlNineBoxGrid') {
+		// Set the calculation ribbon button to visible false when report type is crosstab, 9-box grid OR talent report, true otherwise
+		if ('@Model.ReportType' == '@UtilityType.utlCrossTab' || '@Model.ReportType' == '@UtilityType.utlNineBoxGrid' || '@Model.ReportType' == '@UtilityType.TalentReport') {
 			menu_setVisibleMenuItem("mnutoolCalculationReport", false);
 		}
 		else {
