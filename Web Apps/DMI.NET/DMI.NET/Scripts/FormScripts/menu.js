@@ -2359,6 +2359,7 @@ function menu_disableMenu() {
 		menu_toolbarEnableItem('mnutoolAbsenceBreakdownRecord', false);
 		menu_toolbarEnableItem('mnutoolAbsenceCalendarRecord', false);
 		menu_toolbarEnableItem('mnutoolBradfordRecord', false);
+		menu_toolbarEnableItem('mnutoolTalentRecord', false);
 
 		menu_toolbarEnableItem('mnutoolMailMergeRecord', false);
 		menu_toolbarEnableItem('mnutoolDataTransferRecord', false);

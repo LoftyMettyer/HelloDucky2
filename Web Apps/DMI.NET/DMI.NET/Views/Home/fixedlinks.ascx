@@ -571,20 +571,20 @@
 										Calendar</h6>
 								</a>
 							</div>
-							<div id="mnutoolTalentRecord" class="button">
-								<a href="#" rel="table" title="Talent Reports">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CalendarReports64HOVER.png") %>" alt="" />
-										<i class="icon-CalendarReportsRecord"></i>
-									<h6>Talent<br />
-										Reports</h6>
-								</a>
-							</div>
 							<div id="mnutoolBradfordRecord" class="button">
 								<a href="#" rel="table" title="Bradford Factor">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BradfordFactor64HOVER.png") %>"
 										alt="" /><i class="icon-BradfordRecord"></i>
 									<h6>Bradford<br />
 										Factor</h6>
+								</a>
+							</div>
+							<div id="mnutoolTalentRecord" class="button">
+								<a href="#" rel="table" title="Talent Reports">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CalendarReports64HOVER.png") %>" alt="" />
+										<i class="icon-TalentReportsRecord"></i>
+									<h6>Talent<br />
+										Reports</h6>
 								</a>
 							</div>
 						</li>
