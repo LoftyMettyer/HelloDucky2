@@ -373,7 +373,7 @@ Namespace Controllers
 
 					' Valid login, but do we have any kind of access?
 					If Not (objLogin.IsSSIUser OrElse objLogin.IsDMIUser) Then
-						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, "You are not permitted to use OpenHR Web with this user name.")
+						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, "Login Failed.")
 						Return View("login", loginviewmodel)
 					End If
 

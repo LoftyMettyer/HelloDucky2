@@ -345,12 +345,12 @@ Namespace Controllers
 			Session("WarningText") = ""
 
 			If Session("SSIMode") = True AndAlso Not objSessionInfo.LoginInfo.IsSSIUser Then
-				Session("ErrorText") = "You are not permitted to use OpenHR Self-service with this user name."
+				Session("ErrorText") = "Login Failed."
 				bOK = False
 			End If
 
 			If Session("SSIMode") = False AndAlso Not objSessionInfo.LoginInfo.IsDMIUser Then
-				Session("ErrorText") = "You are not permitted to use OpenHR Web with this user name."
+				Session("ErrorText") = "Login Failed."
 				bOK = False
 			End If
 
