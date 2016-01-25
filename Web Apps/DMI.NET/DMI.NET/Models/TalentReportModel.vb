@@ -32,25 +32,22 @@ Namespace Models
 	  Public Property MatchChildColumnID As Integer
 	  Public Property MatchChildRatingColumnID  As Integer
 	  Public Property MatchAgainstType  As MatchAgainstType
- 		Public Property Output As New ReportOutputModel
-    Public Property MatchPicklistName as String
-    public Property MatchFilterName As String
+		Public Property Output As New ReportOutputModel
+		Public Property MatchViewAccess As String
+		<AllowHtml>
+		Public Property MatchFilterName As String
+		<AllowHtml>
+		Public Property MatchPicklistName As String
+
 
     Public Overrides Function GetAvailableTables() As IEnumerable(Of ReportTableItem)
 
 			Dim objItems As New Collection(Of ReportTableItem)
 
-			Dim objBaseTable = SessionInfo.Tables.Where(Function(m) m.ID = BaseTableID).FirstOrDefault
-			objItems.Add(New ReportTableItem With {.id = objBaseTable.ID, .Name = objBaseTable.Name, .Relation = ReportRelationType.Base})
-
 			' Add base table
 			Dim objTable = SessionInfo.Tables.Where(Function(m) m.ID = BaseTableID).FirstOrDefault
 			objItems.Add(New ReportTableItem With {.id = objTable.ID, .Name = objTable.Name, .Relation = ReportRelationType.Base})
 
-      ' Add match table
-      objTable = SessionInfo.Tables.Where(Function(m) m.ID = MatchTableID).FirstOrDefault
-			objItems.Add(New ReportTableItem With {.id = objTable.ID, .Name = objTable.Name, .Relation = ReportRelationType.Base})
-      
 			Return objItems.OrderBy(Function(m) m.Name)
 
 		End Function

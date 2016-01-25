@@ -461,7 +461,16 @@ Namespace Repository
 						objModel.BaseMinimumRatingColumnID = CInt(row("BaseMinimumRatingColumnID"))
 						objModel.BasePreferredRatingColumnID = CInt(row("BasePreferredRatingColumnID"))
 						objModel.MatchTableID = CInt(row("MatchTableID"))
+						objModel.MatchViewAccess = row("MatchViewAccess").ToString
 						objModel.MatchSelectionType = CType(row("MatchSelection"), RecordSelectionType)
+
+						If objModel.MatchSelectionType <> RecordSelectionType.AllRecords Then
+							objModel.MatchPicklistID = CInt(row("MatchPicklistID"))
+							objModel.MatchPicklistName = row("PersonPicklistName").ToString
+							objModel.MatchFilterID = CInt(row("MatchFilterID"))
+							objModel.MatchFilterName = row("PersonFilterName").ToString
+						End If
+
 						objModel.MatchPicklistID = CInt(row("MatchPicklistID"))
 						objModel.MatchFilterID = CInt(row("MatchFilterID"))
 						objModel.MatchChildTableID = CInt(row("MatchChildTableID"))
@@ -495,6 +504,7 @@ Namespace Repository
 				' if copy the defination then check if group access needs to be hidden
 				If objModel.ActionType = UtilityActionType.Copy Then
 					If objModel.BaseViewAccess = "HD" Or
+						 objModel.MatchViewAccess = "HD" Or
 						objModel.DefinitionAccessBasedOnSelectedCalculationColumns = "HD" Then
 						objModel.IsGroupAccessHiddenWhenCopyTheDefinition = True
 					End If

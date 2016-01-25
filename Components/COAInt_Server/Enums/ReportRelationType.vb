@@ -7,5 +7,6 @@ Namespace Enums
 		Parent1 = 1
 		Parent2 = 2
 		Child = 3
+		Base2 = 4
 	End Enum
 End Namespace

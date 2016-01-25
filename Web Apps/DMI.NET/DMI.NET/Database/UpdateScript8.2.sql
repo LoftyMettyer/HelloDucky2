@@ -37107,17 +37107,23 @@ BEGIN
 			@sAccess 		varchar(MAX),		
 			@fSysSecMgr		bit;		
 
-	DECLARE @psErrorMsg			varchar(MAX) = '',	
-			@psPicklistName		varchar(255) = '',
-			@pfPicklistHidden	bit = 0,
-			@psFilterName		varchar(255) = '',
-			@pfFilterHidden		bit = 0,
-			@psWarningMsg		varchar(255) = '',
-			@psReportOwner		varchar(255),
-			@psReportName		varchar(255),
-			@piPicklistID		integer = 0,
-			@piFilterID			integer = 0,
-			@piCategoryID		integer;
+	DECLARE @psErrorMsg				varchar(MAX) = '',	
+			@psPicklistName			varchar(255) = '',
+			@psMatchPicklistName	varchar(255) = '',
+			@pfPicklistHidden		bit = 0,
+			@pfMatchPicklistHidden	bit = 0,
+			@psFilterName			varchar(255) = '',
+			@psMatchFilterName		varchar(255) = '',
+			@pfFilterHidden			bit = 0,
+			@pfMatchFilterHidden	bit = 0,
+			@psWarningMsg			varchar(255) = '',
+			@psReportOwner			varchar(255),
+			@psReportName			varchar(255),
+			@piPicklistID			integer = 0,
+			@piFilterID				integer = 0,
+			@piMatchPicklistID		integer = 0,
+			@piMatchFilterID		integer = 0,
+			@piCategoryID			integer;
 
 	EXEC [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT;
 
@@ -37131,6 +37137,7 @@ BEGIN
 
 	SELECT @psReportOwner = [username], @psReportName = [name]
 			, @piPicklistID = BasePicklistID, @piFilterID = BaseFilterID
+			, @piMatchPicklistID = MatchPicklistID, @piMatchFilterID = MatchFilterID
 		FROM [dbo].[ASRSysTalentReports]		
 		WHERE ID = @piReportID;
 
@@ -37155,19 +37162,35 @@ BEGIN
 		FROM [dbo].[ASRSysPicklistName]		
 		WHERE picklistID = @piPicklistID;		
 		IF UPPER(@sTempHidden) = 'HD'		
-			SET @pfPicklistHidden = 1;		
-
+			SET @pfPicklistHidden = 1;
 	END		
+
 	IF @piFilterID > 0 		
 	BEGIN		
 		SELECT @psFilterName = name, @sTempHidden = access		
 		FROM [dbo].[ASRSysExpressions]		
 		WHERE exprID = @piFilterID;		
 		IF UPPER(@sTempHidden) = 'HD'		
-			SET @pfFilterHidden = 1;		
-
+			SET @pfFilterHidden = 1;
 	END
 
+	IF @piMatchPicklistID > 0 		
+	BEGIN		
+		SELECT @psMatchPicklistName = name, @sTempHidden = access		
+		FROM [dbo].[ASRSysPicklistName]		
+		WHERE picklistID = @piMatchPicklistID;	
+		IF UPPER(@sTempHidden) = 'HD'
+			SET @pfMatchPicklistHidden = 1;	
+	END
+			
+	IF @piMatchFilterID > 0 		
+	BEGIN		
+		SELECT @psMatchFilterName = name, @sTempHidden = access		
+		FROM [dbo].[ASRSysExpressions]		
+		WHERE exprID = @piMatchFilterID;		
+		IF UPPER(@sTempHidden) = 'HD'
+			SET @pfMatchFilterHidden = 1;
+	END
 	-- Get's the category id associated with the mail merge utility. Return 0 if not found
 	SET @piCategoryID = 0;
 	SELECT @piCategoryID = ISNULL(categoryid,0)
@@ -37180,8 +37203,10 @@ BEGIN
 		m.BaseSelection AS SelectionType,
 		m.BasePicklistID AS PicklistID,	
 		@psPicklistName AS PicklistName,
+		@psMatchPicklistName AS PersonPicklistName,
 		m.BaseFilterID AS FilterID,
 		@psFilterName AS FilterName,
+		@psMatchFilterName AS PersonFilterName,
 	  ISNULL(m.BaseChildTableID, 0) AS BaseChildTableID,
 	  ISNULL(m.BaseChildColumnID, 0) AS BaseChildColumnID,
 		ISNULL(m.BasePreferredRatingColumnID, 0) AS BasePreferredRatingColumnID,
@@ -37198,13 +37223,14 @@ BEGIN
 		m.outputformat AS [Format],		
 		m.outputsave AS [SaveToFile],		
 		m.outputfilename AS [Filename],		
-		m.emailAddrID AS [EmailGroupID],		
+		m.emailAddrID AS [EmailGroupID],	
 		(SELECT Name FROM [dbo].[ASRSysEmailGroupName] WHERE EmailGroupID = m.emailAddrID) AS EmailGroupName,	
 		m.emailSubject,		
 		m.EmailAttachmentName,	
 		m.outputscreen AS [DisplayOutputOnScreen],		
 		CONVERT(integer, m.[timestamp]) AS [Timestamp],
-		CASE WHEN @pfPicklistHidden = 1 OR @pfFilterHidden = 1 THEN 'HD' ELSE '' END AS [BaseViewAccess]
+		CASE WHEN @pfPicklistHidden = 1 OR @pfFilterHidden = 1 THEN 'HD' ELSE '' END AS [BaseViewAccess],
+		CASE WHEN @pfMatchPicklistHidden = 1 OR @pfMatchFilterHidden = 1 THEN 'HD' ELSE '' END AS [MatchViewAccess]
 	FROM [dbo].ASRSysTalentReports m
 	WHERE m.ID = @piReportID;		
 

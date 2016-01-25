@@ -1,7 +1,7 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
 @Inherits System.Web.Mvc.WebViewPage(Of Models.TalentReportModel)
-
+@Html.HiddenFor(Function(m) m.MatchViewAccess, New With {.class = "ViewAccess"})
 @Code
 	Layout = Nothing
 End Code
@@ -36,7 +36,12 @@ End Code
 				<fieldset class="floatleft overflowhidden width50">
 					<div class="inner">
 						<fieldset class="">
-							Person Table : <select class="width70 floatright" name="MatchTableID" id="MatchTableID"></select>
+							Person Table : <select class="width70 floatright" name="MatchTableID" id="MatchTableID" onchange="requestChangeReportPersonTable(event.target);"></select>							
+							<input type="hidden" id="OriginalRoleTableID" />
+							<input type="hidden" id="OriginalRoleTableText" />							
+							<input type="hidden" id="OriginalPersonTableID" />
+							<input type="hidden" id="OriginalPersonTableText" />							
+							<input type="hidden" id="IsPersonTableChange" value="False" />
 						</fieldset>
 
 						<div>
@@ -94,7 +99,7 @@ End Code
 
 			<div id="report_definition_tab_columns">
 				@Code
-				Html.RenderPartial("_ColumnSelection", Model)
+				Html.RenderPartial("_TalentManagementColumnSelection", Model)
 				End Code
 			</div>
 
@@ -121,7 +126,7 @@ End Code
 
 		var tableID = $("#MatchTableID").val();
 		var currentID = $("#txtMatchPicklistID").val();
-		var tableName = "matched";
+		var tableName = $("#MatchTableID option:selected").text();
 
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
 			//If current user is System Manager/Security Manager, we allow them to add or edit the filter/picklist hidden by another user
@@ -133,7 +138,7 @@ End Code
 			else {
 				$("#txtMatchPicklistID").val(id);
 				$("#txtMatchPicklist").val(name);
-				//setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access, tableName);
+				setViewAccess('PICKLIST', $("#MatchViewAccess"), access, tableName);
 				enableSaveButton();
 			}
 		}, getPopupWidth(), getPopupHeight());
@@ -144,7 +149,7 @@ End Code
 
 		var tableID = $("#MatchTableID").val();
 		var currentID = $("#txtMatchFilterID").val();
-		var tableName = "matched";
+		var tableName = $("#MatchTableID option:selected").text();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
 			//If current user is System Manager/Security Manager, we allow them to add or edit the filter/picklist hidden by another user
@@ -156,7 +161,7 @@ End Code
 			else {
 				$("#txtMatchFilterID").val(id);
 				$("#txtMatchFilter").val(name);
-				//setViewAccess('FILTER', $("#Parent1ViewAccess"), access, tableName);
+				setViewAccess('FILTER', $("#MatchViewAccess"), access, tableName);
 				enableSaveButton();
 			}
 		}, getPopupWidth(), getPopupHeight());
@@ -165,13 +170,22 @@ End Code
 
 
 	function setTalentDefinitionDetails() {
+		if (($("#txtReportType").val() == '@UtilityType.TalentReport') && ($("#ActionType").val() == '@UtilityActionType.New')) {						
+			$('#MatchTableID').val("@Model.MatchTableID");			
+			MatchTableClick();
+		}
+		else {
+			$('#MatchTableID').val("@Model.MatchTableID");
+			MatchTableClick();
+		}		
 
-		$('#MatchTableID').val("@Model.MatchTableID");
-
+		$("#OriginalRoleTableID").val($('#BaseTableID').val());		
+		$("#OriginalRoleTableText").val($("#BaseTableID option:selected").text());
+		$("#OriginalPersonTableID").val($('#MatchTableID').val());
+		$("#OriginalPersonTableText").val($("#MatchTableID option:selected").text());
 		refreshTalentReportChildTables();
-		$('#MatchChildTableID').val("@Model.MatchChildTableID");
-
-
+		$('#MatchChildTableID').val("@Model.MatchChildTableID");	
+		
 	}
 
 	function refreshTalentReportChildTables() {
@@ -292,6 +306,7 @@ End Code
 		$('input[type=number]').numeric();
 		$('#description, #Name').css('width', $('#BaseTableID').width());
 	});
+
 	function resizeColumnGrids() {
 		var gridWidth = $('#columnsAvailable').width() - 10;
 		$("#AvailableColumns").jqGrid('setGridWidth', gridWidth);
@@ -307,6 +322,72 @@ End Code
 
 		//column aggregate widths
 		$('.colAggregates').find('.tablecell').css('width', gridWidth / 3);
+	}
+
+	function requestChangeReportPersonTable(target)
+	{	
+		var columnCount = $("#SelectedColumns").getGridParam("reccount");		
+		var sortOrderCount = $("#SortOrders").getGridParam("reccount");
+		$("#IsPersonTableChange").val("True");
+
+		if (columnCount > 0 || sortOrderCount > 0) {
+			OpenHR.modalPrompt("Changing the person table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+				if (answer == 6) { // Yes
+					changeReportPersonTable();
+					MatchTableClick();
+				}
+				else {
+					$('#MatchTableID')[0].selectedIndex = $("#OriginalPersonTableID").val();
+				}
+			});
+		}		
+		else {
+			changeReportPersonTable();
+			MatchTableClick();
+		}
+	}
+
+	function changeReportPersonTable() {
+		// Post Person table change to server
+		var dataSend = {
+			ReportID: '@Model.ID',
+			ReportType: '@Model.ReportType',
+			MatchTableID: $("#MatchTableID option:selected").val(),
+			BaseTableID: 0,
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		};
+		
+		OpenHR.postData("Reports/changePersonTable", dataSend, changeReportPersonCompleted);
+		
+	}
+
+	function changeReportPersonCompleted(json) {
+
+		$("#matchselectiontype_All").prop('checked', 'checked');
+		$("#ChildTablesAvailable").val(parseInt(json.childTablesAvailable));
+		changeRecordOption('Match', 'ALL');
+	
+		if ($("#txtReportType").val() === '@UtilityType.TalentReport') {
+			removeSelectedTableColumns(true,"personTable", $("#OriginalPersonTableText").val());
+			refreshTalentReportChildTables(true);
+		}
+		
+		// Enables save button
+		enableSaveButton();
+	}
+
+	function MatchTableClick() {
+
+		var BaseTableID = $("#BaseTableID").val();
+		var MatchTableID = $("#MatchTableID").val();
+
+		//Reset Base Table so none are disabled/hidden
+		$('#BaseTableID option').removeAttr('disabled');
+
+		//Hide/disable matching items in Base Table
+		$('#BaseTableID option').filter(function () {
+			return $(this).val() == MatchTableID;
+		}).attr('disabled', 'disabled');
 	}
 
 	$("#workframe").attr("data-framesource", "UTIL_DEF_TALENTREPORT");

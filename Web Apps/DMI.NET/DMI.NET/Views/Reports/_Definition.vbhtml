@@ -131,10 +131,10 @@
 			$(".displayTitleInReportHeader").hide();
 		}
 
-	    if ($("#txtReportType").val() === '@UtilityType.TalentReport') {
-	        $(".displayTitleInReportHeader").hide();
-	        $("#BaseTableText span").html('Role Table :');
-	    }
+		if ($("#txtReportType").val() === '@UtilityType.TalentReport') {
+			$(".displayTitleInReportHeader").hide();
+			$("#BaseTableText span").html('Role Table :');
+		}
 
 		ShowHideToolsButtons();
 		EnableDisableToolsButtons();
@@ -199,12 +199,21 @@
 					$('#BaseTableID').append(optionHtml);
 
 					if ('@CInt(Model.ReportType)' == '38') {
-					  $('#MatchTableID').append(optionHtml);
+						$('#MatchTableID').append(optionHtml);
 					}
 
 				});
 
-			  $('#BaseTableID').val("@Model.BaseTableID");
+				if (($("#txtReportType").val() == '@UtilityType.TalentReport') && ($("#ActionType").val() == '@UtilityActionType.New')) {
+					// SettingsConfig.Post_TableID
+					$('#BaseTableID').val("@Model.BaseTableID");
+					BaseTableClick();
+				}
+				else {
+					$('#BaseTableID').val("@Model.BaseTableID");
+					BaseTableClick();
+				}				
+
 				$("#OriginalBaseTableID").val($('#BaseTableID')[0].selectedIndex);
 
 				if ('@CInt(Model.ReportType)' == '2' || '@CInt(Model.ReportType)' == '9' || '@CInt(Model.ReportType)' == '38') {
@@ -212,9 +221,9 @@
 					attachGridToSelectedColumns();
 				}
 
-			  if ('@CInt(Model.ReportType)' == '38') {
-			    setTalentDefinitionDetails();
-        }
+				if ('@CInt(Model.ReportType)' == '38') {
+					setTalentDefinitionDetails();
+				}
 
 				if (($("#txtReportType").val() == '@UtilityType.utlCalendarReport') && ($("#ActionType").val() == '@UtilityActionType.New')) {
 					//If  the Base Table value is anything other than Primary table value then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable
@@ -518,7 +527,7 @@
 				$.each(json, function (i, table) {
 					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
 					$('#SelectedTableID').append(optionHtml);
-
+					
 					// If the report type is custom report then only set Relatedtable1 and Relatedtable2 relation
 					if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
 						if (table.Relation == 1 && baseTableChanged) {
@@ -536,13 +545,18 @@
 						}
 					}
 
+					if ($("#txtReportType").val() == '@UtilityType.TalentReport') {					
+						var optionHtml = '<option value=' + $("#MatchTableID option:selected").val() + '>' + $("#MatchTableID option:selected").text() + '</option>';
+						$('#SelectedTableID').append(optionHtml);
+					}
+
 				});
 
 				$("#SelectedTableID").val($("#BaseTableID").val());
 				getAvailableTableColumnsCalcs();
 
 			}
-		});
+		});			
 	}
 
 	function requestChangeReportBaseTable(target) {
@@ -557,6 +571,7 @@
 			OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
 				if (answer == 6) { // Yes
 					changeReportBaseTable();
+					BaseTableClick();
 				}
 				else {
 					$('#BaseTableID')[0].selectedIndex = $("#OriginalBaseTableID").val();
@@ -576,6 +591,7 @@
 		}
 		else {
 			changeReportBaseTable();
+			BaseTableClick();
 		}
 	}
 
@@ -599,7 +615,7 @@
 		$("#ChildTablesAvailable").val(parseInt(json.childTablesAvailable));
 		changeRecordOption('Base', 'ALL');
 
-		if ($("#txtReportType").val() != '@UtilityType.utlCrossTab' && $("#txtReportType").val() != '@UtilityType.utlNineBoxGrid') {
+		if ($("#txtReportType").val() != '@UtilityType.utlCrossTab' && $("#txtReportType").val() != '@UtilityType.utlNineBoxGrid' && $("#txtReportType").val() != '@UtilityType.TalentReport') {
 			removeAllSortOrders();
 		}
 
@@ -608,7 +624,7 @@
 			resetParentDetails();
 		}
 
-	  if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge' || $("#txtReportType").val() === '@UtilityType.TalentReport') {
+		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge') {
 			removeAllSelectedColumns(false);
 			setDefinitionAccessBasedOnSelectedCalculationColumns();
 			if ($("#txtReportType").val() == '@UtilityType.utlMailMerge') {
@@ -627,9 +643,12 @@
 			refreshCrossTabColumnsAvailable();
 		}
 
-	  if ($("#txtReportType").val() === '@UtilityType.TalentReport') {
-	    refreshTalentReportChildTables(true);
-	  }
+		if ($("#txtReportType").val() === '@UtilityType.TalentReport') {
+			//Remove all columns of previous selected table
+			removeSelectedTableColumns(true, "roleTable",$("#OriginalRoleTableText").val());
+			setDefinitionAccessBasedOnSelectedCalculationColumns();
+			refreshTalentReportChildTables(true);
+		}
 
 
 		// Enables save button
@@ -904,6 +923,25 @@
 		}
 		else {
 			menu_toolbarEnableItem('mnutoolSaveReport', false);
+		}
+	}
+
+	function BaseTableClick() {
+		var BaseTableID = $("#BaseTableID").val();
+		var MatchTableID = $("#MatchTableID").val();
+
+		//Reset Match Table so none are disabled/hidden
+		$('#MatchTableID option').removeAttr('disabled');
+
+		//Hide/disable matching items in Match Table
+		$('#MatchTableID option').filter(function () {
+			return $(this).val() == BaseTableID;
+		}).attr('disabled', 'disabled');
+
+		//reset Match Table if it is selected by BaseTableID
+		if ($("#MatchTableID option:selected").val() == BaseTableID) {
+			//reset the value to top item
+			$('#MatchTableID').val($("#MatchTableID option:not([disabled]):first").val());
 		}
 	}
 

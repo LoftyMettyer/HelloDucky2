@@ -636,32 +636,32 @@ Namespace Controllers
 
         End Function
 
-        <HttpPost>
-        <ValidateAntiForgeryToken>
-        Function AddSortOrder(ReportID As Integer, ReportType As UtilityType) As ActionResult
+		<HttpPost>
+		<ValidateAntiForgeryToken>
+		Function AddSortOrder(ReportID As Integer, ReportType As UtilityType) As ActionResult
 
-            Dim objModel As New SortOrderViewModel
+			Dim objModel As New SortOrderViewModel
 
-            objModel.ReportID = ReportID
-            objModel.ReportType = ReportType
-            objModel.IsNew = True
+			objModel.ReportID = ReportID
+			objModel.ReportType = ReportType
+			objModel.IsNew = True
 
-            Dim objReport = objReportRepository.RetrieveParent(objModel)
+			Dim objReport = objReportRepository.RetrieveParent(objModel)
 
-            If objReport.SortOrders.Count = 0 Then
-                objModel.ID = 1
-                objModel.Sequence = 1
-            Else
-                objModel.ID = objReport.SortOrders.Max(Function(m) m.ID) + 1
-                objModel.Sequence = objReport.SortOrders.Max(Function(m) m.Sequence) + 1
-            End If
+			If objReport.SortOrders.Count = 0 Then
+				objModel.ID = 1
+				objModel.Sequence = 1
+			Else
+				objModel.ID = objReport.SortOrders.Max(Function(m) m.ID) + 1
+				objModel.Sequence = objReport.SortOrders.Max(Function(m) m.Sequence) + 1
+			End If
+			
+			objModel.AvailableColumns = objReport.GetAvailableSortColumns(objModel)
 
-            objModel.AvailableColumns = objReport.GetAvailableSortColumns(objModel)
+			ModelState.Clear()
+			Return PartialView("EditorTemplates\SortOrder", objModel)
 
-            ModelState.Clear()
-            Return PartialView("EditorTemplates\SortOrder", objModel)
-
-        End Function
+		End Function
 
         <HttpPost>
         <ValidateAntiForgeryToken>
@@ -930,7 +930,49 @@ Namespace Controllers
 
         End Function
 
+		
 
-    End Class
+		<HttpPost>
+		<ValidateAntiForgeryToken>
+	 Sub RemoveSelectedTableColumns(objModel As ReportColumnCollection)
 
+			Dim objReport As ReportBaseModel
+			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+
+			Dim objAllObjects As List(Of ReportColumnItem)
+			objAllObjects = objReportRepository.GetColumnsForTable(objModel.ColumnsTableID)
+
+			For Each iColumnID In objReport.Columns
+				Dim objColumn = objAllObjects.Where(Function(m) m.ID = iColumnID.ID).FirstOrDefault				'
+				objReport.Columns.Remove(objColumn)
+				If (Not IsNothing(objColumn)) Then
+					Dim sortColumn = objReport.SortOrders.Where(Function(m) m.ColumnID = objColumn.ID).FirstOrDefault
+					objReport.SortOrders.Remove(sortColumn)
+				End If
+			Next
+
+			objReport.Columns.RemoveAll(Function(m) m.TableID = objModel.ColumnsTableID)
+
+		End Sub
+
+		<HttpPost>
+		<ValidateAntiForgeryToken>
+	 Function changePersonTable(ReportID As Integer, ReportType As UtilityType, MatchTableID As Integer, BaseTableID As Integer) As JsonResult
+
+			Dim objReport As TalentReportModel
+
+			Dim iChildTablesAvailable As Integer
+
+			objReport = CType(objReportRepository.RetrieveParent(ReportID, ReportType), TalentReportModel)
+			objReport.MatchTableID = MatchTableID
+			objReport.BaseTableID = BaseTableID
+			objReport.SetBaseTable(BaseTableID)
+
+			Dim result = New With {.childTablesAvailable = iChildTablesAvailable, .sortOrdersAvailable = objReport.SortOrdersAvailable}
+			Return Json(result, JsonRequestBehavior.AllowGet)
+
+		End Function
+
+	End Class
+	
 End Namespace
