@@ -432,6 +432,7 @@ Namespace Repository
 					objModel.Owner = _username
 					objModel.Output.Format = OutputFormats.DataOnly
 					objModel.Output.IsPreview = True
+					objModel.Output.ToScreen = True
 				Else
 
 					objModel.ID = ID

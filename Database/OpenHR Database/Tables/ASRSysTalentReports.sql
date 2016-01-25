@@ -29,4 +29,5 @@
 			[OutputFormat] [int] NULL,
 			[OutputScreen] [bit] NULL,
 			[OutputSave] [bit] NULL,
-			[OutputFilename] [varchar](255) NULL)
+			[OutputFilename] [varchar](255) NULL, 
+      [OutputEmail] [bit] NULL)

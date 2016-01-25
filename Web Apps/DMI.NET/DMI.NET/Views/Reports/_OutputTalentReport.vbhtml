@@ -7,7 +7,7 @@ End Code
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportOutputModel)
 
 <fieldset class="border0 width20 floatleft">
-	<legend class="fontsmalltitle">Output Formats</legend>
+	<legend class="fontsmalltitle">Output Format :</legend>
 	<fieldset id="outputformats">
 		@Html.RadioButton("Output.Format", 0, Model.Format = OutputFormats.DataOnly, New With {.onchange = "changeOutputType('DataOnly')"})
 		Preview
@@ -22,7 +22,7 @@ End Code
 </fieldset>
 
 <fieldset id="outputdestinatonfieldset" class="border0 floatleft width70">
-	<legend class="fontsmalltitle">Output Destinations</legend>
+	<legend class="fontsmalltitle">Output Destination :</legend>
 
 	<fieldset class="border0 reportdefpreview" style="display:none">
 		<div>
@@ -82,6 +82,10 @@ End Code
 		if (!bSelected) {
 			$(".reportdefemail").children().val("");
 			$("#txtEmailGroupID").val(0);
+		}
+		else
+		{
+			$("#txtEmailGroup").val('None');
 		}
 
 		sendAsEmailChecked();
