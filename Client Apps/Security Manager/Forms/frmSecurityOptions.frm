@@ -67,8 +67,8 @@ Begin VB.Form frmSecurityOptions
       TabCaption(1)   =   "&Advanced"
       TabPicture(1)   =   "frmSecurityOptions.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "frmWindowsAuth"
-      Tab(1).Control(1)=   "fraOrphanedAccounts"
+      Tab(1).Control(0)=   "fraOrphanedAccounts"
+      Tab(1).Control(1)=   "frmWindowsAuth"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Login Maintenance"
       TabPicture(2)   =   "frmSecurityOptions.frx":0044
@@ -80,14 +80,14 @@ Begin VB.Form frmSecurityOptions
          Caption         =   "Self Service Logins :"
          Height          =   3825
          Left            =   -74850
-         TabIndex        =   32
+         TabIndex        =   34
          Top             =   405
          Width           =   6375
          Begin VB.CheckBox chkOverrideSecurity 
-            Caption         =   "&Use specific security group :"
+            Caption         =   "&Use specific user group :"
             Height          =   210
             Left            =   135
-            TabIndex        =   35
+            TabIndex        =   30
             Top             =   945
             Width           =   2775
          End
@@ -95,7 +95,7 @@ Begin VB.Form frmSecurityOptions
             Caption         =   "Send login details to wor&k email address"
             Height          =   225
             Left            =   135
-            TabIndex        =   31
+            TabIndex        =   33
             Top             =   2010
             Width           =   3975
          End
@@ -103,7 +103,7 @@ Begin VB.Form frmSecurityOptions
             Caption         =   "Disable logins on leavin&g date"
             Height          =   255
             Left            =   135
-            TabIndex        =   30
+            TabIndex        =   32
             Top             =   1455
             Width           =   3210
          End
@@ -121,7 +121,7 @@ Begin VB.Form frmSecurityOptions
             Left            =   3000
             List            =   "frmSecurityOptions.frx":0062
             Style           =   2  'Dropdown List
-            TabIndex        =   33
+            TabIndex        =   31
             Top             =   900
             Width           =   2805
          End
@@ -130,7 +130,7 @@ Begin VB.Form frmSecurityOptions
             ForeColor       =   &H000000FF&
             Height          =   900
             Left            =   405
-            TabIndex        =   34
+            TabIndex        =   35
             Top             =   2370
             Width           =   5625
          End
