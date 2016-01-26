@@ -307,7 +307,7 @@ namespace OpenHRTestToLive
       foreach (ASRSysWorkflowElement item in t2l.AllElements) { item.WorkflowID = MaxWFId; }
 
       // Bump the Workflow Link ID's
-      int MaxLinkID = db.ASRSysWorkflowLinks.Max(x => x.ID);
+      int MaxLinkID = db.ASRSysWorkflowLinks.DefaultIfEmpty().Max(x => x == null ? 0 : x.ID);
       MaxLinkID++;
       LogData("Bumping WF Link ID's to start at {0}", MaxLinkID);
       foreach (ASRSysWorkflowLinks item in t2l.AllLinks)
@@ -318,7 +318,7 @@ namespace OpenHRTestToLive
       }
 
 
-      int MaxElementItemID = db.ASRSysWorkflowElementItems.Max(x => x.ID);
+      int MaxElementItemID = db.ASRSysWorkflowElementItems.DefaultIfEmpty().Max(x => x == null ? 0 : x.ID);
       MaxElementItemID++;
       LogData("Bumping WF Element Item ID's to start at {0}", MaxElementItemID);
       foreach (ASRSysWorkflowElementItem child in t2l.AllItems)  // ID - Unique, ElementID - FK to WFElement.ID
@@ -333,7 +333,7 @@ namespace OpenHRTestToLive
         MaxElementItemID++;
       }
 
-      int MaxElementColumnID = db.ASRSysWorkflowElementColumns.Max(x => x.ID);
+      int MaxElementColumnID = db.ASRSysWorkflowElementColumns.DefaultIfEmpty().Max(x => x == null ? 0 : x.ID);
       MaxElementColumnID++;
       LogData("Bumping WF Element Columns ID's to start at {0}", MaxElementColumnID);
       foreach (ASRSysWorkflowElementColumn child in t2l.AllColumns)  // ID - Unique, ElementID - FK to WFElement.ID
@@ -342,7 +342,7 @@ namespace OpenHRTestToLive
         MaxElementColumnID++;
       }
 
-      int MaxElementValidationID = db.ASRSysWorkflowElementValidations.Max(x => x.ID);
+      int MaxElementValidationID = db.ASRSysWorkflowElementValidations.DefaultIfEmpty().Max(x => x == null ? 0 : x.ID);
       MaxElementValidationID++;
       LogData("Bumping WF Element Validations ID's to start at {0}", MaxElementValidationID);
       foreach (ASRSysWorkflowElementValidation child in t2l.AllValidations)  // ID - Unique, ElementID - FK to WFElement.ID
@@ -352,7 +352,7 @@ namespace OpenHRTestToLive
       }
 
       // Bump the workflow element ID's
-      int MaxElementID = db.ASRSysWorkflowElements.Max(x => x.ID);
+      int MaxElementID = db.ASRSysWorkflowElements.DefaultIfEmpty().Max(x => x == null ? 0 : x.ID);
       MaxElementID++;
 
       LogData("Bumping WF Element ID's to start at {0}", MaxElementID);
@@ -391,7 +391,7 @@ namespace OpenHRTestToLive
       }
 
       // Bump the Expression Component ID's
-      int MaxExprComponentID = db.ASRSysExprComponents.Max(x => x.ComponentID);
+      int MaxExprComponentID = db.ASRSysExprComponents.DefaultIfEmpty().Max(x => x == null ? 0 : x.ComponentID);
       MaxExprComponentID++;
       LogData("Bumping WF Expression Component ID's to start at {0}", MaxExprComponentID);
       foreach (ASRSysExprComponent item in t2l.AllComponents)
@@ -406,7 +406,7 @@ namespace OpenHRTestToLive
       }
 
       // Bump the Expression ID's
-      int MaxExprID = db.ASRSysExpressions.Max(x => x.ExprID);
+      int MaxExprID = db.ASRSysExpressions.DefaultIfEmpty().Max(x => x == null ? 0 : x.ExprID);
       MaxExprID++;
       LogData("Bumping WF Expression ID's to start at {0}", MaxExprID);
       foreach (ASRSysExpression item in t2l.AllExpressions)
