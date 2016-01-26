@@ -47837,7 +47837,7 @@ BEGIN
 	SET NOCOUNT ON;
 
 	/* Return a recordset of the prompted values for the given utililty. */
-	DECLARE	@iBaseFilter		integer,
+	DECLARE	@iBaseFilter		integer = 0,
 			@iBase2Filter		integer,
 			@iParent1Filter		integer,
 			@iParent2Filter		integer,
@@ -47893,14 +47893,14 @@ BEGIN
 			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @piUtilID, @sAllComponents OUTPUT;
 	END
 
-	IF @piUtilType = 3
+	IF @piUtilType = 3 AND @piMultipleRecords = 0 AND @piRecordID = 0
 	BEGIN
 
 		SELECT @iBaseFilter = filterID
 			FROM [dbo].ASRSysDataTransferName
 			WHERE DataTransferID = @piUtilID;
 
-		IF (NOT @iBaseFilter IS NULL) AND @iBaseFilter > 0 AND @piMultipleRecords = 0
+		IF (NOT @iBaseFilter IS NULL) AND @iBaseFilter > 0
 			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @iBaseFilter, @sAllComponents OUTPUT;
 
 	END
