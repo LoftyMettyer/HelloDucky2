@@ -120,6 +120,7 @@ Begin VB.Form frmSecurityOptions
             ItemData        =   "frmSecurityOptions.frx":0060
             Left            =   3000
             List            =   "frmSecurityOptions.frx":0062
+            Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   31
             Top             =   900
@@ -940,6 +941,7 @@ Private Function LoadCombos() As Boolean
   For Each objGroup In gObjGroups
    cboAutoAddSelfServiceGroup.AddItem (objGroup.Name)
   Next objGroup
+  cboAutoAddSelfServiceGroup.ListIndex = 0
 
   LoadCombos = True
   Exit Function

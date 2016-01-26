@@ -5659,13 +5659,18 @@ On Error GoTo ErrorTrap:
   Dim sLeavingDateColumn As String
   Dim sSecurityGroupColumn As String
   Dim sPersonnelTable As String
+  Dim sSecurityColumnId As String
     
   bOK = True
   sURL = GetSystemSetting("Web", "SiteAddress", "")
   sPersonnelTable = GetTableName(glngPersonnelTableID)
   sSelfServiceColumn = GetColumnName(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LOGINNAME))
   sLeavingDateColumn = GetColumnName(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LEAVINGDATE))
-  sSecurityGroupColumn = GetColumnName(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SECURITYGROUP))
+  
+  sSecurityColumnId = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SECURITYGROUP)
+  If Len(sSecurityColumnId) > 0 Then
+    sSecurityGroupColumn = GetColumnName(CLng(sSecurityColumnId))
+  End If
  
   sSQL = "/* --------------------------------------------------- */" & vbNewLine & _
         "/* Login Maintenance stored procedure.                 */" & vbNewLine & _
