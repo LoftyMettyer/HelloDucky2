@@ -78,9 +78,6 @@
                 <Component Id="cmp8AB9E98812D4FF1396E72067FB9138E7" Guid="*">
                     <File Id="fil9369FF0D08849E97BCE6FBF835C04429" KeyPath="yes" Source="SourceDir\bin\Owin.dll" />
                 </Component>
-                <Component Id="cmp73EE009A331C86D92AEE39499D952CE6" Guid="*">
-                    <File Id="fil1720949B21BF33E2568A16B59B6C3648" KeyPath="yes" Source="SourceDir\bin\System.Data.SqlServerCe.dll" />
-                </Component>
                 <Component Id="cmpD4CDEC7C1AC12733FA38B6F82824DF0B" Guid="*">
                     <File Id="fil48B01FCAA7C0F6456E6444A98B8C8F3A" KeyPath="yes" Source="SourceDir\bin\System.IdentityModel.Tokens.Jwt.dll" />
                 </Component>
@@ -4608,6 +4605,9 @@
                     <Component Id="cmp5DC28F40AF4909D22FD15F6F7A4F7FF0" Guid="*">
                         <File Id="fil8539356A4BB916AA4684196B9FC78342" KeyPath="yes" Source="SourceDir\Views\Reports\_SortOrder.vbhtml" />
                     </Component>
+                    <Component Id="cmp2D286E670762F830A94C8F12095666A3" Guid="*">
+                        <File Id="fil12F7C29CCE5C064E04C49BFC59EC069D" KeyPath="yes" Source="SourceDir\Views\Reports\_TalentManagementColumnSelection.vbhtml" />
+                    </Component>
                     <Directory Id="dirEFE96038BA4E7959CDFA1BFC083C73AB" Name="EditorTemplates">
                         <Component Id="cmp2DDE817D332CE25655BF9851A9CE6136" Guid="*">
                             <File Id="filC3DFFA9ECB3B5ABA0C28EAEB1A3C566C" KeyPath="yes" Source="SourceDir\Views\Reports\EditorTemplates\CalendarEventDetail.vbhtml" />
@@ -4670,7 +4670,6 @@
             <ComponentRef Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" />
             <ComponentRef Id="cmpCBBD857B6884D163CDBADD7367F6EAB5" />
             <ComponentRef Id="cmp8AB9E98812D4FF1396E72067FB9138E7" />
-            <ComponentRef Id="cmp73EE009A331C86D92AEE39499D952CE6" />
             <ComponentRef Id="cmpD4CDEC7C1AC12733FA38B6F82824DF0B" />
             <ComponentRef Id="cmpAEE8C660E33BAAABE81574A21E56902D" />
             <ComponentRef Id="cmp582232504431329434B8578DF5733810" />
@@ -6111,6 +6110,7 @@
             <ComponentRef Id="cmp9CF2322DDD5CDE9F413C514C02FECFF7" />
             <ComponentRef Id="cmp319F61571E2A312146943D9952478907" />
             <ComponentRef Id="cmp5DC28F40AF4909D22FD15F6F7A4F7FF0" />
+            <ComponentRef Id="cmp2D286E670762F830A94C8F12095666A3" />
             <ComponentRef Id="cmp2DDE817D332CE25655BF9851A9CE6136" />
             <ComponentRef Id="cmpB6FC4E19D7F1848E07B813B161F74AA4" />
             <ComponentRef Id="cmp06985CBEFC1440BBBBB7B747CE94D977" />
