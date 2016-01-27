@@ -104,7 +104,7 @@ Namespace Classes
 						Dim defaultValue As String = "0"
 
 						Try
-							If arrThousandSeparators(colCounter) = "1" Then sThousandSeparator = LocaleThousandSeparator()
+							If arrThousandSeparators.Length >= colCounter AndAlso arrThousandSeparators(colCounter) = "1" Then sThousandSeparator = LocaleThousandSeparator()
 
 							If arrCellProps(col.Ordinal) > 0 Then
 								defaultValue &= LocaleDecimalSeparator()
@@ -113,7 +113,7 @@ Namespace Classes
 								Next
 							End If
 
-							If arrBlankIfZeroColumns(colCounter) = "1" Then
+							If arrBlankIfZeroColumns.Length >= colCounter AndAlso arrBlankIfZeroColumns(colCounter) = "1" Then
 								defaultValue = ""
 							End If
 

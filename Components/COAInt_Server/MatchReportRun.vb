@@ -181,7 +181,7 @@ Public Class MatchReportRun
 				    Logs.AddHeader(EventLog_Type.eltCareerProgression, Name)
 		    End Select
       End If
-      		
+		
 		  If fOK Then fOK = GetDetailsRecordsets
 		  If fOK Then fOK = GetRelationRecordsets
 		  If fOK Then fOK = CheckModuleSetupPermissions
@@ -873,7 +873,7 @@ Public Class MatchReportRun
 		Next
 
     If UtilityType = UtilityType.TalentReport Then
-      ReportDataTable.Columns.Add("Match Score", GetType(String))
+      ReportDataTable.Columns.Add("Match Score", GetType(Decimal))
       ReportDataTable.Columns.Add("Talent Chart", GetType(String))
 			ReportDataTable.Columns.Add("ID_TalentChartForExcel", GetType(String))
 		End If
@@ -1605,11 +1605,33 @@ Public Class MatchReportRun
 	
 	Private Function PopulateGridMain() As Boolean
 		
-		Dim bOK as Boolean
-		mstrSQL = "SELECT DISTINCT * FROM [" & _login.Username & "].[" & mstrTempTableName & "]" & vbCrLf & "WHERE not (ID1 is null) " & mstrSQLOrderBy
-			
-		bOK = PopulateGrid(mcolColDetails, False)
-		Return bOK
+		Try
+      Dim bOK as Boolean
+      dim talentSortOrder as String = "[Match Score] DESC"
+
+    	mstrSQL = String.Format("SELECT DISTINCT * FROM [{0}].[{1}] WHERE not (ID1 is null) {2}" _
+        , _login.Username, mstrTempTableName, mstrSQLOrderBy)
+      bOK = PopulateGrid(mcolColDetails, False)
+
+      If UtilityType = UtilityType.TalentReport Then
+        Dim dv = ReportDataTable.DefaultView
+
+        For Each column in mcolColDetails.Where(Function(m) m.Sequence > 0)
+          talentSortOrder &= string.Format(", [{0} {1}] {2}" , _
+                             column.TableName.Replace("_"," "), column.Heading.Replace("_"," "), IIf(column.SortDir = "D", " DESC", "ASC"))
+
+        Next
+        dv.Sort = talentSortOrder
+
+        ReportDataTable = dv.ToTable()
+      End If
+
+      Return bOK
+
+		Catch ex As Exception
+      Return False
+
+		End Try
 		
 	End Function
 	

@@ -133,9 +133,7 @@
         },
         colModel: jsonData.colModel,
         rowNum: 100,
-        sortname: 'Match Score',
         viewrecords: true,
-        sortorder: "desc",
         loadComplete: gridLoaded,
         autowidth: true,
         height: gridHeight
