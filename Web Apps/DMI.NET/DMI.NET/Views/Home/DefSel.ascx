@@ -727,6 +727,10 @@
 																						
                                                     Try
 
+                                                        If iDefSelType = UtilityType.utlCalculation Then
+                                                          Response.Write("<option value=0>None</option>")
+                                                        End If
+
                                                         For Each objTable In objSession.Tables.OrderBy(Function(t) t.Name) 'Order by table name
 																												
                                                             Response.Write("						<option value=" & objTable.ID)
