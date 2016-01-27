@@ -325,12 +325,22 @@ End Code
 	}
 
 	function requestChangeReportPersonTable(target)
-	{	
-		var columnCount = $("#SelectedColumns").getGridParam("reccount");		
-		var sortOrderCount = $("#SortOrders").getGridParam("reccount");
-		$("#IsPersonTableChange").val("True");
+	{
 
-		if (columnCount > 0 || sortOrderCount > 0) {
+		var columnCount = 0;
+		var previousPersonTableID = $("#OriginalPersonTableID").val();		
+
+		$("#IsPersonTableChange").val("True");
+		var gridData = $("#SelectedColumns").jqGrid('getRowData');
+		
+		for (j = 0; j < gridData.length; j++) {
+			if (gridData[j].TableID === previousPersonTableID) {
+				columnCount = columnCount + 1;
+				break;
+			}
+		}		
+
+		if (columnCount > 0 ) {		
 			OpenHR.modalPrompt("Changing the person table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
 				if (answer == 6) { // Yes
 					changeReportPersonTable();

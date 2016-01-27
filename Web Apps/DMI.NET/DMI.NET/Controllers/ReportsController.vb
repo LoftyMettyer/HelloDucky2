@@ -728,8 +728,12 @@ Namespace Controllers
                     objColumn.Name = objModel.TableName + "." + objColumn.Name
                 End If
 
-                objReport.Columns.Add(objColumn)
-            Next
+				If objReport.ReportType = UtilityType.TalentReport Then
+					objColumn.TableID = objModel.ColumnsTableID
+				End If
+
+				objReport.Columns.Add(objColumn)
+			Next
 
         End Sub
 
@@ -943,14 +947,12 @@ Namespace Controllers
 			objAllObjects = objReportRepository.GetColumnsForTable(objModel.ColumnsTableID)
 
 			For Each iColumnID In objReport.Columns
-				Dim objColumn = objAllObjects.Where(Function(m) m.ID = iColumnID.ID).FirstOrDefault				'
-				objReport.Columns.Remove(objColumn)
+				Dim objColumn = objAllObjects.Where(Function(m) m.ID = iColumnID.ID).FirstOrDefault
 				If (Not IsNothing(objColumn)) Then
 					Dim sortColumn = objReport.SortOrders.Where(Function(m) m.ColumnID = objColumn.ID).FirstOrDefault
 					objReport.SortOrders.Remove(sortColumn)
 				End If
 			Next
-
 			objReport.Columns.RemoveAll(Function(m) m.TableID = objModel.ColumnsTableID)
 
 		End Sub

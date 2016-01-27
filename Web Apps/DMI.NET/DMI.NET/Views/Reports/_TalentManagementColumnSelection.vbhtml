@@ -115,7 +115,7 @@
 			$("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
 			$('#SelectedColumns').jqGrid("setSelection", rowID);
 
-			if (datarow.IsExpression == "false") {
+			if (datarow.IsExpression == "false") {				
 				$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) + 1);
 				button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
 			}
@@ -145,9 +145,9 @@
 	}
 
 	function getDatarowFromAvailable(index) {
-
+	
 		var datarow = $("#AvailableColumns").getRowData(index);
-
+		
 		datarow.ReportType = '@Model.ReportType';
 		datarow.ReportID = '@Model.ID';
 
@@ -160,16 +160,9 @@
 			datarow.Name = $("#SelectedTableID option:selected").text() + ' Calc: ' + datarow.Name;
 		}
 
-		datarow.Sequence = $("#SelectedColumns").jqGrid('getGridParam', 'records') + 1;
-		datarow.IsAverage = false;
-		datarow.IsCount = false;
-		datarow.IsTotal = false;
-		datarow.IsHidden = false;
-		datarow.IsGroupWithNext = false;
-		datarow.IsRepeated = false;
+		datarow.Sequence = $("#SelectedColumns").jqGrid('getGridParam', 'records') + 1;		
 		datarow.TableID = $("#SelectedTableID option:selected").val();
-
-
+		
 		return datarow;
 	}
 
@@ -197,7 +190,7 @@
 
 			$("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
 
-			if (datarow.IsExpression == "false") {
+			if (datarow.IsExpression == "false") {				
 				$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) + 1);
 				button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
 			}
@@ -352,7 +345,7 @@
 		if (reloadColumns == true) {
 			getAvailableTableColumnsCalcs();
 		}
-
+		
 		removeAllSortOrders();
 		$("#SortOrdersAvailable").val(0);
 		button_disable($("#btnSortOrderAdd")[0], true);
@@ -396,46 +389,7 @@
 			return false;
 		}
 	}
-
-
-	// Disabled the column options for the current row and uncheck all the column options for the next row
-	// when GroupWithNext is checked for the current row.
-	function disableColumnOptionsWhenGroupWithNextChecked() {
-
-		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
-
-		// Gets all row ID'S of selected columns. Here the index begin with zero.
-		var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
-		var isBottomRow = (rowId == allRows[allRows.length - 1]);
-		var currentRowIndex = $("#SelectedColumns").getInd(rowId);
-
-		// Gets the previous row data
-		var prevDataRow = $('#SelectedColumns').jqGrid('getRowData', allRows[currentRowIndex - 2]);
-
-		// If previous row has a GroupWithNext checked then disabled the column options except GroupWithNext for the current row
-		if (prevDataRow != null && prevDataRow.IsGroupWithNext == "true") {
-
-			updateColumnsSelectedGrid();
-		}
-
-		// If the current row is not the last row, Uncheck all the column options for the next row and update the row to the grid
-		if (!isBottomRow) {
-
-			//Gets the next selected columns grid row
-			var nextDataRow = $('#SelectedColumns').jqGrid('getRowData', allRows[currentRowIndex]);
-
-			nextDataRow.IsAverage = false;
-			nextDataRow.IsCount = false;
-			nextDataRow.IsTotal = false;
-			nextDataRow.IsHidden = false;
-			nextDataRow.IsRepeated = false;
-
-			$('#SelectedColumns').jqGrid('setRowData', allRows[currentRowIndex], nextDataRow);
-		}
-	}
-
-
-
+	
 	function resetRepeatOnChildRows() {
 
 		var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
@@ -565,7 +519,7 @@
 				id: "ID" //index of the column with the PK in it
 			},
 			colNames: ['ID', 'TableID', 'IsExpression', 'Name', 'Sequence', 'Heading', 'DataType',
-								'Size', 'Decimals', 'IsAverage', 'IsCount', 'IsTotal', 'IsHidden', 'IsGroupWithNext', 'IsRepeated', 'ReportID', 'ReportType', 'Access'],
+								'Size', 'Decimals','ReportID', 'ReportType', 'Access'],
 			colModel: [
 				{ name: 'ID', index: 'ID', hidden: true },
 				{ name: 'TableID', index: 'TableID', hidden: true },
@@ -575,13 +529,7 @@
 				{ name: 'Heading', index: 'Heading', hidden: true },
 				{ name: 'DataType', index: 'DataType', hidden: true },
 				{ name: 'Size', index: 'Size', hidden: true },
-				{ name: 'Decimals', index: 'Decimals', hidden: true },
-				{ name: 'IsAverage', index: 'IsAverage', hidden: true },
-				{ name: 'IsCount', index: 'IsCount', hidden: true },
-				{ name: 'IsTotal', index: 'IsTotal', hidden: true },
-				{ name: 'IsHidden', index: 'IsHidden', hidden: true },
-				{ name: 'IsGroupWithNext', index: 'IsGroupWithNext', hidden: true },
-				{ name: 'IsRepeated', index: 'IsRepeated', hidden: true },
+				{ name: 'Decimals', index: 'Decimals', hidden: true },				
 				{ name: 'ReportID', index: 'ReportID', hidden: true },
 				{ name: 'ReportType', index: 'ReportType', hidden: true },
 				{ name: 'Access', index: 'Access', hidden: true }],
@@ -648,10 +596,7 @@
 				$("#SelectedColumnSize").val(dataRow.Size);
 				$("#SelectedColumnDecimals").val(dataRow.Decimals);
 
-
 				refreshcolumnPropertiesPanel();
-
-				disableColumnOptionsWhenGroupWithNextChecked();
 			},
 			ondblClickRow: function () {
 				doubleClickSelectedColumn();
@@ -663,18 +608,7 @@
 				// Check the view access for the selected calcluation columns. If found any hidden then set the defination access to HD.
 				setDefinitionAccessBasedOnSelectedCalculationColumns();
 			}
-		});
-
-		if ('@Model.ReportType' == '@UtilityType.utlMailMerge') {
-			$("#SelectedColumns").setGridParam({ sortname: 'Name', sortorder: 'asc' }).trigger('reloadGrid');
-		}
-
-		if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
-			// If defination is readonly then don't allow drag and drop of selected columns
-			if (!isDefinitionReadOnly()) {
-				$("#SelectedColumns").jqGrid('sortableRows');
-			}
-		}
+		});		
 
 		$("#SelectedColumns").jqGrid('hideCol', 'cb');
 
@@ -940,23 +874,27 @@
 			ReportID: '@Model.ID',
 			ReportType: '@Model.ReportType',
 			ColumnsTableID: previousBaseTableID,
+			TableName: previousBaseTableName,
 			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
 
-
+		var totDeleteFromSelectedColumnGrid = 0;
 		for (j = 0; j < gridData.length; j++) {
 			if (gridData[j].TableID === previousBaseTableID) {
 				// Remove removed columns
 				$('#SelectedColumns').delRowData(gridData[j].ID);
+				totDeleteFromSelectedColumnGrid = totDeleteFromSelectedColumnGrid + 1;
 			}
 		}
-
+		
+		var totDeleteFromSortOrderGrid = 0;
 		for (j = 0; j < sortOrderGridData.length; j++) {
 			var sortOrderColumnIndex = sortOrderGridData[j].Name.indexOf(".");
 			//Removed sortorder column based on column table name
 			if (sortOrderGridData[j].Name.substring(0, sortOrderColumnIndex) === previousBaseTableName)
 			{
 				$('#SortOrders').delRowData(sortOrderGridData[j].ID);
+				totDeleteFromSortOrderGrid = totDeleteFromSortOrderGrid + 1;
 			}
 		}
 
@@ -983,6 +921,11 @@
 
 		OpenHR.postData("Reports/RemoveSelectedTableColumns", dataSend);
 		
+		var totalSortOrdersAvailable = parseInt($("#SortOrdersAvailable").val());
+		var remainingSortColumns = totDeleteFromSelectedColumnGrid - totDeleteFromSortOrderGrid;
+		//To disable/Enable 'btnSortOrderAdd' button based on calculated SortOrdersAvailable value. If val = 0 then, 'btnSortOrderAdd' button will disable
+		$("#SortOrdersAvailable").val(totalSortOrdersAvailable - remainingSortColumns);
+		refreshSortButtons();
 
 		if (childColumnsCount() == 0) {
 			resetRepeatOnChildRows();

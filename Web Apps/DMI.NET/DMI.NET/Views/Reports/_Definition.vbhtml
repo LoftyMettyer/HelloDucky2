@@ -212,7 +212,7 @@
 				else {
 					$('#BaseTableID').val("@Model.BaseTableID");
 					BaseTableClick();
-				}				
+				}
 
 				$("#OriginalBaseTableID").val($('#BaseTableID')[0].selectedIndex);
 
@@ -527,7 +527,7 @@
 				$.each(json, function (i, table) {
 					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
 					$('#SelectedTableID').append(optionHtml);
-					
+
 					// If the report type is custom report then only set Relatedtable1 and Relatedtable2 relation
 					if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
 						if (table.Relation == 1 && baseTableChanged) {
@@ -545,7 +545,7 @@
 						}
 					}
 
-					if ($("#txtReportType").val() == '@UtilityType.TalentReport') {					
+					if ($("#txtReportType").val() == '@UtilityType.TalentReport') {
 						var optionHtml = '<option value=' + $("#MatchTableID option:selected").val() + '>' + $("#MatchTableID option:selected").text() + '</option>';
 						$('#SelectedTableID').append(optionHtml);
 					}
@@ -556,16 +556,36 @@
 				getAvailableTableColumnsCalcs();
 
 			}
-		});			
+		});
 	}
 
 	function requestChangeReportBaseTable(target) {
 
-		var tableCount = $("#ChildTables").getGridParam("reccount");
-		var columnCount = $("#SelectedColumns").getGridParam("reccount");
-		var eventCount = $("#CalendarEvents").getGridParam("reccount");
-		var sortOrderCount = $("#SortOrders").getGridParam("reccount");
+		var tableCount = 0;
+		var columnCount= 0;
+		var eventCount = 0;
+		var sortOrderCount = 0;
 		$("#IsBaseTableChange").val("True");
+
+		if ($("#txtReportType").val() === '@UtilityType.TalentReport')
+		{
+			//If columns of previous Role table exist in selectedcolumns grid then only we need to prompt changing message
+			var previousRoleTableID = $("#OriginalRoleTableID").val();
+			var gridData = $("#SelectedColumns").jqGrid('getRowData');		
+			for (j = 0; j < gridData.length; j++) {
+				if (gridData[j].TableID === previousRoleTableID) {
+					columnCount = columnCount + 1;
+					break;
+				}
+			}			
+		}
+		else
+		{
+			 tableCount = $("#ChildTables").getGridParam("reccount");
+			 columnCount = $("#SelectedColumns").getGridParam("reccount");
+			 eventCount = $("#CalendarEvents").getGridParam("reccount");
+			 sortOrderCount = $("#SortOrders").getGridParam("reccount");
+		}
 
 		if (tableCount > 0 || columnCount > 0 || eventCount > 0 || sortOrderCount > 0) {
 			OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
@@ -579,20 +599,20 @@
 			});
 		}
 		else if ($("#txtReportType").val() == '@UtilityType.utlCrossTab' || $("#txtReportType").val() == '@UtilityType.utlNineBoxGrid')
-		{
-			OpenHR.modalPrompt("Changing the Base Table will reset all of the selected columns.<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
-				if (answer == 6) { // Yes
-					changeReportBaseTable();
-				}
-				else {
-					$('#BaseTableID')[0].selectedIndex = $("#OriginalBaseTableID").val();
-				}
-			});
-		}
-		else {
-			changeReportBaseTable();
-			BaseTableClick();
-		}
+			{
+				OpenHR.modalPrompt("Changing the Base Table will reset all of the selected columns.<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+					if (answer == 6) { // Yes
+						changeReportBaseTable();
+					}
+					else {
+						$('#BaseTableID')[0].selectedIndex = $("#OriginalBaseTableID").val();
+					}
+				});
+			}
+			else {
+				changeReportBaseTable();
+				BaseTableClick();
+			}
 	}
 
 	function changeReportBaseTable() {
