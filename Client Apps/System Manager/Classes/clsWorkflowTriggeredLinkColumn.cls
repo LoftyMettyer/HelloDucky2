@@ -25,8 +25,3 @@ Public Property Let ColumnID(ByVal plngNewValue As Long)
 End Property
 
 
-Private Sub Class_Initialize()
-
-End Sub
-
-
