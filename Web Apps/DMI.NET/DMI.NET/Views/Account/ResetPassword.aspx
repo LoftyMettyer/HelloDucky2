@@ -135,14 +135,14 @@
 			<tr> 
 				<td style="text-align:center">
 					<label for="txtPassword1" style="float: left">New Password : </label>
-					<input type="password" name="txtPassword1" id="txtPassword1" style="width: 180px; float: right;" value="" class="text" onkeypress="CheckKeyPressed(event);" />
+					<input autocomplete="off" type="password" name="txtPassword1" id="txtPassword1" style="width: 180px; float: right;" value="" class="text" onkeypress="CheckKeyPressed(event);" />
 				</td>
 			</tr>
 			
 			<tr> 
 				<td style="text-align:center">
 					<label for="txtPassword2" style="float: left">Confirm New Password : </label>
-					<input  type="password" name="txtPassword2" id="txtPassword2" style="width: 180px; float: right;" value="" class="text" onkeypress="CheckKeyPressed(event);" />
+					<input autocomplete="off" type="password" name="txtPassword2" id="txtPassword2" style="width: 180px; float: right;" value="" class="text" onkeypress="CheckKeyPressed(event);" />
 				</td>
 			</tr>
 						
