@@ -82,7 +82,7 @@ End Code
 										@Html.ValidationMessageFor(Function(m) m.MatchFilterID)
 									</div>
 								</div>
-								<input type="hidden" id="txtBaseFilterID" name="filterID" value="@Model.FilterID" />
+								<input type="hidden" id="txtMatchFilterID" name="MatchFilterID" value="@Model.MatchFilterID" />
 							</fieldset>
 
 						</div>
@@ -170,14 +170,9 @@ End Code
 
 
 	function setTalentDefinitionDetails() {
-		if (($("#txtReportType").val() == '@UtilityType.TalentReport') && ($("#ActionType").val() == '@UtilityActionType.New')) {						
-			$('#MatchTableID').val("@Model.MatchTableID");			
-			MatchTableClick();
-		}
-		else {
-			$('#MatchTableID').val("@Model.MatchTableID");
-			MatchTableClick();
-		}		
+
+		$('#MatchTableID').val("@Model.MatchTableID");
+		MatchTableClick();
 
 		$("#OriginalRoleTableID").val($('#BaseTableID').val());		
 		$("#OriginalRoleTableText").val($("#BaseTableID option:selected").text());

@@ -34,7 +34,7 @@
 					<input type="button" id="btnColumnRemove" value="Remove" onclick="requestRemoveSelectedColumns();" />
 					<input type="button" id="btnColumnRemoveAll" class="enableSaveButtonOnClick" value="Remove All" onclick="requestRemoveAllSelectedColumns();" />
 				</div>
-				<div id="colbtngrp3" class="customReportsOnly">
+				<div id="colbtngrp3" class="TalentReportsOnly">
 					<input type="button" id="btnColumnMoveUp" class="enableSaveButtonOnClick"  value="Move Up" disabled onclick="moveSelectedColumn('up');" />
 					<input type="button" id="btnColumnMoveDown" class="enableSaveButtonOnClick" value="Move Down" disabled onclick="moveSelectedColumn('down');" />
 				</div>
@@ -54,7 +54,7 @@
 		<div class="tablecell">
 			<fieldset>
 				<div id="definitionColumnProperties">
-					<div class="formfieldfill customReportsOnly">
+					<div class="formfieldfill TalentReportsOnly">
 						<label for="SelectedColumnHeading">Heading :</label>
 						<span><input type='text' id="SelectedColumnHeading" maxlength="50" onchange="updateColumnsSelectedGrid();" /></span>
 					</div>
@@ -466,7 +466,7 @@
 			$(".sizeOnly *").prop("disabled", isReadOnly);
 		}
 
-		// Enable / Disable relevant buttons
+		// Enable / Disable relevant buttons		
 		button_disable($("#btnColumnAdd")[0], bDisableAdd || isReadOnly);
 		button_disable($("#btnColumnAddAll")[0], bDisableAdd || isReadOnly);
 		button_disable($("#btnColumnRemove")[0], !bRowSelected || isReadOnly);
@@ -718,9 +718,7 @@
 			showOn: 'both'
 		}).css("width", "15px");
 
-		if ('@Model.ReportType' == '@UtilityType.utlMailMerge') {
-			$(".customReportsOnly").hide();
-		}
+		
 
 		//Note:-
 		//This solution working in Firefox, Chrome and IE, both with keyboard focus and mouse focus.
@@ -925,6 +923,12 @@
 		var remainingSortColumns = totDeleteFromSelectedColumnGrid - totDeleteFromSortOrderGrid;
 		//To disable/Enable 'btnSortOrderAdd' button based on calculated SortOrdersAvailable value. If val = 0 then, 'btnSortOrderAdd' button will disable
 		$("#SortOrdersAvailable").val(totalSortOrdersAvailable - remainingSortColumns);
+		
+		if (sortOrderGridData.length > 0) {
+			// Goto top record and select the row
+			var topRowID = $("#SortOrders").getDataIDs()[0];
+			$("#SortOrders").jqGrid('setSelection', topRowID);
+		}
 		refreshSortButtons();
 
 		if (childColumnsCount() == 0) {

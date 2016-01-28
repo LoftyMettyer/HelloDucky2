@@ -194,7 +194,7 @@
 			dataType: 'json',
 			success: function (json) {
 
-				$.each(json, function (i, table) {
+				$.each(json, function (i, table) {					
 					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
 					$('#BaseTableID').append(optionHtml);
 
@@ -204,15 +204,8 @@
 
 				});
 
-				if (($("#txtReportType").val() == '@UtilityType.TalentReport') && ($("#ActionType").val() == '@UtilityActionType.New')) {
-					// SettingsConfig.Post_TableID
-					$('#BaseTableID').val("@Model.BaseTableID");
-					BaseTableClick();
-				}
-				else {
-					$('#BaseTableID').val("@Model.BaseTableID");
-					BaseTableClick();
-				}
+				$('#BaseTableID').val("@Model.BaseTableID");
+				BaseTableClick();
 
 				$("#OriginalBaseTableID").val($('#BaseTableID')[0].selectedIndex);
 
@@ -562,7 +555,7 @@
 	function requestChangeReportBaseTable(target) {
 
 		var tableCount = 0;
-		var columnCount= 0;
+		var columnCount = 0;
 		var eventCount = 0;
 		var sortOrderCount = 0;
 		$("#IsBaseTableChange").val("True");
@@ -571,20 +564,20 @@
 		{
 			//If columns of previous Role table exist in selectedcolumns grid then only we need to prompt changing message
 			var previousRoleTableID = $("#OriginalRoleTableID").val();
-			var gridData = $("#SelectedColumns").jqGrid('getRowData');		
+			var gridData = $("#SelectedColumns").jqGrid('getRowData');
 			for (j = 0; j < gridData.length; j++) {
 				if (gridData[j].TableID === previousRoleTableID) {
 					columnCount = columnCount + 1;
 					break;
 				}
-			}			
+			}
 		}
 		else
 		{
-			 tableCount = $("#ChildTables").getGridParam("reccount");
-			 columnCount = $("#SelectedColumns").getGridParam("reccount");
-			 eventCount = $("#CalendarEvents").getGridParam("reccount");
-			 sortOrderCount = $("#SortOrders").getGridParam("reccount");
+			tableCount = $("#ChildTables").getGridParam("reccount");
+			columnCount = $("#SelectedColumns").getGridParam("reccount");
+			eventCount = $("#CalendarEvents").getGridParam("reccount");
+			sortOrderCount = $("#SortOrders").getGridParam("reccount");
 		}
 
 		if (tableCount > 0 || columnCount > 0 || eventCount > 0 || sortOrderCount > 0) {
@@ -599,20 +592,20 @@
 			});
 		}
 		else if ($("#txtReportType").val() == '@UtilityType.utlCrossTab' || $("#txtReportType").val() == '@UtilityType.utlNineBoxGrid')
-			{
-				OpenHR.modalPrompt("Changing the Base Table will reset all of the selected columns.<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
-					if (answer == 6) { // Yes
-						changeReportBaseTable();
-					}
-					else {
-						$('#BaseTableID')[0].selectedIndex = $("#OriginalBaseTableID").val();
-					}
-				});
-			}
-			else {
-				changeReportBaseTable();
-				BaseTableClick();
-			}
+		{
+			OpenHR.modalPrompt("Changing the Base Table will reset all of the selected columns.<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+				if (answer == 6) { // Yes
+					changeReportBaseTable();
+				}
+				else {
+					$('#BaseTableID')[0].selectedIndex = $("#OriginalBaseTableID").val();
+				}
+			});
+		}
+		else {
+			changeReportBaseTable();
+			BaseTableClick();
+		}
 	}
 
 	function changeReportBaseTable() {
@@ -946,7 +939,7 @@
 		}
 	}
 
-	function BaseTableClick() {
+	function BaseTableClick() {	
 		var BaseTableID = $("#BaseTableID").val();
 		var MatchTableID = $("#MatchTableID").val();
 

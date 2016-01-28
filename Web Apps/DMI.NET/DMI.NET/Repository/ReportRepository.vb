@@ -471,8 +471,6 @@ Namespace Repository
 							objModel.MatchFilterName = row("PersonFilterName").ToString
 						End If
 
-						objModel.MatchPicklistID = CInt(row("MatchPicklistID"))
-						objModel.MatchFilterID = CInt(row("MatchFilterID"))
 						objModel.MatchChildTableID = CInt(row("MatchChildTableID"))
 						objModel.MatchChildColumnID = CInt(row("MatchChildColumnID"))
 						objModel.MatchChildRatingColumnID = CInt(row("MatchChildRatingColumnID"))
@@ -1331,6 +1329,10 @@ Namespace Repository
 					End If
 				ElseIf reportType = UtilityType.utlCalendarReport Then ' for calendar report fetch only those tables which have date columns
 					If objSessionInfo.Columns.LongCount(Function(m) m.TableID = objTable.ID AndAlso m.DataType = ColumnDataType.sqlDate) > 0 Then
+						objItems.Add(objItem)
+					End If
+				ElseIf reportType = UtilityType.TalentReport Then	' for talent report fetch only parent tables (e.g. Applicant_records, Personnel_records). 
+					If CBool(objSessionInfo.Tables.LongCount(Function(m) m.ID = objTable.ID AndAlso m.TableType = TableTypes.tabTopLevel)) Then
 						objItems.Add(objItem)
 					End If
 				Else
