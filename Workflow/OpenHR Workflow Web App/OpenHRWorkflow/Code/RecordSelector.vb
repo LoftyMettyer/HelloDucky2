@@ -161,7 +161,7 @@ Public Class RecordSelector
 		 customHeader.BackColor.R,
 		 customHeader.BackColor.G,
 		 customHeader.BackColor.B))) &
-		 "'>")
+		 ";z-index:1'>")
 
 		'render header row 
 		writer.Write("<table ID='" & ID.ToString.Replace("Grid", "") & "Header'" &

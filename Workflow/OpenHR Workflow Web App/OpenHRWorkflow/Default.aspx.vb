@@ -523,6 +523,8 @@ Public Class [Default]
                         If IsMobileBrowser() Then
                             .Attributes("onclick") = "FilterMobileLookup('" & controlId & "');"
                         End If
+
+                        .Style.Add("z-index", "1")
                     End With
 
                     tabPages(formItem.PageNo).Controls.Add(checkBox)
@@ -1137,6 +1139,7 @@ Public Class [Default]
                         .ApplyColor(formItem)
                         If Not IsMobileBrowser() Then .ApplyBorder(False)
                         .Style.Add("padding", "1px")
+                        .Style.Add("z-index", "1")
 
                         .TabIndex = formItem.TabIndex
                         UpdateAutoFocusControl(formItem.TabIndex, controlId)
@@ -1306,6 +1309,7 @@ Public Class [Default]
 
                         .Style.Add("padding", "0px")
                         .Style.Add("white-space", "normal")
+                        .Style.Add("z-index", "1")
 
                         .Value = formItem.Caption
 
