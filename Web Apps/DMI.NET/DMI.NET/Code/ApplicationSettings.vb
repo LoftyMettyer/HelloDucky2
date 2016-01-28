@@ -64,5 +64,17 @@ Namespace Code
 			End Get
 		End Property
 
+ 		Public Shared ReadOnly Property EnableViewCurrentUsers As Boolean
+			Get
+        Dim setting = ConfigurationManager.AppSettings("EnableViewCurrentUsers")
+        
+        if setting IsNot nothing Then
+				  Return CBool(setting)
+        End If 
+
+        Return False
+			End Get
+		End Property
+  
 	End Class
 End Namespace

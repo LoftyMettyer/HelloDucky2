@@ -122,26 +122,34 @@ Namespace Code.Hubs
 
 		Private Shared Sub UpdateUserList()
 
-			Dim objUsers As New List(Of UserModel)
+		  Dim objUsers As New List(Of UserModel)
 
-			For Each sSession In SessionIds
+ 		  If ApplicationSettings.EnableViewCurrentUsers Then
 
-				Dim login = Logins.FirstOrDefault(Function(m) m.IsLoggedIn = True AndAlso m.SessionId = sSession)
-				If login IsNot Nothing Then
-					objUsers.Add(New UserModel() With {.UserName = login.UserName,
-																							.DeviceBrowser = login.DeviceBrowser,
-																							.WebArea = login.WebArea})
-				End If
+        Try
 
-			Next
+			    For Each sSession In SessionIds
+				    Dim login = Logins.FirstOrDefault(Function(m) m.IsLoggedIn = True AndAlso m.SessionId = sSession)
+				    If login IsNot Nothing Then
+					    objUsers.Add(New UserModel() With {.UserName = login.UserName,
+																							    .DeviceBrowser = login.DeviceBrowser,
+																							    .WebArea = login.WebArea})
+				    End If
+			    Next
+    
+			    Dim results = New With {.total = 1, .page = 1, .records = objUsers.Count(), .rows = objUsers}
+			    Dim objSerialize As New JavaScriptSerializer
+			    Dim result = objSerialize.Serialize(results)
 
-			Dim results = New With {.total = 1, .page = 1, .records = objUsers.Count(), .rows = objUsers}
+			    Dim hubContext = GlobalHost.ConnectionManager.GetHubContext(Of LicenceHub, ILicenceHub)()
+			    hubContext.Clients.All.CurrentUserList(result)
 
-			Dim objSerialize As New JavaScriptSerializer
-			Dim result = objSerialize.Serialize(results)
+        Catch ex As Exception
+          Throw
 
-			Dim hubContext = GlobalHost.ConnectionManager.GetHubContext(Of LicenceHub, ILicenceHub)()
-			hubContext.Clients.All.CurrentUserList(result)
+        End Try
+
+      End If
 
 		End Sub
 
