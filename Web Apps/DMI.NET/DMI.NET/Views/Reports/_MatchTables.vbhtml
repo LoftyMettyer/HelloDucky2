@@ -10,30 +10,30 @@
 
 	<fieldset class="">
 		Role Match Table :
-		<select class="width70 floatright" name="BaseChildTableID" id="BaseChildTableID" onchange="refreshTalentReportBaseColumns(event.target);"></select>
+		<select class="width70 floatright enableSaveButtonOnComboChange" name="BaseChildTableID" id="BaseChildTableID" onchange="refreshTalentReportBaseColumns(event.target);"></select>
 	</fieldset>
 
 	<fieldset>
-		Match Column : <select class="width70 floatright" name="BaseChildColumnID" id="BaseChildColumnID"></select>
+		Match Column : <select class="width70 floatright enableSaveButtonOnComboChange" name="BaseChildColumnID" id="BaseChildColumnID"></select>
 	</fieldset>
 
 	<fieldset>
-		Minimum Rating : <select class="width70 floatright" name="BaseMinimumRatingColumnID" id="BaseMinimumRatingColumnID"></select>
+		Minimum Rating : <select class="width70 floatright enableSaveButtonOnComboChange" name="BaseMinimumRatingColumnID" id="BaseMinimumRatingColumnID"></select>
 	</fieldset>
 
 	<fieldset>
-		Preferred Rating : <select class="width70 floatright" name="BasePreferredRatingColumnID" id="BasePreferredRatingColumnID"></select>
+		Preferred Rating : <select class="width70 floatright enableSaveButtonOnComboChange" name="BasePreferredRatingColumnID" id="BasePreferredRatingColumnID"></select>
 	</fieldset>
 
 	<br />
 	<fieldset class="">
-		Person Match Table : <select class="width70 floatright" name="MatchChildTableID" id="MatchChildTableID" onchange="refreshTalentReportMatchColumns(event.target);"></select>
+		Person Match Table : <select class="width70 floatright enableSaveButtonOnComboChange" name="MatchChildTableID" id="MatchChildTableID" onchange="refreshTalentReportMatchColumns(event.target);"></select>
 	</fieldset>
 	<fieldset class="">
-		Match Column : <select class="width70 floatright" name="MatchChildColumnID" id="MatchChildColumnID"></select>
+		Match Column : <select class="width70 floatright enableSaveButtonOnComboChange" name="Matchchildcolumnid" id="MatchChildColumnID"></select>
 	</fieldset>
 	<fieldset class="">
-		Actual Rating : <select class="width70 floatright" name="MatchChildRatingColumnID" id="MatchChildRatingColumnID"></select>
+		Actual Rating : <select class="width70 floatright enableSaveButtonOnComboChange" name="MatchChildRatingColumnID" id="MatchChildRatingColumnID"></select>
 	</fieldset>
 
 	<br />

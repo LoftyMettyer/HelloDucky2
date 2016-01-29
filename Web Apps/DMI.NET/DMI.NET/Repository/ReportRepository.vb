@@ -433,6 +433,7 @@ Namespace Repository
 					objModel.Output.Format = OutputFormats.DataOnly
 					objModel.Output.IsPreview = True
 					objModel.Output.ToScreen = True
+					objModel.MatchAgainstType = MatchAgainstType.Any
 				Else
 
 					objModel.ID = ID

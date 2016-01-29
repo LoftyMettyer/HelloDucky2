@@ -875,7 +875,7 @@
 			TableName: previousBaseTableName,
 			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
-
+		
 		var totDeleteFromSelectedColumnGrid = 0;
 		for (j = 0; j < gridData.length; j++) {
 			if (gridData[j].TableID === previousBaseTableID) {
@@ -883,6 +883,13 @@
 				$('#SelectedColumns').delRowData(gridData[j].ID);
 				totDeleteFromSelectedColumnGrid = totDeleteFromSelectedColumnGrid + 1;
 			}
+		}
+		
+		if ($("#SelectedColumns").jqGrid('getRowData').length > 0) {
+			// Goto top record and select the row
+			var topRowID = $("#SelectedColumns").getDataIDs()[0];
+			$("#SelectedColumns").jqGrid('resetSelection');
+			$("#SelectedColumns").jqGrid('setSelection', topRowID);
 		}
 		
 		var totDeleteFromSortOrderGrid = 0;
@@ -924,9 +931,10 @@
 		//To disable/Enable 'btnSortOrderAdd' button based on calculated SortOrdersAvailable value. If val = 0 then, 'btnSortOrderAdd' button will disable
 		$("#SortOrdersAvailable").val(totalSortOrdersAvailable - remainingSortColumns);
 		
-		if (sortOrderGridData.length > 0) {
+		if ($("#SortOrders").jqGrid('getRowData').length > 0) {
 			// Goto top record and select the row
 			var topRowID = $("#SortOrders").getDataIDs()[0];
+			$("#SortOrders").jqGrid('resetSelection');
 			$("#SortOrders").jqGrid('setSelection', topRowID);
 		}
 		refreshSortButtons();

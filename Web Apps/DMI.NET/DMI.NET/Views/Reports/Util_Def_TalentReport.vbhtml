@@ -59,7 +59,7 @@ End Code
 									<span>Picklist</span>
 								</div>
 								<div class="width70 floatright">
-									@Html.EllipseButton("cmdMatchPicklist", "selectMatchTablePicklist()", Model.SelectionType = RecordSelectionType.Picklist)
+									@Html.EllipseButton("cmdMatchPicklist", "selectMatchTablePicklist()", Model.MatchSelectionType = RecordSelectionType.Picklist)
 									<div class="ellipsistextbox">
 										@Html.TextBoxFor(Function(m) m.MatchPicklistName, New With {.id = "txtMatchPicklist", .readonly = "true"})
 										@Html.ValidationMessageFor(Function(m) m.MatchPicklistID)
@@ -76,7 +76,7 @@ End Code
 								</div>
 
 								<div class="width70 floatright">
-									@Html.EllipseButton("cmdMatchFilter", "selectMatchTableFilter()", Model.SelectionType = RecordSelectionType.Filter)
+									@Html.EllipseButton("cmdMatchFilter", "selectMatchTableFilter()", Model.MatchSelectionType = RecordSelectionType.Filter)
 									<div class="ellipsistextbox">
 										@Html.TextBoxFor(Function(m) m.MatchFilterName, New With {.id = "txtMatchFilter", .readonly = "true"})
 										@Html.ValidationMessageFor(Function(m) m.MatchFilterID)
@@ -172,19 +172,19 @@ End Code
 	function setTalentDefinitionDetails() {
 
 		$('#MatchTableID').val("@Model.MatchTableID");
-		MatchTableClick();
+		refreshBaseTableForSelectedMatchTable();
 
-		$("#OriginalRoleTableID").val($('#BaseTableID').val());		
+		$("#OriginalRoleTableID").val($('#BaseTableID').val());
 		$("#OriginalRoleTableText").val($("#BaseTableID option:selected").text());
 		$("#OriginalPersonTableID").val($('#MatchTableID').val());
 		$("#OriginalPersonTableText").val($("#MatchTableID option:selected").text());
-		refreshTalentReportChildTables();
-		$('#MatchChildTableID').val("@Model.MatchChildTableID");	
-		
+		refreshTalentReportRoleChildTables();
+		refreshTalentReportPersonChildTables();
+		$('#MatchChildTableID').val("@Model.MatchChildTableID");
+
 	}
 
-	function refreshTalentReportChildTables() {
-
+	function refreshTalentReportRoleChildTables() {
 		$.ajax({
 			url: 'Reports/GetChildTables?parentTableId=' + $("#BaseTableID").val(),
 			datatype: 'json',
@@ -201,7 +201,10 @@ End Code
 				refreshTalentReportBaseColumns();
 			}
 		});
+	}
 
+	function refreshTalentReportPersonChildTables() {
+	
 		$.ajax({
 			url: 'Reports/GetChildTables?parentTableId=' + $("#MatchTableID").val(),
 			datatype: 'json',
@@ -226,51 +229,93 @@ End Code
 
 		var optionNone = "<option value='0' data-datatype='0' data-size='0' data-decimals='0'>None</option>";
 
+		// Gets match child table id to get its columns. Pass 0 is no table selected
+		var tableId = $("#BaseChildTableID").val();
+		var matchBaseTableID = 0;
+		if (tableId != undefined || tableId != null) {
+			matchBaseTableID = tableId;
+		}
+
 		$.ajax({
-			url: 'Reports/GetAvailableColumnsForTable?TableID=' + $("#BaseChildTableID").val(),
+			url: 'Reports/GetAvailableColumnsForTable?TableID=' + matchBaseTableID,
 			datatype: 'json',
 			mtype: 'GET',
 			cache: false,
 			success: function (json) {
 
-				var option = "";
+				var optionOfAllType = "";
+				var optionOfTypeInteger = "";
 
 				for (var i = 0; i < json.length; i++) {
-					option += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].ColumnSize + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+					// Fill only columns having datatype as integer
+					if (json[i].DataType === 4) {
+						optionOfTypeInteger += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].ColumnSize + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+					}
+
+					optionOfAllType += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].ColumnSize + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
 				}
 
-				$("select#BaseChildColumnID").html(option);
-				$("select#BaseMinimumRatingColumnID").html(option);
-				$("select#BasePreferredRatingColumnID").html(optionNone + option);
+				$("select#BaseChildColumnID").html(optionOfAllType);
+				$("select#BaseMinimumRatingColumnID").html(optionNone + optionOfTypeInteger);
+				$("select#BasePreferredRatingColumnID").html(optionNone + optionOfTypeInteger);
 
 				$('#BaseChildColumnID').val("@Model.BaseChildColumnID");
 				$('#BaseMinimumRatingColumnID').val("@Model.BaseMinimumRatingColumnID");
 				$('#BasePreferredRatingColumnID').val("@Model.BasePreferredRatingColumnID");
 
+				var minimumRatingColumnId = $("#BaseMinimumRatingColumnID").val();
+				if (minimumRatingColumnId == null || minimumRatingColumnId == undefined) {
+					$('#BaseMinimumRatingColumnID').val('0');
+				}
+
+				var PreferredRatingColumnId = $("#BasePreferredRatingColumnID").val();
+				if (PreferredRatingColumnId == null || PreferredRatingColumnId == undefined) {
+					$('#BasePreferredRatingColumnID').val('0');
+				}
 			}
 		});
 	}
 
 	function refreshTalentReportMatchColumns() {
 
+		// Gets match child table id to get its columns. Pass 0 is no table selected
+		var tableId = $("#MatchChildTableID").val();
+		var matchChildTableID = 0;
+		if (tableId != undefined || tableId != null) {
+			matchChildTableID = tableId;
+		}
+
+		var optionNone = "<option value='0' data-datatype='0' data-size='0' data-decimals='0'>None</option>";
+
 		$.ajax({
-			url: 'Reports/GetAvailableColumnsForTable?TableID=' + $("#MatchChildTableID").val(),
+			url: 'Reports/GetAvailableColumnsForTable?TableID=' + matchChildTableID,
 			datatype: 'json',
 			mtype: 'GET',
 			cache: false,
 			success: function (json) {
-
-				var option = "";
+				var optionOfTypeString = "";
+				var optionOfTypeInteger = "";
 
 				for (var i = 0; i < json.length; i++) {
-					option += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].ColumnSize + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+					// Fill only columns having integer datatype
+					if (json[i].DataType === 4) {
+						optionOfTypeInteger += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].ColumnSize + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+					}
+					else {
+						optionOfTypeString += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].ColumnSize + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+					}
 				}
 
-				$("select#MatchChildColumnID").html(option);
-				$("select#MatchChildRatingColumnID").html(option);
+				$("select#MatchChildColumnID").html(optionOfTypeString);
+				$("select#MatchChildRatingColumnID").html(optionNone + optionOfTypeInteger);
 
 				$('#MatchChildColumnID').val("@Model.MatchChildColumnID");
 				$('#MatchChildRatingColumnID').val("@Model.MatchChildRatingColumnID");
+
+				var MatchChildRatingColumnId = $("#MatchChildRatingColumnID").val();
+				if (MatchChildRatingColumnId == null || MatchChildRatingColumnId == undefined) {
+					$('#MatchChildRatingColumnID').val('0');
+				}
 			}
 		});
 
@@ -319,36 +364,35 @@ End Code
 		$('.colAggregates').find('.tablecell').css('width', gridWidth / 3);
 	}
 
-	function requestChangeReportPersonTable(target)
-	{
+	function requestChangeReportPersonTable(target) {
 
 		var columnCount = 0;
-		var previousPersonTableID = $("#OriginalPersonTableID").val();		
+		var previousPersonTableID = $("#OriginalPersonTableID").val();
 
 		$("#IsPersonTableChange").val("True");
 		var gridData = $("#SelectedColumns").jqGrid('getRowData');
-		
+
 		for (j = 0; j < gridData.length; j++) {
 			if (gridData[j].TableID === previousPersonTableID) {
 				columnCount = columnCount + 1;
 				break;
 			}
-		}		
+		}
 
-		if (columnCount > 0 ) {		
+		if (columnCount > 0) {
 			OpenHR.modalPrompt("Changing the person table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
 				if (answer == 6) { // Yes
 					changeReportPersonTable();
-					MatchTableClick();
+					refreshBaseTableForSelectedMatchTable();
 				}
 				else {
 					$('#MatchTableID')[0].selectedIndex = $("#OriginalPersonTableID").val();
 				}
 			});
-		}		
+		}
 		else {
 			changeReportPersonTable();
-			MatchTableClick();
+			refreshBaseTableForSelectedMatchTable();
 		}
 	}
 
@@ -361,27 +405,29 @@ End Code
 			BaseTableID: 0,
 			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
-		
+
 		OpenHR.postData("Reports/changePersonTable", dataSend, changeReportPersonCompleted);
-		
+
 	}
 
 	function changeReportPersonCompleted(json) {
-
 		$("#matchselectiontype_All").prop('checked', 'checked');
 		$("#ChildTablesAvailable").val(parseInt(json.childTablesAvailable));
+		$('#MatchChildColumnID').empty();
+		$('#MatchChildRatingColumnID').empty();
+
 		changeRecordOption('Match', 'ALL');
-	
+
 		if ($("#txtReportType").val() === '@UtilityType.TalentReport') {
-			removeSelectedTableColumns(true,"personTable", $("#OriginalPersonTableText").val());
-			refreshTalentReportChildTables(true);
+			removeSelectedTableColumns(true, "personTable", $("#OriginalPersonTableText").val());
+			refreshTalentReportPersonChildTables();
 		}
-		
+
 		// Enables save button
 		enableSaveButton();
 	}
 
-	function MatchTableClick() {
+	function refreshBaseTableForSelectedMatchTable() {
 
 		var BaseTableID = $("#BaseTableID").val();
 		var MatchTableID = $("#MatchTableID").val();

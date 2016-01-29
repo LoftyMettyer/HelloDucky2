@@ -205,7 +205,7 @@
 				});
 
 				$('#BaseTableID').val("@Model.BaseTableID");
-				BaseTableClick();
+				refreshMatchTableForSelectedBaseTable();
 
 				$("#OriginalBaseTableID").val($('#BaseTableID')[0].selectedIndex);
 
@@ -584,7 +584,7 @@
 			OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
 				if (answer == 6) { // Yes
 					changeReportBaseTable();
-					BaseTableClick();
+					refreshMatchTableForSelectedBaseTable();
 				}
 				else {
 					$('#BaseTableID')[0].selectedIndex = $("#OriginalBaseTableID").val();
@@ -604,7 +604,7 @@
 		}
 		else {
 			changeReportBaseTable();
-			BaseTableClick();
+			refreshMatchTableForSelectedBaseTable();
 		}
 	}
 
@@ -657,10 +657,16 @@
 		}
 
 		if ($("#txtReportType").val() === '@UtilityType.TalentReport') {
+
+			// Clear role match column, minimum rating and preferred rating dropdowns
+			$('#BaseChildColumnID').empty();
+			$('#BaseMinimumRatingColumnID').empty();
+			$('#BasePreferredRatingColumnID').empty();
+
 			//Remove all columns of previous selected table
 			removeSelectedTableColumns(true, "roleTable",$("#OriginalRoleTableText").val());
 			setDefinitionAccessBasedOnSelectedCalculationColumns();
-			refreshTalentReportChildTables(true);
+			refreshTalentReportRoleChildTables();
 		}
 
 
@@ -939,22 +945,26 @@
 		}
 	}
 
-	function BaseTableClick() {	
-		var BaseTableID = $("#BaseTableID").val();
-		var MatchTableID = $("#MatchTableID").val();
+	function refreshMatchTableForSelectedBaseTable() {
 
-		//Reset Match Table so none are disabled/hidden
-		$('#MatchTableID option').removeAttr('disabled');
+		//refresh match table tab controls
+		if ($("#txtReportType").val() == '@UtilityType.TalentReport') {
+			var BaseTableID = $("#BaseTableID").val();
+			var MatchTableID = $("#MatchTableID").val();
 
-		//Hide/disable matching items in Match Table
-		$('#MatchTableID option').filter(function () {
-			return $(this).val() == BaseTableID;
-		}).attr('disabled', 'disabled');
+			//Reset Match Table so none are disabled/hidden
+			$('#MatchTableID option').removeAttr('disabled');
 
-		//reset Match Table if it is selected by BaseTableID
-		if ($("#MatchTableID option:selected").val() == BaseTableID) {
-			//reset the value to top item
-			$('#MatchTableID').val($("#MatchTableID option:not([disabled]):first").val());
+			//Hide/disable matching items in Match Table
+			$('#MatchTableID option').filter(function () {
+				return $(this).val() == BaseTableID;
+			}).attr('disabled', 'disabled');
+
+			//reset Match Table if it is selected by BaseTableID
+			if ($("#MatchTableID option:selected").val() == BaseTableID) {
+				//reset the value to top item
+				$('#MatchTableID').val($("#MatchTableID option:not([disabled]):first").val());
+			}
 		}
 	}
 

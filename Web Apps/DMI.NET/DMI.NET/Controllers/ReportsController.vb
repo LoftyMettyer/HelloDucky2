@@ -294,7 +294,19 @@ Namespace Controllers
                 If objModel.SortOrdersString.Length > 0 Then
                     objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
                 End If
-            End If
+			End If
+
+			If (objModel.BaseMinimumRatingColumnID > 0 AndAlso objModel.MatchChildRatingColumnID = 0) Then
+				ModelState.AddModelError("IsRatingsOK", "Actual rating should be selected if minimum rating is selected.")
+			End If
+
+			If objModel.BaseMinimumRatingColumnID = 0 AndAlso objModel.MatchChildRatingColumnID > 0 Then
+				ModelState.AddModelError("IsRatingsEmpty", "Actual rating should be none if minimum rating is not selected.")
+			End If
+
+			If objModel.BaseMinimumRatingColumnID = 0 AndAlso objModel.BasePreferredRatingColumnID > 0 Then
+				ModelState.AddModelError("IsPreferredRatingsEmpty", "Preferred rating should be none if minimum rating is not selected.")
+			End If
 
             If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 
@@ -735,206 +747,206 @@ Namespace Controllers
 				objReport.Columns.Add(objColumn)
 			Next
 
-        End Sub
+		End Sub
 
-        <HttpPost>
-        <ValidateAntiForgeryToken>
-        Sub AddReportColumn(objModel As ReportColumnItem)
+		<HttpPost>
+		<ValidateAntiForgeryToken>
+		Sub AddReportColumn(objModel As ReportColumnItem)
 
-            Dim objReport As ReportBaseModel
-            objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+			Dim objReport As ReportBaseModel
+			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
 
-            objReport.Columns.Add(objModel)
+			objReport.Columns.Add(objModel)
 
-        End Sub
+		End Sub
 
-        <HttpPost>
-        <ValidateAntiForgeryToken>
-        Sub RemoveAllChildTables(objModel As ReportColumnItem)
+		<HttpPost>
+		<ValidateAntiForgeryToken>
+		Sub RemoveAllChildTables(objModel As ReportColumnItem)
 
-            Dim objReport As CustomReportModel
-            objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
+			Dim objReport As CustomReportModel
+			objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
 
-            For Each objChildTable In objReport.ChildTables
+			For Each objChildTable In objReport.ChildTables
 
-                'Remove sort columns
-                For Each iColumnID In objReport.Columns.Where(Function(m) m.TableID = objChildTable.TableID)
-                    objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID.ID)
-                Next
+				'Remove sort columns
+				For Each iColumnID In objReport.Columns.Where(Function(m) m.TableID = objChildTable.TableID)
+					objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID.ID)
+				Next
 
-                objReport.Columns.RemoveAll(Function(m) m.TableID = objChildTable.TableID)
-            Next
+				objReport.Columns.RemoveAll(Function(m) m.TableID = objChildTable.TableID)
+			Next
 
-            objReport.ChildTables.Clear()
+			objReport.ChildTables.Clear()
 
-        End Sub
+		End Sub
 
-        <HttpPost>
-        <ValidateAntiForgeryToken>
-        Sub RemoveChildTable(objModel As ReportColumnItem)
+		<HttpPost>
+		<ValidateAntiForgeryToken>
+		Sub RemoveChildTable(objModel As ReportColumnItem)
 
-            Dim objReport As CustomReportModel
-            objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
+			Dim objReport As CustomReportModel
+			objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
 
-            objReport.ChildTables.RemoveAll(Function(m) m.ID = objModel.ID)
+			objReport.ChildTables.RemoveAll(Function(m) m.ID = objModel.ID)
 
-            'Remove sort columns
-            For Each iColumnID In objReport.Columns.Where(Function(m) m.TableID = objModel.TableID)
-                objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID.ID)
-            Next
+			'Remove sort columns
+			For Each iColumnID In objReport.Columns.Where(Function(m) m.TableID = objModel.TableID)
+				objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID.ID)
+			Next
 
-            objReport.Columns.RemoveAll(Function(m) m.TableID = objModel.TableID)
+			objReport.Columns.RemoveAll(Function(m) m.TableID = objModel.TableID)
 
-        End Sub
+		End Sub
 
-        <HttpPost>
-        <ValidateAntiForgeryToken>
-        Sub RemoveReportColumn(objModel As ReportColumnCollection)
+		<HttpPost>
+		<ValidateAntiForgeryToken>
+		Sub RemoveReportColumn(objModel As ReportColumnCollection)
 
-            Dim objReport As ReportBaseModel
-            objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+			Dim objReport As ReportBaseModel
+			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
 
-            For Each iColumnID In objModel.Columns
-                objReport.Columns.RemoveAll(Function(m) m.ID = iColumnID)
-                objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID)
-            Next
+			For Each iColumnID In objModel.Columns
+				objReport.Columns.RemoveAll(Function(m) m.ID = iColumnID)
+				objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID)
+			Next
 
-        End Sub
+		End Sub
 
-        <HttpPost>
-        <ValidateAntiForgeryToken>
-        Sub RemoveAllReportColumns(objModel As ReportColumnItem)
+		<HttpPost>
+		<ValidateAntiForgeryToken>
+		Sub RemoveAllReportColumns(objModel As ReportColumnItem)
 
-            Dim objReport As ReportBaseModel
-            objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+			Dim objReport As ReportBaseModel
+			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
 
-            objReport.Columns.Clear()
-            objReport.SortOrders.Clear()
+			objReport.Columns.Clear()
+			objReport.SortOrders.Clear()
 
-        End Sub
+		End Sub
 
 
-        <HttpGet>
-        Function GetExpressionsForTable(TableID As Integer, SelectionType As String) As JsonResult
+		<HttpGet>
+		Function GetExpressionsForTable(TableID As Integer, SelectionType As String) As JsonResult
 
-            Dim objAvailable As List(Of ExpressionSelectionItem)
+			Dim objAvailable As List(Of ExpressionSelectionItem)
 
-            objAvailable = objReportRepository.GetExpressionListForTable(SelectionType, TableID)
+			objAvailable = objReportRepository.GetExpressionListForTable(SelectionType, TableID)
 
-            Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objAvailable}
-            Return Json(results, JsonRequestBehavior.AllowGet)
+			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objAvailable}
+			Return Json(results, JsonRequestBehavior.AllowGet)
 
-        End Function
+		End Function
 
-        ''' <summary>
-        ''' Validates that the description columns and sort order columns does match when Group by Description is ticked.
-        ''' </summary>
-        ''' <param name="objModel">The Model</param>
-        ''' <param name="objSaveWarning">The save warning object</param>
-        Private Sub DoesSortColumnsMatchToReflectGroupByDescription(objModel As CalendarReportModel, objSaveWarning As SaveWarningModel)
+		''' <summary>
+		''' Validates that the description columns and sort order columns does match when Group by Description is ticked.
+		''' </summary>
+		''' <param name="objModel">The Model</param>
+		''' <param name="objSaveWarning">The save warning object</param>
+		Private Sub DoesSortColumnsMatchToReflectGroupByDescription(objModel As CalendarReportModel, objSaveWarning As SaveWarningModel)
 
-            ' Validate only if group by description is checked and calculation description is not selected
-            If (objModel.GroupByDescription = True AndAlso objModel.Description3ID = 0) Then
-                Dim descriptionColumnsCount As Integer = 0
+			' Validate only if group by description is checked and calculation description is not selected
+			If (objModel.GroupByDescription = True AndAlso objModel.Description3ID = 0) Then
+				Dim descriptionColumnsCount As Integer = 0
 
-                If objModel.Description1ID > 0 Then
-                    'check if description column1 with id exist into sort order, if yes increment the count
-                    If objModel.SortOrders.Exists(Function(f) f.ColumnID = objModel.Description1ID) Then
-                        descriptionColumnsCount += 1
-                    End If
-                End If
+				If objModel.Description1ID > 0 Then
+					'check if description column1 with id exist into sort order, if yes increment the count
+					If objModel.SortOrders.Exists(Function(f) f.ColumnID = objModel.Description1ID) Then
+						descriptionColumnsCount += 1
+					End If
+				End If
 
-                If objModel.Description2ID > 0 Then
-                    'check if description column2 with id exist into sort order, if yes increment the count
-                    If objModel.SortOrders.Exists(Function(f) f.ColumnID = objModel.Description2ID) Then
-                        descriptionColumnsCount += 1
-                    End If
-                End If
+				If objModel.Description2ID > 0 Then
+					'check if description column2 with id exist into sort order, if yes increment the count
+					If objModel.SortOrders.Exists(Function(f) f.ColumnID = objModel.Description2ID) Then
+						descriptionColumnsCount += 1
+					End If
+				End If
 
-                ' Validates sort order columns count does match with the selected descriptions
-                If objModel.SortOrders.Count() <> descriptionColumnsCount Then
-                    objSaveWarning.ErrorCode = ReportValidationStatus.Overwrite
-                    objSaveWarning.ErrorMessage = "The sort order does not reflect the selected Group By Description columns.<BR/><BR/> Are you sure you wish to continue ?"
-                End If
+				' Validates sort order columns count does match with the selected descriptions
+				If objModel.SortOrders.Count() <> descriptionColumnsCount Then
+					objSaveWarning.ErrorCode = ReportValidationStatus.Overwrite
+					objSaveWarning.ErrorMessage = "The sort order does not reflect the selected Group By Description columns.<BR/><BR/> Are you sure you wish to continue ?"
+				End If
 
-            End If
-        End Sub
+			End If
+		End Sub
 
-        Private Shared Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
-            target = value
-            Return value
-        End Function
+		Private Shared Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
+			target = value
+			Return value
+		End Function
 
-        <HttpPost()>
-        <ValidateAntiForgeryToken>
-        Function util_def_mailmerge_submittemplate(TemplateFile As HttpPostedFileBase, MailMergeId As Integer) As ActionResult
-            Try
+		<HttpPost()>
+		<ValidateAntiForgeryToken>
+		Function util_def_mailmerge_submittemplate(TemplateFile As HttpPostedFileBase, MailMergeId As Integer) As ActionResult
+			Try
 
-                Dim objReport As MailMergeModel
-                objReport = CType(objReportRepository.RetrieveParent(MailMergeId, UtilityType.utlMailMerge), MailMergeModel)
+				Dim objReport As MailMergeModel
+				objReport = CType(objReportRepository.RetrieveParent(MailMergeId, UtilityType.utlMailMerge), MailMergeModel)
 
-                If Not TemplateFile Is Nothing Then
+				If Not TemplateFile Is Nothing Then
 
-                    Dim acceptedTypes As New List(Of String)(New String() {
-                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                        "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
-                        "application/msword"})
+					Dim acceptedTypes As New List(Of String)(New String() {
+							"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+							"application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+							"application/msword"})
 
-                    If acceptedTypes.Contains(TemplateFile.ContentType) Then
+					If acceptedTypes.Contains(TemplateFile.ContentType) Then
 
-                        ' Read input stream from request
-                        objReport.UploadTemplate = New Byte(CInt(TemplateFile.InputStream.Length - 1)) {}
-                        Dim offset As Integer = 0
-                        Dim cnt As Integer = 0
-                        While (InlineAssignHelper(cnt, TemplateFile.InputStream.Read(objReport.UploadTemplate, offset, 10))) > 0
-                            offset += cnt
-                        End While
+						' Read input stream from request
+						objReport.UploadTemplate = New Byte(CInt(TemplateFile.InputStream.Length - 1)) {}
+						Dim offset As Integer = 0
+						Dim cnt As Integer = 0
+						While (InlineAssignHelper(cnt, TemplateFile.InputStream.Read(objReport.UploadTemplate, offset, 10))) > 0
+							offset += cnt
+						End While
 
-                        objReport.UploadTemplateName = Path.GetFileName(TemplateFile.FileName)
+						objReport.UploadTemplateName = Path.GetFileName(TemplateFile.FileName)
 
-                    Else
-                        Return New HttpStatusCodeResult(400, "Please select a Microsoft Word document or template file")
+					Else
+						Return New HttpStatusCodeResult(400, "Please select a Microsoft Word document or template file")
 
-                    End If
+					End If
 
-                End If
+				End If
 
-            Catch ex As Exception
-                Session("ErrorTitle") = "File upload"
-                Session("ErrorText") = "You could not upload the template file because of the following error:<p>" & FormatError(ex.Message)
-            End Try
+			Catch ex As Exception
+				Session("ErrorTitle") = "File upload"
+				Session("ErrorText") = "You could not upload the template file because of the following error:<p>" & FormatError(ex.Message)
+			End Try
 
-        End Function
+		End Function
 
-        <HttpPost>
-        <ValidateAntiForgeryToken>
-        Public Function util_def_mailmerge_downloadtemplate(MailMergeId As Integer) As FilePathResult
+		<HttpPost>
+		<ValidateAntiForgeryToken>
+		Public Function util_def_mailmerge_downloadtemplate(MailMergeId As Integer) As FilePathResult
 
-            Dim objReport As MailMergeModel
-            objReport = CType(objReportRepository.RetrieveParent(MailMergeId, UtilityType.utlMailMerge), MailMergeModel)
+			Dim objReport As MailMergeModel
+			objReport = CType(objReportRepository.RetrieveParent(MailMergeId, UtilityType.utlMailMerge), MailMergeModel)
 
-            Dim downloadTokenValue As String = Request("download_token_value_id")
+			Dim downloadTokenValue As String = Request("download_token_value_id")
 
-            Try
-                '  Dim template = CType(objRow.Item(0), Byte())
-                '     Dim fileName = objRow.Item("TemplateName").ToString
+			Try
+				'  Dim template = CType(objRow.Item(0), Byte())
+				'     Dim fileName = objRow.Item("TemplateName").ToString
 
-                ' Download the file
-                Response.ContentType = "application/octet-stream"
-                Response.Clear()
-                Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
-                Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", objReport.UploadTemplateName))
-                Response.OutputStream.Write(objReport.UploadTemplate, 0, objReport.UploadTemplate.Length)
-                Response.End()
-                Response.Flush()
+				' Download the file
+				Response.ContentType = "application/octet-stream"
+				Response.Clear()
+				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
+				Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", objReport.UploadTemplateName))
+				Response.OutputStream.Write(objReport.UploadTemplate, 0, objReport.UploadTemplate.Length)
+				Response.End()
+				Response.Flush()
 
-            Catch ex As Exception
+			Catch ex As Exception
 
-            End Try
+			End Try
 
-        End Function
+		End Function
 
-		
+
 
 		<HttpPost>
 		<ValidateAntiForgeryToken>
