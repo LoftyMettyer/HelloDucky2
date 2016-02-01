@@ -147,11 +147,23 @@
 			</tr>
 						
 			<tr>
-				<td></td>
+				<td><br/></td>
 			</tr>
 
 			<tr>
-				<td></td>
+				<td style="text-align:center">
+				  <img src="<%=Url.Action("GetCaptcha","Generic")%>" />
+				</td>
+			</tr>
+
+			<tr style="text-align:center">
+				<td>Please type the above characters to ensure that you a person, not an automated program submitting this request.</td>
+			</tr>
+ 			<tr style="text-align:center"> 
+				<td style="text-align:center">
+					Verify : &nbsp;&nbsp;&nbsp;
+					<input type="text" name="txtVerify" id="txtVerify" value="" class="text" />
+				</td>
 			</tr>
 
 			<tr> 

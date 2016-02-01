@@ -236,8 +236,15 @@ Namespace Controllers
 			Dim fSubmitPasswordChange = ""
 			Dim sErrorText = ""
 			Dim fRedirectToSSI As Boolean
+      Dim verifyCode as String = Request.Form("txtVerify")
 
-			If True Then
+      If Not verifyCode.Equals(Session("CaptchaText").ToString(), StringComparison.OrdinalIgnoreCase)
+				Session("ErrorTitle") = "Change Password Page"
+				Session("ErrorText") = "Your password cannot be changed. Incorrect validation code."
+				Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = "Main"}
+				Return Json(data, JsonRequestBehavior.AllowGet)
+      Else
+
 				fSubmitPasswordChange = (Len(Request.Form("txtGotoPage")) = 0)
 
 				If fSubmitPasswordChange Then

@@ -87,14 +87,34 @@
 					<input type="text" name="txtUserName" id="txtUserName" value="" class="text" onkeypress="CheckKeyPressed(event);" />
 				</td>
 			</tr>
-			
-			<tr>
-				<td></td>
+
+      <tr>
+        <td>
+          <br />
+        </td>
+      </tr>
+
+      <tr>
+				<td style="text-align:center">
+				  <img src="<%=Url.Action("GetCaptcha","Generic")%>" />
+				</td>
 			</tr>
 
-			<tr>
-				<td></td>
+			<tr style="text-align:center">
+				<td>Please type the above characters to ensure that you a person, not an automated program submitting this request.</td>
 			</tr>
+ 			<tr style="text-align:center"> 
+				<td style="text-align:center">
+					Verify : &nbsp;&nbsp;&nbsp;
+					<input type="text" name="txtVerify" id="txtVerify" value="" class="text" />
+				</td>
+			</tr>
+
+      <tr>
+        <td>
+          <br />
+        </td>
+      </tr>
 
 			<tr> 
 				<td style="text-align: center;">
@@ -105,9 +125,11 @@
 			</tr>
 		</table>
 
-	<%=Html.AntiForgeryToken()%>
 
+
+	<%=Html.AntiForgeryToken()%>
 	<%Html.EndForm()%>
+ 
 </div>
 	</div>
 <script type="text/javascript">

@@ -142,7 +142,42 @@
 						<tr>
 							<td colspan="5" height="20"></td>
 						</tr>
-						<tr>
+
+            <tr style="text-align: left">
+              <td width="20"></td>
+              <td colspan="3" style="text-align:center">
+                <img src="<%=Url.Action("GetCaptcha","Generic")%>" />
+              </td>
+            </tr>
+
+            <tr style="text-align: left">
+              <td width="20"></td>
+              <td colspan="3" width="40" align="center">Please type the above characters to ensure that you a person, not an automated program submitting this request.</td>
+            </tr>
+
+            <tr>
+              <td>
+                <br />
+              </td>
+            </tr>
+
+            <tr>
+							<td width="20"></td>
+							<td align="left" nowrap>Verify :</td>
+							<td width="20"></td>
+							<td align="left">
+								<input id="txtVerify" name="txtVerify" class="text" autocomplete="off" style="WIDTH: 200px; margin-top: 1px; margin-bottom: 1px">
+							</td>
+							<td width="20"></td>
+						</tr>
+
+            <tr>
+              <td>
+                <br />
+              </td>
+            </tr>
+
+            <tr>
 							<td colspan="5">
 								<table class="invisible" cellspacing="0" cellpadding="0" align="center">
 									<td align="center">

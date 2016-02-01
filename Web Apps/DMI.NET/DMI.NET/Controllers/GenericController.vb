@@ -6,8 +6,10 @@ Imports System.IO
 Imports System.Web
 Imports System.Data.SqlClient
 Imports System.Collections.ObjectModel
+Imports System.Drawing.Imaging
 Imports System.Web.Script.Serialization
 Imports DMI.NET.Classes
+Imports DMI.NET.Code.Captcha
 Imports Newtonsoft.Json
 Imports HR.Intranet.Server
 
@@ -166,5 +168,20 @@ Namespace Controllers
 			End If
 
 		End Function
-	End Class
+
+    Public Function GetCaptcha() As FileContentResult 
+
+      Dim captchaText = CaptchaImage.RandomString(6)
+      Dim captchaBitmap = CaptchaImage.CreateBitmap(captchaText)
+      Session("CaptchaText") = captchaText
+
+			Using ms = New MemoryStream()
+        captchaBitmap.Save(ms, ImageFormat.Bmp)
+				ms.Seek(0, SeekOrigin.Begin)
+				Return File(ms.ToArray(), "image/bmp", "captcha.bmp")
+			End Using
+
+    End Function
+
+  End Class
 End Namespace

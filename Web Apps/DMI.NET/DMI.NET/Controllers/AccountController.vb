@@ -682,10 +682,16 @@ Namespace Controllers
 
 			Dim objLogin = CType(Session("sessionChangePassword"), LoginInfo)
 			Dim objDataAccess = New clsDataAccess(objLogin)
+      Dim verifyCode as String = Request.Form("txtVerify")
 
 			Dim fSubmitPasswordChange = (Len(Request.Form("txtGotoPage")) = 0)
 
-			If fSubmitPasswordChange Then
+      If Not verifyCode.Equals(Session("CaptchaText").ToString(), StringComparison.OrdinalIgnoreCase) Then
+        Session("ErrorTitle") = "Change Password Page"
+			  Session("ErrorText") = "You could not change your password at this time.<br/><br/>Incorrect details."
+				Return RedirectToAction("ForcedPasswordChange", "Account")
+
+      ElseIf fSubmitPasswordChange Then
 
 				' Read the Password details from the Password form.
 				Dim sNewPassword As String = Request.Form("txtPassword1")
@@ -738,7 +744,7 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function ForgotPassword_Submit(value As FormCollection) As ActionResult
+		Function ForgotPassword_Submit(value As ForgotPasswordModel) As ActionResult
 			Dim protocol As String = "http"
 			Dim domainName As String
 			Dim websiteURL As String
@@ -747,26 +753,32 @@ Namespace Controllers
 			' run the sp's through the object
 			Try
 
+        If Not value.txtVerify.Equals(Session("CaptchaText").ToString(), StringComparison.OrdinalIgnoreCase)
+				  ViewData("RedirectToURLMessage") = "OK"
+				  ViewData("Message") = "You cannot reset your password at this time. <br/><br/>Incorrect details."
+			    
+        Else
+				  Dim objResetPwd As New ResetPassword With {
+              .Username = value.txtUserName
+            }
 
-				Dim objResetPwd As New Code.ResetPassword
+				  ' Force password change only if there are no other users logged in with the same name.
+				  If Request.ServerVariables("HTTPS").ToLower = "on" Then protocol = "https"
+				  domainName = Request.ServerVariables("HTTP_HOST")
 
-				objResetPwd.Username = Request.Form("txtUserName")
+				  websiteURL = protocol & "://" & domainName & Url.Action("ResetPassword", "Account") 'Even though VS complains that it "Cannot resolve action 'ResetPassword'", it DOES resolve it!
+				  sMessage = objResetPwd.GenerateLinkAndEmail(websiteURL, Now())
 
-				' Force password change only if there are no other users logged in with the same name.
-				If Request.ServerVariables("HTTPS").ToLower = "on" Then protocol = "https"
-				domainName = Request.ServerVariables("HTTP_HOST")
+				  ViewData("RedirectToURLMessage") = "Go back"
+				  ViewData("RedirectToURL") = Url.Action("ForgotPassword", "Account")
 
-				websiteURL = protocol & "://" & domainName & Url.Action("ResetPassword", "Account") 'Even though VS complains that it "Cannot resolve action 'ResetPassword'", it DOES resolve it!
-				sMessage = objResetPwd.GenerateLinkAndEmail(websiteURL, Now())
+				  ' handle response from server...
+				  ' Always show 'email sent' success message: OWASP.
+				  ViewData("Message") = "An e-mail has been sent to you. When you receive it, follow the directions in the email to reset your password."
+				  ViewData("RedirectToURLMessage") = "Login page"
+				  ViewData("RedirectToURL") = Url.Action("Login", "Account")
 
-				ViewData("RedirectToURLMessage") = "Go back"
-				ViewData("RedirectToURL") = Url.Action("ForgotPassword", "Account")
-
-				' handle response from server...
-				' Always show 'email sent' success message: OWASP.
-				ViewData("Message") = "An e-mail has been sent to you. When you receive it, follow the directions in the email to reset your password."
-				ViewData("RedirectToURLMessage") = "Login page"
-				ViewData("RedirectToURL") = Url.Action("Login", "Account")
+ 			  End If
 
 
 			Catch ex As Exception
@@ -787,20 +799,27 @@ Namespace Controllers
 		Function ResetPassword_Submit(value As FormCollection) As ActionResult
 			Dim Password As String = Request.Form("txtPassword1")
 			Dim QueryString As String = Request.Form("txtQueryString")
+      Dim verifyCode as String = Request.Form("txtVerify")
 			Dim Message As String
 			Dim objResetPwd As New Code.ResetPassword
 
-			' Force password change only if there are no other users logged in with the same name.
-			Message = objResetPwd.ResetPassword(QueryString, Password)
-			objResetPwd = Nothing
+      If Not verifyCode.Equals(Session("CaptchaText").ToString(), StringComparison.OrdinalIgnoreCase)
+				  ViewData("RedirectToURLMessage") = "OK"
+				  ViewData("Message") = "You could not change your password at this time.<br/><br/>Incorrect details."
+      Else
 
-			If UCase(Message) = UCase("Password changed successfully") Then
-				' if OK...
-				ViewData("Message") = "Your password has been reset successfully."
-			Else
-				' failure message from dll...	    
-				ViewData("Message") = "You could not change your password at this time.<br/><br/>" & Message
-			End If
+			  ' Force password change only if there are no other users logged in with the same name.
+			  Message = objResetPwd.ResetPassword(QueryString, Password)
+			  objResetPwd = Nothing
+
+			  If UCase(Message) = UCase("Password changed successfully") Then
+				  ' if OK...
+				  ViewData("Message") = "Your password has been reset successfully."
+			  Else
+				  ' failure message from dll...	    
+				  ViewData("Message") = "You could not change your password at this time.<br/><br/>" & Message
+			  End If
+      End If
 
 			Return View()
 		End Function
