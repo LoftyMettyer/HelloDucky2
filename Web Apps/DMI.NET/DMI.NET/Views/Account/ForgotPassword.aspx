@@ -101,7 +101,7 @@
 			</tr>
 
 			<tr style="text-align:center">
-				<td>Please type the above characters to ensure that you a person, not an automated program submitting this request.</td>
+				<td>Please type the above characters to ensure that you are a person, not an automated program submitting this request.</td>
 			</tr>
  			<tr style="text-align:center"> 
 				<td style="text-align:center">

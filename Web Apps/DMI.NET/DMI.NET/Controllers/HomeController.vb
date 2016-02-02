@@ -238,7 +238,7 @@ Namespace Controllers
 			Dim fRedirectToSSI As Boolean
       Dim verifyCode as String = Request.Form("txtVerify")
 
-      If Not verifyCode.Equals(Session("CaptchaText").ToString(), StringComparison.OrdinalIgnoreCase)
+      If verifyCode Is Nothing OrElse Not verifyCode.Equals(Session("CaptchaText").ToString(), StringComparison.OrdinalIgnoreCase)      
 				Session("ErrorTitle") = "Change Password Page"
 				Session("ErrorText") = "Your password cannot be changed. Incorrect validation code."
 				Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = "Main"}

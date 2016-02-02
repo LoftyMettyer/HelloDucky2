@@ -109,7 +109,7 @@
 
                       <tr style="text-align: left">
                         <td width="20"></td>
-                        <td colspan="3" width="40" align="center">Please type the above characters to ensure that you a person, not an automated program submitting this request.</td>
+                        <td colspan="3" width="40" align="center">Please type the above characters to ensure that you are a person, not an automated program submitting this request.</td>
                       </tr>
                                             
                      <tr>

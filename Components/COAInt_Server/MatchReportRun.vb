@@ -472,23 +472,27 @@ Public Class MatchReportRun
 					
 						objColumn.ColType = objBreakdownRow("ColType").ToString()
 						objColumn.ID = cint(objBreakdownRow("ColExprID"))
+						objColumn.Heading = objBreakdownRow("ColHeading").ToString()
 
             Dim actualColumn = Columns.GetById(objColumn.ID)
-
-						objColumn.Size = actualColumn.Size
-						objColumn.Decimals = actualColumn.Decimals
-						objColumn.Heading = objBreakdownRow("ColHeading").ToString()
-						objColumn.Use1000Separator = actualColumn.Use1000Separator
+            
+            If actualColumn Is Nothing Then
+              objColumn.ColType = "E"
+            Else
+						  objColumn.Size = actualColumn.Size
+						  objColumn.Decimals = actualColumn.Decimals
+						  objColumn.Use1000Separator = actualColumn.Use1000Separator
 						
-						If objColumn.ColType = "C" Then
-							objColumn.DataType = actualColumn.DataType
-							objColumn.TableID = actualColumn.TableID
-							objColumn.TableName = Tables.GetById(actualColumn.TableID).Name
-							objColumn.Name = actualColumn.Name
-						Else
-							objColumn.DataType = ColumnDataType.sqlNumeric
+						  If objColumn.ColType = "C" Then
+							  objColumn.DataType = actualColumn.DataType
+							  objColumn.TableID = actualColumn.TableID
+							  objColumn.TableName = Tables.GetById(actualColumn.TableID).Name
+							  objColumn.Name = actualColumn.Name
+						  Else
+							  objColumn.DataType = ColumnDataType.sqlNumeric
+						  End If
 						End If
-						
+
 						objBreakdownCols.Add(objColumn)
 						
 					next 
@@ -1008,7 +1012,7 @@ Public Class MatchReportRun
 				  pstrColumnCode = vbCrLf & mcolSQLMatchScore.Item("T" & CStr(lngTableID))
 				  'UPGRADE_WARNING: Couldn't resolve default property of object mcolSQLMatchScore(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				  strOrderColumn = mcolSQLMatchScore.Item("T" & CStr(lngTableID))
-				  pstrColumnCode = pstrColumnCode & " AS [Match_Score]"
+				  pstrColumnCode = pstrColumnCode & string.Format(" AS [{0}]", objColumn.Heading)
 				
 			  End If
 			
@@ -1664,7 +1668,7 @@ Public Class MatchReportRun
 			  Return False
 		  End If
 	
-      If UtilityType = UtilityType.TalentReport Then      
+      If UtilityType = UtilityType.TalentReport And PreferredColumnID > 0 Then      
         Dim relation =  CType(mcolRelations.Item("T" & Table1ChildTableID), clsMatchRelation)       
         Dim sSQL = String.Format("SELECT MAX([{0}]) FROM {1}", Columns.GetById(PreferredColumnID).Name, relation.Table1RealSource)
         Dim ranges = DB.GetDataTable(sSQL)

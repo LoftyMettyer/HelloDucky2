@@ -686,7 +686,7 @@ Namespace Controllers
 
 			Dim fSubmitPasswordChange = (Len(Request.Form("txtGotoPage")) = 0)
 
-      If Not verifyCode.Equals(Session("CaptchaText").ToString(), StringComparison.OrdinalIgnoreCase) Then
+      If verifyCode Is Nothing OrElse Not verifyCode.Equals(Session("CaptchaText").ToString(), StringComparison.OrdinalIgnoreCase) Then
         Session("ErrorTitle") = "Change Password Page"
 			  Session("ErrorText") = "You could not change your password at this time.<br/><br/>Incorrect details."
 				Return RedirectToAction("ForcedPasswordChange", "Account")
@@ -753,7 +753,7 @@ Namespace Controllers
 			' run the sp's through the object
 			Try
 
-        If Not value.txtVerify.Equals(Session("CaptchaText").ToString(), StringComparison.OrdinalIgnoreCase)
+        If value.txtVerify Is Nothing OrElse Not value.txtVerify.Equals(Session("CaptchaText").ToString(), StringComparison.OrdinalIgnoreCase)
 				  ViewData("RedirectToURLMessage") = "OK"
 				  ViewData("Message") = "You cannot reset your password at this time. <br/><br/>Incorrect details."
 			    
@@ -803,7 +803,7 @@ Namespace Controllers
 			Dim Message As String
 			Dim objResetPwd As New Code.ResetPassword
 
-      If Not verifyCode.Equals(Session("CaptchaText").ToString(), StringComparison.OrdinalIgnoreCase)
+      If verifyCode Is Nothing OrElse Not verifyCode.Equals(Session("CaptchaText").ToString(), StringComparison.OrdinalIgnoreCase)
 				  ViewData("RedirectToURLMessage") = "OK"
 				  ViewData("Message") = "You could not change your password at this time.<br/><br/>Incorrect details."
       Else
