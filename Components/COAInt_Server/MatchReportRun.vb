@@ -1653,8 +1653,7 @@ Public Class MatchReportRun
     Dim bAddToGrid As Boolean
 		
 		Dim aryAddString As ArrayList
-    Dim scores As New List(Of Competency)
-    Dim breakdownValue as String = ""                		
+    Dim scores As List(Of Competency)
     Dim maxScore As Integer = 0
 
     Try
@@ -1792,8 +1791,7 @@ Public Class MatchReportRun
               
               Dim breakdownData = DB.GetDataTable(breakdownSQL)
 
-              scores = New List(Of Competency)
-              breakdownValue = ""            
+              scores = New List(Of Competency) 
               for Each objBreakdown as DataRow in breakdownData.Rows
 
                 competency = New Competency With {
@@ -1803,23 +1801,23 @@ Public Class MatchReportRun
                   .Maximum = maxScore,
                   .Actual = CDbl(IIf(IsDBNull(objBreakdown("ActualScore")), 0, objBreakdown("ActualScore")))
                   }
-                breakdownValue &= IIf(Len(breakdownValue) > 0, ",", "") & competency.TalentGridJson
-                scores.Add(competency)
+                If competency.Actual > 0 Then
+                  scores.Add(competency)
+                End If 
+
               Next
-
-              breakdownValue = IIf(Len(breakdownValue) > 0, "[" & breakdownValue & "]" , "") 
-
+              
               ' Only add to list if within match type
               If scores.MatchCount > 0 Then
                 If MatchAgainstType = MatchAgainstType.Any And scores.MatchCount > 0 Then
                   bAddToGrid = True
-                ElseIf MatchAgainstType = MatchAgainstType.All And scores.AllMatched() Then
+                ElseIf MatchAgainstType = MatchAgainstType.All And scores.MatchCount = breakdownData.Rows.Count Then
                   bAddToGrid = True
 						    End If
               End If
 
               aryAddString.Add(Math.Round(scores.MatchScore, 2))
-              aryAddString.Add(breakdownValue)
+              aryAddString.Add(scores.TalentChartJSON)
               aryAddString.Add(scores.TalentChart)
 
             End If
