@@ -60,7 +60,7 @@
 		<%If Model.Usage Is Nothing Then%>
 			OpenHR.modalPrompt("<%:Model.Status%>", 0, "Confirm").then(function(answer) {
 				if (answer === 1) {
-						menu_LoadDefSel_Inside_Frame(<%:CInt(Model.utiltype)%>, 0, 0, true);
+						menu_LoadDefSel_Inside_Frame(<%:CInt(Model.utiltype)%>, 0, <%:Model.txtTableID%>, true);
 				}
 			});
 		<%Else%>

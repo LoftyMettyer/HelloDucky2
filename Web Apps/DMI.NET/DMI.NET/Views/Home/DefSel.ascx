@@ -438,6 +438,7 @@
                         utiltype: frmDefSel.utiltype.value,
                         utilID: frmDefSel.utilid.value,
                         utilName: $("#utilname").val(),
+                        txtTableID: frmDefSel.txtTableID.value,
                         categoryId:frmDefSel.categoryId.value,
                         ownerName:frmDefSel.ownerName.value,
                         __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()

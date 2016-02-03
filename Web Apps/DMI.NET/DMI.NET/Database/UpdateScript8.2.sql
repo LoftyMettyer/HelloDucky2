@@ -36581,16 +36581,16 @@ BEGIN
 	BEGIN
 		SET @strTableName = 'ASRSysExpressions';
 		SET @strIDName = 'exprID';
-		SET @sExtraWhereSQL = ' (type = 11 AND (returnType = 3 OR type = 10) AND parentComponentID = 0	AND TableID = ' + convert(varchar(255), @intTableID) + ')';
+		SET @sExtraWhereSQL = ' ((type = 11 OR (returnType = 4 AND type = 18)) AND parentComponentID = 0	AND TableID = ' + convert(varchar(255), @intTableID) + ')';
 	END
 
 	IF @intType = 12 /*'calculations'*/
 	BEGIN
 		SET @strTableName = 'ASRSysExpressions';
 		SET @strIDName = 'exprID';
-		SET @sExtraWhereSQL = ' type = 10 AND (returnType = 0 OR type = 10) AND parentComponentID = 0	AND TableID = ' + convert(varchar(255), @intTableID);
+		SET @sExtraWhereSQL = ' ((type = 10 OR (returnType = 4 AND type = 18)) AND parentComponentID = 0	AND TableID = ' + convert(varchar(255), @intTableID) + ')';
 	END
-	
+
 	IF @intType = 14 -- Match Reports
 	BEGIN
 		SET @strTableName = 'ASRSysMatchReportName';
@@ -36835,7 +36835,7 @@ BEGIN
 
 				SET @strSQL = @strSQL  + ' (' + @sRecordSourceWhere + ')';
 			END
-			
+
 			IF LEN(@sExtraWhereSQL) > 0 
 			BEGIN
 				IF @fDoneWhere = 0
