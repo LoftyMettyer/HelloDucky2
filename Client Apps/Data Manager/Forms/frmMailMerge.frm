@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMailMerge 
@@ -25,6 +25,7 @@ Begin VB.Form frmMailMerge
    Icon            =   "frmMailMerge.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   5595
@@ -85,9 +86,12 @@ Begin VB.Form frmMailMerge
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(2)"
+      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(2)=   "fraColumns(0)"
+      Tab(1).Control(1).Enabled=   0   'False
+      Tab(1).Control(2)=   "fraColumns(2)"
+      Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Sort Order"
       TabPicture(2)   =   "frmMailMerge.frx":090E
@@ -1731,7 +1735,7 @@ Private Function IsDefinitionCreator(lngID As Long) As Boolean
   Set rsTemp = datGeneral.GetRecords(sSQL)
   
   If rsTemp.RecordCount > 0 Then
-    IsDefinitionCreator = (LCase(rsTemp!UserName) = LCase(gsUserName))
+    IsDefinitionCreator = (LCase(rsTemp!userName) = LCase(gsUserName))
   Else
     IsDefinitionCreator = False
   End If
@@ -2216,7 +2220,7 @@ Private Sub cmdCalculations_Click()
             sMessage = IsCalcValid(.ExpressionID)
             If sMessage <> vbNullString Then
               COAMsgBox "This calculation has been deleted or hidden by another user." & vbCrLf & _
-                     "It cannot be added to this definition", vbExclamation, app.Title
+                     "It cannot be added to this definition", vbExclamation, app.title
             Else
               If optCalc.Value And (cboTblAvailable.ItemData(cboTblAvailable.ListIndex) = .BaseTableID) Then
                 ListView1.ListItems(strKey).Selected = True
@@ -2709,7 +2713,7 @@ End Sub
 
 Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lMailMergeID As Long, Optional bPrint As Boolean) As Boolean
 
-  Dim iUtilityType As UtilityType
+  Dim iUtilityType As utilityType
 
   On Error GoTo LocalErr
 
@@ -3903,7 +3907,15 @@ Private Function ValidateDefinition()
   If ListView2.ListItems.Count = 0 Then
     SSTab1.Tab = 1
     'strMessage = "No " & IIf(mbIsLabel, "label", "merge") & " columns selected."
-    strMessage = "No Columns Selected."
+    strMessage = "No columns selected."
+    WarningCOAMsgBox strMessage
+    ListView1.SetFocus
+    Exit Function
+  End If
+
+  If ListView2.ListItems.Count > 250 Then
+    SSTab1.Tab = 1
+    strMessage = "A maximum of 250 columns are allowed."
     WarningCOAMsgBox strMessage
     ListView1.SetFocus
     Exit Function
@@ -4304,7 +4316,7 @@ Private Function SaveDefinition() As Boolean
   
   Dim strDocManMapID As String
   Dim strDocManManualHeader As String
-  Dim iUtilityType As UtilityType
+  Dim iUtilityType As utilityType
   
   On Error GoTo LocalErr
 
@@ -4675,7 +4687,7 @@ Private Sub RetreiveDefinition()
   Dim sMessage As String
   Dim fAlreadyNotified As Boolean
   Dim strPrinterName As String
-  Dim iUtilityType As UtilityType
+  Dim iUtilityType As utilityType
 
   On Error GoTo LocalErr
 
@@ -4768,8 +4780,8 @@ Private Sub RetreiveDefinition()
     mblnDefinitionCreator = True
   Else
     txtName.Text = rsTemp!Name
-    txtUserName = StrConv(rsTemp!UserName, vbProperCase)
-    mblnDefinitionCreator = (LCase$(rsTemp!UserName) = LCase$(gsUserName))
+    txtUserName = StrConv(rsTemp!userName, vbProperCase)
+    mblnDefinitionCreator = (LCase$(rsTemp!userName) = LCase$(gsUserName))
   End If
 
   'mblnHiddenPicklistOrFilter = False
@@ -5638,7 +5650,7 @@ Public Sub PrintDef(lMailMergeID As Long)
         End If
     
         .PrintNormal "Description : " & rsTemp!Description
-        .PrintNormal "Owner : " & rsTemp!UserName
+        .PrintNormal "Owner : " & rsTemp!userName
         
         ' Access section --------------------------------------------------------
         .PrintTitle "Access"

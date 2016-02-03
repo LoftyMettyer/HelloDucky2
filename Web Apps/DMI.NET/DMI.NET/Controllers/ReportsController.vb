@@ -255,6 +255,15 @@ Namespace Controllers
                 End If
             End If
 
+          If objModel.Columns.Count > 250 Then
+    				objSaveWarning = New SaveWarningModel With {
+					    .ReportType = objModel.ReportType,
+					    .ID = objModel.ID,
+					    .ErrorCode = ReportValidationStatus.InvalidOnClient,
+					    .ErrorMessage = "A maximum of 250 columns are allowed for your mail merge."}
+            Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
+          End If
+
             If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 
                 objReportRepository.SaveReportDefinition(objModel)
