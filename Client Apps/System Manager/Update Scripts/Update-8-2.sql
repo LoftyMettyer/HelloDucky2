@@ -2662,6 +2662,11 @@ PRINT 'Step - Talent Management Reports'
 		IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysTalentReports', 'U') AND name = 'OutputEmail')
 			EXEC sp_executesql N'ALTER TABLE ASRSysTalentReports ADD OutputEmail bit;';
 
+		IF NOT EXISTS(SELECT Name FROM sysindexes WHERE id = object_id(N'ASRSysTalentReports') AND name = N'PK_ASRSysTalentReports_ID')
+			EXEC sp_executesql N'ALTER TABLE dbo.ASRSysTalentReports ADD CONSTRAINT	PK_ASRSysTalentReports_ID PRIMARY KEY CLUSTERED (ID) ON [PRIMARY]'
+
+		IF NOT EXISTS(SELECT Name FROM sysindexes WHERE id = object_id(N'ASRSysTalentReportDetails') AND name = N'IDX_TalentReportID')
+			EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_TalentReportID] ON ASRSysTalentReportDetails ([TalentReportID])'
 
 
 
