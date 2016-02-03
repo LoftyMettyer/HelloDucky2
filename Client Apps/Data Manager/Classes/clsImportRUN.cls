@@ -792,10 +792,10 @@ Private Function GetRealSource(plngTableID As Long) As Boolean
             
             ' If its the base table, check INSERT privilege
             If plngTableID = mlngImportBaseTable Then
-              pblnAllowed = pobjColumnPrivileges.item(mvarColDetails(4, pintTemp)).AllowUpdate
+              pblnAllowed = pobjColumnPrivileges.Item(mvarColDetails(4, pintTemp)).AllowUpdate
               If Not pblnAllowed Then mstrErrorString = mvarColDetails(2, pintTemp) & "." & mvarColDetails(4, pintTemp) & " : No update permission"
             Else ' Otherwise just check the select privilege
-              pblnAllowed = pobjColumnPrivileges.item(mvarColDetails(4, pintTemp)).AllowSelect
+              pblnAllowed = pobjColumnPrivileges.Item(mvarColDetails(4, pintTemp)).AllowSelect
               If Not pblnAllowed Then mstrErrorString = mvarColDetails(2, pintTemp) & "." & mvarColDetails(4, pintTemp) & " : No read permission"
             End If
             
@@ -2398,7 +2398,7 @@ Private Function GetDataToImport(pintFileType As ImportType) As String
     gobjErrorStack.Disable
     
     'JPD 20040319 Fault 8306
-    Set objTableView = gcoTablePrivileges.item(mstrImportParent2TableName)
+    Set objTableView = gcoTablePrivileges.Item(mstrImportParent2TableName)
     If objTableView.TableType = tabChild Then
       strSQL = "SELECT " & mstrParent2TableRealSources(0) & ".ID FROM " & mstrParent2TableRealSources(0) & _
         mstrParent2ViewJoins & " " & pstrParentWhereSQL
@@ -2495,7 +2495,7 @@ Private Function GetDataToImport(pintFileType As ImportType) As String
     gobjErrorStack.Disable
     
     'JPD 20040319 Fault 8306
-    Set objTableView = gcoTablePrivileges.item(mstrImportParent1TableName)
+    Set objTableView = gcoTablePrivileges.Item(mstrImportParent1TableName)
     If objTableView.TableType = tabChild Then
       strSQL = "SELECT " & mstrParent1TableRealSources(0) & ".ID FROM " & mstrParent1TableRealSources(0) & _
         mstrParent1ViewJoins & " " & pstrParentWhereSQL
@@ -3199,7 +3199,7 @@ Private Function FindMatchingRecord() As Boolean
     'strSQL = "SELECT " & mstrImportParent1TableName & ".ID " & _
              "FROM " & mstrImportParent1TableName & _
              mstrParent1ViewJoins & " WHERE " & mstrParent1Where
-    Set objTableView = gcoTablePrivileges.item(mstrImportParent1TableName)
+    Set objTableView = gcoTablePrivileges.Item(mstrImportParent1TableName)
     If objTableView.TableType = tabChild Then
       strSQL = "SELECT " & mstrParent1TableRealSources(0) & ".ID" & _
         " FROM " & mstrParent1TableRealSources(0) & _
@@ -3223,7 +3223,7 @@ Private Function FindMatchingRecord() As Boolean
     'strSQL = "SELECT " & mstrImportParent2TableName & ".ID " & _
              "FROM " & mstrImportParent2TableName & _
              mstrParent2ViewJoins & " WHERE " & mstrParent2Where
-    Set objTableView = gcoTablePrivileges.item(mstrImportParent2TableName)
+    Set objTableView = gcoTablePrivileges.Item(mstrImportParent2TableName)
     If objTableView.TableType = tabChild Then
       strSQL = "SELECT " & mstrParent2TableRealSources(0) & ".ID" & _
         " FROM " & mstrParent2TableRealSources(0) & _
@@ -3341,7 +3341,7 @@ Private Function AddToWhere(ByRef strWhereSQL As String, strRealSources() As Str
       Set pobjColumnPrivileges = GetColumnPrivileges(strRealSources(lngIndex))
 
       If pobjColumnPrivileges.IsValid(strColumnName) Then
-        If pobjColumnPrivileges.item(strColumnName).AllowSelect Then
+        If pobjColumnPrivileges.Item(strColumnName).AllowSelect Then
           strWhereSQL = strWhereSQL & vbCrLf & _
               " WHEN NOT " & strRealSources(lngIndex) & "." & mvarColDetails(4, intCounter) & _
               " IS NULL THEN " & strRealSources(lngIndex) & "." & mvarColDetails(4, intCounter)
@@ -3438,7 +3438,7 @@ Private Function ReadSQLTableInToFile() As Boolean
     
   On Error GoTo ErrorTrap
     
-  If Not CheckLinkedServerIsValid Then
+  If Not CheckLinkedServerIsValid(mstrLinkedServer, mstrLinkedCatalog, mstrLinkedTable) Then
     mstrErrorString = "Error establishing connection to the linked server." & vbCrLf
     ReadSQLTableInToFile = False
     Exit Function
@@ -3503,34 +3503,4 @@ ErrorTrap:
   bOK = False
   GoTo TidyUpAndExit
 
-End Function
-
-Private Function CheckLinkedServerIsValid() As Boolean
-
-  Dim sSQL As String
-  Dim rsTemp As Recordset
-  Dim bOK As Boolean
-
-  bOK = True
-  sSQL = "SELECT * FROM sys.sysservers WHERE srvname = '" & mstrLinkedServer & "'"
-  
-  Set rsTemp = datGeneral.GetRecords(sSQL)
-  bOK = Not (rsTemp.EOF And rsTemp.BOF)
-  
-  If bOK Then
-    sSQL = "SELECT * FROM [" & mstrLinkedServer & "].master.sys.databases WHERE name = '" & mstrLinkedCatalog & "'"
-    Set rsTemp = datGeneral.GetRecords(sSQL)
-    bOK = Not (rsTemp.EOF And rsTemp.BOF)
-  End If
-  
-  If bOK Then
-    sSQL = "SELECT * FROM [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].sys.tables WHERE name = '" & mstrLinkedTable & "'"
-    Set rsTemp = datGeneral.GetRecords(sSQL)
-    bOK = Not (rsTemp.EOF And rsTemp.BOF)
-  End If
-  
-  CheckLinkedServerIsValid = bOK
-  rsTemp.Close
-  Set rsTemp = Nothing
-  
 End Function

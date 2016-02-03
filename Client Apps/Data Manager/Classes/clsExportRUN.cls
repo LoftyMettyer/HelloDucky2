@@ -1095,12 +1095,12 @@ Private Function GenerateSQLSelect() As Boolean
       
       ' Check permission on that column
       Set mobjColumnPrivileges = GetColumnPrivileges(pstrTempTableName)
-      mstrRealSource = gcoTablePrivileges.item(pstrTempTableName).RealSource
+      mstrRealSource = gcoTablePrivileges.Item(pstrTempTableName).RealSource
       
       pblnColumnOK = mobjColumnPrivileges.IsValid(pstrTempColumnName)
         
       If pblnColumnOK Then
-        pblnColumnOK = mobjColumnPrivileges.item(pstrTempColumnName).AllowSelect
+        pblnColumnOK = mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect
       End If
       
       If pblnColumnOK Then
@@ -1156,14 +1156,14 @@ Private Function GenerateSQLSelect() As Boolean
           (mobjTableView.AllowSelect) Then
           
             pstrSource = mobjTableView.ViewName
-            mstrRealSource = gcoTablePrivileges.item(pstrSource).RealSource
+            mstrRealSource = gcoTablePrivileges.Item(pstrSource).RealSource
             
             ' Get the column permission for the view
             Set mobjColumnPrivileges = GetColumnPrivileges(pstrSource)
             
             ' If we can see the column from this view
             If mobjColumnPrivileges.IsValid(pstrTempColumnName) Then
-              If mobjColumnPrivileges.item(pstrTempColumnName).AllowSelect Then
+              If mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect Then
                 
                 ReDim Preserve mstrViews(UBound(mstrViews) + 1)
                 mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
@@ -1423,7 +1423,7 @@ Private Function GenerateSQLFrom() As Boolean
   
   Set pobjTableView = New CTablePrivilege
   
-    mstrSQLFrom = gcoTablePrivileges.item(mstrExportBaseTableName).RealSource
+    mstrSQLFrom = gcoTablePrivileges.Item(mstrExportBaseTableName).RealSource
   
 '  Else
 '
@@ -1632,7 +1632,7 @@ Private Function DoChildOrderString(rsTemp As Recordset, ByRef psJoinCode As Str
       ' Check if the user can read the column.
       Set pobjOrderCol = gcoTablePrivileges.FindTableID(rsTemp!TableID)
       Set objColumnPrivileges = GetColumnPrivileges(pobjOrderCol.TableName)
-      fColumnOK = objColumnPrivileges.item(rsTemp!ColumnName).AllowSelect
+      fColumnOK = objColumnPrivileges.Item(rsTemp!ColumnName).AllowSelect
       Set objColumnPrivileges = Nothing
       
       If fColumnOK Then
@@ -1687,13 +1687,13 @@ Private Function DoChildOrderString(rsTemp As Recordset, ByRef psJoinCode As Str
               (objTableView.AllowSelect) Then
 
               sSource = objTableView.ViewName
-              sRealSource = gcoTablePrivileges.item(sSource).RealSource
+              sRealSource = gcoTablePrivileges.Item(sSource).RealSource
 
               ' Get the column permission for the view.
               Set objColumnPrivileges = GetColumnPrivileges(sSource)
 
               If objColumnPrivileges.IsValid(rsTemp!ColumnName) Then
-                If objColumnPrivileges.item(rsTemp!ColumnName).AllowSelect Then
+                If objColumnPrivileges.Item(rsTemp!ColumnName).AllowSelect Then
                   ' Add the view info to an array to be put into the column list or order code below.
                   iNextIndex = UBound(asViews) + 1
                   ReDim Preserve asViews(iNextIndex)
@@ -2730,6 +2730,12 @@ Private Function ExportData_SQLTable() As Boolean
   
   bOK = True
   sInsertString = ""
+
+  If Not CheckLinkedServerIsValid(mstrLinkedServer, mstrLinkedCatalog, mstrLinkedTable) Then
+    mstrErrorString = "Error establishing connection to the linked server." & vbCrLf
+    ExportData_SQLTable = False
+    Exit Function
+  End If
 
   sSQL = "SELECT t.Column_Name" & _
     " FROM [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].INFORMATION_SCHEMA.COLUMNS t" & _
