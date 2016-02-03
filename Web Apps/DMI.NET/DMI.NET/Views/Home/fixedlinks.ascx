@@ -581,7 +581,7 @@
 							</div>
 							<div id="mnutoolTalentRecord" class="button">
 								<a href="#" rel="table" title="Talent Reports">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CalendarReports64HOVER.png") %>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/ProgressBar64HOVER.png")%>" alt="" />
 										<i class="icon-TalentReportsRecord"></i>
 									<h6>Talent<br />
 										Reports</h6>

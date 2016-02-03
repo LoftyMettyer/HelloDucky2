@@ -1440,6 +1440,9 @@
     <Content Include="Scripts\officebar\winkit\Packet_Picklist64DIS.png" />
     <Content Include="Scripts\officebar\winkit\Packet_Picklist64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\Packet_Picklist64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\ProgressBar64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\ProgressBar64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\ProgressBar64NORM.png" />
     <Content Include="Scripts\officebar\winkit\registry64DIS.png" />
     <Content Include="Scripts\officebar\winkit\registry64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\registry64NORM.png" />
