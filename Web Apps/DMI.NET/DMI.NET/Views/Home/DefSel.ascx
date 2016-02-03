@@ -596,7 +596,7 @@
                               ElseIf iDefSelType = UtilityType.utlMatchReport Then
                                 Response.Write("Match Reports")
                               ElseIf iDefSelType = UtilityType.TalentReport Then
-                                Response.Write("Talent Management Reports")
+                            		Response.Write("Talent Reports")
                                 End If
                             %>
                         </span>
