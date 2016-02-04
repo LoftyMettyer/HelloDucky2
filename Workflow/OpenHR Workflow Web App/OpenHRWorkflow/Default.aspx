@@ -1,5 +1,4 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" Inherits="OpenHRWorkflow.Default" EnableSessionState="True" Codebehind="Default.aspx.vb" %>
-<%@ Import Namespace="System.Security.Policy" %>
 <%@ Import Namespace="OpenHRWorkflow" %> 
 
 <%@ Register Assembly="ScriptReferenceProfiler" Namespace="ScriptReferenceProfiler" TagPrefix="cc1" %>
@@ -8,16 +7,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head runat="server">
 		<title></title>
-		<meta name="format-detection" content="telephone=no"/>   
-		<%--<link href="/images/logo.ico" rel="shortcut icon"/>--%>
-        
-    <link href="<%=VirtualPathUtility.ToAbsolute("~/Images/logo.ico")%>" rel="shortcut icon"/>
-		<link href="<%=VirtualPathUtility.ToAbsolute("~/Content/default.css")%>" rel="stylesheet" type="text/css" />
-		<link href="<%=VirtualPathUtility.ToAbsolute("~/Content/themes/base/jquery-ui-1.8.21.custom.css")%>" rel="stylesheet" type="text/css" />	  
-		<script src="<%=VirtualPathUtility.ToAbsolute("/Scripts/jquery-1.7.2.min.js")%>" type="text/javascript"> </script>
-		<script src="<%=VirtualPathUtility.ToAbsolute("/Scripts/jquery-ui-1.8.21.custom.min.js")%>" type="text/javascript"> </script>   
+		<meta name="format-detection" content="telephone=no"/>
+    
+		<link rel="shortcut icon" href="images/logo.ico"/>
+		<link href="Content/default.css" rel="stylesheet" type="text/css" />
+		<link href="Content/themes/base/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css" />
+		  
+		<script src="Scripts/jquery-1.7.2.min.js" type="text/javascript"> </script>
+		<script src="Scripts/jquery-ui-1.8.21.custom.min.js" type="text/javascript"> </script>
 	</head>
-
 	<body id="bdyMain" style="overflow: auto; background-color: <%=App.Config.ColourThemeHex()%>;">
 
 		<form runat="server" id="frmMain" onsubmit="return submitForm();" autocomplete="off">
