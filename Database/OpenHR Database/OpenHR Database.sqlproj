@@ -659,6 +659,7 @@
     <Build Include="Stored Procedures\Web\spASRIntSaveTalentReport.sql" />
     <Build Include="Stored Procedures\Web\spASRIntValidateTalentReport.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetTalentReportDefinition.sql" />
+    <Build Include="Stored Procedures\System Manager\spadmin_optimiserecordsave.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
