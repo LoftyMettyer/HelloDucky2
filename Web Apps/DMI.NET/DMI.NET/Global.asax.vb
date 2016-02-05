@@ -4,6 +4,7 @@ Imports DMI.NET.App_Start
 Imports System.Drawing
 Imports System.IO
 Imports System.Web.Helpers
+Imports System.Web.Services.Description
 Imports DMI.NET.Code.Hubs
 
 Public Class MvcApplication
@@ -71,9 +72,18 @@ Public Class MvcApplication
 
 		' get list of available themes
 		Dim arrThemes as new List(Of String)
-			For Each dir As String In Directory.GetDirectories(Server.MapPath("~/Content/themes/"))
-				arrThemes.Add(dir.Remove(0,Server.MapPath("~/Content/themes/").Length))
-    	Next
+		Dim excludeTheme As Boolean
+		Dim currentTheme As String
+
+		For Each dir As String In Directory.GetDirectories(Server.MapPath("~/Content/themes/"))
+			currentTheme = dir.Remove(0, Server.MapPath("~/Content/themes/").Length)
+			excludeTheme = currentTheme.ToLower() = "jmetro" Or currentTheme.ToLower() = "jqueryui"
+
+			If Not excludeTheme Then
+				arrThemes.Add(currentTheme)
+			End If
+		Next
+
 		Session("ui-dynamic-themes") = arrThemes
 
 		' get the TILES theme out of web config.
