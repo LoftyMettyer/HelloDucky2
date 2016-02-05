@@ -104,7 +104,12 @@
 		
 		var ReportTitleFromTitleBar = $(".popup").dialog('option', 'title');
 		var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
-		
+
+		newWin.document.write('<lin');
+		newWin.document.write('k href="');
+		newWin.document.write('<%: Url.LatestContent("~/Content/BulletGraph.css")%>');
+	  newWin.document.write('" rel="stylesheet" type="text/css" />');	
+
 		newWin.document.write('<sty');
 		newWin.document.write('le>.ui-jqgrid-bdiv {height:auto!important;}');
 		newWin.document.write('body {font-family:verdana;}');
@@ -210,7 +215,7 @@
 		<br/>
 		<div id="divReportButtons" style="margin: 0; visibility: hidden; padding-top: 0; float: right">
 			<%If Session("SSIMode") = True Then%>
-				<%If Model.UtilType = UtilityType.utlCustomReport Then%> 
+				<%If Model.UtilType = UtilityType.utlCustomReport Or Model.UtilType = UtilityType.TalentReport Then%> 
 					<input class="btn minwidth100" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
 				<%End If%>
 				<input class="btn minwidth100" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
@@ -288,7 +293,7 @@
 			<%End If%>
 
 			var newButtons = [
-				<%If Model.UtilType = UtilityType.utlCustomReport Then%> 
+				<%If Model.UtilType = UtilityType.utlCustomReport Or Model.UtilType = UtilityType.TalentReport Then%> 
 				{
 					text: "<%=sPrintButtonLabel%>",
 					click: function() { outputOptionsPrintClick(); },

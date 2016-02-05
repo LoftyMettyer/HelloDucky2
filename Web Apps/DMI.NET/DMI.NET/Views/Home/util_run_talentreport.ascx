@@ -1,9 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="DMI.NET.Models" %>
 <%@ Import Namespace="DMI.NET.Repository" %>
 
-<script src="<%:Url.LatestContent("~/Scripts/jquery/jquery.sparkline.min.js") %>"></script>
+<link href="<%: Url.LatestContent("~/Content/BulletGraph.css")%>" rel="stylesheet" type="text/css" />
 
 <%
   dim repository As New ReportRepository
@@ -11,7 +10,7 @@
 %>
 
 <div id="reportworkframe" data-framesource="util_run_talentreport" style="display: inline-block; width:100%; height: 100%;">
-	<table id="gridReportData"></table>
+   <table id="gridReportData"></table>
 </div>
 
 <div id="outputoptions" data-framesource="util_run_outputoptions" style="display: none;">
@@ -43,8 +42,60 @@
 </form>
 
 
-
 <script>
+  
+  function getChartLine(competency, minScore, prefScore, actualScore) {
+
+    var chartTitleText = "Minimum Score: " + minScore +
+      "\nPreferred Score: " + prefScore +
+      "\nActual Score: " + actualScore;
+
+    return '<div class="form-group"> \
+    <div class="col-sm-10"> \
+      <div class="bullet-graph blue"> \
+        <div class="graph"> \
+          <div title="' + chartTitleText + '" class="ui-accordion-header ui-state-default ui-accordion-header-collapsed region-1" style="width: ' + minScore + '%;"></div> \
+          <div title="' + chartTitleText + '" class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active region-2" style="width: ' + (prefScore - minScore) + '%;"></div> \
+          <div title="' + chartTitleText + '" class="region-3" style="width: ' + (100 - Math.max(prefScore, minScore)) + '%;"></div> \
+          <div title="' + chartTitleText + '" class="ui-widget-header measure" style="width: ' + actualScore + '%;"></div> \
+          <div title="Preferred Score: ' + minScore + '" class="ui-state-error target-1" style="width: ' + minScore + '%;"></div> \
+                <div title="Preferred Score: ' + prefScore + '" class="ui-state-error target-1" style="width: ' + prefScore + '%;"></div> \
+        </div> \
+      </div> \
+    </div> \
+  </div>';
+
+  }
+
+  function SnapColumnsToGrid() {
+
+    var colModel = $("#gridReportData").jqGrid('getGridParam', 'colModel');
+    var colCount = colModel.length;
+    var totalWidth = $("#reportworkframe").width();
+    var colWidth = 0;
+    var i, nCol;
+
+    colWidth = ((totalWidth) * 0.35);
+    var matchWidth = colWidth * 0.2;
+    var talentWidth = Math.max(colWidth * 0.70, 420);
+
+
+    colWidth = (totalWidth - matchWidth - talentWidth) / (colCount - 5);
+    for (i = 2, nCol = colCount - 3; i < nCol; i++) {
+      $("#gridReportData").jqGrid('setColWidth', i, colWidth - 5, true);
+    }
+
+    $("#gridReportData").jqGrid('setColWidth', 'Match Score', matchWidth, false);
+    $("#gridReportData").jqGrid('setColWidth', 'Talent Chart', talentWidth - 40, true);
+
+    var gridHeight = $('#reportworkframe').height();
+    var gridWidth = $('#reportworkframe').width();
+    $("#gridReportData").jqGrid('setGridHeight', gridHeight);
+    $("#gridReportData").jqGrid('setGridWidth', gridWidth);
+
+  }
+
+
   var grid = $("#gridReportData"),
     getColumnIndexByName = function (columnName) {
       var cm = grid.jqGrid('getGridParam', 'colModel');
@@ -59,7 +110,6 @@
       setTimeout(function () {
 
         var index = getColumnIndexByName('Talent Chart');
-
         $('#gridReportData').find('tr.jqgrow td:nth-child(' + (index + 1) + ')').each(function () {
           var ar;
           try {
@@ -69,23 +119,12 @@
               $(talentchartCellObject).html("<table width='100%'></table>");
 
               $.each(ar, function (index, obj) {
-                var target = obj.PrefScore,
-                  performance = obj.ActualScore,
-                  range1 = obj.MaxScore,
-                  range2 = obj.MaxScore,
-                  range3 = obj.MinScore;
-                var graphData = [target, performance, range1, range2, range3];
 
-                var cell1Css = "'width:80px;white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: small;'";
-                var chartTitleText = "Minimum Score: " + obj.MinScore +
-                  "\nPreferred Score: " + obj.PrefScore +
-                  "\nActual Score: " + obj.ActualScore;
+                var cell1Css = "'width:160px;white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: small;'";
+                var chartLine = getChartLine(obj.Competency, obj.MinScore, obj.PrefScore, obj.ActualScore);
 
-                $(talentchartCellObject).find("table").append("<tr ><td style='width:80px;padding:2px;border: 0;'><div style=" + cell1Css + ">" + obj.Competency + "</div></td>" +
-                  "<td style='width:150px;border:0;' title='" + chartTitleText + "' class='graph_" + index + "'></td></tr>");
-
-                //Create the graph and add it to the 2nd cell.
-                $(talentchartCellObject).find(".graph_" + index).sparkline(graphData, { type: 'bullet', targetColor: 'red', width: '150px' });
+                $(talentchartCellObject).find("table").append("<tr><td style='width:80px;border: 0;'><div style=" + cell1Css + ">" + obj.Competency + "</div></td>" +
+                  "<td style='width:150px;border:0;'>" + chartLine + "</td></tr>");
               });
 
             }
@@ -97,8 +136,9 @@
         $(".ui-dialog-buttonpane #cmdClose").show();
       } else {
         $("#divReportButtons #cmdClose").hide();
-        setTimeout(resizeGrid, 100);
       }
+
+      SnapColumnsToGrid();
 
     };
 
@@ -106,10 +146,11 @@
   if (menu_isSSIMode()) {
     gridHeight = $('#reportworkframe').height() - 100;
   } else {
-    gridHeight = 'auto';
+    gridHeight = gridHeight = $('#reportworkframe').height();
   }
 
-
+  gridWidth = $('#reportworkframe').width();
+   
   $.ajax({
     cache: false,
     url: '<%:Url.Action("getTalentReportData", "Home")%>',
@@ -135,10 +176,13 @@
         rowNum: 100,
         viewrecords: true,
         loadComplete: gridLoaded,
-        autowidth: true,
-        height: gridHeight
+        height: gridHeight,
+        width: gridWidth,
+        shrinkToFit: false,
+        autoWidth: false
       });    
     }
   });
+  
 
 </script>

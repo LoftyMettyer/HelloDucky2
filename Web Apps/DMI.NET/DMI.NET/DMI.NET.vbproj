@@ -381,6 +381,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\BulletGraph.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\SSI80v194934\style.css" />
@@ -1350,6 +1351,7 @@
     <Content Include="Scripts\jquery.gridster.with-extras.js" />
     <Content Include="Scripts\jquery.gridster.with-extras.min.js" />
     <Content Include="Scripts\jquery.jqGrid.min.js" />
+    <Content Include="Scripts\jquery.jqGrid.setColWidth.js" />
     <Content Include="Scripts\jquery.maskedinput.js" />
     <Content Include="Scripts\jquery.maskedinput.min.js" />
     <Content Include="Scripts\jquery.mousewheel.js" />

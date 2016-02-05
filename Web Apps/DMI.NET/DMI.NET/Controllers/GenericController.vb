@@ -68,7 +68,7 @@ Namespace Controllers
 			If rstLookup Is Nothing Or rstLookup.Rows.Count = 0 Then
 				Return "{""total"":1,""page"":1,""records"":0,""rows"":"""",""colmodel"":""""}"
 			Else
-				Dim colModel As List(Of Object) = JqGridColModel.CreateColModel(rstLookup, sThousandColumns, sBlankIfZeroColumns)
+				Dim colModel As List(Of Object) = JqGridColModel.CreateColModel(rstLookup, sThousandColumns, sBlankIfZeroColumns, False)
 
 				'We need to make some adjustements to the data, such as setting values on cells according to the "BlankIfZero" flag
 				Dim arrBlankIfZeroColumns = sBlankIfZeroColumns.ToCharArray()
@@ -144,7 +144,7 @@ Namespace Controllers
 			If rstLookup Is Nothing Or rstLookup.Rows.Count = 0 Then
 				Return "{""total"":1,""page"":1,""records"":0,""rows"":"""",""colmodel"":""""}"
 			Else
-				Dim colModel As List(Of Object) = JqGridColModel.CreateColModel(rstLookup, sThousandColumns, sBlankIfZeroColumns)
+				Dim colModel As List(Of Object) = JqGridColModel.CreateColModel(rstLookup, sThousandColumns, sBlankIfZeroColumns, False)
 
 				'We need to make some adjustements to the data, such as setting values on cells according to the "BlankIfZero" flag
 				Dim arrBlankIfZeroColumns = sBlankIfZeroColumns.ToCharArray()

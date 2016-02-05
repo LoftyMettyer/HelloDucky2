@@ -9,7 +9,7 @@ Namespace Classes
 		'							datatype: 'local',
 		'							data: jsondata.coldata
 
-		Public Shared Function CreateColModel(dataTable As DataTable, Optional thousandSeparators As String = "", Optional blankIfZeroColumns As String = "") As List(Of Object)
+		Public Shared Function CreateColModel(dataTable As DataTable, thousandSeparators As String, blankIfZeroColumns As String, ResizeColumns As Boolean) As List(Of Object)
 
 			Dim arrCellProps(dataTable.Columns.Count)
 
@@ -60,7 +60,9 @@ Namespace Classes
 							Key .label = col.ColumnName.Replace("_", " "),
 							Key .formatter = "date",
 							Key .sorttype = "date",
-							Key .formatoptions = New formatoptions() With {.srcformat = "ISO8601Long", .newformat = localeDateFormat}
+							Key .formatoptions = New formatoptions() With {.srcformat = "ISO8601Long", .newformat = localeDateFormat},
+              Key .width = 150,
+              Key .resizable = true
 						})
 
 					Case GetType(Boolean)
@@ -71,7 +73,9 @@ Namespace Classes
 							Key .hidden = col.ColumnName = "ID" Or String.Concat(col.ColumnName, "xxx").Substring(0, 3) = "ID_",
 							Key .label = col.ColumnName.Replace("_", " "),
 							Key .formatter = "checkbox",
-							Key .align = "center"
+							Key .align = "center",
+              Key .width = 150,
+              Key .resizable = true
 						})
 
 					Case GetType(Int32)
@@ -90,6 +94,8 @@ Namespace Classes
 							Key .formatter = "integer",
 							Key .align = "right",
 							Key .sorttype = "int",
+              Key .width = 150,
+              Key .resizable = true,
 							Key .formatoptions = New formatoptions() With {
 								.thousandsSeparator = sThousandSeparator,
 								.decimalSeparator = "",
@@ -129,6 +135,9 @@ Namespace Classes
 							Key .formatter = "number",
 							Key .align = "right",
 							Key .sorttype = "number",
+              Key .resizeable = true,
+              Key .width = 150,
+              Key .resizable = true,
 							Key .formatoptions = New formatoptions() With {
 								.thousandsSeparator = sThousandSeparator,
 								.decimalSeparator = LocaleDecimalSeparator(),
@@ -144,7 +153,9 @@ Namespace Classes
 							Key .sortable = True,
 							Key .hidden = col.ColumnName = "ID" Or String.Concat(col.ColumnName, "xxx").Substring(0, 3) = "ID_",
 							Key .label = col.ColumnName.Replace("_", " "),
-							Key .align = "left"
+							Key .align = "left",
+              Key .width = 150,
+              Key .resizable = true
 						})
 
 

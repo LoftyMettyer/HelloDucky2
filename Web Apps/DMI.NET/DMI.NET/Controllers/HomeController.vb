@@ -2624,7 +2624,7 @@ Namespace Controllers
 				  rows.Add(row)
 			  Next
 
-  		  Dim colModel As List(Of Object) = JqGridColModel.CreateColModel(matchReport.ReportDataTable, "", "")
+  		  Dim colModel As List(Of Object) = JqGridColModel.CreateColModel(matchReport.ReportDataTable, "", "", True)
 
 			  Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = rows, .colModel = colModel}
 			  Return Json(results, JsonRequestBehavior.AllowGet)

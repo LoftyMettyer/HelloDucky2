@@ -26,6 +26,7 @@ Namespace App_Start
 				"~/Scripts/jquery-{version}.js",
 				"~/Scripts/jquery-ui-{version}.js",
 				"~/Scripts/jquery.jqGrid.js",
+				"~/Scripts/jquery.jqGrid.setColWidth.js",
 				"~/Scripts/jquery/grid.locale-en.js",
 				"~/Scripts/jquery/datepicker-locale.js",
 				"~/Scripts/jquery/jsTree/jquery.jstree.js",

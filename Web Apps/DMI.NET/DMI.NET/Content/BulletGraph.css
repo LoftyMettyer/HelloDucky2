@@ -1,0 +1,171 @@
+﻿/* Bulletgraph css */
+
+div.bullet-graph {
+  position: relative;
+  width: 200px;
+  top: -5px;
+}
+
+div.bullet-graph div.graph {
+  position: relative;
+  width: 100%;
+  top: 0.4em;
+  height: 2.0em;
+}
+
+div.bullet-graph div.graph div[class^='region-'],
+div.bullet-graph div.graph div[class*=' region-'] {
+  float: left;
+  height: 100%;
+  background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.0));
+  background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.0));
+  background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.0));
+  background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.0));
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.0));
+  border-right-style: none;
+  border-left-style: none;
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+div.bullet-graph.blue div.region-2 {
+  float: left;
+  height: 100%;
+}
+
+div.bullet-graph.blue div.region-4 {
+  background-color: #84ADD5;
+}
+
+div.bullet-graph.blue.inverse div.region-1 {
+  background-color: #1A316A;
+}
+
+div.bullet-graph.blue.inverse div.region-2 {
+  background-color: #2D519B;
+}
+
+div.bullet-graph.blue.inverse div.region-3 {
+  background-color: #4670B4;
+}
+
+div.bullet-graph.blue.inverse div.region-4 {
+  background-color: #6391C5;
+}
+
+div.bullet-graph div.graph div[class^='region-'] div.region-label,
+div.bullet-graph div.graph div[class*=' region-'] div.region-label {
+  color: #575757;
+  background-image: none;
+  position: relative;
+  top: -1.2em;
+  left: 0;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.bullet-graph div.measure {
+  position: absolute;
+  height: 45%;
+  top: 25%;
+  -webkit-border-radius: 0 0.3em 0.3em 0;
+  -moz-border-radius: 0 0.3em 0.3em 0;
+  border-radius: 0 0.3em 0.3em 0;
+  -webkit-box-shadow: 0.2em 0.2em 0.4em rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0.2em 0.2em 0.4em rgba(0, 0, 0, 0.3);
+  box-shadow: 0.2em 0.2em 0.4em rgba(0, 0, 0, 0.3);
+}
+
+
+div.bullet-graph div.graph div.measure div.measure-label {
+  color: #000;
+  position: relative;
+  left: 100%;
+  padding-left: 0.3em;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+  background-image: none;
+}
+
+div.bullet-graph.inverse div.graph div.measure div.measure-label {
+  color: #FFF;
+}
+
+div.bullet-graph div.target-1 {
+  position: absolute;
+  left: -1px;
+  /* shift left since width > 1px */
+  height: 100%;
+  border: none;
+  border-right: 3px solid;
+  background: none;
+}
+
+div.bullet-graph div.target-2 {
+  position: absolute;
+  left: -1px;
+  /* shift left since width > 1px */
+  height: 100%;
+  border-right: 3px #00FF00 solid;
+}
+
+div.bullet-graph div.graph div.target div.target-label {
+  color: #575757;
+  position: absolute;
+  top: -1.2em;
+  right: 0;
+  text-align: right;
+  white-space: nowrap;
+}
+
+div.bullet-graph div.graph div.target div.target-label div.target-label-text {
+  position: relative;
+  right: -50%;
+}
+
+div.bullet-graph div.graph div.target div.target-label-left {
+  color: #000;
+  position: relative;
+  height: 100%;
+  top: 0.6em;
+  left: 100%;
+  padding-left: 0.4em;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+  background-image: none;
+}
+
+div.bullet-graph.inverse div.graph div.target div.target-label-left {
+  color: #FFF;
+}
+
+div.bullet-graph div.scale {
+  position: relative;
+  top: 1.2em;
+  width: 100%;
+  height: 0.5em;
+}
+
+div.bullet-graph div.scale div.tick {
+  position: absolute;
+  height: 100%;
+  width: 1px;
+  background-color: #8f8f8f;
+}
+
+div.bullet-graph div.scale div.tick div.tick-label {
+  color: #575757;
+  font-size: 0.9em;
+  position: absolute;
+  bottom: -1.4em;
+  white-space: nowrap;
+}
+
+div.bullet-graph div.scale div.tick div.tick-label div.tick-label-text {
+  position: relative;
+  left: -40%;
+}
