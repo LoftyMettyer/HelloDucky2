@@ -196,8 +196,8 @@
 				autoOpen: false,
 				modal: true,
 				width: 350,
-				height: 300,
-			    resizable: false
+				height: 'auto',
+				resizable: false
 			});
 		
 			$("#divSignalRMessage").dialog({

@@ -117,9 +117,9 @@
 </style>
 <form method="POST" action="importTheme_Submit" name="themeroller" id="themeroller" enctype="multipart/form-data">
 	<div class="application">
-		<div id="themeeditoraccordion" style="margin: 30px;">
+		<div id="themeeditoraccordion">
 			<p>Choose a predefined theme:</p>
-			<span>Layout:<select id="cmbLayout" style="width: 150px; margin-left: 40px;" onchange="toggleCombos()"><option></option>
+			<span>Layout:<select id="cmbLayout" style="width: 220px; margin-left: 40px;" onchange="toggleCombos()"><option></option>
 				<option value="wireframe">wireframe</option>
 				<option value="winkit">winkit</option>
 				<option value="tiles">tiles</option>
@@ -127,7 +127,7 @@
 			
 			<br /><br />
 
-			<span>Theme:<select id="cmbTheme" style="width: 150px; margin-left: 40px;" onchange="toggleCombos()"><option></option>
+			<span>Theme:<select id="cmbTheme" style="width: 220px; margin-left: 40px;" onchange="toggleCombos()"><option></option>
 				<%
 					for each strTheme in Session("ui-dynamic-themes")
 						Response.Write("<OPTION VALUE = " & """" & strTheme & """" & ">" & strTheme & "</OPTION>")
