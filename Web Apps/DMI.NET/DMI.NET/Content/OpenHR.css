@@ -1572,3 +1572,7 @@ div#sessionWarning {
   -ms-user-select: none;
   user-select: none;
 }
+
+.dropdownDisable{
+     background-color: #EBEBE4;
+}

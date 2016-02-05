@@ -718,43 +718,45 @@
 
                                         <div id="divTable" style="display: inline-block;" class="invisible">
                                             <label>Table :</label>																					
-																					<%	
-																						Response.Write("<select id=selectTable name=selectTable class=combo style=height: 22px; width: 200px ")
+																					<%
+																						
+																						Response.Write("<select id=selectTable name=selectTable style='height:22px;' width:'200px;' class='combo ")
 																						If (Not notFromRecordEditscreen) Then
-																							Response.Write(" disabled=disabled >")
+																							Response.Write("dropdownDisable' disabled=disabled >")
+																					        
 																						Else
-																							Response.Write(" >")
+																							Response.Write("' >")
 																						End If
 																						
-                                                    Try
+																						Try
 
-                                                        If iDefSelType = UtilityType.utlCalculation Then
-                                                          Response.Write("<option value=0>None</option>")
-                                                        End If
+																							If iDefSelType = UtilityType.utlCalculation Then
+																								Response.Write("<option value=0>None</option>")
+																							End If
 
-                                                        For Each objTable In objSession.Tables.OrderBy(Function(t) t.Name) 'Order by table name
+																							For Each objTable In objSession.Tables.OrderBy(Function(t) t.Name) 'Order by table name
 																												
-                                                            Response.Write("						<option value=" & objTable.ID)
-                                                            If SelectedTableID Is Nothing Or SelectedTableID = "" Then
-                                                                If objTable.ID = iBaseTableID Then
-                                                                    Response.Write(" SELECTED")
-                                                                End If
-                                                            Else
-                                                                If objTable.ID = CLng(SelectedTableID) Then
-                                                                    Response.Write(" SELECTED")
-                                                                End If
-                                                            End If
+																								Response.Write("						<option value=" & objTable.ID)
+																								If SelectedTableID Is Nothing Or SelectedTableID = "" Then
+																									If objTable.ID = iBaseTableID Then
+																										Response.Write(" SELECTED")
+																									End If
+																								Else
+																									If objTable.ID = CLng(SelectedTableID) Then
+																										Response.Write(" SELECTED")
+																									End If
+																								End If
 
-                                                            Response.Write(">" & Replace(objTable.Name, "_", " ") & "</option>" & vbCrLf)
+																								Response.Write(">" & Replace(objTable.Name, "_", " ") & "</option>" & vbCrLf)
 
-                                                        Next
+																							Next
 				
-                                                    Catch ex As Exception
-                                                        sErrorDescription = "The table records could not be retrieved." & vbCrLf & ex.Message
+																						Catch ex As Exception
+																							sErrorDescription = "The table records could not be retrieved." & vbCrLf & ex.Message
 
 																						End Try
 																						Response.Write("  </select>")
-                                            End If
+																					End If
                                             %>
                                         </div>
                                         <br />
