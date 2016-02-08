@@ -1,9 +1,9 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCHRT20.OCX"
+Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "mschrt20.ocx"
 Begin VB.Form frmSSIntranetLink 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Link"
@@ -2733,21 +2733,25 @@ Private Function ValidateLink() As Boolean
   
   fValid = True
   
-  ' Check that a prompt has been entered (if required)
-  'JPD 20070424 Fault 12168
-  'If (miLinkType = SSINTLINK_BUTTON) And _
-  '  (Len(txtPrompt.Text) = 0) Then
-  '  fValid = False
-  '  MsgBox "No prompt has been entered.", vbOKOnly + vbExclamation, Application.Name
-  '  txtPrompt.SetFocus
-  'End If
-  
   ' Check that text has been entered
   If fValid Then
     If (Len(txtText.Text) = 0) And Not optLink(SSINTLINKPWFSTEPS).value And Not optLink(SSINTLINKSEPARATOR).value And Not optLink(SSINTLINKTODAYS_EVENTS).value Then
       fValid = False
       MsgBox "No text has been entered.", vbOKOnly + vbExclamation, Application.Name
       txtText.SetFocus
+    End If
+  End If
+  
+  ' Check that text Text cannot contain apostrophes for workflows
+  If fValid Then
+    If cboHRProUtilityType.ListIndex >= 0 Then
+      If cboHRProUtilityType.ItemData(cboHRProUtilityType.ListIndex) = utlWorkflow Then
+        If InStr(txtText.Text, "'") > 0 Then
+          fValid = False
+          MsgBox "This Link Text cannot contain apostrophes.", vbOKOnly + vbExclamation, Application.Name
+          txtText.SetFocus
+        End If
+      End If
     End If
   End If
   
@@ -4110,9 +4114,15 @@ End Sub
 
 Private Sub txtText_Change()
   If Not mfLoading Then
-    If InStr(txtText.Text, "'") > 0 Then
-      MsgBox "This Link Text cannot contain apostrophes.", vbOKOnly + vbExclamation, Application.Name
-      txtText.SetFocus
+  
+    ' Check that text Text cannot contain apostrophes for workflows only
+    If cboHRProUtilityType.ListIndex >= 0 Then
+      If cboHRProUtilityType.ItemData(cboHRProUtilityType.ListIndex) = utlWorkflow Then
+        If InStr(txtText.Text, "'") > 0 Then
+          MsgBox "This Link Text cannot contain apostrophes.", vbOKOnly + vbExclamation, Application.Name
+          txtText.SetFocus
+        End If
+      End If
     End If
 
     mfChanged = True
