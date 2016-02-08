@@ -1952,12 +1952,6 @@ function customMenu(node) {
 					action: function (obj) {
 						abExprMenu_Click('ID_ShrinkAll');
 					}
-				},
-				"colourise": {
-					"label": "Colour Nodes",
-					action: function (obj) {
-						abExprMenu_Click('ID_Colour');
-					}
 				}
 			}
 		},
