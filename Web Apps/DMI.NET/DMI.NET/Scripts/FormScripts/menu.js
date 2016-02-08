@@ -2710,7 +2710,7 @@ function menu_loadPage(psPage) {
 	frmWorkArea.txtGotoRecordID.value = 0;
 	
 	// Sets multi select mode off when loading record edit (when set to First record from user configuration) window from clicking tree menu item.
-	SetMultiSelectionModeOff();
+	SetMultiSelectionModeOn();
 	frmWorkArea.txtSelectedRecordsInFindGrid.value = "";
 	
 	frmWorkArea.txtGotoPageID.value = 0;
@@ -2883,7 +2883,7 @@ function menu_loadPage(psPage) {
 	frmWorkArea.txtGotoCurrentRecCount.value = 0;
 
 	// Sets multi select mode off when loading find window from clicking tree menu item.
-	SetMultiSelectionModeOff();
+	SetMultiSelectionModeOn();
 	frmWorkArea.txtSelectedRecordsInFindGrid.value = "";
 
 	if (psToolName.substr(0, 3) == "HT_") {
@@ -5178,7 +5178,7 @@ function EnableMultiSelectRibbonButton(enableMultiSelectButton) {
 
 	// Hide multi select button if ssi mode is enabledgroup for SSI...
 	if (menu_isSSIMode() == true) {
-		SetMultiSelectionModeOff();
+		SetMultiSelectionModeOn();
 		menu_setVisibletoolbarGroupById("mnuSectionReportsAndUtility", false);
 		$("#mnutoolPositionRecordFind span.selectedRecordsCount").hide();
 	}
@@ -5265,14 +5265,14 @@ function RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGri
 // Returns true if multi select is on, False otherwise
 function IsMultiSelectionModeOn() {
 	var isMultiSelectOn = false;
-	if ($('#mnutoolMultiSelectFind h6').text().indexOf('On') > -1) { isMultiSelectOn = true; }
+	if ($('#mnutoolMultiSelectFind h6').text().indexOf('Off') > -1) { isMultiSelectOn = true; }
 	return isMultiSelectOn;
 }
 
 // Sets multi select mode off and multi select tooltip text
-function SetMultiSelectionModeOff() {
-	$('#mnutoolMultiSelectFind h6').html("Multi-Select <br/>Off");
-	$('#mnutoolMultiSelectFind a').prop("title", "Multi-Select Off");
+function SetMultiSelectionModeOn() {
+	$('#mnutoolMultiSelectFind h6').html("Multi-Select <br/>On");
+	$('#mnutoolMultiSelectFind a').prop("title", "Multi-Select On");
 }
 
 // Load report or utility screeen from the find window
