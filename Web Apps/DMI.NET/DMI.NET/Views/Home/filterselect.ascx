@@ -1217,7 +1217,7 @@
 										</td>
 										<td style="width: 10px; height: 10px"></td>
 										<td style="width: 10px; height: 10px">
-											<input id="cmdRemoveAll" name="cmdRemoveAll" type="button" value="Remove All" style="width: 100px; margin-top: 10px;" class="btn"
+											<input id="cmdRemoveAll" name="cmdRemoveAll" type="button" value="Remove All" style="margin-top: 10px;" class="btn"
 												onclick="FilterSelect_removeAll()" />
 										</td>
 									</tr>
@@ -1337,7 +1337,7 @@
 										</td>
 										<td></td>
 										<td style="width: 175px; text-align: right">
-											<input id="cmdAddToList" name="cmdAddToList" class="btn" type="button" value="Add To List" style="width: 100px"
+											<input id="cmdAddToList" name="cmdAddToList" class="btn" type="button" value="Add To List"
 												onclick="AddToList()" />
 										</td>
 									</tr>
