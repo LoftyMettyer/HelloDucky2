@@ -1659,14 +1659,7 @@ Public Class MatchReportRun
     Try
 
 		  rsMatchReportsData = DB.GetDataTable(mstrSQL)
-			
-		  If rsMatchReportsData.Rows.Count = 0 Then
-			  mstrErrorMessage = "No records meet selection criteria."
-			  mblnNoRecords = True
-			  fOK = False
-			  Return False
-		  End If
-	
+				
       If UtilityType = UtilityType.TalentReport And PreferredColumnID > 0 Then      
         Dim relation =  CType(mcolRelations.Item("T" & Table1ChildTableID), clsMatchRelation)       
         Dim sSQL = String.Format("SELECT MAX([{0}]) FROM {1}", Columns.GetById(PreferredColumnID).Name, relation.Table1RealSource)
@@ -1830,9 +1823,16 @@ Public Class MatchReportRun
 				  Next 
 			  End If
 			
-		  End With			
-			
-		  Return True	
+		  End With
+
+      If ReportDataTable.Rows.Count = 0 Then
+			  mstrErrorMessage = "No records meet selection criteria."
+			  mblnNoRecords = True
+			  fOK = False
+			  Return False
+		  End If
+
+      Return True	
 
       Catch ex As Exception
         Return False
