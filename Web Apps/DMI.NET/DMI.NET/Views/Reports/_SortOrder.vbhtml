@@ -57,7 +57,8 @@
 		    attachGrid();
 
 		    if ($("#txtReportType").val() === '@UtilityType.TalentReport') {
-		        $("#sortOrderContainer legend span").html(' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Report will always be sorted by Match Score (Descending) as the first parameter');
+		    	$("#sortOrderContainer legend span").html('Report will always be sorted by Match Score (Descending) as the first parameter');
+		    	$("#sortOrderContainer legend span").css("padding-left", "7px").css("font-weight", "normal");
 		    }
 
 		})

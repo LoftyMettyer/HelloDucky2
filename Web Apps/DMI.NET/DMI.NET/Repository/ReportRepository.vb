@@ -1197,11 +1197,11 @@ Namespace Repository
 				sOrderString = "0||0||"
 				Dim itemId = objItem.ID
 				For Each objSortItem In objSortColumns.Where(Function(m) m.ColumnID = itemId)
-					sOrderString = String.Format("{0}||{1}||", objSortItem.Sequence, IIf(objSortItem.Order = OrderType.Ascending, "A", "").ToString)
+					sOrderString = String.Format("{0}||{1}||", objSortItem.Sequence, IIf(objSortItem.Order = OrderType.Ascending, "Asc", "Desc").ToString)
 				Next
 
 				sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}**" _
-													, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Size, objItem.Decimals, objItem.IsNumeric, sOrderString, objItem.Heading)
+													, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Size, objItem.Decimals, objItem.IsNumeric, sOrderString, HttpUtility.UrlDecode(objItem.Heading))
 
 				iCount += 1
 			Next

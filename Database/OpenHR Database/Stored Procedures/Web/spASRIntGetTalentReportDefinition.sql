@@ -69,6 +69,7 @@ BEGIN
 		IF UPPER(@sTempHidden) = 'HD'		
 			SET @pfPicklistHidden = 1;
 	END		
+	
 	IF @piFilterID > 0 		
 	BEGIN		
 		SELECT @psFilterName = name, @sTempHidden = access		
@@ -85,8 +86,8 @@ BEGIN
 		WHERE picklistID = @piMatchPicklistID;	
 		IF UPPER(@sTempHidden) = 'HD'
 			SET @pfMatchPicklistHidden = 1;	
+	END			
 
-	END		
 	IF @piMatchFilterID > 0 		
 	BEGIN		
 		SELECT @psMatchFilterName = name, @sTempHidden = access		
@@ -95,6 +96,7 @@ BEGIN
 		IF UPPER(@sTempHidden) = 'HD'
 			SET @pfMatchFilterHidden = 1;
 	END
+
 	-- Get's the category id associated with the mail merge utility. Return 0 if not found
 	SET @piCategoryID = 0;
 	SELECT @piCategoryID = ISNULL(categoryid,0)
@@ -144,19 +146,18 @@ BEGIN
 		0 AS [IsExpression],
 		0 AS [accesshidden],
 		c.tableID,
-		t.tableName + '.' + c.columnName AS [name],
-		c.columnName AS [heading], 
+		t.tableName + '.' + c.columnName AS [name],		
 		c.DataType,
 		r.ColSize AS [Size],
 		r.ColDecs AS [Decimals],
-		'' AS Heading,
+		r.ColHeading AS Heading,
 		0 AS IsAverage,
 		0 AS IsCount,
 		0 AS IsTotal,
 		0 AS IsHidden,
 		0 AS IsGroupWithNext,
 		0 AS IsRepeated,
-		r.SortOrderSeq AS [sequence]
+		r.ColSequence AS [sequence]
 	FROM ASRSysTalentReportDetails r	
 	INNER JOIN ASRSysColumns c ON r.ColExprID = c.columnId		
 	INNER JOIN ASRSysTables t ON c.tableID = t.tableID		

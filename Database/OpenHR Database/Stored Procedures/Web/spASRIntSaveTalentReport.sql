@@ -85,7 +85,7 @@ BEGIN
 			MatchChildColumnID,
 			MatchChildRatingColumnID,
 			MatchAgainstType,
- 			UserName,
+			UserName,
 			OutputFormat,
 			OutputScreen,
 			OutputEmail,
@@ -112,7 +112,7 @@ BEGIN
 			@piMatchChildColumnID,
 			@piMatchChildRatingColumnID,
 			@piMatchAgainstType,
- 			@psUserName,
+			@psUserName,
 			@piOutputFormat,
 			@pfOutputScreen,
 			@pfOutputEmail,
@@ -219,7 +219,7 @@ BEGIN
 		END
 
 		INSERT ASRSysTalentReportDetails (TalentReportID, ColType, ColExprID, ColSequence, SortOrderSeq, SortOrderDirection, ColSize, ColDecs, ColHeading)
-			VALUES (@piID, @sType, @iColExprID, @iSortOrderSequence, @iSortOrderSequence, @sSortOrder, @iSize, @iDP, @sHeading);
+			VALUES (@piID, @sType, @iColExprID, @iSequence, @iSortOrderSequence, @sSortOrder, @iSize, @iDP, @sHeading);
 
 	END
 
