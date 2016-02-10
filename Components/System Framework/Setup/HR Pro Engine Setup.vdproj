@@ -154,61 +154,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6F6C084754D6008EAA53D95B491E2795"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_66537F08CFCF85341F4170C4EC3438B6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_820F288B0C4D6BFB9C91118FD0970F1F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EAC89FD4EC612D17D4E3AF5D1891C43E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_088A569FEF3A4462B744DFEBF5FE6CBE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_8CB056C4A73F99DCF219E2C8A33680A4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_328A9C9F455DCF452D6A8AE739CC59C2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6C7DD6E93C862BA5DC76B201533AFCD1"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6C60E2099EA596EF7DBD4186095D0B67"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BFD642D843E84B1AC923A3FEC0AE5351"
+        "OwnerKey" = "8:_015D8069EA404EE7927FF2B44A6A670D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -220,7 +166,61 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_015D8069EA404EE7927FF2B44A6A670D"
+        "OwnerKey" = "8:_BFD642D843E84B1AC923A3FEC0AE5351"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_6C60E2099EA596EF7DBD4186095D0B67"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_6C7DD6E93C862BA5DC76B201533AFCD1"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_328A9C9F455DCF452D6A8AE739CC59C2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_8CB056C4A73F99DCF219E2C8A33680A4"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_088A569FEF3A4462B744DFEBF5FE6CBE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_EAC89FD4EC612D17D4E3AF5D1891C43E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_820F288B0C4D6BFB9C91118FD0970F1F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_66537F08CFCF85341F4170C4EC3438B6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_6F6C084754D6008EAA53D95B491E2795"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -735,15 +735,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Framework 8.2"
-        "ProductCode" = "8:{6BF75EAD-077E-4AD2-A7AA-77CF6024C739}"
-        "PackageCode" = "8:{A4EEF4B0-E8B9-4748-8293-3DA18F611D14}"
+        "ProductCode" = "8:{ACBA73DA-B87F-4B1D-AD37-F5744B44B406}"
+        "PackageCode" = "8:{35EFE8F9-8ED0-4E75-84E0-8D60F2B02597}"
         "UpgradeCode" = "8:{ABDC503D-A5B2-4289-8F9B-D7E10AB9F830}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:8.2.9"
+        "ProductVersion" = "8:8.2.10"
         "Manufacturer" = "8:Advanced Business Software and Solutions Limited"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
