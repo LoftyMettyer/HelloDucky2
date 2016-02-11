@@ -1,7 +1,8 @@
 CREATE PROCEDURE [dbo].[spASRIntGetUtilityPromptedValues] (
-	@piUtilType 	integer,
-	@piUtilID 		integer,
-	@piRecordID 	integer,
+	@piUtilType 		integer,
+	@piUtilID 			integer,
+	@piUtilTableID	integer = 0,
+	@piRecordID 		integer,
 	@piMultipleRecords integer = 0
 )
 AS
@@ -107,7 +108,8 @@ BEGIN
 	IF @piUtilType = 38
 	BEGIN
 
-		SELECT @iBaseFilter = BaseFilterID, @iBase2Filter = MatchFilterID
+		SELECT @iBaseFilter = CASE WHEN BaseTableID = @piUtilTableID AND @piRecordID > 0 THEN 0 ELSE BaseFilterID END
+			, @iBase2Filter = CASE WHEN MatchTableID = @piUtilTableID AND @piRecordID > 0 THEN 0 ELSE MatchFilterID END
 			FROM [dbo].ASRSysTalentReports
 			WHERE ID = @piUtilID;
 

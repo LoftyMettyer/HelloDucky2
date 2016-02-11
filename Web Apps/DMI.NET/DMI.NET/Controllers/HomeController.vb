@@ -2603,7 +2603,7 @@ Namespace Controllers
 			matchReport.UtilityType = CType(Session("utiltype"), UtilityType)
 			matchReport.SetPromptedValues(prompts)
 			matchReport.MatchReportID = CInt(Session("utilid"))
-			matchReport.RunMatchReport()
+			matchReport.RunMatchReport(Session("utiltableID"), Session("singleRecordID"))
 
       Session("MatchReport") = matchReport
 

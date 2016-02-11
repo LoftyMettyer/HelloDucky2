@@ -154,6 +154,7 @@
 				rstPromptedValue = objDatabaseAccess.GetDataTable("spASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
 						New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = Model.UtilType}, _
 						New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = iPromptUtilID}, _
+						New SqlParameter("piUtilTableID", SqlDbType.Int) With {.Value = CInt(Session("utilTableId"))}, _
 						New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = CInt(Session("singleRecordID"))}, _
 						New SqlParameter("piMultipleRecords", SqlDbType.Int) With {.Value = isMultipleRecordsSelected})
 

@@ -703,6 +703,7 @@
 
 						rstPromptedValue = objDataAccess.GetDataTable("spASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
 									New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = UtilityType.utlFilter}, _
+									New SqlParameter("piUtilTableID", SqlDbType.Int) With {.Value = 0}, _
 									New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CleanNumeric(CLng(sFilterCalcID))}, _
 									New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = 0})
 							
