@@ -4,8 +4,8 @@
 	@piTimestamp 		integer, 
 	@piBasePicklistID	integer, 
 	@piBaseFilterID 	integer,
-	@piMatchPicklistID	integer,		-- not yet implemented
-	@piMatchFilterID 	integer,			-- not yet implemented 
+	@piMatchPicklistID	integer,		
+	@piMatchFilterID 	integer,			
 	@piCategoryID 		integer,
 	@psCalculations 	varchar(MAX), 
 	@psHiddenGroups 	varchar(MAX), 
@@ -108,7 +108,7 @@ BEGIN
 			END
 			
 		END
-	END
+	END	
 
 	IF @piErrorCode = 0
 	BEGIN
@@ -118,13 +118,13 @@ BEGIN
 			SELECT @iCount = COUNT(*) 
 			FROM ASRSysTalentReports
 			WHERE name = @psUtilName
-				AND ID <> @piUtilID AND IsLabel = 0;
+				AND ID <> @piUtilID;
 		END
 		ELSE
 		BEGIN
 			SELECT @iCount = COUNT(*) 
 			FROM ASRSysTalentReports
-			WHERE name = @psUtilName AND IsLabel = 0;
+			WHERE name = @psUtilName;
 		END
 
 		IF @iCount > 0 
@@ -132,7 +132,7 @@ BEGIN
 			SET @psErrorMsg = 'A talent report called ''' + @psUtilName + ''' already exists.';
 			SET @piErrorCode = 1;
 		END
-	END
+	END	
 
 	IF (@piErrorCode = 0) AND (@piBasePicklistID > 0)
 	BEGIN
@@ -143,7 +143,7 @@ BEGIN
 
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The base table picklist has been deleted by another user.';
+			SET @psErrorMsg = 'The role table picklist has been deleted by another user.';
 			SET @piErrorCode = 1;
 		END
 		ELSE
@@ -155,12 +155,39 @@ BEGIN
 
 			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @psErrorMsg = 'The base table picklist has been made hidden by another user.';
+				SET @psErrorMsg = 'The role table picklist has been made hidden by another user.';
 				SET @piErrorCode = 1;
 			END
 		END
 	END
+	
+	IF (@piErrorCode = 0) AND (@piMatchPicklistID > 0)
+	BEGIN
+		/* Check that the Base table picklist exists. */
+		SELECT @iCount = COUNT(*)
+		FROM ASRSysPicklistName 
+		WHERE picklistID = @piMatchPicklistID;
 
+		IF @iCount = 0
+		BEGIN
+			SET @psErrorMsg = 'The person table picklist has been deleted by another user.';
+			SET @piErrorCode = 1;
+		END
+		ELSE
+		BEGIN
+			SELECT @sOwner = userName,
+				@sAccess = access
+			FROM ASRSysPicklistName 
+			WHERE picklistID = @piMatchPicklistID;
+
+			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
+			BEGIN
+				SET @psErrorMsg = 'The person table picklist has been made hidden by another user.';
+				SET @piErrorCode = 1;
+			END
+		END
+	END
+	
 	IF (@piErrorCode = 0) AND (@piBaseFilterID > 0)
 	BEGIN
 		/* Check that the Base table filter exists. */
@@ -170,7 +197,7 @@ BEGIN
 
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The base table filter has been deleted by another user.';
+			SET @psErrorMsg = 'The role table filter has been deleted by another user.';
 			SET @piErrorCode = 1;
 		END
 		ELSE
@@ -182,12 +209,39 @@ BEGIN
 
 			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @psErrorMsg = 'The base table filter has been made hidden by another user.';
+				SET @psErrorMsg = 'The role table filter has been made hidden by another user.';
 				SET @piErrorCode = 1;
 			END
 		END
 	END
 
+	IF (@piErrorCode = 0) AND (@piMatchFilterID > 0)
+	BEGIN
+		/* Check that the Base table filter exists. */
+		SELECT @iCount = COUNT(*)
+		FROM ASRSysExpressions 
+		WHERE exprID = @piMatchFilterID;
+
+		IF @iCount = 0
+		BEGIN
+			SET @psErrorMsg = 'The person table filter has been deleted by another user.';
+			SET @piErrorCode = 1;
+		END
+		ELSE
+		BEGIN
+			SELECT @sOwner = userName,
+				@sAccess = access
+			FROM ASRSysExpressions 
+			WHERE exprID = @piMatchFilterID;
+
+			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
+			BEGIN
+				SET @psErrorMsg = 'The person table filter has been made hidden by another user.';
+				SET @piErrorCode = 1;
+			END
+		END
+	END
+	
 	IF (@piErrorCode = 0) AND (@piCategoryID > 0)
 	BEGIN
 		/* Check that the category exists. */

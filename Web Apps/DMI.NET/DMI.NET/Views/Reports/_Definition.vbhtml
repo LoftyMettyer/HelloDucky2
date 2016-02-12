@@ -558,11 +558,13 @@
 		var columnCount = 0;
 		var eventCount = 0;
 		var sortOrderCount = 0;
+		var baseDropdownlabel = "base";
 		$("#IsBaseTableChange").val("True");
 
 		if ($("#txtReportType").val() === '@UtilityType.TalentReport')
 		{
 			//If columns of previous Role table exist in selectedcolumns grid then only we need to prompt changing message
+			baseDropdownlabel = "role"
 			var previousRoleTableID = $("#OriginalRoleTableID").val();
 			var gridData = $("#SelectedColumns").jqGrid('getRowData');
 			for (j = 0; j < gridData.length; j++) {
@@ -581,7 +583,7 @@
 		}
 
 		if (tableCount > 0 || columnCount > 0 || eventCount > 0 || sortOrderCount > 0) {
-			OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+			OpenHR.modalPrompt("Changing the " + baseDropdownlabel + " table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
 				if (answer == 6) { // Yes
 					changeReportBaseTable();
 					refreshMatchTableForSelectedBaseTable();
@@ -855,7 +857,7 @@
 		});
 	}
 
-	function submitReportDefinition() {
+	function submitReportDefinition() {		
 		$("#ValidityStatus").val('ServerCheckComplete');
 		$(".reportViewAccessGroup").prop('disabled', false);
 		$("#drpSetAllSecurityGroups").prop('disabled', false);

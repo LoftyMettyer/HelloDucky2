@@ -5,6 +5,7 @@ Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel.DataAnnotations
 Imports System.Collections.ObjectModel
 Imports DMI.NET.Classes
+Imports DMI.NET.Code.Attributes
 
 Namespace Models
 	Public Class TalentReportModel
@@ -18,6 +19,12 @@ Namespace Models
 
 		Public Overrides Sub SetBaseTable(TableID As Integer)
 		End Sub
+
+		<NonZeroIf("SelectionType", RecordSelectionType.Filter, ErrorMessage:="No filter selected for role table.")> _
+		Public Overloads Property FilterID As Integer
+
+		<NonZeroIf("SelectionType", RecordSelectionType.Picklist, ErrorMessage:="No picklist selected for role table.")>
+		Public Overloads Property PicklistID As Integer
 
 		Public Property BaseSelection As RecordSelectionType
 		Public Property BasePicklistID As Integer
@@ -33,7 +40,11 @@ Namespace Models
 		Public Property BasePreferredRatingColumnID As Integer
 		Public Property MatchTableID As Integer
 		Public Property MatchSelectionType As RecordSelectionType
+
+		<NonZeroIf("MatchSelectionType", RecordSelectionType.Picklist, ErrorMessage:="No picklist selected for person table.")> _
 		Public Property MatchPicklistID As Integer
+
+		<NonZeroIf("MatchSelectionType", RecordSelectionType.Filter, ErrorMessage:="No filter selected for person table.")> _
 		Public Property MatchFilterID As Integer
 
 		<Range(1, Integer.MaxValue, ErrorMessage:="Person match table not selected.")>
