@@ -85,7 +85,6 @@ namespace OpenHRTestToLive
     {
       try
       {
-
         var importObjects = new T2LClass();
         var liveDb = new npg_openhr8_2Entities(_connection);
 
@@ -103,34 +102,27 @@ namespace OpenHRTestToLive
         // Get the imported WF id
         int ImportedWFId = importObjects.AllWorkflows.First().id;
 
-        //AllLinks = new List<ASRSysWorkflowLinks>();
-        //AllElements = new List<ASRSysWorkflowElement>();
-        //AllColumns = new List<ASRSysWorkflowElementColumn>();
-        //AllValidations = new List<ASRSysWorkflowElementValidation>();
-        //AllExpressions = new List<ASRSysExpression>();
-        //AllComponents = new List<ASRSysExprComponent>();
-        //AllItems = new List<ASRSysWorkflowElementItem>();
-        //AllValues = new List<ASRSysWorkflowElementItemValue>();
-
         // If the imported ID clashes with the existing id range, fixup all imported id's
         if (ImportedWFId <= MaxWFId)
         {
           MaxWFId = BumpWorkflowIDs(importObjects, liveDb, MaxWFId);
         }
 
-        // Disable all imported workflows
-        foreach (var workflow in importObjects.AllWorkflows)
+				var simpleFileName = Path.GetFileNameWithoutExtension(inputFile);
+
+				// Disable all imported workflows
+				foreach (var workflow in importObjects.AllWorkflows)
         {
-          var isDuplicate = liveDb.ASRSysWorkflows.Any(w => w.name == workflow.name);
+					var isDuplicate = liveDb.ASRSysWorkflows.Any(w => w.name == simpleFileName);
 
-          while (isDuplicate)
-          {
-            workflow.name = "Copy of " + workflow.name;
-            isDuplicate = liveDb.ASRSysWorkflows.Any(w => w.name == workflow.name);           
+					while (isDuplicate)
+					{
+						simpleFileName = "Copy of " + simpleFileName;
+            isDuplicate = liveDb.ASRSysWorkflows.Any(w => w.name == simpleFileName);           
           }
-
           workflow.enabled = false;
-        }
+					workflow.name = simpleFileName;
+				}
       
         // Assign the data lists back to the EF structures
         liveDb.ASRSysWorkflows.Add(importObjects.AllWorkflows.First());
@@ -143,8 +135,6 @@ namespace OpenHRTestToLive
         liveDb.ASRSysExpressions.AddRange(importObjects.AllExpressions);
         liveDb.ASRSysExprComponents.AddRange(importObjects.AllComponents);
         // And save
-
-
         try
         {
           liveDb.SaveChanges();
@@ -166,13 +156,11 @@ namespace OpenHRTestToLive
           //throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
           return RepositoryStatus.Error;
         }
-
       }
       catch (Exception)
       {
         return RepositoryStatus.Error;
       }
-
 
       return RepositoryStatus.DefinitionsImported;
     }
