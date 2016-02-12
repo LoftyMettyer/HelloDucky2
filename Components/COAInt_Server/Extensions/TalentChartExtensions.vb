@@ -13,7 +13,7 @@ Friend Module TalentChartExtensions
 
       Dim output As String = ""
 
-      For Each competency In items.Where(Function(m) m.Actual >= m.Minimum)
+      For Each competency In items.Where(Function(m) m.Include or m.actual >= m.Minimum)
         output &= String.Format("{0} - Minimum : {1}, Preferred : {2}, Actual : {3}", _
                                 competency.Name, competency.Preferred, competency.Minimum, competency.Actual) & vbNewLine
       Next
@@ -31,7 +31,7 @@ Friend Module TalentChartExtensions
 
       Dim output As String = ""
 
-      For Each competency In items.Where(Function(m) m.Actual >= m.Minimum)
+      For Each competency In items.Where(Function(m) m.Include Or m.Actual >= m.Minimum)
         output &= String.Format("{{""Competency"":""{0}"", ""MinScore"":{1}, ""PrefScore"":{2}, ""ActualScore"":{3}, ""MaxScore"":{4}}}," _
                   ,competency.Name, competency.Minimum, competency.Preferred, competency.Actual, competency.Maximum)
 

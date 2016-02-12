@@ -37220,6 +37220,8 @@ BEGIN
 	  ISNULL(m.MatchChildColumnID, 0) AS MatchChildColumnID,
 	  ISNULL(m.MatchChildRatingColumnID, 0) AS MatchChildRatingColumnID,
 	  ISNULL(m.MatchAgainstType, 0) AS MatchAgainstType,
+		ISNULL(m.IncludeUnmatched, 0) AS IncludeUnmatched,
+		ISNULL(m.MinimumScore, 0) AS MinimumScore,
 	  m.OutputEmail AS [SendToEmail],
 		m.outputformat AS [Format],		
 		m.outputsave AS [SaveToFile],		
@@ -37272,8 +37274,6 @@ BEGIN
 	ORDER BY [sequence] ASC;
 
 END
-
-
 GO
 
 IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntDeleteUtility]') AND xtype in (N'P'))
@@ -41736,6 +41736,8 @@ CREATE PROCEDURE [dbo].[spASRIntSaveTalentReport] (
 	@piMatchChildColumnID	integer,
 	@piMatchChildRatingColumnID		integer,
 	@piMatchAgainstType		integer,
+	@pbIncludeUnmatched		bit,
+	@piMinimumScore				integer = 0,
 	@psUserName						varchar(255),
 	@psAccess							varchar(MAX),
 	@psJobsToHide					varchar(MAX),
@@ -41804,6 +41806,8 @@ BEGIN
 			MatchChildColumnID,
 			MatchChildRatingColumnID,
 			MatchAgainstType,
+			IncludeUnmatched,
+			MinimumScore,
 			UserName,
 			OutputFormat,
 			OutputScreen,
@@ -41831,6 +41835,8 @@ BEGIN
 			@piMatchChildColumnID,
 			@piMatchChildRatingColumnID,
 			@piMatchAgainstType,
+			@pbIncludeUnmatched,
+			@piMinimumScore,
 			@psUserName,
 			@piOutputFormat,
 			@pfOutputScreen,
@@ -41868,6 +41874,8 @@ BEGIN
 			MatchChildColumnID = @piMatchChildColumnID,
 			MatchChildRatingColumnID = @piMatchChildRatingColumnID,
 			MatchAgainstType = @piMatchAgainstType,
+			IncludeUnmatched = @pbIncludeUnmatched,
+			MinimumScore = @piMinimumScore,
 			OutputFormat = @piOutputFormat,
 			OutputScreen = @pfOutputScreen,
 			OutputEmail = @pfOutputEmail,
@@ -44347,7 +44355,7 @@ BEGIN
 			END
 			
 		END
-	END	
+	END
 
 	IF @piErrorCode = 0
 	BEGIN
@@ -44371,7 +44379,7 @@ BEGIN
 			SET @psErrorMsg = 'A talent report called ''' + @psUtilName + ''' already exists.';
 			SET @piErrorCode = 1;
 		END
-	END	
+	END
 
 	IF (@piErrorCode = 0) AND (@piBasePicklistID > 0)
 	BEGIN
@@ -44426,7 +44434,7 @@ BEGIN
 			END
 		END
 	END
-	
+
 	IF (@piErrorCode = 0) AND (@piBaseFilterID > 0)
 	BEGIN
 		/* Check that the Base table filter exists. */
@@ -44480,7 +44488,7 @@ BEGIN
 			END
 		END
 	END
-	
+
 	IF (@piErrorCode = 0) AND (@piCategoryID > 0)
 	BEGIN
 		/* Check that the category exists. */

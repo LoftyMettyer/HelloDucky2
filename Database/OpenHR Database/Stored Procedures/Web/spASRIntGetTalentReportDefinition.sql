@@ -125,6 +125,8 @@ BEGIN
 	  ISNULL(m.MatchChildColumnID, 0) AS MatchChildColumnID,
 	  ISNULL(m.MatchChildRatingColumnID, 0) AS MatchChildRatingColumnID,
 	  ISNULL(m.MatchAgainstType, 0) AS MatchAgainstType,
+		ISNULL(m.IncludeUnmatched, 0) AS IncludeUnmatched,
+		ISNULL(m.MinimumScore, 0) AS MinimumScore,
 	  m.OutputEmail AS [SendToEmail],
 		m.outputformat AS [Format],		
 		m.outputsave AS [SaveToFile],		

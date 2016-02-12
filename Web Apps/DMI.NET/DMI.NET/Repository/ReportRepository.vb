@@ -418,7 +418,6 @@ Namespace Repository
 
 		Public Function LoadTalentReport(ID As Integer, action As UtilityActionType) As TalentReportModel
 
-
 			Dim objModel As New TalentReportModel
 
 			Try
@@ -434,6 +433,8 @@ Namespace Repository
 					objModel.Output.IsPreview = True
 					objModel.Output.ToScreen = True
 					objModel.MatchAgainstType = MatchAgainstType.Any
+          objModel.IncludeUnmatched = False
+          objModel.MinimumScore = 0
 				Else
 
 					objModel.ID = ID
@@ -476,6 +477,8 @@ Namespace Repository
 						objModel.MatchChildColumnID = CInt(row("MatchChildColumnID"))
 						objModel.MatchChildRatingColumnID = CInt(row("MatchChildRatingColumnID"))
 						objModel.MatchAgainstType = CType(row("MatchAgainstType"), MatchAgainstType)
+            objModel.IncludeUnmatched = CBool(row("IncludeUnmatched"))
+            objModel.MinimumScore = CInt(row("MinimumScore"))
 
 						' Output Tab
 						objModel.Output.Format = CType(row("Format"), OutputFormats)
@@ -1081,6 +1084,8 @@ Namespace Repository
 								New SqlParameter("piMatchChildColumnID", SqlDbType.Int) With {.Value = objModel.MatchChildColumnID}, _
 								New SqlParameter("piMatchChildRatingColumnID", SqlDbType.Int) With {.Value = objModel.MatchChildRatingColumnID}, _
 								New SqlParameter("piMatchAgainstType", SqlDbType.Int) With {.Value = objModel.MatchAgainstType}, _
+								New SqlParameter("pbIncludeUnmatched", SqlDbType.Bit) With {.Value = objModel.IncludeUnmatched}, _
+								New SqlParameter("piMinimumScore", SqlDbType.Int) With {.Value = objModel.MinimumScore}, _
 								New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner}, _
 								New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess}, _
 								New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.JobIDsToHide}, _

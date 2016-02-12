@@ -18,6 +18,7 @@
 			[MatchChildColumnID] [int] NOT NULL,
 			[MatchChildRatingColumnID] [int] NOT NULL,
 			[MatchAgainstType] [int] NOT NULL,
+			[IncludeUnmatched] [bit] NULL,
 			[UserName] [varchar](50) NOT NULL,
 			[TimeStamp] [timestamp] NULL,
 			[EmailAddrID] [int] NULL,
@@ -30,4 +31,5 @@
 			[OutputScreen] [bit] NULL,
 			[OutputSave] [bit] NULL,
 			[OutputFilename] [varchar](255) NULL, 
-      [OutputEmail] [bit] NULL)
+      [OutputEmail] [bit] NULL, 
+			[MinimumScore] INT NULL)

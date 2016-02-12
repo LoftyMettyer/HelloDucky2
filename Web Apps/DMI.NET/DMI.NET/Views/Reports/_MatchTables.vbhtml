@@ -36,14 +36,28 @@
 		Actual Rating : <select class="width70 floatright enableSaveButtonOnComboChange" name="MatchChildRatingColumnID" id="MatchChildRatingColumnID"></select>
 	</fieldset>
 
-	<br />
-	<div class="width70 floatright">
-        &nbsp;Match Against : 
-		@Html.RadioButton("matchagainsttype", MatchAgainstType.Any, Model.MatchAgainstType = MatchAgainstType.Any, New With {.id = "matchagainsttype_any"})
-		Any
-		@Html.RadioButton("matchagainsttype", MatchAgainstType.All, Model.MatchAgainstType = MatchAgainstType.All, New With {.id = "matchagainsttype_all"})
-		All
-	</div>
+  </fieldset>
 
+  <fieldset id="MatchTables" class="floatleft overflowhidden width50">
+    <legend class="fontsmalltitle">Match Filter :</legend>
 
-</fieldset>
+    <fieldset>
+      Match Against :
+      @Html.RadioButton("matchagainsttype", MatchAgainstType.Any, Model.MatchAgainstType = MatchAgainstType.Any, New With {.id = "matchagainsttype_any"})
+      Any
+      @Html.RadioButton("matchagainsttype", MatchAgainstType.All, Model.MatchAgainstType = MatchAgainstType.All, New With {.id = "matchagainsttype_all"})
+      All
+    </fieldset>
+
+    <fieldset>
+      @Html.LabelFor(Function(m) m.MinimumScore)
+      @Html.TextBoxFor(Function(m) m.MinimumScore)
+    </fieldset>
+
+    <fieldset>
+      @Html.CheckBoxFor(Function(m) m.IncludeUnmatched)
+      @Html.LabelFor(Function(m) m.IncludeUnmatched)
+    </fieldset>
+
+  </fieldset>
+

@@ -2674,18 +2674,24 @@ PRINT 'Step - Talent Reports'
 			[SortOrderDirection] [varchar](4) NULL)';
         EXEC sp_executesql N'GRANT SELECT, INSERT, UPDATE, DELETE ON [ASRSysTalentReportDetails] TO [ASRSysGroup]';
 
-		END
+	END
 
-        EXEC sp_executesql N'GRANT SELECT,INSERT,UPDATE,DELETE ON [ASRSysTalentReports] TO [ASRSysGroup]'
+    EXEC sp_executesql N'GRANT SELECT,INSERT,UPDATE,DELETE ON [ASRSysTalentReports] TO [ASRSysGroup]'
 
-		IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysTalentReports', 'U') AND name = 'OutputEmail')
-			EXEC sp_executesql N'ALTER TABLE ASRSysTalentReports ADD OutputEmail bit;';
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysTalentReports', 'U') AND name = 'OutputEmail')
+		EXEC sp_executesql N'ALTER TABLE ASRSysTalentReports ADD OutputEmail bit;';
 
-		IF NOT EXISTS(SELECT Name FROM sysindexes WHERE id = object_id(N'ASRSysTalentReports') AND name = N'PK_ASRSysTalentReports_ID')
-			EXEC sp_executesql N'ALTER TABLE dbo.ASRSysTalentReports ADD CONSTRAINT	PK_ASRSysTalentReports_ID PRIMARY KEY CLUSTERED (ID) ON [PRIMARY]'
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysTalentReports', 'U') AND name = 'IncludeUnmatched')
+		EXEC sp_executesql N'ALTER TABLE ASRSysTalentReports ADD IncludeUnmatched bit;';
 
-		IF NOT EXISTS(SELECT Name FROM sysindexes WHERE id = object_id(N'ASRSysTalentReportDetails') AND name = N'IDX_TalentReportID')
-			EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_TalentReportID] ON ASRSysTalentReportDetails ([TalentReportID])'
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysTalentReports', 'U') AND name = 'MinimumScore')
+		EXEC sp_executesql N'ALTER TABLE ASRSysTalentReports ADD MinimumScore int;';
+
+	IF NOT EXISTS(SELECT Name FROM sysindexes WHERE id = object_id(N'ASRSysTalentReports') AND name = N'PK_ASRSysTalentReports_ID')
+		EXEC sp_executesql N'ALTER TABLE dbo.ASRSysTalentReports ADD CONSTRAINT	PK_ASRSysTalentReports_ID PRIMARY KEY CLUSTERED (ID) ON [PRIMARY]'
+
+	IF NOT EXISTS(SELECT Name FROM sysindexes WHERE id = object_id(N'ASRSysTalentReportDetails') AND name = N'IDX_TalentReportID')
+		EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_TalentReportID] ON ASRSysTalentReportDetails ([TalentReportID])'
 
 
 

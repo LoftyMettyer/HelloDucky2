@@ -4,6 +4,7 @@ Option Strict On
 Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel.DataAnnotations
 Imports System.Collections.ObjectModel
+Imports System.ComponentModel
 Imports DMI.NET.Classes
 Imports DMI.NET.Code.Attributes
 
@@ -61,6 +62,13 @@ Namespace Models
 		Public Property MatchFilterName As String
 		<AllowHtml>
 		Public Property MatchPicklistName As String
+
+    <DisplayName("Include Unmatched Records")>
+    Public Property IncludeUnmatched as boolean
+
+    <Range(0, 100, ErrorMessage:="Minimum Match Score not defined")>
+    <DisplayName("Minimum Match Score : ")>
+    Public Property MinimumScore as integer
 
 
 		Public Overrides Function GetAvailableTables() As IEnumerable(Of ReportTableItem)

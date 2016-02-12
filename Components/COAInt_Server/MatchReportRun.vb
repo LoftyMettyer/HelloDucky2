@@ -41,6 +41,8 @@ Public Class MatchReportRun
   Public Property Table1ChildTableID As Integer
   Public Property Table2ChildTableID As Integer  
   Public Property MatchAgainstType As MatchAgainstType
+  Public Property IncludeUnmatched as Boolean
+  Public Property MinimumScore as Integer
   Public Property PreferredColumnID As Integer
 
   public Property UtilityType as UtilityType
@@ -1355,15 +1357,15 @@ Public Class MatchReportRun
    	
       If UtilityType = UtilityType.TalentReport Then
         Const sMissingColumns As String = ", BaseTableID AS Table1ID, BasePicklistID as Table1Picklist, BaseFilterID as Table1Filter" & _
-                                          ", MatchTableID AS Table2ID, MatchPicklistID as Table2Picklist, MatchFilterID as Table2Filter, 0 AS [NumRecords], [MatchAgainstType]" & _
+                                          ", MatchTableID AS Table2ID, MatchPicklistID as Table2Picklist, MatchFilterID as Table2Filter, 0 AS [NumRecords], [MatchAgainstType], ISNULL(IncludeUnmatched, 0) AS [IncludeUnmatched]" & _
                                           ", BaseChildTableID AS Table1ChildTableID, BaseChildColumnID AS Table1ColumnID" & _
                                           ", MatchChildTableID AS Table2ChildTableID, MatchChildColumnID AS Table2ColumnID" & _
                                           ", BasePreferredRatingColumnID" & _
-                                          ", 0 AS ScoreMode, 0 as ScoreCheck, 0 AS ScoreLimit, 0 AS EqualGrade, 0 AS ReportingStructure " & _
+                                          ", 0 AS ScoreMode, 0 as ScoreCheck, 0 AS ScoreLimit, 0 AS EqualGrade, 0 AS ReportingStructure, MinimumScore" & _
                                           ", 0  AS [PrintFilterHeader]"
         strSQL = string.Format("SELECT * {0} FROM ASRSysTalentReports base WHERE base.ID = {1}", sMissingColumns, mlngMatchReportID)
       Else 
-		    strSQL = String.Format("SELECT *, 0 AS Table1ColumnID, 0 AS Table2ColumnID, 0 AS Table1ChildTableID, 0 AS Table2ChildTableID, 0 AS MatchAgainstType, 0 AS BasePreferredRatingColumnID, 0 AS BaseMinimumRatingColumnID " & _
+		    strSQL = String.Format("SELECT *, 0 AS Table1ColumnID, 0 AS Table2ColumnID, 0 AS Table1ChildTableID, 0 AS Table2ChildTableID, 0 AS MatchAgainstType, 0 AS IncludeUnmatched, 0 AS BasePreferredRatingColumnID, 0 AS BaseMinimumRatingColumnID, 0 AS MinimumScore " & _
                                "FROM ASRSysMatchReportName base WHERE base.MatchReportID = {0} " ,mlngMatchReportID)
       End If
 	
@@ -1393,6 +1395,8 @@ Public Class MatchReportRun
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			mblnReportingStructure = IIf(IsDbNull(objRow("ReportingStructure")), 0, CInt(objRow("ReportingStructure")))	
       MatchAgainstType = CType(objRow("MatchAgainstType"), MatchAgainstType)
+      IncludeUnmatched = CBool(objRow("IncludeUnmatched"))
+      MinimumScore = CInt(objRow("MinimumScore"))
       PreferredColumnID = IIf(objRow("BasePreferredRatingColumnID") = 0, objRow("BaseMinimumRatingColumnID"), objRow("BasePreferredRatingColumnID"))
 
 			mlngTable1ID = CInt(objRow("Table1ID"))
@@ -1792,20 +1796,21 @@ Public Class MatchReportRun
                   .Minimum =  CDbl(IIf(IsDBNull(objBreakdown("MinScore")), 0, objBreakdown("MinScore"))),
                   .Preferred = CDbl(IIf(IsDBNull(objBreakdown("PrefScore")), 0, objBreakdown("PrefScore"))),
                   .Maximum = maxScore,
-                  .Actual = CDbl(IIf(IsDBNull(objBreakdown("ActualScore")), 0, objBreakdown("ActualScore")))
+                  .Actual = CDbl(IIf(IsDBNull(objBreakdown("ActualScore")), 0, objBreakdown("ActualScore"))),
+                  .Include = IncludeUnmatched And MatchAgainstType = MatchAgainstType.Any
                   }
-                If competency.Actual > 0 Then
-                  scores.Add(competency)
-                End If 
+                scores.Add(competency)
 
               Next
               
               ' Only add to list if within match type
-              If scores.MatchCount > 0 Then
-                If MatchAgainstType = MatchAgainstType.Any And scores.MatchCount > 0 Then
+              If scores.MatchScore >= MinimumScore Then
+                If MatchAgainstType = MatchAgainstType.Any And scores.Count > 0 Then
                   bAddToGrid = True
                 ElseIf MatchAgainstType = MatchAgainstType.All And scores.MatchCount = breakdownData.Rows.Count Then
                   bAddToGrid = True
+                'ElseIf IncludeUnmatched And MatchAgainstType = MatchAgainstType.Any Then
+                '  bAddToGrid = True
 						    End If
               End If
 
