@@ -2685,7 +2685,10 @@ PRINT 'Step - Talent Reports'
 		EXEC sp_executesql N'ALTER TABLE ASRSysTalentReports ADD IncludeUnmatched bit;';
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysTalentReports', 'U') AND name = 'MinimumScore')
+	BEGIN
 		EXEC sp_executesql N'ALTER TABLE ASRSysTalentReports ADD MinimumScore int;';
+		EXEC sp_executesql N'UPDATE ASRSysTalentReports SET MinimumScore = 0;';
+	END
 
 	IF NOT EXISTS(SELECT Name FROM sysindexes WHERE id = object_id(N'ASRSysTalentReports') AND name = N'PK_ASRSysTalentReports_ID')
 		EXEC sp_executesql N'ALTER TABLE dbo.ASRSysTalentReports ADD CONSTRAINT	PK_ASRSysTalentReports_ID PRIMARY KEY CLUSTERED (ID) ON [PRIMARY]'
