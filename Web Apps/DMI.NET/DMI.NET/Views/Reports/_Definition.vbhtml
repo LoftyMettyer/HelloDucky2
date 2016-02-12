@@ -727,7 +727,7 @@
 		selectGridTopRow($('#SelectedColumns'));
 		selectGridTopRow($('#SortOrders'));
 
-		// Disable sort grid buttons if no records found
+	  // Disable sort grid buttons if no records found
 		if (($("#SortOrders").getGridParam("reccount") == 0) || ($("#SelectedColumns").getGridParam("reccount") == 0)) {
 			refreshSortButtons();
 		}

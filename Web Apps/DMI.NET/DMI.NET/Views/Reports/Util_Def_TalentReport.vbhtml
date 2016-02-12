@@ -182,6 +182,7 @@ End Code
 		refreshTalentReportPersonChildTables();
 		$('#MatchChildTableID').val("@Model.MatchChildTableID");
 
+	  refreshSortButtons();
 	}
 
 	function refreshTalentReportRoleChildTables() {

@@ -875,7 +875,7 @@ Public Class MatchReportRun
 
 		For Each objColumn In mcolColDetails.Where(Function(c) Not c.Hidden)
 			' Replace _ with space for the column name.
-			ReportDataTable.Columns.Add(String.Format("{0} {1}", objColumn.TableName.Replace("_", " "), objColumn.Name.Replace("_", " ")), GetType(String))
+			ReportDataTable.Columns.Add(String.Format("{0}", objColumn.Heading), GetType(String))
 		Next
 
     If UtilityType = UtilityType.TalentReport Then
@@ -1625,9 +1625,7 @@ Public Class MatchReportRun
         Dim dv = ReportDataTable.DefaultView
 
         For Each column in mcolColDetails.Where(Function(m) m.Sequence > 0)
-          talentSortOrder &= string.Format(", [{0} {1}] {2}" , _
-                             column.TableName.Replace("_"," "), column.Heading.Replace("_"," "), IIf(column.SortDir = "D", " DESC", "ASC"))
-
+          talentSortOrder &= string.Format(", [{0}] {1}" , column.Heading, IIf(column.SortDir = "D", " DESC", "ASC"))
         Next
         dv.Sort = talentSortOrder
 

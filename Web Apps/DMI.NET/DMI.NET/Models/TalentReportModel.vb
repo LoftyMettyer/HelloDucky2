@@ -70,6 +70,8 @@ Namespace Models
     <DisplayName("Minimum Match Score : ")>
     Public Property MinimumScore as integer
 
+    <MinLength(0) >
+    Public Overrides Property SortOrdersString As String
 
 		Public Overrides Function GetAvailableTables() As IEnumerable(Of ReportTableItem)
 
