@@ -2662,7 +2662,7 @@ Namespace Controllers
 
 			'Sort output in DESC mode by Match Score column
 			Dim dataView As New DataView(objReportData.ReportDataTable)
-			dataView.Sort = "Match Score DESC"
+			dataView.Sort = "Match Score % DESC"
 			objReportData.ReportDataTable = dataView.ToTable
 
 			' Rename last column with the second last column. (Second last column bullet graph would be removed)

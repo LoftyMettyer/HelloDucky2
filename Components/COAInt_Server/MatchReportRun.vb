@@ -879,7 +879,7 @@ Public Class MatchReportRun
 		Next
 
     If UtilityType = UtilityType.TalentReport Then
-      ReportDataTable.Columns.Add("Match Score", GetType(Decimal))
+      ReportDataTable.Columns.Add("Match Score %", GetType(Decimal))
       ReportDataTable.Columns.Add("Talent Chart", GetType(String))
 			ReportDataTable.Columns.Add("ID_TalentChartForExcel", GetType(String))
 		End If
@@ -1396,7 +1396,7 @@ Public Class MatchReportRun
 			mblnReportingStructure = IIf(IsDbNull(objRow("ReportingStructure")), 0, CInt(objRow("ReportingStructure")))	
       MatchAgainstType = CType(objRow("MatchAgainstType"), MatchAgainstType)
       IncludeUnmatched = CBool(objRow("IncludeUnmatched"))
-      MinimumScore = CInt(objRow("MinimumScore"))
+      MinimumScore =  CInt(objRow("MinimumScore"))
       PreferredColumnID = IIf(objRow("BasePreferredRatingColumnID") = 0, objRow("BaseMinimumRatingColumnID"), objRow("BasePreferredRatingColumnID"))
 
 			mlngTable1ID = CInt(objRow("Table1ID"))
@@ -1615,7 +1615,7 @@ Public Class MatchReportRun
 		
 		Try
       Dim bOK as Boolean
-      dim talentSortOrder as String = "[Match Score] DESC"
+      dim talentSortOrder as String = "[Match Score %] DESC"
 
     	mstrSQL = String.Format("SELECT DISTINCT * FROM [{0}].[{1}] WHERE not (ID1 is null) {2}" _
         , _login.Username, mstrTempTableName, mstrSQLOrderBy)
