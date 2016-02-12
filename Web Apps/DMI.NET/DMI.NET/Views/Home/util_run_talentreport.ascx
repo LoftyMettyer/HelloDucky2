@@ -46,24 +46,33 @@
   
   function getChartLine(competency, minScore, prefScore, actualScore) {
 
-    var chartTitleText = "Minimum Score: " + minScore +
+    var returnDiv;
+
+    var chartTitleText = "Competency: " + competency +
+      "\nMinimum Score: " + minScore +
       "\nPreferred Score: " + prefScore +
       "\nActual Score: " + actualScore;
 
-    return '<div class="form-group"> \
-    <div class="col-sm-10"> \
-      <div class="bullet-graph blue"> \
-        <div class="graph"> \
-          <div title="' + chartTitleText + '" class="ui-accordion-header ui-state-default ui-accordion-header-collapsed region-1" style="width: ' + minScore + '%;"></div> \
-          <div title="' + chartTitleText + '" class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active region-2" style="width: ' + (prefScore - minScore) + '%;"></div> \
-          <div title="' + chartTitleText + '" class="region-3" style="width: ' + (100 - Math.max(prefScore, minScore)) + '%;"></div> \
-          <div title="' + chartTitleText + '" class="ui-widget-header measure" style="width: ' + actualScore + '%;"></div> \
-          <div title="Preferred Score: ' + minScore + '" class="ui-state-error target-1" style="width: ' + minScore + '%;"></div> \
-                <div title="Preferred Score: ' + prefScore + '" class="ui-state-error target-1" style="width: ' + prefScore + '%;"></div> \
+    returnDiv = '<div title="' + chartTitleText + '" class="form-group"> \
+    <div title="' + chartTitleText + '" class="col-sm-10"> \
+      <div title="' + chartTitleText + '" class="bullet-graph blue"> \
+        <div title="' + chartTitleText + '" class="graph"> \
+          <div class="ui-accordion-header ui-state-default ui-accordion-header-collapsed region-1" style="width: ' + minScore + '%;"></div> \
+          <div class="ui-accordion-header ui-state-default ui-accordion-header-active ui-state-active region-2" style="width: ' + (prefScore - minScore) + '%;"></div> \
+          <div class="region-3" style="width: ' + (100 - Math.max(prefScore, minScore)) + '%;"></div>';
+
+    if (actualScore > 0) {
+      returnDiv = returnDiv + '<div class="ui-widget-header measure" style="width: ' + actualScore + '%;"></div>';
+    }
+          
+    returnDiv = returnDiv + '<div class="ui-state-error target-1" style="width: ' + minScore + '%;"></div> \
+                <div title="' + chartTitleText + '" class="ui-state-error target-1" style="width: ' + prefScore + '%;"></div> \
         </div> \
       </div> \
     </div> \
   </div>';
+
+    return returnDiv;
 
   }
 
@@ -123,7 +132,7 @@
                 var cell1Css = "'width:160px;white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: small;'";
                 var chartLine = getChartLine(obj.Competency, obj.MinScore, obj.PrefScore, obj.ActualScore);
 
-                $(talentchartCellObject).find("table").append("<tr><td style='width:80px;border: 0;'><div style=" + cell1Css + ">" + obj.Competency + "</div></td>" +
+                $(talentchartCellObject).find("table").append("<tr><td title='' style='width:80px;border: 0;'><div style=" + cell1Css + ">" + obj.Competency + "</div></td>" +
                   "<td style='width:150px;border:0;'>" + chartLine + "</td></tr>");
               });
 
