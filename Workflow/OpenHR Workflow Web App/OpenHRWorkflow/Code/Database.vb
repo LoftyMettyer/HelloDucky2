@@ -64,7 +64,8 @@ Public Class Database
     End Function
 
     Public Function ServiceLoginIsSameAsWorkflowURL(url As WorkflowUrl) As Boolean
-      Return url.Database = App.Config.Database And url.Server = App.Config.Server
+      Return (url.Database = App.Config.Database And url.Server = App.Config.Server) _
+        Or (url.Database = "" And url.Server = "")
       Return True
     End Function
 
