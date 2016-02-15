@@ -39507,7 +39507,7 @@ BEGIN
 		DEALLOCATE expr_cursor
 	END
 
-	IF @intType = 1 OR @intType = 2 OR @intType = 9 OR @intType = 17 OR @intType = 35
+	IF @intType IN(1, 2, 9, 17, 35, 38)
 	BEGIN
 		/* Reports & Utilities
 		Check for usage in Batch Jobs */
@@ -39516,6 +39516,7 @@ BEGIN
 		IF @intType = 9 SET @sJobTypeName = 'MAIL MERGE' 
 		IF @intType = 17 SET @sJobTypeName = 'CALENDAR REPORT'
 		IF @intType = 35 SET @sJobTypeName = '9-BOX GRID REPORT'
+		IF @intType = 35 SET @sJobTypeName = 'TALENT REPORT'
 		
 		DECLARE usage_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT DISTINCT ASRSysBatchJobName.Name, 
