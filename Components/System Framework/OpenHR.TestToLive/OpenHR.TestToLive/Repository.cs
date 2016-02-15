@@ -420,7 +420,10 @@ namespace OpenHRTestToLive
         {
           child.CalcID = MaxExprID;
         }
-
+        foreach (ASRSysWorkflowElement child in t2l.AllElements.Where(i => i.DescriptionExprID == CurrentExprID))
+        {
+          child.DescriptionExprID = MaxExprID;
+        }
         MaxExprID++;
       }
 
