@@ -14,7 +14,7 @@
 	</fieldset>
 
 	<fieldset>
-		Match Column : <select class="width70 floatright enableSaveButtonOnComboChange" name="BaseChildColumnID" id="BaseChildColumnID"></select>
+		Match Column : <select class="width70 floatright enableSaveButtonOnComboChange" name="BaseChildColumnID" id="BaseChildColumnID" onchange="SetSelectedColumnDataType('Base')"></select>
 	</fieldset>
 
 	<fieldset>
@@ -30,7 +30,7 @@
 		Person Match Table : <select class="width70 floatright enableSaveButtonOnComboChange" name="MatchChildTableID" id="MatchChildTableID" onchange="refreshTalentReportMatchColumns(event.target);"></select>
 	</fieldset>
 	<fieldset class="">
-		Match Column : <select class="width70 floatright enableSaveButtonOnComboChange" name="Matchchildcolumnid" id="MatchChildColumnID"></select>
+		Match Column : <select class="width70 floatright enableSaveButtonOnComboChange" name="Matchchildcolumnid" id="MatchChildColumnID" onchange="SetSelectedColumnDataType('Match')"></select>
 	</fieldset>
 	<fieldset class="">
 		Actual Rating : <select class="width70 floatright enableSaveButtonOnComboChange" name="MatchChildRatingColumnID" id="MatchChildRatingColumnID"></select>
@@ -58,6 +58,7 @@
       @Html.CheckBoxFor(Function(m) m.IncludeUnmatched)
       @Html.LabelFor(Function(m) m.IncludeUnmatched)
     </fieldset>
-
+		@Html.HiddenFor(Function(m) m.BaseChildColumnDataType, New With {.id = "BaseChildColumnDataType"})
+		@Html.HiddenFor(Function(m) m.MatchChildColumnDataType, New With {.id = "MatchChildColumnDataType"})
   </fieldset>
 

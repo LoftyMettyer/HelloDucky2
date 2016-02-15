@@ -284,25 +284,54 @@ Namespace Controllers
 
         End Function
 
-            <HttpPost>
-        <ValidateAntiForgeryToken>
-        Function util_def_talentreport(objModel As TalentReportModel) As ActionResult
+		<HttpPost>
+		<ValidateAntiForgeryToken>
+		Function util_def_talentreport(objModel As TalentReportModel) As ActionResult
 
-            Dim objSaveWarning As SaveWarningModel
-            Dim deserializer = New JavaScriptSerializer()
+			Dim objSaveWarning As SaveWarningModel
+			Dim deserializer = New JavaScriptSerializer()
 
-            objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.TalentReport)
+			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.TalentReport)
 
-            If objModel.ColumnsAsString IsNot Nothing Then
-                If objModel.ColumnsAsString.Length > 0 Then
-                    objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
-                End If
-            End If
+			If objModel.ColumnsAsString IsNot Nothing Then
+				If objModel.ColumnsAsString.Length > 0 Then
+					objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
+				End If
 
-            If objModel.SortOrdersString IsNot Nothing Then
-                If objModel.SortOrdersString.Length > 0 Then
-                    objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
-                End If
+				'------------------------------------------------------------------
+
+				' Check the column heading has value.
+				For Each columnItem As ReportColumnItem In objModel.Columns
+					If String.IsNullOrEmpty(columnItem.Heading.Trim()) And columnItem.IsHidden = False Then
+						ModelState.AddModelError("IsColumnHeaderEmpty", "The '" & columnItem.Name & "' column has a blank heading.")
+						Exit For
+					End If
+				Next
+
+				' Check the column headings are unique.
+				Dim breakNestedLoop As Boolean
+				For Each columnItem As ReportColumnItem In objModel.Columns
+					For Each columnItemHeaderToCheck As ReportColumnItem In objModel.Columns
+
+						If columnItem.ID <> columnItemHeaderToCheck.ID AndAlso UCase(columnItem.Heading.Trim()) = UCase(columnItemHeaderToCheck.Heading.Trim()) AndAlso columnItemHeaderToCheck.IsHidden = False Then
+							ModelState.AddModelError("IsColumnHeaderUnique", "One or more columns in your report have a heading of '" & columnItemHeaderToCheck.Heading & "'. " & "Column headings must be unique.")
+							breakNestedLoop = True
+							Exit For
+						End If
+					Next
+					If breakNestedLoop Then
+						Exit For
+					End If
+				Next
+
+				'------------------------------------------------------------------
+
+			End If
+
+			If objModel.SortOrdersString IsNot Nothing Then
+				If objModel.SortOrdersString.Length > 0 Then
+					objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
+				End If
 			End If
 
 			If (objModel.BaseMinimumRatingColumnID > 0 AndAlso objModel.MatchChildRatingColumnID = 0) Then
@@ -317,25 +346,30 @@ Namespace Controllers
 				ModelState.AddModelError("IsPreferredRatingsEmpty", "Preferred rating should be none if minimum rating is not selected.")
 			End If
 
-            If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
+			'Check if role and person table match column has same datatype
+			If (objModel.BaseChildColumnDataType > 0 AndAlso objModel.MatchChildColumnDataType > 0 AndAlso objModel.BaseChildColumnDataType <> objModel.MatchChildColumnDataType) Then
+				ModelState.AddModelError("IsColumnSelectionOK", "Role match column and Person match column datatype should be same.")
+			End If
 
-                objReportRepository.SaveReportDefinition(objModel)
-                Session("utilid") = objModel.ID
-                Return RedirectToAction("Defsel", "Home")
+			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 
-            Else
+				objReportRepository.SaveReportDefinition(objModel)
+				Session("utilid") = objModel.ID
+				Return RedirectToAction("Defsel", "Home")
 
-                If ModelState.IsValid Then
-                    objSaveWarning = objReportRepository.ServerValidate(objModel)
-                Else
-                    objSaveWarning = ModelState.ToWebMessage
-                End If
+			Else
 
-                Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
+				If ModelState.IsValid Then
+					objSaveWarning = objReportRepository.ServerValidate(objModel)
+				Else
+					objSaveWarning = ModelState.ToWebMessage
+				End If
 
-            End If
+				Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
 
-        End Function
+			End If
+
+		End Function
 
         <HttpPost>
         <ValidateAntiForgeryToken>

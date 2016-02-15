@@ -36,6 +36,7 @@ Namespace Models
 
 		<Range(1, Integer.MaxValue, ErrorMessage:="Role match table column not selected.")>
 		Public Property BaseChildColumnID As Integer
+		Public Property BaseChildColumnDataType As Integer
 
 		Public Property BaseMinimumRatingColumnID As Integer
 		Public Property BasePreferredRatingColumnID As Integer
@@ -53,6 +54,7 @@ Namespace Models
 
 		<Range(1, Integer.MaxValue, ErrorMessage:="Person match table column not selected.")>
 		Public Property MatchChildColumnID As Integer
+		Public Property MatchChildColumnDataType As Integer
 
 		Public Property MatchChildRatingColumnID As Integer
 		Public Property MatchAgainstType As MatchAgainstType
@@ -63,12 +65,12 @@ Namespace Models
 		<AllowHtml>
 		Public Property MatchPicklistName As String
 
-    <DisplayName("Include Unmatched Records")>
-    Public Property IncludeUnmatched as boolean
+		<DisplayName("Include Unmatched Records")>
+		Public Property IncludeUnmatched As Boolean
 
-    <Range(0, 100, ErrorMessage:="Minimum Match Score not defined")>
-    <DisplayName("Minimum Match Score : ")>
-    Public Property MinimumScore as integer
+		<Range(0, 100, ErrorMessage:="Minimum Match Score not defined")>
+		<DisplayName("Minimum Match Score : ")>
+		Public Property MinimumScore As Integer
 
     <MinLength(0) >
     Public Overrides Property SortOrdersString As String

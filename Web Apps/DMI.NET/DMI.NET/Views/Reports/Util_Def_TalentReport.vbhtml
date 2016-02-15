@@ -264,6 +264,9 @@ End Code
 				$('#BaseMinimumRatingColumnID').val("@Model.BaseMinimumRatingColumnID");
 				$('#BasePreferredRatingColumnID').val("@Model.BasePreferredRatingColumnID");
 
+				//Set datatype for selected Role match column
+				SetSelectedColumnDataType('Base');
+
 				var minimumRatingColumnId = $("#BaseMinimumRatingColumnID").val();
 				if (minimumRatingColumnId == null || minimumRatingColumnId == undefined) {
 					$('#BaseMinimumRatingColumnID').val('0');
@@ -313,6 +316,9 @@ End Code
 				$('#MatchChildColumnID').val("@Model.MatchChildColumnID");
 				$('#MatchChildRatingColumnID').val("@Model.MatchChildRatingColumnID");
 
+				//Set datatype for selected Person match column
+				SetSelectedColumnDataType('Match');
+
 				var MatchChildRatingColumnId = $("#MatchChildRatingColumnID").val();
 				if (MatchChildRatingColumnId == null || MatchChildRatingColumnId == undefined) {
 					$('#MatchChildRatingColumnID').val('0');
@@ -320,6 +326,14 @@ End Code
 			}
 		});
 
+	}
+
+	//Set datatype for selected Role/Person match column
+	function SetSelectedColumnDataType(controlType)
+	{
+		if ($("#" + controlType + "ChildColumnID option:selected")[0] != undefined) {
+			$('#' + controlType + 'ChildColumnDataType').val($("#" + controlType + "ChildColumnID option:selected")[0].attributes['data-datatype'].value);
+		}
 	}
 
 
