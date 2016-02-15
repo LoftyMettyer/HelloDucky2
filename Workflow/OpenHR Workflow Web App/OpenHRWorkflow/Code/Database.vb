@@ -63,6 +63,11 @@ Public Class Database
         End Using
     End Function
 
+    Public Function ServiceLoginIsSameAsWorkflowURL(url As WorkflowUrl) As Boolean
+      Return url.Database = App.Config.Database And url.Server = App.Config.Server
+      Return True
+    End Function
+
     Public Function IsMobileModuleInstalled() As Boolean
 
         Using conn As New SqlConnection(_connectionString)

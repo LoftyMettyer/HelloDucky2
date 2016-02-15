@@ -65,6 +65,12 @@ Public Class [Default]
 
         End If
 
+        ' Verify the calling URL is the same db as the workflow service
+        If Not _db.ServiceLoginIsSameAsWorkflowURL(_url) Then
+          message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE005)."        
+        End If
+
+
         ' Authentication options
         If message.IsNullOrEmpty() Then
             Dim thisStep = _db.StepAuthenticationDetails(_url.InstanceId, _url.ElementId)
