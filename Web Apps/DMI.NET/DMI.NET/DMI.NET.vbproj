@@ -1352,8 +1352,7 @@
     <Content Include="Scripts\jquery.gridster.with-extras.min.js" />
     <Content Include="Scripts\jquery.jqGrid.min.js" />
     <Content Include="Scripts\jquery.jqGrid.setColWidth.js" />
-    <Content Include="Scripts\jquery.maskedinput.js" />
-    <Content Include="Scripts\jquery.maskedinput.min.js" />
+    <Content Include="Scripts\jquery.maskedinput_MODIFIED.js" />
     <Content Include="Scripts\jquery.mousewheel.js" />
     <Content Include="Scripts\jquery.mousewheel.min.js" />
     <Content Include="Scripts\jquery.numeric.js" />
