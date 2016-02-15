@@ -5,6 +5,7 @@ Imports AjaxControlToolkit
 Imports System.Transactions
 Imports System.Globalization
 Imports System.Reflection
+Imports System.Security.Principal
 
 Public Class [Default]
     Inherits Page
@@ -29,6 +30,7 @@ Public Class [Default]
 
         'Page requested with no workflow details, just redirect to the login page
         If Request.QueryString.Count = 0 Then
+            Session("ValidLogins") = Nothing
             Response.Redirect("~/Account/Login.aspx")
         End If
 
@@ -73,15 +75,18 @@ Public Class [Default]
 
         ' Authentication options
         If message.IsNullOrEmpty() Then
-            Dim thisStep = _db.StepAuthenticationDetails(_url.InstanceId, _url.ElementId)
+          Dim thisStep = _db.StepAuthenticationDetails(_url.InstanceId, _url.ElementId)
 
-            If thisStep.RequiresAuthorization Then
-                If Not HttpContext.Current.User.Identity.IsAuthenticated Then
-                    Session("ValidLogins") = thisStep.AuthorizedUsers
-                    FormsAuthentication.RedirectToLoginPage()
-                End If
+          If thisStep.RequiresAuthorization Then
+            If Not thisStep.AuthorizedUsers.Contains(HttpContext.Current.User.Identity.Name) Or Not HttpContext.Current.User.Identity.IsAuthenticated Then
+              Session("ValidLogins") = thisStep.AuthorizedUsers
+              FormsAuthentication.SignOut()
+              HttpContext.Current.User = new GenericPrincipal(new GenericIdentity(string.Empty), Nothing)
+              FormsAuthentication.RedirectToLoginPage()
             End If
-        End If
+            
+          End If
+    End If
 
 #If DEBUG Then
 #Else

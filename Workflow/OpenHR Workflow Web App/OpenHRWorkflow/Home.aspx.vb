@@ -1,5 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Collections.Generic
+Imports System.Security.Principal
 
 Partial Class Home
 	Inherits Page
@@ -123,6 +124,7 @@ Partial Class Home
 
 	Protected Sub BtnLogoutClick(sender As Object, e As EventArgs) Handles btnLogout.Click
 		FormsAuthentication.SignOut()
+    HttpContext.Current.User = new GenericPrincipal(new GenericIdentity(string.Empty), Nothing)
 		FormsAuthentication.RedirectToLoginPage()
 	End Sub
 
