@@ -223,12 +223,6 @@ Namespace Controllers
 					Return View("login", LoginViewModel)
 				End If
 
-				' Users that are assigned certain server roles cannot log in (I think its dodgy because we rely too heavily on dbo)
-				If objLogin.IsServerRole Then
-					ModelState.AddModelError(Function(i As LoginViewModel) i.UserName, "Users assigned to fixed SQL Server roles cannot use OpenHR web.")
-					Return View("login", LoginViewModel)
-				End If
-
 				If Not CompareVersion(objServerSession.DatabaseStatus.IntranetVersion, objAppVersion, False) _
 					Or Not CompareVersion(objServerSession.DatabaseStatus.SysMgrVersion, objAppVersion, True) Then
 					sErrorMessage = String.Format("The database is out of date. Please ask the System Administrator to update the database for use with version {0}.{1}.{2}." _
@@ -377,6 +371,11 @@ Namespace Controllers
 						Return View("login", loginviewmodel)
 					End If
 
+   				' Users that are assigned certain server roles cannot log in (I think its dodgy because we rely too heavily on dbo)
+				  If objLogin.IsServerRole Then
+					  ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, "Login Failed.")
+					  Return View("login", LoginViewModel)
+				  End If
 
 					' User is allowed into OpenHR, now populate some metadata
 					objServerSession.RegionalSettings = Platform.PopulateRegionalSettings(sLocaleCultureName)
