@@ -70,7 +70,7 @@ BEGIN
 		IF @intType = 9 SET @sJobTypeName = 'MAIL MERGE' 
 		IF @intType = 17 SET @sJobTypeName = 'CALENDAR REPORT'
 		IF @intType = 35 SET @sJobTypeName = '9-BOX GRID REPORT'
-		IF @intType = 35 SET @sJobTypeName = 'TALENT REPORT'
+		IF @intType = 38 SET @sJobTypeName = 'TALENT REPORT'
 		
 		DECLARE usage_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT DISTINCT ASRSysBatchJobName.Name, 
