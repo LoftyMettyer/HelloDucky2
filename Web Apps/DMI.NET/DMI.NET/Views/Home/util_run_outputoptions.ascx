@@ -531,10 +531,16 @@
 			OpenHR.messageBox("You must select an email group", 48, "Output Options");
 			window.focus();
 			return;
-		}
+			}
 
-
-		if ((frmOutputDef.chkDestination3.checked)
+			if ((frmOutputDef.chkDestination3.checked)
+											&& (frmOutputDef.txtEmailSubject.value == '')) {
+				OpenHR.messageBox("You must enter an email subject.", 48, "Output Options");
+				window.focus();
+				return;
+			}
+			
+			if ((frmOutputDef.chkDestination3.checked)
 				&& (frmOutputDef.txtEmailAttachAs.value == '')) {
 			OpenHR.messageBox("You must enter an email attachment file name.", 48, "Output Options");
 			window.focus();
