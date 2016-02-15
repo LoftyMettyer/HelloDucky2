@@ -40,7 +40,7 @@ var jQuerySetup = function () {
 
 	jQuery('input.date.withPicker').datepicker();
 
-	jQuery('img.ui-datepicker-trigger').css('z-index', '1');
+	jQuery('img.ui-datepicker-trigger').css('z-index', '3');
 
 	jQuery('input.date.withPicker').change(function () {
 		//validate a typed date and format it

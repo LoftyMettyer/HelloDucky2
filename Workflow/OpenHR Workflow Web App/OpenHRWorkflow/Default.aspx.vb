@@ -294,7 +294,7 @@ Public Class [Default]
 
                         .Style.Add("padding", "0px")
                         .Style.Add("white-space", "normal")
-                        .Style.Add("z-index", "2")
+                        .Style.Add("z-index", "3")
 
                         .Value = formItem.Caption
 
@@ -347,7 +347,7 @@ Public Class [Default]
                             Case Else   'Text
                                 .Text = formItem.Value
                         End Select
-
+                        .Style.Add("z-index", "3")
                     End With
 
                     tabPages(formItem.PageNo).Controls.Add(control)
@@ -366,13 +366,14 @@ Public Class [Default]
 
                         ' NPG20120305 Fault HRPRO-1967 reverted by PBG20120419 Fault HRPRO-2157
                         '.Style("word-wrap") = "break-word"
-                        .Style("overflow") = "auto"
+                        .Style("overflow") = "hidden"
 
                         If formItem.CaptionType = 3 Then    'calculated caption
                             .Text = formItem.Value
                         Else
                             .Text = formItem.Caption
                         End If
+                        .Style.Add("z-index", "3")
                     End With
 
                     tabPages(formItem.PageNo).Controls.Add(control)
@@ -420,7 +421,7 @@ Public Class [Default]
                         If IsMobileBrowser() Then
                             .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
                         End If
-                        .Style("z-index") = "1"
+                        .Style.Add("z-index", "3")
                     End With
 
                     tabPages(formItem.PageNo).Controls.Add(control)
@@ -467,7 +468,7 @@ Public Class [Default]
                             Case Else   'Text
                                 .Text = HttpUtility.HtmlEncode(formItem.Value)
                         End Select
-
+                        .Style.Add("z-index", "3")
                     End With
 
                     tabPages(formItem.PageNo).Controls.Add(control)
@@ -507,7 +508,7 @@ Public Class [Default]
                         If IsMobileBrowser() Then
                             .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
                         End If
-                        .Style("z-index") = "1"
+                        .Style.Add("z-index", "3")
                     End With
                     tabPages(formItem.PageNo).Controls.Add(control)
 
@@ -535,7 +536,7 @@ Public Class [Default]
                             .Attributes("onclick") = "FilterMobileLookup('" & controlId & "');"
                         End If
 
-                        .Style.Add("z-index", "1")
+                        .Style.Add("z-index", "3")
                     End With
 
                     tabPages(formItem.PageNo).Controls.Add(checkBox)
@@ -577,7 +578,7 @@ Public Class [Default]
                         If IsMobileBrowser() Then
                             .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
                         End If
-                        .Style("z-index") = "1"
+                        .Style.Add("z-index", "3")
                     End With
 
                     Dim panel As New Panel
@@ -610,7 +611,7 @@ Public Class [Default]
                         End If
                     End If
 
-                    html &= String.Format(" style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4}; z-index: 0;", top, left, width, height, GetFontCss(formItem))
+                    html &= String.Format(" style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4}; z-index: 2;", top, left, width, height, GetFontCss(formItem))
 
                     If HotSpotID > 0 Then
 
@@ -662,10 +663,10 @@ Public Class [Default]
 
                     Select Case formItem.Orientation
                         Case 0 ' Vertical
-                            html = String.Format("<div style='position:absolute; left:{0}px; top:{1}px; height:{2}px; width:0px; border-left: 1px solid {3};'></div>",
+                            html = String.Format("<div style='z-index: 3; position:absolute; left:{0}px; top:{1}px; height:{2}px; width:0px; border-left: 1px solid {3};'></div>",
                                 formItem.Left, formItem.Top, formItem.Height, General.GetHtmlColour(formItem.BackColor))
                         Case Else   ' Horizontal
-                            html = String.Format("<div style='position:absolute; left:{0}px; top:{1}px; height:0px; width:{2}px; border-top: 1px solid {3};'></div>",
+                            html = String.Format("<div style='z-index: 3; position:absolute; left:{0}px; top:{1}px; height:0px; width:{2}px; border-top: 1px solid {3};'></div>",
                             formItem.Left, formItem.Top, formItem.Width, General.GetHtmlColour(formItem.BackColor))
                     End Select
 
@@ -684,6 +685,8 @@ Public Class [Default]
                         End If
 
                         .ImageUrl = "~/Image.ashx?s=&id=" & formItem.PictureId
+
+                        .Style.Add("z-index", "3")
                     End With
 
                     tabPages(formItem.PageNo).Controls.Add(control)
@@ -810,7 +813,7 @@ Public Class [Default]
                         Else
                             .SelectedRowStyle.BackColor = General.GetColour(formItem.BackColorHighlight.Value)
                         End If
-
+                        .Style.Add("z-index", "3")
                     End With
 
                     ' ==================================================
@@ -886,7 +889,7 @@ Public Class [Default]
                             .Style.Add("background-repeat", "no-repeat")
                             .Style.Add("background-origin", "content-box")
                             .Style.Add("background-size", "17px 100%")
-                            .Style.Add("z-index", "1")
+                            .Style.Add("z-index", "3")
                         End With
 
                         tabPages(formItem.PageNo).Controls.Add(textBox)
@@ -957,6 +960,8 @@ Public Class [Default]
                             .PagerStyle.VerticalAlign = VerticalAlign.Middle
                             .PagerStyle.HorizontalAlign = HorizontalAlign.Center
                             .PagerStyle.BorderWidth = 0
+
+                            .Style.Add("z-index", "3")
                         End With
 
                         Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
@@ -1067,7 +1072,7 @@ Public Class [Default]
                             .ApplyColor(formItem)
                             If Not IsMobileBrowser() Then .ApplyBorder(False)
                             .Style.Add("padding", "1px")
-
+                            .Style.Add("z-index", "3")
                             .TabIndex = formItem.TabIndex
                             UpdateAutoFocusControl(formItem.TabIndex, controlId)
 
@@ -1150,7 +1155,7 @@ Public Class [Default]
                         .ApplyColor(formItem)
                         If Not IsMobileBrowser() Then .ApplyBorder(False)
                         .Style.Add("padding", "1px")
-                        .Style.Add("z-index", "1")
+                        .Style.Add("z-index", "3")
 
                         .TabIndex = formItem.TabIndex
                         UpdateAutoFocusControl(formItem.TabIndex, controlId)
@@ -1230,7 +1235,7 @@ Public Class [Default]
                         End If
                     End If
 
-                    Dim html = String.Format("<fieldset style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4} {5} {6}'>",
+                    Dim html = String.Format("<fieldset style='z-index: 3; position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4} {5} {6}'>",
                      top, left, width, height, GetFontCss(formItem), GetColorCss(formItem, True), borderCss)
 
                     If formItem.PictureBorder And formItem.Caption.Trim.Length > 0 Then
@@ -1258,6 +1263,7 @@ Public Class [Default]
                         .Style("top") = Unit.Pixel(radioTop + formItem.Top).ToString
                         .Style("left") = Unit.Pixel(9 + formItem.Left).ToString
                         .Style.Add("color", General.GetHtmlColour(formItem.ForeColor).ToString)
+                        .Style.Add("z-index", "3")
                         .Width() = formItem.Width - 12
                     End With
 
@@ -1320,7 +1326,7 @@ Public Class [Default]
 
                         .Style.Add("padding", "0px")
                         .Style.Add("white-space", "normal")
-                        .Style.Add("z-index", "1")
+                        .Style.Add("z-index", "3")
 
                         .Value = formItem.Caption
 
@@ -1342,7 +1348,7 @@ Public Class [Default]
 
                     Dim crypt As New Crypt, encodedId As String = crypt.SimpleEncrypt(formItem.Id.ToString, Session.SessionID)
 
-                    Dim html = "<span id='{0}' tabindex='{1}' style='position:absolute; display:inline-block; word-wrap:break-word; overflow:auto; " &
+                    Dim html = "<span id='{0}' tabindex='{1}' style='z-index: 3; position:absolute; display:inline-block; word-wrap:break-word; overflow:auto; " &
                         "top:{2}px; left:{3}px; width:{4}px; height:{5}px; {6} {7}' " &
                         "onclick='FileDownload_Click(""{8}"");' onkeypress='FileDownload_KeyPress(""{8}"");'>{9}</span>"
 
@@ -1363,6 +1369,7 @@ Public Class [Default]
                     pnlTabsDiv.Style("height") = formItem.Height & "px"
                     pnlTabsDiv.Style("left") = formItem.Left & "px"
                     pnlTabsDiv.Style("top") = formItem.Top & "px"
+                    pnlTabsDiv.Style.Add("z-index", "1")
 
                     Dim ctlTabsDiv As New Panel
                     ctlTabsDiv.ID = "TabsDiv"
@@ -1398,6 +1405,7 @@ Public Class [Default]
                             .ImageUrl = "~/Images/tab-prev.gif"
                             .Style.Add("margin", "0px")
                             .Style.Add("padding", "0px")
+                            .Style.Add("z-index", "1")
                             .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 20;")
                         End With
                         ctlFormTabArrows.Controls.Add(image)
@@ -1410,6 +1418,7 @@ Public Class [Default]
                             .ImageUrl = "~/Images/tab-next.gif"
                             .Style.Add("margin", "0px")
                             .Style.Add("padding", "0px")
+                            .Style.Add("z-index", "1")
                             .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 20;")
                         End With
                         ctlFormTabArrows.Controls.Add(image)
@@ -1424,6 +1433,7 @@ Public Class [Default]
                     trPager.Height = TabStripHeight - 1
                     ' to prevent vertical scrollbar
                     trPager.Style.Add("white-space", "nowrap")
+                    trPager.Style.Add("z-index", "1")
 
                     Dim iTabNo As Integer = 1
                     ' add a cell for each tab
@@ -1443,6 +1453,7 @@ Public Class [Default]
                             label.Font.Name = "Verdana"
                             label.Font.Size = New FontUnit(11, UnitType.Pixel)
                             label.Text = sTabCaption.ToString
+                            label.Style.Add("z-index", "1")
 
                             .Controls.Add(label)
 
@@ -1463,6 +1474,7 @@ Public Class [Default]
                         tabPage.Style.Add("position", "absolute")
                         tabPage.Style.Add("top", (formItem.Top + TabStripHeight) & "px")
                         tabPage.Style.Add("left", formItem.Left & "px")
+                        tabPage.Style.Add("z-index", "1")
                         If iTabNo > 1 Then
                             tabPage.Style.Add("display", "none")
                         End If
