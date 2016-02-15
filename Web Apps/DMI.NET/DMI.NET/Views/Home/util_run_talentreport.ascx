@@ -97,10 +97,14 @@
     $("#gridReportData").jqGrid('setColWidth', 'Match Score', matchWidth, false);
     $("#gridReportData").jqGrid('setColWidth', 'Talent Chart', talentWidth - 40, true);
 
-    var gridHeight = $('#reportworkframe').height();
-    var gridWidth = $('#reportworkframe').width();
-    $("#gridReportData").jqGrid('setGridHeight', gridHeight);
+  	var gridWidth = $('#reportworkframe').width();
     $("#gridReportData").jqGrid('setGridWidth', gridWidth);
+
+    if (menu_isSSIMode()) {
+    	gridHeight = $('#reportworkframe').height() - 100;
+    } else {
+    	gridHeight = $('#reportworkframe').height();
+    }
 
   }
 
@@ -155,7 +159,7 @@
   if (menu_isSSIMode()) {
     gridHeight = $('#reportworkframe').height() - 100;
   } else {
-    gridHeight = gridHeight = $('#reportworkframe').height();
+    gridHeight = $('#reportworkframe').height();
   }
 
   gridWidth = $('#reportworkframe').width();
