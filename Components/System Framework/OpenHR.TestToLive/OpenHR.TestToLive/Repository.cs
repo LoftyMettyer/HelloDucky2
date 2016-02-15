@@ -424,6 +424,11 @@ namespace OpenHRTestToLive
         {
           child.DescriptionExprID = MaxExprID;
         }
+        foreach (ASRSysWorkflowElement child in t2l.AllElements.Where(i => i.TrueFlowExprID == CurrentExprID))
+        {
+          child.TrueFlowExprID = MaxExprID;
+        }
+
         MaxExprID++;
       }
 
