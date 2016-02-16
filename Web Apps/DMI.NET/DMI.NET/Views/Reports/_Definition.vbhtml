@@ -558,11 +558,13 @@
 		var columnCount = 0;
 		var eventCount = 0;
 		var sortOrderCount = 0;
+		var baseChildTableID = 0;
 		var baseDropdownlabel = "base";
 		$("#IsBaseTableChange").val("True");
 
 		if ($("#txtReportType").val() === '@UtilityType.TalentReport')
 		{
+		  baseChildTableID = $("#BaseChildTableID option:selected").val()
 			//If columns of previous Role table exist in selectedcolumns grid then only we need to prompt changing message
 			baseDropdownlabel = "role"
 			var previousRoleTableID = $("#OriginalRoleTableID").val();
@@ -582,7 +584,7 @@
 			sortOrderCount = $("#SortOrders").getGridParam("reccount");
 		}
 
-		if (tableCount > 0 || columnCount > 0 || eventCount > 0 || sortOrderCount > 0) {
+	    if (tableCount > 0 || columnCount > 0 || eventCount > 0 || sortOrderCount > 0 || baseChildTableID > 0) {
 			OpenHR.modalPrompt("Changing the " + baseDropdownlabel + " table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
 				if (answer == 6) { // Yes
 					changeReportBaseTable();
@@ -668,7 +670,7 @@
 			//Remove all columns of previous selected table
 			removeSelectedTableColumns(true, "roleTable",$("#OriginalRoleTableText").val());
 			setDefinitionAccessBasedOnSelectedCalculationColumns();
-			refreshTalentReportRoleChildTables();
+			refreshTalentReportRoleChildTables('0');
 		}
 
 

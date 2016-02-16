@@ -178,14 +178,14 @@ End Code
 		$("#OriginalRoleTableText").val($("#BaseTableID option:selected").text());
 		$("#OriginalPersonTableID").val($('#MatchTableID').val());
 		$("#OriginalPersonTableText").val($("#MatchTableID option:selected").text());
-		refreshTalentReportRoleChildTables();
-		refreshTalentReportPersonChildTables();
+		refreshTalentReportRoleChildTables('@Model.BaseChildTableID');
+		refreshTalentReportPersonChildTables('@Model.MatchChildTableID');
 		$('#MatchChildTableID').val("@Model.MatchChildTableID");
 
-	  refreshSortButtons();
+		refreshSortButtons();
 	}
 
-	function refreshTalentReportRoleChildTables() {
+	function refreshTalentReportRoleChildTables(roleChildTableId) {
 		$.ajax({
 			url: 'Reports/GetChildTables?parentTableId=' + $("#BaseTableID").val(),
 			datatype: 'json',
@@ -198,14 +198,14 @@ End Code
 					option += "<option value='" + json[i].id + "'>" + json[i].Name + "</option>";
 				}
 				$("select#BaseChildTableID").html(option);
-				$('#BaseChildTableID').val("@Model.BaseChildTableID");
+				$('#BaseChildTableID').val(roleChildTableId); 
 				refreshTalentReportBaseColumns();
 			}
 		});
 	}
 
-	function refreshTalentReportPersonChildTables() {
-	
+	function refreshTalentReportPersonChildTables(matchChildTableId) {
+
 		$.ajax({
 			url: 'Reports/GetChildTables?parentTableId=' + $("#MatchTableID").val(),
 			datatype: 'json',
@@ -218,7 +218,7 @@ End Code
 					option += "<option value='" + json[i].id + "'>" + json[i].Name + "</option>";
 				}
 				$("select#MatchChildTableID").html(option);
-				$('#MatchChildTableID').val("@Model.MatchChildTableID");
+				$('#MatchChildTableID').val(matchChildTableId);
 				refreshTalentReportMatchColumns();
 
 			}
@@ -381,8 +381,10 @@ End Code
 
 	function requestChangeReportPersonTable(target) {
 
+		var matchChildTableID = 0;
 		var columnCount = 0;
 		var previousPersonTableID = $("#OriginalPersonTableID").val();
+		matchChildTableID = $("#MatchChildTableID option:selected").val();
 
 		$("#IsPersonTableChange").val("True");
 		var gridData = $("#SelectedColumns").jqGrid('getRowData');
@@ -394,14 +396,14 @@ End Code
 			}
 		}
 
-		if (columnCount > 0) {
+		if (columnCount > 0 || matchChildTableID > 0) {
 			OpenHR.modalPrompt("Changing the person table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
 				if (answer == 6) { // Yes
 					changeReportPersonTable();
 					refreshBaseTableForSelectedMatchTable();
 				}
 				else {
-					$('#MatchTableID')[0].selectedIndex = $("#OriginalPersonTableID").val();
+					$('#MatchTableID').val($("#OriginalPersonTableID").val());
 				}
 			});
 		}
@@ -435,7 +437,7 @@ End Code
 
 		if ($("#txtReportType").val() === '@UtilityType.TalentReport') {
 			removeSelectedTableColumns(true, "personTable", $("#OriginalPersonTableText").val());
-			refreshTalentReportPersonChildTables();
+			refreshTalentReportPersonChildTables('0');
 		}
 
 		// Enables save button
