@@ -54,11 +54,12 @@ Public Class Database
             cmd.CommandType = CommandType.StoredProcedure
             cmd.CommandTimeout = _timeout
 
-            cmd.Parameters.Add("@allow", SqlDbType.Bit).Direction = ParameterDirection.Output
+            Dim prmAllow = New SqlParameter("@allow", SqlDbType.Bit) With {.Direction = ParameterDirection.InputOutput, .Value = False}
+            cmd.Parameters.Add(prmAllow)
 
             cmd.ExecuteNonQuery()
 
-            Return CBool(cmd.Parameters("@allow").Value)
+            Return CBool(prmAllow.Value)
 
         End Using
     End Function
