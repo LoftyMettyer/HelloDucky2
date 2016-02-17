@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Define variables -->
+<?define ProductName = "OpenHR Outlook Calendar Service" ?>
+<?define Manufacturer = "Advanced Computer Software" ?>
+<?define InstallFolder = "Advanced" ?>
+<?define ExecutableName = "OutlookCalendarService2.exe" ?>
+<?define ExecutablePath="..\OutlookCalendarService\bin\Release\$(var.ExecutableName)"?>
+<?define ServiceFilesPath="..\OutlookCalendarService\bin\Release\"?>
+<?define FullProductVersion="$(fileVersion.FullProductVersion($(var.ExecutablePath)))"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+   xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+   xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+
+   <Product Id="*"
+      Name="$(var.ProductName)"
+      Language="1033"
+      Version="$(var.FullProductVersion)"
+      Manufacturer="$(var.Manufacturer)"
+      UpgradeCode="{C249C88F-5C2D-4D55-8F8A-A30C05F4397C}">
+
+      <Package Id="*" InstallerVersion="300" Compressed="yes" InstallScope="perMachine" />
+
+      <Media Id="1" Cabinet="OpenHROutlookCalendarServiceInstaller.cab" EmbedCab="yes" />
+
+      <!-- Application icon -->
+      <Icon Id="Application_Icon" SourceFile="AdvancedIcon.ico" />
+      <Property Id="ARPPRODUCTICON" Value="Application_Icon" />
+
+      <!-- Set some properties for the MSI installer -->
+      <Property Id="ARPHELPLINK">http://webfirst.advancedcomputersoftware.com</Property> <!-- This property appears as the "Help link" in the "Programs and Features" Windows screen -->
+      <Property Id="ARPURLINFOABOUT">http://www.advancedcomputersoftware.com/abs</Property> <!-- This property appears as the "Support link" in the "Programs and Features" Windows screen -->
+
+      <!-- Define the directory structure -->
+      <Directory Id="TARGETDIR" Name="SourceDir">
+         <Directory Id="ProgramFilesFolder">
+            <!-- Create a folder inside Program Files -->
+            <Directory Id="ROOTDIRECTORY" Name="$(var.InstallFolder)">
+               <!-- Create a folder inside -->
+               <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)" />
+            </Directory>
+         </Directory>
+      </Directory>
+
+      <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+      <!-- The files inside this DirectoryRef are linked to the Service directory via INSTALLFOLDER -->
+      <DirectoryRef Id="INSTALLFOLDER">
+         <!-- Create a component which is the Service executable file -->
+         <Component Id="ServiceExecutableComponent">
+            <!-- Copies the Service executable file using the project reference preprocessor variables -->
+            <File Id="$(var.ExecutableName)" Source="$(var.ExecutablePath)" KeyPath="yes" />
+            <!-- Tell WiX to install the Service -->
+            <ServiceInstall Id="ServiceInstaller"
+                            Type="ownProcess"
+                            Name="$(var.ProductName)"
+                            DisplayName="$(var.ProductName)"
+                            Description="The OpenHR Outlook Calendar Service"
+                            Start="demand"
+                            ErrorControl="normal" />
+            <ServiceControl Id="StartService" Stop="both" Remove="uninstall" Name="$(var.ProductName)" Wait="yes" />
+         </Component>
+         <Component Id="Library1Component">
+            <File Id="Microsoft.Exchange.WebServices.dll" Source="$(var.ServiceFilesPath)" KeyPath="yes" />
+         </Component>
+         <Component Id="Library2Component">
+            <File Id="OutlookCalendarLogic.dll" Source="$(var.ServiceFilesPath)" KeyPath="yes" />
+         </Component>
+         <Component Id="ConfigFileComponent">
+            <File Id="OutlookCalendarService2.exe.config" Source="$(var.ServiceFilesPath)" KeyPath="yes" />
+         </Component>
+      </DirectoryRef>
+
+      <!-- Check if .NET 4.5.2 is installed -->
+      <PropertyRef Id="NETFRAMEWORK45"/>
+      <Condition Message="OpenHR Outlook Calendar Service requires .NET Framework 4.5.2 or later; please install it and run the setup again.">
+         <![CDATA[Installed OR NETFRAMEWORK45>="#379893"]]>
+      </Condition>
+
+      <Property Id="SQLCLIENT10INSTALLED" Value="0">
+         <RegistrySearch Id="SQLClient10Installed"
+											Key="SOFTWARE\Microsoft\Microsoft SQL Server Native Client 10.0"
+											Name="CurrentVersion"
+											Root="HKLM"
+											Type="raw" />
+      </Property>
+      <Property Id="SQLCLIENT11INSTALLED" Value="0">
+         <RegistrySearch Id="SQLClient11Installed"
+											Key="SOFTWARE\Microsoft\Microsoft SQL Server Native Client 11.0"
+											Name="CurrentVersion"
+											Root="HKLM"
+											Type="raw" />
+      </Property>
+      <Condition Message="OpenHR Workflow Web Site requires SQL Server client; please install it and then re-run the OpenHR Workflow Web Site setup">
+         <![CDATA[Installed OR (SQLCLIENT10INSTALLED > "#0" OR SQLCLIENT11INSTALLED > "#0"]]>
+      </Condition>
+
+      <!-- Tell WiX to install the component -->
+      <Feature Id="MainApplication" Title="Main Application" Level="1">
+         <ComponentRef Id="ServiceExecutableComponent" />
+         <ComponentRef Id="Library1Component" />
+         <ComponentRef Id="Library2Component" />
+         <ComponentRef Id="ConfigFileComponent" />
+      </Feature>
+
+      <!-- Images for the UI -->
+      <WixVariable Id="WixUIBannerBmp" Value="COA_Logo_Small.jpg" />
+      <WixVariable Id="WixUIDialogBmp" Value="COA_Background.jpg" />
+
+      <!-- Upgrade settings -->
+      <MajorUpgrade
+			Schedule="afterInstallInitialize"
+			DowngradeErrorMessage="A newer version of [ProductName] is already installed. Setup will now exit." />
+
+      <!-- Use one of Wix's built-in dialog sets  -->
+      <UIRef Id="WixUI_InstallDir" />
+      <!-- Determine which dialogs to use from the built-in dialog-set -->
+      <UI>
+         <UIRef Id="WixUI_InstallDir" />
+         <Publish Dialog="WelcomeDlg"
+                   Control="Next"
+                   Event="NewDialog"
+                   Value="InstallDirDlg"
+                   Order="2">1</Publish>
+         <Publish Dialog="InstallDirDlg"
+                   Control="Back"
+                   Event="NewDialog"
+                   Value="WelcomeDlg"
+                   Order="2">1</Publish>
+      </UI>
+   </Product>
+</Wix>
