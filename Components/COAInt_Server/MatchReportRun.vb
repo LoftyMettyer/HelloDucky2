@@ -1802,7 +1802,7 @@ Public Class MatchReportRun
 						    End If
               End If
 
-              aryAddString.Add(Math.Round(scores.MatchScore, 2))
+              aryAddString.Add(Math.Round(scores.MatchScore))
               aryAddString.Add(scores.TalentChartJSON)
               aryAddString.Add(scores.TalentChart)
 
