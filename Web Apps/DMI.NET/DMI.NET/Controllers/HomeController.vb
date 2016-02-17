@@ -2608,7 +2608,6 @@ Namespace Controllers
       Session("MatchReport") = matchReport
 
 		  If len(matchReport.ErrorString) > 0 Then
-        Response.StatusCode = HttpStatusCode.BadRequest
         Return Json(matchReport.ErrorString, JsonRequestBehavior.AllowGet)
       Else
 

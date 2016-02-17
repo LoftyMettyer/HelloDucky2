@@ -97,7 +97,7 @@
     $("#gridReportData").jqGrid('setColWidth', 'Match Score', matchWidth, false);
     $("#gridReportData").jqGrid('setColWidth', 'Talent Chart', talentWidth - 40, true);
 
-  	var gridWidth = $('#reportworkframe').width();
+    var gridWidth = $('#reportworkframe').width();
     $("#gridReportData").jqGrid('setGridWidth', gridWidth);
 
     if (menu_isSSIMode()) {
@@ -168,11 +168,17 @@
     cache: false,
     url: '<%:Url.Action("getTalentReportData", "Home")%>',
     dataType: "json",
-    error: function(xhr, st, err) {
+    error: function (xhr, st, err) {
       OpenHR.modalPrompt(xhr.responseJSON, 2, "", "");
       closeclick();
     },
-    success: function(jsonData) {
+    success: function (jsonData) {
+
+      if (typeof jsonData.colModel == "undefined") {
+        OpenHR.modalPrompt(jsonData, 2, "", "");
+        closeclick();
+      }
+
       $("#gridReportData").jqGrid({
         datatype: "local",
         data: $.parseJSON(JSON.stringify(jsonData)).rows,
