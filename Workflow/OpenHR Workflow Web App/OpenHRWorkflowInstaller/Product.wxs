@@ -85,6 +85,11 @@
 			<![CDATA[Installed OR (IISMAJORVERSION AND (IISMAJORVERSION = "#7" OR IISMAJORVERSION = "#8"))]]>
 		</Condition>
 
+		<!--
+		See the following two links for the .NET check below:
+		http://stackoverflow.com/questions/33717582/check-for-net-framework-4-5-2-in-registry-in-wix
+		https://msdn.microsoft.com/en-us/library/ee942965(v=vs.110).aspx#detect_net
+		-->
 		<!-- Check if .NET 4.5.2 is installed -->
 		<PropertyRef Id="NETFRAMEWORK45" />
 		<Condition Message="OpenHR Workflow Web Site requires .NET Framework 4.5.2 or later; please install it and run the setup again.">
