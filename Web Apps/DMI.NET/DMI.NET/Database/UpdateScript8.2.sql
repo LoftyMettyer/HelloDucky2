@@ -48177,8 +48177,8 @@ BEGIN
 						 @iDescCalc = DescriptionExpr
 			FROM ASRSysCalendarReports
 			WHERE ID = @piUtilID
-				
-			IF (@piRecordID = 0) OR (@piMultipleRecords = 0)
+			
+			IF (@piRecordID = 0) AND (@piMultipleRecords = 0)
 			BEGIN
 				/* Get the prompted values used in the Base table filter. */
 				SET @iFilterID = @iBaseFilter
