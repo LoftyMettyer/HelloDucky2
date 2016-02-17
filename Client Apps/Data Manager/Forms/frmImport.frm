@@ -2353,8 +2353,8 @@ Private Function ValidateDefinition() As Boolean
   ' SQL Table specific
   If cboFileFormat.ItemData(cboFileFormat.ListIndex) = ImportType.SQLTable Then
     If txtLinkedServer.Text = "" Or txtLinkedCatalog.Text = "" Or txtLinkedTable.Text = "" Then
-      COAMsgBox "You must specify all options for importing from a linked table.", vbExclamation + vbOKOnly, "Export"
-      tabImport.Tab = 3
+      COAMsgBox "You must specify all options for importing from a linked table.", vbExclamation + vbOKOnly, "Import"
+      tabImport.Tab = 2
       ValidateDefinition = False
       Exit Function
     End If
