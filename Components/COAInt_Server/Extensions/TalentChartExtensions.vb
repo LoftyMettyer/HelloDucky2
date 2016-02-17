@@ -32,8 +32,8 @@ Friend Module TalentChartExtensions
       Dim output As String = ""
 
       For Each competency In items.Where(Function(m) m.Include Or m.Actual >= m.Minimum).OrderBy(Function(m) m.Name)
-        output &= String.Format("{{""Competency"":""{0}"", ""MinScore"":{1}, ""PrefScore"":{2}, ""ActualScore"":{3}, ""MaxScore"":{4}}}," _
-                  ,competency.Name, competency.Minimum, competency.Preferred, competency.Actual, competency.Maximum)
+        output &= String.Format("{{""Competency"":""{0}"", ""MinScore"":{1}, ""PrefScore"":{2}, ""ActualScore"":{3}}}," _
+                  ,competency.Name, competency.Minimum, competency.Preferred, competency.Actual)
 
       Next
 

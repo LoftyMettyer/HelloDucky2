@@ -1656,20 +1656,11 @@ Public Class MatchReportRun
 		
 		Dim aryAddString As ArrayList
     Dim scores As List(Of Competency)
-    Dim maxScore As Integer = 0
 
     Try
 
 		  rsMatchReportsData = DB.GetDataTable(mstrSQL)
 				
-      If UtilityType = UtilityType.TalentReport And PreferredColumnID > 0 Then      
-        Dim relation =  CType(mcolRelations.Item("T" & Table1ChildTableID), clsMatchRelation)       
-        Dim sSQL = String.Format("SELECT MAX([{0}]) FROM {1}", Columns.GetById(PreferredColumnID).Name, relation.Table1RealSource)
-        Dim ranges = DB.GetDataTable(sSQL)
-        maxScore = ranges.Rows(0)(0)
-      End If
-      			
-	
 		  With rsMatchReportsData
 								
 			  If .Rows.Count > 0 Then
@@ -1793,7 +1784,6 @@ Public Class MatchReportRun
                   .Name = objBreakdown("Competency").ToString(),
                   .Minimum =  CDbl(IIf(IsDBNull(objBreakdown("MinScore")), 0, objBreakdown("MinScore"))),
                   .Preferred = CDbl(IIf(IsDBNull(objBreakdown("PrefScore")), 0, objBreakdown("PrefScore"))),
-                  .Maximum = maxScore,
                   .Actual = CDbl(IIf(IsDBNull(objBreakdown("ActualScore")), 0, objBreakdown("ActualScore"))),
                   .Include = IncludeUnmatched And MatchAgainstType = MatchAgainstType.Any
                   }

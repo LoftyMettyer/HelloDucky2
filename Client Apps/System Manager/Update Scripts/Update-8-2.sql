@@ -2682,12 +2682,15 @@ PRINT 'Step - Talent Reports'
 		EXEC sp_executesql N'ALTER TABLE ASRSysTalentReports ADD OutputEmail bit;';
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysTalentReports', 'U') AND name = 'IncludeUnmatched')
+	BEGIN
 		EXEC sp_executesql N'ALTER TABLE ASRSysTalentReports ADD IncludeUnmatched bit;';
+		EXEC sp_executesql N'UPDATE ASRSysTalentReports SET IncludeUnmatched = 0;';
+	END
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysTalentReports', 'U') AND name = 'MinimumScore')
 	BEGIN
 		EXEC sp_executesql N'ALTER TABLE ASRSysTalentReports ADD MinimumScore int;';
-		EXEC sp_executesql N'UPDATE ASRSysTalentReports SET MinimumScore = 0;';
+		EXEC sp_executesql N'UPDATE ASRSysTalentReports SET MinimumScore = 1;';
 	END
 
 	IF NOT EXISTS(SELECT Name FROM sysindexes WHERE id = object_id(N'ASRSysTalentReports') AND name = N'PK_ASRSysTalentReports_ID')

@@ -434,7 +434,7 @@ Namespace Repository
 					objModel.Output.ToScreen = True
 					objModel.MatchAgainstType = MatchAgainstType.Any
           objModel.IncludeUnmatched = False
-          objModel.MinimumScore = 0
+          objModel.MinimumScore = 1
 				Else
 
 					objModel.ID = ID

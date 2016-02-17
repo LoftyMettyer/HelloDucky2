@@ -13,7 +13,7 @@ Friend Module MatchScoreExtension
 
       Dim score As Double = 0
 
-      For Each competency In items
+      For Each competency In items.Where(function(c) c.Actual > 0)
         If competency.Actual >= competency.Preferred Or competency.Minimum <= 0 Then
           score += 1
         Else 
@@ -30,7 +30,7 @@ Friend Module MatchScoreExtension
 
     <Extension()>
     Public Function MatchCount(Of T As Competency)(items As ICollection(Of T)) As Integer
-      Return items.Where(Function(i) i.Actual >= i.Minimum Or i.Include).Count()
+      Return items.Where(Function(i) (i.Actual >= i.Minimum And i.Actual > 0) Or i.Include).Count()
     End Function
 
   End Module
