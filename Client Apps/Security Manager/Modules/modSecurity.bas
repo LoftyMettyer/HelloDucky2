@@ -51,6 +51,10 @@ Private Sub RemoveGroupAccessRecords(psGroupName As String)
     "  WHERE groupName = '" & psGroupName & "'"
   gADOCon.Execute sSQL, , adExecuteNoRecords
 
+  sSQL = "DELETE FROM ASRSysTalentReportAccess" & _
+    "  WHERE groupName = '" & psGroupName & "'"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+
   sSQL = "DELETE FROM ASRSysCalendarReportAccess" & _
     "  WHERE groupName = '" & psGroupName & "'"
   gADOCon.Execute sSQL, , adExecuteNoRecords
@@ -1984,6 +1988,13 @@ Private Function ApplyChanges_NewGroups() As Boolean
             "   WHERE groupName = '" & .AccessCopyGroup & "')"
           gADOCon.Execute sSQL, , adExecuteNoRecords
     
+          sSQL = "INSERT INTO ASRSysTalentReportAccess" & _
+            " (groupName, access, id)" & _
+            " (SELECT '" & .Name & "', access, id" & _
+            "   FROM ASRSysTalentReportAccess" & _
+            "   WHERE groupName = '" & .AccessCopyGroup & "')"
+          gADOCon.Execute sSQL, , adExecuteNoRecords
+    
           sSQL = "INSERT INTO ASRSysCalendarReportAccess" & _
             " (groupName, access, id)" & _
             " (SELECT '" & .Name & "', access, id" & _
@@ -2098,6 +2109,21 @@ Private Function ApplyChanges_NewGroups() As Boolean
                       sHiddenJobTypes = sHiddenJobTypes & _
                         IIf(LenB(sHiddenJobTypes) <> 0, ",", vbNullString) & _
                         "'Cross Tab'"
+                    End If
+
+                  Case utlTalent
+                    sSQL = "INSERT INTO ASRSysTalentReportAccess" & _
+                      " (groupName, access, id)" & _
+                      " (SELECT '" & .Name & "', '" & CStr(avAccess(2, iLoop)) & "', ID" & _
+                      "   FROM ASRSysTalentReports)"
+                    gADOCon.Execute sSQL, , adExecuteNoRecords
+
+                    ' If the utility/report is being made hidden then any  batch jobs that
+                    ' contain this utility/report must also be made hidden.
+                    If CStr(avAccess(2, iLoop)) = ACCESS_HIDDEN Then
+                      sHiddenJobTypes = sHiddenJobTypes & _
+                        IIf(LenB(sHiddenJobTypes) <> 0, ",", vbNullString) & _
+                        "'Custom Report'"
                     End If
                                     
                   Case utlCustomReport
@@ -4551,6 +4577,14 @@ Private Function ApplyChanges_CleanUp() As Boolean
     "      AND uid <> 0)"
   gADOCon.Execute sSQL, , adExecuteNoRecords
   
+  sSQL = "DELETE FROM ASRSysTalentReportAccess" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+   
   sSQL = "DELETE FROM ASRSysCustomReportAccess" & _
     " WHERE groupName NOT IN" & _
     "   (SELECT name" & _
