@@ -1551,6 +1551,7 @@ div#sessionWarning {
 	text-align: center;
 	font-size: x-large;
 	margin: 0 auto;
+	z-index: 101;
 }
 
 	div#sessionWarning p {

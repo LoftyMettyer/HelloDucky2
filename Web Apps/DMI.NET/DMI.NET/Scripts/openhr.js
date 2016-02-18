@@ -1483,6 +1483,8 @@
 
                     try {
                         if (window.timeoutSecondsLeft < 300)
+                          //If the parent of the element with class "divProgressMessage" (i.e. the "Please wait..." div) is not being shown...
+                           if ($(".divProgressMessage").parent().css("display") === "none")
                             $("#sessionWarning").show(); //show countdown for the last 5 minutes.
                         else
                             $("#sessionWarning").hide();
