@@ -5,6 +5,11 @@ var frmUseful = OpenHR.getForm("workframe", "frmUseful") || OpenHR.getForm("Tool
 
 function util_def_picklist_onload() {
 
+	showDefaultRibbon();
+	$("#toolbarReportNewEditCopy").parent().show();
+	$("#toolbarReportNewEditCopy").click();
+	HideToolsRibbonButtons();
+
 	if (IsToolsScreenLoadedFromReportDefinition()) {
 		$("#ToolsFrame").attr("data-framesource", "UTIL_DEF_PICKLIST");
 		$("#ToolsFrame").show();

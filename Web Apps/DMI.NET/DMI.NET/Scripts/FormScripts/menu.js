@@ -359,8 +359,8 @@ function menu_MenuClick(sTool) {
 
 	//------------------------DEFSEL----------------------------//
 	//NEW buttons
-	if ((sToolName == 'mnutoolNewReportFind') || (sToolName == 'mnutoolNewUtilitiesFind') || (sToolName == 'mnutoolNewToolsFind')) {
-		try {		
+	if ((sToolName == 'mnutoolNewReportFind') || (sToolName == 'mnutoolNewUtilitiesFind')) {
+		try {
 			showDefaultRibbon();
 			setnew();
 			$("#toolbarReportNewEditCopy").parent().show();
@@ -373,19 +373,27 @@ function menu_MenuClick(sTool) {
 					$('#toolbarReportNewEditCopy').text('Utility');
 					HideToolsRibbonButtons();
 					break;
-				case 'mnutoolNewToolsFind':
-					$('#toolbarReportNewEditCopy').text('Tools');
-					HideToolsRibbonButtons();
-					break;
 			}
 		} catch(e) {
 		} finally {
 			return false;
 		}
 	}
+		//Exception handling on util_def_picklist.ascx and util_def_expression.ascx are not upto mark. 
+		//Hence, menus are changed in the util_def_picklist_onload() event in util_def_picklist.js file and util_def_expression_onload() event in util_def_expression.js file instead of changing it here.
+		//That way, if/when the page fails to load, the original defsel toolbar will remain in place. Below code would be called for calc/picklist/filter New ribbon button.
+	else if (sToolName == 'mnutoolNewToolsFind') {
+		try {
+			setnew();
+			$('#toolbarReportNewEditCopy').text('Tools');
+		} catch (e) {
+		} finally {
+			return false;
+		}
+	}
 
 	//COPY buttons
-	if ((sToolName == 'mnutoolCopyReportFind') || (sToolName == 'mnutoolCopyUtilitiesFind') || (sToolName == 'mnutoolCopyToolsFind')) {
+	if ((sToolName == 'mnutoolCopyReportFind') || (sToolName == 'mnutoolCopyUtilitiesFind')) {
 		try {
 			showDefaultRibbon();
 			setcopy();
@@ -399,19 +407,27 @@ function menu_MenuClick(sTool) {
 					$('#toolbarReportNewEditCopy').text('Utility');
 					HideToolsRibbonButtons();
 					break;
-				case 'mnutoolCopyToolsFind':
-					$('#toolbarReportNewEditCopy').text('Tools');
-					HideToolsRibbonButtons();
-					break;
 			}
 		} catch(e) {
 		} finally {
 			return false;
 		}
 	}
+		//Exception handling on util_def_picklist.ascx and util_def_expression.ascx are not upto mark. 
+		//Hence, menus are changed in the util_def_picklist_onload() event in util_def_picklist.js file and util_def_expression_onload() event in util_def_expression.js file instead of changing it here.
+		//That way, if/when the page fails to load, the original defsel toolbar will remain in place. Below code would be called for calc/picklist/filter Copy ribbon button.
+	else if (sToolName == 'mnutoolCopyToolsFind') {
+		try {
+			setcopy();
+			$('#toolbarReportNewEditCopy').text('Tools');
+		} catch (e) {
+		} finally {
+			return false;
+		}
+	}
 
 	//EDIT buttons
-	if ((sToolName == 'mnutoolEditReportFind') || (sToolName == 'mnutoolEditUtilitiesFind') || (sToolName == 'mnutoolEditToolsFind')) {
+	if ((sToolName == 'mnutoolEditReportFind') || (sToolName == 'mnutoolEditUtilitiesFind')) {
 		try {
 			showDefaultRibbon();
 			setedit();
@@ -425,12 +441,20 @@ function menu_MenuClick(sTool) {
 					$('#toolbarReportNewEditCopy').text('Utility');
 					HideToolsRibbonButtons();
 					break;
-				case 'mnutoolEditToolsFind':
-					$('#toolbarReportNewEditCopy').text('Tools');
-					HideToolsRibbonButtons();
-					break;
 			}
-		} catch(e) {
+		} catch (e) {
+		} finally {
+			return false;
+		}
+	}
+		//Exception handling on util_def_picklist.ascx and util_def_expression.ascx are not upto mark. 
+		//Hence, menus are changed in the util_def_picklist_onload() event in util_def_picklist.js file and util_def_expression_onload() event in util_def_expression.js file instead of changing it here.
+		//That way, if/when the page fails to load, the original defsel toolbar will remain in place. Below code would be called for calc/picklist/filter Edit ribbon button.
+	else if (sToolName == 'mnutoolEditToolsFind') {
+		try {
+			setedit();
+			$('#toolbarReportNewEditCopy').text('Tools');
+		} catch (e) {
 		} finally {
 			return false;
 		}

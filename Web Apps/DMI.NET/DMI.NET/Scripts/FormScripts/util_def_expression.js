@@ -155,7 +155,11 @@ function buildjsTree() {
 
 
 function util_def_expression_onload() {
-	
+
+	showDefaultRibbon();
+	$("#toolbarReportNewEditCopy").parent().show();
+	$("#toolbarReportNewEditCopy").click();
+	HideToolsRibbonButtons();
 
 	resizeGridToFit();
 
