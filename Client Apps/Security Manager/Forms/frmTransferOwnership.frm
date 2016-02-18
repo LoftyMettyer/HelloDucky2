@@ -506,7 +506,10 @@ Private Function BuildReportSQL(sUserName As String) As String
     sWhere = "WHERE LOWER(Username) = '" & Replace(LCase(sUserName), "'", "''") & "' " & vbCrLf
   End If
   
-  
+  sSQL = sSQL & "SELECT  ID, 'TALENT REPORT' AS Type, Name, Username " & vbCrLf
+  sSQL = sSQL & "From ASRSysTalentReports " & vbCrLf
+  sSQL = sSQL & sWhere
+  sSQL = sSQL & "Union " & vbCrLf
   sSQL = sSQL & "SELECT  CrossTabID AS ID, '9-BOX GRID REPORT' AS Type, Name, Username " & vbCrLf
   sSQL = sSQL & "From ASRSysCrossTab " & vbCrLf
   sSQL = sSQL & sWhere & " AND CrossTabType = " & ctt9GridBox & vbCrLf
@@ -804,6 +807,13 @@ Private Function DoTransfer() As Boolean
   strCommand = "UPDATE ASRSysCrossTab SET Username = '" & strTo & "'"
   sWhereExtra = sWhere & " AND CrossTabType <> " & ctt9GridBox
   
+  strCommand = strCommand & sWhereExtra
+  gADOCon.Execute strCommand
+  DoEvents
+  
+  ' Talent Reports
+  Progress "Transferring Talent Reports..."
+  strCommand = "UPDATE ASRSysTalentReports SET Username = '" & strTo & "'"
   strCommand = strCommand & sWhereExtra
   gADOCon.Execute strCommand
   DoEvents
