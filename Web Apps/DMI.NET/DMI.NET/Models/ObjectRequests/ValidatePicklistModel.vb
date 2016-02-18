@@ -5,6 +5,8 @@ Namespace Models.ObjectRequests
 	Public Class ValidatePicklistModel
 
 		Public Property validatePass As Integer
+
+		<AllowHtml>
 		Public Property validateName As String
 		Public Property validateTimestamp As String
 		Public Property validateUtilID As Integer

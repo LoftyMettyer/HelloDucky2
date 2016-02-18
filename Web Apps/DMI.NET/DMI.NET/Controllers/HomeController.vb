@@ -4230,6 +4230,8 @@ Namespace Controllers
 
 		End Function
 
+      <HttpPost>
+      <ValidateAntiForgeryToken>
 		Function util_validate_picklist(model As ValidatePicklistModel) As ActionResult
 			Return View(model)
 		End Function

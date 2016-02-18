@@ -112,7 +112,8 @@ function submitDefinition() {
 		validateTimestamp: sTimeStamp,
 		validateUtilID: sUtilID,
 		validateBaseTableID: frmSend.txtSend_tableID.value,
-		validateAccess: frmSend.txtSend_access.value
+		validateAccess: frmSend.txtSend_access.value,
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 	};
 
 	OpenHR.submitForm(null, "reportframe", null, postData, "util_validate_picklist");

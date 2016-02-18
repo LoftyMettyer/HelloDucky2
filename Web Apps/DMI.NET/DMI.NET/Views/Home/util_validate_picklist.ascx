@@ -1,8 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.Models.ObjectRequests.ValidatePicklistModel)" %>
 
-<%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="DMI.NET.Helpers" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <script type="text/javascript">
@@ -36,7 +36,8 @@
 				validateTimestamp: '<%:Model.validateTimestamp%>',
 				validateUtilID: <%:Model.validateUtilID%>,
 				validateBaseTableID: <%:Model.validateBaseTableID%>,
-				validateAccess: '<%:Model.validateAccess%>'
+				validateAccess: '<%:Model.validateAccess%>',
+				<%:Html.AntiForgeryTokenForAjaxPost() %>
 			};
 
 		OpenHR.submitForm(null, "reportframe", null, postData, "util_validate_picklist");
