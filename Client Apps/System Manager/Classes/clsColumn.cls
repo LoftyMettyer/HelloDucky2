@@ -534,62 +534,6 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   'Close temporary recordset
   rsOtherColumns.Close
   
-  
-''  ' Check that the column is not used for a lookup prompted value in an expression.
-''  sSQL = "SELECT DISTINCT tmpExpressions.exprID " & _
-''    " FROM tmpExpressions " & _
-''    " WHERE (tmpExpressions.type NOT IN (" & giEXPR_RUNTIMECALCULATION & "," & giEXPR_RUNTIMEFILTER & "," & giEXPR_RECORDINDEPENDANTCALC & "," & _
-''                                             giEXPR_UTILRUNTIMEFILTER & "," & giEXPR_MATCHJOINEXPRESSION & "," & giEXPR_MATCHSCOREEXPRESSION & "," & _
-''                                             giEXPR_MATCHWHEREEXPRESSION & ")) " & _
-''    "   AND (tmpExpressions.parentComponentID = 0)"
-'''    "   AND ((tmpComponents.fieldColumnID = " & Trim(Str(gLngColumnID)) & ") " & _
-'''    "   OR  (tmpComponents.lookupColumnID = " & Trim(Str(gLngColumnID)) & ")) " & _
-''
-''  Set rsExpressions = daoDb.OpenRecordset(sSQL, _
-''    dbOpenForwardOnly, dbReadOnly)
-''  If Not (rsExpressions.BOF And rsExpressions.EOF) Then
-'''    fUsed = True
-''    Do Until rsExpressions.EOF
-''      sExprName = vbNullString
-''      sExprParentTable = vbNullString
-''
-''      ' Get the expression name and type description.
-''      Set objExpr = New CExpression
-''      lngExprID = rsExpressions!ExprID
-''      objExpr.ExpressionID = lngExprID
-''
-''      If objExpr.ConstructExpression Then
-''        sExprName = objExpr.Name
-''        sExprType = objExpr.ExpressionTypeName
-''        lngExprParentTableID = objExpr.BaseTableID
-''        If objExpr.ExpressionContainsColumn(gLngColumnID) Then
-''          fUsed = True
-''          If objExpr.ExpressionType = giEXPR_RECORDINDEPENDANTCALC Then
-''            sExprParentTable = vbNullString
-''          Else
-''            ' Get the expression's parent table name.
-''            recTabEdit.Index = "idxTableID"
-''            recTabEdit.Seek "=", lngExprParentTableID
-''            If Not recTabEdit.NoMatch Then
-''              sExprParentTable = recTabEdit!TableName
-''            Else
-''              sExprParentTable = "<unknown>"
-''            End If
-''          End If
-''          mfrmUse.AddToList (sExprType & " : " & sExprName & " <" & sExprParentTable & ">")
-''        End If
-''      End If
-''      ' Disassociate object variables.
-''      'objExpr.Terminate      'MH20060727
-''      Set objExpr = Nothing
-''
-''      rsExpressions.MoveNext
-''    Loop
-''  End If
-''  'Close temporary recordset
-''  rsExpressions.Close
-
-
   ' Check that the column is not used in any screens.
   sSQL = "SELECT DISTINCT tmpScreens.name, tmpTables.tableName" & _
     " FROM tmpScreens, tmpControls, tmpTables" & _
@@ -648,7 +592,7 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   If Not (rsViews.BOF And rsViews.EOF) Then
     fUsed = True
     Do Until rsViews.EOF
-      mfrmUse.AddToList ("View : " & rsViews!ViewName & " <" & rsViews!TableName & ">")
+      mfrmUse.AddToList ("View : " & rsViews!viewName & " <" & rsViews!TableName & ">")
       rsViews.MoveNext
     Loop
   End If
@@ -821,27 +765,6 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
     End With
   End If
 
-'NHRD Prototype Fusion Code***********************************************************
-' This can be deleted when it is confirmed its not needed
-'  If gbFusionModule Then
-'    sSQL = "SELECT rtrim(t.FusionType) + ' - ' + f.Description AS Description" & _
-'           " FROM tmpFusionFieldDefinitions f " & _
-'           " INNER JOIN tmpFusionTypes t ON t.FusionTypeID = f.FusionTypeID" & _
-'           " WHERE ASRColumnID = " & Me.ColumnID & " AND ASRMapType = 0"
-'    Set rsFusion = daoDb.OpenRecordset(sSQL)
-'    With rsFusion
-'      If Not (.EOF And .BOF) Then
-'        fUsed = True
-'        Do Until .EOF
-'          mfrmUse.AddToList "Fusion Configuration : " & Trim(!Description)
-'          .MoveNext
-'        Loop
-'      End If
-'      .Close
-'    End With
-'  End If
-'NHRD Prototype Fusion Code***********************************************************
-  
   'TM20011003 Fault 2191 - 1
   'Make check for the columns use in email definitions.
   sSQL = "SELECT DISTINCT tmpEmailAddresses.name " & _
@@ -983,6 +906,33 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
       fUsed = True
       Do Until .EOF
         mfrmUse.AddToList ("Custom Report : " & !Name)
+        .MoveNext
+      Loop
+    End If
+    .Close
+  End With
+  Set rsUtils1 = Nothing
+    
+  ' Now Check if the column is used in a Talent Report
+  sSQL = "SELECT DISTINCT r.Name, r.ID, r.Username" & _
+         " FROM ASRSysTalentReports r" & _
+         " INNER JOIN ASRSysTalentReportDetails d" & _
+         "   ON r.ID = d.TalentReportID" & _
+         " WHERE d.ColExprID = " & Trim(Str(gLngColumnID)) & " AND d.ColType = 'C'" & _
+         " UNION " & _
+         " SELECT DISTINCT r.Name, r.ID, r.Username FROM ASRSysTalentReports r" & _
+         "   WHERE BaseChildColumnId = " & Trim(Str(gLngColumnID)) & _
+         "   OR BasePreferredRatingColumnID = " & Trim(Str(gLngColumnID)) & _
+         "   OR BaseMinimumRatingColumnID = " & Trim(Str(gLngColumnID)) & _
+         "   OR MatchChildColumnId = " & Trim(Str(gLngColumnID)) & _
+         "   OR MatchChildRatingColumnId = " & Trim(Str(gLngColumnID))
+  Set rsUtils1 = New ADODB.Recordset
+  rsUtils1.Open sSQL, gADOCon, adOpenStatic, adLockReadOnly
+  With rsUtils1
+    If Not (.EOF And .BOF) Then
+      fUsed = True
+      Do Until .EOF
+        mfrmUse.AddToList ("Talent Report : " & !Name)
         .MoveNext
       Loop
     End If
