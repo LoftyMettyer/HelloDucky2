@@ -79,6 +79,7 @@ BEGIN
 	DECLARE @calculationIDs TABLE(id integer)
 	DECLARE @expressionIDs TABLE(id integer)
 	DECLARE @superExpressionIDs TABLE(id integer)
+	DECLARE @talentReportIDs TABLE(id integer)
 
 	IF (@piUtilityType = 12) OR (@piUtilityType = 11)
 	BEGIN
@@ -342,7 +343,172 @@ BEGIN
 				BEGIN
 					/* Found a Calendar Report in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-								
+            		
+					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
+					BEGIN
+						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
+					END
+					ELSE
+					BEGIN
+						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : ' + @sUtilName + '<BR>'
+					END
+				END            
+	
+				FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @iScheduled, @sRoleToPrompt, @iNonHiddenCount, @sUtilOwner, @sJobName
+			END
+			CLOSE check_cursor
+			DEALLOCATE check_cursor
+		END
+
+		/*---------------------------------------------------*/
+		/* Check Talent Report for this Expression. */
+		/*---------------------------------------------------*/
+		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT ASRSysTalentReports.Name,
+			ASRSysTalentReports.ID,
+			ASRSysTalentReports.Username,
+			COUNT (ASRSysTalentReportAccess.Access) AS [nonHiddenCount]
+		FROM ASRSysTalentReports
+		LEFT OUTER JOIN ASRSysTalentReportAccess ON ASRSysTalentReports.ID = ASRSysTalentReportAccess.ID
+			AND ASRSysTalentReportAccess.access <> 'HD'
+			AND ASRSysTalentReportAccess.groupName NOT IN (SELECT sysusers.name
+				FROM sysusers
+				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
+					AND ASRSysGroupPermissions.permitted = 1
+				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+ 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
+				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
+				WHERE sysusers.uid = sysusers.gid
+					AND sysusers.uid <> 0)
+    WHERE (ASRSysTalentReports.BaseFilterID IN (SELECT id FROM @expressionIDs)
+      OR ASRSysTalentReports.MatchFilterID IN (SELECT id FROM @expressionIDs))
+		GROUP BY ASRSysTalentReports.Name,
+			ASRSysTalentReports.ID,
+ 			ASRSysTalentReports.Username
+
+		OPEN check_cursor
+		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			IF @sUtilOwner = @sCurrentUser
+			BEGIN
+				/* Found a Talent Report whose owner is the same */
+				IF @iNonHiddenCount > 0
+				BEGIN
+					SET @iCount_Owner = @iCount_Owner + 1
+					SET @sDetails_Owner = @sDetails_Owner + 'Talent Report : ' + @sUtilName + '<BR>'
+					INSERT INTO @talentReportIDs (id) VALUES (@iUtilID)
+				END
+			END
+			ELSE
+			BEGIN
+				/* Found a Talent Report whose owner is not the same */        
+				SET @iCount_NotOwner = @iCount_NotOwner + 1
+          
+				exec spASRIntCurrentUserAccess 
+					38,
+					@iUtilID,
+					@sUtilAccess	OUTPUT
+
+				IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
+				BEGIN
+					SET @sDetails_NotOwner = @sDetails_NotOwner + 'Talent Report : <Hidden> by ' + @sUtilOwner + '<BR>'
+				END
+				ELSE
+				BEGIN
+					SET @sDetails_NotOwner = @sDetails_NotOwner + 'Talent Report : ' + @sUtilName + '<BR>'
+				END
+			END
+
+			FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
+		END
+		CLOSE check_cursor
+		DEALLOCATE check_cursor
+
+		/* Now check that any of these Talent Reports are contained within a batch job */
+		SELECT @iCount = COUNT(*)
+		FROM @talentReportIDs
+
+		IF @iCount > 0 
+		BEGIN
+			DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
+				SELECT ASRSysBatchJobName.[Name],
+					ASRSysBatchJobName.[ID],
+					convert(integer, ASRSysBatchJobName.scheduled) AS [scheduled],
+					ASRSysBatchJobName.roleToPrompt,
+					COUNT (ASRSysBatchJobAccess.Access) AS [nonHiddenCount],
+					ASRSysBatchJobName.[Username],
+					ASRSysTalentReports.[Name] AS 'JobName' 
+				FROM ASRSysBatchJobDetails
+				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysTalentReports ON ASRSysTalentReports.ID = ASRSysBatchJobdetails.JobID
+				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
+					AND ASRSysBatchJobAccess.access <> 'HD'
+					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
+						FROM sysusers
+						INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
+							AND ASRSysGroupPermissions.permitted = 1
+						INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+							AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+							OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
+						INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+							AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
+						WHERE sysusers.uid = sysusers.gid
+							AND sysusers.uid <> 0)
+				WHERE ASRSysBatchJobDetails.JobType = 'Talent Report'
+					AND ASRSysBatchJobDetails.JobID IN (SELECT id FROM @talentReportIDs)
+				GROUP BY ASRSysBatchJobName.Name,
+					ASRSysBatchJobName.ID,
+					convert(integer, ASRSysBatchJobName.scheduled),
+					ASRSysBatchJobName.roleToPrompt,
+					ASRSysBatchJobName.Username,
+					ASRSysTalentReports.Name
+
+			OPEN check_cursor
+			FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @iScheduled, @sRoleToPrompt, @iNonHiddenCount, @sUtilOwner, @sJobName
+			WHILE (@@fetch_status = 0)
+			BEGIN
+				exec spASRIntCurrentUserAccess 
+					0,
+					@iUtilID,
+					@sUtilAccess	OUTPUT
+
+				IF @sUtilOwner = @sCurrentUser
+				BEGIN
+					/* Found a Talent Report in a batch job whose owner is the same */
+					IF (@iScheduled = 1) 
+						AND (Len(@sRoleToPrompt) > 0) 
+						AND (@sRoleToPrompt <> @sCurrentUserGroup)
+					BEGIN
+						/*Found a Batch Job which is scheduled for another user group to run. */
+						SET @fBatchJobsOK = 0
+      
+						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
+						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
+						BEGIN
+							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : <Hidden> by ' + @sUtilOwner + '<BR>'
+						END
+						ELSE
+						BEGIN
+							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : ' + @sUtilName+ '<BR>'
+						END
+					END
+					ELSE
+					BEGIN
+						IF @iNonHiddenCount > 0
+						BEGIN
+							SET @sBatchJobDetails_Owner = @sBatchJobDetails_Owner + 'Batch Job : ' +  @sUtilName + ' (Contains Talent Report ''' + @sJobName + ''') ' + '<BR>'
+							INSERT INTO @batchJobIDs (id) VALUES(@iUtilID)
+						END
+					END
+				END
+				ELSE
+				BEGIN
+					/* Found a Talent Report in a batch job whose owner is not the same */
+					SET @fBatchJobsOK = 0
+            		
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
@@ -2731,7 +2897,172 @@ LEFT OUTER JOIN ASRSYSCustomReportAccess ON ASRSysCustomReportsName.ID = ASRSYSC
 				BEGIN
 					/* Found a Calendar Report in a batch job whose owner is not the same */
 					SET @fBatchJobsOK = 0
-								
+            		
+					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
+					BEGIN
+						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
+					END
+					ELSE
+					BEGIN
+						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : ' + @sUtilName + '<BR>'
+					END
+				END            
+	
+				FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @iScheduled, @sRoleToPrompt, @iNonHiddenCount, @sUtilOwner, @sJobName
+			END
+			CLOSE check_cursor
+			DEALLOCATE check_cursor
+		END
+
+		/*---------------------------------------------------*/
+		/* Check Talent Reports for this Picklist. */
+		/*---------------------------------------------------*/
+		DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT ASRSysTalentReports.Name,
+			ASRSysTalentReports.ID,
+			ASRSysTalentReports.Username,
+			COUNT (ASRSysTalentReportAccess.Access) AS [nonHiddenCount]
+		FROM ASRSysTalentReports
+		LEFT OUTER JOIN ASRSysTalentReportAccess ON ASRSysTalentReports.ID = ASRSysTalentReportAccess.ID
+			AND ASRSysTalentReportAccess.access <> 'HD'
+			AND ASRSysTalentReportAccess.groupName NOT IN (SELECT sysusers.name
+				FROM sysusers
+				INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
+					AND ASRSysGroupPermissions.permitted = 1
+				INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+ 					AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+					OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
+				INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+					AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
+				WHERE sysusers.uid = sysusers.gid
+					AND sysusers.uid <> 0)
+    WHERE (ASRSysTalentReports.BasePicklistID = @piUtilityID
+      OR ASRSysTalentReports.MatchPicklistID = @piUtilityID)
+		GROUP BY ASRSysTalentReports.Name,
+			ASRSysTalentReports.ID,
+ 			ASRSysTalentReports.Username
+
+		OPEN check_cursor
+		FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			IF @sUtilOwner = @sCurrentUser
+			BEGIN
+				/* Found a Talent Report whose owner is the same */
+				IF @iNonHiddenCount > 0
+				BEGIN
+					SET @iCount_Owner = @iCount_Owner + 1
+					SET @sDetails_Owner = @sDetails_Owner + 'Talent Report : ' + @sUtilName + '<BR>'
+					INSERT INTO @talentReportIDs (id) VALUES (@iUtilID)
+				END
+			END
+			ELSE
+			BEGIN
+				/* Found a Talent Report whose owner is not the same */        
+				SET @iCount_NotOwner = @iCount_NotOwner + 1
+          
+				exec spASRIntCurrentUserAccess 
+					38,
+					@iUtilID,
+					@sUtilAccess	OUTPUT
+
+				IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
+				BEGIN
+					SET @sDetails_NotOwner = @sDetails_NotOwner + 'Talent Report : <Hidden> by ' + @sUtilOwner + '<BR>'
+				END
+				ELSE
+				BEGIN
+					SET @sDetails_NotOwner = @sDetails_NotOwner + 'Talent Report : ' + @sUtilName + '<BR>'
+				END
+			END
+
+			FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @sUtilOwner, @iNonHiddenCount
+		END
+		CLOSE check_cursor
+		DEALLOCATE check_cursor
+
+		/* Now check that any of these Talent Reports are contained within a batch job */
+		SELECT @iCount = COUNT(*)
+		FROM @talentReportIDs
+
+		IF @iCount > 0 
+		BEGIN
+			DECLARE check_cursor CURSOR LOCAL FAST_FORWARD FOR 
+				SELECT ASRSysBatchJobName.[Name],
+					ASRSysBatchJobName.[ID],
+					convert(integer, ASRSysBatchJobName.scheduled) AS [scheduled],
+					ASRSysBatchJobName.roleToPrompt,
+					COUNT (ASRSysBatchJobAccess.Access) AS [nonHiddenCount],
+					ASRSysBatchJobName.[Username],
+					ASRSysTalentReports.[Name] AS 'JobName' 
+				FROM ASRSysBatchJobDetails
+				INNER JOIN ASRSysBatchJobName ON AsrSysBatchJobName.ID = AsrSysBatchJobDetails.BatchJobNameID
+				INNER JOIN ASRSysTalentReports ON ASRSysTalentReports.ID = ASRSysBatchJobdetails.JobID
+				LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
+					AND ASRSysBatchJobAccess.access <> 'HD'
+					AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
+						FROM sysusers
+						INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
+							AND ASRSysGroupPermissions.permitted = 1
+						INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+							AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+							OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
+						INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+							AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
+						WHERE sysusers.uid = sysusers.gid
+							AND sysusers.uid <> 0)
+				WHERE ASRSysBatchJobDetails.JobType = 'Talent Report'
+					AND ASRSysBatchJobDetails.JobID IN (SELECT id FROM @talentReportIDs)
+				GROUP BY ASRSysBatchJobName.Name,
+					ASRSysBatchJobName.ID,
+					convert(integer, ASRSysBatchJobName.scheduled),
+					ASRSysBatchJobName.roleToPrompt,
+					ASRSysBatchJobName.Username,
+					ASRSysTalentReports.Name
+
+			OPEN check_cursor
+			FETCH NEXT FROM check_cursor INTO @sUtilName, @iUtilID, @iScheduled, @sRoleToPrompt, @iNonHiddenCount, @sUtilOwner, @sJobName
+			WHILE (@@fetch_status = 0)
+			BEGIN
+				exec spASRIntCurrentUserAccess 
+					0,
+					@iUtilID,
+					@sUtilAccess	OUTPUT
+
+				IF @sUtilOwner = @sCurrentUser
+				BEGIN
+					/* Found a Talent Report in a batch job whose owner is the same */
+					IF (@iScheduled = 1) 
+						AND (Len(@sRoleToPrompt) > 0) 
+						AND (@sRoleToPrompt <> @sCurrentUserGroup)
+					BEGIN
+						/*Found a Batch Job which is scheduled for another user group to run. */
+						SET @fBatchJobsOK = 0
+      
+						SET @sScheduledUserGroups = @sScheduledUserGroups + @sRoleToPrompt + '<BR>'
+						IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
+						BEGIN
+							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : <Hidden> by ' + @sUtilOwner + '<BR>'
+						END
+						ELSE
+						BEGIN
+							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : ' + @sUtilName+ '<BR>'
+						END
+					END
+					ELSE
+					BEGIN
+						IF @iNonHiddenCount > 0
+						BEGIN
+							SET @sBatchJobDetails_Owner = @sBatchJobDetails_Owner + 'Batch Job : ' +  @sUtilName + ' (Contains Talent Report ''' + @sJobName + ''') ' + '<BR>'
+							INSERT INTO @batchJobIDs (id) VALUES(@iUtilID)
+						END
+					END
+				END
+				ELSE
+				BEGIN
+					/* Found a Talent Report in a batch job whose owner is not the same */
+					SET @fBatchJobsOK = 0
+            		
 					IF (@sUtilAccess = 'HD') AND (@fSysSecMgr = 0)
 					BEGIN
 						SET @sBatchJobDetails_NotOwner = @sBatchJobDetails_NotOwner + 'Batch Job : <Hidden> by ' + @sUtilName + '<BR>'
