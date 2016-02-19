@@ -172,6 +172,9 @@ Private Sub GetHRProUtilityTypes()
     .AddItem "Mail Merge"
     .ItemData(.NewIndex) = utlMailMerge
     
+    .AddItem "Talent Report"
+    .ItemData(.NewIndex) = utlTalent
+    
     If ASRDEVELOPMENT Or Application.WorkflowModule Then
       .AddItem "Workflow"
       .ItemData(.NewIndex) = utlWorkflow
@@ -282,6 +285,10 @@ Private Sub GetHRProUtilities(pUtilityType As UtilityType)
       sTableName = "ASRSysMatchReportName"
       sIDColumnName = "matchReportID"
   
+    Case utlTalent
+      sTableName = "ASRSysTalentReports"
+      sIDColumnName = "ID"
+  
     Case utlWorkflow
       fLocalTable = True
       sTableName = "tmpWorkflows"
@@ -356,7 +363,7 @@ Private Sub cmdCancel_Click()
   UnLoad Me
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   If ValidateLink Then
     Cancelled = False
     Me.Hide
