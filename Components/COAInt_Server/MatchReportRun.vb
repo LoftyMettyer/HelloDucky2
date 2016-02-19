@@ -1574,8 +1574,10 @@ Public Class MatchReportRun
 		
     dim sorts as New ArrayList
 		
-    For Each column in mcolColDetails.Where(Function(m) m.Sequence > 0)
-      sorts.Add("[" & column.Heading & "]" & IIf(column.SortDir = "D", " DESC", ""))
+    For Each column in mcolColDetails _
+      .Where(Function(m) m.Sequence > 0) _
+      .OrderBy(function(m) m.SortSeq)
+        sorts.Add("[" & column.Heading & "]" & IIf(column.SortDir = "D", " DESC", ""))
     Next
 
 		mstrSQLOrderBy = " ORDER BY " & String.Join(", ",sorts.ToArray())
@@ -1624,7 +1626,9 @@ Public Class MatchReportRun
       If UtilityType = UtilityType.TalentReport Then
         Dim dv = ReportDataTable.DefaultView
 
-        For Each column in mcolColDetails.Where(Function(m) m.Sequence > 0)
+        For Each column in mcolColDetails _
+            .Where(Function(m) m.Sequence > 0) _
+            .OrderBy(function(m) m.SortSeq)
           talentSortOrder &= string.Format(", [{0}] {1}" , column.Heading, IIf(column.SortDir = "D", " DESC", "ASC"))
         Next
         dv.Sort = talentSortOrder
