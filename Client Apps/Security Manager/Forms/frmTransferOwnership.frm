@@ -827,14 +827,7 @@ Private Function DoTransfer() As Boolean
     gADOCon.Execute strCommand
     DoEvents
   End If
-  
-  ' Talent Reports
-  Progress "Transferring Talent Reports..."
-  strCommand = "UPDATE ASRSysTalentReports SET Username = '" & strTo & "'"
-  strCommand = strCommand & sWhere
-  gADOCon.Execute strCommand
-  DoEvents
-  
+   
   ' Custom Reports
   Progress "Transferring Custom Reports..."
   strCommand = "UPDATE ASRSysCustomReportsName SET Username = '" & strTo & "'"

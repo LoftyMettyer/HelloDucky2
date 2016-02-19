@@ -415,7 +415,7 @@ Private Function DoTransfer() As Boolean
   ' Talent Reports
   Progress "Transferring Talent Reports..."
   strCommand = "UPDATE ASRSysTalentReports SET Username = '" & strTo & "'"
-  If Not blnAll Then strCommand = strCommand & " AND Username = '" & strFrom & "'"
+  If Not blnAll Then strCommand = strCommand & " WHERE Username = '" & strFrom & "'"
 
   gADOCon.Execute strCommand
   DoEvents
