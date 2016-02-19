@@ -2640,7 +2640,7 @@ Namespace Controllers
 			Dim lngOutputFormat = CType(Request("txtFormat"), OutputFormats)
 			Dim bPreview As Boolean = Request("txtPreview")
 			Dim blnEmail As Boolean = Request("txtEmail")
-			Dim lngEmailGroupId As Integer = Request("txtEmailAddr")
+			Dim lngEmailGroupId As Integer = Request("txtEmailGroupID")
 			Dim strEmailSubject As String = Request("txtEmailSubject")
 			Dim strEmailAttachAs As String = Request("txtEmailAttachAs")
 			Dim downloadTokenValue As String = Request("download_token_value_id")
