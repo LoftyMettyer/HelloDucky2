@@ -102,10 +102,11 @@
 
     if (menu_isSSIMode()) {
     	gridHeight = $('#reportworkframe').height() - 100;
+    	$("#gridReportData").jqGrid('setGridHeight', gridHeight);
     } else {
     	gridHeight = $('#reportworkframe').height();
+    	$("#gridReportData").jqGrid('setGridHeight', gridHeight);
     }
-
   }
 
 
