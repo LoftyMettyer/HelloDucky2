@@ -27,7 +27,6 @@ Friend Class frmHRProLicence
 			.Items.Add(New VB6.ListBoxItem("Mobile Interface", lngBit)) : lngBit = lngBit * 2
 			.Items.Add(New VB6.ListBoxItem("Fusion Integration", lngBit)) : lngBit = lngBit * 2
 			.Items.Add(New VB6.ListBoxItem("XML Exports", lngBit)) : lngBit = lngBit * 2
-			.Items.Add(New VB6.ListBoxItem("3rd Party Tables", lngBit)) : lngBit = lngBit * 2
 			.Items.Add(New VB6.ListBoxItem("9-Box Grid Reports", lngBit)) : lngBit = lngBit * 2
 			.Items.Add(New VB6.ListBoxItem("Editable Grids", lngBit)) : lngBit = lngBit * 2
 			.Items.Add(New VB6.ListBoxItem("Power Customisation Pack", lngBit)) : lngBit = lngBit * 2
