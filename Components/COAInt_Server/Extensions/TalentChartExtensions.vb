@@ -15,7 +15,7 @@ Friend Module TalentChartExtensions
 
       For Each competency In items.Where(Function(m) m.Include or m.actual >= m.Minimum).OrderBy(Function(m) m.Name)
         output &= String.Format("{0} - Minimum : {1}, Preferred : {2}, Actual : {3}", _
-                                competency.Name, competency.Preferred, competency.Minimum, competency.Actual) & vbNewLine
+                                competency.Name, competency.Minimum, competency.Preferred, competency.Actual) & vbNewLine
       Next
 
       If output.Length > 0 Then
