@@ -342,7 +342,10 @@ End Code
 			activate: function (event, ui) {
 				//Tab click event fired
 				if (ui.newTab.text() == "Columns") {
-					resizeColumnGrids();
+					var topID = $("#SelectedColumns").getDataIDs()[0]
+					$('#SelectedColumns').jqGrid('resetSelection');
+					$("#SelectedColumns").jqGrid('setSelection', topID);
+					resizeColumnGrids();					
 				}
 				if (ui.newTab.text() == "Sort Order") {
 					//resize the Event Details grid to fit

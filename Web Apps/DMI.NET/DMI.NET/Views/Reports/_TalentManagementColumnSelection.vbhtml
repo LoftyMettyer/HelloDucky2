@@ -11,7 +11,7 @@
 <div class="nowrap">
 	<div class="tablerow">
 		<fieldset id="selectedTable">
-			<legend class="fontsmalltitle width100">Table(s) :</legend>
+			<legend class="fontsmalltitle width100">Tables :</legend>
 			<select name="SelectedTableID" id="SelectedTableID" class="enableSaveButtonOnComboChange" onchange="ChangeColumnTable(event.target);"></select>			   
 		</fieldset>
 	</div>
@@ -76,8 +76,7 @@
 
 <script type="text/javascript">
 
-	function removeSelectedColumnsFromAvailable() {
-		//Find row in Sort Order columns to see if Value On Change or Suppress Repeated Values is ticked.
+	function removeSelectedColumnsFromAvailable() {		
 		var SelectedRows = $("#SelectedColumns").getRowData();
 		var AvailableRows = $("#AvailableColumns").getRowData();
 
@@ -113,6 +112,7 @@
 			OpenHR.postData("Reports/AddReportColumn", datarow);
 
 			$("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
+			$("#SelectedColumns").jqGrid('resetSelection');
 			$('#SelectedColumns').jqGrid("setSelection", rowID);
 
 			if (datarow.IsExpression == "false") {				
@@ -135,9 +135,9 @@
 		// Remove selected columns from available
 		for (var i = selectedRows.length - 1; i >= 0; i--) {
 			$("#AvailableColumns").delRowData(selectedRows[i]);
-		}
-
-		$("#AvailableColumns").jqGrid("setSelection", ids[nextIndex], true);
+		}		
+	
+		$("#AvailableColumns").jqGrid("setSelection", ids[nextIndex], true);		
 		refreshcolumnPropertiesPanel();
 
 		// Check the view access for the selected calcluation column. If hidden hide the defination.
@@ -196,10 +196,10 @@
 			}
 
 		}
-
+		$("#SelectedColumns").jqGrid('resetSelection');
 		$('#SelectedColumns').jqGrid("setSelection", rowID);
 		$('#AvailableColumns').jqGrid('clearGridData');
-
+		
 		refreshcolumnPropertiesPanel();
 
 		// Check the view access for the selected calcluation column. If hidden hide the defination.
@@ -326,7 +326,7 @@
 		if (($("#SelectedColumns").getGridParam("records") > 0) && ($("#SelectedColumns").jqGrid('getGridParam', 'selrow') == null)) {
 			selectGridTopRow($('#SelectedColumns'));
 		}
-
+	
 		refreshcolumnPropertiesPanel();
 
 	}
@@ -353,7 +353,7 @@
 		if (childColumnsCount() == 0) {
 			resetRepeatOnChildRows();
 		}
-
+		
 		refreshcolumnPropertiesPanel();
 	}
 
@@ -423,8 +423,8 @@
 		var rowCount = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length;
 		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 		var dataRow = $("#SelectedColumns").getRowData(rowId)
-		var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
-		var bDisableAdd = ($("#AvailableColumns").getGridParam("reccount") == 0);
+		var allRows = $('#SelectedColumns').jqGrid('getDataIDs');		
+		var bDisableAdd = ($("#AvailableColumns").getGridParam("reccount") == 0);		
 		var isTopRow = true;
 		var isBottomRow = true;
 		var isReadOnly = isDefinitionReadOnly();
@@ -447,25 +447,14 @@
 			if (!isReadOnly) {
 				$("#definitionColumnProperties :input").removeAttr("disabled");
 			}
-			var isThereChildColumns = (childColumnsCount() > 0);
-
-			if (isThereChildColumns) {
-				var isRepeated = $("#SelectedColumnIsRepeated").is(':checked');
-			} else {
-				$('#SelectedColumnIsRepeated').prop('checked', false);
-				$("#SelectedColumnIsRepeated").prop("disabled", true);
-				var isRepeated = false;
-			}
-
 			var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
-			var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");
-			var isBaseOrParentTableColumn = (dataRow.TableID == $("#BaseTableID").val()) || (dataRow.TableID == $("#txtParent1ID").val()) || (dataRow.TableID == $("#txtParent2ID").val());
+			var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");			
 			var isSize = (dataRow.DataType == '4');
 			$(".decimalsOnly *").prop("disabled", !isDecimals || isReadOnly || isSize);
 			$("#SelectedColumnHeading").prop("disabled", isReadOnly);
 			$(".sizeOnly *").prop("disabled", isReadOnly);
 		}
-
+		
 		// Enable / Disable relevant buttons		
 		button_disable($("#btnColumnAdd")[0], bDisableAdd || isReadOnly);
 		button_disable($("#btnColumnAddAll")[0], bDisableAdd || isReadOnly);
@@ -595,7 +584,7 @@
 
 				$("#SelectedColumnSize").val(dataRow.Size);
 				$("#SelectedColumnDecimals").val(dataRow.Decimals);
-
+				
 				refreshcolumnPropertiesPanel();
 			},
 			ondblClickRow: function () {
@@ -775,7 +764,7 @@
 			autowidth: false,
 			sortname: 'Name',
 			sortorder: "desc",
-			rowNum: 10000,
+			rowNum: 10000,			
 			scrollrows: true,
 			multiselect: true,
 			beforeSelectRow: function (rowid, e) {
@@ -821,12 +810,12 @@
 			},
 			ondblClickRow: function (rowid) {
 				doubleClickAvailableColumn();
-			},
+			},			
 			loadComplete: function (data) {
-				refreshcolumnPropertiesPanel();
 				removeSelectedColumnsFromAvailable();
-				var topID = $("#AvailableColumns").getDataIDs()[0]
-				$("#AvailableColumns").jqGrid("setSelection", topID);
+				refreshcolumnPropertiesPanel();
+				var topID = $("#AvailableColumns").getDataIDs()[0]				
+				$("#AvailableColumns").jqGrid("setSelection", topID);			
 			}
 		});
 
@@ -851,7 +840,7 @@
 
 
 	function ChangeColumnTable(target) {
-		getAvailableTableColumnsCalcs();
+		getAvailableTableColumnsCalcs();		
 	}
 
 
@@ -941,9 +930,9 @@
 
 		if (childColumnsCount() == 0) {
 			resetRepeatOnChildRows();
-		}
+		}	
 		refreshcolumnPropertiesPanel();
 	}
 
-
+	
 </script>
