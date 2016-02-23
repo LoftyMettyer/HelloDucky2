@@ -870,13 +870,17 @@ Public Class MatchReportRun
 
 		Next objRelation
 
-    ReportDataTable.Columns.Add("ID_1", GetType(String))
-    ReportDataTable.Columns.Add("ID_2", GetType(String))
-
-		For Each objColumn In mcolColDetails.Where(Function(c) Not c.Hidden)
-			' Replace _ with space for the column name.
-			ReportDataTable.Columns.Add(String.Format("{0}", objColumn.Heading), GetType(String))
-		Next
+        ReportDataTable.Columns.Add("ID_1", GetType(String))
+        ReportDataTable.Columns.Add("ID_2", GetType(String))
+        
+        For Each objColumn In mcolColDetails.Where(Function(c) Not c.Hidden)
+            ' Replace _ with space for the column name.
+            If (objColumn.IsNumeric) Then
+                ReportDataTable.Columns.Add(String.Format("{0}", objColumn.Heading), GetType(Decimal))
+            Else
+                ReportDataTable.Columns.Add(String.Format("{0}", objColumn.Heading), GetType(String))
+            End If
+        Next
 
     If UtilityType = UtilityType.TalentReport Then
       ReportDataTable.Columns.Add("Match Score %", GetType(Decimal))
