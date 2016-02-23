@@ -165,7 +165,7 @@ Public Class SessionInfo
 				Case 18487, 18488
 					_objLogin.MustChangePassword = True
 
-				Case 18456
+				Case 18456, 4060
 					' invalid login credentials
 					_objLogin.LoginFailReason = "Login Failed."
 
