@@ -149,6 +149,8 @@
       if (menu_isSSIMode()) {
         $(".ui-dialog-buttonpane #cmdClose").show();
       } else {
+      	$('.popup').dialog('option', 'buttons', window.newButtons);
+      	$(".popup").dialog("open");
         $("#divReportButtons #cmdClose").hide();
       }
 

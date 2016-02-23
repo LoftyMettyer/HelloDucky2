@@ -345,9 +345,15 @@
 			});
 
 			if (menu_isSSIMode() == false) {
-				$(".popup").dialog("open");
+
+				<%If Model.UtilType = UtilityType.TalentReport Then%>
+					$(".popup").dialog("close");
+				<%Else %>
+					$(".popup").dialog("open");
+				<%End If%>
+
 				$(".popup").dialog({ dialogClass: 'no-close' });
-				$('#main').css('marginTop', '30px'); //.css('borderTop', '1px solid rgb(206, 206, 206)');
+				$('#main').css('marginTop', '30px');
 			}
 
 			$("#PageDivTitle").text($("#txtDefn_Name").val());
