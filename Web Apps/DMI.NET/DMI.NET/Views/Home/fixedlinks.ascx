@@ -139,7 +139,7 @@
 		}
 
 		//always try to show about popup.
-		OpenHR.showAboutPopup();
+		OpenHR.showAboutPopup(true);
 
 	}
 

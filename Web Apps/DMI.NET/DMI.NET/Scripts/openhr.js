@@ -1427,12 +1427,14 @@
 		}
 	},
 
-	showAboutPopup = function () {
+	showAboutPopup = function (isResetSession) {
 
 		var aboutUrl = window.ROOT + "/account/about";
 		if (window.ROOT.slice(-1) == "/") aboutUrl = window.ROOT + "account/about";
 
-   		OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+		if (typeof (isResetSession) != 'undefined' && isResetSession == true) {
+			OpenHR.ResetSession(); //Reset the session so it doesn't timeout
+		}
 
 		$.ajax({
 			url: aboutUrl,

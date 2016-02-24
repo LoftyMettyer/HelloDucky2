@@ -3545,7 +3545,7 @@ function menu_pausecomp(millis) {
 }
 
 	function menu_mnutoolAboutHRPro() {
-		OpenHR.showAboutPopup();
+		OpenHR.showAboutPopup(true);
 	}
 
 
