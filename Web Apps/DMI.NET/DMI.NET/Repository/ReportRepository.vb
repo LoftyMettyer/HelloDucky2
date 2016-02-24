@@ -1206,7 +1206,7 @@ Namespace Repository
 				Next
 
 				sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}**" _
-													, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Size, objItem.Decimals, objItem.IsNumeric, sOrderString, HttpUtility.UrlDecode(objItem.Heading))
+													, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Size, objItem.Decimals, objItem.IsNumeric, sOrderString, HttpUtility.UrlDecode(objItem.Heading.Trim()))
 
 				iCount += 1
 			Next
