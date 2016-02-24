@@ -73,6 +73,7 @@
 	}
 
 	function outputOptionsFormatClick(index) {
+
 		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
 		
 		frmOutputDef.chkDestination0.checked = false;
@@ -90,6 +91,7 @@
 		}
 		else {
 			frmOutputDef.chkDestination0.checked = true;
+			outputOptionsRefreshControls();
 		}
 
 	}
@@ -200,6 +202,8 @@
 					button_disable(cmdEmailGroup, false);
 					text_disable(txtEmailAttachAs, false);
 					txtEmailGroup.value = 'None';
+					txtEmailAttachAs.value = '';
+					txtEmailSubject.value = '';
 				}
 				else {
 					txtEmailGroup.value = '';
@@ -243,6 +247,8 @@
 					button_disable(cmdEmailGroup, false);
 					text_disable(txtEmailAttachAs, false);
 					txtEmailGroup.value = 'None';
+					txtEmailAttachAs.value = '';
+					txtEmailSubject.value = '';
 				}
 				else {
 					txtEmailGroup.value = '';
@@ -291,6 +297,8 @@
 					button_disable(cmdEmailGroup, false);
 					text_disable(txtEmailAttachAs, false);
 					txtEmailGroup.value = 'None';
+					txtEmailAttachAs.value = '';
+					txtEmailSubject.value = '';
 				}
 				else {
 					txtEmailGroup.value = '';
@@ -348,7 +356,9 @@
 					text_disable(txtEmailAttachAs, false);
 					$('#frmOutputDef #txtEmailAttachAs').removeClass('ui-state-disabled');
 					$('#frmOutputDef #lblEmailAttachAs').removeClass('ui-state-disabled');
-					txtEmailGroup.value = 'None';					
+					txtEmailGroup.value = 'None';
+					txtEmailAttachAs.value = '';
+					txtEmailSubject.value = '';
 				}
 				else {
 					//text_disable(txtEmailGroup, true);
@@ -1075,6 +1085,7 @@
 	<input type="hidden" id="txtWordFormatDefaultIndex" name="txtWordFormatDefaultIndex" value="<%=Session("WordFormatDefaultIndex")%>">
 	<input type="hidden" id="txtExcelFormatDefaultIndex" name="txtExcelFormatDefaultIndex" value="<%=Session("ExcelFormatDefaultIndex")%>">
 	<input type="hidden" id="txtOfficeSaveAsFormats" name="txtOfficeSaveAsFormats" value="<%=Session("OfficeSaveAsValues")%>">
+	<input type="hidden" id="txtPreviousSelectedOutputFormat" name="txtPreviousSelectedOutputFormat" value="0">
 
 	<%If Session("utilType") = 35 Or Session("utilType") = 38 Then	'For 9-box grids & talent report, we need here the fields that are not needed for it but need to be present for the run-time engine to work%>
 	<input name="chkDestination2" id="chkDestination2" type="hidden" value="false">
