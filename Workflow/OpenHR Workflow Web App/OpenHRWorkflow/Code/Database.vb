@@ -823,15 +823,18 @@ Public Class Database
 
     End Function
 
-    Public Function StepAuthenticationDetails(instanceId As Integer, elementId As Integer) As StepAuthorization
+  Public Function StepAuthenticationDetails(instanceId As Integer, elementId As Integer) As StepAuthorization
 
-        Dim thisStep As New StepAuthorization With {
+      Dim thisStep As New StepAuthorization With {
+            .InstanceId = instanceId,
+            .ElementId = elementId,
             .RequiresAuthorization = False,
-            .AuthorizedUsers = New List(Of String)()
-        }
+            .AuthorizedUsers = New List(Of String)(),
+            .HasBeenAuthenticated = False
+      }
 
-        ' Who are valid users to authenticate this step
-        Using conn As New SqlConnection(_connectionString)
+    ' Who are valid users to authenticate this step
+    Using conn As New SqlConnection(_connectionString)
 
             conn.Open()
 

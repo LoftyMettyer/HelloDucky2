@@ -2,7 +2,7 @@
 CREATE PROCEDURE dbo.[spASRWorkflowGetValidLoginsForStep] (
 	@instanceID int,
 	@elementId int,
-	@requiresAuthorization bit OUTPUT)
+	@requiresAuthorization bit = 0 OUTPUT)
 AS
 BEGIN
 	SELECT '' AS [Email], '' AS [Login] WHERE 3 = 4

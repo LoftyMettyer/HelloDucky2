@@ -6,6 +6,7 @@ Imports System.Transactions
 Imports System.Globalization
 Imports System.Reflection
 Imports System.Security.Principal
+Imports OpenHRWorkflow.Code.Classes
 
 Public Class [Default]
     Inherits Page
@@ -30,7 +31,7 @@ Public Class [Default]
 
         'Page requested with no workflow details, just redirect to the login page
         If Request.QueryString.Count = 0 Then
-            Session("ValidLogins") = Nothing
+            Session("CurrentStep") = Nothing
             Response.Redirect("~/Account/Login.aspx")
         End If
 
@@ -72,21 +73,32 @@ Public Class [Default]
           message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE005)."        
         End If
 
+    ' Authentication options
+    If message.IsNullOrEmpty() Then
 
-        ' Authentication options
-        If message.IsNullOrEmpty() Then
-          Dim thisStep = _db.StepAuthenticationDetails(_url.InstanceId, _url.ElementId)
+      Dim thisStep As StepAuthorization
+      Dim allSteps = Security.GetStepDictionary()
 
-          If thisStep.RequiresAuthorization Then
-            If Not thisStep.AuthorizedUsers.Contains(HttpContext.Current.User.Identity.Name) Or Not HttpContext.Current.User.Identity.IsAuthenticated Then
-              Session("ValidLogins") = thisStep.AuthorizedUsers
-              FormsAuthentication.SignOut()
-              HttpContext.Current.User = new GenericPrincipal(new GenericIdentity(string.Empty), Nothing)
-              FormsAuthentication.RedirectToLoginPage()
-            End If
-            
-          End If
-    End If
+      If Not allSteps.ContainsKey(_url.InstanceId) Then
+        thisStep = _db.StepAuthenticationDetails(_url.InstanceId, _url.ElementId)
+        allSteps.Add(_url.InstanceId, thisStep)
+      End If
+
+      thisStep = allSteps(_url.InstanceId)
+
+      If IsPostBack Then
+        allSteps.Remove(_url.InstanceId)
+      Else
+        If thisStep.RequiresAuthorization AndAlso Not thisStep.HasBeenAuthenticated Then
+          FormsAuthentication.SignOut()
+          HttpContext.Current.User = new GenericPrincipal(new GenericIdentity(string.Empty), Nothing)
+          FormsAuthentication.RedirectToLoginPage()
+        End If
+      End If
+
+      Session("CurrentStep") = thisStep
+
+  End If
 
 #If DEBUG Then
 #Else
@@ -105,8 +117,8 @@ Public Class [Default]
         End If
 #End If
 
-        'Activating mobile security. I've hijacked the InstanceID and populated it with the User ID that is to be activated.
-        If message.IsNullOrEmpty() AndAlso Not IsPostBack AndAlso _url.ElementId = -2 AndAlso _url.InstanceId > 0 Then
+    'Activating mobile security. I've hijacked the InstanceID and populated it with the User ID that is to be activated.
+    If message.IsNullOrEmpty() AndAlso Not IsPostBack AndAlso _url.ElementId = -2 AndAlso _url.InstanceId > 0 Then
 
             message = _db.ActivateUser(_url.InstanceId)
 
@@ -1934,7 +1946,7 @@ Public Class [Default]
 			EncodeOrDecodeFormFields(True)
 		Catch e As Exception
 			'Ignore other errors
-		End Try
+		End Try   
 
 		'Regardless of an exception having been thrown above, call the base method (this is normal behaviour)
 		MyBase.ProcessRequest(context)

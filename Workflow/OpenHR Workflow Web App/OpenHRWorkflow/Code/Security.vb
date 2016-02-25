@@ -1,7 +1,18 @@
 ﻿Imports System.Data.SqlClient
 Imports System.DirectoryServices
+Imports OpenHRWorkflow.Code.Classes
 
 Public Class Security
+
+  Public Shared Function GetStepDictionary() As Dictionary(Of Integer, StepAuthorization)
+
+    If HttpContext.Current.Session("AuthenticationStepDictionary") Is Nothing Then
+      HttpContext.Current.Session("AuthenticationStepDictionary") = New Dictionary(Of Integer, StepAuthorization)
+    End If
+
+    Return CType(HttpContext.Current.Session("AuthenticationStepDictionary"), Dictionary(Of Integer, StepAuthorization))
+
+  End Function
 
     Public Shared Function ValidateUser(userName As String, password As String, authenticateOnly As Boolean) As String
 

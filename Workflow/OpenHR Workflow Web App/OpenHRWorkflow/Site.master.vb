@@ -7,13 +7,13 @@ Partial Class Site
 
 		App.Config.WorkflowUrl = HttpContext.Current.Request.Url.Scheme & "://" & HttpContext.Current.Request.Url.Authority & HttpContext.Current.Request.ApplicationPath.TrimEnd(CChar("/")) + "/"
 
-        If Session("ValidLogins") Is Nothing Then
-            Forms.RedirectToNotConfigured()
-            Forms.RedirectIfNotLicensed()
-            Forms.RedirectToMobileModuleNotInstalled()
-        End If
+    If Session("CurrentStep") Is Nothing Then
+        Forms.RedirectToNotConfigured()
+        Forms.RedirectIfNotLicensed()
+        Forms.RedirectToMobileModuleNotInstalled()
+    End If
 
-        Forms.RedirectIfDbLocked()
+    Forms.RedirectIfDbLocked()
 
 		Using conn As New SqlConnection(App.Config.ConnectionString)
 

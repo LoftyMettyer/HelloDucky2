@@ -5469,30 +5469,36 @@ Public Function CreateSP_WorkflowGetValidLoginsForStep() As Boolean
       "(" & vbNewLine & _
       "    @instanceId integer," & vbNewLine & _
       "    @elementId integer," & vbNewLine & _
-      "    @requiresAuthorization bit OUTPUT" & vbNewLine & _
-      ")" & vbNewLine & _
+      "    @requiresAuthorization bit = 0 OUTPUT)" & vbNewLine & _
       "AS" & vbNewLine & _
       "BEGIN" & vbNewLine & _
       "    SET NOCOUNT ON;" & vbNewLine & vbNewLine & _
-      "    DECLARE @Email nvarchar(MAX);" & vbNewLine & vbNewLine
+      "    DECLARE @Email nvarchar(MAX)," & vbNewLine & _
+      "            @initiatorID int;" & vbNewLine & vbNewLine
       
     If bSetupOK Then
       strSPSQL = strSPSQL & _
-        "    SELECT @Email = s.UserEmail + ';' + ISNULL(s.EmailCC, ''), @requiresAuthorization = ISNULL(e.RequiresAuthentication, 0)" & vbNewLine & _
+        "    SELECT @initiatorID = ISNULL(i.InitiatorID, 0), @Email = s.UserEmail + ';' + ISNULL(s.EmailCC, ''), @requiresAuthorization = ISNULL(e.RequiresAuthentication, 0)" & vbNewLine & _
         "        FROM ASRSysWorkflowInstanceSteps s" & vbNewLine & _
         "        INNER JOIN ASRSysWorkflowElements e ON e.ID = s.ElementID" & vbNewLine & _
+        "        INNER JOIN ASRSysWorkflowInstances i ON s.InstanceID = i.ID" & vbNewLine & _
         "        WHERE s.elementid = @elementId AND s.instanceId = @instanceID;" & vbNewLine & vbNewLine
         
       If bRequireAuthorization Then
         strSPSQL = strSPSQL & _
-          "    IF LEN(@Email) > 1" & vbNewLine & _
-          "        SET @requiresAuthorization = 1;" & vbNewLine & vbNewLine
+          "    IF LEN(@Email) > 1 SET @requiresAuthorization = 1;" & vbNewLine & vbNewLine
       End If
-        
+
       strSPSQL = strSPSQL & _
-        "    SELECT l.SplitColumn AS [Email], p.[" & sSelfServiceLoginColumnName & "] AS [Login] FROM dbo.[udfsysStringToTable](@Email, ';') l" & vbNewLine & _
-        "       INNER JOIN [" & sPersonnelTableName & "] p ON p.[" & sWorkEmailColumnName & "] = l.SplitColumn" & vbNewLine & _
-        "       WHERE l.SplitColumn <> '' AND p.[" & sSelfServiceLoginColumnName & "] <> '';" & vbNewLine & vbNewLine
+        "    IF @Email = ';'" & vbNewLine & _
+        "        SELECT [" & sWorkEmailColumnName & "] AS [Email], ISNULL([" & sSelfServiceLoginColumnName & "], '') AS [Login]" & vbNewLine & _
+        "            FROM [" & sPersonnelTableName & "]" & vbNewLine & _
+        "            WHERE [id] = @initiatorID;" & vbNewLine & vbNewLine & _
+        "    ELSE" & vbNewLine & _
+        "       SELECT l.SplitColumn AS [Email], p.[" & sSelfServiceLoginColumnName & "] AS [Login]" & vbNewLine & _
+        "           FROM dbo.[udfsysStringToTable](@Email, ';') l" & vbNewLine & _
+        "           INNER JOIN [" & sPersonnelTableName & "] p ON p.[" & sWorkEmailColumnName & "] = l.SplitColumn" & vbNewLine & _
+        "           WHERE l.SplitColumn <> '' AND p.[" & sSelfServiceLoginColumnName & "] <> '';" & vbNewLine & vbNewLine
     End If
     
     strSPSQL = strSPSQL & _

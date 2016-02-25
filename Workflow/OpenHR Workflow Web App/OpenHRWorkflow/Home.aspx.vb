@@ -13,6 +13,8 @@ Partial Class Home
 		Dim result As CheckLoginResult = db.CheckLoginDetails(User.Identity.Name)
 		Dim userGroupID As Integer
 
+    Session("CurrentStep") = Nothing
+
 		If result.Valid Then
 			userGroupID = result.UserGroupID
 		Else

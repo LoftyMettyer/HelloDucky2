@@ -1,4 +1,6 @@
 ﻿
+Imports OpenHRWorkflow.Code.Classes
+
 Partial Class Login
     Inherits Page
 
@@ -11,7 +13,11 @@ Partial Class Login
         Form.DefaultButton = btnLogin2.UniqueID
         Form.DefaultFocus = txtUserName.ClientID
 
-        If Session("ValidLogins") IsNot Nothing Then
+        If Request.QueryString.Count = 0 Then
+          Session("CurrentStep") = Nothing
+        End If
+
+        If Session("CurrentStep") IsNot Nothing Then
             btnRegister.Visible = False
             btnForgotPwd.Visible = False
         End If
@@ -21,10 +27,11 @@ Partial Class Login
     Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLogin.Click, btnLogin2.Click
 
         Dim authenticateOnly As Boolean = (Request.QueryString.Count > 0)
-        Dim validLogins = CType(Session("ValidLogins"), List(Of String))
+        Dim AuthenticationStep = CType(Session("CurrentStep"), StepAuthorization)
         Dim message As String
 
-        If validLogins IsNot Nothing AndAlso validLogins.Count > 0 AndAlso Not validLogins.Contains(txtUserName.Text.Trim.ToLower) Then
+        If AuthenticationStep IsNot Nothing AndAlso AuthenticationStep.AuthorizedUsers.Count > 0 _
+          AndAlso Not AuthenticationStep.AuthorizedUsers.Contains(txtUserName.Text.Trim.ToLower) Then
             message = "You are not authorised for this step"
         Else
             message = Security.ValidateUser(txtUserName.Text.Trim, txtPassword.Text, authenticateOnly)
@@ -33,6 +40,12 @@ Partial Class Login
         If message.Length > 0 Then
             CType(Master, Site).ShowDialog("Login Failed", message)
         Else
+            dim allSteps = Security.GetStepDictionary()
+            
+
+            If Not Session("CurrentStep") Is Nothing Then
+              CType(Session("CurrentStep"), StepAuthorization).HasBeenAuthenticated = True
+            End If
             FormsAuthentication.RedirectFromLoginPage(txtUserName.Text.Trim, chkRememberPwd.Checked)
         End If
 
