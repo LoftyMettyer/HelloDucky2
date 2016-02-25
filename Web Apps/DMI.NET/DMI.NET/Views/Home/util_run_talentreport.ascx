@@ -148,10 +148,13 @@
 
       if (menu_isSSIMode()) {
         $(".ui-dialog-buttonpane #cmdClose").show();
-      } else {
+      } else {      	
       	$('.popup').dialog('option', 'buttons', window.newButtons);
       	$(".popup").dialog("open");
-        $("#divReportButtons #cmdClose").hide();
+      	$("#divReportButtons #cmdClose").hide();
+      	$(".ui-dialog-buttonpane #cmdOK").hide();
+      	$(".ui-dialog-buttonpane #cmdCancel").removeClass('ui-state-focus');
+      	$(".ui-dialog-buttonpane #cmdCancel").button({ disabled: true });
       }
 
       SnapColumnsToGrid();
