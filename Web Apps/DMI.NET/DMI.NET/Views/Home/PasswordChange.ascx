@@ -96,11 +96,13 @@
 				<td>
 					<table align="center" class="invisible" cellpadding="0" cellspacing="0">
 						<tr>
-							<td colspan="5" height="10"></td>
-						</tr>
-						<tr>
 							<td colspan="5">
 								<h3 align="center">Change Password</h3>
+							</td>
+						</tr>
+						<tr style="visibility: hidden">
+							<td colspan="5"><%--' this stops the problem of showing passwords in more sensitive areas.--%>
+								<input autocomplete="Off" type="password" id="dummypasswordfield">
 							</td>
 						</tr>
 						<%
