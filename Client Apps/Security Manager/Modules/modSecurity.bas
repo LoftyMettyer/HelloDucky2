@@ -5748,7 +5748,7 @@ On Error GoTo ErrorTrap:
           "      BEGIN" & vbNewLine & _
           "          IF @sendEmail = 1" & vbNewLine & _
           "              SET @initialPassword = LOWER(SUBSTRING(CONVERT(varchar(255), NEWID()), 1, 5)) + 'A!3' + LOWER(SUBSTRING(CONVERT(varchar(255), NEWID()), 1, 4));" & vbNewLine & vbNewLine & _
-          "          SET @emailContent = 'Dear ' + @knownAs + ',' + CHAR(13) + 'Your login details for OpenHR Self-service are as follows:' + CHAR(13) + CHAR(13) +" & vbNewLine & _
+          "          SET @emailContent = 'Dear ' + @knownAs + ',' + CHAR(13) + 'Your login details for OpenHR are as follows:' + CHAR(13) + CHAR(13) +" & vbNewLine & _
           "              'Username : ' + @login + CHAR(13) +" & vbNewLine & _
           "              'Password : ' + @initialPassword + CHAR(13) + CHAR(13) +" & vbNewLine & _
           "              'Please follow the link provided below to access the website.' + CHAR(13) + CHAR(13) +" & vbNewLine & _
@@ -5771,7 +5771,7 @@ On Error GoTo ErrorTrap:
           "              INSERT ASRSysEmailQueue(RecordDesc, ColumnValue, DateDue, UserName, [Immediate], RecalculateRecordDesc," & vbNewLine & _
           "                  RepTo, MsgText, WorkflowInstanceID, [Subject])" & vbNewLine & _
           "              VALUES ('', '', @startDate, 'OpenHR Web', 1, 0," & vbNewLine & _
-          "                  @emailAddress, @emailContent, 0, 'Your Self-service login details');" & vbNewLine & vbNewLine & _
+          "                  @emailAddress, @emailContent, 0, 'Your OpenHR login details');" & vbNewLine & vbNewLine & _
           "              EXECUTE dbo.spASREmailImmediate 'OpenHR Web';" & vbNewLine & _
           "          END" & vbNewLine & _
           "      END" & vbNewLine & _
