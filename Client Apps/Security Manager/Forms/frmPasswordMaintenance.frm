@@ -451,7 +451,6 @@ Private Function SaveIt() As Boolean
     If mstrSecurityGroupName = vbNullString Then
       IsUserNameInUse cboUser.Text, gObjGroups, mstrSecurityGroupName
     End If
-    
     ' AE20080325 Fault #12827
     ' If this is a user we've just created then update the collection
     If gObjGroups(mstrSecurityGroupName).Users(cboUser.Text).NewUser Then
@@ -609,10 +608,22 @@ Private Sub LoadPropertiesForUser()
       chkAccountIsLocked.Enabled = (chkAccountIsLocked.Value = vbChecked)
     Else
       ' New user
-      chkEnforcePasswordPolicy.Value = vbChecked
-      chkEnforceExpiry.Value = vbChecked
-      chkForceChange.Value = vbChecked
-      chkAccountIsLocked.Enabled = False
+      Dim bIgnoreDomainPolicy As Boolean
+      bIgnoreDomainPolicy = GetSystemSetting("Policy", "Sec Man Bypass", 0)
+      
+      If bIgnoreDomainPolicy Then
+        chkEnforcePasswordPolicy.Value = vbUnchecked
+        chkEnforceExpiry.Enabled = False
+        chkEnforceExpiry.Value = vbUnchecked
+        chkForceChange.Enabled = False
+        chkForceChange.Value = vbUnchecked
+        chkAccountIsLocked.Enabled = False
+      Else
+        chkEnforcePasswordPolicy.Value = vbChecked
+        chkEnforceExpiry.Value = vbChecked
+        chkForceChange.Value = vbChecked
+        chkAccountIsLocked.Enabled = False
+      End If
     End If
 
     rsUserInfo.Close
