@@ -2289,8 +2289,6 @@ function updateControl(lngColumnID, value) {
 			$(this).val(strOLEType);
 			$(this).attr('title', tooltipText);
 			$(this).attr('data-fileName', filename);
-			
-
 		}
 
 		//Working pattern & Option group
@@ -2311,16 +2309,11 @@ function updateControl(lngColumnID, value) {
 			}
 		}
 
-
 		if ($(this).is("select")) {
-
-			var encodedValue = encodeURI(value);
-
 			//does value exist in the dropdown?
-			if ($(this).find('option[value="' + encodedValue + '"]').length) {
+			if ($(this).find('option[value="' + value + '"]').length) {
 				$(this).val(value);
 			} else {
-
 				if ($(this).attr("data-columntype") == "lookup") $(this).empty();	//For lookups, clear out all values, so the newly selected value is all there is.							
 
 				var option = document.createElement('option');
@@ -2331,25 +2324,8 @@ function updateControl(lngColumnID, value) {
 			}
 		}
 
-
-		////ComboBox
-		//if (($(this).is("select")) && (this.length > 0)) {
-		//	$(this).val(value);
-		//}
-
-		////Lookup
-		//if (($(this).is("select")) && (this.length == 0)) {
-		//	var option = document.createElement('option');
-		//	option.value = value;
-		//	option.appendChild(document.createTextNode(value));
-		//	$(this).append(option);
-		//	$(this).val(value);
-		//}
-
 		//Option Group
-
 		//OLE
-
 		//Spinner - done nwith number above..
 
 		//Nav controls
