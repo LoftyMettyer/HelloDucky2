@@ -7,7 +7,7 @@ Partial Class FileDownload
 		Dim sTemp As String
 		Dim iTemp As Integer
 		Dim sQueryString As String
-		Dim iElementItemID As Integer
+		Dim iElementItemID As Long
 		Dim objCrypt As New Crypt
 		Dim sErrorMessage As String
 
@@ -21,7 +21,7 @@ Partial Class FileDownload
 				sQueryString = sTemp.Substring(iTemp + 1)
 				sQueryString = objCrypt.SimpleDecrypt(sQueryString, Session.SessionID)
 			End If
-			iElementItemID = CInt(sQueryString)
+			iElementItemID = CLng(sQueryString)
 
 			sErrorMessage = ShowTheFile(iElementItemID)
 		Catch ex As Exception
@@ -39,7 +39,7 @@ Partial Class FileDownload
 		End If
 	End Sub
 
-	Private Function ShowTheFile(ByVal piElementItemID As Integer) As String
+	Private Function ShowTheFile(ByVal piElementItemID As Long) As String
 
 		Dim conn As System.Data.SqlClient.SqlConnection
 		Dim cmdRead As System.Data.SqlClient.SqlCommand
@@ -271,7 +271,7 @@ Partial Class FileDownload
 
 				Response.Clear()
 				Response.ClearHeaders()
-				Response.AddHeader("content-disposition", "attachment; filename=" + sFileName)
+				Response.AddHeader("content-disposition", "attachment; filename='" + sFileName + "'")
 				Response.ClearContent()
 				Response.ContentEncoding = Encoding.UTF8
 				Response.ContentType = sContentType
