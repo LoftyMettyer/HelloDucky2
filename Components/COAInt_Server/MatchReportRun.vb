@@ -1691,23 +1691,27 @@ Public Class MatchReportRun
 						  vData = Replace(vData, vbTab, "")
 						
 						  If objColumn.IsNumeric Then
-							
-							  If objColumn.Decimals > 0 Then
-								  'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								  vData = VB6.Format(vData, "0." & New String("0", objColumn.Decimals))
-							  Else
-								  If objColumn.Size > 0 Then
-									  'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									  If vData = "0" Then
-										  'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-										  vData = VB6.Format(vData, "0")
-									  Else
-										  'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-										  vData = VB6.Format(vData, "#")
-									  End If
-								  End If
-							  End If
-							
+						
+                If IsNumeric(vData) Then
+							    If objColumn.Decimals > 0 Then
+								    'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								    vData = VB6.Format(vData, "0." & New String("0", objColumn.Decimals))
+							    Else
+								    If objColumn.Size > 0 Then
+									    'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									    If vData = "0" Then
+										    'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										    vData = VB6.Format(vData, "0")
+									    Else
+										    'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+										    vData = VB6.Format(vData, "#")
+									    End If
+								    End If
+							    End If
+                Else
+                  vData = 0
+                End If							
+
 							  If objColumn.Use1000Separator Then
 								  'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 								  'UPGRADE_WARNING: Couldn't resolve default property of object vDataTemp. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
