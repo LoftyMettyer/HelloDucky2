@@ -5,7 +5,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server"><%: GetPageTitle("Login") %></asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-		
+	
 	<%Html.EnableClientValidation()%>
 <div class="divLogin">
 	<%Html.BeginForm("Login", "Account", FormMethod.Post, New With {.id = "frmLoginForm", .defaultbutton = "submitLoginDetails"})%>
@@ -33,15 +33,18 @@
 		<%Else%>
 		<div id="divLoginDetails">
 
+      <input style="display:none">
+      <input type="password" style="display:none">
+
 			<div class="loginframeField">
 				<%:Html.LabelFor(Function(loginviewmodel) loginviewmodel.UserName)%>
-				<%:Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.UserName, New With {.id = "txtUserName", .onkeypress = "CheckKeyPressed(event)"})%>
+				<%:Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.UserName, New With {.id = "txtUserName", .onkeypress = "CheckKeyPressed(event)", .autocomplete = "Off"})%>
 				<%:Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.UserName)%>
 			</div>
 
 			<div class="loginframeField">
 				<%:Html.LabelFor(Function(loginviewmodel) loginviewmodel.Password)%>
-				<%:Html.PasswordFor(Function(loginviewmodel) loginviewmodel.Password, New With {.id = "txtPassword", .onkeypress = "CheckKeyPressed(event)", .autocomplete = "off"})%>
+				<%:Html.PasswordFor(Function(loginviewmodel) loginviewmodel.Password, New With {.id = "txtPassword", .onkeypress = "CheckKeyPressed(event)", .autocomplete = "Off"})%>
 				<%:Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Password)%>
 			</div>
 		

@@ -84,7 +84,7 @@
 			<tr> 
 				<td style="text-align:center">
 					User name : &nbsp;&nbsp;&nbsp;
-					<input type="text" name="txtUserName" id="txtUserName" value="" class="text" onkeypress="CheckKeyPressed(event);" />
+					<input type="text" autocomplete="Off" name="txtUserName" id="txtUserName" value="" class="text" onkeypress="CheckKeyPressed(event);" />
 				</td>
 			</tr>
 

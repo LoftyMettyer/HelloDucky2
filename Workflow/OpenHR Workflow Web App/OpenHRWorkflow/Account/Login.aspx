@@ -26,15 +26,24 @@
     <asp:Label runat="server" ID="lblWelcome" Text="Welcome"/>
     
     <asp:ValidationSummary runat="server" Font-Size="11px" />
+  
+    <table style="display:none">
+        <tr>
+            <asp:TextBox runat="server" style="display:none"/>
+            <asp:TextBox runat="server" TextMode="Password" style="visibility:hidden" Height="0"/>
+        </tr>        
+    </table>
 
     <table class="controlgrid">
+
+
         <tr>
             <td><asp:Label runat="server" ID="lblUserName" Text="Username" AssociatedControlID="txtUserName"/></td>
-            <td><asp:TextBox runat="server" ID="txtUserName"/></td>
+            <td><asp:TextBox runat="server" ID="txtUserName" autocomplete="Off"/></td>
         </tr>
         <tr>
             <td><asp:Label runat="server" ID="lblPassword" Text="Password"/></td>
-            <td><asp:TextBox runat="server" ID="txtPassword" autocomplete="off" TextMode="Password" /></td>            
+            <td><asp:TextBox runat="server" ID="txtPassword" autocomplete="Off" TextMode="Password" /></td>            
         </tr>
         <tr>
             <td><asp:Label runat="server" ID="lblRememberPwd" Text="Remember me" AssociatedControlID="chkRememberPwd" /></td>
