@@ -148,7 +148,7 @@
 
       if (menu_isSSIMode()) {
         $(".ui-dialog-buttonpane #cmdClose").show();
-      } else {      	
+      } else {
       	$('.popup').dialog('option', 'buttons', window.newButtons);
       	$(".popup").dialog("open");
       	$("#divReportButtons #cmdClose").hide();
@@ -158,7 +158,6 @@
       }
 
       SnapColumnsToGrid();
-
     };
 
   var gridHeight;
@@ -169,7 +168,7 @@
   }
 
   gridWidth = $('#reportworkframe').width();
-   
+
   $.ajax({
     cache: false,
     url: '<%:Url.Action("getTalentReportData", "Home")%>',
@@ -179,35 +178,41 @@
       closeclick();
     },
     success: function (jsonData) {
-
-      if (typeof jsonData.colModel == "undefined") {
-        OpenHR.modalPrompt(jsonData, 2, "", "");
-        closeclick();
-      }
-
-      $("#gridReportData").jqGrid({
-        datatype: "local",
-        data: $.parseJSON(JSON.stringify(jsonData)).rows,
-        mtype: 'GET',
-        jsonReader: {
-          root: "rows", //array containing actual data
-          page: "page", //current page
-          total: "total", //total pages for the query
-          records: "records", //total number of records
-          repeatitems: false,
-          id: "ID_1"
-        },
-        colModel: jsonData.colModel,
-        rowNum: 100,
-        viewrecords: true,
-        loadComplete: gridLoaded,
-        height: gridHeight,
-        width: gridWidth,
-        shrinkToFit: false,
-        autoWidth: false
-      });    
+	    if (typeof jsonData.colModel == "undefined") {
+	    	gotNoData(jsonData);
+	    } else {
+		    gotData(jsonData);
+	    }
     }
   });
-  
+
+	function gotData(jdata) {
+  	$("#gridReportData").jqGrid({
+  		datatype: "local",
+  		data: $.parseJSON(JSON.stringify(jdata)).rows,
+  		mtype: 'GET',
+  		jsonReader: {
+  			root: "rows", //array containing actual data
+  			page: "page", //current page
+  			total: "total", //total pages for the query
+  			records: "records", //total number of records
+  			repeatitems: false,
+  			id: "ID_1"
+  		},
+  		colModel: jdata.colModel,
+  		rowNum: 100,
+  		viewrecords: true,
+  		loadComplete: gridLoaded,
+  		height: gridHeight,
+  		width: gridWidth,
+  		shrinkToFit: false,
+  		autoWidth: false
+  	});
+	};
+
+  function gotNoData(data) {
+  	OpenHR.modalPrompt(data, 2, "", "");
+  	closeclick();
+  };
 
 </script>
