@@ -61,7 +61,7 @@
 		if (outputFilename != '') {
 			outputFilename = outputFilename.substr(outputFilename.lastIndexOf("\\") + 1);
 		}
-
+		
 		frmOutputDef.txtFilename.value = outputFilename;
 		outputOptionsRefreshControls();
 
@@ -593,31 +593,40 @@
 		//Send the values back to the calling form...
 		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
 		var frmExportData = OpenHR.getForm("main", "frmExportData");
-
+		var excelBased = false;
+		
 		frmExportData.txtFormat.value = 0;
-		if (frmOutputDef.optOutputFormat1.checked == true) { frmExportData.txtFormat.value = 1; }
 
 		//CSV
-		if (frmOutputDef.optOutputFormat2.checked == true) { frmExportData.txtFormat.value = 2; }
+		if (frmOutputDef.optOutputFormat1.checked == true) { frmExportData.txtFormat.value = 1; }
 
 		//HTML
-		if (frmOutputDef.optOutputFormat3.checked == true) { frmExportData.txtFormat.value = 3; }
+		if (frmOutputDef.optOutputFormat2.checked == true) { frmExportData.txtFormat.value = 2; }
 
 		//WORD
-		if (frmOutputDef.optOutputFormat4.checked == true) { frmExportData.txtFormat.value = 4; }
+		if (frmOutputDef.optOutputFormat3.checked == true) { frmExportData.txtFormat.value = 3; }
 
-		//EXCEL
-		if (frmOutputDef.optOutputFormat5.checked == true) { frmExportData.txtFormat.value = 5; }
+		//Excel Worksheet
+		if (frmOutputDef.optOutputFormat4.checked == true) {
+			frmExportData.txtFormat.value = 4;
+			excelBased = true;
+		}
 
-		//GRAPH
-		if (frmOutputDef.optOutputFormat6.checked == true) { frmExportData.txtFormat.value = 6; }
-
-		//PIVOT
-
+		//Excel Chart
+		if (frmOutputDef.optOutputFormat5.checked == true) {
+			frmExportData.txtFormat.value = 5;
+			excelBased = true;
+		}
+		//Excel Pivot
+		if (frmOutputDef.optOutputFormat6.checked == true) {
+			frmExportData.txtFormat.value = 6;
+			excelBased = true;
+		}
+		
 		frmExportData.txtScreen.value = frmOutputDef.chkDestination0.checked;
-
 		frmExportData.txtPrinter.value = frmOutputDef.chkDestination1.checked;
 		frmExportData.txtPrinterName.value = '';
+
 		if (frmOutputDef.cboPrinterName.selectedIndex != -1) {
 			frmExportData.txtPrinterName.value = frmOutputDef.cboPrinterName.options[frmOutputDef.cboPrinterName.selectedIndex].innerText;
 		}
@@ -631,6 +640,12 @@
 		frmExportData.txtEmailAttachAs.value = frmOutputDef.txtEmailAttachAs.value;
 		frmExportData.txtFileName.value = frmOutputDef.txtFilename.value;
 
+		if (getExt(frmOutputDef.txtFilename.value) === "" && excelBased) {
+			// All reports are excel based from OpenHR at time of fix.
+			// I will leave the excel based argument in case we change our mind and add other formats.
+			frmExportData.txtFileName.value = frmExportData.txtFileName.value + ".xlsx"; 
+		};
+
 		if (frmExportData.txtEmailGroupID.value > 0) {
 			$(frmExportData).submit();
 		}
@@ -638,7 +653,12 @@
 			frmExportData.txtEmailGroupID.value = 0;
 			$(frmExportData).submit();
 		}
-
+	}
+	
+	function getExt(filename) {
+		var ext = filename.split('.').pop();
+		if (ext === filename) return "";
+		return ext;
 	}
 
 	function saveFile() {
