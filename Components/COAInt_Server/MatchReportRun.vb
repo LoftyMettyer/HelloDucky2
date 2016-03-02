@@ -1631,7 +1631,7 @@ Public Class MatchReportRun
         Dim dv = ReportDataTable.DefaultView
 
         For Each column in mcolColDetails _
-            .Where(Function(m) m.Sequence > 0) _
+            .Where(Function(m) m.SortSeq > 0) _
             .OrderBy(function(m) m.SortSeq)
           talentSortOrder &= string.Format(", [{0}] {1}" , column.Heading, IIf(column.SortDir = "D", " DESC", "ASC"))
         Next
