@@ -293,7 +293,7 @@
         // Set the report find toolbar group name to 'find' and hide the picklist/filter menu items
         menu_setVisibletoolbarGroupById('mnuSectionReportToolsFind', false);
         $('#toolbarReportFind').text('Find');
-		
+
         if (!isRunOnly) {
             menu_toolbarEnableItem("mnutoolNew" + menuSection + "Find", isNewPermitted && fFromMenu);
             menu_toolbarEnableItem("mnutoolCopy" + menuSection + "Find", fHasRows && isNewPermitted && fFromMenu);
@@ -306,6 +306,7 @@
         } else {
             menu_toolbarEnableItem("mnutoolRun" + menuSection + "Find", fHasRows && isRunPermitted);
             menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fFromMenu);
+            if (menuSection !== "Tools") { menu_toolbarEnableItem("mnutoolClose" + menuSection + "Find", !fFromMenu);}
         }
 
         // Finally show and select the tab
