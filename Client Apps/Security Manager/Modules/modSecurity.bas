@@ -5812,11 +5812,13 @@ On Error GoTo ErrorTrap:
     sSQL = sSQL & _
         "    DECLARE loginCursor CURSOR LOCAL FAST_FORWARD FOR" & vbNewLine & _
         "        SELECT [" & sSelfServiceColumn & "], [" & sSecurityGroupColumn & "] FROM [" & sPersonnelTable & "]" & vbNewLine & _
-        "        WHERE [" & sLeavingDateColumn & "] < @today;" & vbNewLine & vbNewLine & _
+        "        WHERE [" & sLeavingDateColumn & "] < @today AND [Leaving_Date] IS NOT NULL;" & vbNewLine & vbNewLine & _
         "    OPEN loginCursor;" & vbNewLine & _
         "    FETCH NEXT FROM loginCursor INTO @login, @securityGroup;" & vbNewLine & _
         "    WHILE @@FETCH_STATUS = 0" & vbNewLine & _
         "    BEGIN" & vbNewLine & _
+        "        IF EXISTS (SELECT * FROM sys.schemas WHERE name = @login)" & vbNewLine & _
+        "            EXECUTE ('DROP SCHEMA [' + @login + ']');" & vbNewLine & vbNewLine & _
         "        IF EXISTS (SELECT * FROM sys.sysusers WHERE name = @login)" & vbNewLine & _
         "            EXECUTE ('DROP USER [' + @login + ']');" & vbNewLine & vbNewLine & _
         "        IF EXISTS (SELECT * FROM sys.syslogins WHERE name = @login)" & vbNewLine & _
