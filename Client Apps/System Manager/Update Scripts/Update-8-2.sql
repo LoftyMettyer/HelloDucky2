@@ -2555,7 +2555,7 @@ PRINT 'Step - Misc Updates'
 PRINT 'Step - Auto Self Service Logins'
 /* ------------------------------------------------------- */
 
-	IF NOT EXISTS (SELECT c.object_id FROM sys.columns c INNER JOIN sys.objects o ON o.object_id = c.object_id WHERE c.name = 'SecurityGroup' AND o.type = 'TT' AND o.name LIKE 'TT_SelfServiceType_%')
+	IF NOT EXISTS (SELECT c.object_id FROM sys.columns c INNER JOIN sys.objects o ON o.object_id = c.object_id WHERE c.name = 'ID' AND o.type = 'TT' AND o.name LIKE 'TT_SelfServiceType_%')
 	BEGIN
 		IF EXISTS(SELECT *FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGenerateSelfServiceLogins]') AND xtype = 'P')
 		BEGIN
@@ -2565,7 +2565,14 @@ PRINT 'Step - Auto Self Service Logins'
 	END
 
 	IF NOT EXISTS (SELECT * FROM sys.types WHERE is_table_type = 1 AND name ='SelfServiceType')
-		EXECUTE sp_executesql N'CREATE TYPE SelfServiceType AS TABLE ([Login] nvarchar(255) NULL, [Email] nvarchar(255), [StartDate] datetime, [LeavingDate] datetime, [KnownAs] nvarchar(255), [SecurityGroup] nvarchar(255))';
+		EXECUTE sp_executesql N'CREATE TYPE SelfServiceType AS TABLE (
+			[ID] integer,
+			[Login] nvarchar(255) NULL,
+			[Email] nvarchar(255),
+			[StartDate] datetime,
+			[LeavingDate] datetime,
+			[KnownAs] nvarchar(255),
+			[SecurityGroup] nvarchar(255))';
 
 	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGenerateSelfServiceLogins]') AND xtype = 'P')
 		EXECUTE sp_executesql N'CREATE PROCEDURE dbo.spASRGenerateSelfServiceLogins(@logins AS SelfServiceType READONLY)

@@ -5717,6 +5717,7 @@ On Error GoTo ErrorTrap:
         "  SET NOCOUNT ON;" & vbNewLine & vbNewLine & _
         "  DECLARE @hResult int," & vbNewLine & _
         "      @sCode nvarchar(MAX) = ''," & vbNewLine & _
+        "      @id integer = 0," & vbNewLine & _
         "      @login nvarchar(255)," & vbNewLine & _
         "      @securityGroup nvarchar(255)," & vbNewLine & _
         "      @emailAddress nvarchar(255)," & vbNewLine & _
@@ -5731,10 +5732,10 @@ On Error GoTo ErrorTrap:
   If gbLoginMaintAutoAdd Then
   
     sSQL = sSQL & _
-          "  DECLARE loginCursor CURSOR LOCAL FAST_FORWARD FOR SELECT [Login], [Email], [StartDate], [LeavingDate], [KnownAs], [SecurityGroup] FROM @logins" & vbNewLine & _
-          "      WHERE [Login] <> '' AND [Email] <> '';" & vbNewLine & _
+          "  DECLARE loginCursor CURSOR LOCAL FAST_FORWARD FOR SELECT [ID], [Login], [Email], [StartDate], [LeavingDate], [KnownAs], [SecurityGroup] FROM @logins" & vbNewLine & _
+          "      WHERE ISNULL([Login], '') <> '' AND ([LeavingDate] >= @todaysDate OR [LeavingDate] IS NULL);" & vbNewLine & _
           "  OPEN loginCursor;" & vbNewLine & _
-          "  FETCH NEXT FROM loginCursor INTO @login, @emailAddress, @startDate, @leavingDate, @knownAs, @securityGroup;" & vbNewLine & _
+          "  FETCH NEXT FROM loginCursor INTO @id, @login, @emailAddress, @startDate, @leavingDate, @knownAs, @securityGroup;" & vbNewLine & _
           "  WHILE @@FETCH_STATUS = 0" & vbNewLine & _
           "  BEGIN" & vbNewLine & vbNewLine
   
@@ -5746,7 +5747,7 @@ On Error GoTo ErrorTrap:
     sSQL = sSQL & _
           "      IF NOT EXISTS (SELECT loginname FROM sys.syslogins WHERE name = @login) AND EXISTS(SELECT Name FROM ASRSysGroups WHERE Name = @securityGroup)" & vbNewLine & _
           "      BEGIN" & vbNewLine & _
-          "          IF @sendEmail = 1" & vbNewLine & _
+          "          IF @sendEmail = 1 AND ISNULL(@emailAddress,'') <> ''" & vbNewLine & _
           "              SET @initialPassword = LOWER(SUBSTRING(CONVERT(varchar(255), NEWID()), 1, 5)) + 'A!3' + LOWER(SUBSTRING(CONVERT(varchar(255), NEWID()), 1, 4));" & vbNewLine & vbNewLine & _
           "          SET @emailContent = 'Dear ' + @knownAs + ',' + CHAR(13) + 'Your login details for OpenHR are as follows:' + CHAR(13) + CHAR(13) +" & vbNewLine & _
           "              'Username : ' + @login + CHAR(13) +" & vbNewLine & _
@@ -5761,21 +5762,20 @@ On Error GoTo ErrorTrap:
           "          EXEC sp_executeSQL @sCode;" & vbNewLine & vbNewLine
           
     sSQL = sSQL & _
-          "        INSERT ASRSysAuditGroup(UserName, DateTimeStamp, GroupName, UserLogin, [Action])" & vbNewLine & _
-          "            VALUES ('System', GETDATE(), @securityGroup, @login, 'User Added')" & vbNewLine & vbNewLine
+          "          INSERT ASRSysAuditGroup([UserName], [DateTimeStamp], [GroupName], [UserLogin], [Action])" & vbNewLine & _
+          "              VALUES (SYSTEM_USER, GETDATE(), @securityGroup, @login, 'User Added')" & vbNewLine & vbNewLine
           
     sSQL = sSQL & _
-          "          IF @sendEmail = 1 AND (@leavingDate >= @todaysDate OR @leavingDate IS NULL)" & vbNewLine & _
+          "          IF @sendEmail = 1 AND ISNULL(@emailAddress,'') <> ''" & vbNewLine & _
           "          BEGIN" & vbNewLine & _
-          "              IF @startDate < @todaysDate SET @startDate = @todaysDate;" & vbNewLine & _
-          "              INSERT ASRSysEmailQueue(RecordDesc, ColumnValue, DateDue, UserName, [Immediate], RecalculateRecordDesc," & vbNewLine & _
+          "              INSERT ASRSysEmailQueue(RecordID, RecordDesc, ColumnValue, DateDue, UserName, [Immediate], RecalculateRecordDesc," & vbNewLine & _
           "                  RepTo, MsgText, WorkflowInstanceID, [Subject])" & vbNewLine & _
-          "              VALUES ('', '', @startDate, 'OpenHR Web', 1, 0," & vbNewLine & _
+          "              VALUES (@id, '', '', @startDate, 'OpenHR Web', 1, 0," & vbNewLine & _
           "                  @emailAddress, @emailContent, 0, 'Your OpenHR login details');" & vbNewLine & vbNewLine & _
           "              EXECUTE dbo.spASREmailImmediate 'OpenHR Web';" & vbNewLine & _
           "          END" & vbNewLine & _
           "      END" & vbNewLine & _
-          "      FETCH NEXT FROM loginCursor INTO @login, @emailAddress, @startDate, @leavingDate, @knownAs, @securityGroup;" & vbNewLine
+          "      FETCH NEXT FROM loginCursor INTO @id, @login, @emailAddress, @startDate, @leavingDate, @knownAs, @securityGroup;" & vbNewLine
     
       sSQL = sSQL & _
           "  END" & vbNewLine & _
@@ -5802,18 +5802,19 @@ On Error GoTo ErrorTrap:
         "AS" & vbNewLine & _
         "BEGIN" & vbNewLine & vbNewLine & _
         "    SET NOCOUNT ON;" & vbNewLine & vbNewLine & _
-        "    DECLARE @yesterday datetime = DATEADD(dd, 0, DATEDIFF(dd, 0,  GETDATE())) - 1 ," & vbNewLine & _
+        "    DECLARE @today datetime = DATEADD(dd, 0, DATEDIFF(dd, 0,  GETDATE()))," & vbNewLine & _
         "        @login nvarchar(MAX)," & vbNewLine & _
+        "        @securityGroup nvarchar(255)," & vbNewLine & _
         "        @sqlCode nvarchar(MAX) = '';" & vbNewLine & vbNewLine
 
   If gbLoginMaintDisableOnLeave Then
   
     sSQL = sSQL & _
         "    DECLARE loginCursor CURSOR LOCAL FAST_FORWARD FOR" & vbNewLine & _
-        "        SELECT [" & sSelfServiceColumn & "] FROM [" & sPersonnelTable & "]" & vbNewLine & _
-        "        WHERE [" & sLeavingDateColumn & "] <= @yesterday;" & vbNewLine & vbNewLine & _
+        "        SELECT [" & sSelfServiceColumn & "], [" & sSecurityGroupColumn & "] FROM [" & sPersonnelTable & "]" & vbNewLine & _
+        "        WHERE [" & sLeavingDateColumn & "] < @today;" & vbNewLine & vbNewLine & _
         "    OPEN loginCursor;" & vbNewLine & _
-        "    FETCH NEXT FROM loginCursor INTO @login;" & vbNewLine & _
+        "    FETCH NEXT FROM loginCursor INTO @login, @securityGroup;" & vbNewLine & _
         "    WHILE @@FETCH_STATUS = 0" & vbNewLine & _
         "    BEGIN" & vbNewLine & _
         "        IF EXISTS (SELECT * FROM sys.sysusers WHERE name = @login)" & vbNewLine & _
@@ -5822,16 +5823,16 @@ On Error GoTo ErrorTrap:
         "        BEGIN" & vbNewLine & _
         "            EXECUTE ('DROP LOGIN [' + @login + ']');" & vbNewLine & _
         "            INSERT dbo.ASRSysAuditGroup(UserName, DateTimeStamp, GroupName, UserLogin, [Action])" & vbNewLine & _
-        "                VALUES ('System', @yesterday + 1, '" & gstrLoginMaintAutoAddGroup & "', @login, 'User Deleted')" & vbNewLine & _
+        "                VALUES ('OpenHR Overnight Process', GETDATE(), @securityGroup, @login, 'User Deleted')" & vbNewLine & _
         "        END" & vbNewLine & _
-        "        FETCH NEXT FROM loginCursor INTO @login;" & vbNewLine & _
+        "        FETCH NEXT FROM loginCursor INTO @login, @securityGroup;" & vbNewLine & _
         "   END" & vbNewLine & vbNewLine & _
         "CLOSE loginCursor;" & vbNewLine & _
         "DEALLOCATE loginCursor;" & vbNewLine
     
   End If
 
-  sSQL = sSQL & _
+  sSQL = sSQL & vbNewLine & _
     "END" & vbNewLine
 
   gADOCon.Execute sSQL, , adExecuteNoRecords
