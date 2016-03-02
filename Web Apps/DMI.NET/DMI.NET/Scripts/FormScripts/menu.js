@@ -339,7 +339,7 @@ function menu_MenuClick(sTool) {
 		}
 	}
 	
-	if (sToolName == "mnutoolMFRecord") {
+	if (sToolName == "mnutoolMFRecord") {		
 		var highlightMandatoryText = ($('#mnutoolMFRecord h6').text().indexOf('Off') > -1 ? "Highlight Mandatory <br/>Columns On" : "Highlight Mandatory <br/>Columns Off");
 		var highlightMandatorytooltipText = ($('#mnutoolMFRecord h6').text().indexOf('Off') > -1 ? "Highlight Mandatory Columns On" : "Highlight Mandatory Columns Off");
 
@@ -746,13 +746,15 @@ function menu_MenuClick(sTool) {
 		return;
 	}
 
-	if (sToolName == "mnutoolFindRecord") {
+	if (sToolName == "mnutoolFindRecord") {		
 		saveChangesPrompt(sTool, 'menu_disableMenu(); menu_refreshHistoryScreensMenu(0); menu_loadFindPage()');
+		HighlightMandatoryColumnsOn();
 		return false;
 	}
 
 	if (sToolName == "mnutoolQuickFindRecord") {
 		saveChangesPrompt('QUICKFIND', 'menu_loadQuickFindNoSaveCheck()');
+		HighlightMandatoryColumnsOn();
 		return false;
 	}
 
@@ -5287,16 +5289,17 @@ function RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGri
 
 
 // Returns true if multi select is on, False otherwise
-function IsMultiSelectionModeOn() {
+function IsMultiSelectionModeOn() {	
 	var isMultiSelectOn = false;
 	if ($('#mnutoolMultiSelectFind h6').text().indexOf('Off') > -1) { isMultiSelectOn = true; }
 	return isMultiSelectOn;
 }
 
-// Sets multi select mode off and multi select tooltip text
-function SetMultiSelectionModeOn() {
+// Sets multi select mode on and multi select tooltip text
+function SetMultiSelectionModeOn() {	
 	$('#mnutoolMultiSelectFind h6').html("Multi-Select <br/>On");
 	$('#mnutoolMultiSelectFind a').prop("title", "Multi-Select On");
+	HighlightMandatoryColumnsOn();
 }
 
 // Load report or utility screeen from the find window
@@ -5410,3 +5413,34 @@ function RunReportsOrUtilities(sTool) {
 }
 
 /******* End Changes for the User Story 19519:As a user, I want to be able to assign categories to Reports and Utilities *********/
+
+function HighlightMandatoryColumnsOn()
+{
+	$('#mnutoolMFRecord h6').html("Highlight Mandatory <br/>Columns On");
+	$('#mnutoolMFRecord a').prop("title", "Highlight Mandatory Columns On");
+
+	$('#ctlRecordEdit *[data-Mandatory="1"]').each(function () {
+		var controlType = $(this).attr('data-controlType');		
+		if (controlType == "4096") {
+			//working pattern
+			if ($(this).children('input:enabled').length > 0) $(this).removeClass('ui-state-highlight');
+		}
+		else if ((controlType == "32") && ($(this).is(':enabled'))) {
+			//Spinner
+			$(this).parent().removeClass('ui-state-highlight');
+		}
+		else if ((controlType == "1") && ($(this).is(':enabled'))) {
+			//checkbox
+			$(this).parent().removeClass('ui-state-highlight');
+		}
+		else if ((controlType == "16") && (!$(this).prop('disabled'))) {
+			//Option Group
+			$(this).removeClass('ui-state-highlight');
+		} else {
+			if ($(this).is(':enabled')) {
+				$(this).removeClass('ui-state-highlight');
+			}
+		}
+	});
+	
+}
