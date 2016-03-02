@@ -127,6 +127,9 @@
         $('#gridReportData').find('tr.jqgrow td:nth-child(' + (index + 1) + ')').each(function () {
           var ar;
           try {
+
+            $(this)[0].title = "";
+
             ar = $.parseJSON($(this).text());
             if (ar && ar.length > 0) {
               var talentchartCellObject = this;
