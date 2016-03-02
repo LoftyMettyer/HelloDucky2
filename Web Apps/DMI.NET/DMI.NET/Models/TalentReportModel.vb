@@ -31,12 +31,12 @@ Namespace Models
 		Public Property BasePicklistID As Integer
 		Public Property BaseFilterID As Integer
 
-		<Range(1, Integer.MaxValue, ErrorMessage:="Role match table not selected.")>
-		Public Property BaseChildTableID As Integer
+        <Range(1, Integer.MaxValue, ErrorMessage:="Role match table not selected.")>
+        Public Property BaseChildTableID As Integer
 
-		<Range(1, Integer.MaxValue, ErrorMessage:="Role match table column not selected.")>
-		Public Property BaseChildColumnID As Integer
-		Public Property BaseChildColumnDataType As Integer
+        <Range(1, Integer.MaxValue, ErrorMessage:="Role match table column not selected.")>
+        Public Property BaseChildColumnID As Integer
+        Public Property BaseChildColumnDataType As Integer
 
 		Public Property BaseMinimumRatingColumnID As Integer
 		Public Property BasePreferredRatingColumnID As Integer
@@ -72,11 +72,17 @@ Namespace Models
 		<DisplayName("Minimum Match Score : ")>
 		Public Property MinimumScore As Integer
 
-    <MinLength(0) >
-    Public Overrides Property SortOrdersString As String
+		<MinLength(0)>
+		Public Overrides Property SortOrdersString As String
 
- 		<MinLength(3, ErrorMessage:="You must select at least one column for your report.")> _
-		Public Overrides Property ColumnsAsString As String
+		<MinLength(3, ErrorMessage:="You must select at least one column for your report.")> _
+		 Public Overrides Property ColumnsAsString As String
+
+		Public Property MatchChildTableName As String
+		Public Property BaseChildTableName As String
+		Public Property BaseTableName As String
+		Public Property MatchTableName As String
+
 
 		Public Overrides Function GetAvailableTables() As IEnumerable(Of ReportTableItem)
 

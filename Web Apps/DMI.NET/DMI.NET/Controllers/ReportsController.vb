@@ -349,6 +349,28 @@ Namespace Controllers
 			'Check if role and person table match column has same datatype
 			If (objModel.BaseChildColumnDataType > 0 AndAlso objModel.MatchChildColumnDataType > 0 AndAlso objModel.BaseChildColumnDataType <> objModel.MatchChildColumnDataType) Then
 				ModelState.AddModelError("IsColumnSelectionOK", "Role match column and Person match column datatype should be same.")
+            End If
+
+			If objModel.BaseChildTableID > 0 AndAlso objModel.MatchChildTableID > 0 Then
+
+				Dim matchReport = New MatchReportRun
+				matchReport.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+				Dim blnChildOf1, blnChildOf2 As Boolean
+
+				blnChildOf1 = matchReport.IsAChildOf((objModel.BaseChildTableID), objModel.BaseTableID)
+				blnChildOf2 = matchReport.IsAChildOf((objModel.BaseChildTableID), objModel.MatchTableID)
+
+				If blnChildOf1 AndAlso blnChildOf2 Then
+					ModelState.AddModelError("IsBaseTableSelectionOK", "Cannot use the '" & objModel.BaseChildTableName & "' table as it is a child table of both the '" & objModel.BaseTableName & "' and the '" & objModel.MatchTableName & "' tables.")
+				End If
+
+				blnChildOf1 = matchReport.IsAChildOf((objModel.MatchChildTableID), objModel.BaseTableID)
+				blnChildOf2 = matchReport.IsAChildOf((objModel.MatchChildTableID), objModel.MatchTableID)
+
+				If blnChildOf1 AndAlso blnChildOf2 Then
+					ModelState.AddModelError("IsMatchTableSelectionOK", "Cannot use the '" & objModel.MatchChildTableName & "' table as it is a child table of both the '" & objModel.BaseTableName & "' and the '" & objModel.MatchTableName & "' tables.")
+				End If
+
 			End If
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
