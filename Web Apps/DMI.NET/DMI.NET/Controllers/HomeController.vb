@@ -2647,6 +2647,12 @@ Namespace Controllers
       Dim objReportData As MatchReportRun = CType(Session("MatchReport"), MatchReportRun)
       Dim outputFile = Path.GetTempFileName.Replace(".tmp", ".xlsx")
 
+      If Len(objReportData.ErrorString) > 0 Then
+        Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+				Response.AppendCookie(New HttpCookie("fileDownloadErrors", objReportData.ErrorString))	' marks the download as complete on the client	
+        Exit Function
+      End If
+
 			Dim strDownloadFileName = objReportData.DownloadFileName
 
 			Dim objDocument As New Workbook
