@@ -1813,18 +1813,16 @@ Public Class MatchReportRun
                 '  bAddToGrid = True
 						    End If
               End If
-
-              aryAddString.Add(Math.Round(scores.MatchScore))
+							
+              aryAddString.Add(Math.Round(scores.MatchScore,MidpointRounding.AwayFromZero))
               aryAddString.Add(scores.TalentChartJSON)
               aryAddString.Add(scores.TalentChart)
-
             End If
 
             ' Add the talent values into the grid
 				    If bAddToGrid Then
               AddItemToReportData(aryAddString)
 				    End If
-
 				  Next 
 			  End If
 			
