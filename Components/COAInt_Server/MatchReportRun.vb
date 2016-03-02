@@ -1579,9 +1579,9 @@ Public Class MatchReportRun
     dim sorts as New ArrayList
 		
     For Each column in mcolColDetails _
-      .Where(Function(m) m.Sequence > 0) _
+      .Where(Function(m) m.SortSeq > 0) _
       .OrderBy(function(m) m.SortSeq)
-        sorts.Add("[" & column.Heading & "]" & IIf(column.SortDir = "D", " DESC", ""))
+        sorts.Add("[" & column.Heading & "]" & IIf(column.SortDir = "Desc", " DESC", " ASC"))
     Next
 
 		mstrSQLOrderBy = " ORDER BY " & String.Join(", ",sorts.ToArray())
@@ -1633,7 +1633,7 @@ Public Class MatchReportRun
         For Each column in mcolColDetails _
             .Where(Function(m) m.SortSeq > 0) _
             .OrderBy(function(m) m.SortSeq)
-          talentSortOrder &= string.Format(", [{0}] {1}" , column.Heading, IIf(column.SortDir = "D", " DESC", "ASC"))
+          talentSortOrder &= string.Format(", [{0}] {1}" , column.Heading, IIf(column.SortDir = "Desc", " DESC", " ASC"))
         Next
         dv.Sort = talentSortOrder
 
