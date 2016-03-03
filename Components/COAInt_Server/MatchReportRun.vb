@@ -1584,7 +1584,10 @@ Public Class MatchReportRun
         sorts.Add("[" & column.Heading & "]" & IIf(column.SortDir = "Desc", " DESC", " ASC"))
     Next
 
-		mstrSQLOrderBy = " ORDER BY " & String.Join(", ",sorts.ToArray())
+    if sorts.Count > 0 Then
+		  mstrSQLOrderBy = " ORDER BY " & String.Join(", ",sorts.ToArray())
+    End If
+
 		Return True
 		
 	End Function
