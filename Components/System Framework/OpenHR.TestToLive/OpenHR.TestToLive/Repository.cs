@@ -101,12 +101,8 @@ namespace OpenHRTestToLive
 
         // Get the imported WF id
         int ImportedWFId = importObjects.AllWorkflows.First().id;
-
-        // If the imported ID clashes with the existing id range, fixup all imported id's
-        if (ImportedWFId <= MaxWFId)
-        {
-          MaxWFId = BumpWorkflowIDs(importObjects, liveDb, MaxWFId);
-        }
+        
+        BumpWorkflowIDs(importObjects, liveDb, MaxWFId);
 
 				var simpleFileName = Path.GetFileNameWithoutExtension(inputFile);
 
@@ -407,6 +403,7 @@ namespace OpenHRTestToLive
         foreach (ASRSysExprComponent child in t2l.AllComponents)
         {
           if (child.ExprID == CurrentExprID) { child.ExprID = MaxExprID; }
+          if (child.FieldSelectionFilter == CurrentExprID) { child.FieldSelectionFilter = MaxExprID; }
         }
         foreach (ASRSysWorkflowElementValidation child in t2l.AllValidations)
         {
