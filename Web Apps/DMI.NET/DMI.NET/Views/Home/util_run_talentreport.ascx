@@ -181,17 +181,20 @@
       closeclick();
     },
     success: function (jsonData) {
-	    if (typeof jsonData.colModel == "undefined") {
-	    	gotNoData(jsonData);
-	    } else {
-		    gotData(jsonData);
-	    }
-    }
+    	var previewData = window.frmExportData.txtFormat.value === "0";
+    	if (previewData) {
+    		if (typeof jsonData.colModel == "undefined") {
+    			gotNoData(jsonData);
+    		} else {
+    			gotData(jsonData);
+    		}
+    	};
+	  }
   });
 
 	function gotData(jdata) {
   	$("#gridReportData").jqGrid({
-  		datatype: "local",
+  		datatype: "local", 
   		data: $.parseJSON(JSON.stringify(jdata)).rows,
   		mtype: 'GET',
   		jsonReader: {
