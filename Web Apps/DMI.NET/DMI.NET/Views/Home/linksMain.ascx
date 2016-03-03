@@ -503,10 +503,10 @@
 									fMultiAxis = False
 								End If
 
-								sText = navlink.Text
-								If navlink.Text.Length > 25 Then
-									navlink.Text = navlink.Text.Substring(0, 25) + "..."
-								End If
+								'sText = navlink.Text
+								'If navlink.Text.Length > 25 Then
+								'	navlink.Text = navlink.Text.Substring(0, 25) + "..."
+								'End If
 
 								' Drilldown?
 								If navlink.UtilityID > 0 Then
