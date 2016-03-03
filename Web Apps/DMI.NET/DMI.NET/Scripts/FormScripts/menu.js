@@ -747,14 +747,12 @@ function menu_MenuClick(sTool) {
 	}
 
 	if (sToolName == "mnutoolFindRecord") {		
-		saveChangesPrompt(sTool, 'menu_disableMenu(); menu_refreshHistoryScreensMenu(0); menu_loadFindPage()');
-		HighlightMandatoryColumnsOn();
+		saveChangesPrompt(sTool, 'menu_disableMenu(); menu_refreshHistoryScreensMenu(0); menu_loadFindPage()');		
 		return false;
 	}
 
 	if (sToolName == "mnutoolQuickFindRecord") {
-		saveChangesPrompt('QUICKFIND', 'menu_loadQuickFindNoSaveCheck()');
-		HighlightMandatoryColumnsOn();
+		saveChangesPrompt('QUICKFIND', 'menu_loadQuickFindNoSaveCheck()');		
 		return false;
 	}
 
@@ -5018,7 +5016,7 @@ function showDatabaseMenuGroup() {
 }
 
 function toggleMandatoryColumns(pfSetting) {
-	
+
 	$('#ctlRecordEdit *[data-Mandatory="1"]').each(function () {
 		var controlType = $(this).attr('data-controlType');
 
@@ -5044,10 +5042,6 @@ function toggleMandatoryColumns(pfSetting) {
 		}
 	});
 
-	//Store user setting to cookie		
-	if (!pfSetting) {		
-		setCookie("toolMFRecord", ($('#mnutoolMFRecord').hasClass('toolbarButtonOn')), 100);
-	}
 }
 
 /******* Begin Changes related to to user stories : 18362, 18363, 18628 & 18629  *********/
@@ -5298,8 +5292,7 @@ function IsMultiSelectionModeOn() {
 // Sets multi select mode on and multi select tooltip text
 function SetMultiSelectionModeOn() {	
 	$('#mnutoolMultiSelectFind h6').html("Multi-Select <br/>On");
-	$('#mnutoolMultiSelectFind a').prop("title", "Multi-Select On");
-	HighlightMandatoryColumnsOn();
+	$('#mnutoolMultiSelectFind a').prop("title", "Multi-Select On");	
 }
 
 // Load report or utility screeen from the find window
@@ -5414,33 +5407,32 @@ function RunReportsOrUtilities(sTool) {
 
 /******* End Changes for the User Story 19519:As a user, I want to be able to assign categories to Reports and Utilities *********/
 
-function HighlightMandatoryColumnsOn()
-{
-	$('#mnutoolMFRecord h6').html("Highlight Mandatory <br/>Columns On");
-	$('#mnutoolMFRecord a').prop("title", "Highlight Mandatory Columns On");
-
-	$('#ctlRecordEdit *[data-Mandatory="1"]').each(function () {
-		var controlType = $(this).attr('data-controlType');		
-		if (controlType == "4096") {
-			//working pattern
-			if ($(this).children('input:enabled').length > 0) $(this).removeClass('ui-state-highlight');
-		}
-		else if ((controlType == "32") && ($(this).is(':enabled'))) {
-			//Spinner
-			$(this).parent().removeClass('ui-state-highlight');
-		}
-		else if ((controlType == "1") && ($(this).is(':enabled'))) {
-			//checkbox
-			$(this).parent().removeClass('ui-state-highlight');
-		}
-		else if ((controlType == "16") && (!$(this).prop('disabled'))) {
-			//Option Group
-			$(this).removeClass('ui-state-highlight');
-		} else {
-			if ($(this).is(':enabled')) {
-				$(this).removeClass('ui-state-highlight');
+function HighlightFieldsOnOFF()
+{	
+	if ($('#mnutoolMFRecord h6').text().indexOf('Off') > -1)
+	{
+		$('#ctlRecordEdit *[data-Mandatory="1"]').each(function () {
+			var controlType = $(this).attr('data-controlType');		
+			if (controlType == "4096") {
+				//working pattern
+				if ($(this).children('input:enabled').length > 0) $(this).addClass('ui-state-highlight');
 			}
-		}
-	});
-	
+			else if ((controlType == "32") && ($(this).is(':enabled'))) {
+				//Spinner
+				$(this).parent().addClass('ui-state-highlight');
+			}
+			else if ((controlType == "1") && ($(this).is(':enabled'))) {
+				//checkbox
+				$(this).parent().addClass('ui-state-highlight');
+			}
+			else if ((controlType == "16") && (!$(this).prop('disabled'))) {
+				//Option Group
+				$(this).addClass('ui-state-highlight');
+			} else {
+				if ($(this).is(':enabled')) {
+					$(this).addClass('ui-state-highlight');
+				}
+			}
+		});
+	}	
 }

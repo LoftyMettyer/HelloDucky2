@@ -812,8 +812,9 @@
 			//$("#ctlRecordEdit").css("transform-origin", "50% top");
 		}
 
-		var toolMfRecord = getCookie('toolMFRecord');		
-		if (toolMfRecord == 'true') toggleMandatoryColumns(true);
+		//Highlighted fields set to on/off based on HighlightMandatory text
+		HighlightFieldsOnOFF();
+
 	});
 
 </script>
