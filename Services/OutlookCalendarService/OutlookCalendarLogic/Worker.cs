@@ -833,29 +833,34 @@ namespace OutlookCalendarLogic {
 	private bool CreateEntry() {
 	  if (!_loggedOn) {
 		_errorMessage = "Exchange Logon failed";
+		RaiseMessageEvent(new MessageEventDetails(_errorMessage));
 		return false;
 	  }
 
 	  if (_startDate.ToString() == string.Empty) {
 		_errorMessage = "No start date entered";
+		RaiseMessageEvent(new MessageEventDetails(_errorMessage));
 		return false;
 	  }
 
 	  if (!_allDayEvent) {
 		if (!LikeOperator.LikeString(_startTime, "##:##", CompareMethod.Text)) {
 		  _errorMessage = string.Concat("Invalid Start Time <", _startTime, ">");
+		  RaiseMessageEvent(new MessageEventDetails(_errorMessage));
 		  return false;
 		}
 	  }
 	  if (!LikeOperator.LikeString(_endTime, "##:##", CompareMethod.Text)) {
 		{
 		  _errorMessage = string.Concat("Invalid End Time <", _endTime, ">");
+		  RaiseMessageEvent(new MessageEventDetails(_errorMessage));
 		  return false;
 		}
 	  }
 
 	  if (_folder == string.Empty) {
 		_errorMessage = "Outlook folder name empty";
+		RaiseMessageEvent(new MessageEventDetails(_errorMessage));
 		return false;
 	  }
 
@@ -924,10 +929,12 @@ namespace OutlookCalendarLogic {
 
 	  if (calendarFolder == null) {
 		_errorMessage = "Unable to obtain a valid Calendar path from: " + _folder;
+		RaiseMessageEvent(new MessageEventDetails(_errorMessage));
 		return false;
 	  }
 
 	  if (_errorMessage != string.Empty) {
+		RaiseMessageEvent(new MessageEventDetails(_errorMessage));
 		return false;
 	  }
 
@@ -974,6 +981,7 @@ namespace OutlookCalendarLogic {
 		_entryId = appointment.Id.ToString();
 	  } catch (Exception ex) {
 		_errorMessage = ex.Message;
+		RaiseMessageEvent(new MessageEventDetails(_errorMessage));
 		return false;
 	  }
 
@@ -984,9 +992,9 @@ namespace OutlookCalendarLogic {
 	  try {
 		var appointment = Appointment.Bind(_exchangeService, new ItemId(_entryId));
 		appointment.Delete(DeleteMode.HardDelete);
-	  } catch (Exception) {
-		RaiseMessageEvent(new MessageEventDetails("Cannot delete entry - Check Mailbox and Calendar folder permissions"));
-		_errorMessage = "Cannot delete entry - Check Mailbox and Calendar folder permissions";
+	  } catch (Exception e) {
+		RaiseMessageEvent(new MessageEventDetails("Cannot delete entry - Check Mailbox and Calendar folder permissions - " + e.Message));
+		_errorMessage = "Cannot delete entry - Check Mailbox and Calendar folder permissions - " + e.Message;
 		return false;
 	  }
 
