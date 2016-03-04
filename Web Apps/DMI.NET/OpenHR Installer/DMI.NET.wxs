@@ -78,9 +78,6 @@
                 <Component Id="cmp8AB9E98812D4FF1396E72067FB9138E7" Guid="*">
                     <File Id="fil9369FF0D08849E97BCE6FBF835C04429" KeyPath="yes" Source="SourceDir\bin\Owin.dll" />
                 </Component>
-                <Component Id="cmp73EE009A331C86D92AEE39499D952CE6" Guid="*">
-                    <File Id="fil1720949B21BF33E2568A16B59B6C3648" KeyPath="yes" Source="SourceDir\bin\System.Data.SqlServerCe.dll" />
-                </Component>
                 <Component Id="cmpD4CDEC7C1AC12733FA38B6F82824DF0B" Guid="*">
                     <File Id="fil48B01FCAA7C0F6456E6444A98B8C8F3A" KeyPath="yes" Source="SourceDir\bin\System.IdentityModel.Tokens.Jwt.dll" />
                 </Component>
@@ -3379,9 +3376,6 @@
                 <Component Id="cmpB1B089D79EDF5AE1EB34A5143B1CCBF4" Guid="*">
                     <File Id="fil00A0113661973E2E5175A272A8A72399" KeyPath="yes" Source="SourceDir\Scripts\jquery.mousewheel.js" />
                 </Component>
-                <Component Id="cmp2CD22A659923149F122B118EC7C5FDD9" Guid="*">
-                    <File Id="fil08F53A7647A4254FB3B692560FD37D34" KeyPath="yes" Source="SourceDir\Scripts\jquery.mousewheel.min.js" />
-                </Component>
                 <Component Id="cmpD900494767BEDBE2E3D6EDC45C726B80" Guid="*">
                     <File Id="filDD5B4161866F14F8E36F19C0DE742B73" KeyPath="yes" Source="SourceDir\Scripts\jquery.numeric.js" />
                 </Component>
@@ -4711,7 +4705,6 @@
             <ComponentRef Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" />
             <ComponentRef Id="cmpCBBD857B6884D163CDBADD7367F6EAB5" />
             <ComponentRef Id="cmp8AB9E98812D4FF1396E72067FB9138E7" />
-            <ComponentRef Id="cmp73EE009A331C86D92AEE39499D952CE6" />
             <ComponentRef Id="cmpD4CDEC7C1AC12733FA38B6F82824DF0B" />
             <ComponentRef Id="cmpAEE8C660E33BAAABE81574A21E56902D" />
             <ComponentRef Id="cmp582232504431329434B8578DF5733810" />
@@ -5758,7 +5751,6 @@
             <ComponentRef Id="cmp2A8E5B1477948AAABB356021D23F5321" />
             <ComponentRef Id="cmpBC7448D225D8360B9D2E177F67B65DCA" />
             <ComponentRef Id="cmpB1B089D79EDF5AE1EB34A5143B1CCBF4" />
-            <ComponentRef Id="cmp2CD22A659923149F122B118EC7C5FDD9" />
             <ComponentRef Id="cmpD900494767BEDBE2E3D6EDC45C726B80" />
             <ComponentRef Id="cmpB54D2212043A303F574C97E03DECF0C6" />
             <ComponentRef Id="cmpD924F4DB1C34A3B2F609BF0D212A5243" />
