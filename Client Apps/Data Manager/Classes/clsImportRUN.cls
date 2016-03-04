@@ -3458,6 +3458,26 @@ Private Function ReadSQLTableInToFile() As Boolean
     Exit Function
   End If
     
+  If mbUseUpdateBlob Then
+  
+    sSQL = "SELECT COUNT(t.Column_Name) AS [ColumnCount]" & _
+      " FROM [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].INFORMATION_SCHEMA.COLUMNS t" & _
+      " WHERE t.TABLE_NAME = '" & mstrLinkedTable & "' AND Column_Name IN ('PROCESS_DATE', 'PROCESSED', 'ERROR', 'ID')"
+    Set rsColumns = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
+    
+    With rsColumns
+      If Not (.BOF And .EOF) Then
+        rsColumns.MoveFirst
+        If rsColumns.Fields("ColumnCount").Value < 4 Then
+          mstrErrorString = "The update blob has been incorrectly defined on the linked table." & vbCrLf
+          ReadSQLTableInToFile = False
+          Exit Function
+        End If
+      End If
+    End With
+    
+  End If
+    
   sSQL = "SELECT t.Column_Name" & _
     " FROM [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].INFORMATION_SCHEMA.COLUMNS t" & _
     " WHERE t.TABLE_NAME = '" & mstrLinkedTable & "'  ORDER BY ORDINAL_POSITION"
