@@ -522,7 +522,7 @@ Private Function TableNew() As Boolean
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
     sSQL = "CREATE VIEW dbo." & sTableName & " WITH SCHEMABINDING AS SELECT " & sCreateView.ToString & " FROM dbo." & sPhysicalTableName & vbNewLine & _
-           "WHERE ISNULL([_deleted],0) = 0"
+           "WHERE [_deleted] IS NULL OR [_deleted] = 0"
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
     ' Add an index
