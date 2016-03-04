@@ -40,6 +40,7 @@ Begin VB.Form frmImport
       _ExtentY        =   9922
       _Version        =   393216
       Style           =   1
+      Tab             =   2
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -52,11 +53,9 @@ Begin VB.Form frmImport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmImport.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraData"
-      Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraInformation"
-      Tab(0).Control(1).Enabled=   0   'False
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "fraInformation"
+      Tab(0).Control(1)=   "fraData"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmImport.frx":0028
@@ -65,16 +64,20 @@ Begin VB.Form frmImport
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "O&ptions"
       TabPicture(2)   =   "frmImport.frx":0044
-      Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraSource"
-      Tab(2).Control(1)=   "fraOptions"
-      Tab(2).Control(2)=   "fraTableDetails"
-      Tab(2).Control(3)=   "fraFileDetails"
+      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).Control(0)=   "fraFileDetails"
+      Tab(2).Control(0).Enabled=   0   'False
+      Tab(2).Control(1)=   "fraTableDetails"
+      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(2)=   "fraOptions"
+      Tab(2).Control(2).Enabled=   0   'False
+      Tab(2).Control(3)=   "fraSource"
+      Tab(2).Control(3).Enabled=   0   'False
       Tab(2).ControlCount=   4
       Begin VB.Frame fraSource 
          Caption         =   "Data Source :"
          Height          =   1485
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   53
          Top             =   400
          Width           =   9400
@@ -83,7 +86,7 @@ Begin VB.Form frmImport
             Enabled         =   0   'False
             Height          =   315
             Left            =   4650
-            TabIndex        =   62
+            TabIndex        =   63
             Top             =   960
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -92,7 +95,7 @@ Begin VB.Form frmImport
             Caption         =   "&All"
             Height          =   195
             Left            =   1575
-            TabIndex        =   61
+            TabIndex        =   62
             Top             =   705
             Value           =   -1  'True
             Width           =   800
@@ -101,7 +104,7 @@ Begin VB.Form frmImport
             Caption         =   "&Filter"
             Height          =   315
             Left            =   1575
-            TabIndex        =   60
+            TabIndex        =   61
             Top             =   960
             Width           =   800
          End
@@ -132,7 +135,7 @@ Begin VB.Form frmImport
             Caption         =   "Filter :"
             Height          =   195
             Left            =   195
-            TabIndex        =   63
+            TabIndex        =   64
             Top             =   705
             Width           =   555
          End
@@ -149,7 +152,7 @@ Begin VB.Form frmImport
       End
       Begin VB.Frame fraInformation 
          Height          =   2355
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   47
          Top             =   400
          Width           =   9405
@@ -555,7 +558,7 @@ Begin VB.Form frmImport
       Begin VB.Frame fraOptions 
          Caption         =   "Records :"
          Height          =   1335
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   35
          Top             =   4125
          Width           =   9400
@@ -627,7 +630,7 @@ Begin VB.Form frmImport
       Begin VB.Frame fraData 
          Caption         =   "Data :"
          Height          =   2565
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
          Top             =   2895
          Width           =   9405
@@ -653,10 +656,18 @@ Begin VB.Form frmImport
       Begin VB.Frame fraTableDetails 
          Caption         =   "Source Table :"
          Height          =   2070
-         Left            =   -74850
-         TabIndex        =   64
+         Left            =   150
+         TabIndex        =   65
          Top             =   1965
          Width           =   9400
+         Begin VB.CheckBox chkUseUpdateBlob 
+            Caption         =   "Use Update &Blob"
+            Height          =   285
+            Left            =   210
+            TabIndex        =   60
+            Top             =   1635
+            Width           =   3075
+         End
          Begin VB.TextBox txtLinkedServer 
             Height          =   315
             Left            =   1620
@@ -682,7 +693,7 @@ Begin VB.Form frmImport
             Caption         =   "Server :"
             Height          =   300
             Left            =   255
-            TabIndex        =   67
+            TabIndex        =   68
             Top             =   390
             Width           =   1365
          End
@@ -690,7 +701,7 @@ Begin VB.Form frmImport
             Caption         =   "Catalog :"
             Height          =   255
             Left            =   255
-            TabIndex        =   66
+            TabIndex        =   67
             Top             =   825
             Width           =   1170
          End
@@ -698,7 +709,7 @@ Begin VB.Form frmImport
             Caption         =   "Table :"
             Height          =   165
             Left            =   255
-            TabIndex        =   65
+            TabIndex        =   66
             Top             =   1275
             Width           =   960
          End
@@ -706,7 +717,7 @@ Begin VB.Form frmImport
       Begin VB.Frame fraFileDetails 
          Caption         =   "File :"
          Height          =   2070
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   16
          Top             =   1965
          Width           =   9400
@@ -1019,7 +1030,7 @@ Public Property Get SelectedID() As Long
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -1053,7 +1064,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Private Sub cboBaseTable_Click()
@@ -1191,6 +1202,10 @@ Private Sub cboFileFormat_Click()
   
   Changed = True
   
+End Sub
+
+Private Sub chkUseUpdateBlob_Click()
+  Changed = True
 End Sub
 
 Private Sub cmdCancel_Click()
@@ -2108,13 +2123,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
 
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
@@ -2616,7 +2631,8 @@ Private Function SaveDefinition() As Boolean
             
     sSQL = sSQL & "LinkedServer = '" & Replace(txtLinkedServer.Text, "'", "''") & "'," & _
              "LinkedCatalog = '" & Replace(txtLinkedCatalog.Text, "'", "''") & "'," & _
-             "LinkedTable = '" & Replace(txtLinkedTable.Text, "'", "''") & "'"
+             "LinkedTable = '" & Replace(txtLinkedTable.Text, "'", "''") & "', " & _
+             "UseUpdateBlob = " & IIf(chkUseUpdateBlob.Value, "1", "0")
             
     'TM20020726 Fault 2123 - Upadte the DateSeparator column.
     'MH20010816 Fault 2017
@@ -2637,14 +2653,13 @@ Private Function SaveDefinition() As Boolean
            "FileType, FileName, Delimiter, OtherDelimiter, DateFormat, " & _
            "Encapsulator, MultipleRecordAction, " & _
            "HeaderLines, FooterLines, ImportType, " & _
-           "UserName, FilterID, DateSeparator, LinkedServer, LinkedCatalog, LinkedTable) "
+           "UserName, FilterID, DateSeparator, LinkedServer, LinkedCatalog, LinkedTable, UseUpdateBlob) "
     
     sSQL = sSQL & _
            "Values('" & _
            Trim(Replace(txtName.Text, "'", "''")) & "','" & _
            Replace(txtDesc.Text, "'", "''") & "'," & _
            cboBaseTable.ItemData(cboBaseTable.ListIndex)
-
 
     sSQL = sSQL & ", " & Me.cboFileFormat.ItemData(cboFileFormat.ListIndex)
     sSQL = sSQL & ", '" & Replace(Me.txtFilename.Text, "'", "''") & "'"
@@ -2661,7 +2676,8 @@ Private Function SaveDefinition() As Boolean
     sSQL = sSQL & ", '" & cboDateSeparator.Text & "'"
     sSQL = sSQL & ", '" & Replace(txtLinkedServer.Text, "'", "''") & "'"
     sSQL = sSQL & ", '" & Replace(txtLinkedCatalog.Text, "'", "''") & "'"
-    sSQL = sSQL & ", '" & Replace(txtLinkedTable.Text, "'", "''") & "')"
+    sSQL = sSQL & ", '" & Replace(txtLinkedTable.Text, "'", "''") & "'"
+    sSQL = sSQL & ", " & IIf(chkUseUpdateBlob.Value, "1", "0") & ")"
 
     mlngImportID = InsertImport(sSQL)
 
@@ -3047,6 +3063,10 @@ Private Function RetrieveImportDetails(plngImportID As Long) As Boolean
   txtLinkedServer.Text = IIf(IsNull(rsTemp!LinkedServer), "", rsTemp!LinkedServer)
   txtLinkedCatalog.Text = IIf(IsNull(rsTemp!LinkedCatalog), "", rsTemp!LinkedCatalog)
   txtLinkedTable.Text = IIf(IsNull(rsTemp!LinkedTable), "", rsTemp!LinkedTable)
+  
+  If Not IsNull(rsTemp!UseUpdateBlob) Then
+    If rsTemp!UseUpdateBlob Then chkUseUpdateBlob.Value = vbChecked
+  End If
   
   ' Set name, username, access etc
   If mblnFromCopy Then

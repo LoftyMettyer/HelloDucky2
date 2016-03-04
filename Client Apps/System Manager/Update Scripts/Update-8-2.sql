@@ -237,6 +237,9 @@ PRINT 'Step - Import additions'
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysImportName', 'U') AND name = 'LinkedTable')
 		EXEC sp_executesql N'ALTER TABLE ASRSysImportName ADD LinkedTable nvarchar(255);';
 
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysImportName', 'U') AND name = 'UseUpdateBlob')
+		EXEC sp_executesql N'ALTER TABLE ASRSysImportName ADD UseUpdateBlob bit;';
+
 
 /* ------------------------------------------------------- */
 PRINT 'Step - Workflow additions'

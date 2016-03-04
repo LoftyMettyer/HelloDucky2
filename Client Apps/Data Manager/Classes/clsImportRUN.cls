@@ -59,6 +59,8 @@ Private mintImportFooterLines As Integer
 Private mstrLinkedServer As String
 Private mstrLinkedCatalog As String
 Private mstrLinkedTable As String
+Private maryRecordSuccessIDs() As String
+Private mbUseUpdateBlob As Boolean
 
 Private mblnImportCreateNewOnly As Boolean
 Private mlngFilterID As Long
@@ -321,6 +323,10 @@ Public Function RunImport() As Boolean
     gADOCon.Execute strSQL, , adExecuteNoRecords
   End If
  
+  If fOK And mbUseUpdateBlob Then
+    UpdateImportedRecords
+  End If
+ 
   If fOK And mintImportFileType = ImportType.SQLTable Then
     Kill mstrImportFileName
   End If
@@ -534,9 +540,9 @@ Private Function GetImportDefinition() As Boolean
     mstrLinkedServer = IIf(IsNull(!LinkedServer), "", !LinkedServer)
     mstrLinkedCatalog = IIf(IsNull(!LinkedCatalog), "", !LinkedCatalog)
     mstrLinkedTable = IIf(IsNull(!LinkedTable), "", !LinkedTable)
+    mbUseUpdateBlob = IIf(IsNull(!UseUpdateBlob), 0, !UseUpdateBlob)
     
   End With
-
   
   If mintImportFileType = ImportType.ExcelWorksheet Then
     gobjProgress.AVI = dbText
@@ -580,7 +586,7 @@ Private Function GetImportDetails() As Boolean
     GetImportDetails = False
     Exit Function
   End If
-  
+      
   ' Get the column information from the Details table, in order
   pstrTempSQL = "SELECT * FROM AsrSysImportDetails WHERE " & _
                 "ImportID = " & mlngImportID & " " & _
@@ -637,7 +643,11 @@ Private Function GetImportDetails() As Boolean
     Loop
   .MoveFirst
   End With
-  
+
+  If mbUseUpdateBlob Then
+    AddLMSImportBlob
+  End If
+
   ' Now populate the Table used in the import variables
   Set prstDetails = mclsData.OpenRecordset("SELECT DISTINCT TableID FROM ASRSysImportDetails WHERE TableID <> 0 AND TableID <> " & mlngImportBaseTable & " AND ImportID = " & mlngImportID, adOpenForwardOnly, adLockReadOnly)
   
@@ -792,10 +802,10 @@ Private Function GetRealSource(plngTableID As Long) As Boolean
             
             ' If its the base table, check INSERT privilege
             If plngTableID = mlngImportBaseTable Then
-              pblnAllowed = pobjColumnPrivileges.Item(mvarColDetails(4, pintTemp)).AllowUpdate
+              pblnAllowed = pobjColumnPrivileges.item(mvarColDetails(4, pintTemp)).AllowUpdate
               If Not pblnAllowed Then mstrErrorString = mvarColDetails(2, pintTemp) & "." & mvarColDetails(4, pintTemp) & " : No update permission"
             Else ' Otherwise just check the select privilege
-              pblnAllowed = pobjColumnPrivileges.Item(mvarColDetails(4, pintTemp)).AllowSelect
+              pblnAllowed = pobjColumnPrivileges.item(mvarColDetails(4, pintTemp)).AllowSelect
               If Not pblnAllowed Then mstrErrorString = mvarColDetails(2, pintTemp) & "." & mvarColDetails(4, pintTemp) & " : No read permission"
             End If
             
@@ -990,6 +1000,7 @@ Private Function ProcessFile() As Boolean
   
   Set objFilter = New clsExprExpression
   ReDim mavColumns(2, 0)
+  ReDim maryRecordSuccessIDs(0)
   
   ' Create an array of the column IDs, and values to pass to the expression.
   ' Column 1= column id.
@@ -1090,6 +1101,11 @@ Private Function ProcessFile() As Boolean
           Else
             ' Create the Where code and then run the appropriate function
             blnRecordOK = FindMatchingRecord
+          End If
+      
+          If mbUseUpdateBlob And blnRecordOK Then
+            maryRecordSuccessIDs(UBound(maryRecordSuccessIDs)) = GetSpecificKeyData(UBound(mvarColDetails, 2))
+            ReDim Preserve maryRecordSuccessIDs(UBound(maryRecordSuccessIDs) + 1)
           End If
   
           If blnRecordOK Then
@@ -1360,8 +1376,6 @@ Dim strJoin As String
   End If
 
 '##############
-
-
 
   If fColFound Then
     'mstrSQL = Left(mstrSQL, (Len(mstrSQL) - 1))
@@ -2398,7 +2412,7 @@ Private Function GetDataToImport(pintFileType As ImportType) As String
     gobjErrorStack.Disable
     
     'JPD 20040319 Fault 8306
-    Set objTableView = gcoTablePrivileges.Item(mstrImportParent2TableName)
+    Set objTableView = gcoTablePrivileges.item(mstrImportParent2TableName)
     If objTableView.TableType = tabChild Then
       strSQL = "SELECT " & mstrParent2TableRealSources(0) & ".ID FROM " & mstrParent2TableRealSources(0) & _
         mstrParent2ViewJoins & " " & pstrParentWhereSQL
@@ -2495,7 +2509,7 @@ Private Function GetDataToImport(pintFileType As ImportType) As String
     gobjErrorStack.Disable
     
     'JPD 20040319 Fault 8306
-    Set objTableView = gcoTablePrivileges.Item(mstrImportParent1TableName)
+    Set objTableView = gcoTablePrivileges.item(mstrImportParent1TableName)
     If objTableView.TableType = tabChild Then
       strSQL = "SELECT " & mstrParent1TableRealSources(0) & ".ID FROM " & mstrParent1TableRealSources(0) & _
         mstrParent1ViewJoins & " " & pstrParentWhereSQL
@@ -3199,7 +3213,7 @@ Private Function FindMatchingRecord() As Boolean
     'strSQL = "SELECT " & mstrImportParent1TableName & ".ID " & _
              "FROM " & mstrImportParent1TableName & _
              mstrParent1ViewJoins & " WHERE " & mstrParent1Where
-    Set objTableView = gcoTablePrivileges.Item(mstrImportParent1TableName)
+    Set objTableView = gcoTablePrivileges.item(mstrImportParent1TableName)
     If objTableView.TableType = tabChild Then
       strSQL = "SELECT " & mstrParent1TableRealSources(0) & ".ID" & _
         " FROM " & mstrParent1TableRealSources(0) & _
@@ -3223,7 +3237,7 @@ Private Function FindMatchingRecord() As Boolean
     'strSQL = "SELECT " & mstrImportParent2TableName & ".ID " & _
              "FROM " & mstrImportParent2TableName & _
              mstrParent2ViewJoins & " WHERE " & mstrParent2Where
-    Set objTableView = gcoTablePrivileges.Item(mstrImportParent2TableName)
+    Set objTableView = gcoTablePrivileges.item(mstrImportParent2TableName)
     If objTableView.TableType = tabChild Then
       strSQL = "SELECT " & mstrParent2TableRealSources(0) & ".ID" & _
         " FROM " & mstrParent2TableRealSources(0) & _
@@ -3341,7 +3355,7 @@ Private Function AddToWhere(ByRef strWhereSQL As String, strRealSources() As Str
       Set pobjColumnPrivileges = GetColumnPrivileges(strRealSources(lngIndex))
 
       If pobjColumnPrivileges.IsValid(strColumnName) Then
-        If pobjColumnPrivileges.Item(strColumnName).AllowSelect Then
+        If pobjColumnPrivileges.item(strColumnName).AllowSelect Then
           strWhereSQL = strWhereSQL & vbCrLf & _
               " WHEN NOT " & strRealSources(lngIndex) & "." & mvarColDetails(4, intCounter) & _
               " IS NULL THEN " & strRealSources(lngIndex) & "." & mvarColDetails(4, intCounter)
@@ -3446,7 +3460,7 @@ Private Function ReadSQLTableInToFile() As Boolean
     
   sSQL = "SELECT t.Column_Name" & _
     " FROM [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].INFORMATION_SCHEMA.COLUMNS t" & _
-    " WHERE t.TABLE_NAME = '" & mstrLinkedTable & "' ORDER BY ORDINAL_POSITION"
+    " WHERE t.TABLE_NAME = '" & mstrLinkedTable & "'  ORDER BY ORDINAL_POSITION"
   Set rsColumns = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
 
   With rsColumns
@@ -3465,6 +3479,11 @@ Private Function ReadSQLTableInToFile() As Boolean
   
   ' Now go grab the data
   sSQL = "SELECT " & sSelectString & " FROM [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].dbo.[" & mstrLinkedTable & "]"
+  
+  If mbUseUpdateBlob Then
+    sSQL = sSQL & " WHERE PROCESS_DATE IS NULL"
+  End If
+  
   Set rsDataTable = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
 
   With rsDataTable
@@ -3504,3 +3523,82 @@ ErrorTrap:
   GoTo TidyUpAndExit
 
 End Function
+
+Private Sub AddLMSImportBlob()
+
+  Dim iTemp As Integer
+  iTemp = UBound(mvarColDetails, 2) + 1
+
+  ReDim Preserve mvarColDetails(13, iTemp)
+  mvarColDetails(0, iTemp) = "C"
+  mvarColDetails(1, iTemp) = 0
+  mvarColDetails(2, iTemp) = ""
+  mvarColDetails(3, iTemp) = 0
+  mvarColDetails(4, iTemp) = "PROCESS_DATE"
+  mvarColDetails(5, iTemp) = False
+  mvarColDetails(6, iTemp) = 10
+  mvarColDetails(7, iTemp) = True
+  mvarColDetails(8, iTemp) = False
+  mvarColDetails(9, iTemp) = False
+  mvarColDetails(10, iTemp) = TrimmingTypes.giTRIMMING_NONE
+  mvarColDetails(13, iTemp) = True
+
+
+  iTemp = iTemp + 1
+  ReDim Preserve mvarColDetails(13, iTemp)
+  mvarColDetails(0, iTemp) = "C"
+  mvarColDetails(1, iTemp) = 0
+  mvarColDetails(2, iTemp) = ""
+  mvarColDetails(3, iTemp) = 0
+  mvarColDetails(4, iTemp) = "PROCESSED"
+  mvarColDetails(5, iTemp) = False
+  mvarColDetails(6, iTemp) = 10
+  mvarColDetails(7, iTemp) = False
+  mvarColDetails(8, iTemp) = False
+  mvarColDetails(9, iTemp) = True
+  mvarColDetails(10, iTemp) = TrimmingTypes.giTRIMMING_NONE
+  mvarColDetails(13, iTemp) = True
+
+  iTemp = iTemp + 1
+  ReDim Preserve mvarColDetails(13, iTemp)
+  mvarColDetails(0, iTemp) = "C"
+  mvarColDetails(1, iTemp) = 0
+  mvarColDetails(2, iTemp) = ""
+  mvarColDetails(3, iTemp) = 0
+  mvarColDetails(4, iTemp) = "ERROR"
+  mvarColDetails(5, iTemp) = False
+  mvarColDetails(6, iTemp) = 10
+  mvarColDetails(7, iTemp) = False
+  mvarColDetails(8, iTemp) = False
+  mvarColDetails(9, iTemp) = False
+  mvarColDetails(10, iTemp) = TrimmingTypes.giTRIMMING_NONE
+  mvarColDetails(13, iTemp) = True
+
+
+  iTemp = iTemp + 1
+  ReDim Preserve mvarColDetails(13, iTemp)
+  mvarColDetails(0, iTemp) = "C"
+  mvarColDetails(1, iTemp) = 0
+  mvarColDetails(2, iTemp) = ""
+  mvarColDetails(3, iTemp) = 0
+  mvarColDetails(4, iTemp) = "ID"
+  mvarColDetails(5, iTemp) = False
+  mvarColDetails(6, iTemp) = 10
+  mvarColDetails(7, iTemp) = False
+  mvarColDetails(8, iTemp) = True
+  mvarColDetails(9, iTemp) = False
+  mvarColDetails(10, iTemp) = TrimmingTypes.giTRIMMING_NONE
+  mvarColDetails(13, iTemp) = True
+
+End Sub
+
+Private Sub UpdateImportedRecords()
+
+  Dim sSQL As String
+
+  ReDim Preserve maryRecordSuccessIDs(UBound(maryRecordSuccessIDs) - 1)
+  sSQL = "UPDATE [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].dbo.[" & mstrLinkedTable & "] SET PROCESS_DATE = GETDATE() WHERE id IN (" & _
+    "" & Join(maryRecordSuccessIDs, ",") & ")"
+  mclsData.ExecuteSql (sSQL)
+
+End Sub
