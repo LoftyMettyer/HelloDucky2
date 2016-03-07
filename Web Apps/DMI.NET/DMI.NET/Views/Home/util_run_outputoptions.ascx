@@ -129,8 +129,8 @@
 			
 			if ((optOutputFormat0.checked == true) || (optOutputFormat1.checked == true) || (optOutputFormat2.checked == true) || (optOutputFormat3.checked == true)) {
 				optOutputFormat4.checked = true;
-			}		
-
+			}
+			
 			if (optOutputFormat0.checked == true)		//Data Only
 			{
 				//disable display on screen options FOR OUTPUT SCREEN ONLY
@@ -640,11 +640,39 @@
 		frmExportData.txtEmailAttachAs.value = frmOutputDef.txtEmailAttachAs.value;
 		frmExportData.txtFileName.value = frmOutputDef.txtFilename.value;
 
-		if (getExt(frmOutputDef.txtFilename.value) === "" && excelBased) {
-			// All reports are excel based from OpenHR at time of fix.
-			// I will leave the excel based argument in case we change our mind and add other formats.
-			frmExportData.txtFileName.value = frmExportData.txtFileName.value + ".xlsx"; 
-		};
+		var txtOutputName = "";
+		
+		if (excelBased) {
+			var txtReportType = frmOutputDef.txtUtilType.value;
+			var bEmptyFilename = frmOutputDef.txtFilename.value === "";
+			var bEmptyAttachAs = frmOutputDef.txtEmailAttachAs.value === "";
+
+			if (bEmptyAttachAs) {
+				if (txtReportType === "15" || txtReportType === "16") {
+					txtOutputName = (txtReportType === "15") ? "Absence Breakdown Report" : "Bradford Factor Report";
+				} else {
+					txtOutputName = "<%:Session("utilname")%>";
+				}
+			} else {
+				if (getExt(frmOutputDef.txtEmailAttachAs.value) === "") {
+					txtOutputName = frmOutputDef.txtEmailAttachAs.value;
+				}
+			}
+			
+			if (bEmptyFilename) {
+				if (txtReportType === "15" || txtReportType === "16") {
+					txtOutputName = (txtReportType === "15") ? "Absence Breakdown Report" : "Bradford Factor Report";
+				} else {
+					txtOutputName = "<%:Session("utilname")%>";
+				}
+			} else {
+				if (getExt(frmOutputDef.txtFileName.value) === "") {
+					txtOutputName = frmOutputDef.txtFileName.value;
+				}
+			}
+		}
+		frmExportData.txtEmailAttachAs.value = txtOutputName + ".xlsx";
+		frmExportData.txtFileName.value = txtOutputName + ".xlsx";
 
 		if (frmExportData.txtEmailGroupID.value > 0) {
 			$(frmExportData).submit();
