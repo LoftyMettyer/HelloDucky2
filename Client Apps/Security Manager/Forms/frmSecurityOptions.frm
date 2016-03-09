@@ -67,8 +67,8 @@ Begin VB.Form frmSecurityOptions
       TabCaption(1)   =   "&Advanced"
       TabPicture(1)   =   "frmSecurityOptions.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraOrphanedAccounts"
-      Tab(1).Control(1)=   "frmWindowsAuth"
+      Tab(1).Control(0)=   "frmWindowsAuth"
+      Tab(1).Control(1)=   "fraOrphanedAccounts"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Login Maintenance"
       TabPicture(2)   =   "frmSecurityOptions.frx":0044
@@ -430,8 +430,7 @@ Public Function Initialise() As Boolean
    
   lblBypassWarning.Visible = chkSecManBypass.Enabled
   lblDeleteOrphanWarning.Visible = chkDelOrphanedLogins.Enabled
-   
-   
+        
   Changed = False
   
   Initialise = pblnOK
@@ -463,6 +462,7 @@ Private Function LoadSecuritySettings() As Boolean
   Dim pmADO As ADODB.Parameter
   Dim iResult As Integer
   Dim iComplexity As Integer
+  Dim sSecurityColumnId As String
 
   ' Get the policy settings from the domain
   If glngSQLVersion > 8 Then
@@ -559,6 +559,13 @@ Private Function LoadSecuritySettings() As Boolean
   SetComboText cboAutoAddSelfServiceGroup, gstrLoginMaintAutoAddGroup
   chkDisableLoginsOnLeaveDate.Value = IIf(gbLoginMaintDisableOnLeave, vbChecked, vbUnchecked)
   chkEmailWorkAddress.Value = IIf(gbLoginMaintSendEmail, vbChecked, vbUnchecked)
+  
+  ' If security role is undefined we have to force it into a specific group
+  sSecurityColumnId = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SECURITYGROUP)
+  If Len(sSecurityColumnId) = 0 Then
+    chkOverrideSecurity.Value = vbChecked
+    chkOverrideSecurity.Enabled = False
+  End If
   
   RefreshButtons
   LoadSecuritySettings = True
