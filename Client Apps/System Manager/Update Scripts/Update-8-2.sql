@@ -2616,15 +2616,30 @@ PRINT 'Step - Talent Reports'
 		-- Clone existing security based on match report permissions
 		DELETE FROM ASRSysGroupPermissions WHERE itemid IN (169, 170, 171, 172, 173)
 		INSERT ASRSysGroupPermissions (itemID, groupName, permitted)
-			SELECT DISTINCT 169, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (101, 134, 139)
+			SELECT DISTINCT 169, groupName, CASE WHEN SUM(CASE permitted WHEN 1 THEN 1 ELSE 0 END) > 0 THEN 1 ELSE 0 END
+				FROM ASRSysGroupPermissions
+				WHERE itemid IN (101, 134, 139)
+				GROUP BY groupName
 			UNION
-			SELECT DISTINCT 170, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (102, 135, 140)
+			SELECT DISTINCT 170, groupName, CASE WHEN SUM(CASE permitted WHEN 1 THEN 1 ELSE 0 END) > 0 THEN 1 ELSE 0 END
+				FROM ASRSysGroupPermissions
+				WHERE itemid IN (102, 135, 140)
+				GROUP BY groupName
 			UNION
-			SELECT DISTINCT 171, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (103, 136, 141)
+			SELECT DISTINCT 171, groupName, CASE WHEN SUM(CASE permitted WHEN 1 THEN 1 ELSE 0 END) > 0 THEN 1 ELSE 0 END
+				FROM ASRSysGroupPermissions
+				WHERE itemid IN (103, 136, 141)
+				GROUP BY groupName
 			UNION
-			SELECT DISTINCT 172, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (104, 137, 142)
+			SELECT DISTINCT 172, groupName, CASE WHEN SUM(CASE permitted WHEN 1 THEN 1 ELSE 0 END) > 0 THEN 1 ELSE 0 END
+				FROM ASRSysGroupPermissions
+				WHERE itemid IN (104, 137, 142)
+				GROUP BY groupName
 			UNION
-			SELECT DISTINCT 173, groupName, permitted FROM ASRSysGroupPermissions WHERE itemid IN (105, 138, 143)
+			SELECT DISTINCT 173, groupName, CASE WHEN SUM(CASE permitted WHEN 1 THEN 1 ELSE 0 END) > 0 THEN 1 ELSE 0 END
+				FROM ASRSysGroupPermissions
+				WHERE itemid IN (105, 138, 143)
+				GROUP BY groupName
 	END
 
 	UPDATE ASRSysPermissionCategories SET Description = 'Talent Reports' WHERE categoryID = 46
