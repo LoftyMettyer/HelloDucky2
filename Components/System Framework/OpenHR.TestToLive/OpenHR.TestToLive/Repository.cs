@@ -413,6 +413,10 @@ namespace OpenHRTestToLive
         {
           child.CalcID = MaxExprID;
         }
+        foreach (ASRSysWorkflowElementItem child in t2l.AllItems.Where(i => i.RecordFilterID == CurrentExprID))
+        {
+          child.RecordFilterID = MaxExprID;
+        }
         foreach (ASRSysWorkflowElementColumn child in t2l.AllColumns.Where(i => i.CalcID == CurrentExprID))
         {
           child.CalcID = MaxExprID;
