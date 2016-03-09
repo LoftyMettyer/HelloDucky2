@@ -3616,9 +3616,11 @@ Private Sub UpdateImportedRecords()
 
   Dim sSQL As String
 
-  ReDim Preserve maryRecordSuccessIDs(UBound(maryRecordSuccessIDs) - 1)
-  sSQL = "UPDATE [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].dbo.[" & mstrLinkedTable & "] SET PROCESS_DATE = GETDATE() WHERE id IN (" & _
-    "" & Join(maryRecordSuccessIDs, ",") & ")"
-  mclsData.ExecuteSql (sSQL)
+  If UBound(maryRecordSuccessIDs) > 0 Then
+    ReDim Preserve maryRecordSuccessIDs(UBound(maryRecordSuccessIDs) - 1)
+    sSQL = "UPDATE [" & mstrLinkedServer & "].[" & mstrLinkedCatalog & "].dbo.[" & mstrLinkedTable & "] SET PROCESS_DATE = GETDATE() WHERE id IN (" & _
+      "" & Join(maryRecordSuccessIDs, ",") & ")"
+    mclsData.ExecuteSql (sSQL)
+  End If
 
 End Sub
