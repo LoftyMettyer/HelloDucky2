@@ -640,8 +640,9 @@
 		frmExportData.txtEmailAttachAs.value = frmOutputDef.txtEmailAttachAs.value;
 		frmExportData.txtFileName.value = frmOutputDef.txtFilename.value;
 
-		var txtOutputName = "";
-		
+		var txtOutputAttachAs = frmOutputDef.txtEmailAttachAs.value;
+		var txtOutputFileName = frmOutputDef.txtFilename.value;
+
 		if (excelBased) {
 			var txtReportType = frmOutputDef.txtUtilType.value;
 			var bEmptyFilename = frmOutputDef.txtFilename.value === "";
@@ -649,30 +650,28 @@
 
 			if (bEmptyAttachAs) {
 				if (txtReportType === "15" || txtReportType === "16") {
-					txtOutputName = (txtReportType === "15") ? "Absence Breakdown Report" : "Bradford Factor Report";
+					txtOutputAttachAs = (txtReportType === "15") ? "Absence Breakdown Report" : "Bradford Factor Report";
 				} else {
-					txtOutputName = "<%:Session("utilname")%>";
+					txtOutputAttachAs = "<%:Session("utilname")%>";
 				}
 			} else {
-				if (getExt(frmOutputDef.txtEmailAttachAs.value) === "") {
-					txtOutputName = frmOutputDef.txtEmailAttachAs.value;
+				if (getExt(txtOutputAttachAs) === "") {
+					frmExportData.txtEmailAttachAs.value = txtOutputAttachAs + ".xlsx";
 				}
 			}
 			
 			if (bEmptyFilename) {
 				if (txtReportType === "15" || txtReportType === "16") {
-					txtOutputName = (txtReportType === "15") ? "Absence Breakdown Report" : "Bradford Factor Report";
+					txtOutputFileName = (txtReportType === "15") ? "Absence Breakdown Report" : "Bradford Factor Report";
 				} else {
-					txtOutputName = "<%:Session("utilname")%>";
+					txtOutputFileName = "<%:Session("utilname")%>";
 				}
 			} else {
-				if (getExt(frmOutputDef.txtFileName.value) === "") {
-					txtOutputName = frmOutputDef.txtFileName.value;
+				if (getExt(txtOutputFileName) === "") {
+					frmExportData.txtFileName.value = txtOutputFileName + ".xlsx";
 				}
 			}
 		}
-		frmExportData.txtEmailAttachAs.value = txtOutputName + ".xlsx";
-		frmExportData.txtFileName.value = txtOutputName + ".xlsx";
 
 		if (frmExportData.txtEmailGroupID.value > 0) {
 			$(frmExportData).submit();
