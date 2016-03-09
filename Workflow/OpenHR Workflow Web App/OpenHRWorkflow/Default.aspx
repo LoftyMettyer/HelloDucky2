@@ -13,8 +13,8 @@
 		<link href="Content/default.css" rel="stylesheet" type="text/css" />
 		<link href="Content/themes/base/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css" />
 		  
-		<script src="Scripts/jquery-1.7.2.min.js" type="text/javascript"> </script>
-		<script src="Scripts/jquery-ui-1.8.21.custom.min.js" type="text/javascript"> </script>
+		<script src="Scripts/jquery-2.1.4.min.js" type="text/javascript"> </script>
+		<script src="Scripts/jquery-ui-1.11.4.min.js" type="text/javascript"> </script>
 	</head>
 	<body id="bdyMain" style="overflow: auto; background-color: <%=App.Config.ColourThemeHex()%>;">
 
@@ -51,7 +51,7 @@
 						<asp:ScriptReference name="PopupExtender.PopupBehavior.js" assembly="AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e"/>
 						<asp:ScriptReference name="DropDown.DropDownBehavior.js" assembly="AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e"/>
 						<asp:ScriptReference Path="~/Scripts/jquery.metadata.min.js" />
-						<asp:ScriptReference Path="~/Scripts/autoNumeric-1.7.4.min.js" />	
+						<asp:ScriptReference Path="~/Scripts/autoNumeric-1.9.25.min.js" />	
 						<asp:ScriptReference Path="~/Scripts/resizable-table.min.js" />
 						<asp:ScriptReference Path="~/Scripts/default.js" />
 					</Scripts>

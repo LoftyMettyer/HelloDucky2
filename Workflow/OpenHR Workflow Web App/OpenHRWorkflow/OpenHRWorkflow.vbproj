@@ -164,14 +164,10 @@
     <Content Include="Lib\ScriptReferenceProfiler.dll" />
     <Content Include="Message.aspx" />
     <Content Include="PendingSteps.aspx" />
-    <Content Include="Scripts\autoNumeric-1.7.4.js" />
-    <Content Include="Scripts\autoNumeric-1.7.4.min.js" />
+    <Content Include="Scripts\autoNumeric-1.9.25.min.js" />
     <Content Include="Scripts\default.js" />
-    <Content Include="Scripts\jquery-1.5.1-vsdoc.js" />
-    <Content Include="Scripts\jquery-1.5.1.js" />
-    <Content Include="Scripts\jquery-1.5.1.min.js" />
-    <Content Include="Scripts\jquery-1.7.2.min.js" />
-    <Content Include="Scripts\jquery-ui-1.8.21.custom.min.js" />
+    <Content Include="Scripts\jquery-2.1.4.min.js" />
+    <Content Include="Scripts\jquery-ui-1.11.4.min.js" />
     <Content Include="Scripts\jquery.metadata.js" />
     <Content Include="Scripts\jquery.metadata.min.js" />
     <Content Include="Scripts\resizable-table.js" />
