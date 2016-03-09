@@ -23,6 +23,7 @@
 
 		<p id="ancientBrowser" class="centered hidden">OpenHR Web and Self Service cannot be accessed using this browser.</p>
 		<p id="systemLocked" class="centered hidden">A system administrator has locked the database.</p>
+    
 
 
 		<%If Len(Session("version")) = 0 Then%>
@@ -33,17 +34,14 @@
 		<%Else%>
 		<div id="divLoginDetails">
 
-      <input style="display:none">
-      <input type="password" style="display:none">
-
 			<div class="loginframeField">
 				<%:Html.LabelFor(Function(loginviewmodel) loginviewmodel.UserName)%>
 				<%:Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.UserName, New With {.id = "txtUserName", .onkeypress = "CheckKeyPressed(event)", .autocomplete = "Off"})%>
 				<%:Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.UserName)%>
 			</div>
-
+     
 			<div class="loginframeField">
-				<%:Html.LabelFor(Function(loginviewmodel) loginviewmodel.Password)%>
+				<%:Html.LabelFor(Function(loginviewmodel) loginviewmodel.Password)%>       
 				<%:Html.PasswordFor(Function(loginviewmodel) loginviewmodel.Password, New With {.id = "txtPassword", .onkeypress = "CheckKeyPressed(event)", .autocomplete = "Off"})%>
 				<%:Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Password)%>
 			</div>
