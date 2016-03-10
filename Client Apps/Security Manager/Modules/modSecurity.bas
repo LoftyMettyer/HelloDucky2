@@ -5752,11 +5752,15 @@ On Error GoTo ErrorTrap:
           "              '<" & sURL & ">' + CHAR(13) + CHAR(13) +" & vbNewLine & _
           "              'Note that you will be prompted to change your password the first time you login.'" & vbNewLine & vbNewLine & _
           "          SET @sCode = 'CREATE LOGIN [' + @login + '] WITH PASSWORD = ''' + @initialPassword + ''' MUST_CHANGE, CHECK_POLICY=ON, CHECK_EXPIRATION=ON; " & vbNewLine & _
-          "              CREATE USER [' + @login + '] FOR LOGIN [' + @login + '];" & vbNewLine & _
+          "              CREATE USER [' + @login + '] FOR LOGIN [' + @login + '] WITH DEFAULT_SCHEMA = [' + @login + '] ;" & vbNewLine & _
           "              EXEC sp_addrolemember ''ASRSysGroup'', ''' + @login + ''';" & vbNewLine & _
           "              EXEC sp_addrolemember ''' + @securityGroup + ''', ''' + @login + '''';" & vbNewLine & vbNewLine & _
           "          EXEC sp_executeSQL @sCode;" & vbNewLine & vbNewLine
-          
+
+    sSQL = sSQL & _
+          "          SET @sCode = 'CREATE SCHEMA [' + @login + '] AUTHORIZATION [' + @login + '];';" & vbNewLine & _
+          "          EXEC sp_executeSQL @sCode;" & vbNewLine & vbNewLine
+
     sSQL = sSQL & _
           "          EXECUTE AS CALLER;" & vbNewLine & _
           "          INSERT ASRSysAuditGroup([UserName], [DateTimeStamp], [GroupName], [UserLogin], [Action])" & vbNewLine & _
