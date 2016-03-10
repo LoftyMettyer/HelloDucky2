@@ -1510,13 +1510,13 @@ Namespace ScriptDB
           If selfServiceColumn IsNot Nothing And securityGroupColumn IsNot Nothing Then
 
             sCode &= String.Format(vbNewLine & vbNewLine & "    -- Maintain logins from self service column" & vbNewLine _
-                  & "    IF UPDATE([{0}]) OR UPDATE([{2}]) OR UPDATE([{3}])" & vbNewLine _
+                  & "    IF UPDATE([{0}]) OR UPDATE([{2}]) OR UPDATE([{3}]) OR @startingtrigger = 1" & vbNewLine _
                   & "    BEGIN" & vbNewLine _
                   & "        DECLARE @logins AS SelfServiceType;" & vbNewLine _
                   & "        INSERT @logins" & vbNewLine _
                   & "        SELECT i.ID, i.[{0}], i.[{1}], i.[{2}], i.[{3}], i.[{4}], i.[{5}] FROM inserted i" & vbNewLine _
                   & "            INNER JOIN deleted d ON d.id = i.id" & vbNewLine _
-                  & "            WHERE ISNULL(i.[{0}], '') <> ISNULL(d.[{0}], '');" & vbNewLine _
+                  & "            WHERE ISNULL(i.[{0}], '') <> ISNULL(d.[{0}], '') OR @startingtrigger = 1;" & vbNewLine _
                   & "        EXECUTE dbo.spASRGenerateSelfServiceLogins @logins;" & vbNewLine _
                   & "    END", selfServiceColumn.Name, workEmailColumn.Name, startDateColumn.Name, leavingDateColumn.Name, knownAsColumn.Name, securityGroupColumn.Name)
 
