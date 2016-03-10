@@ -10,8 +10,16 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+   <%
+      ' Fetch cookies
+      Dim sIntranet_MenuWidth As String = ""
 
-	<script> document.querySelector("body").classList.add("loading");</script>
+      If request.Cookies.AllKeys.Contains("Intranet_MenuWidth") then
+         Dim cookie As HttpCookie = Request.Cookies("Intranet_MenuWidth")
+         sIntranet_MenuWidth = cookie.Value
+      End If
+   %>
+   <script> document.querySelector("body").classList.add("loading");</script>
 
 	<script type="text/javascript">
 
@@ -158,7 +166,7 @@
 			});
 
 			if (SelfServiceUserType == 'False') {
-				var splitFunc = 'resizedw(' + getCookie('Intranet_MenuWidth') + ')';
+				var splitFunc = 'resizedw(<%:sIntranet_MenuWidth%>)';
 				setTimeout(splitFunc, 50);
 			}
 

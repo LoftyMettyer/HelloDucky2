@@ -10,8 +10,32 @@
 	</title>
 
 	<link rel="Icon" href="~/Content/images/Logo.ico" type="image/x-icon" />
-	
-	<%
+
+   <%
+      ' Fetch cookies
+      Dim sIntranetLayout As String = ""
+      Dim sIntranetWireframeTheme As String = ""
+      Dim sApplyWireframeTheme As String = ""
+
+      If request.Cookies.AllKeys.Contains("Intranet_Layout") then
+            Dim cookie As HttpCookie = Request.Cookies("Intranet_Layout")
+            sIntranetLayout = cookie.Value
+      End If
+          
+      If request.Cookies.AllKeys.Contains("Intranet_Wireframe_Theme") then
+            Dim cookie As HttpCookie = Request.Cookies("Intranet_Wireframe_Theme")
+            sIntranetWireframeTheme = cookie.Value
+      End If
+      
+        If request.Cookies.AllKeys.Contains("Apply_Wireframe_Theme") then
+            Dim cookie As HttpCookie = Request.Cookies("Apply_Wireframe_Theme")
+            sApplyWireframeTheme = cookie.Value
+      End If
+   %>
+
+
+
+   <%
 		' Mobiles. Fix as tiles display.
 		Dim ua As String = Request.UserAgent
 		Dim currentLayout As String = "winkit"
@@ -366,7 +390,7 @@
 				$('body').addClass('DMI');
 			} else {				
 				//only load themes for linksMain.							
-				var cookieLayout = getCookie('Intranet_Layout');
+			   var cookieLayout = "<%:sIntranetLayout%>";
 				if (cookieLayout === undefined || cookieLayout === "undefined" || cookieLayout.length <= 0) cookieLayout = "winkit";
 				if ('<%=currentLayout%>' != 'tiles') {
 					if ('<%=UCase(Session("ui-layout-selectable").ToString())%>' == 'TRUE') {
@@ -376,7 +400,7 @@
 					}
 				}
 
-				<%
+			   <%
 		
 		' session(currentlayout) is only used in linksMain BTW.
 		If currentLayout <> "tiles" Then
@@ -395,8 +419,7 @@
 		End If
 		
 		%>
-
-				var cookiewireframeTheme = getCookie("Intranet_Wireframe_Theme");
+			   var cookiewireframeTheme = "<%:sIntranetWireframeTheme%>";
 				if (cookiewireframeTheme === undefined || cookiewireframeTheme === "undefined" || cookiewireframeTheme.length <= 0) cookiewireframeTheme = '<%=Session("ui-wireframe-theme").ToString()%>';
 				if ('<%=UCase(Session("ui-layout-selectable").ToString())%>' == 'TRUE') {
 					cookiewireframeTheme = cookiewireframeTheme;
@@ -405,7 +428,7 @@
 				}
 
 				//cookieapplyWireframeTheme is for upgraded systems, who want to use the old custom_config.txt values.
-				window.cookieapplyWireframeTheme = getCookie("Apply_Wireframe_Theme");
+			   window.cookieapplyWireframeTheme = "<%:sApplyWireframeTheme%>";
 				if (cookieapplyWireframeTheme === undefined || cookieapplyWireframeTheme === "undefined" || cookieapplyWireframeTheme.length <= 0) {
 					window.cookieapplyWireframeTheme = "false";
 				}
@@ -421,7 +444,7 @@
 					$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/" & Session("ui-winkit-theme").ToString() & "/jquery-ui.min.css")%>" });
 					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/" & Session("ui-winkit-theme").ToString() & "/jquery-ui.min.css")%>" });
 					break;
-				case "wireframe":
+				   case "wireframe":
 					if (cookieapplyWireframeTheme == "true") $("link[id=WireframethemeLink]").attr({ href: window.ROOT + "Content/DashboardStyles/themes/upgraded.css" });
 
 					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
@@ -436,6 +459,7 @@
 				}			
 
 			}
+
 			//Save some cookies we will need in other parts of the system
 			setCookie("SSIMode", SSIMode, 100);
 			if ('<%=UCase(Session("ui-layout-selectable").ToString())%>' == 'TRUE') {
@@ -491,26 +515,22 @@
 		org.owasp.esapi.ESAPI.initialize();
 		var openhrBlackListValidator = new org.owasp.esapi.reference.validation.StringValidationRule("OpenhrBlackListValidator", null, null);
 
-		function getCookie(cName) {
-			var i, x, y, arrCookies = document.cookie.split(";");
-			for (i = 0; i < arrCookies.length; i++) {
-				x = arrCookies[i].substr(0, arrCookies[i].indexOf("="));
-				y = arrCookies[i].substr(arrCookies[i].indexOf("=") + 1);
-				x = x.replace(/^\s+|\s+$/g, "");
-				if (x == cName) {
-					if (y === undefined || y === "undefined" || y.length <= 0) y = "";
-					return unescape(y);
-				}
-			}
-			return '';
-		}
-
 		function setCookie(cName, value, exdays) {
-			var exdate = new Date();
-			exdate.setDate(exdate.getDate() + exdays);
-			var cValue = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
-			document.cookie = cName + "=" + cValue;
-		}
+		   var url = window.ROOT + "Home/SetCookie";
+		   var data = {
+		      cookieName: cName,
+		      cookieValue: value,
+		      expiryDays: exdays,
+		      __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		   };
+
+		   $.ajax({
+		      url: url,
+		      type: "POST",
+		      async: false,  //important
+		      data: data
+		   });
+      }
 
 		window.currentLayout = "<%=currentLayout %>";
 
@@ -631,7 +651,7 @@
 			}
 		}
 
-	</script>
+   </script>
 
 </head>
 <body class="ui-widget absolutefull">
@@ -712,6 +732,9 @@
 		<p id="footerbannerprogress" class="footer-banner-p-progress" runat="server"></p>
 		<p class="footer-banner-p-copyright"><a href="http://www.advancedcomputersoftware.com" target="_blank">Copyright © Advanced Business Software and Solutions Ltd</a></p>
 	</div>--%>
+
+   <%=Html.AntiForgeryToken()%>
+
 </body>
 </html>
 

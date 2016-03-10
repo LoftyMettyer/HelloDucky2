@@ -23,54 +23,65 @@
 <script src="<%:Url.LatestContent("~/Scripts/jquery/jquery.tablesorter.min.js")%>"></script>
 
 <%Session("recordID") = 0
-	Session("singleRecordID") = 0
-	
-	Dim fWFDisplayPendingSteps As Boolean
-	Dim _PendingWorkflowStepsHTMLTable As New StringBuilder	'Used to construct the (temporary) HTML table that will be transformed into a jQuey grid table
-	Dim _StepCount As Integer = 0
+   Session("singleRecordID") = 0
 
-	Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
-	Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
-	
-	'Get the pendings workflow steps from the database	
-	If Licence.IsModuleLicenced(SoftwareModule.Workflow) Then
 
-		Try
-			
-			fWFDisplayPendingSteps = NullSafeInteger(Session("SSILinkViewID")) = NullSafeInteger(Session("SingleRecordViewID"))
-			
-			Dim _rstDefSelRecords = objDataAccess.GetDataTable("spASRIntCheckPendingWorkflowSteps", CommandType.StoredProcedure)
-		
-			With _PendingWorkflowStepsHTMLTable
-				.Append("<table id=""PendingStepsTable_Dash"">")
-				.Append("<tr>")
-				.Append("<th id=""DescriptionHeader"">Description</th>")
-				.Append("<th id=""URLHeader"">URL</th>")
-				.Append("<th id=""NameHeader"">URL</th>")
-				.Append("</tr>")
-			End With
-			'Loop over the records
-			For Each objRow As DataRow In _rstDefSelRecords.Rows
-			
-				_StepCount += 1
-				With _PendingWorkflowStepsHTMLTable
-					.Append("<tr>")
-					.Append("<td>" & objRow("description").ToString() & "</td>")
-					.Append("<td>" & objRow("url").ToString() & "</td>")
-					.Append("<td>" & objRow("name").ToString() & "</td>")
-					.Append("</tr>")
-				End With
-			Next
-						
-			_PendingWorkflowStepsHTMLTable.Append("</table>")
-				
-		
-		Catch ex As Exception
-			Throw
-		
-		End Try
-	End If
-		
+
+   ' Fetch cookies
+   Dim sdisplayDocBar As String = ""
+
+   If request.Cookies.AllKeys.Contains("displayDocBar") then
+      Dim cookie As HttpCookie = Request.Cookies("displayDocBar")
+      sdisplayDocBar = cookie.Value
+   End If
+
+
+   Dim fWFDisplayPendingSteps As Boolean
+   Dim _PendingWorkflowStepsHTMLTable As New StringBuilder  'Used to construct the (temporary) HTML table that will be transformed into a jQuey grid table
+   Dim _StepCount As Integer = 0
+
+   Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
+   Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
+
+   'Get the pendings workflow steps from the database	
+   If Licence.IsModuleLicenced(SoftwareModule.Workflow) Then
+
+      Try
+
+         fWFDisplayPendingSteps = NullSafeInteger(Session("SSILinkViewID")) = NullSafeInteger(Session("SingleRecordViewID"))
+
+         Dim _rstDefSelRecords = objDataAccess.GetDataTable("spASRIntCheckPendingWorkflowSteps", CommandType.StoredProcedure)
+
+         With _PendingWorkflowStepsHTMLTable
+            .Append("<table id=""PendingStepsTable_Dash"">")
+            .Append("<tr>")
+            .Append("<th id=""DescriptionHeader"">Description</th>")
+            .Append("<th id=""URLHeader"">URL</th>")
+            .Append("<th id=""NameHeader"">URL</th>")
+            .Append("</tr>")
+         End With
+         'Loop over the records
+         For Each objRow As DataRow In _rstDefSelRecords.Rows
+
+            _StepCount += 1
+            With _PendingWorkflowStepsHTMLTable
+               .Append("<tr>")
+               .Append("<td>" & objRow("description").ToString() & "</td>")
+               .Append("<td>" & objRow("url").ToString() & "</td>")
+               .Append("<td>" & objRow("name").ToString() & "</td>")
+               .Append("</tr>")
+            End With
+         Next
+
+         _PendingWorkflowStepsHTMLTable.Append("</table>")
+
+
+      Catch ex As Exception
+         Throw
+
+      End Try
+   End If
+
 %>
 
 <div id="" class="DashContent" style="display: block;">
@@ -1544,7 +1555,7 @@
 
 			//Show document display (not tiles)
 			//get cookie...
-			var showDocBar = window.getCookie('displayDocBar');
+			var showDocBar = "<%:sdisplayDocBar%>";
 			if (showDocBar.length == 0) showDocBar = 'true';
 
 			if (showDocBar == 'true') {

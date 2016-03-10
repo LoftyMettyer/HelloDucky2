@@ -5811,6 +5811,21 @@ Namespace Controllers
 
 		End Function
 
+      <HttpPost()>
+      <ValidateAntiForgeryToken>
+      public function SetCookie(cookieName As String, cookieValue As String, expiryDays As string) As actionresult
+         
+         	Dim cookie = New HttpCookie(cookieName)
+				cookie.Expires = Now.AddDays(expiryDays)
+				cookie.HttpOnly = True
+				cookie.Value = cookieValue
+
+				Response.Cookies.Add(cookie)
+
+            return New HttpStatusCodeResult(HttpStatusCode.OK)
+
+      End function
+
 	End Class
 
 	Public Class ErrMsgJsonAjaxResponse
