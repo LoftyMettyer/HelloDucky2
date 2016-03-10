@@ -5758,9 +5758,10 @@ On Error GoTo ErrorTrap:
           "          EXEC sp_executeSQL @sCode;" & vbNewLine & vbNewLine
           
     sSQL = sSQL & _
+          "          EXECUTE AS CALLER;" & vbNewLine & _
           "          INSERT ASRSysAuditGroup([UserName], [DateTimeStamp], [GroupName], [UserLogin], [Action])" & vbNewLine & _
-          "              VALUES (SYSTEM_USER, GETDATE(), @securityGroup, @login, 'User Added')" & vbNewLine & vbNewLine
-          
+          "              VALUES (SYSTEM_USER, GETDATE(), @securityGroup, @login, 'User Added');" & vbNewLine & _
+          "          REVERT;" & vbNewLine & vbNewLine
     sSQL = sSQL & _
           "          IF @sendEmail = 1 AND ISNULL(@emailAddress,'') <> ''" & vbNewLine & _
           "          BEGIN" & vbNewLine & _
