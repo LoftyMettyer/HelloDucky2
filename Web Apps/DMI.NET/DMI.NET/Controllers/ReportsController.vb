@@ -355,20 +355,36 @@ Namespace Controllers
 
 				Dim matchReport = New MatchReportRun
 				matchReport.SessionInfo = CType(Session("SessionContext"), SessionInfo)
-				Dim blnChildOf1, blnChildOf2 As Boolean
+				Dim blnChildOf1, blnChildOf2, isTableHasSameParent As Boolean
+				Dim isBaseAndMatchChildTableAreSame = (objModel.MatchChildTableID = objModel.BaseChildTableID)
+
+				'Gets the table name
+				Dim matchChildTableName = matchReport.SessionInfo.Tables.GetById(objModel.MatchChildTableID).Name
+				Dim baseChildTableName = matchReport.SessionInfo.Tables.GetById(objModel.BaseChildTableID).Name
+				Dim baseTableName = matchReport.SessionInfo.Tables.GetById(objModel.BaseTableID).Name
+				Dim matchTableName = matchReport.SessionInfo.Tables.GetById(objModel.MatchTableID).Name
 
 				blnChildOf1 = matchReport.IsAChildOf((objModel.BaseChildTableID), objModel.BaseTableID)
 				blnChildOf2 = matchReport.IsAChildOf((objModel.BaseChildTableID), objModel.MatchTableID)
 
+				' Check if base child table is child of both base and match table OR Not.
 				If blnChildOf1 AndAlso blnChildOf2 Then
-					ModelState.AddModelError("IsBaseTableSelectionOK", "Cannot use the '" & objModel.BaseChildTableName & "' table as it is a child table of both the '" & objModel.BaseTableName & "' and the '" & objModel.MatchTableName & "' tables.")
+					isTableHasSameParent = True
+					ModelState.AddModelError("IsBaseTableSelectionOK", "Cannot use the '" & baseChildTableName & "' table as it is a child table of both the '" & baseTableName & "' and the '" & matchTableName & "' tables.")
 				End If
 
 				blnChildOf1 = matchReport.IsAChildOf((objModel.MatchChildTableID), objModel.BaseTableID)
 				blnChildOf2 = matchReport.IsAChildOf((objModel.MatchChildTableID), objModel.MatchTableID)
 
+				' Check if match child table is child of both base and match table OR Not.
 				If blnChildOf1 AndAlso blnChildOf2 Then
-					ModelState.AddModelError("IsMatchTableSelectionOK", "Cannot use the '" & objModel.MatchChildTableName & "' table as it is a child table of both the '" & objModel.BaseTableName & "' and the '" & objModel.MatchTableName & "' tables.")
+					isTableHasSameParent = True
+					ModelState.AddModelError("IsMatchTableSelectionOK", "Cannot use the '" & matchChildTableName & "' table as it is a child table of both the '" & baseTableName & "' and the '" & matchTableName & "' tables.")
+				End If
+
+				' If both base & match child table selected are same then show only one warning message instead of showing same message twice.
+				If isBaseAndMatchChildTableAreSame AndAlso isTableHasSameParent Then
+					ModelState.Remove("IsBaseTableSelectionOK")
 				End If
 
 			End If

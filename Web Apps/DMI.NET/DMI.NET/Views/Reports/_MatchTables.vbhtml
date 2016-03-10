@@ -60,9 +60,5 @@
     </fieldset>
 		@Html.HiddenFor(Function(m) m.BaseChildColumnDataType, New With {.id = "BaseChildColumnDataType"})
 		@Html.HiddenFor(Function(m) m.MatchChildColumnDataType, New With {.id = "MatchChildColumnDataType"})
-  		@Html.HiddenFor(Function(m) m.MatchChildTableName, New With {.id = "MatchChildTableName"})
-  		@Html.HiddenFor(Function(m) m.BaseChildTableName, New With {.id = "BaseChildTableName"})
-  		@Html.HiddenFor(Function(m) m.BaseTableName, New With {.id = "BaseTableName"})
-  		@Html.HiddenFor(Function(m) m.MatchTableName, New With {.id = "MatchTableName"})
   </fieldset>
 

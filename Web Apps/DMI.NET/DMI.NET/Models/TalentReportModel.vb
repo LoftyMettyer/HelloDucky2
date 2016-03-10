@@ -78,12 +78,6 @@ Namespace Models
 		<MinLength(3, ErrorMessage:="You must select at least one column for your report.")> _
 		 Public Overrides Property ColumnsAsString As String
 
-		Public Property MatchChildTableName As String
-		Public Property BaseChildTableName As String
-		Public Property BaseTableName As String
-		Public Property MatchTableName As String
-
-
 		Public Overrides Function GetAvailableTables() As IEnumerable(Of ReportTableItem)
 
 			Dim objItems As New Collection(Of ReportTableItem)

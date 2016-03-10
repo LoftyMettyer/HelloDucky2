@@ -176,10 +176,8 @@ End Code
 
 		$("#OriginalRoleTableID").val($('#BaseTableID').val());
 		$("#OriginalRoleTableText").val($("#BaseTableID option:selected").text());
-		$("#BaseTableName").val($("#BaseTableID option:selected").text());
 		$("#OriginalPersonTableID").val($('#MatchTableID').val());
 		$("#OriginalPersonTableText").val($("#MatchTableID option:selected").text());
-		$("#MatchTableName").val($("#MatchTableID option:selected").text());
 		refreshTalentReportRoleChildTables('@Model.BaseChildTableID');
 		refreshTalentReportPersonChildTables('@Model.MatchChildTableID');
 		$('#MatchChildTableID').val("@Model.MatchChildTableID");
@@ -265,7 +263,6 @@ End Code
 				$('#BaseChildColumnID').val("@Model.BaseChildColumnID");
 				$('#BaseMinimumRatingColumnID').val("@Model.BaseMinimumRatingColumnID");
 				$('#BasePreferredRatingColumnID').val("@Model.BasePreferredRatingColumnID");
-				$('#BaseChildTableName').val($("#BaseChildTableID option:selected").text());
 
 				//Set datatype for selected Role match column
 				SetSelectedColumnDataType('Base');
@@ -318,7 +315,6 @@ End Code
 
 				$('#MatchChildColumnID').val("@Model.MatchChildColumnID");
 				$('#MatchChildRatingColumnID').val("@Model.MatchChildRatingColumnID");
-				$('#MatchChildTableName').val($("#MatchChildTableID option:selected").text());
 
 				//Set datatype for selected Person match column
 				SetSelectedColumnDataType('Match');
