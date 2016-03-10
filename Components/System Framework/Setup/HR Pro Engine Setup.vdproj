@@ -28,7 +28,7 @@
         "Entry"
         {
         "MsmKey" = "8:_063A69986DBDE8FF5A82B64EE05A9D7E"
-        "OwnerKey" = "8:_EE930C6D71606C7F826174A61528011C"
+        "OwnerKey" = "8:_015D8069EA404EE7927FF2B44A6A670D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -40,7 +40,7 @@
         "Entry"
         {
         "MsmKey" = "8:_063A69986DBDE8FF5A82B64EE05A9D7E"
-        "OwnerKey" = "8:_015D8069EA404EE7927FF2B44A6A670D"
+        "OwnerKey" = "8:_EE930C6D71606C7F826174A61528011C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -106,13 +106,13 @@
         "Entry"
         {
         "MsmKey" = "8:_87E738D81EEB2423746C3472E7F8DEDB"
-        "OwnerKey" = "8:_EE930C6D71606C7F826174A61528011C"
+        "OwnerKey" = "8:_015D8069EA404EE7927FF2B44A6A670D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_87E738D81EEB2423746C3472E7F8DEDB"
-        "OwnerKey" = "8:_015D8069EA404EE7927FF2B44A6A670D"
+        "OwnerKey" = "8:_EE930C6D71606C7F826174A61528011C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -172,61 +172,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_166F191DDCAD786E2B589AAC4F19D70C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_87E738D81EEB2423746C3472E7F8DEDB"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_063A69986DBDE8FF5A82B64EE05A9D7E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C7403BC32F8BA8ECF308425219A691C6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EE930C6D71606C7F826174A61528011C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_98CAD693054E65F9B2DC9AD82B7819BE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_015D8069EA404EE7927FF2B44A6A670D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_AF9FA69E6C87A8C93EFB446835DD7311"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_60BE8114B3D014E2D20EB08139D2B25F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2D8F9BB7B1CE47D2F28E912FF8FCCAAF"
+        "OwnerKey" = "8:_EE3A3CDE1AFFA6BFC0EA788AB52779EE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -238,7 +184,61 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EE3A3CDE1AFFA6BFC0EA788AB52779EE"
+        "OwnerKey" = "8:_2D8F9BB7B1CE47D2F28E912FF8FCCAAF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_60BE8114B3D014E2D20EB08139D2B25F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_AF9FA69E6C87A8C93EFB446835DD7311"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_015D8069EA404EE7927FF2B44A6A670D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_98CAD693054E65F9B2DC9AD82B7819BE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_EE930C6D71606C7F826174A61528011C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_C7403BC32F8BA8ECF308425219A691C6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_063A69986DBDE8FF5A82B64EE05A9D7E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_87E738D81EEB2423746C3472E7F8DEDB"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_166F191DDCAD786E2B589AAC4F19D70C"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -353,6 +353,11 @@
             "AssemblyAsmDisplayName" = "8:NHibernate, Version=3.2.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_063A69986DBDE8FF5A82B64EE05A9D7E"
+                    {
+                    "Name" = "8:NHibernate.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:NHibernate.dll"
             "TargetName" = "8:"
@@ -379,6 +384,11 @@
             "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_166F191DDCAD786E2B589AAC4F19D70C"
+                    {
+                    "Name" = "8:log4net.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:log4net.dll"
             "TargetName" = "8:"
@@ -405,6 +415,11 @@
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_2D8F9BB7B1CE47D2F28E912FF8FCCAAF"
+                    {
+                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Newtonsoft.Json.dll"
             "TargetName" = "8:"
@@ -431,6 +446,11 @@
             "AssemblyAsmDisplayName" = "8:EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_60BE8114B3D014E2D20EB08139D2B25F"
+                    {
+                    "Name" = "8:EntityFramework.SqlServer.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:EntityFramework.SqlServer.dll"
             "TargetName" = "8:"
@@ -517,6 +537,11 @@
             "AssemblyAsmDisplayName" = "8:Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_87E738D81EEB2423746C3472E7F8DEDB"
+                    {
+                    "Name" = "8:Iesi.Collections.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Iesi.Collections.dll"
             "TargetName" = "8:"
@@ -543,6 +568,11 @@
             "AssemblyAsmDisplayName" = "8:ConfOrm.Shop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=90b38bd64c76a74a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_98CAD693054E65F9B2DC9AD82B7819BE"
+                    {
+                    "Name" = "8:ConfOrm.Shop.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ConfOrm.Shop.dll"
             "TargetName" = "8:"
@@ -569,6 +599,11 @@
             "AssemblyAsmDisplayName" = "8:EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_AF9FA69E6C87A8C93EFB446835DD7311"
+                    {
+                    "Name" = "8:EntityFramework.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:EntityFramework.dll"
             "TargetName" = "8:"
@@ -595,6 +630,11 @@
             "AssemblyAsmDisplayName" = "8:NHibernate.JetDriver, Version=2.0.0.1001, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_C7403BC32F8BA8ECF308425219A691C6"
+                    {
+                    "Name" = "8:NHibernate.JetDriver.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:NHibernate.JetDriver.dll"
             "TargetName" = "8:"
@@ -641,6 +681,11 @@
             "AssemblyAsmDisplayName" = "8:NSQLFormatter, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_EE3A3CDE1AFFA6BFC0EA788AB52779EE"
+                    {
+                    "Name" = "8:NSQLFormatter.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:NSQLFormatter.dll"
             "TargetName" = "8:"
@@ -667,6 +712,11 @@
             "AssemblyAsmDisplayName" = "8:ConfOrm, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed8affdf01cbe4cf, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_EE930C6D71606C7F826174A61528011C"
+                    {
+                    "Name" = "8:ConfOrm.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ConfOrm.dll"
             "TargetName" = "8:"
@@ -753,15 +803,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Framework 8.2"
-        "ProductCode" = "8:{9EF523B9-B3CB-4046-B706-3C2CE72331F6}"
-        "PackageCode" = "8:{96783AAA-EE55-4B24-B396-44A88BCD8DBC}"
+        "ProductCode" = "8:{5A73C858-A383-4780-B16A-04A147C75660}"
+        "PackageCode" = "8:{FA5D237F-4D18-42D8-97AC-168577E787BD}"
         "UpgradeCode" = "8:{ABDC503D-A5B2-4289-8F9B-D7E10AB9F830}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:8.2.12"
+        "ProductVersion" = "8:8.2.13"
         "Manufacturer" = "8:Advanced Business Software and Solutions Limited"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
