@@ -1697,8 +1697,7 @@ Public Class MatchReportRun
 						
                 If IsNumeric(vData) Then
 							    If objColumn.Decimals > 0 Then
-								    'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								    vData = VB6.Format(vData, "0." & New String("0", objColumn.Decimals))
+								    vData = CDbl(vData).ToString("F" & objColumn.Decimals)
 							    Else
 								    If objColumn.Size > 0 Then
 									    'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
