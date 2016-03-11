@@ -340,7 +340,7 @@ namespace OpenHRTestToLive
       MaxElementID++;
 
       LogData("Bumping WF Element ID's to start at {0}", MaxElementID);
-      foreach (ASRSysWorkflowElement item in t2l.AllElements)
+      foreach (ASRSysWorkflowElement item in t2l.AllElements.OrderBy(e => e.ID))
       {
         // Deal with the child records first
         int CurrentElementID = item.ID;
