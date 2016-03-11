@@ -10,8 +10,8 @@
 %>
 
 <div id="reportworkframe" data-framesource="util_run_talentreport" style="display: inline-block; width:100%; height: 100%;">
-  <table id="gridReportData"></table> 
-  
+  <table id="gridReportData"></table>  
+
   <form action="util_run_talentreport_downloadoutput" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
 	  <input type="hidden" id="txtPreview" name="txtPreview" value="<%=objReport.Output.IsPreview%>">
 	  <input type="hidden" id="txtFormat" name="txtFormat" value="<%=objReport.Output.Format%>">
@@ -181,8 +181,11 @@
       closeclick();
     },
     success: function (jsonData) {
-    	var previewData = window.frmExportData.txtFormat.value === "0";
-    	if (previewData) {
+
+      var frmExport = OpenHR.getForm("main", "frmExportData");
+      var previewData = frmExport.txtFormat.value === "0";
+
+      if (previewData) {
     		if (typeof jsonData.colModel == "undefined") {
     			gotNoData(jsonData);
     		} else {
