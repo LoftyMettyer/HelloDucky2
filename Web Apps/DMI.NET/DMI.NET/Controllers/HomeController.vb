@@ -2617,9 +2617,9 @@ Namespace Controllers
 			  For Each dr As DataRow In matchReport.ReportDataTable.Rows
 				  row = New Dictionary(Of String, Object)()
 
-				  For Each col As DataColumn In matchReport.ReportDataTable.Columns
-						row.Add(col.ColumnName, dr(col))
-				  Next
+                    For Each col As DataColumn In matchReport.ReportDataTable.Columns
+                        row.Add(col.ColumnName, dr(col))
+                    Next
 				  rows.Add(row)
 			  Next
 
@@ -2848,7 +2848,7 @@ Namespace Controllers
 				blnEmail = objCrossTab.OutputEmail
 				lngEmailGroupID = objCrossTab.OutputEmailID
 				strEmailSubject = objCrossTab.OutputEmailSubject
-				strEmailAttachAs = objCrossTab.OutputEmailAttachAs
+				strEmailAttachAs = GetEmailAttachFileNameWithExcelExtension(objCrossTab.OutputEmailAttachAs)
 				strDownloadFileName = objCrossTab.DownloadFileName
 			End If
 
@@ -3166,7 +3166,7 @@ Namespace Controllers
 				blnEmail = objCrossTab.OutputEmail
 				lngEmailGroupID = objCrossTab.OutputEmailID
 				strEmailSubject = objCrossTab.OutputEmailSubject
-				strEmailAttachAs = objCrossTab.OutputEmailAttachAs
+				strEmailAttachAs = GetEmailAttachFileNameWithExcelExtension(objCrossTab.OutputEmailAttachAs)
 				strDownloadFileName = objCrossTab.DownloadFileName
 			End If
 
@@ -3370,7 +3370,7 @@ Namespace Controllers
 				blnEmail = objReport.OutputEmail
 				lngEmailGroupID = CLng(objReport.OutputEmailID)
 				strEmailSubject = objReport.OutputEmailSubject
-				strEmailAttachAs = objReport.OutputEmailAttachAs
+				strEmailAttachAs = GetEmailAttachFileNameWithExcelExtension(objReport.OutputEmailAttachAs)
 				strDownloadFileName = objReport.DownloadFileName
 			End If
 
@@ -3684,7 +3684,7 @@ Namespace Controllers
 				blnEmail = objCalendar.OutputEmail
 				lngEmailGroupID = objCalendar.OutputEmailID
 				strEmailSubject = objCalendar.OutputEmailSubject
-				strEmailAttachAs = objCalendar.OutputEmailAttachAs
+				strEmailAttachAs = GetEmailAttachFileNameWithExcelExtension(objCalendar.OutputEmailAttachAs)
 				strDownloadFileName = objCalendar.DownloadFileName
 			End If
 
@@ -5811,20 +5811,24 @@ Namespace Controllers
 
 		End Function
 
-      <HttpPost()>
-      <ValidateAntiForgeryToken>
-      public function SetCookie(cookieName As String, cookieValue As String, expiryDays As string) As actionresult
-         
-         	Dim cookie = New HttpCookie(cookieName)
-				cookie.Expires = Now.AddDays(expiryDays)
-				cookie.HttpOnly = True
-				cookie.Value = cookieValue
+		<HttpPost()>
+		<ValidateAntiForgeryToken>
+		Public Function SetCookie(cookieName As String, cookieValue As String, expiryDays As String) As ActionResult
 
-				Response.Cookies.Add(cookie)
+			Dim cookie = New HttpCookie(cookieName)
+			cookie.Expires = Now.AddDays(expiryDays)
+			cookie.HttpOnly = True
+			cookie.Value = cookieValue
 
-            return New HttpStatusCodeResult(HttpStatusCode.OK)
+			Response.Cookies.Add(cookie)
 
-      End function
+			Return New HttpStatusCodeResult(HttpStatusCode.OK)
+
+		End Function
+
+		Private Function GetEmailAttachFileNameWithExcelExtension(fileName As String) As String
+			Return IIf(Path.GetFileNameWithoutExtension(fileName) = fileName, fileName + ".xlsx", fileName)
+		End Function
 
 	End Class
 

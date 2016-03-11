@@ -357,8 +357,6 @@
 					$('#frmOutputDef #txtEmailAttachAs').removeClass('ui-state-disabled');
 					$('#frmOutputDef #lblEmailAttachAs').removeClass('ui-state-disabled');
 					txtEmailGroup.value = 'None';
-					txtEmailAttachAs.value = '';
-					txtEmailSubject.value = '';
 				}
 				else {
 					//text_disable(txtEmailGroup, true);
@@ -523,7 +521,7 @@
 		};
 
 		if ((frmOutputDef.chkDestination2.checked)
-				&& (frmOutputDef.txtFilename.value == "") ) {
+				&& ($.trim(frmOutputDef.txtFilename.value) === "") ) {
 			OpenHR.messageBox("You must enter a file name", 48, "Output Options");
 			window.focus();
 			return;
@@ -544,14 +542,14 @@
 			}
 
 			if ((frmOutputDef.chkDestination3.checked)
-											&& (frmOutputDef.txtEmailSubject.value == '')) {
+											&& ($.trim(frmOutputDef.txtEmailSubject.value) === "")) {
 				OpenHR.messageBox("You must enter an email subject.", 48, "Output Options");
 				window.focus();
 				return;
 			}
 			
 			if ((frmOutputDef.chkDestination3.checked)
-				&& (frmOutputDef.txtEmailAttachAs.value == '')) {
+				&& ($.trim(frmOutputDef.txtEmailAttachAs.value) === "")) {
 			OpenHR.messageBox("You must enter an email attachment file name.", 48, "Output Options");
 			window.focus();
 			return;
