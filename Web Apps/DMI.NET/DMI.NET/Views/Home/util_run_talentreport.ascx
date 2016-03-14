@@ -222,6 +222,11 @@
   function gotNoData(data) {
   	OpenHR.modalPrompt(data, 2, "", "");
   	closeclick();
+
+  	if (menu_isSSIMode()) {
+  	  loadPartialView("linksMain", "Home", "workframe", null);
+  	}
+
   };
 
 </script>
