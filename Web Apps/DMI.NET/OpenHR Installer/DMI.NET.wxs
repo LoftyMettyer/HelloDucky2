@@ -4503,6 +4503,9 @@
                     <Component Id="cmp5CC67977631F43CB91EEC0D84F238385" Guid="*">
                         <File Id="filA058612ED0B40503162EDBBBC5B1B540" KeyPath="yes" Source="SourceDir\Views\Home\tbStatusPrompt.ascx" />
                     </Component>
+                    <Component Id="cmp53C8D57ABB7E592397917575AC41543E" Guid="*">
+                        <File Id="fil893D963B0F075B7DC5ED2DA95BF75A6B" KeyPath="yes" Source="SourceDir\Views\Home\themeEditor.ascx" />
+                    </Component>
                     <Component Id="cmp7483F7DC7AD3FB6BF8324BFA132195CA" Guid="*">
                         <File Id="fil59BD1E772A40F9865BF6DDB5837B32DC" KeyPath="yes" Source="SourceDir\Views\Home\util_def_exprcomponent.ascx" />
                     </Component>
@@ -4667,9 +4670,6 @@
                     </Component>
                     <Component Id="cmp34FC75B786E04B3A89A6F4ACEFC5A069" Guid="*">
                         <File Id="fil81301B4DCA2E546CDA3ED2AA5A8A6059" KeyPath="yes" Source="SourceDir\Views\Shared\Site.Master" />
-                    </Component>
-                    <Component Id="cmpFDDE3D6D07FB231F25F7D52440073411" Guid="*">
-                        <File Id="fil1D4992BB0EFEC2EB1D6D443706076356" KeyPath="yes" Source="SourceDir\Views\Shared\themeEditor.ascx" />
                     </Component>
                     <Component Id="cmp05C3916BD6B0E0E3B3CF947C9ED34DB4" Guid="*">
                         <File Id="fil738FF8AD811D71F27C1D717719074525" KeyPath="yes" Source="SourceDir\Views\Shared\_Banner.ascx" />
@@ -6111,6 +6111,7 @@
             <ComponentRef Id="cmpAADDD7CBE19F56195C844431DF8C330F" />
             <ComponentRef Id="cmp6F74E921669389D588DD8D02576C7D72" />
             <ComponentRef Id="cmp5CC67977631F43CB91EEC0D84F238385" />
+            <ComponentRef Id="cmp53C8D57ABB7E592397917575AC41543E" />
             <ComponentRef Id="cmp7483F7DC7AD3FB6BF8324BFA132195CA" />
             <ComponentRef Id="cmp829862E02C6402F9E3E517826C084A3A" />
             <ComponentRef Id="cmpE720DE64B3EBDE81C00B1345DC4B380C" />
@@ -6164,7 +6165,6 @@
             <ComponentRef Id="cmpC8C55C5C1E701FAECE48BA8A7CF68946" />
             <ComponentRef Id="cmp689A47288E8C41D736C9D29B3FFD3EFE" />
             <ComponentRef Id="cmp34FC75B786E04B3A89A6F4ACEFC5A069" />
-            <ComponentRef Id="cmpFDDE3D6D07FB231F25F7D52440073411" />
             <ComponentRef Id="cmp05C3916BD6B0E0E3B3CF947C9ED34DB4" />
         </ComponentGroup>
     </Fragment>
