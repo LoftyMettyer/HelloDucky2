@@ -1829,7 +1829,7 @@
     <Content Include="Views\Home\util_validate_picklist.ascx" />
     <Content Include="Views\Home\WorkflowPendingSteps.ascx" />
     <Content Include="Views\Shared\gotoOption.ascx" />
-    <Content Include="Views\Shared\themeEditor.ascx" />
+    <Content Include="Views\Home\themeEditor.ascx" />
     <Content Include="Views\Shared\gotoWork.ascx" />
     <Content Include="Views\Shared\Site.Master" />
     <Content Include="Views\Reports\_ColumnSelection.vbhtml" />

@@ -114,15 +114,10 @@ function changeLayout(newLayoutName) {
 		setCookie('Intranet_Theme', "blue", 365);
 	}
 
-	$(".DashContent").fadeOut("slow");
-
-	$(".DashContent").promise().done(function () {
-		window.location = "MainSSI";
-	});
 }
 
 function changeTheme(newThemeName) {	
-	$("link[id=SSIthemeLink]").attr({ href: window.ROOT + "Content/themes/" + newThemeName + "/jquery-ui.min.css" });
+  $("link[id=SSIthemeLink]").attr({ href: window.ROOT + "Content/themes/" + newThemeName + "/jquery-ui.min.css" });
 	setCookie('Intranet_Wireframe_Theme', newThemeName, 365);
 }
 

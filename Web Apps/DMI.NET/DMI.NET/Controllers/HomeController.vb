@@ -5813,12 +5813,13 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Public Function SetCookie(cookieName As String, cookieValue As String, expiryDays As String) As ActionResult
+		Public Function SetCookie(cookieName As String, cookieValue As String, expiryDays As String, path as String) As ActionResult
 
-			Dim cookie = New HttpCookie(cookieName)
-			cookie.Expires = Now.AddDays(expiryDays)
+      Dim cookie = New HttpCookie(cookieName)
+      cookie.Expires = Now.AddDays(expiryDays)
 			cookie.HttpOnly = True
 			cookie.Value = cookieValue
+      cookie.Path = path
 
 			Response.Cookies.Add(cookie)
 

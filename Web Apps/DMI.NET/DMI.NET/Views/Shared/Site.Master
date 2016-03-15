@@ -462,11 +462,7 @@
 
 			//Save some cookies we will need in other parts of the system
 			setCookie("SSIMode", SSIMode, 100);
-			if ('<%=UCase(Session("ui-layout-selectable").ToString())%>' == 'TRUE') {
-				setCookie("currentLayout", "<%=currentLayout%>", 100);
-				setCookie("cookiewireframeTheme", cookiewireframeTheme, 100);
-				setCookie("cookieapplyWireframeTheme", window.cookieapplyWireframeTheme, 100);
-			}
+
 			//Apply ajax Loading message
 			$(document).ajaxStart(function () {
 				setTimeout('updateProgressMsg()', 50);
@@ -515,15 +511,24 @@
 		org.owasp.esapi.ESAPI.initialize();
 		var openhrBlackListValidator = new org.owasp.esapi.reference.validation.StringValidationRule("OpenhrBlackListValidator", null, null);
 
+		function removeCookie(sKey, sPath, sDomain) {
+		  document.cookie = encodeURIComponent(sKey) + 
+                    "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + 
+                    (sDomain ? "; domain=" + sDomain : "") + 
+                    (sPath ? "; path=" + sPath : "");
+		}
+
 		function setCookie(cName, value, exdays) {
 		   var url = window.ROOT + "Home/SetCookie";
 		   var data = {
 		      cookieName: cName,
 		      cookieValue: value,
 		      expiryDays: exdays,
+          path: "",
 		      __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		   };
 
+		   removeCookie(cName);
 		   $.ajax({
 		      url: url,
 		      type: "POST",
@@ -540,7 +545,9 @@
 		//Set locale-related global variables
 		window.UserLocale = "<%:LocaleLanguage() %>";
 		window.LocaleThousandSeparator = "<%:Html.Raw(LocaleThousandSeparator())%>";
-		window.LocaleDecimalSeparator = "<%:Html.Raw(LocaleDecimalSeparator())%>";
+	  window.LocaleDecimalSeparator = "<%:Html.Raw(LocaleDecimalSeparator())%>";
+	  window.IntranetLayout = "<%:sIntranetLayout%>";
+		window.IntranetWireframeTheme = "<%:sIntranetWireframeTheme%>";
 
 		function loadPartialView(action, controller, targetDiv, params) {
 

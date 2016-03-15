@@ -50,27 +50,25 @@
 
 	function themeEditor_window_onload() {
 		 
-			var currentLayout = OpenHR.getCookie("Intranet_Layout");
-			var currentTheme = OpenHR.getCookie("Intranet_Wireframe_Theme");
-			
-			if (currentLayout != null) {
-					document.getElementById('cmbLayout').value = currentLayout;
-			}
+	  document.getElementById('cmbLayout').value = window.IntranetLayout;
+		document.getElementById('cmbTheme').value = window.IntranetWireframeTheme;
+		toggleCombos();
 
-			if (currentTheme != null) {
-					document.getElementById('cmbTheme').value = currentTheme;
-			}	    
-			toggleCombos();
 	}
 
 	function saveLayoutandTheme() {
-		 
+
 		try { changeLayout($("#cmbLayout :selected").text()); } catch (e) { }		
 			if ($("#cmbLayout :selected").val() == "wireframe") {	      
 					try { changeTheme($("#cmbTheme :selected").val()); } catch (e) { }      
 				 
 			}
-			themeEditor_window_onload();
+
+			$(".DashContent").fadeOut("slow");
+			$(".DashContent").promise().done(function () {
+			  window.location = "MainSSI";
+			});
+
 	}
 
 	function toggleCombos() {
