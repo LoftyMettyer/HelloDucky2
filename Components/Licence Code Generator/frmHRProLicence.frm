@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Begin VB.Form frmHRProLicence 
    BorderStyle     =   3  'Fixed Dialog
@@ -1000,7 +1000,7 @@ Private Sub PopulateModules(lstTemp As ListBox)
     .AddItem "Mobile Interface": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Fusion Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "XML Exports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
-    ' .AddItem "OpenLMS Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+    lngBit = lngBit * 2
     .AddItem "9-Box Grid Reports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Editable Grids": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Power Customisation Pack": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2

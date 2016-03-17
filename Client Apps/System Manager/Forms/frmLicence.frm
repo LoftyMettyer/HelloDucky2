@@ -667,7 +667,7 @@ Private Sub PopulateModules()
     .AddItem "Mobile Interface": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Fusion Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "XML Exports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
-    ' .AddItem "OpenLMS Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+    lngBit = lngBit * 2
     .AddItem "9-Box Grid Reports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Editable Grids": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Power Customisation Pack": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
