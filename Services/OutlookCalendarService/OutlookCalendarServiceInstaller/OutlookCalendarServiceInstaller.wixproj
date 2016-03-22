@@ -18,7 +18,10 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <CompilerAdditionalOptions>-ext "..\OutlookCalendarService Wix Extensions\bin\Release\OutlookCalendarService Wix Extensions.dll"</CompilerAdditionalOptions>
+    <LinkerAdditionalOptions>-ext "..\OutlookCalendarService Wix Extensions\bin\Release\OutlookCalendarService Wix Extensions.dll"</LinkerAdditionalOptions>
     <DefineConstants>Debug</DefineConstants>
+    <SuppressValidation>True</SuppressValidation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>

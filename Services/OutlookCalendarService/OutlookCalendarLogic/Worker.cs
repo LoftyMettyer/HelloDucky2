@@ -32,26 +32,28 @@ namespace OutlookCalendarLogic {
 	private readonly string _exchangeUser;
 	private readonly string _exchangeUserPassword;
 	private readonly bool _useDefaultCredentials;
-	private bool _enableExchangeTrace;
+	private readonly bool _enableExchangeTrace;
 	private bool _isProcessing;
 	private bool _loggedOn;
 	private VersionNumber _svcVersion;
 	private const Single MINIMUMDBVERSION = 8.0f;
-	private string _errorMessage;
 	private string _storeId;
 	private string _entryId;
-	private bool _reminder;
-	private int _reminderOffset;
-	private int _reminderPeriod;
-	private bool _allDayEvent;
+	private string _dateFormat = string.Empty;
+	private string _errorMessage = string.Empty;
+	private bool _reminder = false;
+	private Int32 _reminderOffset = 0;
+	private Int32 _reminderPeriod = 0;
+	private bool _allDayEvent = false;
 	private DateTime _startDate;
 	private DateTime _endDate;
-	private string _startTime;
-	private string _endTime;
-	private string _subject;
-	private string _content;
-	private int _busyStatus;
-	private string _folder;
+	private string _startTime = string.Empty;
+	private string _endTime = string.Empty;
+	private string _subject = string.Empty;
+	private string _content = string.Empty;
+	private Int32 _busyStatus = 0;
+	private string _folder = string.Empty;
+
 
 	#endregion
 
@@ -431,28 +433,41 @@ namespace OutlookCalendarLogic {
 	}
 
 	private bool OutlookBatch() {
-	  string sql;
-	  bool deleted;
-	  int linkID;
-	  int folderID;
-	  int recordID;
-	  int startDateColumnID;
-	  int endDateColumnID;
-	  string fixedStartTime;
-	  string fixedEndTime;
-	  int startTimeColumnID;
-	  int endTimeColumnID;
-	  int timeRange;
-	  string title;
-	  int subjectExprID;
-	  int recordDescExprID;
-	  int folderType;
-	  string folderPath;
-	  int folderExprID;
-	  bool _outlookOK = false;
-	  string _dateFormat;
-	  _startDate = DateTime.Parse(SqlDateTime.MinValue.Value.ToString());
-	  _endDate = DateTime.Parse(SqlDateTime.MinValue.Value.ToString());
+	  string dateFormat = string.Empty;
+	  string sql = string.Empty;
+	  Int32 linkID = 0;
+	  Int32 folderID = 0;
+	  Int32 startDateColumnID = 0;
+	  Int32 endDateColumnID = 0;
+	  Int32 startTimeColumnID = 0;
+	  Int32 endTimeColumnID = 0;
+	  Int32 recordID = 0;
+	  Int32 recordDescExprID = 0;
+	  Int32 subjectExprID = 0;
+	  string storeId = string.Empty;
+	  string entryId = string.Empty;
+	  string title = string.Empty;
+	  string content = string.Empty;
+	  string fixedStartTime = string.Empty;
+	  string fixedEndTime = string.Empty;
+	  bool deleted = false;
+	  bool reminder = false;
+	  Int32 reminderOffset = 0;
+	  Int32 reminderPeriod = 0;
+	  Int32 busyStatus = 0;
+	  Int32 timeRange = 0;
+	  Int32 folderType = 0;
+	  Int32 folderExprID = 0;
+	  string folderPath = string.Empty;
+	  bool createdEntry = false;
+	  bool doOutlookOK = false;
+	  bool allDayEvent = false;
+	  DateTime startDate = DateTime.Parse(SqlDateTime.MinValue.Value.ToString());
+	  DateTime endDate = DateTime.Parse(SqlDateTime.MinValue.Value.ToString());
+	  string startTime = string.Empty;
+	  string endTime = string.Empty;
+	  string subject = string.Empty;
+	  string folder = string.Empty;
 
 	  if (_userDefinedConfiguration.Debug) {
 		RaiseMessageEvent(new MessageEventDetails("-------------" + Environment.NewLine + "Batch Started" + Environment.NewLine + "-------------"));
@@ -491,8 +506,8 @@ namespace OutlookCalendarLogic {
 				RaiseMessageEvent(new MessageEventDetails("Connected to Exchange"));
 
 				while (reader.Read()) {
-				  _storeId = Utilities.NullSafeString(reader["StoreID"]);
-				  _entryId = Utilities.NullSafeString(reader["EntryID"]);
+				  storeId = Utilities.NullSafeString(reader["StoreID"]);
+				  entryId = Utilities.NullSafeString(reader["EntryID"]);
 				  deleted = Utilities.NullSafeBoolean(reader["Deleted"]);
 				  linkID = Utilities.NullSafeInteger(reader["LinkID"]);
 				  folderID = Utilities.NullSafeInteger(reader["FolderID"]);
@@ -510,25 +525,27 @@ namespace OutlookCalendarLogic {
 				  folderType = Utilities.NullSafeInteger(reader["FolderType"]);
 				  folderPath = Utilities.NullSafeString(reader["FixedPath"]);
 				  folderExprID = Utilities.NullSafeInteger(reader["ExprID"]);
-				  _content = Utilities.NullSafeString(reader["Content"]);
-				  _reminder = Utilities.NullSafeBoolean(reader["Reminder"]);
-				  _reminderOffset = Utilities.NullSafeInteger(reader["ReminderOffset"]);
-				  _reminderPeriod = Utilities.NullSafeInteger(reader["ReminderPeriod"]);
-				  _busyStatus = Utilities.NullSafeInteger(reader["BusyStatus"]);
+				  content = Utilities.NullSafeString(reader["Content"]);
+				  reminder = Utilities.NullSafeBoolean(reader["Reminder"]);
+				  reminderOffset = Utilities.NullSafeInteger(reader["ReminderOffset"]);
+				  reminderPeriod = Utilities.NullSafeInteger(reader["ReminderPeriod"]);
+				  busyStatus = Utilities.NullSafeInteger(reader["BusyStatus"]);
 
-				  _storeId = "";
-				  _entryId = "";
-				  _outlookOK = true;
+				  _storeId = string.Empty;
+				  _entryId = string.Empty;
+				  doOutlookOK = true;
 
-				  bool emptyIDs = (_storeId == string.Empty && _entryId == string.Empty);
+				  bool emptyIDs = (storeId == string.Empty && entryId == string.Empty);
 
 				  RaiseMessageEvent(new MessageEventDetails($"Servicing {serverDBName}"));
 				  RaiseMessageEvent(new MessageEventDetails(title));
 				  RaiseMessageEvent(
 					  new MessageEventDetails(
-						  string.Format("Deleted: {0}{3}StoreID: {1}{3}EntryID: {2}", deleted, _storeId, _entryId, Environment.NewLine)));
+						  string.Format("Deleted: {0}{3}StoreID: {1}{3}EntryID: {2}", deleted, storeId, entryId, Environment.NewLine)));
 
 				  if (deleted || (!emptyIDs)) {
+					_storeId = storeId;
+					_entryId = entryId;
 					SqlTransaction transaction;
 
 					using (SqlConnection connEvents = new SqlConnection(openHrSystem.ConnectionString)) {
@@ -582,7 +599,7 @@ namespace OutlookCalendarLogic {
 
 						  // Attempt to commit the transaction.
 						  transaction.Commit();
-						  _outlookOK = true;
+						  doOutlookOK = true;
 						} else {
 						  try {
 							RaiseMessageEvent(
@@ -597,7 +614,7 @@ namespace OutlookCalendarLogic {
 								EventLogEntryType.Error, MessageEventDetails.MessageEventType.WindowsEventsLog));
 						  }
 
-						  _outlookOK = false;
+						  doOutlookOK = false;
 						  RaiseMessageEvent(new MessageEventDetails("Delete Error: " + _errorMessage, EventLogEntryType.Warning,
 							  MessageEventDetails.MessageEventType.WindowsEventsLog));
 
@@ -633,7 +650,7 @@ namespace OutlookCalendarLogic {
 						  }
 						}
 					  } catch (SqlException sqlEx) {
-						_outlookOK = false;
+						doOutlookOK = false;
 						// Rollback
 						try {
 						  RaiseMessageEvent(new MessageEventDetails("ROLLBACK TRANS: Update or Delete failed"));
@@ -659,16 +676,16 @@ namespace OutlookCalendarLogic {
 							EventLogEntryType.Error, MessageEventDetails.MessageEventType.WindowsEventsLog));
 
 					  } catch (Exception ex) {
-						_outlookOK = false;
+						doOutlookOK = false;
 						RaiseMessageEvent(new MessageEventDetails($"Error in transaction: {ex.Message}.",
 							EventLogEntryType.Error, MessageEventDetails.MessageEventType.WindowsEventsLog));
 					  }
 					}
 				  }
 
-				  RaiseMessageEvent(new MessageEventDetails("doOutlookOK: " + _outlookOK));
+				  RaiseMessageEvent(new MessageEventDetails("doOutlookOK: " + doOutlookOK));
 
-				  if (_outlookOK && !deleted) {
+				  if (doOutlookOK && !deleted) {
 					using (SqlConnection sqlConnectionSp = new SqlConnection(openHrSystem.ConnectionString)) {
 					  // Lets call spASRNetOutlookBatch to get us the rest of our properties
 					  SqlCommand cmdSp = new SqlCommand("spASRNetOutlookBatch", sqlConnectionSp);
@@ -677,7 +694,7 @@ namespace OutlookCalendarLogic {
 
 					  // Input/Output parameters
 					  cmdSp.Parameters.Add("@Content", SqlDbType.VarChar, 8000).Direction = ParameterDirection.InputOutput;
-					  cmdSp.Parameters["@Content"].Value = _content;
+					  cmdSp.Parameters["@Content"].Value = content;
 
 					  // Output parameters
 					  cmdSp.Parameters.Add("@AllDayEvent", SqlDbType.Bit).Direction = ParameterDirection.Output;
@@ -709,7 +726,7 @@ namespace OutlookCalendarLogic {
 					  cmdSp.ExecuteNonQuery();
 
 					  // Retrieve output parameters
-					  _content = Utilities.NullSafeString(cmdSp.Parameters["@Content"].Value);
+					  content = Utilities.NullSafeString(cmdSp.Parameters["@Content"].Value);
 					  _allDayEvent = Utilities.NullSafeBoolean(cmdSp.Parameters["@AllDayEvent"].Value);
 
 					  if (!cmdSp.Parameters["@StartDate"].Value.Equals(DBNull.Value))
@@ -977,7 +994,7 @@ namespace OutlookCalendarLogic {
 
 		appointment.Save(new FolderId(WellKnownFolderName.Calendar, new Mailbox(_exchangeUser)));
 
-		//	_storeID = appointment.StoreEntryId;
+		_storeId =  Encoding.UTF8.GetString(appointment.StoreEntryId);
 		_entryId = appointment.Id.ToString();
 	  } catch (Exception ex) {
 		_errorMessage = ex.Message;
@@ -990,6 +1007,8 @@ namespace OutlookCalendarLogic {
 
 	private bool DeleteEntry() {
 	  try {
+		if (_entryId == string.Empty)
+			return true;
 		var appointment = Appointment.Bind(_exchangeService, new ItemId(_entryId));
 		appointment.Delete(DeleteMode.HardDelete);
 	  } catch (Exception e) {
