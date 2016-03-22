@@ -421,7 +421,20 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (15, 228, 'Transfer child information based on contract type', 1, 1, ' 	-- Insert leave schemes based on contract type
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (15, 228, 'Transfer child information based on contract type', 1, 1, '  -- Update Memo Salary on Post
+
+    ;WITH base AS (
+        SELECT *
+            FROM [dbo].[tbuser_Post_Records]
+            WHERE [id] IN (SELECT DISTINCT [id_219] FROM inserted)
+			AND @startingtrigger = 1)
+    UPDATE base SET 
+ 		Memo_Salary = (
+		SELECT ct.Memo_Salary 
+			FROM inserted i
+			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract);
+			
+	-- Insert leave schemes based on contract type
 	INSERT Post_Leave_Schemes (ID_219, Effective_Date, End_Date, Leave_Scheme, Notes)
 		SELECT i.ID_219, i.Effective_Date, chs.End_Date, chs.Leave_Scheme, chs.Notes
 			FROM Contract_Leave_Schemes chs
@@ -477,3 +490,15 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 ');
 GO
 
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (17, 3, 'Appointments Memo Salary', 1, 1, '  -- Update Memo Salary on Appointments
+    ;WITH base AS (
+        SELECT *
+            FROM [dbo].[tbuser_Appointments]
+            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted)
+			AND @startingtrigger = 1)
+    UPDATE base SET 
+ 		Memo_Salary = (
+		SELECT pr.Memo_Salary 
+			FROM inserted i
+			INNER JOIN Post_Records pr ON pr.ID = i.ID_219);');
+GO
