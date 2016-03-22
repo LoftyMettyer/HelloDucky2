@@ -277,10 +277,10 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 			FROM inserted i
 			INNER JOIN Post_Deductions pd ON pd.ID_219 = i.ID_219;
 
-	INSERT Appointment_Holiday_Schemes(ID_3, Effective_Date, Holiday_Scheme)
-		SELECT i.ID, i.Appointment_Start_Date, phs.Holiday_Scheme
+	INSERT Appointment_Leave_Schemes(ID_3, Effective_Date, Leave_Scheme)
+		SELECT i.ID, i.Appointment_Start_Date, phs.Leave_Scheme
 			FROM inserted i
-			INNER JOIN Post_Holiday_Schemes phs ON phs.ID_219 = i.ID_219;
+			INNER JOIN Post_Leave_Schemes phs ON phs.ID_219 = i.ID_219;
 
 	INSERT Appointment_OMP_Schemes(ID_3, Effective_Date, OMP_Scheme)
 		SELECT i.ID, i.Appointment_Start_Date, sch.OMP_Scheme
@@ -385,11 +385,11 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (7, 219, 'Transfer working pattern from appointment', 0, 1, '    INSERT Post_Holiday_Schemes (ID_219, Effective_Date, Holiday_Scheme)
-		SELECT i.ID, i.Effective_Date, chs.Holiday_Scheme
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (7, 219, 'Transfer working pattern from appointment', 0, 1, '    INSERT Post_Leave_Schemes (ID_219, Effective_Date, Leave_Scheme)
+		SELECT i.ID, i.Effective_Date, chs.Leave_Scheme
 			FROM inserted i
 			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract
-			INNER JOIN Contract_Holiday_Schemes chs ON chs.ID_215 = ct.ID AND (chs.End_Date >= GETDATE() OR End_Date IS NULL);
+			INNER JOIN Contract_Leave_Schemes chs ON chs.ID_215 = ct.ID AND (chs.End_Date >= GETDATE() OR End_Date IS NULL);
 
 	INSERT Post_OMP_Schemes (ID_219, Effective_Date, OMP_Scheme, Description)
 		SELECT i.ID, i.Effective_Date, omp.OMP_Scheme, omp.Description
@@ -421,10 +421,10 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (15, 228, 'Transfer child information based on contract type', 1, 1, ' 	-- Insert holiday schemes based on contract type
-	INSERT Post_Holiday_Schemes (ID_219, Effective_Date, End_Date, Holiday_Scheme, Notes)
-		SELECT i.ID_219, i.Effective_Date, chs.End_Date, chs.Holiday_Scheme, chs.Notes
-			FROM Contract_Holiday_Schemes chs
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (15, 228, 'Transfer child information based on contract type', 1, 1, ' 	-- Insert leave schemes based on contract type
+	INSERT Post_Leave_Schemes (ID_219, Effective_Date, End_Date, Leave_Scheme, Notes)
+		SELECT i.ID_219, i.Effective_Date, chs.End_Date, chs.Leave_Scheme, chs.Notes
+			FROM Contract_Leave_Schemes chs
 			INNER JOIN Contract_Templates ct ON ct.ID = chs.ID_215
 			INNER JOIN inserted i ON i.Contract = ct.Contract
 			INNER JOIN deleted d ON i.id = d.id
