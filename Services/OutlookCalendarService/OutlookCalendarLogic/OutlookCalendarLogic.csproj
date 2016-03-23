@@ -44,9 +44,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="RKIC.DebugUtilities">
-      <HintPath>..\..\..\..\..\..\..\Roberto\Source\RKIC.DebugUtilities\RKIC.DebugUtilities\bin\Debug\RKIC.DebugUtilities.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
