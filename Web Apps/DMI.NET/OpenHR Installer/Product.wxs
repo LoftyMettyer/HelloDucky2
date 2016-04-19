@@ -115,7 +115,7 @@
 		<!-- Check if IIS is installed -->
 		<PropertyRef Id="IISMAJORVERSION"/>
 		<Condition Message="OpenHR Web requires IIS 7 or above; as part of the IIS installation, if the Server is Microsoft Server 2008, please also install support for ASP.NET; if the Server is Microsoft Server 2012, make sure ASP.NET 3.5 and ASP.NET 4.5 are also installed">
-			<![CDATA[Installed OR (IISMAJORVERSION AND (IISMAJORVERSION = "#7" OR IISMAJORVERSION = "#8" OR IISMAJORVERSION = "#10"))]]>
+			<![CDATA[Installed OR (IISMAJORVERSION AND (IISMAJORVERSION = "#7" OR IISMAJORVERSION = "#8" OR IISMAJORVERSION = #10))]]>
 		</Condition>
 
 		<!--
