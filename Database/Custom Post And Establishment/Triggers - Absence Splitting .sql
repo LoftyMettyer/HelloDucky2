@@ -401,7 +401,7 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 		SELECT i.ID, i.Effective_Date, osp.OSP_Scheme, osp.Description
 			FROM inserted i
 			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract
-			INNER JOIN Contract_OSP_Schemes osp ON osp.ID_215 = ct.ID AND (osp.End_Date >= GETDATE() OR omp.End_Date IS NULL);
+			INNER JOIN Contract_OSP_Schemes osp ON osp.ID_215 = ct.ID AND (osp.End_Date >= GETDATE() OR osp.End_Date IS NULL);
 
 	INSERT Post_Pension_Schemes (ID_219, Effective_Date, Pension_Scheme)
 		SELECT i.ID, i.Effective_Date, pen.Pension_Scheme
