@@ -31,6 +31,7 @@ namespace OutlookCalendarLogic
     #region Private variables
     private ExchangeService _exchangeService;
     private UserDefinedConfiguration _userDefinedConfiguration;
+    private readonly string _exchangeURL;
     private readonly string _exchangeUser;
     private readonly string _exchangeUserPassword;
     private readonly bool _useDefaultCredentials;
@@ -100,6 +101,7 @@ namespace OutlookCalendarLogic
           OpenHRUser = ConfigurationManager.AppSettings["openhruser"],
           OpenHRPassword = ConfigurationManager.AppSettings["openhrpassword"],
           ExchangeServer = ConfigurationManager.AppSettings["exchange"],
+          ExchangeServerURL = ConfigurationManager.AppSettings["exchangeURL"],
           ServiceAccountPassword = ConfigurationManager.AppSettings["serviceAccountPassword"],
           Debug = ConfigurationManager.AppSettings["debug"] != "0"
         };
@@ -855,12 +857,13 @@ namespace OutlookCalendarLogic
                     {
                       RaiseMessageEvent(new MessageEventDetails("Create Entry: FAILED"));
                       RaiseMessageEvent(
-                        new MessageEventDetails("Could not create entry {_subject}: {_errorMessage}.",
+
+                        new MessageEventDetails(string.Format("Could not create entry {0} : {1}", _subject, _errorMessage),
                           EventLogEntryType.Warning, MessageEventDetails.MessageEventType.WindowsEventsLog));
                     }
                     else { //Entry created
                       RaiseMessageEvent(
-                        new MessageEventDetails("StoreID: {_storeId}{Environment.NewLine}EntryID: {_entryId}"));
+                        new MessageEventDetails(string.Format("StoreID: {0} EntryId: {1}", _storeId, _entryId)));
                       RaiseMessageEvent(new MessageEventDetails(
                         "Create Entry: " + _subject + " [" + _startDate + " to " + _endDate + "]", EventLogEntryType.Information,
                         MessageEventDetails.MessageEventType.WindowsEventsLogAndDebugLog));
@@ -968,6 +971,8 @@ namespace OutlookCalendarLogic
 
     private bool CreateEntry()
     {
+      string mailboxName = "";
+
       if (!_loggedOn)
       {
         _errorMessage = "Exchange Logon failed";
@@ -990,16 +995,16 @@ namespace OutlookCalendarLogic
           RaiseMessageEvent(new MessageEventDetails(_errorMessage));
           return false;
         }
-      }
-      if (!LikeOperator.LikeString(_endTime, "##:##", CompareMethod.Text))
-      {
+
+        if (!LikeOperator.LikeString(_endTime, "##:##", CompareMethod.Text))
         {
-          _errorMessage = string.Concat("Invalid End Time <", _endTime, ">");
-          RaiseMessageEvent(new MessageEventDetails(_errorMessage));
-          return false;
+          {
+            _errorMessage = string.Concat("Invalid End Time <", _endTime, ">");
+            RaiseMessageEvent(new MessageEventDetails(_errorMessage));
+            return false;
+          }
         }
       }
-
       if (_folder == string.Empty)
       {
         _errorMessage = "Outlook folder name empty";
@@ -1016,19 +1021,20 @@ namespace OutlookCalendarLogic
       {
         try
         {
-          string mailboxName = GetNameFromMailbox(_folder);
+          mailboxName = GetNameFromMailbox(_folder);
           RaiseMessageEvent(new MessageEventDetails("GetSharedMailbox: " + mailboxName));
           calendarFolder = Folder.Bind(_exchangeService, WellKnownFolderName.Calendar);
           RaiseMessageEvent(new MessageEventDetails("GetSharedMailbox OK"));
         }
-        catch
+        catch (Exception ex)
         {
-          _errorMessage = "Unable to open mailbox for {GetNameFromMailbox(_folder)}. Check permissions.";
+          _errorMessage = string.Format("Unable to open mailbox for {GetNameFromMailbox(_folder)}. {0}", ex.Message);
 
           return false;
         }
       }
-      else {
+      else
+      {
         RaiseMessageEvent(new MessageEventDetails("Public Folder: " + _folder));
         try
         {
@@ -1134,9 +1140,9 @@ namespace OutlookCalendarLogic
         //RaiseMessageEvent(new MessageEventDetails("- Body (Content): {_content}", EventLogEntryType.Error, MessageEventDetails.MessageEventType.DebugLog));
         //RaiseMessageEvent(new MessageEventDetails("- All-day: {_allDayEvent}; reminder in minutes: {reminderInMinutes}", EventLogEntryType.Error, MessageEventDetails.MessageEventType.DebugLog));
 
-        appointment.Save(new FolderId(WellKnownFolderName.Calendar, new Mailbox(_exchangeUser)));
+        appointment.Save(new FolderId(WellKnownFolderName.Calendar, new Mailbox(mailboxName)));
 
-        _storeId = Encoding.UTF8.GetString(appointment.StoreEntryId);
+        // _storeId = Encoding.UTF8.GetString(appointment.StoreEntryId);
         _entryId = appointment.Id.ToString();
       }
       catch (Exception ex)
@@ -1186,9 +1192,16 @@ namespace OutlookCalendarLogic
         };
 
         if (!_useDefaultCredentials) //Need to provide username and password
-          _exchangeService.Credentials = new NetworkCredential(_exchangeUser, _exchangeUserPassword);
+          _exchangeService.Credentials = new NetworkCredential(_exchangeUser, _exchangeUserPassword, "");
 
-        _exchangeService.AutodiscoverUrl(_exchangeUser, RedirectionUrlValidationCallback);
+        if (_userDefinedConfiguration.ExchangeServerURL == null)
+        {
+          _exchangeService.AutodiscoverUrl(_exchangeUser, RedirectionUrlValidationCallback);
+        }
+        else
+        {
+          _exchangeService.Url = new Uri(_userDefinedConfiguration.ExchangeServerURL);
+        }
 
         try
         {
@@ -1532,6 +1545,99 @@ namespace OutlookCalendarLogic
       RaiseMessageEvent(
         new MessageEventDetails(
           "OpenHR Outlook Calendar Service 2 ({_userDefinedConfiguration.ExchangeServer}) stopped successfully.", EventLogEntryType.Information, MessageEventDetails.MessageEventType.WindowsEventsLogAndDebugLog));
+    }
+
+
+    public void CreateTestCalendarAndPopulate()
+    {
+
+      LogonToExchange();
+
+      try
+      {
+        var appointment = new Appointment(_exchangeService)
+        {
+          Subject = "OpenHR",
+          Body = _content,
+          IsAllDayEvent = _allDayEvent
+        };
+
+
+
+        if (_allDayEvent)
+        {
+          appointment.Start = _startDate;
+          //If no times are specified then outlook correctly finishes at midnight but does not include the end date. 
+          //For OpenHR we need the event to be inclusive of both the start date and end date so if its an all day
+          //event add one day to the end date.
+          if (DateTime.Compare(_startDate, _endDate) > 0)
+            appointment.End = _startDate.AddDays(1); //Start date after end date
+          else
+            appointment.End = _endDate.AddDays(1);
+        }
+        else
+        {
+          var dateFormat = "103";
+          _startTime = "2016-02-05 09:00:00.000";
+          _endTime = "2016-02-05 17:30:00.000";
+
+
+          _startDate = Convert.ToDateTime(_startTime);
+          appointment.Start = _startDate;
+          _endDate = Convert.ToDateTime(_endTime);
+          appointment.End = _endDate;
+        }
+
+        appointment.LegacyFreeBusyStatus = (LegacyFreeBusyStatus)_busyStatus;
+        appointment.IsReminderSet = _reminder;
+        var reminderInMinutes = Convert.ToInt32(_reminderOffset) *
+                                Convert.ToInt32(Interaction.Choose(_reminderPeriod + 1, 1, 1440, 10080, 40240));
+        if (_reminder)
+        {
+          appointment.ReminderMinutesBeforeStart = reminderInMinutes;
+        }
+
+        appointment.Save(new FolderId(WellKnownFolderName.Calendar, new Mailbox(_exchangeUser)));
+
+        //_exchangeService.LoadPropertiesForItems(appointment, PropertySet.FirstClassProperties);
+        //     var calendarView = new CalendarView();
+        //   var getProps = _exchangeService.FindAppointments(appointment.ParentFolderId, calendarView);
+
+
+
+        _storeId = "unused"; //Encoding.UTF8.GetString(appointment.StoreEntryId);
+        _entryId = appointment.Id.ToString();
+
+        appointment.Delete(DeleteMode.HardDelete);
+
+        RaiseMessageEvent(
+          new MessageEventDetails(string.Format("update success calendar entry success: {0} - {1} ", _storeId,
+            _entryId)));
+      }
+
+
+      catch (Exception ex)
+      {
+        RaiseMessageEvent(new MessageEventDetails("updated test calendar entry failed: " + ex.Message));
+      }
+    }
+
+    public void CreateTestCalendarDelete(string entryID)
+    {
+      try
+      {
+        LogonToExchange();
+
+        var appointment = Appointment.Bind(_exchangeService, new ItemId(entryID));
+        appointment.Delete(DeleteMode.HardDelete);
+
+        RaiseMessageEvent(new MessageEventDetails("deleted test calendar entry successfully"));
+      }
+      catch (Exception ex)
+      {
+        RaiseMessageEvent(new MessageEventDetails("deleted test calendar entry failed: " + ex.Message));
+      }
+
     }
   }
 }
