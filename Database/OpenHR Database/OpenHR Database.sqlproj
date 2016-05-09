@@ -660,6 +660,8 @@
     <Build Include="Stored Procedures\Web\spASRIntValidateTalentReport.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetTalentReportDefinition.sql" />
     <Build Include="Stored Procedures\System Manager\spadmin_optimiserecordsave.sql" />
+    <Build Include="Stored Procedures\Auto Generated\spASRWorkflowGetSelfServiceRecordID.sql" />
+    <Build Include="Stored Procedures\Workflow\spASRGetWorkflowIDFromName.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

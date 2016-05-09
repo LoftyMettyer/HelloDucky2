@@ -49,6 +49,26 @@ BEGIN
 END
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - Workspace Integration'
+/* ------------------------------------------------------- */
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGetWorkflowIDFromName]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRGetWorkflowIDFromName];
+	EXEC sp_executesql N'CREATE PROCEDURE spASRGetWorkflowIDFromName(
+		@name varchar(255),
+		@id integer OUTPUT)
+	AS
+	BEGIN
+
+		IF (SELECT COUNT(id) FROM ASRSysWorkflows WHERE Name = @name) = 1
+			SELECT @id = id FROM ASRSysWorkflows WHERE Name = @name;
+		ELSE
+			SET @id = 0;
+
+	END'
+
+
 
 PRINT 'Final Step - Updating Versions'
 
