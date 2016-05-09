@@ -21,6 +21,14 @@ Public Class [Default]
     Private Const FormInputPrefix As String = "FI_"
 
     Protected Sub Page_PreInit(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.PreInit
+    'Get the Workspace User Id (if present), whcih we will use to get the Record Id from Openhr
+      Dim workspaceUserId As String = ""
+
+      If Not Request.Cookies("iplanetdirectorypro") Is Nothing Then
+         Dim workspaceTokenId = Request.Cookies("iplanetdirectorypro").Value
+         workspaceUserId = OpenAmRestCalls.GetIdFromSession(workspaceTokenId)
+
+      End If
 
         Dim message As String = Nothing
 
