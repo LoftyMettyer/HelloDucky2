@@ -46,11 +46,18 @@ Public Class [Default]
         'Extract the workflow details from the url (use the rawUrl rather than queryString) as some characters are ignored in the queryString
         Dim query = Server.UrlDecode(Request.RawUrl)
         query = query.Substring(query.IndexOf("?") + 1)
-        Try
-            _url = WorkflowUrl.Decrypt(query)
-        Catch ex As Exception
-            message = ex.Message
-        End Try
+
+        If Request.QueryString.Keys(0) = Nothing Then
+            ' This isn't a workspace request for a workflow.
+            Try
+                _url = WorkflowUrl.Decrypt(query)
+            Catch ex As Exception
+                message = ex.Message
+            End Try
+        Else
+            ' This is a workspace request for a workflow.
+            _url = New WorkflowUrl() ' TODO: Task 23514 will populate the _url class
+        End If
 
         _db = New Database(App.Config.ConnectionString)
 
@@ -71,42 +78,42 @@ Public Class [Default]
             End If
 
             If Not _db.ServiceLoginIsValid() Then
-               message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE004)."
+                message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE004)."
             End If
 
         End If
 
         ' Verify the calling URL is the same db as the workflow service
         If Not _db.ServiceLoginIsSameAsWorkflowURL(_url) Then
-          message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE005)."        
+            message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE005)."
         End If
 
-    ' Authentication options
-    If message.IsNullOrEmpty() Then
+        ' Authentication options
+        If message.IsNullOrEmpty() Then
 
-      Dim thisStep As StepAuthorization
-      Dim allSteps = Security.GetStepDictionary()
+            Dim thisStep As StepAuthorization
+            Dim allSteps = Security.GetStepDictionary()
 
-      If Not allSteps.ContainsKey(_url.InstanceId) Then
-        thisStep = _db.StepAuthenticationDetails(_url.InstanceId, _url.ElementId)
-        allSteps.Add(_url.InstanceId, thisStep)
-      End If
+            If Not allSteps.ContainsKey(_url.InstanceId) Then
+                thisStep = _db.StepAuthenticationDetails(_url.InstanceId, _url.ElementId)
+                allSteps.Add(_url.InstanceId, thisStep)
+            End If
 
-      thisStep = allSteps(_url.InstanceId)
+            thisStep = allSteps(_url.InstanceId)
 
-      If IsPostBack Then
-        allSteps.Remove(_url.InstanceId)
-      Else
-        If thisStep.RequiresAuthorization AndAlso Not thisStep.HasBeenAuthenticated Then
-          FormsAuthentication.SignOut()
-          HttpContext.Current.User = new GenericPrincipal(new GenericIdentity(string.Empty), Nothing)
-          FormsAuthentication.RedirectToLoginPage()
+            If IsPostBack Then
+                allSteps.Remove(_url.InstanceId)
+            Else
+                If thisStep.RequiresAuthorization AndAlso Not thisStep.HasBeenAuthenticated Then
+                    FormsAuthentication.SignOut()
+                    HttpContext.Current.User = New GenericPrincipal(New GenericIdentity(String.Empty), Nothing)
+                    FormsAuthentication.RedirectToLoginPage()
+                End If
+            End If
+
+            Session("CurrentStep") = thisStep
+
         End If
-      End If
-
-      Session("CurrentStep") = thisStep
-
-  End If
 
 #If DEBUG Then
 #Else
@@ -125,8 +132,8 @@ Public Class [Default]
         End If
 #End If
 
-    'Activating mobile security. I've hijacked the InstanceID and populated it with the User ID that is to be activated.
-    If message.IsNullOrEmpty() AndAlso Not IsPostBack AndAlso _url.ElementId = -2 AndAlso _url.InstanceId > 0 Then
+        'Activating mobile security. I've hijacked the InstanceID and populated it with the User ID that is to be activated.
+        If message.IsNullOrEmpty() AndAlso Not IsPostBack AndAlso _url.ElementId = -2 AndAlso _url.InstanceId > 0 Then
 
             message = _db.ActivateUser(_url.InstanceId)
 
@@ -188,7 +195,7 @@ Public Class [Default]
 
         ' Get the selected tab number for this workflow, if any...
         If Not IsPostBack Then
-            hdnDefaultPageNo.Value = _db.GetWorkflowCurrentTab(_url.InstanceID).ToString
+            hdnDefaultPageNo.Value = _db.GetWorkflowCurrentTab(_url.InstanceId).ToString
         End If
 
         'Do we need to fire off any sibling forms
@@ -197,7 +204,7 @@ Public Class [Default]
         Session.Remove(siblingSessionKey)
 
         'Get the worklfow form details
-        _form = _db.GetWorkflowForm(_url.InstanceID, _url.ElementID)
+        _form = _db.GetWorkflowForm(_url.InstanceId, _url.ElementId)
 
         'Create the web form controls
         Dim script As String = ""
@@ -649,11 +656,11 @@ Public Class [Default]
                                     ' Toggle the logic box...
                                     html &= "onclick='document.getElementById(" & Chr(34) & TargetID & Chr(34) & ").checked = !document.getElementById(" & Chr(34) & TargetID & Chr(34) & ").checked;'>"
 
-                                'Case 15	' Option Group - disabled: couldn't agree on functionality
-                                '	' Cycle through the options...
+                                    'Case 15	' Option Group - disabled: couldn't agree on functionality
+                                    '	' Cycle through the options...
 
-                                'Case 17	' File Upload Button - disabled: file upload disabled in mobiles.
-                                '	html &= "onclick='document.getElementById(" & Chr(34) & TargetID & Chr(34) & ").click();'>"
+                                    'Case 17	' File Upload Button - disabled: file upload disabled in mobiles.
+                                    '	html &= "onclick='document.getElementById(" & Chr(34) & TargetID & Chr(34) & ").click();'>"
 
                                 Case Else   ' all other char inputs
                                     html &= "onclick='document.getElementById(" & Chr(34) & TargetID & Chr(34) & ").focus();'>"
@@ -1642,7 +1649,7 @@ Public Class [Default]
             errorMessagePanel.Font.Size = App.Config.ValidationMessageFontSize
             errorMessagePanel.ForeColor = General.GetColour(6697779)
 
-            Dim result = _db.WorkflowValidateWebForm(_url.ElementID, _url.InstanceID, valueString)
+            Dim result = _db.WorkflowValidateWebForm(_url.ElementId, _url.InstanceId, valueString)
 
             bulletErrors.Items.Clear()
             bulletWarnings.Items.Clear()
@@ -1672,7 +1679,7 @@ Public Class [Default]
                     'TODO NOW PG why transactionscope???
                     Dim submit As SubmitWebFormResult
                     Using (New TransactionScope(TransactionScopeOption.Suppress))
-                        submit = _db.WorkflowSubmitWebForm(_url.ElementID, _url.InstanceID, valueString, NullSafeInteger(hdnDefaultPageNo.Value))
+                        submit = _db.WorkflowSubmitWebForm(_url.ElementId, _url.InstanceId, valueString, NullSafeInteger(hdnDefaultPageNo.Value))
                     End Using
 
                     hdnFollowOnForms.Value = ""
@@ -1689,7 +1696,7 @@ Public Class [Default]
                     Else
                         Dim followOnForms As String() = submit.FormElements.
                          Split(New String() {vbTab}, StringSplitOptions.RemoveEmptyEntries).
-                         Select(Function(f) _db.GetWorkflowQueryString(_url.InstanceID, CInt(f))).
+                         Select(Function(f) _db.GetWorkflowQueryString(_url.InstanceId, CInt(f))).
                          ToArray()
 
                         hdnFollowOnForms.Value = String.Join(vbTab, followOnForms)
@@ -1880,7 +1887,7 @@ Public Class [Default]
 
             Dim gridView As RecordSelector = TryCast(pnlInputDiv.FindControl(lookupId.Replace("refresh", "Grid")), RecordSelector)
 
-            gridView.filterSQL = filterSql.ToString
+            gridView.FilterSql = filterSql.ToString
             gridView.DataSource = dataTable
             gridView.DataBind()
         End If
@@ -1945,43 +1952,43 @@ Public Class [Default]
         Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(cult)
     End Sub
 
-	Public Overrides Sub ProcessRequest(context As HttpContext)
-		Try
-			'The line below will throw an HttpRequestValidationException if any of the fields in the Form contain
-			'"potentially dangerous" characters, in which case we need to catch the exception and then encode the fields
-			Dim formItemsCount = context.Request.Form.Count
-		Catch ex As HttpRequestValidationException
-			EncodeOrDecodeFormFields(True)
-		Catch e As Exception
-			'Ignore other errors
-		End Try   
+    Public Overrides Sub ProcessRequest(context As HttpContext)
+        Try
+            'The line below will throw an HttpRequestValidationException if any of the fields in the Form contain
+            '"potentially dangerous" characters, in which case we need to catch the exception and then encode the fields
+            Dim formItemsCount = context.Request.Form.Count
+        Catch ex As HttpRequestValidationException
+            EncodeOrDecodeFormFields(True)
+        Catch e As Exception
+            'Ignore other errors
+        End Try
 
-		'Regardless of an exception having been thrown above, call the base method (this is normal behaviour)
-		MyBase.ProcessRequest(context)
-	End Sub
+        'Regardless of an exception having been thrown above, call the base method (this is normal behaviour)
+        MyBase.ProcessRequest(context)
+    End Sub
 
-	Private Sub Page_Load() Handles Me.Load
-		'Decode form fields when loading the form so the user doesn't see the encoded values but the actual values
-		EncodeOrDecodeFormFields(False)
-	End Sub
+    Private Sub Page_Load() Handles Me.Load
+        'Decode form fields when loading the form so the user doesn't see the encoded values but the actual values
+        EncodeOrDecodeFormFields(False)
+    End Sub
 
-	Private Sub EncodeOrDecodeFormFields(encode As Boolean)
-		'This collection is read only, so before we encode its values we need to make it writable
-		Dim collection = HttpContext.Current.Request.Form
-		Dim propInfo = collection.GetType().GetProperty("IsReadOnly", BindingFlags.Instance Or BindingFlags.NonPublic)
+    Private Sub EncodeOrDecodeFormFields(encode As Boolean)
+        'This collection is read only, so before we encode its values we need to make it writable
+        Dim collection = HttpContext.Current.Request.Form
+        Dim propInfo = collection.GetType().GetProperty("IsReadOnly", BindingFlags.Instance Or BindingFlags.NonPublic)
 
-		'Set the 'IsReadOnly' property of the collection to false
-		propInfo.SetValue(collection, False, New Object() {})
+        'Set the 'IsReadOnly' property of the collection to false
+        propInfo.SetValue(collection, False, New Object() {})
 
-		For Each k As String In collection.AllKeys
-			If encode Then
-				collection.Set(k, HttpUtility.HtmlEncode(collection(k))) 'Encode each item
-			Else
-				collection.Set(k, HttpUtility.HtmlDecode(collection(k))) 'Encode each item
-			End If
-		Next
+        For Each k As String In collection.AllKeys
+            If encode Then
+                collection.Set(k, HttpUtility.HtmlEncode(collection(k))) 'Encode each item
+            Else
+                collection.Set(k, HttpUtility.HtmlDecode(collection(k))) 'Encode each item
+            End If
+        Next
 
-		'Set the 'IsReadOnly' property of the collection back to true
-		propInfo.SetValue(collection, True, New Object() {})
-	End Sub
+        'Set the 'IsReadOnly' property of the collection back to true
+        propInfo.SetValue(collection, True, New Object() {})
+    End Sub
 End Class
