@@ -42,6 +42,9 @@ Public Function SaveWorkflows() As Boolean
     fOk = CreateSP_WorkflowGetValidLoginsForStep
   End If
  
+  If fOk Then
+    fOk = CreateSP_WorkflowSelfServiceRecord
+  End If
   
 TidyUpAndExit:
   SaveWorkflows = fOk
