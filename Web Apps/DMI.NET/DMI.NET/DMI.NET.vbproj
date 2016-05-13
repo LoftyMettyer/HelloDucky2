@@ -1288,6 +1288,7 @@
     <Content Include="Content\themes\vader\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\vader\jquery.ui.tooltip.min.css" />
     <Content Include="Database\UpdateScript8.1.sql" />
+    <Content Include="Database\UpdateScript8.3.sql" />
     <Content Include="Database\UpdateScript8.2.sql" />
     <Content Include="Scripts\autoNumeric\autoNumeric-1.9.25.js" />
     <Content Include="Scripts\autoNumeric\autoNumeric-1.9.25.min.js" />
