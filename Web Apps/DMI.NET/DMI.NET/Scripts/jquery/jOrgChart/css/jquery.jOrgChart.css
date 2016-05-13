@@ -33,10 +33,12 @@
 .jOrgChart .node {
   /*background-color 		: #35363B;*/
   display               : inline-block;
-  width                 : 96px;
   height                : 100px;
   z-index 				: 10;
-  margin               : 0 6px;
+  margin                : 0 6px;
+  min-width             : 96px;
+  overflow-y            : auto;
+  overflow-x	        : hidden;
 }
 
 /* jQuery drag 'n drop */
