@@ -3,20 +3,18 @@ Imports System.Net
 Imports System.Web.Script.Serialization
 
 Public Class OpenAmRestCalls
-   Private Shared ReadOnly OpenAmAuthenticateUri As String = "http://ghsso01.coa.local:8500/openam/json/authenticate"
-   Private Shared ReadOnly OpenAmGetIdFromSessionUri As String = "http://ghsso01.coa.local:8500/openam/json/users?_action=idFromSession"
    Public Shared Function LoginAndReturnToken(username As String, password As String) As String
       Dim requestHeaders As New NameValueCollection
       requestHeaders.Add("x-openam-username", username)
       requestHeaders.Add("x-openam-password", password)
 
-      Return CallRestApiAndReturnObject(Of LoginResponse)(OpenAmAuthenticateUri, "POST", requestHeaders).TokenId
+      Return CallRestApiAndReturnObject(Of LoginResponse)(App.Config.OpenAmAuthenticateUri, "POST", requestHeaders).TokenId
    End Function
    Public Shared Function GetIdFromSession(tokenId As String) As String
       Dim requestHeaders As New NameValueCollection
       requestHeaders.Add("iplanetdirectorypro", tokenId)
 
-      Return CallRestApiAndReturnObject(Of GetIdFromSessionResponse)(OpenAmGetIdFromSessionUri, "POST", requestHeaders).Id
+      Return CallRestApiAndReturnObject(Of GetIdFromSessionResponse)(App.Config.OpenAmGetIdFromSessionUri, "POST", requestHeaders).Id
    End Function
    Private Shared Function CallRestApiAndReturnObject(Of T)(requestUri As String, requestMethod As String, requestHeaders As NameValueCollection) As T
       Dim request = WebRequest.Create(requestUri)

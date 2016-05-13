@@ -3,7 +3,6 @@ Imports System.Xml
 Imports System.Data.SqlClient
 
 Public Class Config
-
 	Private Property ThemeFile As String
 	Private Property CustomConfigFile As String
 	Public Property Server As String
@@ -27,7 +26,9 @@ Public Class Config
 	''' Timeout measured in milliseconds
 	''' </summary>
 	Public Property SubmissionTimeout As Integer
-	Public Property SubmissionTimeoutInSeconds As Integer
+   Public Property SubmissionTimeoutInSeconds As Integer
+   Public Property OpenAmAuthenticateUri As String
+   Public Property OpenAmGetIdFromSessionUri As String
 
 	Public Sub New(customConfigFile As String, themeFile As String)
 		Me.CustomConfigFile = customConfigFile
@@ -48,6 +49,8 @@ Public Class Config
 		LookupRowsRange = GetSetting("LookupRowsRange", 100)
 		TabletBackColour = GetSetting("TabletBackColour", "lightgray")
 		DefaultActiveDirectoryServer = GetSetting("DefaultActiveDirectoryServer", "")
+      OpenAmAuthenticateUri = GetSetting("OpenAmAuthenticateUri","")
+      OpenAmGetIdFromSessionUri = GetSetting("OpenAmGetIdFromSessionUri", "")
 
 		' Retrieve connection string from web config.
 		Try
