@@ -4,6 +4,7 @@ Imports System.Drawing
 Imports Microsoft.Win32
 Imports System.IO
 Imports System
+Imports System.Globalization
 
 Public Class General
 
@@ -987,4 +988,60 @@ Public Class General
 
     Return psContentType
   End Function
+
+  Friend Shared Function DecryptFromQueryString(value As String) As WorkflowUrl
+
+    Dim url As New WorkflowUrl
+
+    Try
+      'Try the latest encryption method
+      'Set the culture to English(GB) to ensure the decryption works OK. Fault HRPRO-1404
+      Dim currentCulture = Thread.CurrentThread.CurrentCulture
+
+      Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB")
+      Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-GB")
+
+      Dim crypt As New Crypt
+      value = crypt.DecompactString(value)
+      value = crypt.DecryptString(value, "", True)
+
+      'Reset the culture to be the one used by the client. Fault HRPRO-1404
+      Thread.CurrentThread.CurrentCulture = currentCulture
+      Thread.CurrentThread.CurrentUICulture = currentCulture
+
+      'Extract the required parameters from the decrypted queryString.
+      Dim values = value.Split(vbTab(0))
+
+      url.InstanceId = CInt(values(0))
+      url.ElementId = CInt(values(1))
+      url.User = values(2)
+      url.Password = values(3)
+      url.Server = values(4)
+      url.Database = values(5)
+      If values.Count > 6 Then url.UserName = values(6)
+
+    Catch ex As Exception
+      'Try the older encryption method
+      Try
+        Dim crypt As New Crypt
+        value = crypt.ProcessDecryptString(value)
+        value = crypt.DecryptString(value, "", False)
+
+        Dim values = value.Split(vbTab(0))
+
+        If url.InstanceId = 0 Then url.InstanceId = CInt(values(0))
+        If url.ElementId = 0 Then url.ElementId = CInt(values(1))
+        url.User = values(2)
+        url.Password = values(3)
+        url.Server = values(4)
+        url.Database = values(5)
+      Catch exx As Exception
+        Throw New Exception("Invalid workflow url")
+      End Try
+    End Try
+
+    Return url
+
+  End Function 
+
 End Class

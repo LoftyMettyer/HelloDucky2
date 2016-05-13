@@ -24,10 +24,12 @@ Public Class [Default]
     'Get the Workspace User Id (if present), whcih we will use to get the Record Id from Openhr
       Dim workspaceUserId As String = ""
 
+          'temp for lofty (until cookies are all setup and ok)
+      workspaceUserId = "coa\lofty.mettyer"
+
       If Not Request.Cookies("iplanetdirectorypro") Is Nothing Then
          Dim workspaceTokenId = Request.Cookies("iplanetdirectorypro").Value
          workspaceUserId = OpenAmRestCalls.GetIdFromSession(workspaceTokenId)
-
       End If
 
         Dim message As String = Nothing
@@ -41,22 +43,6 @@ Public Class [Default]
         If Request.QueryString.Count = 0 Then
             Session("CurrentStep") = Nothing
             Response.Redirect("~/Account/Login.aspx")
-        End If
-
-        'Extract the workflow details from the url (use the rawUrl rather than queryString) as some characters are ignored in the queryString
-        Dim query = Server.UrlDecode(Request.RawUrl)
-        query = query.Substring(query.IndexOf("?") + 1)
-
-        If Request.QueryString.Keys(0) = Nothing Then
-            ' This isn't a workspace request for a workflow.
-            Try
-                _url = WorkflowUrl.Decrypt(query)
-            Catch ex As Exception
-                message = ex.Message
-            End Try
-        Else
-            ' This is a workspace request for a workflow.
-            _url = New WorkflowUrl() ' TODO: Task 23514 will populate the _url class
         End If
 
         _db = New Database(App.Config.ConnectionString)
@@ -82,6 +68,28 @@ Public Class [Default]
             End If
 
         End If
+
+        'Extract the workflow details from the url (use the rawUrl rather than queryString) as some characters are ignored in the queryString
+        Dim query = Server.UrlDecode(Request.RawUrl)
+        query = query.Substring(query.IndexOf("?") + 1)
+
+        If Request.QueryString.Keys(0) = Nothing Then
+            ' This isn't a workspace request for a workflow.
+            Try
+                _url = General.DecryptFromQueryString(query)
+            Catch ex As Exception
+                message = ex.Message
+            End Try
+        Else
+            ' This is a workspace request for a workflow.
+            _url = _db.GetWorkflowUrlFromWorkspace(Request.QueryString("workflowname"), workspaceUserId)
+
+            if _url.InstanceId = 0 Then
+              message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE006)."
+            End If
+
+        End If
+ 
 
         ' Verify the calling URL is the same db as the workflow service
         If Not _db.ServiceLoginIsSameAsWorkflowURL(_url) Then

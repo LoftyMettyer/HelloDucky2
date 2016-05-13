@@ -416,10 +416,10 @@ Public Class Database
             cmd.Connection = conn
             cmd.CommandTimeout = _timeout
 
-            If Not keyParameter = Nothing Then
-                cmd.CommandText = "spASRMobileInstantiateWorkflow"
-            Else
+            If keyParameter = Nothing Then
                 cmd.CommandText = "spASRInstantiateWorkflow"
+            Else
+                cmd.CommandText = "spASRMobileInstantiateWorkflow"
             End If
 
             cmd.Parameters.Add("@piWorkflowID", SqlDbType.Int).Direction = ParameterDirection.Input
@@ -864,6 +864,38 @@ Public Class Database
 
         Return thisStep
     End Function
+
+  Friend Function GetWorkflowUrlFromWorkspace(name as String, workspaceUserId as String) as WorkflowUrl
+
+    Dim url As New WorkflowUrl
+    dim workflowId As Integer = 0
+
+    ' Get the basic infor for this workflow name
+    Using conn As New SqlConnection(_connectionString)
+        conn.Open()
+
+        Dim cmd As New SqlCommand("spASRGetWorkflowIDFromName", conn)
+        cmd.CommandType = CommandType.StoredProcedure
+        cmd.CommandTimeout = _timeout
+      
+        Dim prmID = New SqlParameter("@id", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+
+        cmd.Parameters.Add(New SqlParameter("@name", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Input, .Value = name})
+        cmd.Parameters.Add(prmID)
+
+        cmd.ExecuteNonQuery()
+
+        workflowId = CInt(prmID.Value)
+
+    End Using
+
+    url.UserName = workspaceUserId
+    url.InstanceId = -workflowId
+    url.ElementId = -1
+
+    Return url
+
+  End Function
 
 End Class
 
