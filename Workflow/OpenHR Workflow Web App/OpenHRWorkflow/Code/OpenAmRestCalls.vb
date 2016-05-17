@@ -34,7 +34,7 @@ Public Class OpenAmRestCalls
 
          Return getResponseObject
       Catch ex As Exception
-         Throw New Exception(ex.Message, ex)
+         Throw
       End Try
    End Function
 
