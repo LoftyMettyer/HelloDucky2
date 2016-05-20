@@ -10,6 +10,8 @@
   <add key="LookupRowsRange" value="100" />
   <add key="DefaultActiveDirectoryServer" value="" />
   <add key="TabletBackColour" value="lightgray"/>
+
+  <!--The following section is for Workspace users only-->
   <add key="OpenAmAuthenticateUri" value="" />
   <add key="OpenAmGetIdFromSessionUri" value="" />
 </appSettings>
