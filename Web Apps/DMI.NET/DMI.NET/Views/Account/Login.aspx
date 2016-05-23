@@ -46,7 +46,7 @@
 				<%:Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Password)%>
 			</div>
 		
-			<%If Platform.IsWindowsAuthenicatedEnabled() Then%>
+			<%If Platform.IsWindowsAuthenicatedEnabled() Then%>         
 			<div class="loginframeFieldWA">
 				<%:Html.CheckBoxFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication, New With {.id = "chkWindowsAuthentication", .onclick = "ToggleWindowsAuthentication()"})%>
 				<%:Html.LabelFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication)%>
@@ -112,9 +112,9 @@
 				}
 			};
 
-			if (!window.isMobileBrowser) {
-				if ('<%:Model.UserName%>'.length > 0) $('#txtPassword').focus();
-				if ('<%:Model.UserName%>'.length == 0) $('#txtUser').focus();
+			if (!window.isMobileBrowser) {          
+				if ($('#txtUserName').val().length > 0) $('#txtPassword').focus();
+				if ($('#txtUserName').val().length == 0) $('#txtUserName').focus();
 			}
 			if ('<%:Model.WindowsAuthentication.ToString().ToLower()%>' == 'true') {
 				$('#chkWindowsAuthentication').prop('checked', true);
@@ -153,7 +153,7 @@
 		}
 
 		function DisableUsernamePassword(pfDisable) {
-			$('#txtUserName').css('color', pfDisable ? 'lightgray' : '').prop('readonly', pfDisable);
+			$('#txtUserName').css('color', pfDisable ? 'lightgray' : '').prop('readonly', pfDisable);			
 			$('#txtPassword').css('color', pfDisable ? 'lightgray' : '').prop('readonly', pfDisable);
 		}
 
