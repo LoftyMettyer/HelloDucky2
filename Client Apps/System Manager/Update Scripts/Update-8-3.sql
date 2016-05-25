@@ -69,6 +69,13 @@ PRINT 'Step - Workspace Integration'
 	END'
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - Calculation Updates'
+/* ------------------------------------------------------- */
+
+   UPDATE tbstat_componentcode SET [precode] = 'POWER(', [aftercode] = ')', [code] = ', ' WHERE ID = 15 AND isoperator = 1;
+
+
 
 PRINT 'Final Step - Updating Versions'
 
