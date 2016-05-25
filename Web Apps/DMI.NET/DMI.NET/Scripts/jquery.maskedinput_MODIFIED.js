@@ -251,6 +251,18 @@
 
         function writeBuffer() { input.val(buffer.join('')); }
 
+        function validateMaskInputForSpace() {
+            var space = " ";
+
+            //Validate if the last character is not entered as input text for the mask value and 
+            //if space is allowed for the last character then add a space at that place.
+            //This would be true if last mask character is S
+            if ((input.val().lastIndexOf($.mask.placeholder) == (len - 1)) &&
+				tests[len - 1].test(space)) {
+                input.val(input.val().substring(0, input.val().length - 1) + space);
+            }
+        }
+
         function checkVal(allow) {
           //try to place characters where they belong
           var test = input.val(),
@@ -320,6 +332,7 @@
 				  }, 10);
 				})
 				.bind("blur.mask", function () {
+				  validateMaskInputForSpace();
 				  checkVal();
 				  if (input.val() != focusText)
 				    input.change();
