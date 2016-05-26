@@ -115,7 +115,247 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[trcustom_A
 	DROP TRIGGER [dbo].[trcustom_Appointments_P&E]
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (2, 250, 'Split Absence Request for individual appointment approval', 0, 1, '    
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (1, 3, 'Populate from Post Template', 0, 1, '    INSERT Appointment_Allowances(ID_3, Effective_Date, Type, Frequency, Amount, Currency)
+		SELECT i.ID, i.Appointment_Start_Date, pa.Type, pa.Frequency, pa.Amount, pa.Currency
+			FROM inserted i
+			INNER JOIN Post_Allowances pa ON pa.ID_219 = i.ID_219;
+
+	INSERT Appointment_Benefits(ID_3, Effective_Date, Type, Provider, Frequency, Cost, Currency, Annual_Cost_to_Employer)
+		SELECT i.ID, i.Appointment_Start_Date, pb.Type, pb.Provider, pb.Frequency, pb.Cost, pb.Currency, pb.Annual_Cost_to_Employer
+			FROM inserted i
+			INNER JOIN Post_Benefits pb ON pb.ID_219 = i.ID_219;
+
+	INSERT Appointment_Deductions(ID_3, Effective_Date, Type, Frequency, Amount, Currency)
+		SELECT i.ID, i.Appointment_Start_Date, pd.Type, pd.Frequency, pd.Amount, pd.Currency
+			FROM inserted i
+			INNER JOIN Post_Deductions pd ON pd.ID_219 = i.ID_219;
+
+	INSERT Appointment_Leave_Schemes(ID_3, Effective_Date, Leave_Scheme)
+		SELECT i.ID, i.Appointment_Start_Date, phs.Leave_Scheme
+			FROM inserted i
+			INNER JOIN Post_Leave_Schemes phs ON phs.ID_219 = i.ID_219;
+
+	INSERT Appointment_OMP_Schemes(ID_3, Effective_Date, OMP_Scheme)
+		SELECT i.ID, i.Appointment_Start_Date, sch.OMP_Scheme
+			FROM inserted i
+			INNER JOIN Post_OMP_Schemes sch ON sch.ID_219 = i.ID_219;
+
+	INSERT Appointment_OSP_Schemes(ID_3, Effective_Date, OSP_Scheme)
+		SELECT i.ID, i.Appointment_Start_Date, sch.OSP_Scheme
+			FROM inserted i
+			INNER JOIN Post_OSP_Schemes sch ON sch.ID_219 = i.ID_219;
+
+	INSERT Appointment_Pension_Schemes(ID_3, Effective_Date, Pension_Scheme)
+		SELECT i.ID, i.Appointment_Start_Date, sch.Pension_Scheme
+			FROM inserted i
+			INNER JOIN Post_Pension_Schemes sch ON sch.ID_219 = i.ID_219;
+
+	INSERT Appointment_Working_Patterns(ID_3, Effective_Date, Regional_ID, Absence_In, Day_Pattern
+									, Sunday_Hours_AM, Sunday_Hours_PM, Monday_Hours_AM, Monday_Hours_PM
+									, Tuesday_Hours_AM, Tuesday_Hours_PM, Wednesday_Hours_AM, Wednesday_Hours_PM, Thursday_Hours_AM, Thursday_Hours_PM
+									, Friday_Hours_AM, Friday_Hours_PM, Saturday_Hours_AM, Saturday_Hours_PM)
+		SELECT i.ID, i.Appointment_Start_Date, wp.Regional_ID, wp.Absence_In, wp.Day_Pattern, wp.Sunday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_AM,wp.Monday_Hours_PM
+									, wp.Tuesday_Hours_AM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_AM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_AM, wp.Thursday_Hours_PM
+									, wp.Friday_Hours_AM, wp.Friday_Hours_PM, wp.Saturday_Hours_AM, wp.Saturday_Hours_PM
+			FROM inserted i
+			INNER JOIN Post_Working_Patterns wp ON wp.ID_219 = i.ID_219;');
+GO
+
+
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (2, 3, 'Appointments Memo Salary', 1, 1, '  -- Update Memo Salary on Appointments
+    ;WITH base AS (
+        SELECT *
+            FROM [dbo].[tbuser_Appointments]
+            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted)
+			AND @startingtrigger = 1)
+    UPDATE base SET 
+ 		Memo_Salary = (
+		SELECT pr.Memo_Salary 
+			FROM inserted i
+			INNER JOIN Post_Records pr ON pr.ID = i.ID_219);');
+GO
+
+
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (3, 219, 'Transfer working pattern from appointment', 0, 1, '    INSERT Post_Leave_Schemes (ID_219, Effective_Date, Leave_Scheme)
+		SELECT i.ID, i.Effective_Date, chs.Leave_Scheme
+			FROM inserted i
+			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract
+			INNER JOIN Contract_Leave_Schemes chs ON chs.ID_215 = ct.ID AND (chs.End_Date >= GETDATE() OR chs.End_Date IS NULL);
+
+	INSERT Post_OMP_Schemes (ID_219, Effective_Date, OMP_Scheme, Description)
+		SELECT i.ID, i.Effective_Date, omp.OMP_Scheme, omp.Description
+			FROM inserted i
+			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract
+			INNER JOIN Contract_OMP_Schemes omp ON omp.ID_215 = ct.ID AND (omp.End_Date >= GETDATE() OR omp.End_Date IS NULL);
+
+	INSERT Post_OSP_Schemes (ID_219, Effective_Date, OSP_Scheme, Description)
+		SELECT i.ID, i.Effective_Date, osp.OSP_Scheme, osp.Description
+			FROM inserted i
+			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract
+			INNER JOIN Contract_OSP_Schemes osp ON osp.ID_215 = ct.ID AND (osp.End_Date >= GETDATE() OR osp.End_Date IS NULL);
+
+	INSERT Post_Pension_Schemes (ID_219, Effective_Date, Pension_Scheme)
+		SELECT i.ID, i.Effective_Date, pen.Pension_Scheme
+			FROM inserted i
+			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract
+			INNER JOIN Contract_Pension_Schemes pen ON pen.ID_215 = ct.ID AND (pen.End_Date >= GETDATE() OR pen.End_Date IS NULL);
+
+	INSERT Post_Working_Patterns (ID_219, Effective_Date, Regional_ID, Absence_In, Day_Pattern, Sunday_Hours_AM, Sunday_Hours_PM, Monday_Hours_AM, Monday_Hours_PM
+									, Tuesday_Hours_AM, Tuesday_Hours_PM, Wednesday_Hours_AM, Wednesday_Hours_PM, Thursday_Hours_AM, Thursday_Hours_PM
+									, Friday_Hours_AM, Friday_Hours_PM, Saturday_Hours_AM, Saturday_Hours_PM)
+		SELECT i.ID, i.Effective_Date, wp.Regional_ID, wp.Absence_In, wp.Day_Pattern, wp.Sunday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_AM,wp.Monday_Hours_PM
+									, wp.Tuesday_Hours_AM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_AM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_AM, wp.Thursday_Hours_PM
+									, wp.Friday_Hours_AM, wp.Friday_Hours_PM, wp.Saturday_Hours_AM, wp.Saturday_Hours_PM
+			FROM inserted i
+			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract
+			INNER JOIN Contract_Working_Patterns wp ON wp.ID_215 = ct.ID AND (wp.End_Date >= GETDATE() OR wp.End_Date IS NULL);');
+
+GO
+
+
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (4, 228, 'Transfer child information based on contract type', 1, 1, '  -- Update Memo Salary on Post
+
+    ;WITH base AS (
+        SELECT *
+            FROM [dbo].[tbuser_Post_Records]
+            WHERE [id] IN (SELECT DISTINCT [id_219] FROM inserted)
+			AND @startingtrigger = 1)
+    UPDATE base SET 
+ 		Memo_Salary = (
+		SELECT ct.Memo_Salary 
+			FROM inserted i
+			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract);
+			
+	-- Insert leave schemes based on contract type
+	INSERT Post_Leave_Schemes (ID_219, Effective_Date, End_Date, Leave_Scheme, Notes)
+		SELECT i.ID_219, i.Effective_Date, chs.End_Date, chs.Leave_Scheme, chs.Notes
+			FROM Contract_Leave_Schemes chs
+			INNER JOIN Contract_Templates ct ON ct.ID = chs.ID_215
+			INNER JOIN inserted i ON i.Contract = ct.Contract
+			INNER JOIN deleted d ON i.id = d.id
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND chs.Effective_Date <= GETDATE() AND (chs.End_Date IS NULL OR chs.End_Date >= GETDATE());
+
+	-- Insert OMP Schemes based on contract type
+	INSERT Post_OMP_Schemes (ID_219, Effective_Date, End_Date, OMP_Scheme, Notes, Description)
+		SELECT i.ID_219, i.Effective_Date, cms.End_Date, cms.OMP_Scheme, cms.Notes, cms.Description
+			FROM Contract_OMP_Schemes cms
+			INNER JOIN Contract_Templates ct ON ct.ID = cms.ID_215
+			INNER JOIN inserted i ON i.Contract = ct.Contract
+			INNER JOIN deleted d ON i.id = d.id
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND cms.Effective_Date <= GETDATE() AND (cms.End_Date IS NULL OR cms.End_Date >= GETDATE());
+
+	-- Insert OSP Schemes based on contract type
+	INSERT Post_OSP_Schemes (ID_219, Effective_Date, End_Date, OSP_Scheme, Notes, Description)
+		SELECT i.ID_219, i.Effective_Date, css.End_Date, css.OSP_Scheme, css.Notes, css.Description
+			FROM Contract_OSP_Schemes css
+			INNER JOIN Contract_Templates ct ON ct.ID = css.ID_215
+			INNER JOIN inserted i ON i.Contract = ct.Contract
+			INNER JOIN deleted d ON i.id = d.id
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND css.Effective_Date <= GETDATE() AND (css.End_Date IS NULL OR css.End_Date >= GETDATE());
+
+	-- Insert OSP Schemes based on contract type
+	INSERT Post_Pension_Schemes (ID_219, Effective_Date, End_Date, Pension_Scheme, Scheme_Number, Notes)
+		SELECT i.ID_219, i.Effective_Date, cps.End_Date, cps.Pension_Scheme, cps.Scheme_Number, cps.Notes
+			FROM Contract_Pension_Schemes cps
+			INNER JOIN Contract_Templates ct ON ct.ID = cps.ID_215
+			INNER JOIN inserted i ON i.Contract = ct.Contract
+			INNER JOIN deleted d ON i.id = d.id
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND cps.Effective_Date <= GETDATE() AND (cps.End_Date IS NULL OR cps.End_Date >= GETDATE());
+
+	-- Insert Working Pattern Schemes based on contract type
+	INSERT Post_Working_Patterns (ID_219, Effective_Date, Regional_ID, Absence_In, Sunday_Hours_AM, Sunday_Hours_PM, Monday_Hours_AM, Monday_Hours_PM
+									, Tuesday_Hours_AM, Tuesday_Hours_PM, Wednesday_Hours_AM, Wednesday_Hours_PM, Thursday_Hours_AM, Thursday_Hours_PM
+									, Friday_Hours_AM, Friday_Hours_PM, Saturday_Hours_AM, Saturday_Hours_PM)
+		SELECT i.ID_219, i.Effective_Date, cws.Regional_ID, cws.Absence_In, cws.Sunday_Hours_AM, cws.Sunday_Hours_PM, cws.Monday_Hours_AM,cws.Monday_Hours_PM
+									, cws.Tuesday_Hours_AM, cws.Tuesday_Hours_PM, cws.Wednesday_Hours_AM, cws.Wednesday_Hours_PM, cws.Thursday_Hours_AM, cws.Thursday_Hours_PM
+									, cws.Friday_Hours_AM, cws.Friday_Hours_PM, cws.Saturday_Hours_AM, cws.Saturday_Hours_PM
+			FROM Contract_Working_Patterns cws
+			INNER JOIN Contract_Templates ct ON ct.ID = cws.ID_215
+			INNER JOIN inserted i ON i.Contract = ct.Contract
+			INNER JOIN deleted d ON i.id = d.id
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND cws.Effective_Date <= GETDATE() AND (cws.End_Date IS NULL OR cws.End_Date >= GETDATE());');
+GO
+
+
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (5, 249, 'Slave to appointment working pattern', 1, 1, '    
+
+	DECLARE @persID integer;
+	DECLARE @changeDates TABLE(effectiveDate datetime, ID integer, PersID integer);
+	DECLARE @employees TABLE(PersID integer);
+
+	INSERT @employees 
+	  SELECT DISTINCT [ID_1] FROM inserted i	
+		INNER JOIN Appointments a ON a.ID = i.ID_3;
+
+	INSERT @changeDates 
+	  SELECT awp.Effective_Date, awp.ID , a.ID_1
+		FROM Appointment_Working_Patterns awp
+		INNER JOIN Appointments a ON a.ID = awp.ID_3	
+		INNER JOIN @employees e ON e.PersID = a.ID_1
+	  UNION
+	  SELECT awp.End_Date + 1, awp.ID, a.ID_1
+		FROM Appointment_Working_Patterns awp
+		INNER JOIN Appointments a ON a.ID = awp.ID_3
+		INNER JOIN @employees e ON e.PersID = a.ID_1
+		WHERE awp.End_Date IS NOT NULL;
+
+
+	DECLARE @merged TABLE (PersID integer, effective_date datetime, sunHoursAM numeric(4,2), sunHoursPM numeric(4,2)
+						, MonHoursAM numeric(4,2), MonHoursPM numeric(4,2)
+						, TuesHoursAM numeric(4,2), TuesHoursPM numeric(4,2)
+						, WedHoursAM numeric(4,2), WedHoursPM numeric(4,2)
+						, ThursHoursAM numeric(4,2), ThursHoursPM numeric(4,2)
+						, FriHoursAM numeric(4,2), FriHoursPM numeric(4,2)
+						, SatHoursAM numeric(4,2), SatHoursPM numeric(4,2));
+
+	DECLARE @cursRollupWorkingPatterns cursor,
+		@effectiveDate datetime;
+
+    SET @cursRollupWorkingPatterns = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR 
+		SELECT DISTINCT EffectiveDate, PersID FROM @changeDates
+			ORDER BY EffectiveDate;
+
+	OPEN @cursRollupWorkingPatterns
+	FETCH NEXT FROM @cursRollupWorkingPatterns INTO @effectiveDate, @PersID
+    WHILE (@@fetch_status = 0)
+	BEGIN
+
+		INSERT @merged
+			SELECT @PersID, @effectiveDate
+			, ISNULL(SUM(wp.Sunday_Hours_AM),0), ISNULL(SUM(wp.Sunday_Hours_PM),0)
+			, ISNULL(SUM(wp.Monday_Hours_AM),0), ISNULL(SUM(wp.Monday_Hours_PM),0)
+			, ISNULL(SUM(wp.Tuesday_Hours_AM),0), ISNULL(SUM(wp.Tuesday_Hours_PM),0)
+			, ISNULL(SUM(wp.Wednesday_Hours_AM),0), ISNULL(SUM(wp.Wednesday_Hours_PM),0)
+			, ISNULL(SUM(wp.Thursday_Hours_AM),0), ISNULL(SUM(wp.Thursday_Hours_PM),0)
+			, ISNULL(SUM(wp.Friday_Hours_AM),0), ISNULL(SUM(wp.Friday_Hours_PM),0)
+			, ISNULL(SUM(wp.Saturday_Hours_AM),0), ISNULL(SUM(wp.Saturday_Hours_PM),0)
+		FROM Appointment_Working_Patterns wp
+			INNER JOIN Appointments a ON a.ID = wp.ID_3
+			WHERE (a.ID_1 = @persID	AND @effectiveDate >= wp.Effective_Date AND (@effectiveDate <= wp.End_Date OR wp.End_Date IS NULL));
+
+		FETCH NEXT FROM @cursRollupWorkingPatterns INTO @effectiveDate, @PersID
+	END
+	CLOSE @cursRollupWorkingPatterns;
+    DEALLOCATE @cursRollupWorkingPatterns;
+
+	MERGE Working_Patterns AS wp
+		USING (SELECT PersID, effective_date, SunHoursAM, SunHoursPM, MonHoursAM, MonHoursPM, TuesHoursAM, TuesHoursPM
+			, WedHoursAM, WedHoursPM, ThursHoursAM, ThursHoursPM, FriHoursAM, FriHoursPM, SatHoursAM, SatHoursPM 
+		FROM @merged)
+	AS awp ON (wp.ID_1 = awp.PersID AND wp.Effective_Date = awp.effective_date) 
+	WHEN NOT MATCHED BY TARGET
+		THEN INSERT(ID_1, Effective_Date, Sunday_Hours_AM, Sunday_Hours_PM, Monday_Hours_AM, Monday_Hours_PM, Tuesday_Hours_AM, Tuesday_Hours_PM, Wednesday_Hours_AM, Wednesday_Hours_PM, Thursday_Hours_AM, Thursday_Hours_PM, Friday_Hours_AM, Friday_Hours_PM, Saturday_Hours_AM, Saturday_Hours_PM) 
+			VALUES(awp.persID, awp.Effective_Date, awp.SunHoursAM, awp.SunHoursPM, awp.MonHoursAM, awp.MonHoursPM, awp.TuesHoursAM, awp.TuesHoursPM, awp.WedHoursAM, awp.WedHoursPM, awp.ThursHoursAM, awp.ThursHoursPM, awp.FriHoursAM, awp.FriHoursPM, awp.SatHoursAM, awp.SatHoursPM)
+	WHEN MATCHED 
+		THEN UPDATE SET Effective_Date = awp.Effective_Date, Sunday_Hours_AM = awp.SunHoursAM, Sunday_Hours_PM = awp.SunHoursPM, Monday_Hours_AM = awp.MonHoursAM, Monday_Hours_PM = awp.MonHoursPM, Tuesday_Hours_AM = awp.TuesHoursAM, Tuesday_Hours_PM = awp.TuesHoursPM, Wednesday_Hours_AM = awp.WedHoursAM, Wednesday_Hours_PM = awp.WedHoursPM
+			, Thursday_Hours_AM = awp.ThursHoursAM, Thursday_Hours_PM = awp.ThursHoursPM, Friday_Hours_AM = awp.FriHoursAM, Friday_Hours_PM = awp.FriHoursPM, Saturday_Hours_AM = awp.SatHoursAM, Saturday_Hours_PM = awp.SatHoursPM
+	WHEN NOT MATCHED BY SOURCE AND wp.ID_1 IN(SELECT PersID FROM @employees)
+	    THEN DELETE ;');
+
+GO
+
+
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (6, 250, 'Split Absence Request for individual appointment approval', 0, 1, '    
 	DECLARE @today datetime =  DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE()));
 
 	INSERT Appointment_Absence_Staging (ID_3, Start_Date, Start_Session, End_Date, End_Session, Absence_Type, Reason, Duration, Absence_In)
@@ -130,28 +370,8 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 			AND dbo.udfcustom_AbsenceDurationForAppointment(ae.Start_Date, ae.Start_Session, ISNULL(ae.End_Date, @today), ae.End_Session, a.ID) > 0;')
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (8, 254, 'Manual & Automatic Approval of absence based on type', 1, 1, '    
 
-	-- Recalculate the duration for this absence request
-	;WITH base AS (SELECT *
-            FROM [dbo].[tbuser_Appointment_Absence_Staging]
-            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))
-    UPDATE base SET 
-		Duration = dbo.udfcustom_AbsenceDurationForAppointment(Start_Date, Start_Session, End_Date, End_Session, ID_3);
-
-	-- Approve authorised absences and absences that require no authorisation
-	INSERT Appointment_Absence (ID_3, StagingID, Start_Date, End_Date, Start_Session, End_Session, Absence_In, Absence_Type, Reason, Post_ID, Staff_Number, Payroll_Company_Code)
-		SELECT i.ID_3, i.ID, i.Start_Date, i.End_Date, i.Start_Session, i.End_Session, a.Absence_In, i.Absence_Type, i.Reason, a.Post_ID, a.Staff_Number, a.Payroll_Company_Code
-		FROM inserted i
-			INNER JOIN Appointments a ON a.ID = i.ID_3
-			INNER JOIN Absence_Type_Table at ON at.Absence_Type = i.Absence_Type
-		WHERE (at.Requires_Authorisation = 0 OR i.Status = ''Authorised'')
-			AND i.ID NOT IN (SELECT StagingID FROM Appointment_Absence);
-
-')
-GO
-
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (3, 251, 'Breakdown absences into individual days', 1, 1, '   
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (7, 251, 'Breakdown absences into individual days', 1, 1, '   
    	DECLARE @today datetime =  DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE()));
 	DECLARE @changeDates TABLE(Effective_Date datetime, AppointmentID integer, PersID integer);
 
@@ -260,245 +480,33 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 			
 	');
 		
-
-
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (5, 3, 'Populate from Post Template', 0, 1, '    INSERT Appointment_Allowances(ID_3, Effective_Date, Type, Frequency, Amount, Currency)
-		SELECT i.ID, i.Appointment_Start_Date, pa.Type, pa.Frequency, pa.Amount, pa.Currency
-			FROM inserted i
-			INNER JOIN Post_Allowances pa ON pa.ID_219 = i.ID_219;
-
-	INSERT Appointment_Benefits(ID_3, Effective_Date, Type, Provider, Frequency, Cost, Currency, Annual_Cost_to_Employer)
-		SELECT i.ID, i.Appointment_Start_Date, pb.Type, pb.Provider, pb.Frequency, pb.Cost, pb.Currency, pb.Annual_Cost_to_Employer
-			FROM inserted i
-			INNER JOIN Post_Benefits pb ON pb.ID_219 = i.ID_219;
-
-	INSERT Appointment_Deductions(ID_3, Effective_Date, Type, Frequency, Amount, Currency)
-		SELECT i.ID, i.Appointment_Start_Date, pd.Type, pd.Frequency, pd.Amount, pd.Currency
-			FROM inserted i
-			INNER JOIN Post_Deductions pd ON pd.ID_219 = i.ID_219;
-
-	INSERT Appointment_Leave_Schemes(ID_3, Effective_Date, Leave_Scheme)
-		SELECT i.ID, i.Appointment_Start_Date, phs.Leave_Scheme
-			FROM inserted i
-			INNER JOIN Post_Leave_Schemes phs ON phs.ID_219 = i.ID_219;
-
-	INSERT Appointment_OMP_Schemes(ID_3, Effective_Date, OMP_Scheme)
-		SELECT i.ID, i.Appointment_Start_Date, sch.OMP_Scheme
-			FROM inserted i
-			INNER JOIN Post_OMP_Schemes sch ON sch.ID_219 = i.ID_219;
-
-	INSERT Appointment_OSP_Schemes(ID_3, Effective_Date, OSP_Scheme)
-		SELECT i.ID, i.Appointment_Start_Date, sch.OSP_Scheme
-			FROM inserted i
-			INNER JOIN Post_OSP_Schemes sch ON sch.ID_219 = i.ID_219;
-
-	INSERT Appointment_Pension_Schemes(ID_3, Effective_Date, Pension_Scheme)
-		SELECT i.ID, i.Appointment_Start_Date, sch.Pension_Scheme
-			FROM inserted i
-			INNER JOIN Post_Pension_Schemes sch ON sch.ID_219 = i.ID_219;
-
-	INSERT Appointment_Working_Patterns(ID_3, Effective_Date, Regional_ID, Absence_In, Day_Pattern
-									, Sunday_Hours_AM, Sunday_Hours_PM, Monday_Hours_AM, Monday_Hours_PM
-									, Tuesday_Hours_AM, Tuesday_Hours_PM, Wednesday_Hours_AM, Wednesday_Hours_PM, Thursday_Hours_AM, Thursday_Hours_PM
-									, Friday_Hours_AM, Friday_Hours_PM, Saturday_Hours_AM, Saturday_Hours_PM)
-		SELECT i.ID, i.Appointment_Start_Date, wp.Regional_ID, wp.Absence_In, wp.Day_Pattern, wp.Sunday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_AM,wp.Monday_Hours_PM
-									, wp.Tuesday_Hours_AM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_AM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_AM, wp.Thursday_Hours_PM
-									, wp.Friday_Hours_AM, wp.Friday_Hours_PM, wp.Saturday_Hours_AM, wp.Saturday_Hours_PM
-			FROM inserted i
-			INNER JOIN Post_Working_Patterns wp ON wp.ID_219 = i.ID_219;');
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (6, 249, 'Slave to appointment working pattern', 1, 1, '    
 
-	DECLARE @persID integer;
-	DECLARE @changeDates TABLE(effectiveDate datetime, ID integer, PersID integer);
-	DECLARE @employees TABLE(PersID integer);
-
-	INSERT @employees 
-	  SELECT DISTINCT [ID_1] FROM inserted i	
-		INNER JOIN Appointments a ON a.ID = i.ID_3;
-
-	INSERT @changeDates 
-	  SELECT awp.Effective_Date, awp.ID , a.ID_1
-		FROM Appointment_Working_Patterns awp
-		INNER JOIN Appointments a ON a.ID = awp.ID_3	
-		INNER JOIN @employees e ON e.PersID = a.ID_1
-	  UNION
-	  SELECT awp.End_Date + 1, awp.ID, a.ID_1
-		FROM Appointment_Working_Patterns awp
-		INNER JOIN Appointments a ON a.ID = awp.ID_3
-		INNER JOIN @employees e ON e.PersID = a.ID_1
-		WHERE awp.End_Date IS NOT NULL;
-
-
-	DECLARE @merged TABLE (PersID integer, effective_date datetime, sunHoursAM numeric(4,2), sunHoursPM numeric(4,2)
-						, MonHoursAM numeric(4,2), MonHoursPM numeric(4,2)
-						, TuesHoursAM numeric(4,2), TuesHoursPM numeric(4,2)
-						, WedHoursAM numeric(4,2), WedHoursPM numeric(4,2)
-						, ThursHoursAM numeric(4,2), ThursHoursPM numeric(4,2)
-						, FriHoursAM numeric(4,2), FriHoursPM numeric(4,2)
-						, SatHoursAM numeric(4,2), SatHoursPM numeric(4,2));
-
-	DECLARE @cursRollupWorkingPatterns cursor,
-		@effectiveDate datetime;
-
-    SET @cursRollupWorkingPatterns = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR 
-		SELECT DISTINCT EffectiveDate, PersID FROM @changeDates
-			ORDER BY EffectiveDate;
-
-	OPEN @cursRollupWorkingPatterns
-	FETCH NEXT FROM @cursRollupWorkingPatterns INTO @effectiveDate, @PersID
-    WHILE (@@fetch_status = 0)
-	BEGIN
-
-		INSERT @merged
-			SELECT @PersID, @effectiveDate
-			, ISNULL(SUM(wp.Sunday_Hours_AM),0), ISNULL(SUM(wp.Sunday_Hours_PM),0)
-			, ISNULL(SUM(wp.Monday_Hours_AM),0), ISNULL(SUM(wp.Monday_Hours_PM),0)
-			, ISNULL(SUM(wp.Tuesday_Hours_AM),0), ISNULL(SUM(wp.Tuesday_Hours_PM),0)
-			, ISNULL(SUM(wp.Wednesday_Hours_AM),0), ISNULL(SUM(wp.Wednesday_Hours_PM),0)
-			, ISNULL(SUM(wp.Thursday_Hours_AM),0), ISNULL(SUM(wp.Thursday_Hours_PM),0)
-			, ISNULL(SUM(wp.Friday_Hours_AM),0), ISNULL(SUM(wp.Friday_Hours_PM),0)
-			, ISNULL(SUM(wp.Saturday_Hours_AM),0), ISNULL(SUM(wp.Saturday_Hours_PM),0)
-		FROM Appointment_Working_Patterns wp
-			INNER JOIN Appointments a ON a.ID = wp.ID_3
-			WHERE (a.ID_1 = @persID	AND @effectiveDate >= wp.Effective_Date AND (@effectiveDate <= wp.End_Date OR wp.End_Date IS NULL));
-
-		FETCH NEXT FROM @cursRollupWorkingPatterns INTO @effectiveDate, @PersID
-	END
-	CLOSE @cursRollupWorkingPatterns;
-    DEALLOCATE @cursRollupWorkingPatterns;
-
-	MERGE Working_Patterns AS wp
-		USING (SELECT PersID, effective_date, SunHoursAM, SunHoursPM, MonHoursAM, MonHoursPM, TuesHoursAM, TuesHoursPM
-			, WedHoursAM, WedHoursPM, ThursHoursAM, ThursHoursPM, FriHoursAM, FriHoursPM, SatHoursAM, SatHoursPM 
-		FROM @merged)
-	AS awp ON (wp.ID_1 = awp.PersID AND wp.Effective_Date = awp.effective_date) 
-	WHEN NOT MATCHED BY TARGET
-		THEN INSERT(ID_1, Effective_Date, Sunday_Hours_AM, Sunday_Hours_PM, Monday_Hours_AM, Monday_Hours_PM, Tuesday_Hours_AM, Tuesday_Hours_PM, Wednesday_Hours_AM, Wednesday_Hours_PM, Thursday_Hours_AM, Thursday_Hours_PM, Friday_Hours_AM, Friday_Hours_PM, Saturday_Hours_AM, Saturday_Hours_PM) 
-			VALUES(awp.persID, awp.Effective_Date, awp.SunHoursAM, awp.SunHoursPM, awp.MonHoursAM, awp.MonHoursPM, awp.TuesHoursAM, awp.TuesHoursPM, awp.WedHoursAM, awp.WedHoursPM, awp.ThursHoursAM, awp.ThursHoursPM, awp.FriHoursAM, awp.FriHoursPM, awp.SatHoursAM, awp.SatHoursPM)
-	WHEN MATCHED 
-		THEN UPDATE SET Effective_Date = awp.Effective_Date, Sunday_Hours_AM = awp.SunHoursAM, Sunday_Hours_PM = awp.SunHoursPM, Monday_Hours_AM = awp.MonHoursAM, Monday_Hours_PM = awp.MonHoursPM, Tuesday_Hours_AM = awp.TuesHoursAM, Tuesday_Hours_PM = awp.TuesHoursPM, Wednesday_Hours_AM = awp.WedHoursAM, Wednesday_Hours_PM = awp.WedHoursPM
-			, Thursday_Hours_AM = awp.ThursHoursAM, Thursday_Hours_PM = awp.ThursHoursPM, Friday_Hours_AM = awp.FriHoursAM, Friday_Hours_PM = awp.FriHoursPM, Saturday_Hours_AM = awp.SatHoursAM, Saturday_Hours_PM = awp.SatHoursPM
-	WHEN NOT MATCHED BY SOURCE AND wp.ID_1 IN(SELECT PersID FROM @employees)
-	    THEN DELETE ;');
-
-GO
-
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (7, 219, 'Transfer working pattern from appointment', 0, 1, '    INSERT Post_Leave_Schemes (ID_219, Effective_Date, Leave_Scheme)
-		SELECT i.ID, i.Effective_Date, chs.Leave_Scheme
-			FROM inserted i
-			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract
-			INNER JOIN Contract_Leave_Schemes chs ON chs.ID_215 = ct.ID AND (chs.End_Date >= GETDATE() OR chs.End_Date IS NULL);
-
-	INSERT Post_OMP_Schemes (ID_219, Effective_Date, OMP_Scheme, Description)
-		SELECT i.ID, i.Effective_Date, omp.OMP_Scheme, omp.Description
-			FROM inserted i
-			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract
-			INNER JOIN Contract_OMP_Schemes omp ON omp.ID_215 = ct.ID AND (omp.End_Date >= GETDATE() OR omp.End_Date IS NULL);
-
-	INSERT Post_OSP_Schemes (ID_219, Effective_Date, OSP_Scheme, Description)
-		SELECT i.ID, i.Effective_Date, osp.OSP_Scheme, osp.Description
-			FROM inserted i
-			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract
-			INNER JOIN Contract_OSP_Schemes osp ON osp.ID_215 = ct.ID AND (osp.End_Date >= GETDATE() OR osp.End_Date IS NULL);
-
-	INSERT Post_Pension_Schemes (ID_219, Effective_Date, Pension_Scheme)
-		SELECT i.ID, i.Effective_Date, pen.Pension_Scheme
-			FROM inserted i
-			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract
-			INNER JOIN Contract_Pension_Schemes pen ON pen.ID_215 = ct.ID AND (pen.End_Date >= GETDATE() OR pen.End_Date IS NULL);
-
-	INSERT Post_Working_Patterns (ID_219, Effective_Date, Regional_ID, Absence_In, Day_Pattern, Sunday_Hours_AM, Sunday_Hours_PM, Monday_Hours_AM, Monday_Hours_PM
-									, Tuesday_Hours_AM, Tuesday_Hours_PM, Wednesday_Hours_AM, Wednesday_Hours_PM, Thursday_Hours_AM, Thursday_Hours_PM
-									, Friday_Hours_AM, Friday_Hours_PM, Saturday_Hours_AM, Saturday_Hours_PM)
-		SELECT i.ID, i.Effective_Date, wp.Regional_ID, wp.Absence_In, wp.Day_Pattern, wp.Sunday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_AM,wp.Monday_Hours_PM
-									, wp.Tuesday_Hours_AM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_AM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_AM, wp.Thursday_Hours_PM
-									, wp.Friday_Hours_AM, wp.Friday_Hours_PM, wp.Saturday_Hours_AM, wp.Saturday_Hours_PM
-			FROM inserted i
-			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract
-			INNER JOIN Contract_Working_Patterns wp ON wp.ID_215 = ct.ID AND (wp.End_Date >= GETDATE() OR wp.End_Date IS NULL);');
-
-GO
-
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (15, 228, 'Transfer child information based on contract type', 1, 1, '  -- Update Memo Salary on Post
-
-    ;WITH base AS (
-        SELECT *
-            FROM [dbo].[tbuser_Post_Records]
-            WHERE [id] IN (SELECT DISTINCT [id_219] FROM inserted)
-			AND @startingtrigger = 1)
-    UPDATE base SET 
- 		Memo_Salary = (
-		SELECT ct.Memo_Salary 
-			FROM inserted i
-			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract);
-			
-	-- Insert leave schemes based on contract type
-	INSERT Post_Leave_Schemes (ID_219, Effective_Date, End_Date, Leave_Scheme, Notes)
-		SELECT i.ID_219, i.Effective_Date, chs.End_Date, chs.Leave_Scheme, chs.Notes
-			FROM Contract_Leave_Schemes chs
-			INNER JOIN Contract_Templates ct ON ct.ID = chs.ID_215
-			INNER JOIN inserted i ON i.Contract = ct.Contract
-			INNER JOIN deleted d ON i.id = d.id
-			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND chs.Effective_Date <= GETDATE() AND (chs.End_Date IS NULL OR chs.End_Date >= GETDATE());
-
-	-- Insert OMP Schemes based on contract type
-	INSERT Post_OMP_Schemes (ID_219, Effective_Date, End_Date, OMP_Scheme, Notes, Description)
-		SELECT i.ID_219, i.Effective_Date, cms.End_Date, cms.OMP_Scheme, cms.Notes, cms.Description
-			FROM Contract_OMP_Schemes cms
-			INNER JOIN Contract_Templates ct ON ct.ID = cms.ID_215
-			INNER JOIN inserted i ON i.Contract = ct.Contract
-			INNER JOIN deleted d ON i.id = d.id
-			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND cms.Effective_Date <= GETDATE() AND (cms.End_Date IS NULL OR cms.End_Date >= GETDATE());
-
-	-- Insert OSP Schemes based on contract type
-	INSERT Post_OSP_Schemes (ID_219, Effective_Date, End_Date, OSP_Scheme, Notes, Description)
-		SELECT i.ID_219, i.Effective_Date, css.End_Date, css.OSP_Scheme, css.Notes, css.Description
-			FROM Contract_OSP_Schemes css
-			INNER JOIN Contract_Templates ct ON ct.ID = css.ID_215
-			INNER JOIN inserted i ON i.Contract = ct.Contract
-			INNER JOIN deleted d ON i.id = d.id
-			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND css.Effective_Date <= GETDATE() AND (css.End_Date IS NULL OR css.End_Date >= GETDATE());
-
-	-- Insert OSP Schemes based on contract type
-	INSERT Post_Pension_Schemes (ID_219, Effective_Date, End_Date, Pension_Scheme, Scheme_Number, Notes)
-		SELECT i.ID_219, i.Effective_Date, cps.End_Date, cps.Pension_Scheme, cps.Scheme_Number, cps.Notes
-			FROM Contract_Pension_Schemes cps
-			INNER JOIN Contract_Templates ct ON ct.ID = cps.ID_215
-			INNER JOIN inserted i ON i.Contract = ct.Contract
-			INNER JOIN deleted d ON i.id = d.id
-			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND cps.Effective_Date <= GETDATE() AND (cps.End_Date IS NULL OR cps.End_Date >= GETDATE());
-
-	-- Insert Working Pattern Schemes based on contract type
-	INSERT Post_Working_Patterns (ID_219, Effective_Date, Regional_ID, Absence_In, Sunday_Hours_AM, Sunday_Hours_PM, Monday_Hours_AM, Monday_Hours_PM
-									, Tuesday_Hours_AM, Tuesday_Hours_PM, Wednesday_Hours_AM, Wednesday_Hours_PM, Thursday_Hours_AM, Thursday_Hours_PM
-									, Friday_Hours_AM, Friday_Hours_PM, Saturday_Hours_AM, Saturday_Hours_PM)
-		SELECT i.ID_219, i.Effective_Date, cws.Regional_ID, cws.Absence_In, cws.Sunday_Hours_AM, cws.Sunday_Hours_PM, cws.Monday_Hours_AM,cws.Monday_Hours_PM
-									, cws.Tuesday_Hours_AM, cws.Tuesday_Hours_PM, cws.Wednesday_Hours_AM, cws.Wednesday_Hours_PM, cws.Thursday_Hours_AM, cws.Thursday_Hours_PM
-									, cws.Friday_Hours_AM, cws.Friday_Hours_PM, cws.Saturday_Hours_AM, cws.Saturday_Hours_PM
-			FROM Contract_Working_Patterns cws
-			INNER JOIN Contract_Templates ct ON ct.ID = cws.ID_215
-			INNER JOIN inserted i ON i.Contract = ct.Contract
-			INNER JOIN deleted d ON i.id = d.id
-			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND cws.Effective_Date <= GETDATE() AND (cws.End_Date IS NULL OR cws.End_Date >= GETDATE());');
-GO
-
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (16, 252, 'Update appointment duration', 1, 1, ' 	-- Update duration of appointment absence
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (8, 252, 'Update appointment duration', 1, 1, ' 	-- Update duration of appointment absence
 	IF @startingtriggertable = 252
         UPDATE [dbo].[tbuser_Appointment_Absence] SET [updflag] = 1 WHERE [dbo].[tbuser_Appointment_Absence].[id] IN (SELECT DISTINCT [id_251] FROM inserted)
 ');
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (17, 3, 'Appointments Memo Salary', 1, 1, '  -- Update Memo Salary on Appointments
-    ;WITH base AS (
-        SELECT *
-            FROM [dbo].[tbuser_Appointments]
-            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted)
-			AND @startingtrigger = 1)
+
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (9, 254, 'Manual & Automatic Approval of absence based on type', 1, 1, '    
+
+	-- Recalculate the duration for this absence request
+	;WITH base AS (SELECT *
+            FROM [dbo].[tbuser_Appointment_Absence_Staging]
+            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))
     UPDATE base SET 
- 		Memo_Salary = (
-		SELECT pr.Memo_Salary 
-			FROM inserted i
-			INNER JOIN Post_Records pr ON pr.ID = i.ID_219);');
+		Duration = dbo.udfcustom_AbsenceDurationForAppointment(Start_Date, Start_Session, End_Date, End_Session, ID_3);
+
+	-- Approve authorised absences and absences that require no authorisation
+	INSERT Appointment_Absence (ID_3, StagingID, Start_Date, End_Date, Start_Session, End_Session, Absence_In, Absence_Type, Reason, Post_ID, Staff_Number, Payroll_Company_Code)
+		SELECT i.ID_3, i.ID, i.Start_Date, i.End_Date, i.Start_Session, i.End_Session, a.Absence_In, i.Absence_Type, i.Reason, a.Post_ID, a.Staff_Number, a.Payroll_Company_Code
+		FROM inserted i
+			INNER JOIN Appointments a ON a.ID = i.ID_3
+			INNER JOIN Absence_Type_Table at ON at.Absence_Type = i.Absence_Type
+		WHERE (at.Requires_Authorisation = 0 OR i.Status = ''Authorised'')
+			AND i.ID NOT IN (SELECT StagingID FROM Appointment_Absence);
+
+')
 GO
