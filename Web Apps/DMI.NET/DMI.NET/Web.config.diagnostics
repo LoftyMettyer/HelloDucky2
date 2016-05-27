@@ -139,7 +139,11 @@
 		<system.webServer>
 			<handlers>
 				<add name="ELMAH" verb="POST,GET,HEAD" path="elmah.axd" type="Elmah.ErrorLogPageFactory, Elmah" preCondition="integratedMode" />
-			</handlers>
+        <remove name="ExtensionlessUrlHandler-Integrated-4.0" />
+        <remove name="OPTIONSVerbHandler" />
+        <remove name="TRACEVerbHandler" />
+        <add name="ExtensionlessUrlHandler-Integrated-4.0" path="*." verb="*" type="System.Web.Handlers.TransferRequestHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+      </handlers>
 		</system.webServer>
 	</location>
 </configuration>
