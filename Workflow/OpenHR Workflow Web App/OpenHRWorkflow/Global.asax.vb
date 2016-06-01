@@ -1,4 +1,7 @@
 ﻿
+Imports System.Web.Http
+Imports System.Web.Routing
+
 Public Class App
    Inherits HttpApplication
 
@@ -7,6 +10,10 @@ Public Class App
    Sub Application_Start(ByVal sender As Object, ByVal e As EventArgs)
       ' Fires when the application is started
 		Config = New Config(Server.MapPath("~/Web.custom.config"), Server.MapPath("~/Themes/ThemeHex.xml"))
+
+
+      'Web API routing
+      RouteTable.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{action}/{id}", New With {.id = System.Web.Http.RouteParameter.Optional})
    End Sub
 
    Sub Session_Start(ByVal sender As Object, ByVal e As EventArgs)
