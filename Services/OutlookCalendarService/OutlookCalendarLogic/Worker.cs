@@ -1009,7 +1009,7 @@ namespace OutlookCalendarLogic
       {
         try
         {
-          mailboxName = GetNameFromMailbox(_folder);
+          mailboxName = GetNameFromMailbox(_folder, true);
           RaiseMessageEvent(new MessageEventDetails("GetSharedMailbox: " + mailboxName));
           calendarFolder = Folder.Bind(_exchangeService, WellKnownFolderName.Calendar);
           RaiseMessageEvent(new MessageEventDetails("GetSharedMailbox OK"));
@@ -1121,15 +1121,8 @@ namespace OutlookCalendarLogic
           appointment.ReminderMinutesBeforeStart = reminderInMinutes;
         }
 
-        //RaiseMessageEvent(new MessageEventDetails("Creating Outlook entry: ", EventLogEntryType.Error, MessageEventDetails.MessageEventType.DebugLog));
-        //RaiseMessageEvent(new MessageEventDetails("- Start: {_startDate}; end: {_endDate}", EventLogEntryType.Error, MessageEventDetails.MessageEventType.DebugLog));
-        //RaiseMessageEvent(new MessageEventDetails("- Subject: {_subject}", EventLogEntryType.Error, MessageEventDetails.MessageEventType.DebugLog));
-        //RaiseMessageEvent(new MessageEventDetails("- Body (Content): {_content}", EventLogEntryType.Error, MessageEventDetails.MessageEventType.DebugLog));
-        //RaiseMessageEvent(new MessageEventDetails("- All-day: {_allDayEvent}; reminder in minutes: {reminderInMinutes}", EventLogEntryType.Error, MessageEventDetails.MessageEventType.DebugLog));
-
         appointment.Save(new FolderId(WellKnownFolderName.Calendar, new Mailbox(mailboxName)));
 
-        // _storeId = Encoding.UTF8.GetString(appointment.StoreEntryId);
         _entryId = appointment.Id.ToString();
       }
       catch (Exception ex)
@@ -1327,21 +1320,27 @@ namespace OutlookCalendarLogic
       }
     }
 
-    private string GetNameFromMailbox(string mailboxPath)
+    private string GetNameFromMailbox(string mailboxPath, bool resolveName)
     {
       string tmpName = mailboxPath;
       try
       {
-        if (mailboxPath.Contains("\\\\Mailbox"))
-        {
+        if (mailboxPath.Contains("\\\\Mailbox")) {
           tmpName = mailboxPath.Replace("\\\\Mailbox - ", "");
           tmpName = tmpName.Substring(0, tmpName.IndexOf("\\"));
         }
-        else if (mailboxPath.StartsWith("\\\\"))
-        {
+        else if (mailboxPath.StartsWith("\\\\")) {
           tmpName = mailboxPath.Substring(mailboxPath.IndexOf("\\\\") + 2);
           tmpName = tmpName.Substring(0, tmpName.IndexOf("\\"));
         }
+
+        if (!tmpName.Contains("@") && resolveName) {
+          var resolved = _exchangeService.ResolveName(tmpName);
+          if (resolved.Count == 1) {
+            tmpName = resolved[0].Mailbox.Address;
+            }
+        }
+
       }
       catch
       {
