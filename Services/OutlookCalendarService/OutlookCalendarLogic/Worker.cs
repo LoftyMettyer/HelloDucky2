@@ -522,26 +522,15 @@ namespace OutlookCalendarLogic
       string storeId = string.Empty;
       string entryId = string.Empty;
       string title = string.Empty;
-      string content = string.Empty;
       string fixedStartTime = string.Empty;
       string fixedEndTime = string.Empty;
       bool deleted = false;
-      bool reminder = false;
-      Int32 reminderOffset = 0;
-      Int32 reminderPeriod = 0;
-      Int32 busyStatus = 0;
       Int32 timeRange = 0;
       Int32 folderType = 0;
       Int32 folderExprID = 0;
       string folderPath = string.Empty;
       bool createdEntry = false;
       bool doOutlookOK = false;
-      bool allDayEvent = false;
-      DateTime startDate = DateTime.Parse(SqlDateTime.MinValue.Value.ToString());
-      DateTime endDate = DateTime.Parse(SqlDateTime.MinValue.Value.ToString());
-      string startTime = string.Empty;
-      string endTime = string.Empty;
-      string subject = string.Empty;
       string folder = string.Empty;
 
       if (_userDefinedConfiguration.Debug)
@@ -551,7 +540,6 @@ namespace OutlookCalendarLogic
 
       foreach (OpenHRSystem openHrSystem in _userDefinedConfiguration.OpenHRSystems)
       {
-        var serverDBName = "{openHrSystem.ServerName.ToUpper()}.{openHrSystem.DatabaseName.ToUpper()}";
         try
         {
           RaiseMessageEvent(new MessageEventDetails("Opening Connection {openHrSystem.ConnectionString}"));
@@ -608,11 +596,11 @@ namespace OutlookCalendarLogic
                   folderType = Utilities.NullSafeInteger(reader["FolderType"]);
                   folderPath = Utilities.NullSafeString(reader["FixedPath"]);
                   folderExprID = Utilities.NullSafeInteger(reader["ExprID"]);
-                  content = Utilities.NullSafeString(reader["Content"]);
-                  reminder = Utilities.NullSafeBoolean(reader["Reminder"]);
-                  reminderOffset = Utilities.NullSafeInteger(reader["ReminderOffset"]);
-                  reminderPeriod = Utilities.NullSafeInteger(reader["ReminderPeriod"]);
-                  busyStatus = Utilities.NullSafeInteger(reader["BusyStatus"]);
+                  _content = Utilities.NullSafeString(reader["Content"]);
+                  _reminder = Utilities.NullSafeBoolean(reader["Reminder"]);
+                  _reminderOffset = Utilities.NullSafeInteger(reader["ReminderOffset"]);
+                  _reminderPeriod = Utilities.NullSafeInteger(reader["ReminderPeriod"]);
+                  _busyStatus = Utilities.NullSafeInteger(reader["BusyStatus"]);
 
                   _storeId = string.Empty;
                   _entryId = string.Empty;
@@ -773,14 +761,14 @@ namespace OutlookCalendarLogic
                           }
                           return false;
                         }
-                        RaiseMessageEvent(new MessageEventDetails("Sql Error in transaction: {sqlEx.Message}.",
+                        RaiseMessageEvent(new MessageEventDetails(string.Format("Sql Error in transaction: {0}.", sqlEx.Message), 
                           EventLogEntryType.Error, MessageEventDetails.MessageEventType.WindowsEventsLog));
 
                       }
                       catch (Exception ex)
                       {
                         doOutlookOK = false;
-                        RaiseMessageEvent(new MessageEventDetails("Error in transaction: {ex.Message}.",
+                        RaiseMessageEvent(new MessageEventDetails(string.Format("Error in transaction: {0}.", ex.Message),
                           EventLogEntryType.Error, MessageEventDetails.MessageEventType.WindowsEventsLog));
                       }
                     }
@@ -799,7 +787,7 @@ namespace OutlookCalendarLogic
 
                       // Input/Output parameters
                       cmdSp.Parameters.Add("@Content", SqlDbType.VarChar, 8000).Direction = ParameterDirection.InputOutput;
-                      cmdSp.Parameters["@Content"].Value = content;
+                      cmdSp.Parameters["@Content"].Value = _content;
 
                       // Output parameters
                       cmdSp.Parameters.Add("@AllDayEvent", SqlDbType.Bit).Direction = ParameterDirection.Output;
@@ -831,7 +819,7 @@ namespace OutlookCalendarLogic
                       cmdSp.ExecuteNonQuery();
 
                       // Retrieve output parameters
-                      content = Utilities.NullSafeString(cmdSp.Parameters["@Content"].Value);
+                      _content = Utilities.NullSafeString(cmdSp.Parameters["@Content"].Value);
                       _allDayEvent = Utilities.NullSafeBoolean(cmdSp.Parameters["@AllDayEvent"].Value);
 
                       if (!cmdSp.Parameters["@StartDate"].Value.Equals(DBNull.Value))
@@ -1028,8 +1016,7 @@ namespace OutlookCalendarLogic
         }
         catch (Exception ex)
         {
-          _errorMessage = string.Format("Unable to open mailbox for {GetNameFromMailbox(_folder)}. {0}", ex.Message);
-
+          _errorMessage = string.Format("Unable to open mailbox for {0} - {1}", mailboxName, ex.Message);
           return false;
         }
       }
