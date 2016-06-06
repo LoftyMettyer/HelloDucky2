@@ -897,6 +897,31 @@ Public Class Database
 
   End Function
 
+   Public Function GetDataSet(sProcedureName As String, CommandType As CommandType, ParamArray args() As SqlParameter) As DataSet
+      Dim objDataSet As New DataSet
+      Dim objAdaptor As New SqlDataAdapter
+
+      Try
+
+         Using sqlConnection As New SqlConnection(_connectionString)
+
+            objAdaptor.SelectCommand = New SqlCommand(sProcedureName, sqlConnection)
+            objAdaptor.SelectCommand.CommandType = CommandType
+
+            objAdaptor.SelectCommand.Parameters.Clear()
+            For Each sqlParm In args
+               objAdaptor.SelectCommand.Parameters.Add(sqlParm)
+            Next
+
+            objAdaptor.Fill(objDataSet)
+
+         End Using
+      Catch ex As Exception
+         ' TODO
+      End Try
+
+      Return objDataSet
+   End Function
 End Class
 
 Public Structure CheckLoginResult

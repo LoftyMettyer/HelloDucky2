@@ -402,7 +402,12 @@
       <DependentUpon>Registration.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Classes\Workspace\FeedParticipantResponse.vb" />
+    <Compile Include="API\IncomingRequestInterceptor.vb" />
+    <Compile Include="API\WebApiConfig.vb" />
+    <Compile Include="API\Workspace\TaskController.vb" />
+    <Compile Include="Classes\Workspace\FeedParticipantResponseBase.vb" />
+    <Compile Include="Classes\Workspace\FeedParticipantResponseCodeEnum.vb" />
+    <Compile Include="Classes\Workspace\FeedUserTask.vb" />
     <Compile Include="Code\Classes\StepAuthorization.vb" />
     <Compile Include="Code\Config.vb" />
     <Compile Include="Code\Crypt.vb" />

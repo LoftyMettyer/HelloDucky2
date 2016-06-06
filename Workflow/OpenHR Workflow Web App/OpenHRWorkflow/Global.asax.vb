@@ -1,6 +1,7 @@
 ﻿
 Imports System.Web.Http
 Imports System.Web.Routing
+Imports OpenHRWorkflow.API
 
 Public Class App
    Inherits HttpApplication
@@ -11,9 +12,9 @@ Public Class App
       ' Fires when the application is started
 		Config = New Config(Server.MapPath("~/Web.custom.config"), Server.MapPath("~/Themes/ThemeHex.xml"))
 
-
-      'Web API routing
-      RouteTable.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{action}/{id}", New With {.id = System.Web.Http.RouteParameter.Optional})
+      'Web API stuff
+      WebApiConfig.RegisterConfiguration(GlobalConfiguration.Configuration)
+      WebApiConfig.RegisterRoutes()
    End Sub
 
    Sub Session_Start(ByVal sender As Object, ByVal e As EventArgs)

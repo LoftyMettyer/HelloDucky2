@@ -22,13 +22,12 @@ Public Class [Default]
 
    Protected Sub Page_PreInit(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.PreInit
       'Get the Workspace User Id (if present), whcih we will use to get the Record Id from Openhr
-      Dim workspaceUserId As String = ""
       Dim message As String = Nothing
 
       If Not Request.Cookies("iplanetdirectorypro") Is Nothing Then
          Dim workspaceTokenId = Request.Cookies("iplanetdirectorypro").Value
          Try
-            workspaceUserId = OpenAmRestCalls.GetIdFromSession(workspaceTokenId)
+            General.Global_WorkspaceUserId = OpenAmRestCalls.GetIdFromSession(workspaceTokenId)
          Catch ex As Exception
             message = "Invalid Workflow Url"
          End Try
@@ -83,7 +82,7 @@ Public Class [Default]
             End Try
          Else
             ' This is a workspace request for a workflow.
-            _url = _db.GetWorkflowUrlFromWorkspace(Request.QueryString("workflowname"), workspaceUserId)
+            _url = _db.GetWorkflowUrlFromWorkspace(Request.QueryString("workflowname"), General.Global_WorkspaceUserId)
 
             If _url.InstanceId = 0 Then
                message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE006)."

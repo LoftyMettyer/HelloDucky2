@@ -11,6 +11,8 @@ Public Class General
   Private Sub New()
   End Sub
 
+   Public Shared Global_WorkspaceUserId As String = ""
+
   Public Shared Function GetColour(ByVal piColour As Int32) As Color
     Try
       Return ColorTranslator.FromOle(piColour)
