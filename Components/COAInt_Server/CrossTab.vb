@@ -1151,165 +1151,195 @@ Public Class CrossTab
 
 	End Function
 
-	Private Sub GetHeadingsAndSearchesForColumns(lngLoop As Integer, ByRef strHeading() As String, ByRef strSearch() As String)
+   Private Sub GetHeadingsAndSearchesForColumns(lngLoop As Integer, ByRef strHeading() As String, ByRef strSearch() As String)
 
-		Dim strFieldValue As String
-		Dim lngCount As Integer
-		Dim dblGroup As Double
-		Dim dblGroupMax As Double
-		Dim dblUnit As Double
-		Dim strColumnName As String
-		Dim strWhereEmpty As String
-		Dim strOrder As String
-		Dim sColumnNames() As String
+      Dim strFieldValue As String
+      Dim lngCount As Integer
+      Dim dblGroup As Double
+      Dim dblGroupMax As Double
+      Dim dblUnit As Double
+      Dim strColumnName As String
+      Dim strWhereEmpty As String
+      Dim strOrder As String
+      Dim sColumnNames() As String
+      Dim outputDataRows As DataRow()
 
-		'UPGRADE_WARNING: Couldn't resolve default property of object Choose(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		strColumnName = Choose(lngLoop + 1, "Hor", "Ver", "Pgb")
+      'UPGRADE_WARNING: Couldn't resolve default property of object Choose(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      strColumnName = Choose(lngLoop + 1, "Hor", "Ver", "Pgb")
 
-		If mdblMin(lngLoop) = 0 And mdblMax(lngLoop) = 0 Then
+      If mdblMin(lngLoop) = 0 And mdblMax(lngLoop) = 0 Then
 
-			lngCount = 0
+         lngCount = 0
 
-			strWhereEmpty = strColumnName & " IS NULL"
-			If mlngColDataType(lngLoop) <> CStr(ColumnDataType.sqlNumeric) And mlngColDataType(lngLoop) <> CStr(ColumnDataType.sqlInteger) And mlngColDataType(lngLoop) <> CStr(ColumnDataType.sqlBoolean) Then
-				strWhereEmpty = strWhereEmpty & " OR Trim(" & strColumnName & ") = ''"
-			End If
+         strWhereEmpty = strColumnName & " IS NULL"
+         If mlngColDataType(lngLoop) <> CStr(ColumnDataType.sqlNumeric) And mlngColDataType(lngLoop) <> CStr(ColumnDataType.sqlInteger) And mlngColDataType(lngLoop) <> CStr(ColumnDataType.sqlBoolean) Then
+            strWhereEmpty = strWhereEmpty & " OR Trim(" & strColumnName & ") = ''"
+         End If
 
-			' Don't put in empty clauses if we're running an absence breakdown
-			If mlngCrossTabType <> Enums.CrossTabType.cttAbsenceBreakdown Then
-				ReDim Preserve strHeading(lngCount)
-				ReDim Preserve strSearch(lngCount)
-				strHeading(lngCount) = "<Empty>"
-				strSearch(lngCount) = strWhereEmpty
-				lngCount += 1
-			End If
+         ' Don't put in empty clauses if we're running an absence breakdown
+         If mlngCrossTabType <> Enums.CrossTabType.cttAbsenceBreakdown Then
+            ReDim Preserve strHeading(lngCount)
+            ReDim Preserve strSearch(lngCount)
+            strHeading(lngCount) = "<Empty>"
+            strSearch(lngCount) = strWhereEmpty
+            lngCount += 1
+         End If
 
-			If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown And strColumnName = "Hor" Then
-				sColumnNames = {FormatSQLColumn(strColumnName), "Day_Number", "DisplayOrder"}
-				strOrder = "DisplayOrder"
-			Else
-				sColumnNames = {FormatSQLColumn(strColumnName)}
-				strOrder = strColumnName
-			End If
+         If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown And strColumnName = "Hor" Then
+            sColumnNames = {FormatSQLColumn(strColumnName), "Day_Number", "DisplayOrder"}
+            strOrder = "DisplayOrder"
+         Else
+            sColumnNames = {FormatSQLColumn(strColumnName)}
+            strOrder = strColumnName
+         End If
 
-			For Each objRow As DataRow In rsCrossTabData.DefaultView.ToTable(True, sColumnNames).Select("", strOrder)
+         ' If page break column then apply filer and get only unique values
+         If strColumnName.ToUpper().Equals("PGB") Then
+            outputDataRows = GetUniquePageBreakValues(strOrder, rsCrossTabData, sColumnNames, lngLoop)
+         Else
+            outputDataRows = rsCrossTabData.DefaultView.ToTable(True, sColumnNames).Select("", strOrder)
+         End If
 
-				'MH20010213 Had to make this change so that working pattern would work
+         For Each objRow As DataRow In outputDataRows
 
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				strFieldValue = IIf(IsDBNull(objRow(0)), vbNullString, objRow(0))
+            'MH20010213 Had to make this change so that working pattern would work
 
-				If Trim(strFieldValue) <> vbNullString Then
-					ReDim Preserve strHeading(lngCount)
-					ReDim Preserve strSearch(lngCount)
+            'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+            strFieldValue = IIf(IsDBNull(objRow(0)), vbNullString, objRow(0))
 
-					Select Case mlngColDataType(lngLoop)
-						Case CStr(ColumnDataType.sqlDate)
-							strHeading(lngCount) = VB6.Format(objRow(0), LocaleDateFormat)
-							strSearch(lngCount) = strColumnName & " = '" & CDate(objRow(0)).ToString(LocaleDateFormat) & "'"
+            If Trim(strFieldValue) <> vbNullString Then
+               ReDim Preserve strHeading(lngCount)
+               ReDim Preserve strSearch(lngCount)
 
-						Case CStr(ColumnDataType.sqlBoolean)
-							strHeading(lngCount) = IIf(objRow(0), "True", "False")
-							strSearch(lngCount) = strColumnName & " = " & IIf(objRow(0), "1", "0")
+               Select Case mlngColDataType(lngLoop)
+                  Case CStr(ColumnDataType.sqlDate)
+                     strHeading(lngCount) = VB6.Format(objRow(0), LocaleDateFormat)
+                     strSearch(lngCount) = strColumnName & " = '" & CDate(objRow(0)).ToString(LocaleDateFormat) & "'"
 
-						Case CStr(ColumnDataType.sqlNumeric), CStr(ColumnDataType.sqlInteger)
-							strHeading(lngCount) = ConvertNumberForDisplay(VB6.Format(objRow(0), mstrFormat(lngLoop)))
-							strSearch(lngCount) = strColumnName & " = " & ConvertNumberForSQL(objRow(0))
+                  Case CStr(ColumnDataType.sqlBoolean)
+                     strHeading(lngCount) = IIf(objRow(0), "True", "False")
+                     strSearch(lngCount) = strColumnName & " = " & IIf(objRow(0), "1", "0")
 
-						Case Else
-							strHeading(lngCount) = HttpUtility.HtmlEncode(objRow(0).ToString)
-							strSearch(lngCount) = FormatSQLColumn(strColumnName) & " = '" & Replace(strFieldValue, "'", "''") & "'"
+                  Case CStr(ColumnDataType.sqlNumeric), CStr(ColumnDataType.sqlInteger)
+                     strHeading(lngCount) = ConvertNumberForDisplay(VB6.Format(objRow(0), mstrFormat(lngLoop)))
+                     strSearch(lngCount) = strColumnName & " = " & ConvertNumberForSQL(objRow(0))
 
-					End Select
+                  Case Else
+                     strHeading(lngCount) = HttpUtility.HtmlEncode(objRow(0).ToString)
+                     strSearch(lngCount) = FormatSQLColumn(strColumnName) & " = '" & Replace(strFieldValue, "'", "''") & "'"
 
-					lngCount += 1
+               End Select
 
-				End If
+               lngCount += 1
 
-			Next
+            End If
 
-		Else
+         Next
 
-			ReDim Preserve strHeading(1)
-			ReDim Preserve strSearch(1)
+      Else
 
-			'First element of range for null values...
-			strHeading(0) = "<Empty>"
-			strSearch(0) = strColumnName & " IS NULL"
+         ReDim Preserve strHeading(1)
+         ReDim Preserve strSearch(1)
 
-			'Second element of range for those less than minimum value of range...
-			strHeading(1) = "< " & ConvertNumberForDisplay(VB6.Format(mdblMin(lngLoop), mstrFormat(lngLoop)))
-			strSearch(1) = strColumnName & " < " & ConvertNumberForSQL(CStr(mdblMin(lngLoop)))
+         'First element of range for null values...
+         strHeading(0) = "<Empty>"
+         strSearch(0) = strColumnName & " IS NULL"
 
-			dblUnit = GetSmallestUnit(lngLoop)
+         'Second element of range for those less than minimum value of range...
+         strHeading(1) = "< " & ConvertNumberForDisplay(VB6.Format(mdblMin(lngLoop), mstrFormat(lngLoop)))
+         strSearch(1) = strColumnName & " < " & ConvertNumberForSQL(CStr(mdblMin(lngLoop)))
 
-			lngCount = 2
+         dblUnit = GetSmallestUnit(lngLoop)
 
-			If mlngCrossTabType = CrossTabType.ctt9GridBox Then
+         lngCount = 2
 
-				Dim stepValue = Math.Round((mdblMax(lngLoop) - mdblMin(lngLoop)) / 3, 3)
-				Dim lastValue = mdblMin(lngLoop)
+         If mlngCrossTabType = CrossTabType.ctt9GridBox Then
 
-				For iLoop2 = 0 To 2
+            Dim stepValue = Math.Round((mdblMax(lngLoop) - mdblMin(lngLoop)) / 3, 3)
+            Dim lastValue = mdblMin(lngLoop)
 
-					ReDim Preserve strHeading(lngCount)
-					ReDim Preserve strSearch(lngCount)
+            For iLoop2 = 0 To 2
 
-					Dim dblFrom = lastValue
-					Dim dblTo As Double
+               ReDim Preserve strHeading(lngCount)
+               ReDim Preserve strSearch(lngCount)
 
-					dblTo = Math.Min(Math.Round(lastValue + stepValue, 2), mdblMax(lngLoop))
+               Dim dblFrom = lastValue
+               Dim dblTo As Double
 
-					strHeading(lngCount) = String.Format("{0} - {1}", dblFrom.ToString(CultureInfo.InvariantCulture), dblTo.ToString(CultureInfo.InvariantCulture))
-					strSearch(lngCount) = String.Format("{0} >= {1} AND {0} <= {2}", strColumnName, dblFrom.ToString(CultureInfo.InvariantCulture), dblTo.ToString(CultureInfo.InvariantCulture))
+               dblTo = Math.Min(Math.Round(lastValue + stepValue, 2), mdblMax(lngLoop))
 
-					lastValue = dblTo + 0.01
-					lngCount += 1
+               strHeading(lngCount) = String.Format("{0} - {1}", dblFrom.ToString(CultureInfo.InvariantCulture), dblTo.ToString(CultureInfo.InvariantCulture))
+               strSearch(lngCount) = String.Format("{0} >= {1} AND {0} <= {2}", strColumnName, dblFrom.ToString(CultureInfo.InvariantCulture), dblTo.ToString(CultureInfo.InvariantCulture))
 
-				Next
+               lastValue = dblTo + 0.01
+               lngCount += 1
 
-				' Because the Nine Box Grid is upside down swap rows 3 and 5 around
-				If lngLoop = 1 Then
-					Dim swapNineBox As String
-					swapNineBox = strHeading(2)
-					strHeading(2) = strHeading(4)
-					strHeading(4) = swapNineBox
+            Next
 
-					swapNineBox = strSearch(2)
-					strSearch(2) = strSearch(4)
-					strSearch(4) = swapNineBox
-				End If
+            ' Because the Nine Box Grid is upside down swap rows 3 and 5 around
+            If lngLoop = 1 Then
+               Dim swapNineBox As String
+               swapNineBox = strHeading(2)
+               strHeading(2) = strHeading(4)
+               strHeading(4) = swapNineBox
 
-			Else
+               swapNineBox = strSearch(2)
+               strSearch(2) = strSearch(4)
+               strSearch(4) = swapNineBox
+            End If
 
-				If mdblStep(lngLoop) = 0 Then
-					mstrStatusMessage = "Step value for " & strColumnName & " column cannot be zero"
-					fOK = False
-					Exit Sub
-				End If
+         Else
 
-				For dblGroup = mdblMin(lngLoop) To mdblMax(lngLoop) Step mdblStep(lngLoop)
-					ReDim Preserve strHeading(lngCount)
-					ReDim Preserve strSearch(lngCount)
-					dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
-					strHeading(lngCount) = ConvertNumberForDisplay(VB6.Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
-					strSearch(lngCount) = String.Format("{0} >= {1} AND {0} <= {2}", strColumnName, ConvertNumberForSQL(CStr(dblGroup)), ConvertNumberForSQL(CStr(dblGroupMax)))
-					lngCount += 1
-				Next
+            If mdblStep(lngLoop) = 0 Then
+               mstrStatusMessage = "Step value for " & strColumnName & " column cannot be zero"
+               fOK = False
+               Exit Sub
+            End If
 
-			End If
+            For dblGroup = mdblMin(lngLoop) To mdblMax(lngLoop) Step mdblStep(lngLoop)
+               ReDim Preserve strHeading(lngCount)
+               ReDim Preserve strSearch(lngCount)
+               dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
+               strHeading(lngCount) = ConvertNumberForDisplay(VB6.Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
+               strSearch(lngCount) = String.Format("{0} >= {1} AND {0} <= {2}", strColumnName, ConvertNumberForSQL(CStr(dblGroup)), ConvertNumberForSQL(CStr(dblGroupMax)))
+               lngCount += 1
+            Next
 
-			ReDim Preserve strHeading(lngCount)
-			ReDim Preserve strSearch(lngCount)
-			'Last element of range for those more than maximum value of range...
-			strHeading(lngCount) = "> " & ConvertNumberForDisplay(VB6.Format(dblGroup - dblUnit, mstrFormat(lngLoop)))
-			strSearch(lngCount) = strColumnName & " > " & ConvertNumberForSQL(CStr(dblGroup - dblUnit))
+         End If
 
-		End If
+         ReDim Preserve strHeading(lngCount)
+         ReDim Preserve strSearch(lngCount)
+         'Last element of range for those more than maximum value of range...
+         strHeading(lngCount) = "> " & ConvertNumberForDisplay(VB6.Format(dblGroup - dblUnit, mstrFormat(lngLoop)))
+         strSearch(lngCount) = strColumnName & " > " & ConvertNumberForSQL(CStr(dblGroup - dblUnit))
 
-	End Sub
+      End If
 
-	Private Function GetSmallestUnit(lngLoop As Integer) As Double
+   End Sub
+
+   Private Function GetUniquePageBreakValues(strOrder As String, rsCrossTabData As DataTable, sColumnNames As String(), lngLoop As Integer) As DataRow()
+
+      'Gets all distinct value for the PAGE BREAK column (pgb) table rows
+      Dim lastValue As String = String.Empty
+      Dim outputDataRows As DataRow()
+      Dim currentValue As String = String.Empty
+      Dim outputTable As New DataTable()
+      outputTable.Columns.Add(strOrder, Type.GetType("System.String"))
+
+      For Each dataRow As DataRow In rsCrossTabData.DefaultView.ToTable(True, sColumnNames).Select("", strOrder)
+         currentValue = IIf(IsDBNull(dataRow(0)), vbNullString, dataRow(0))
+         If ((currentValue <> vbNullString AndAlso (lastValue.Equals(Trim(currentValue), StringComparison.CurrentCultureIgnoreCase) = False))) Then
+            lastValue = Trim(currentValue)
+            outputTable.Rows.Add(currentValue)
+         End If
+      Next
+
+      outputDataRows = outputTable.Select("", strOrder)
+      Return outputDataRows
+
+   End Function
+
+   Private Function GetSmallestUnit(lngLoop As Integer) As Double
 
 		'e.g. mstrFormat(lngLoop) = 0.0,   GetSmallestUnit = 0.1
 		'     mstrFormat(lngLoop) = 0.000, GetSmallestUnit = 0.001
