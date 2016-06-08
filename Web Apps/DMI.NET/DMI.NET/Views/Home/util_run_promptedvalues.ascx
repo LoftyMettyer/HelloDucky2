@@ -17,9 +17,9 @@
 		});
 
 		var frmPromptedValues = document.getElementById("frmPromptedValues");
-		$(".datepicker").datepicker();
+		$(".promptedvaluesdatepicker").datepicker();
 
-		$(document).on('keydown', '.datepicker', function (event) {
+		$(document).on('keydown', '.promptedvaluesdatepicker', function (event) {
 
 			switch (event.keyCode) {
 				case 113:
@@ -29,9 +29,9 @@
 			}
 		});
 
-		$(document).on('blur', '.datepicker', function (sender) {
+		$(document).on('blur', '.promptedvaluesdatepicker', function (sender) {
 			if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
-			  event.preventDefault();
+			  sender.preventDefault();
 			  OpenHR.modalMessage("Invalid date value entered");			  
 			  $(this).datepicker("setDate", new Date());
 			  $("#butPromptedSubmit").focus();
@@ -125,196 +125,196 @@
 
 			<%
 
-                Dim objDatabaseAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-                Dim rstPromptedValue As DataTable
-                Dim rstLookupValues As DataTable
+            Dim objDatabaseAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+            Dim rstPromptedValue As DataTable
+            Dim rstLookupValues As DataTable
 
-                Dim fDefaultFound As Boolean
-                Dim fFirstValueDone As Boolean
-                Dim sFirstValue As String
+            Dim fDefaultFound As Boolean
+            Dim fFirstValueDone As Boolean
+            Dim sFirstValue As String
 
-                Dim iValueType As Integer
+            Dim iValueType As Integer
 
-                Dim iPromptCount = 0
-                Dim iPromptUtilID As Integer
+            Dim iPromptCount = 0
+            Dim iPromptUtilID As Integer
 
-                If Model.UtilType = UtilityType.utlAbsenceBreakdown Or Model.UtilType = UtilityType.utlBradfordFactor Then
-                    iPromptUtilID = CType(Model, StandardReportRunModel).txtBaseFilterID
-                Else
-                    iPromptUtilID = Model.ID
-                End If
+            If Model.UtilType = UtilityType.utlAbsenceBreakdown Or Model.UtilType = UtilityType.utlBradfordFactor Then
+               iPromptUtilID = CType(Model, StandardReportRunModel).txtBaseFilterID
+            Else
+               iPromptUtilID = Model.ID
+            End If
 
-				'Check if the prompted values invoked from the Find window - multiselect, then set the flag isMultipleRecordsSelected to true, false otherwise
-				Dim isMultipleRecordsSelected As Integer = 0
-				Dim multipleRecordIds As String = Session("multipleRecordIDs")
-				If (Not IsNothing(multipleRecordIds)) AndAlso CInt(multipleRecordIds.Length) > 0 Then
-					isMultipleRecordsSelected = 1
-				End If
-			
-				rstPromptedValue = objDatabaseAccess.GetDataTable("spASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
-						New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = Model.UtilType}, _
-						New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = iPromptUtilID}, _
-						New SqlParameter("piUtilTableID", SqlDbType.Int) With {.Value = CInt(Session("utilTableId"))}, _
-						New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = CInt(Session("singleRecordID"))}, _
-						New SqlParameter("piMultipleRecords", SqlDbType.Int) With {.Value = isMultipleRecordsSelected})
+            'Check if the prompted values invoked from the Find window - multiselect, then set the flag isMultipleRecordsSelected to true, false otherwise
+            Dim isMultipleRecordsSelected As Integer = 0
+            Dim multipleRecordIds As String = Session("multipleRecordIDs")
+            If (Not IsNothing(multipleRecordIds)) AndAlso CInt(multipleRecordIds.Length) > 0 Then
+               isMultipleRecordsSelected = 1
+            End If
 
-                If rstPromptedValue.Rows.Count > 0 Then
+            rstPromptedValue = objDatabaseAccess.GetDataTable("spASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
+                  New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = Model.UtilType}, _
+                  New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = iPromptUtilID}, _
+                  New SqlParameter("piUtilTableID", SqlDbType.Int) With {.Value = CInt(Session("utilTableId"))}, _
+                  New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = CInt(Session("singleRecordID"))}, _
+                  New SqlParameter("piMultipleRecords", SqlDbType.Int) With {.Value = isMultipleRecordsSelected})
 
-                    Response.Write("			<table align=center class=""invisible"" cellspacing=5 cellpadding=0 style=""width:100%;"">" & vbCrLf)
+            If rstPromptedValue.Rows.Count > 0 Then
 
-                    For Each objRow As DataRow In rstPromptedValue.Rows
+               Response.Write("			<table align=center class=""invisible"" cellspacing=5 cellpadding=0 style=""width:100%;"">" & vbCrLf)
 
-                        iPromptCount += 1
+               For Each objRow As DataRow In rstPromptedValue.Rows
 
-                        Response.Write("    <tr>" & vbCrLf)
-                        Response.Write("      <td width='auto' nowrap>" & vbCrLf)
+                  iPromptCount += 1
 
-                        If objRow("ValueType") = 3 Then
-                            Response.Write("      <label " & vbCrLf)
-                            Response.Write("        for=""prompt_3_" & objRow("componentID") & vbCrLf)
-                            Response.Write("        class=""checkbox""" & vbCrLf)
-                            Response.Write("        tabindex=0>" & vbCrLf)
+                  Response.Write("    <tr>" & vbCrLf)
+                  Response.Write("      <td width='auto' nowrap>" & vbCrLf)
+
+                  If objRow("ValueType") = 3 Then
+                     Response.Write("      <label " & vbCrLf)
+                     Response.Write("        for=""prompt_3_" & objRow("componentID") & vbCrLf)
+                     Response.Write("        class=""checkbox""" & vbCrLf)
+                     Response.Write("        tabindex=0>" & vbCrLf)
+                  End If
+
+                  Response.Write("        " & HttpUtility.HtmlEncode(objRow("PromptDescription")) & vbCrLf)
+
+                  If iValueType = 3 Then
+                     Response.Write("      </label>" & vbCrLf)
+                  End If
+
+                  Response.Write("      </td>" & vbCrLf)
+                  Response.Write("      <td width=20>&nbsp;&nbsp;</td>" & vbCrLf)
+                  Response.Write("      <td style='width:100%;'>" & vbCrLf)
+
+                  ' Character Prompted Value
+                  If objRow("ValueType") = 1 Then
+                     Response.Write("        <input type=text class=""text"" id=prompt_1_" & objRow("componentID") & " name=prompt_1_" & objRow("componentID") & " value=""" & HttpUtility.HtmlEncode(objRow("valuecharacter")) & """ maxlength=" & objRow("promptsize") & " style=""WIDTH: 100%"">" & vbCrLf)
+                     Response.Write("        <input type=hidden id=promptMask_" & objRow("componentID") & " name=promptMask_" & objRow("componentID") & " value=""" & HttpUtility.HtmlEncode(objRow("promptMask")) & """>" & vbCrLf)
+
+                     ' Numeric Prompted Value
+                  ElseIf objRow("ValueType") = 2 Then
+                     Response.Write("        <input type=text class=""text"" id=prompt_2_" & objRow("componentID") & " name=prompt_2_" & objRow("componentID") & " value=""" & Replace(CType(objRow("valuenumeric"), String), ".", CType(Session("LocaleDecimalSeparator"), String)) & """ style=""WIDTH: 100%"">" & vbCrLf)
+                     Response.Write("        <input type=hidden id=promptSize_" & objRow("componentID") & " name=promptSize" & objRow("componentID") & " value=""" & objRow("promptSize") & """>" & vbCrLf)
+                     Response.Write("        <input type=hidden id=promptDecs_" & objRow("componentID") & " name=promptDecs" & objRow("componentID") & " value=""" & objRow("promptDecimals") & """>" & vbCrLf)
+
+                     ' Logic Prompted Value
+                  ElseIf objRow("ValueType") = 3 Then
+                     Response.Write("        <input type=checkbox id=prompt_3_" & objRow("componentID") & " name=prompt_3_" & objRow("componentID") & " onclick=""checkboxClick(" & objRow("componentID") & ")""")
+                     Response.Write("            onclick=""checkboxClick('" & objRow("componentID") & "')""" & vbCrLf)
+                     Response.Write("            onmouseover=""try{checkbox_onMouseOver(this);}catch(e){}""" & vbCrLf)
+                     Response.Write("            onmouseout=""try{checkbox_onMouseOut(this);}catch(e){}""")
+                     If objRow("valuelogic") Then
+                        Response.Write(" CHECKED/>" & vbCrLf)
+                     Else
+                        Response.Write("/>" & vbCrLf)
+                     End If
+                     Response.Write("        <input type=hidden id=promptChk_" & objRow("componentID") & " name=promptChk_" & objRow("componentID") & " value=" & objRow("valuelogic") & ">" & vbCrLf)
+
+                     ' Date Prompted Value
+                  ElseIf objRow("ValueType") = 4 Then
+
+                     Response.Write("        <input type=text class=""promptedvaluesdatepicker"" id=prompt_4_" & objRow("componentID") & " name=prompt_4_" & objRow("componentID") & " value=""")
+
+                     ' Set the date if available.
+                     Dim dtDate = CalculatePromptedDate(objRow)
+                     If (dtDate <> Nothing) Then
+                        Response.Write(ConvertSQLDateToLocale(CDate(dtDate)))
+                     End If
+                     Response.Write(""" style=""WIDTH: 100%"">" & vbCrLf)
+
+                     ' Lookup Prompted Value
+                  ElseIf objRow("ValueType") = 5 Then
+                     Response.Write("        <SELECT STYLE=""width:100%;"" id=promptLookup_" & objRow("componentID") & " name=promptLookup_" & objRow("componentID") & " class=""combo"" style=""WIDTH: 100%"" onchange=""comboChange(" & objRow("componentID") & ")"">" & vbCrLf)
+
+                     fDefaultFound = False
+                     fFirstValueDone = False
+                     sFirstValue = ""
+
+                     rstLookupValues = GetLookupValues(CInt(objRow("fieldColumnID")))
+
+                     For Each objLookupRow As DataRow In rstLookupValues.Rows
+
+                        Response.Write("          <OPTION")
+
+                        If Not fFirstValueDone Then
+                           sFirstValue = objLookupRow(0).ToString()
+                           fFirstValueDone = True
                         End If
 
-                        Response.Write("        " & HttpUtility.HtmlEncode(objRow("PromptDescription")) & vbCrLf)
+                        Dim sOptionValue As String
 
-                        If iValueType = 3 Then
-                            Response.Write("      </label>" & vbCrLf)
+                        If rstLookupValues.Columns(0).DataType.Name.ToLower() = "datetime" Then
+                           ' Field is a date so format as such.
+                           sOptionValue = ConvertSQLDateToLocale(objLookupRow(0))
+                           If sOptionValue = ConvertSQLDateToLocale(objRow("valuecharacter").ToString()) Then
+                              Response.Write(" SELECTED")
+                              fDefaultFound = True
+                           End If
+                           Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
+                        ElseIf rstLookupValues.Columns(0).DataType.Name.ToLower() = "decimal" Then
+                           ' Field is a numeric so format as such.
+                           sOptionValue = Replace(CType(objLookupRow(0), String), ".", CType(Session("LocaleDecimalSeparator"), String))
+                           If (Not IsDBNull(objLookupRow(0))) And (Not IsDBNull(objRow("valuecharacter"))) Then
+                              If FormatNumber(objLookupRow(0)) = FormatNumber(objRow("valuecharacter")) Then
+                                 Response.Write(" SELECTED")
+                                 fDefaultFound = True
+                              End If
+                           End If
+                           Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
+                        ElseIf rstLookupValues.Columns(0).DataType.Name.ToLower() = "boolean" Then
+                           ' Field is a logic so format as such.
+                           sOptionValue = objLookupRow(0).ToString()
+                           If sOptionValue = objRow("valuecharacter") Then
+                              Response.Write(" SELECTED")
+                              fDefaultFound = True
+                           End If
+                           Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
+                        Else
+                           sOptionValue = RTrim(objLookupRow(0).ToString())
+                           If sOptionValue = objRow("valuecharacter") Then
+                              Response.Write(" SELECTED")
+                              fDefaultFound = True
+                           End If
+                           Response.Write(">" & HttpUtility.HtmlEncode(sOptionValue) & "</OPTION>" & vbCrLf)
                         End If
 
-                        Response.Write("      </td>" & vbCrLf)
-                        Response.Write("      <td width=20>&nbsp;&nbsp;</td>" & vbCrLf)
-                        Response.Write("      <td style='width:100%;'>" & vbCrLf)
+                     Next
 
-                        ' Character Prompted Value
-                        If objRow("ValueType") = 1 Then
-                            Response.Write("        <input type=text class=""text"" id=prompt_1_" & objRow("componentID") & " name=prompt_1_" & objRow("componentID") & " value=""" & HttpUtility.HtmlEncode(objRow("valuecharacter")) & """ maxlength=" & objRow("promptsize") & " style=""WIDTH: 100%"">" & vbCrLf)
-                            Response.Write("        <input type=hidden id=promptMask_" & objRow("componentID") & " name=promptMask_" & objRow("componentID") & " value=""" & HttpUtility.HtmlEncode(objRow("promptMask")) & """>" & vbCrLf)
+                     Response.Write("        </SELECT>" & vbCrLf)
 
-                            ' Numeric Prompted Value
-                        ElseIf objRow("ValueType") = 2 Then
-                            Response.Write("        <input type=text class=""text"" id=prompt_2_" & objRow("componentID") & " name=prompt_2_" & objRow("componentID") & " value=""" & Replace(CType(objRow("valuenumeric"), String), ".", CType(Session("LocaleDecimalSeparator"), String)) & """ style=""WIDTH: 100%"">" & vbCrLf)
-                            Response.Write("        <input type=hidden id=promptSize_" & objRow("componentID") & " name=promptSize" & objRow("componentID") & " value=""" & objRow("promptSize") & """>" & vbCrLf)
-                            Response.Write("        <input type=hidden id=promptDecs_" & objRow("componentID") & " name=promptDecs" & objRow("componentID") & " value=""" & objRow("promptDecimals") & """>" & vbCrLf)
+                     Dim sDefaultValue As String
 
-                            ' Logic Prompted Value
-                        ElseIf objRow("ValueType") = 3 Then
-                            Response.Write("        <input type=checkbox id=prompt_3_" & objRow("componentID") & " name=prompt_3_" & objRow("componentID") & " onclick=""checkboxClick(" & objRow("componentID") & ")""")
-                            Response.Write("            onclick=""checkboxClick('" & objRow("componentID") & "')""" & vbCrLf)
-                            Response.Write("            onmouseover=""try{checkbox_onMouseOver(this);}catch(e){}""" & vbCrLf)
-                            Response.Write("            onmouseout=""try{checkbox_onMouseOut(this);}catch(e){}""")
-                            If objRow("valuelogic") Then
-                                Response.Write(" CHECKED/>" & vbCrLf)
-                            Else
-                                Response.Write("/>" & vbCrLf)
-                            End If
-                            Response.Write("        <input type=hidden id=promptChk_" & objRow("componentID") & " name=promptChk_" & objRow("componentID") & " value=" & objRow("valuelogic") & ">" & vbCrLf)
+                     If fDefaultFound Then
+                        sDefaultValue = objRow("valuecharacter").ToString()
+                     Else
+                        sDefaultValue = sFirstValue
+                     End If
 
-                            ' Date Prompted Value
-                        ElseIf objRow("ValueType") = 4 Then
+                     Select Case rstLookupValues.Columns(0).DataType.Name.ToLower()
+                        Case "datetime"
+                           Response.Write("        <input type=hidden id=prompt_4_" & objRow("componentID") & " name=prompt_4_" & objRow("componentID") & " value=" & ConvertSQLDateToLocale(sDefaultValue) & ">" & vbCrLf)
 
-                            Response.Write("        <input type=text class=""datepicker"" id=prompt_4_" & objRow("componentID") & " name=prompt_4_" & objRow("componentID") & " value=""")
+                        Case "decimal"
+                           Response.Write("        <input type=hidden id=prompt_2_" & objRow("componentID") & " name=prompt_2_" & objRow("componentID") & " value=" & Replace(sDefaultValue, ".", CType(Session("LocaleDecimalSeparator"), String)) & ">" & vbCrLf)
 
-                            ' Set the date if available.
-                            Dim dtDate = CalculatePromptedDate(objRow)
-                            If (dtDate <> Nothing) Then
-                                Response.Write(ConvertSQLDateToLocale(CDate(dtDate)))
-                            End If
-                            Response.Write(""" style=""WIDTH: 100%"">" & vbCrLf)
+                        Case "boolean"
+                           Response.Write("        <input type=hidden id=prompt_3_" & objRow("componentID") & " name=prompt_3_" & objRow("componentID") & " value=" & sDefaultValue & ">" & vbCrLf)
 
-                            ' Lookup Prompted Value
-                        ElseIf objRow("ValueType") = 5 Then
-                            Response.Write("        <SELECT STYLE=""width:100%;"" id=promptLookup_" & objRow("componentID") & " name=promptLookup_" & objRow("componentID") & " class=""combo"" style=""WIDTH: 100%"" onchange=""comboChange(" & objRow("componentID") & ")"">" & vbCrLf)
+                        Case Else
+                           Response.Write("        <input type=hidden id=prompt_1_" & objRow("componentID") & " name=prompt_1_" & objRow("componentID") & " value=""" & HttpUtility.HtmlEncode(sDefaultValue) & """>" & vbCrLf)
 
-                            fDefaultFound = False
-                            fFirstValueDone = False
-                            sFirstValue = ""
+                     End Select
 
-                            rstLookupValues = GetLookupValues(CInt(objRow("fieldColumnID")))
+                     rstLookupValues = Nothing
+                  End If
 
-                            For Each objLookupRow As DataRow In rstLookupValues.Rows
+                  Response.Write("					</td>" & vbCrLf)
+                  Response.Write("					<td width=20 height=10>&nbsp;</td>" & vbCrLf)
+                  Response.Write("				</tr>" & vbCrLf)
 
-                                Response.Write("          <OPTION")
+               Next
 
-                                If Not fFirstValueDone Then
-                                    sFirstValue = objLookupRow(0).ToString()
-                                    fFirstValueDone = True
-                                End If
-
-                                Dim sOptionValue As String
-
-                                If rstLookupValues.Columns(0).DataType.Name.ToLower() = "datetime" Then
-                                    ' Field is a date so format as such.
-                                    sOptionValue = ConvertSQLDateToLocale(objLookupRow(0))
-                                    If sOptionValue = ConvertSQLDateToLocale(objRow("valuecharacter").ToString()) Then
-                                        Response.Write(" SELECTED")
-                                        fDefaultFound = True
-                                    End If
-                                    Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
-                                ElseIf rstLookupValues.Columns(0).DataType.Name.ToLower() = "decimal" Then
-                                    ' Field is a numeric so format as such.
-                                    sOptionValue = Replace(CType(objLookupRow(0), String), ".", CType(Session("LocaleDecimalSeparator"), String))
-                                    If (Not IsDBNull(objLookupRow(0))) And (Not IsDBNull(objRow("valuecharacter"))) Then
-                                        If FormatNumber(objLookupRow(0)) = FormatNumber(objRow("valuecharacter")) Then
-                                            Response.Write(" SELECTED")
-                                            fDefaultFound = True
-                                        End If
-                                    End If
-                                    Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
-                                ElseIf rstLookupValues.Columns(0).DataType.Name.ToLower() = "boolean" Then
-                                    ' Field is a logic so format as such.
-                                    sOptionValue = objLookupRow(0).ToString()
-                                    If sOptionValue = objRow("valuecharacter") Then
-                                        Response.Write(" SELECTED")
-                                        fDefaultFound = True
-                                    End If
-                                    Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
-                                Else
-                                    sOptionValue = RTrim(objLookupRow(0).ToString())
-                                    If sOptionValue = objRow("valuecharacter") Then
-                                        Response.Write(" SELECTED")
-                                        fDefaultFound = True
-                                    End If
-                                    Response.Write(">" & HttpUtility.HtmlEncode(sOptionValue) & "</OPTION>" & vbCrLf)
-                                End If
-
-                            Next
-
-                            Response.Write("        </SELECT>" & vbCrLf)
-
-                            Dim sDefaultValue As String
-
-                            If fDefaultFound Then
-                                sDefaultValue = objRow("valuecharacter").ToString()
-                            Else
-                                sDefaultValue = sFirstValue
-                            End If
-
-                            Select Case rstLookupValues.Columns(0).DataType.Name.ToLower()
-                                Case "datetime"
-                                    Response.Write("        <input type=hidden id=prompt_4_" & objRow("componentID") & " name=prompt_4_" & objRow("componentID") & " value=" & ConvertSQLDateToLocale(sDefaultValue) & ">" & vbCrLf)
-
-                                Case "decimal"
-                                    Response.Write("        <input type=hidden id=prompt_2_" & objRow("componentID") & " name=prompt_2_" & objRow("componentID") & " value=" & Replace(sDefaultValue, ".", CType(Session("LocaleDecimalSeparator"), String)) & ">" & vbCrLf)
-
-                                Case "boolean"
-                                    Response.Write("        <input type=hidden id=prompt_3_" & objRow("componentID") & " name=prompt_3_" & objRow("componentID") & " value=" & sDefaultValue & ">" & vbCrLf)
-
-                                Case Else
-                                    Response.Write("        <input type=hidden id=prompt_1_" & objRow("componentID") & " name=prompt_1_" & objRow("componentID") & " value=""" & HttpUtility.HtmlEncode(sDefaultValue) & """>" & vbCrLf)
-
-                            End Select
-
-                            rstLookupValues = Nothing
-                        End If
-
-                        Response.Write("					</td>" & vbCrLf)
-                        Response.Write("					<td width=20 height=10>&nbsp;</td>" & vbCrLf)
-                        Response.Write("				</tr>" & vbCrLf)
-
-                    Next
-
-                    Response.Write("</table>" & vbCrLf)
+               Response.Write("</table>" & vbCrLf)
 
 			%>
 
