@@ -741,125 +741,125 @@
 							</div>
 						</li>
 						<%
-							iRowNum += 1
-							fWFDisplayPendingSteps = False
+                        iRowNum += 1
+                        fWFDisplayPendingSteps = False
 
-						Case ElementType.DatabaseValue
-									
-							' DBValue Formatting options...
-							Dim fUseFormatting = navlink.UseFormatting
-									
-							Dim iFormatting_DecimalPlaces = navlink.Formatting_DecimalPlaces
-							Dim fFormatting_Use1000Separator = navlink.Formatting_Use1000Separator
-							Dim sFormatting_Prefix = Html.Encode(navlink.Formatting_Prefix)
-							Dim sFormatting_Suffix = Html.Encode(navlink.Formatting_Suffix)
-		
-							' DBValue Conditional Formatting options...
-							Dim fUseConditionalFormatting = navlink.UseConditionalFormatting
+                     Case ElementType.DatabaseValue
 
-							Dim sCFOperator(2) As String
-							Dim sCFValue(2) As String
-							Dim sCFStyle(2) As String
-							Dim sCFColour(2) As String
-									
-							sCFOperator(0) = navlink.ConditionalFormatting_Operator_1
-							sCFOperator(1) = navlink.ConditionalFormatting_Operator_2
-							sCFOperator(2) = navlink.ConditionalFormatting_Operator_3
-		
-							sCFValue(0) = navlink.ConditionalFormatting_Value_1
-							sCFValue(1) = navlink.ConditionalFormatting_Value_2
-							sCFValue(2) = navlink.ConditionalFormatting_Value_3
-		
-							sCFStyle(0) = navlink.ConditionalFormatting_Style_1
-							sCFStyle(1) = navlink.ConditionalFormatting_Style_2
-							sCFStyle(2) = navlink.ConditionalFormatting_Style_3
-		
-							sCFColour(0) = navlink.ConditionalFormatting_Colour_1
-							sCFColour(1) = navlink.ConditionalFormatting_Colour_2
-							sCFColour(2) = navlink.ConditionalFormatting_Colour_3
+                        ' DBValue Formatting options...
+                        Dim fUseFormatting = navlink.UseFormatting
 
-							' Set the conditional formatting defaults
-							Dim sCFForeColor = "" + Session("Config-linkspagebuttontext-colour")
-							Dim sCFFontBold = "" + Session("Config-linkspagebuttontext-bold")
-							Dim sCFFontItalic = "" + Session("Config-linkspagebuttontext-italic")
-							Dim sCFVisible = True
-		
-						    Dim fFormattingApplies = True
-									
-							Dim sErrorDescription = ""
-							Dim sPrompt = navlink.Text
-							sText = ""
-									
-							' Create the reference to the DLL (Report Class)
-							Dim objChart = New HR.Intranet.Server.clsChart
-							objChart.SessionInfo = objSession
-			
-							Err.Clear()
-							Dim mrstDbValueData = objChart.GetChartData(navlink.Chart_TableID, navlink.Chart_ColumnID, navlink.Chart_FilterID, _
-																													navlink.Chart_AggregateType, navlink.Element_Type, 0, 0, 0, 0, navlink.Chart_SortOrderID, _
-																													navlink.Chart_SortDirection, navlink.Chart_ColourID)
+                        Dim iFormatting_DecimalPlaces = navlink.Formatting_DecimalPlaces
+                        Dim fFormatting_Use1000Separator = navlink.Formatting_Use1000Separator
+                        Dim sFormatting_Prefix = Html.Encode(navlink.Formatting_Prefix)
+                        Dim sFormatting_Suffix = Html.Encode(navlink.Formatting_Suffix)
 
-							If Err.Number <> 0 Then
-								sErrorDescription = "The Database Values could not be retrieved." & vbCrLf & FormatError(Err.Description)
-							End If
-									
-							If Len(sErrorDescription) = 0 Then
+                        ' DBValue Conditional Formatting options...
+                        Dim fUseConditionalFormatting = navlink.UseConditionalFormatting
 
-								For Each objRow As DataRow In mrstDbValueData.Rows
-									sText = objRow(0).ToString()
-								Next
-								Dim fDoFormatting As Boolean
-								If fUseConditionalFormatting = True Then
-									For jnCount = 0 To 2
-										fDoFormatting = False
-										If sCFValue(jnCount) <> vbNullString And sText <> "No Data" And sText <> "No Access" Then 'objChart.GetChartData returns either "No Data" or "No Access" if there is a permission-denied problem
-											Select Case sCFOperator(jnCount)
-												Case "is equal to"
-													If CType(sText, Int32) = CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
-												Case "is not equal to"
-													If CType(sText, Int32) <> CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
-												Case "is less than or equal to"
-													If CType(sText, Int32) <= CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
-												Case "is greater than or equal to"
-													If CType(sText, Int32) >= CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
-												Case "is less than"
-													If CType(sText, Int32) < CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
-												Case "is greater than"
-													If CType(sText, Int32) > CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
-											End Select
-														
-											If fDoFormatting Then
-												sCFForeColor = sCFColour(jnCount)
-												Select Case sCFStyle(jnCount)
-													Case "Bold"
-														sCFFontBold = "font-weight:bold"
-													Case "Italic"
-														sCFFontItalic = "font-style:italic"
-													Case "Bold & Italic"
-														sCFFontItalic = "font-weight:bold;font-style:italic"
-													Case "Hidden"
-														sCFVisible = False
-													Case "Normal"
-														fFormattingApplies = True
-													Case Else
-														fFormattingApplies = False
-												End Select
-												Exit For
-											End If
-										End If
-									Next
-								Else
-									fFormattingApplies = False
-								End If
+                        Dim sCFOperator(2) As String
+                        Dim sCFValue(2) As String
+                        Dim sCFStyle(2) As String
+                        Dim sCFColour(2) As String
+
+                        sCFOperator(0) = navlink.ConditionalFormatting_Operator_1
+                        sCFOperator(1) = navlink.ConditionalFormatting_Operator_2
+                        sCFOperator(2) = navlink.ConditionalFormatting_Operator_3
+
+                        sCFValue(0) = navlink.ConditionalFormatting_Value_1
+                        sCFValue(1) = navlink.ConditionalFormatting_Value_2
+                        sCFValue(2) = navlink.ConditionalFormatting_Value_3
+
+                        sCFStyle(0) = navlink.ConditionalFormatting_Style_1
+                        sCFStyle(1) = navlink.ConditionalFormatting_Style_2
+                        sCFStyle(2) = navlink.ConditionalFormatting_Style_3
+
+                        sCFColour(0) = navlink.ConditionalFormatting_Colour_1
+                        sCFColour(1) = navlink.ConditionalFormatting_Colour_2
+                        sCFColour(2) = navlink.ConditionalFormatting_Colour_3
+
+                        ' Set the conditional formatting defaults
+                        Dim sCFForeColor = "" + Session("Config-linkspagebuttontext-colour")
+                        Dim sCFFontBold = "" + Session("Config-linkspagebuttontext-bold")
+                        Dim sCFFontItalic = "" + Session("Config-linkspagebuttontext-italic")
+                        Dim sCFVisible = True
+
+                        Dim fFormattingApplies = True
+
+                        Dim sErrorDescription = ""
+                        Dim sPrompt = navlink.Text
+                        sText = ""
+
+                        ' Create the reference to the DLL (Report Class)
+                        Dim objChart = New HR.Intranet.Server.clsChart
+                        objChart.SessionInfo = objSession
+
+                        Err.Clear()
+                        Dim mrstDbValueData = objChart.GetChartData(navlink.Chart_TableID, navlink.Chart_ColumnID, navlink.Chart_FilterID, _
+                                                                                          navlink.Chart_AggregateType, navlink.Element_Type, 0, 0, 0, 0, navlink.Chart_SortOrderID, _
+                                                                                          navlink.Chart_SortDirection, navlink.Chart_ColourID)
+
+                        If Err.Number <> 0 Then
+                           sErrorDescription = "The Database Values could not be retrieved." & vbCrLf & FormatError(Err.Description)
+                        End If
+
+                        If Len(sErrorDescription) = 0 Then
+
+                           For Each objRow As DataRow In mrstDbValueData.Rows
+                              sText = objRow(0).ToString()
+                           Next
+                           Dim fDoFormatting As Boolean
+                           If fUseConditionalFormatting = True Then
+                              For jnCount = 0 To 2
+                                 fDoFormatting = False
+                                 If sCFValue(jnCount) <> vbNullString And sText <> "No Data" And sText <> "No Access" Then 'objChart.GetChartData returns either "No Data" or "No Access" if there is a permission-denied problem
+                                    Select Case sCFOperator(jnCount)
+                                       Case "is equal to"
+                                          If Double.Parse(sText, System.Globalization.CultureInfo.InvariantCulture) = Double.Parse(sCFValue(jnCount), System.Globalization.CultureInfo.InvariantCulture) Then fDoFormatting = True
+                                       Case "is not equal to"
+                                          If Double.Parse(sText, System.Globalization.CultureInfo.InvariantCulture) <> Double.Parse(sCFValue(jnCount), System.Globalization.CultureInfo.InvariantCulture) Then fDoFormatting = True
+                                       Case "is less than or equal to"
+                                          If Double.Parse(sText, System.Globalization.CultureInfo.InvariantCulture) <= Double.Parse(sCFValue(jnCount), System.Globalization.CultureInfo.InvariantCulture) Then fDoFormatting = True
+                                       Case "is greater than or equal to"
+                                          If Double.Parse(sText, System.Globalization.CultureInfo.InvariantCulture) >= Double.Parse(sCFValue(jnCount), System.Globalization.CultureInfo.InvariantCulture) Then fDoFormatting = True
+                                       Case "is less than"
+                                          If Double.Parse(sText, System.Globalization.CultureInfo.InvariantCulture) < Double.Parse(sCFValue(jnCount), System.Globalization.CultureInfo.InvariantCulture) Then fDoFormatting = True
+                                       Case "is greater than"
+                                          If Double.Parse(sText, System.Globalization.CultureInfo.InvariantCulture) > Double.Parse(sCFValue(jnCount), System.Globalization.CultureInfo.InvariantCulture) Then fDoFormatting = True
+                                    End Select
+
+                                    If fDoFormatting Then
+                                       sCFForeColor = sCFColour(jnCount)
+                                       Select Case sCFStyle(jnCount)
+                                          Case "Bold"
+                                             sCFFontBold = "font-weight:bold"
+                                          Case "Italic"
+                                             sCFFontItalic = "font-style:italic"
+                                          Case "Bold & Italic"
+                                             sCFFontItalic = "font-weight:bold;font-style:italic"
+                                          Case "Hidden"
+                                             sCFVisible = False
+                                          Case "Normal"
+                                             fFormattingApplies = True
+                                          Case Else
+                                             fFormattingApplies = False
+                                       End Select
+                                       Exit For
+                                    End If
+                                 End If
+                              Next
+                           Else
+                              fFormattingApplies = False
+                           End If
 
 
-							Else	 ' no results - return zero
-								sText = "No Data"
-							End If
-								
-							If sText <> "No Data" And sCFVisible = True Then
-									
-								If fFormattingApplies Then
+                        Else   ' no results - return zero
+                           sText = "No Data"
+                        End If
+
+                        If sText <> "No Data" And sCFVisible = True Then
+
+                           If fFormattingApplies Then
 						%>
 						<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
 							data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
