@@ -55,6 +55,13 @@
 			}
 		});
 
+      $(document).on('blur', '.datepicker', function (sender) {
+	    if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
+	       OpenHR.modalMessage("Invalid date value entered");
+         sender.target.value = ""
+	    	$(sender.target.id).focus();
+	    }
+	});
 		
 		var frmFilterForm = document.getElementById("frmFilterForm");
 
@@ -860,8 +867,8 @@
 			if (iDataType == 11) {
 				// Date column.
 				// Ensure that the value entered is a date.
-				sValue = frmFilterForm.selectDate.value;
-
+			   sValue = frmFilterForm.selectDate.value;
+            
 				if (sValue.length == 0) {
 					sAddString = sAddString.concat(frmFilterForm.selectConditionDate.options[frmFilterForm.selectConditionDate.selectedIndex].text);
 					sAddString = sAddString.concat("	");
