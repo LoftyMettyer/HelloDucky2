@@ -1623,7 +1623,7 @@
     <Content Include="Content\OpenHR.css" />
     <Content Include="Content\widgetCSS\wdg_oHRHoliday.css" />
     <Content Include="Scripts\FormScripts\menu.js" />
-    <Content Include="Scripts\jquery\jsTree\jquery.jstree.js" />
+    <Content Include="Scripts\jquery\jsTree\jquery.jstree_MODIFIED.js" />
     <Content Include="Scripts\officebar\winkit\AbsenceBreakdown64DIS.png" />
     <Content Include="Scripts\officebar\winkit\AbsenceBreakdown64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\AbsenceBreakdown64NORM.png" />

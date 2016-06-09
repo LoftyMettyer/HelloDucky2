@@ -21,26 +21,26 @@ Namespace App_Start
 					"~/Scripts/date.js"))
 
 
-			' JQuery UI
-			bundles.Add(New ScriptBundle("~/bundles/jQueryUI7").Include(
-				"~/Scripts/jquery-{version}.js",
-				"~/Scripts/jquery-ui-{version}.js",
-				"~/Scripts/jquery.jqGrid.js",
-				"~/Scripts/jquery.jqGrid.setColWidth.js",
-				"~/Scripts/jquery/grid.locale-en.js",
-				"~/Scripts/jquery/datepicker-locale.js",
-				"~/Scripts/jquery/jsTree/jquery.jstree.js",
-				"~/Scripts/jquery.gridster.js",
-				"~/Scripts/jquery/jquery.menu.js",
-				"~/Scripts/jquery.maskedinput_MODIFIED.js",
-				"~/Scripts/jquery.mousewheel.js",
-				"~/Scripts/jquery.numeric.js",
-				"~/Scripts/jquery/jOrgChart/prettify.js",
-				"~/Scripts/jquery/jOrgChart/jquery.jOrgChart.js",
-				"~/Scripts/officebar/jquery.officebar_MODIFIED.js"))
+         ' JQuery UI
+         bundles.Add(New ScriptBundle("~/bundles/jQueryUI7").Include(
+            "~/Scripts/jquery-{version}.js",
+            "~/Scripts/jquery-ui-{version}.js",
+            "~/Scripts/jquery.jqGrid.js",
+            "~/Scripts/jquery.jqGrid.setColWidth.js",
+            "~/Scripts/jquery/grid.locale-en.js",
+            "~/Scripts/jquery/datepicker-locale.js",
+            "~/Scripts/jquery/jsTree/jquery.jstree_MODIFIED.js",
+            "~/Scripts/jquery.gridster.js",
+            "~/Scripts/jquery/jquery.menu.js",
+            "~/Scripts/jquery.maskedinput_MODIFIED.js",
+            "~/Scripts/jquery.mousewheel.js",
+            "~/Scripts/jquery.numeric.js",
+            "~/Scripts/jquery/jOrgChart/prettify.js",
+            "~/Scripts/jquery/jOrgChart/jquery.jOrgChart.js",
+            "~/Scripts/officebar/jquery.officebar_MODIFIED.js"))
 
-			' OpenHR core
-			bundles.Add(New ScriptBundle("~/bundles/OpenHR_General").Include(
+         ' OpenHR core
+         bundles.Add(New ScriptBundle("~/bundles/OpenHR_General").Include(
 				"~/Scripts/openHR.js",
 				"~/Scripts/FormScripts/general.js",
 				"~/Scripts/FormScripts/menu.js",

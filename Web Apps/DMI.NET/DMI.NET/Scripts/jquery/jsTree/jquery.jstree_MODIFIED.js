@@ -2144,7 +2144,7 @@
 						this.sort(m.children("ul"));
 					}, this));
 		},
-		defaults : function (a, b) { return this.get_text(a) > this.get_text(b) ? 1 : -1; },
+		defaults : function (a, b) { return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1; },
 		_fn : {
 			sort : function (obj) {
 				var s = this._get_settings().sort,
