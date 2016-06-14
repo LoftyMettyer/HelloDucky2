@@ -2,7 +2,7 @@
 <%@ Import Namespace="DMI.NET.Code.Extensions" %>
 
 <div class="pageTitleDiv" style="margin-bottom: 15px">
-	<span class="pageTitle" id="PopupReportDefinition_PageTitle">'<%:Model.utilName%>' is in use</span>
+	<span class="pageTitle" id="PopupReportDefinition_PageTitle">'<%:Model.utilName%>' is in use and cannot be deleted</span>
 </div>
 
 <fieldset id="definitionusagediv">
@@ -27,7 +27,7 @@
 			repeatitems: false,
 			id: "Name" //index of the column with the PK in it
 		},
-		colNames: ['Name'],
+		colNames: ['Usage'],
 		colModel: [
 		{ name: 'Name', index: 'Name', align: "left" }],
 		rowNum: 10000,
