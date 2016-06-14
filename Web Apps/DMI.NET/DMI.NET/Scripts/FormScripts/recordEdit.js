@@ -1990,7 +1990,7 @@ function addHTMLControlValues(controlValues) {
 
 							//add text to radio button
 							label.style.marginLeft = "3px";
-							label.style.marginRight = "32px";
+							label.style.marginRight = "22px";
 							label.htmlFor = uniqueID + "_" + i;
 							label.style.verticalAlign = 'middle';
 							
