@@ -1187,8 +1187,10 @@ Public Class Report
 							' If we cant see a column, then get outta here
 							If pblnNoSelect Then
 								GenerateSQLSelect = False
-								mstrErrorString = vbNewLine & vbNewLine & "You do not have permission to see the column '" & objReportItem.ColumnName & "'" & vbNewLine & "either directly or through any views."
-								Exit Function
+                        mstrErrorString = vbNewLine & vbNewLine & "You do not have permission to see the column '" & objReportItem.ColumnName & "'" & vbNewLine & "either directly or through any views."
+                        Logs.AddDetailEntry(mstrErrorString)
+                        Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+                        Exit Function
 							End If
 
 
@@ -2313,8 +2315,10 @@ Public Class Report
 
 					If pblnNoSelect Then
 						GenerateSQLOrderBy = False
-						mstrErrorString = vbNewLine & "You do not have permission to see the column '" & mstrOrderByColumn & "' " & vbNewLine & "either directly or through any views."
-						Exit Function
+                  mstrErrorString = vbNewLine & "You do not have permission to see the column '" & mstrOrderByColumn & "' " & vbNewLine & "either directly or through any views."
+                  Logs.AddDetailEntry(mstrErrorString)
+                  Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+                  Exit Function
 					End If
 				End If
 
@@ -2382,8 +2386,10 @@ Public Class Report
 
 					If pblnNoSelect Then
 						GenerateSQLOrderBy = False
-						mstrErrorString = vbNewLine & "You do not have permission to see the column '" & mstrGroupByColumn & "' " & vbNewLine & "either directly or through any views."
-						Exit Function
+                  mstrErrorString = vbNewLine & "You do not have permission to see the column '" & mstrGroupByColumn & "' " & vbNewLine & "either directly or through any views."
+                  Logs.AddDetailEntry(mstrErrorString)
+                  Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+                  Exit Function
 					End If
 				End If
 				'*********************************************************************************

@@ -1171,8 +1171,10 @@ TidyUpAndExit:
 			If blnNoSelect Then
 				strSQLRef = vbNullString
 				CheckColumnPermissions = False
-				mstrErrorString = vbNewLine & vbNewLine & "You do not have permission to see the column '" & pstrColumnName & "'" & vbNewLine & "either directly or through any views."
-				Exit Function
+            mstrErrorString = vbNewLine & vbNewLine & "You do not have permission to see the column '" & pstrColumnName & "'" & vbNewLine & "either directly or through any views."
+            Logs.AddDetailEntry(mstrErrorString)
+            Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+            Exit Function
 			End If
 
 			If Not blnOK Then

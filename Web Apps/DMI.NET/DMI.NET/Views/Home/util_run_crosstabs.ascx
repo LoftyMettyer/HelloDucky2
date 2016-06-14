@@ -15,34 +15,33 @@
 </script>
 
 <%
-	Dim objCrossTab As CrossTab
-		
-	objCrossTab = CType(Session("objCrossTab" & Session("UtilID")), CrossTab)
-	If (objCrossTab.ErrorString = "") Then
+   Dim objCrossTab As CrossTab
 
-		Response.Write("<script type=""text/javascript"">" & vbCrLf)
-		Response.Write("   function util_run_crosstabs_window_onload() {" & vbCrLf)
+   objCrossTab = CType(Session("objCrossTab" & Session("UtilID")), CrossTab)
+   If (objCrossTab.ErrorString = "") Then
 
-		Response.Write("	crosstab_loadAddRecords();" & vbCrLf)
-		Response.Write("    frmError.txtEventLogID.value = """ & CleanStringForJavaScript(objCrossTab.EventLogID) & """;" & vbCrLf)
-		Response.Write("  }" & vbCrLf)
-		Response.Write("</script>" & vbCrLf)
+      Response.Write("<script type=""text/javascript"">" & vbCrLf)
+      Response.Write("   function util_run_crosstabs_window_onload() {" & vbCrLf)
 
-		objCrossTab.EventLogChangeHeaderStatus(EventLog_Status.elsSuccessful)
+      Response.Write("	crosstab_loadAddRecords();" & vbCrLf)
+      Response.Write("    frmError.txtEventLogID.value = """ & CleanStringForJavaScript(objCrossTab.EventLogID) & """;" & vbCrLf)
+      Response.Write("  }" & vbCrLf)
+      Response.Write("</script>" & vbCrLf)
 
-	Else
-		
-		If objCrossTab.NoRecords Then
-			objCrossTab.EventLogChangeHeaderStatus(EventLog_Status.elsSuccessful)
-		Else
-			objCrossTab.EventLogChangeHeaderStatus(EventLog_Status.elsFailed)
-		End If
-		
-		If objCrossTab.ErrorString <> "" Then
-			objCrossTab.FailedMessage = objCrossTab.ErrorString
-		End If
+      objCrossTab.EventLogChangeHeaderStatus(EventLog_Status.elsSuccessful)
 
-	End If
+   Else
+      If objCrossTab.NoRecords AndAlso objCrossTab.ErrorString = "" Then
+         objCrossTab.EventLogChangeHeaderStatus(EventLog_Status.elsSuccessful)
+      Else
+         objCrossTab.EventLogChangeHeaderStatus(EventLog_Status.elsFailed)
+      End If
+
+      If objCrossTab.ErrorString <> "" Then
+         objCrossTab.FailedMessage = objCrossTab.ErrorString
+      End If
+
+   End If
 %>
 
 <div>
