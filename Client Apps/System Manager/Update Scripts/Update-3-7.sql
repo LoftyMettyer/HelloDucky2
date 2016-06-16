@@ -7,7 +7,7 @@ DECLARE @iRecCount integer,
 	@sDBVersion varchar(10),
 	@DBName varchar(255),
 	@Command varchar(8000),
-	@iSQLVersion int,
+	@iSQLVersion numeric(3,1),
 	@NVarCommand nvarchar(4000),
 	@sObject sysname,
 	@sObjectType char(2),
@@ -47,7 +47,7 @@ BEGIN
 END
 
 -- Only allow script to be run on or above SQL2005
-SELECT @iSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2))
+SELECT @iSQLVersion = convert(numeric(3,1), convert(nvarchar(4), SERVERPROPERTY('ProductVersion')));
 IF (@iSQLVersion < 9)
 BEGIN
 	RAISERROR('The SQL Server is incompatible with this version of HR Pro', 16, 1)

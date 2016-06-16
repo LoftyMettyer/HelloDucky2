@@ -6,7 +6,7 @@ DECLARE @iRecCount integer,
 	@sDBVersion varchar(10),
 	@DBName varchar(255),
 	@Command varchar(max),
-	@iSQLVersion int,
+	@iSQLVersion numeric(3,1),
 	@NVarCommand nvarchar(max),
 	@sObject sysname,
 	@sObjectType char(2),
@@ -66,7 +66,7 @@ BEGIN
 END
 
 -- Only allow script to be run on SQL2008 or above
-SELECT @iSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2))
+SELECT @iSQLVersion = convert(numeric(3,1), convert(nvarchar(4), SERVERPROPERTY('ProductVersion')));
 IF (@iSQLVersion < 9)
 BEGIN
 	RAISERROR('The SQL Server is incompatible with this version of OpenHR', 16, 1)

@@ -6,7 +6,7 @@
 DECLARE @iRecCount integer,
 	@sDBVersion varchar(10),
 	@DBName varchar(255),
-	@iSQLVersion int,
+	@iSQLVersion numeric(3,1),
 	@Command varchar(8000),
 	@NVarCommand nvarchar(4000),
     @sObject sysname,
@@ -27,7 +27,7 @@ DECLARE @sSPCode_7 nvarchar(4000)
 /* ----------------------------------- */
 SET NOCOUNT ON
 SET @DBName = DB_NAME()
-SELECT @iSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2))
+SELECT @iSQLVersion = convert(numeric(3,1), convert(nvarchar(4), SERVERPROPERTY('ProductVersion')));
 
 /* ------------------------------------------------------- */
 /* Get the database version from the ASRSysSettings table. */

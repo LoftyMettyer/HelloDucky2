@@ -10,8 +10,7 @@
   DECLARE @SchedTime varchar(8000)
 
   DECLARE @numSQLVersion numeric(3,1)
-
-
+  
 
   SET @SchedType = 4 --default to daily
   SELECT @SchedType = settingvalue
@@ -33,7 +32,7 @@
   INNER JOIN master..sysprocesses ON master..sysdatabases.dbid = master..sysprocesses.dbid
   WHERE master..sysprocesses.spid = @@spid
 
-  SELECT @numSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2))
+  SELECT @numSQLVersion = convert(numeric(3,1), convert(nvarchar(4), SERVERPROPERTY('ProductVersion')));
 
   DECLARE @NVarCommand nvarchar(4000)
 
