@@ -3394,6 +3394,7 @@ Public Sub DropWorkflowObjects()
   ' Drop Workflow stored procedures
   DropProcedure msCheckPendingSteps_PROCEDURENAME
   DropProcedure msIntCheckPendingSteps_PROCEDURENAME
+  DropProcedure msWorkspaceCheckPendingSteps_PROCEDURENAME
   DropProcedure msGetEmailAddresses_PROCEDURENAME
   DropProcedure msGetDelegatedRecords_PROCEDURENAME
   DropProcedure msOutOfOfficeCheck_PROCEDURENAME
