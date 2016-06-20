@@ -106,7 +106,7 @@
 				<li class="pendingworkflowlink-displaytype">
 					<div class="wrapupcontainer">
 						<div class="wrapuptext">
-							<p class="pendingworkflowlinkseparator">Pending Workflows (max. four)</p>
+							<p class="pendingworkflowlinkseparator">Pending Workflows (max. four) <a href="#" onclick="relocateURL('WorkflowPendingSteps', 0);" class="icon-inbox" title="Show All Pending Workflows"></a></p>
 						</div>
 					</div>
 					<div class="gridster pendingworkflowlinkcontent" id="gridster_PendingWorkflow">
@@ -908,7 +908,7 @@
 											sText = sText.Substring(0, 30) + "..."
 										End If
 										sText = sText.Replace("--", "")
-									   sText = sText.Replace("'", """")%>
+										sText = sText.Replace("'", """")%>
                               <%-- SSI Tiles Layout - if the Database value label contains a colon at the end then remove it --%>
                               <% If Session("CurrentLayout").ToString() = Layout.tiles.ToString() AndAlso sText.EndsWith(":") Then
                                  sText = sText.substring(0,sText.length() - 1)
