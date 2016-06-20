@@ -1144,14 +1144,17 @@ function value_changeType() {
 		if($('#frmMainForm #cboValueType').val() == "4") {
 			//Date value
 			$('#txtValue').datepicker();
-			$('#txtValue').on('change', function(sender) {
-				if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
-					OpenHR.modalMessage("Invalid date value entered.");
+			$('#txtValue').on('blur', function(sender) {
+			   if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
+			      sender.preventDefault();
+				   OpenHR.modalMessage("Invalid date value entered.");				   
+				   $('#txtValue').datepicker("setDate", new Date());
+				   $('#cmdOK').focus();				   
 				}
 			});
 		} else {
 			$('#txtValue').datepicker('destroy');
-			$('#txtValue').off('change');
+			$('#txtValue').off('blur');
 		}
 	}
 
@@ -1484,14 +1487,18 @@ function pVal_changeType() {
 
 	if (iPValType == 4) {
 		$('#txtPValDefault').datepicker();
-		$('#txtPValDefault').on('change', function (sender) {
-			if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
-				OpenHR.modalMessage("Invalid date value entered.");
+		$('#txtPValDefault').on('blur', function (sender) {
+		   if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
+		      sender.preventDefault();
+			   OpenHR.modalMessage("Invalid date value entered.");
+			   $('#txtPValDefault').datepicker("setDate", new Date());
+			   $('#cmdOK').focus();
+			   $('#txtPValDefault').datepicker('widget').hide('true');
 			}
 		});
 	} else {
 		$('#txtPValDefault').datepicker('destroy');
-		$('#txtPValDefault').off('change');
+		$('#txtPValDefault').off('blur');
 	}
 
 	frmMainForm.txtPValDefault.value = "";
