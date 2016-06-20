@@ -880,6 +880,10 @@
 										End If
 									sText = sText.Replace("--", "")
 									sText = sText.Replace("'", """")%>
+                           <%-- SSI Tiles Layout - if the Database value label contains a colon at the end then remove it --%>
+                            <% If Session("CurrentLayout").ToString() = Layout.tiles.ToString() AndAlso sText.EndsWith(":") Then
+                              sText = sText.substring(0,sText.length() - 1)
+                             End If%>
 									<%: sText %>
 								</p>
 							</a>
@@ -904,7 +908,11 @@
 											sText = sText.Substring(0, 30) + "..."
 										End If
 										sText = sText.Replace("--", "")
-										sText = sText.Replace("'", """")%>
+									   sText = sText.Replace("'", """")%>
+                              <%-- SSI Tiles Layout - if the Database value label contains a colon at the end then remove it --%>
+                              <% If Session("CurrentLayout").ToString() = Layout.tiles.ToString() AndAlso sText.EndsWith(":") Then
+                                 sText = sText.substring(0,sText.length() - 1)
+                             End If%>
 									<%: sText%>
 								</p>
 							</a>
