@@ -75,7 +75,7 @@
 			
 			//theme selection is allowed in wirefamemode only
 			if ($("#cmbLayout :selected").text() != "") {
-					document.getElementById("btnDiv2OK").disabled = false;
+			      button_disable($("#btnDiv2OK")[0], false);
 					if ($("#cmbLayout :selected").text() != "wireframe") {
 							document.getElementById("cmbTheme").disabled = true;
 							document.getElementById("cmbTheme").value = "";
@@ -83,16 +83,16 @@
 					else {
 							document.getElementById("cmbTheme").disabled = false;
 							if ($("#cmbTheme :selected").text() == "") {
-									document.getElementById("btnDiv2OK").disabled = true;
-							}
+							   button_disable($("#btnDiv2OK")[0], true);
+			      	  }
 							else {
-									document.getElementById("btnDiv2OK").disabled = false;
+							   button_disable($("#btnDiv2OK")[0], false);
 							}
 					}
 			}
 			else {
 					document.getElementById("cmbTheme").value = "";
-					document.getElementById("btnDiv2OK").disabled = true;
+					button_disable($("#btnDiv2OK")[0], true);
 			}
 	}
 
