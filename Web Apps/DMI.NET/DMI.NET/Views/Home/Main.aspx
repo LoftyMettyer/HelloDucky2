@@ -62,13 +62,14 @@
 							$("#workframeset").css("left", "30px");
 							// $("#reportframeset").css("left", "30px");
 							$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/expand.png") %>');
-
+						   $(".ContextMenu-panel").resizable("disable");
 						} else {
 							$('#menuframe').animate({ left: '0' }, contextMenuTab.speed)
 								.addClass('open');
 							$("#workframeset").css("left", containerWidth + 30);
 							// $("#reportframeset").css("left", "350px");
 							$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/retract.png") %>');
+						   $(".ContextMenu-panel").resizable("enable");
 							}
 
 						//resize defsel/find screen accordingly.
@@ -158,7 +159,8 @@
 			var doit;
 			var minHeight = $('#menuframe').height();
 			$('.ContextMenu-panel').resizable({
-				handles: 'e,w',
+			   handles: 'e,w',
+			   minWidth: 30,
 				resize: function () {
 					clearTimeout(doit);
 					doit = setTimeout(resizedw, 100);
@@ -249,8 +251,8 @@
 	}
 
 	function resizedw(splitPos) {
-		if (!(Number(splitPos) > 0)) {
-			splitPos = $('.ContextMenu-panel').width();
+	   if (!(Number(splitPos) > 0)) {
+		   splitPos = $('.ContextMenu-panel').width();
 		} else {
 			$('#menuframe').width(splitPos);
 		}
