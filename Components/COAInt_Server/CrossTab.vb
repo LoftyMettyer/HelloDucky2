@@ -906,8 +906,8 @@ Public Class CrossTab
 
 			If rsCrossTabData.Rows.Count = 0 Then
 				mstrStatusMessage = "No records meet the selection criteria."
-				Logs.AddDetailEntry("Completed successfully. " & mstrStatusMessage)
-				Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+                Logs.AddDetailEntry("Completed successfully. ")
+                Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 				mblnNoRecords = True
 				fOK = False
 			End If
