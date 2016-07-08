@@ -39,11 +39,10 @@
 					repeatitems: false,
 					id: "UserName" //index of the column with the PK in it
 				},
-				colNames: ['User Name', 'Device', 'Area'],
+				colNames: ['User Name', 'Area'],
 				colModel: [
-					{ name: 'UserName', index: 'UserName', width:160 },
-					{ name: 'DeviceBrowser', index: 'Device', width: 230 },
-					{ name: 'WebAreaName', index: 'WebAreaName', width: 120 }
+               { name: 'UserName', index: 'UserName', width: 390 },
+               { name: 'WebAreaName', index: 'WebAreaName', width: 120 }
 				],
 				autowidth: false,
 				width: 560,
