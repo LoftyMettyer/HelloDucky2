@@ -75,7 +75,7 @@
 									case "decimal":
 										var numDecimals = Number(aColumnType[2]);
 										var sThousandSeparator = (aColumnType[3] === 'true') ? OpenHR.LocaleThousandSeparator() : "";
-										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'number', formatoptions: { thousandsSeparator: sThousandSeparator, decimalSeparator: OpenHR.LocaleDecimalSeparator(), decimalPlaces: numDecimals, disabled: true }, align: 'right', width: 100 });
+										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'number', formatoptions: { defaultValue: "", thousandsSeparator: sThousandSeparator, decimalSeparator: OpenHR.LocaleDecimalSeparator(), decimalPlaces: numDecimals, disabled: true }, align: 'right', width: 100 });										
 										break;
 									case "datetime": //Date - 135
 										colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: dateFormat, newformat: dateFormat, disabled: true }, align: 'left', width: 100 });
@@ -114,7 +114,7 @@
 				}
 			}
 
-			//create the column layout:
+		   //create the column layout:
 			var shrinkToFit = false;
 			if (colMode.length < 8) shrinkToFit = true;
 
@@ -138,7 +138,7 @@
 				afterShowForm: function ($form) {
 					$("#dData", $form.parent()).click();
 				},
-				beforeSelectRow: handleMultiSelect // handle multi select
+				beforeSelectRow: handleMultiSelect // handle multi select            
 			}).jqGrid('hideCol', 'cb');
 
 			//resize the grid to the height of its container.		
@@ -187,124 +187,130 @@
 
 <div id="frmPicklistData">
 	<%
-		Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-		Dim sErrorDescription As String = ""
-		Dim sThousandColumns As String = ""
-		Dim sBlankIfZeroColumns As String = ""
+      Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+      Dim sErrorDescription As String = ""
+      Dim sThousandColumns As String = ""
+      Dim sBlankIfZeroColumns As String = ""
 
-		Response.Write("<input type='hidden' id=txtErrorMessage name=txtErrorMessage value=""" & Replace(Session("errorMessage"), """", "&quot;") & """>" & vbCrLf)
+      Response.Write("<input type='hidden' id=txtErrorMessage name=txtErrorMessage value=""" & Replace(Session("errorMessage"), """", "&quot;") & """>" & vbCrLf)
 
-		' Get the required record count if we have a query.
-		If Session("picklistSelectionDataLoading") = False Then
-			
-			Try
-				Get1000SeparatorBlankIfZeroFindColumns(CleanNumeric(Session("tableID")), CleanNumeric(Session("viewID")), CleanNumeric(Session("orderID")), sThousandColumns, sBlankIfZeroColumns)
+      ' Get the required record count if we have a query.
+      If Session("picklistSelectionDataLoading") = False Then
 
-				Dim prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmIsFirstPage = New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmIsLastPage = New SqlParameter("pfLastPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmColumnType = New SqlParameter("piColumnType", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmTotalRecCount = New SqlParameter("piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmFirstRecPos = New SqlParameter("piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("firstRecPos"))}
-				Dim prmColumnSize = New SqlParameter("piColumnSize", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmColumnDecimals = New SqlParameter("piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-		
-				Dim dsData = objDataAccess.GetDataSet("sp_ASRIntGetLinkFindRecords" _
-					, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))} _
-					, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))} _
-					, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))} _
-					, prmError _
-					, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 1000000} _
-					, prmIsFirstPage _
-					, prmIsLastPage _
-					, New SqlParameter("psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("locateValue")} _
-					, prmColumnType _
-					, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = Session("pageAction")} _
-					, prmTotalRecCount _
-					, prmFirstRecPos _
-					, New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))} _
-					, New SqlParameter("psExcludedIDs", SqlDbType.VarChar, -1) With {.Value = Session("selectedIDs1")} _
-					, prmColumnSize _
-					, prmColumnDecimals)
+         Try
+            Get1000SeparatorBlankIfZeroFindColumns(CleanNumeric(Session("tableID")), CleanNumeric(Session("viewID")), CleanNumeric(Session("orderID")), sThousandColumns, sBlankIfZeroColumns)
 
-				If dsData.Tables.Count > 0 Then
-					Dim jqGridColDef = New Dictionary(Of String, String)
-					Dim rows As New List(Of Dictionary(Of String, Object))()
-					Dim row As Dictionary(Of String, Object)
-					Dim iLoop As Integer = 0
-					
-					Dim rstFindRecords = dsData.Tables(0)
-					For Each dr As DataRow In rstFindRecords.Rows
-						iLoop += 1
-						row = New Dictionary(Of String, Object)()
-						For Each col As DataColumn In rstFindRecords.Columns
-							If Not jqGridColDef.ContainsKey(col.ColumnName) Then
-								Dim sColDef As String = col.DataType.Name
+            Dim prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+            Dim prmIsFirstPage = New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+            Dim prmIsLastPage = New SqlParameter("pfLastPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+            Dim prmColumnType = New SqlParameter("piColumnType", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+            Dim prmTotalRecCount = New SqlParameter("piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+            Dim prmFirstRecPos = New SqlParameter("piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("firstRecPos"))}
+            Dim prmColumnSize = New SqlParameter("piColumnSize", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+            Dim prmColumnDecimals = New SqlParameter("piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-								If sColDef = "Decimal" Then
-									Dim numberAsString As String = dr(col).ToString()
-									Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), System.StringComparison.Ordinal)
-									Dim numberOfDecimals As Integer = 0
-									If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
+            Dim dsData = objDataAccess.GetDataSet("sp_ASRIntGetLinkFindRecords" _
+               , New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))} _
+               , New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))} _
+               , New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))} _
+               , prmError _
+               , New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 1000000} _
+               , prmIsFirstPage _
+               , prmIsLastPage _
+               , New SqlParameter("psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("locateValue")} _
+               , prmColumnType _
+               , New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = Session("pageAction")} _
+               , prmTotalRecCount _
+               , prmFirstRecPos _
+               , New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))} _
+               , New SqlParameter("psExcludedIDs", SqlDbType.VarChar, -1) With {.Value = Session("selectedIDs1")} _
+               , prmColumnSize _
+               , prmColumnDecimals)
 
-									If Mid(sThousandColumns, iLoop + 1, 1) = "1" Then
-										sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "true"
-									Else
-										sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "false"
-									End If
-								End If
+            If dsData.Tables.Count > 0 Then
+               Dim jqGridColDef = New Dictionary(Of String, String)
+               Dim rows As New List(Of Dictionary(Of String, Object))()
+               Dim row As Dictionary(Of String, Object)
+               Dim iLoop As Integer = 0
 
-								jqGridColDef.Add(col.ColumnName, sColDef)
-							End If
+               Dim rstFindRecords = dsData.Tables(0)
+               Dim rstColumnProperties = dsData.Tables(1)
+               For Each dr As DataRow In rstFindRecords.Rows
+                  iLoop += 1
+                  row = New Dictionary(Of String, Object)()
+                  For Each col As DataColumn In rstFindRecords.Columns
+                     Dim objRow = rstColumnProperties.Select("ColumnName='" & col.ColumnName & "'")
+                     If Not jqGridColDef.ContainsKey(col.ColumnName) Then
+                        Dim sColDef As String = col.DataType.Name
 
-							If col.DataType.Name = "DateTime" And dr(col).ToString().Length > 0 Then
-								row.Add(col.ColumnName, dr(col).ToShortDateString())
-							Else
-								row.Add(col.ColumnName, dr(col))
-							End If
+                        If sColDef = "Decimal" Then
+                           Dim numberAsString As String = dr(col).ToString()
+                           Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), System.StringComparison.Ordinal)
+                           Dim numberOfDecimals As Integer = 0
+                           If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
 
-						Next
-						rows.Add(row)
-					Next
+                           If Mid(sThousandColumns, iLoop + 1, 1) = "1" Then
+                              sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "true"
+                           Else
+                              sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "false"
+                           End If
+                        End If
 
-					'Now that we have the data, output it to input tags!
-					Dim counter As Integer = 0
-					Dim addString As String = ""
-					'Column definitions for jqGrid's colModel
-					For Each key As String In jqGridColDef.Keys
-						counter += 1
-						Response.Write("<input type='hidden' id='txtColDef_" & counter & "' name='txtColDef_" & counter & "' value=""" & key & vbTab & jqGridColDef(key) & """>" & vbCrLf)
-					Next
-					'Data for jqGrid's colData
-					counter = 0
-					For i As Integer = 0 To rows.Count - 1
-						addString = ""
-						For Each key As String In rows(i).Keys
-							addString &= HttpUtility.HtmlEncode(rows(i)(key).ToString) & vbTab
-						Next
-						counter += 1
-						Response.Write("<input type='hidden' id='txtData_" & counter & "' name='txtData_" & counter & "' value=""" & addString & """>" & vbCrLf)
-					Next
-				End If
+                        jqGridColDef.Add(col.ColumnName, sColDef)
+                     End If
 
-				Response.Write("<input type='hidden' id=txtIsFirstPage name=txtIsFirstPage value=" & prmIsFirstPage.Value & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtIsLastPage name=txtIsLastPage value=" & prmIsLastPage.Value & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtFirstColumnType name=txtFirstColumnType value=" & prmColumnType.Value & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtTotalRecordCount name=txtTotalRecordCount value=" & prmTotalRecCount.Value & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtFirstRecPos name=txtFirstRecPos value=" & prmFirstRecPos.Value & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtRecordCount name=txtRecordCount value=0>" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtFirstColumnSize name=txtFirstColumnSize value=" & prmColumnSize.Value & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtFirstColumnDecimals name=txtFirstColumnDecimals value=" & prmColumnDecimals.Value & ">" & vbCrLf)
-			
-			
-				
-			Catch ex As Exception
-				sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
-			End Try
+                     If col.DataType.Name = "DateTime" And dr(col).ToString().Length > 0 Then
+                        row.Add(col.ColumnName, dr(col).ToShortDateString())
+                     Else
+                        If objRow.Length > 0 AndAlso objRow.FirstOrDefault.Item("BlankIfZero") AndAlso dr(col).ToString() = "0.00" Then
+                           row.Add(col.ColumnName, "")
+                        Else
+                           row.Add(col.ColumnName, dr(col))
+                        End If
+                     End If
 
-		End If
+                  Next
+                  rows.Add(row)
+               Next
 
-		Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
+               'Now that we have the data, output it to input tags!
+               Dim counter As Integer = 0
+               Dim addString As String = ""
+               'Column definitions for jqGrid's colModel
+               For Each key As String In jqGridColDef.Keys
+                  counter += 1
+                  Response.Write("<input type='hidden' id='txtColDef_" & counter & "' name='txtColDef_" & counter & "' value=""" & key & vbTab & jqGridColDef(key) & """>" & vbCrLf)
+               Next
+               'Data for jqGrid's colData
+               counter = 0
+               For i As Integer = 0 To rows.Count - 1
+                  addString = ""
+                  For Each key As String In rows(i).Keys
+                     addString &= HttpUtility.HtmlEncode(rows(i)(key).ToString) & vbTab
+                  Next
+                  counter += 1
+                  Response.Write("<input type='hidden' id='txtData_" & counter & "' name='txtData_" & counter & "' value=""" & addString & """>" & vbCrLf)
+               Next
+            End If
+
+            Response.Write("<input type='hidden' id=txtIsFirstPage name=txtIsFirstPage value=" & prmIsFirstPage.Value & ">" & vbCrLf)
+            Response.Write("<input type='hidden' id=txtIsLastPage name=txtIsLastPage value=" & prmIsLastPage.Value & ">" & vbCrLf)
+            Response.Write("<input type='hidden' id=txtFirstColumnType name=txtFirstColumnType value=" & prmColumnType.Value & ">" & vbCrLf)
+            Response.Write("<input type='hidden' id=txtTotalRecordCount name=txtTotalRecordCount value=" & prmTotalRecCount.Value & ">" & vbCrLf)
+            Response.Write("<input type='hidden' id=txtFirstRecPos name=txtFirstRecPos value=" & prmFirstRecPos.Value & ">" & vbCrLf)
+            Response.Write("<input type='hidden' id=txtRecordCount name=txtRecordCount value=0>" & vbCrLf)
+            Response.Write("<input type='hidden' id=txtFirstColumnSize name=txtFirstColumnSize value=" & prmColumnSize.Value & ">" & vbCrLf)
+            Response.Write("<input type='hidden' id=txtFirstColumnDecimals name=txtFirstColumnDecimals value=" & prmColumnDecimals.Value & ">" & vbCrLf)
+
+
+
+         Catch ex As Exception
+            sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
+         End Try
+
+      End If
+
+      Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
 	%>
 </div>
 

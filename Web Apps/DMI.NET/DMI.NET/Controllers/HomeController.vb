@@ -4552,11 +4552,13 @@ Namespace Controllers
 					, prmColumnSize _
 					, prmColumnDecimals)
 
-				Dim rstFindRecords As New DataTable
+            Dim rstFindRecords As New DataTable
+            Dim rstColumnProperties As New DataTable
 
-				If dsFindData.Tables.Count > 0 Then
-					rstFindRecords = dsFindData.Tables(0)
-				End If
+            If dsFindData.Tables.Count > 0 Then
+               rstFindRecords = dsFindData.Tables(0)
+               rstColumnProperties = dsFindData.Tables(1)
+            End If
 
 				If prmError.Value <> 0 Then
 					Session("ErrorTitle") = "Bulk Booking Selection Find Page"
@@ -4573,36 +4575,42 @@ Namespace Controllers
 				For Each dr As DataRow In rstFindRecords.Rows
 					iLoop += 1
 					row = New Dictionary(Of String, Object)()
-					For Each col As DataColumn In rstFindRecords.Columns
+               For Each col As DataColumn In rstFindRecords.Columns
 
-						If Not jqGridColDef.ContainsKey(col.ColumnName) Then
-							Dim sColDef As String = col.DataType.Name
+                  Dim objRow = rstColumnProperties.Select("ColumnName='" & col.ColumnName & "'")
 
-							If sColDef = "Decimal" Then
-								Dim numberAsString As String = dr(col).ToString()
-								Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), System.StringComparison.Ordinal)
-								Dim numberOfDecimals As Integer = 0
-								If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
+                  If Not jqGridColDef.ContainsKey(col.ColumnName) Then
+                     Dim sColDef As String = col.DataType.Name
 
-								If Mid(sThousandColumns, iLoop + 1, 1) = "1" Then
-									sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "true"
-								Else
-									sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "false"
-								End If
-							End If
+                     If sColDef = "Decimal" Then
+                        Dim numberAsString As String = dr(col).ToString()
+                        Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), System.StringComparison.Ordinal)
+                        Dim numberOfDecimals As Integer = 0
+                        If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
 
-							jqGridColDef.Add(col.ColumnName, sColDef)
-						End If
+                        If Mid(sThousandColumns, iLoop + 1, 1) = "1" Then
+                           sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "true"
+                        Else
+                           sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "false"
+                        End If
+                     End If
 
-						If col.DataType.Name = "DateTime" And dr(col).ToString().Length > 0 Then
-							row.Add(col.ColumnName, dr(col).ToShortDateString())
-						Else
-							row.Add(col.ColumnName, dr(col))
-						End If
+                     jqGridColDef.Add(col.ColumnName, sColDef)
+                  End If
 
-					Next
+                  If col.DataType.Name = "DateTime" And dr(col).ToString().Length > 0 Then
+                     row.Add(col.ColumnName, dr(col).ToShortDateString())
+                  Else
+                     If objRow.Length > 0 AndAlso objRow.FirstOrDefault.Item("BlankIfZero") AndAlso dr(col).ToString() = "0.00" Then
+                        row.Add(col.ColumnName, "")
+                     Else
+                        row.Add(col.ColumnName, dr(col))
+                     End If
+                  End If
 
-					rows.Add(row)
+               Next
+
+               rows.Add(row)
 
 				Next
 

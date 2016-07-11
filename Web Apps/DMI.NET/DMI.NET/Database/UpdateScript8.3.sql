@@ -53840,6 +53840,15 @@ BEGIN
 
 	-- Return generated SQL	
 	EXEC sp_executeSQL @sExecString;
+
+   --Fetch columns properties 
+   SELECT c.columnName,c.dataType,c.blankIfZero
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @iOrderID
+		AND c.datatype <> -3 AND c.datatype <> -4
+	ORDER BY oi.sequence;
 	
 END
 GO
@@ -55876,6 +55885,15 @@ BEGIN
 	IF (LEN(@sExecString) > 0)
 		EXECUTE sp_executeSQL @sExecString;
 
+      --Fetch columns properties 
+   SELECT c.columnName,c.dataType,c.blankIfZero
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @piOrderID
+		AND c.datatype <> -3 AND c.datatype <> -4
+	ORDER BY oi.sequence;
+
 END
 GO
 
@@ -57669,6 +57687,15 @@ BEGIN
 
 	-- Execute the generated string
 	EXECUTE sp_executeSQL @sExecuteSQL;
+
+   --Fetch columns properties 
+   SELECT c.columnName,c.dataType,c.blankIfZero
+	FROM ASRSysOrderItems oi
+		INNER JOIN ASRSysColumns c ON oi.columnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.tableID = c.tableID
+	WHERE oi.orderID = @iOrderID
+		AND c.datatype <> -3 AND c.datatype <> -4
+	ORDER BY oi.sequence;
 
 END
 GO
