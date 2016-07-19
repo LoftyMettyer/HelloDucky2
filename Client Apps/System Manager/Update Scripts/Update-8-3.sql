@@ -76,6 +76,47 @@ PRINT 'Step - Calculation Updates'
    UPDATE tbstat_componentcode SET [precode] = 'POWER(', [aftercode] = ')', [code] = ', ' WHERE ID = 15 AND isoperator = 1;
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - Organisation Reports'
+/* ------------------------------------------------------- */
+
+	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysOrganisationReport]') AND xtype in (N'U'))
+	BEGIN
+
+	EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysOrganisationReport](
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[Name] [varchar](50) NOT NULL,
+		[Description] [varchar](255) NOT NULL,
+		[BaseViewID] [int] NOT NULL,
+		[UserName] [varchar](50) NOT NULL,
+		[Timestamp] [timestamp] NOT NULL)';
+
+	EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysOrganisationReportAccess](
+		[GroupName] varchar(256) NOT NULL,
+		[Access] varchar(2) NOT NULL,
+		[ID] int NOT NULL)';
+
+	EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysOrganisationColumns](
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[OrganisationID] [int] NOT NULL,
+		[ColumnID] [int] NOT NULL,
+		[Prefix] [varchar](50) NULL,
+		[Suffix] [varchar](50) NULL,
+		[FontSize] int,
+		[Decimals] int,
+		[Height] int,
+		[ConcatenateWithNext] bit)';
+
+	EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysOrganisationReportFilters](
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[OrganisationID] int NOT NULL,
+		[FieldID] int NOT NULL,
+		[Operator] [int] NOT NULL,
+		[Value] nvarchar(MAX) NOT NULL)';
+
+	END
+
+
 
 PRINT 'Final Step - Updating Versions'
 

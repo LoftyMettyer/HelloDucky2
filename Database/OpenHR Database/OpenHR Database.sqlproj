@@ -662,6 +662,10 @@
     <Build Include="Stored Procedures\System Manager\spadmin_optimiserecordsave.sql" />
     <Build Include="Stored Procedures\Auto Generated\spASRWorkflowGetSelfServiceRecordID.sql" />
     <Build Include="Stored Procedures\Workflow\spASRGetWorkflowIDFromName.sql" />
+    <Build Include="Tables\ASRSysOrganisationReport.sql" />
+    <Build Include="Tables\ASRSysOrganisationReportAccess.sql" />
+    <Build Include="Tables\ASRSysOrganisationColumns.sql" />
+    <Build Include="Tables\ASRSysOrganisationReportFilters.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
