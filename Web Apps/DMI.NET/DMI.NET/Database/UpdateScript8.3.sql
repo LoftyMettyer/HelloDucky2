@@ -36983,6 +36983,19 @@ BEGIN
 		SET @sAccessTableName= 'ASRSysCrossTabAccess';
 		SET @sExtraWhereSQL = ' CrossTabType = 4';
 	END
+
+   IF @intType = 39 /* Organisation Reports */
+	BEGIN
+		SET @strTableName = 'ASRSysOrganisationReport';
+		SET @strIDName = 'ID';
+		SET @fNewAccess = 1;
+		SET @sExtraWhereSQL = '';
+		SET @sAccessTableName= 'ASRSysOrganisationReportAccess';
+		IF (@intTableID > 0)
+		BEGIN
+			SET @sExtraWhereSQL = 'ASRSysOrganisationReport.BaseViewID = ' + convert(varchar(255), @intTableID);
+		END
+	END
 		
 	IF len(@strExplicitSQL) > 0 
 	BEGIN

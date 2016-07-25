@@ -64,7 +64,7 @@
 
 <script type="text/javascript">
 
-	var isNewPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "NEW").ToString.ToLower%>");
+   var isNewPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "NEW").ToString.ToLower%>");
 	var isEditPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "EDIT").ToString.ToLower%>");
 	var isViewPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "VIEW").ToString.ToLower%>");
 	var isDeletePermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "DELETE").ToString.ToLower%>");
@@ -574,31 +574,33 @@
                     <td colspan="5" height="10">
                         <span class="pageTitle">
                             <%
-                                If iDefSelType = UtilityType.utlCrossTab Then
-                                    Response.Write("Cross Tabs")
-                                ElseIf iDefSelType = UtilityType.utlCustomReport Then
-                                    Response.Write("Custom Reports")
-                                ElseIf iDefSelType = UtilityType.utlMailMerge Then
-                                    Response.Write("Mail Merge")
-                                ElseIf iDefSelType = UtilityType.utlPicklist Then
-                                    Response.Write("Picklists")
-                                ElseIf iDefSelType = UtilityType.utlFilter Then
-                                    Response.Write("Filters")
-                                ElseIf iDefSelType = UtilityType.utlCalculation Then
-                                    Response.Write("Calculations")
-                                ElseIf iDefSelType = UtilityType.utlCalendarReport Then
-                                    Response.Write("Calendar Reports")
-                                ElseIf iDefSelType = UtilityType.utlWorkflow Then
-                                    Response.Write("Workflow")
-                                ElseIf iDefSelType = UtilityType.utlNineBoxGrid Then
-                                    Response.Write("9-Box Grid Reports")
-                                ElseIf iDefSelType = UtilityType.utlDataTransfer Then
-                                    Response.Write("Data Transfer")
-                              ElseIf iDefSelType = UtilityType.utlMatchReport Then
-                                Response.Write("Match Reports")
-                              ElseIf iDefSelType = UtilityType.TalentReport Then
-                            		Response.Write("Talent Reports")
-                                End If
+                               If iDefSelType = UtilityType.utlCrossTab Then
+                                  Response.Write("Cross Tabs")
+                               ElseIf iDefSelType = UtilityType.utlCustomReport Then
+                                  Response.Write("Custom Reports")
+                               ElseIf iDefSelType = UtilityType.utlMailMerge Then
+                                  Response.Write("Mail Merge")
+                               ElseIf iDefSelType = UtilityType.utlPicklist Then
+                                  Response.Write("Picklists")
+                               ElseIf iDefSelType = UtilityType.utlFilter Then
+                                  Response.Write("Filters")
+                               ElseIf iDefSelType = UtilityType.utlCalculation Then
+                                  Response.Write("Calculations")
+                               ElseIf iDefSelType = UtilityType.utlCalendarReport Then
+                                  Response.Write("Calendar Reports")
+                               ElseIf iDefSelType = UtilityType.utlWorkflow Then
+                                  Response.Write("Workflow")
+                               ElseIf iDefSelType = UtilityType.utlNineBoxGrid Then
+                                  Response.Write("9-Box Grid Reports")
+                               ElseIf iDefSelType = UtilityType.utlDataTransfer Then
+                                  Response.Write("Data Transfer")
+                               ElseIf iDefSelType = UtilityType.utlMatchReport Then
+                                  Response.Write("Match Reports")
+                               ElseIf iDefSelType = UtilityType.TalentReport Then
+                                  Response.Write("Talent Reports")
+                               ElseIf iDefSelType = UtilityType.OrgReporting Then
+                                  Response.Write("Organisation Reporting")
+                               End If
                             %>
                         </span>
                     </td>
@@ -869,7 +871,7 @@
 		}
 		var defSelType = "<%:iDefSelType%>";		
 		
-    	if ( defSelType === "utlCustomReport" || defSelType === "utlCrossTab" || defSelType === "utlCalendarReport" || defSelType === "utlMailMerge" || defSelType === "utlNineBoxGrid" || defSelType === "TalentReport" || defSelType === "utlMatchReport")
+	   if ( defSelType === "utlCustomReport" || defSelType === "utlCrossTab" || defSelType === "utlCalendarReport" || defSelType === "utlMailMerge" || defSelType === "utlNineBoxGrid" || defSelType === "TalentReport" || defSelType === "utlMatchReport")
     	{
     		$("#divCategory").show();
     	}

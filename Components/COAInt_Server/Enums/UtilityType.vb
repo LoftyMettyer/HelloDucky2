@@ -39,8 +39,9 @@
 		utlNineBoxGrid = 35
 		utlAbsenceBreakdownConfiguration = 36
 		NewUser = 37
-    TalentReport = 38
-	End Enum
+      TalentReport = 38
+      OrgReporting = 39
+   End Enum
 	'There is also a list in DAT Manager - 
 	'ModEnums.bas which has to be kept in sync with this one
 End Namespace

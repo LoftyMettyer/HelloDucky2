@@ -849,6 +849,12 @@ function menu_MenuClick(sTool) {
 		  return false;
 		}
 
+    // Organisation Reporting
+		if (sToolName === "mnutoolOrgReporting") {
+		   saveChangesPrompt("ORGREPORTING", 'menu_loadDefSelPageForAllCategoryAndOwner(39, 0, -1, true, true)');
+		   return false;
+		}
+
     // Match Reports
 		if (sToolName === "mnutoolMatchReports") {
 		  saveChangesPrompt("MATCHREPORTS", 'menu_loadDefSelPageForAllCategoryAndOwner(14, 0, -1, true, true)');
