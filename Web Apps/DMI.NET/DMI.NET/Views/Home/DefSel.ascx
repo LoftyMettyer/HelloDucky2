@@ -871,7 +871,7 @@
 		}
 		var defSelType = "<%:iDefSelType%>";		
 		
-	   if ( defSelType === "utlCustomReport" || defSelType === "utlCrossTab" || defSelType === "utlCalendarReport" || defSelType === "utlMailMerge" || defSelType === "utlNineBoxGrid" || defSelType === "TalentReport" || defSelType === "utlMatchReport")
+	   if ( defSelType === "utlCustomReport" || defSelType === "utlCrossTab" || defSelType === "utlCalendarReport" || defSelType === "utlMailMerge" || defSelType === "utlNineBoxGrid" || defSelType === "TalentReport" || defSelType === "utlMatchReport" || defSelType === "OrgReporting")
     	{
     		$("#divCategory").show();
     	}
