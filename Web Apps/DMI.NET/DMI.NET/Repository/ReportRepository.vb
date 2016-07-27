@@ -19,9 +19,10 @@ Namespace Repository
 		Private ReadOnly _calendarreports As New Collection(Of CalendarReportModel)
 		Private ReadOnly _mailmerges As New Collection(Of MailMergeModel)
 		Private ReadOnly _talentreports As New Collection(Of TalentReportModel)
-		Private ReadOnly _nineboxgrids As New Collection(Of NineBoxGridModel)
+      Private ReadOnly _nineboxgrids As New Collection(Of NineBoxGridModel)
+      Private ReadOnly _organisationreports As New Collection(Of OrganisationReportModel)
 
-		Private ReadOnly Property _username As String
+      Private ReadOnly Property _username As String
 			Get
 				Return HttpContext.Current.Session("username").ToString
 			End Get
@@ -2143,47 +2144,279 @@ Namespace Repository
 
 		End Function
 
-		''' <summary>
-		''' Gets category list
-		''' </summary>
-		''' <returns>List of category of type selectlistitem</returns>
-		''' <remarks></remarks>
-		Private Function GetCategoryList() As Collection(Of SelectListItem)
+      ''' <summary>
+      ''' Gets category list
+      ''' </summary>
+      ''' <returns>List of category of type selectlistitem</returns>
+      ''' <remarks></remarks>
+      Private Function GetCategoryList() As Collection(Of SelectListItem)
 
-			Dim objItem As New Collection(Of SelectListItem)
+         Dim objItem As New Collection(Of SelectListItem)
 
-			Try
+         Try
 
-				Dim dsDefinition As DataSet = _objDataAccess.GetDataSet("spsys_getobjectcategories" _
-							 , New SqlParameter("utilityType", SqlDbType.Int) With {.Value = 0} _
-							 , New SqlParameter("UtilityID", SqlDbType.Int) With {.Value = 0} _
-							 , New SqlParameter("tableID", SqlDbType.Int) With {.Value = 0})
+            Dim dsDefinition As DataSet = _objDataAccess.GetDataSet("spsys_getobjectcategories" _
+                      , New SqlParameter("utilityType", SqlDbType.Int) With {.Value = 0} _
+                      , New SqlParameter("UtilityID", SqlDbType.Int) With {.Value = 0} _
+                      , New SqlParameter("tableID", SqlDbType.Int) With {.Value = 0})
 
-				Dim objRowDefaultItem As New SelectListItem() With {
-																.Value = "0",
-																.Text = "None"}
+            Dim objRowDefaultItem As New SelectListItem() With {
+                                                .Value = "0",
+                                                .Text = "None"}
 
-				objItem.Add(objRowDefaultItem)
+            objItem.Add(objRowDefaultItem)
 
-				If dsDefinition.Tables(0).Rows.Count > 0 Then
-					For Each objRow As DataRow In dsDefinition.Tables(0).Rows
+            If dsDefinition.Tables(0).Rows.Count > 0 Then
+               For Each objRow As DataRow In dsDefinition.Tables(0).Rows
 
-						Dim objRowItem As New SelectListItem() With {
-								.Value = CStr(objRow(0)),
-								.Text = objRow(1).ToString()}
+                  Dim objRowItem As New SelectListItem() With {
+                        .Value = CStr(objRow(0)),
+                        .Text = objRow(1).ToString()}
 
-						objItem.Add(objRowItem)
+                  objItem.Add(objRowItem)
 
-					Next
-				End If
+               Next
+            End If
 
-			Catch ex As Exception
-				Throw
-			End Try
+         Catch ex As Exception
+            Throw
+         End Try
 
-			Return objItem
+         Return objItem
 
-		End Function
+      End Function
 
-	End Class
+      Public Function LoadOrganisationReport(ID As Integer, action As UtilityActionType) As OrganisationReportModel
+
+         Dim objModel As New OrganisationReportModel
+
+         Try
+
+            objModel.Attach(_objSessionInfo)
+            objModel.ActionType = action
+
+            If action = UtilityActionType.New Then
+               'Need to fetch hierachy table id
+               objModel.BaseViewTableID = SettingsConfig.Hierarchy_TableID
+               objModel.Owner = _username
+
+            Else
+
+               objModel.ID = ID
+
+               Dim dsDefinition = _objDataAccess.GetDataSet("spASRIntGetOrganisationReportDefinition" _
+                  , New SqlParameter("@piReportID", SqlDbType.Int) With {.Value = objModel.ID} _
+                  , New SqlParameter("@psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username} _
+                  , New SqlParameter("@psAction", SqlDbType.VarChar, 255) With {.Value = action})
+
+               objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
+
+               PopulateOrganisationDefinition(objModel, dsDefinition.Tables(0))
+
+               PopulateOrganisationReportFilters(objModel, dsDefinition.Tables(1))
+
+               PopulateOrganisationReportColumns(objModel, dsDefinition.Tables(2))
+
+            End If
+
+            ' if copy the definition then check if group access needs to be hidden
+            If objModel.ActionType = UtilityActionType.Copy Then
+               If objModel.BaseViewAccess = "HD" Then
+                  objModel.IsGroupAccessHiddenWhenCopyTheDefinition = True
+               End If
+            End If
+
+            objModel.GroupAccess = GetUtilityAccess(objModel, action)
+            objModel.IsReadOnly = (action = UtilityActionType.View)
+            objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
+            objModel.CategoryList = GetCategoryList()
+            _organisationreports.Remove(objModel.ID)
+            _organisationreports.Add(objModel)
+
+         Catch ex As Exception
+            Throw
+
+         End Try
+
+         Return objModel
+
+
+      End Function
+
+      'Populate organisation report definition tab contorls
+      Private Sub PopulateOrganisationDefinition(outputModel As ReportBaseModel, data As DataTable)
+
+         Try
+
+            If data.Rows.Count = 1 Then
+
+               Dim row As DataRow = data.Rows(0)
+
+               outputModel.BaseViewID = CInt(row("BaseViewID"))
+               outputModel.CategoryID = CInt(row("CategoryID"))
+               outputModel.Name = row("Name").ToString
+               outputModel.Description = row("description").ToString
+               outputModel.Owner = row("owner").ToString
+               outputModel.Timestamp = CLng(row("Timestamp"))
+               outputModel.BaseViewAccess = row("BaseViewAccess").ToString()
+            End If
+
+         Catch ex As Exception
+            Throw
+
+         End Try
+
+      End Sub
+
+      'Populate organisation report column tab contorls
+      Private Sub PopulateOrganisationReportColumns(outputModel As ReportBaseModel, data As DataTable)
+
+         Try
+            outputModel.Columns = New List(Of ReportColumnItem)
+
+            For Each objRow As DataRow In data.Rows
+
+               Dim objItem As New ReportColumnItem() With {
+                .ColumnID = CInt(objRow("ColumnID")),
+                .Prefix = HttpUtility.HtmlEncode(objRow("Prefix").ToString),
+                .Suffix = HttpUtility.HtmlEncode(objRow("Suffix").ToString),
+                .FontSize = CInt(objRow("FontSize")),
+                .Decimals = CInt(objRow("Decimals")),
+                .Height = CInt(objRow("Height")),
+                .IsGroupWithNext = CBool(objRow("ConcatenateWithNext"))}
+
+               outputModel.Columns.Add(objItem)
+
+            Next
+
+         Catch ex As Exception
+            Throw
+
+         End Try
+
+      End Sub
+
+      'Populate organisation report filters tab contorls
+      Private Sub PopulateOrganisationReportFilters(outputModel As OrganisationReportModel, data As DataTable)
+
+         Try
+            outputModel.Filters = New List(Of OrganisationReportFilterItem)
+
+            For Each objRow As DataRow In data.Rows
+
+               Dim objItem As New OrganisationReportFilterItem() With {
+               .FilterFieldID = CInt(objRow("FilterFieldID")),
+               .FilterOperator = CInt(objRow("FilterOperator")),
+               .FilterValue = HttpUtility.HtmlEncode(objRow("FilterValue").ToString)}
+
+               outputModel.Filters.Add(objItem)
+
+            Next
+
+         Catch ex As Exception
+            Throw
+
+         End Try
+
+      End Sub
+
+
+      Public Function SaveReportDefinition(objModel As OrganisationReportModel) As Boolean
+
+         Try
+
+            Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
+            Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
+            Dim sColumns = OrganisationReportColumnsAsString(objModel.Columns)
+            Dim sFilters = OrganisationReportFiltersAsString(objModel.Filters)
+
+
+            _objDataAccess.ExecuteSP("spASRIntSaveorganisationReport" _
+               , New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
+               , New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description} _
+               , New SqlParameter("piCategoryID", SqlDbType.Int) With {.Value = objModel.CategoryID} _
+               , New SqlParameter("piBaseViewID", SqlDbType.Int) With {.Value = objModel.BaseViewID} _
+               , New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner} _
+               , New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess} _
+               , New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = sFilters} _
+               , New SqlParameter("psColumns", SqlDbType.VarChar, -1) With {.Value = sColumns} _
+               , New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.JobIDsToHide} _
+               , New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()} _
+               , prmID)
+
+            _organisationreports.Remove(objModel.ID)
+            objModel.ID = CInt(prmID.Value)
+
+         Catch ex As Exception
+            Throw
+
+         End Try
+
+         Return True
+
+      End Function
+      'Create columns string for selected columns.
+      Private Function OrganisationReportColumnsAsString(objColumns As IEnumerable(Of ReportColumnItem)) As String
+
+         Dim sColumns As String = ""
+         Dim iCount As Integer = 1
+         For Each objItem In objColumns
+
+            sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}**" _
+                                       , iCount, objItem.ColumnID, HttpUtility.HtmlEncode(objItem.Prefix), HttpUtility.HtmlEncode(objItem.Suffix), objItem.Decimals, objItem.Height, objItem.IsGroupWithNext)
+
+            iCount += 1
+         Next
+
+         Return sColumns
+
+      End Function
+      'Create filter string for defined filters.
+      Private Function OrganisationReportFiltersAsString(objFilters As IEnumerable(Of OrganisationReportFilterItem)) As String
+
+         Dim sFilters As String = ""
+         Dim iCount As Integer = 1
+         For Each objItem In objFilters
+
+            sFilters += String.Format("{0}||{1}||{2}||{3}**" _
+                                       , iCount, objItem.FilterFieldID, objItem.FilterOperator, HttpUtility.HtmlEncode(objItem.FilterValue))
+            iCount += 1
+         Next
+
+         Return sFilters
+
+      End Function
+
+      Public Function ServerValidate(objModel As OrganisationReportModel) As SaveWarningModel
+
+         Dim objSaveMessage As SaveWarningModel
+         Try
+
+            Dim prmErrorMsg As New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+            Dim prmErrorCode As New SqlParameter("piErrorCode", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+
+            _objDataAccess.ExecuteSP("spASRIntValidateOrganisationReport" _
+               , New SqlParameter("psUtilName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
+               , New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = objModel.ID} _
+               , New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = objModel.Timestamp} _
+               , New SqlParameter("piBaseViewID", SqlDbType.Int) With {.Value = objModel.BaseViewID} _
+               , New SqlParameter("piCategoryID", SqlDbType.Int) With {.Value = objModel.CategoryID} _
+               , prmErrorMsg, prmErrorCode)
+
+            objSaveMessage = New SaveWarningModel With {
+               .ReportType = objModel.ReportType,
+               .ID = objModel.ID,
+               .ErrorCode = CType(prmErrorCode.Value, ReportValidationStatus),
+               .ErrorMessage = prmErrorMsg.Value.ToString()}
+
+         Catch ex As Exception
+            Throw
+
+         End Try
+
+         Return objSaveMessage
+
+      End Function
+
+   End Class
 End Namespace

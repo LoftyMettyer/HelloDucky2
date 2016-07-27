@@ -30,13 +30,21 @@ Namespace Classes
 		Public Property IsTotal As Boolean
 		Public Property IsHidden As Boolean
 		Public Property IsGroupWithNext As Boolean
-		Public Property IsRepeated As Boolean
+      Public Property IsRepeated As Boolean
 
-		''' <summary>
-		''' Gets/Sets the access rights for the column (E.g. HD/RW/RO)
-		''' </summary>
-		''' <value>The column access value</value>
-		Public Property Access As String
+      ''Organisation Columns Properties
+      Public Property ColumnID As Integer
+      Public Property Prefix As String
+      Public Property Suffix As String
+      Public Property FontSize As Integer
+      Public Property Height As Integer
+      'Public Property ConcatenateWithNext As Boolean
+
+      ''' <summary>
+      ''' Gets/Sets the access rights for the column (E.g. HD/RW/RO)
+      ''' </summary>
+      ''' <value>The column access value</value>
+      Public Property Access As String
 
 
 		''' <summary>

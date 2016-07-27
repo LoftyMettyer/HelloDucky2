@@ -82,10 +82,12 @@ Namespace Models
 		Public Property SortOrders As New List(Of SortOrderViewModel) Implements IReport.SortOrders
 
 		Public Property DefinitionAccessBasedOnSelectedCalculationColumns As String
-		Public Property IsGroupAccessHiddenWhenCopyTheDefinition As Boolean
+      Public Property IsGroupAccessHiddenWhenCopyTheDefinition As Boolean
+      Public Property BaseViewTableID As Integer
+      Public Property BaseViewID As Integer
 
 
-		Public Overridable ReadOnly Property SortOrdersAvailable As Integer Implements IReport.SortOrdersAvailable
+      Public Overridable ReadOnly Property SortOrdersAvailable As Integer Implements IReport.SortOrdersAvailable
 			Get
 				If Columns IsNot Nothing Then
 					Return Columns.Where(Function(m) m.IsExpression = False).Count - SortOrders.Count

@@ -253,8 +253,10 @@
     <Compile Include="Code\EncryptionService.vb" />
     <Compile Include="Infrastructure\AllowJWTAccessAttribute.vb" />
     <Compile Include="Infrastructure\ClaimsAuthorizationAttribute.vb" />
+    <Compile Include="Models\OrganisationReportFilterItem.vb" />
     <Compile Include="Models\DefinitionSearchResultModel.vb" />
     <Compile Include="Models\ForgotPasswordModel.vb" />
+    <Compile Include="Models\OrganisationReportModel.vb" />
     <Compile Include="Models\TalentReportModel.vb" />
     <Compile Include="Models\UserModel.vb" />
     <Compile Include="Classes\jqGridHelper.vb" />

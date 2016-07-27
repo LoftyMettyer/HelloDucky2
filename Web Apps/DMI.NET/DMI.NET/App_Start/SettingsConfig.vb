@@ -8,21 +8,23 @@ Imports HR.Intranet.Server
 Public Class SettingsConfig
 
 	Public Shared Personnel_EmpTableID As Integer
-  public Shared Post_TableID as Integer
-	
-	Public Shared Sub Register()
+   Public Shared Post_TableID As Integer
+   Public Shared Hierarchy_TableID As Integer
+
+   Public Shared Sub Register()
 
     Try
 
       Dim objDataAccess As New clsDataAccess(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
 
- 		  If Licence.IsModuleLicenced(SoftwareModule.Personnel) Then
-        Personnel_EmpTableID = CInt(objDataAccess.GetModuleSetting("MODULE_PERSONNEL", "Param_TablePersonnel", "PType_TableID"))
-		  End If
+         If Licence.IsModuleLicenced(SoftwareModule.Personnel) Then
+            Personnel_EmpTableID = CInt(objDataAccess.GetModuleSetting("MODULE_PERSONNEL", "Param_TablePersonnel", "PType_TableID"))
+         End If
 
-      Post_TableID = CInt(objDataAccess.GetModuleSetting("MODULE_POST", "Param_PostTable", "PType_TableID"))
+         Post_TableID = CInt(objDataAccess.GetModuleSetting("MODULE_POST", "Param_PostTable", "PType_TableID"))
+         Hierarchy_TableID = CInt(objDataAccess.GetModuleSetting("MODULE_HIERARCHY", "Param_TableHierarchy", "PType_TableID"))
 
-    Catch ex As Exception
+      Catch ex As Exception
       Throw
 
     End Try
