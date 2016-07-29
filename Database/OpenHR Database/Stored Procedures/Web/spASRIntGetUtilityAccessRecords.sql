@@ -51,6 +51,12 @@ BEGIN
 		SET @sKey = 'dfltaccess TalentReports';
 	END
 
+	IF @piUtilityType = 39
+	BEGIN
+		/* Organisation Report */
+		SET @sAccessTable = 'ASRSysOrganisationReportAccess';
+		SET @sKey = 'dfltaccess OrganisationReport';
+	END
 
 	IF LEN(@sAccessTable) > 0
 	BEGIN
@@ -155,3 +161,4 @@ BEGIN
 	END
 
 END
+

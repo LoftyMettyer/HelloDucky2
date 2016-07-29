@@ -9729,6 +9729,13 @@ BEGIN
 		END
 	END
 
+	IF @piUtilityType = 39 /* Organisation Report*/
+	BEGIN
+		SET @sTableName = 'ASRSysOrganisationReport';
+		SET @sAccessTableName = 'ASRSysOrganisationReportAccess';
+		SET @sIDColumnName = 'ID';
+	END
+
 	IF len(@sTableName) > 0
 	BEGIN
 		SET @sSQL = 'SELECT @sValue = 
@@ -38145,6 +38152,12 @@ BEGIN
 		SET @sKey = 'dfltaccess TalentReports';
 	END
 
+	IF @piUtilityType = 39
+	BEGIN
+		/* Organisation Report */
+		SET @sAccessTable = 'ASRSysOrganisationReportAccess';
+		SET @sKey = 'dfltaccess OrganisationReport';
+	END
 
 	IF LEN(@sAccessTable) > 0
 	BEGIN
@@ -61277,6 +61290,507 @@ BEGIN
 	SELECT DISTINCT Username FROM ASRSysAllObjectNamesForOpenHRWeb WHERE NOT NULLIF(username,'') = '' ORDER BY username;
 END
 
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetOrganisationReportDefinition]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetOrganisationReportDefinition];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetOrganisationReportDefinition] (	
+	@piReportID 			integer, 	
+	@psCurrentUser			varchar(255),		
+	@psAction				varchar(255)
+)		
+AS		
+BEGIN		
+	SET NOCOUNT ON;
+
+	DECLARE	@iCount		integer,		
+			@sTempHidden	varchar(MAX),		
+			@sAccess 		varchar(MAX),		
+			@fSysSecMgr		bit;		
+
+	DECLARE @psErrorMsg				varchar(MAX) = '',	
+			@psBaseViewName			varchar(255) = '',			
+			@pfBaseViewHidden		bit = 0,			
+			@psWarningMsg			varchar(255) = '',
+			@psReportOwner			varchar(255),
+			@psReportName			varchar(255),
+			@piBaseViewID			integer = 0,			
+			@piCategoryID			integer;
+
+	EXEC [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT;
+
+	/* Check the organisation report is exists. */		
+	SELECT @iCount = COUNT(*)		
+	FROM [dbo].[ASRSysOrganisationReport]		
+	WHERE ID = @piReportID;		
+
+	IF @iCount = 0		
+		SET @psErrorMsg = 'organisation report has been deleted by another user.';		
+
+	SELECT  @psReportOwner = [username], 
+			@psReportName = [name]
+		  , @piBaseViewID = BaseViewID
+	FROM [dbo].[ASRSysOrganisationReport]		
+	WHERE ID = @piReportID;
+
+	-- Check the current user can view the report.
+	EXEC [dbo].[spASRIntCurrentUserAccess] 39, @piReportID, @sAccess OUTPUT;
+
+	IF (@sAccess = 'HD') AND (@psReportOwner <> @psCurrentUser) 		
+		SET @psErrorMsg = 'organisation report has been made hidden by another user.';		
+
+	IF (@psAction <> 'view') AND (@psAction <> 'copy') AND (@sAccess = 'RO') AND (@psReportOwner <> @psCurrentUser) 		
+		SET @psErrorMsg = 'organisation report has been made read only by another user.';		
+
+	IF @psAction = 'copy' 		
+	BEGIN		
+		SET @psReportName = left('copy of ' + @psReportName, 50);		
+		SET @psReportOwner = @psCurrentUser;		
+	END		
+	
+
+	-- Get's the category id associated with the mail merge utility. Return 0 if not found
+	SET @piCategoryID = 0;
+	SELECT @piCategoryID = ISNULL(categoryid,0)
+	FROM [dbo].[tbsys_objectcategories]
+	WHERE objectid = @piReportID AND objecttype = 39;
+
+	-- Definition
+	SELECT    @psReportName AS [Name],
+			  @piBaseViewID AS [BaseViewID],
+			  @piCategoryID AS [CategoryID], 
+			  m.[description], 
+			  @psReportOwner AS [owner],					
+			 CONVERT(integer, m.[timestamp]) AS [Timestamp]
+	FROM [dbo].ASRSysOrganisationReport m
+	WHERE m.ID = @piReportID;
+
+	---- Filter
+	SELECT r.OrganisationID AS [OrganisationID],
+		--convert(varchar(MAX), t.tableName + '.' + c.columnName) AS [name],
+		r.FieldID AS [FieldID],
+		r.Operator  AS Operator,
+		r.Value AS [Value]		
+	FROM ASRSysOrganisationReportFilters r
+	WHERE r.OrganisationID	= @piReportID ;	
+
+	-- Columns
+	SELECT r.ColumnID AS [ID],		
+		c.tableID,
+		t.tableName + '.' + c.columnName AS [name],		
+		c.DataType,
+		r.Prefix AS [Prefix],
+		r.Suffix AS [Suffix],
+		r.FontSize AS [FontSize],
+		r.Decimals AS [Decimals],
+		r.Height AS [Height],
+		r.ConcatenateWithNext AS [ConcatenateWithNext]		
+	FROM ASRSysOrganisationColumns r	
+	INNER JOIN ASRSysColumns c ON r.ColumnID = c.columnId		
+	INNER JOIN ASRSysTables t ON c.tableID = t.tableID		
+	WHERE r.OrganisationID = @piReportID;
+
+END
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntValidateOrganisationReport]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntValidateOrganisationReport];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntValidateOrganisationReport] (	
+	@psUtilName 		varchar(255), 
+	@piUtilID 			integer, 
+	@piTimestamp 		integer, 
+	@piBaseViewID		integer, 	
+	@piCategoryID 		integer,
+	@psErrorMsg			varchar(MAX)	OUTPUT,
+	@piErrorCode		varchar(MAX)	OUTPUT /* 	0 = no errors, 
+								1 = error, 
+								2 = definition deleted or made read only by someone else,  but prompt to save as new definition
+								3 = definition changed by someone else, overwrite ? */
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE	@iTimestamp				integer,
+			@sAccess				varchar(MAX),
+			@sOwner					varchar(255),
+			@iCount					integer,
+			@sCurrentUser			sysname,					
+			@fSysSecMgr				bit;
+	
+	SET @psErrorMsg = '';
+	SET @piErrorCode = 0;	
+	SELECT @sCurrentUser = SYSTEM_USER;
+
+	exec spASRIntSysSecMgr @fSysSecMgr OUTPUT;
+	
+	IF @piUtilID > 0
+	BEGIN
+		/* Check if this definition has been changed by another user. */
+		SELECT @iCount = COUNT(*)
+		FROM ASRSysOrganisationReport
+		WHERE ID = @piUtilID;
+
+		IF @iCount = 0
+		BEGIN
+			SET @psErrorMsg = 'The organisation report has been deleted by another user. Save as a new definition ?';
+			SET @piErrorCode = 2;
+		END
+		ELSE
+		BEGIN
+			SELECT @iTimestamp = convert(integer, timestamp), 
+				@sOwner = userName
+			FROM ASRSysOrganisationReport
+			WHERE ID = @piUtilID;
+
+			IF (@iTimestamp <> @piTimestamp)
+			BEGIN
+				exec spASRIntCurrentUserAccess 
+					39, 
+					@piUtilID,
+					@sAccess	OUTPUT;
+		
+				IF (@sOwner <> @sCurrentUser) AND (@sAccess <> 'RW') AND (@iTimestamp <>@piTimestamp)
+				BEGIN
+					SET @psErrorMsg = 'The organisation report has been amended by another user and is now Read Only. Save as a new definition ?';
+					SET @piErrorCode = 2;
+				END
+				ELSE
+				BEGIN
+					SET @psErrorMsg = 'The organisation report has been amended by another user. Would you like to overwrite this definition ?';
+					SET @piErrorCode = 3;
+				END
+			END
+			
+		END
+	END
+
+	IF @piErrorCode = 0
+	BEGIN
+		/* Check that the report name is unique. */
+		IF @piUtilID > 0
+		BEGIN
+			SELECT @iCount = COUNT(*) 
+			FROM ASRSysOrganisationReport
+			WHERE name = @psUtilName
+				AND ID <> @piUtilID;
+		END
+		ELSE
+		BEGIN
+			SELECT @iCount = COUNT(*) 
+			FROM ASRSysOrganisationReport
+			WHERE name = @psUtilName;
+		END
+
+		IF @iCount > 0 
+		BEGIN
+			SET @psErrorMsg = 'An organisation report called ''' + @psUtilName + ''' already exists.';
+			SET @piErrorCode = 1;
+		END
+	END
+
+	IF (@piErrorCode = 0) AND (@piBaseViewID > 0)
+	BEGIN
+		/* Check that the Base View exists. */
+		SELECT @iCount = COUNT(*)
+		FROM ASRSysViews 
+		WHERE ViewID = @piBaseViewID;
+
+		IF @iCount = 0
+		BEGIN
+			SET @psErrorMsg = 'The base view has been deleted by another user.';
+			SET @piErrorCode = 1;
+		END		
+	END	
+	
+
+	IF (@piErrorCode = 0) AND (@piCategoryID > 0)
+	BEGIN
+		/* Check that the category exists. */
+		SELECT @iCount = COUNT(*)
+		FROM ASRSysCategories
+		WHERE id = @piCategoryID And _deleted = 1;
+
+		IF @iCount = 1
+		BEGIN
+			SET @psErrorMsg = 'The category has been deleted by another user.';
+			SET @piErrorCode = 1;
+		END
+	END	
+
+END
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntSaveOrganisationReport]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntSaveOrganisationReport];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntSaveOrganisationReport] (	
+	
+	@psName						varchar(255),
+	@psDescription				varchar(MAX),
+	@piCategoryID				integer,
+	@piBaseViewID				integer,
+	@psUserName					varchar(255),
+	@psAccess					varchar(MAX),
+	@psFilterDef				varchar(MAX),
+	@psColumns					varchar(MAX),
+	@piID						integer					OUTPUT
+	
+)
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+
+	DECLARE	@sTemp					varchar(MAX),
+			@sColumnDefn			varchar(MAX),
+			@sColumnParam			varchar(MAX),
+			@iColumnID				integer,
+			@sPrefix				varchar(50),
+			@sSuffix				varchar(50),
+			@iFontSize				integer,
+			@iHeight				integer,
+			@iDP					integer,
+			@fConcatenateWithNext	bit,
+			@iCount					integer,
+			@fIsNew					bit,
+			@sGroup					varchar(255),
+			@sAccess				varchar(MAX),
+			@sTempFilter			varchar(MAX),
+			@sFilterParam			varchar(MAX),
+			@iFieldID				integer,
+			@iOperator				integer,
+			@sValue					varchar(Max);
+
+			DECLARE	@outputTable table (id int NOT NULL);
+
+	SET @fIsNew = 0;
+
+	/* Insert/update the report header. */
+	IF (@piID = 0)
+	BEGIN
+		/* Creating a new report. */
+		INSERT ASRSysOrganisationReport(
+			[Name]
+           ,[Description]
+           ,[BaseViewID]
+           ,[UserName])
+		OUTPUT inserted.ID INTO @outputTable
+ 		VALUES (
+ 			@psName,
+ 			@psDescription,
+ 			@piBaseViewID,
+			@psUserName);
+
+		SET @fIsNew = 1;
+		-- Get the ID of the inserted record.
+		SELECT @piID = id FROM @outputTable;
+
+		EXEC [dbo].[spsys_saveobjectcategories] 39, @piID, @piCategoryID;
+
+	END
+	ELSE
+	BEGIN
+		/* Updating an existing report. */
+		UPDATE ASRSysOrganisationReport SET 
+			Name = @psName,
+			Description = @psDescription,
+			BaseViewID = @piBaseViewID
+		WHERE ID = @piID;
+
+		DELETE FROM ASRSysOrganisationColumns
+			WHERE OrganisationID = @piID;
+
+		DELETE FROM ASRSysOrganisationReportFilters
+			WHERE OrganisationID = @piID;
+
+		EXEC [dbo].[spsys_saveobjectcategories] 39, @piID, @piCategoryID;
+
+	END
+
+	/* Create the details records. */
+	SET @sTemp = @psColumns;
+
+	WHILE LEN(@sTemp) > 0
+	BEGIN
+		IF CHARINDEX('**', @sTemp) > 0
+		BEGIN
+			SET @sColumnDefn = LEFT(@sTemp, CHARINDEX('**', @sTemp) - 1);
+			SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX('**', @sTemp) - 1);
+		END
+		ELSE
+		BEGIN
+			SET @sColumnDefn = @sTemp;
+			SET @sTemp = '';
+		END
+
+		/* Rip out the column definition parameters. */
+		SET @iColumnID = 0;
+		SET @sPrefix = '';
+		SET @sSuffix = '';
+		SET @iFontSize = 0;
+		SET @iDP = 0;
+		SET @iHeight = 0;
+		Set @fConcatenateWithNext = 0;
+		SET @iCount = 0;
+		
+		WHILE LEN(@sColumnDefn) > 0
+		BEGIN
+			IF CHARINDEX('||', @sColumnDefn) > 0
+			BEGIN
+				SET @sColumnParam = LEFT(@sColumnDefn, CHARINDEX('||', @sColumnDefn) - 1);
+				SET @sColumnDefn = RIGHT(@sColumnDefn, LEN(@sColumnDefn) - CHARINDEX('||', @sColumnDefn) - 1);
+			END
+			ELSE
+			BEGIN
+				SET @sColumnParam = @sColumnDefn;
+				SET @sColumnDefn = '';
+			END
+
+			IF @iCount = 0 SET @iColumnID = convert(integer, @sColumnParam);
+			IF @iCount = 1 SET @sPrefix = @sColumnParam;
+			IF @iCount = 2 SET @sSuffix = @sColumnParam;
+			IF @iCount = 3 SET @iFontSize = convert(integer, @sColumnParam);
+			IF @iCount = 4 SET @iDP = convert(integer, @sColumnParam);
+			IF @iCount = 4 SET @iHeight = convert(integer, @sColumnParam);
+			IF @iCount = 5 SET @fConcatenateWithNext = convert(bit, @sColumnParam);
+
+			SET @iCount = @iCount + 1;
+		END
+
+		INSERT ASRSysOrganisationColumns (OrganisationID, ColumnID, Prefix, Suffix, FontSize, Decimals, Height, ConcatenateWithNext)
+			VALUES (@piID, @iColumnID, @sPrefix, @sSuffix, @iFontSize, @iDP, @iHeight, @fConcatenateWithNext);
+
+	END
+
+	/* Create the records for filters */
+	SET @sTemp = @psFilterDef;
+
+	WHILE LEN(@sTemp) > 0
+	BEGIN
+		IF CHARINDEX('**', @sTemp) > 0
+		BEGIN
+			SET @sTempFilter = LEFT(@sTemp, CHARINDEX('**', @sTemp) - 1);
+			SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX('**', @sTemp) - 1);
+		END
+		ELSE
+		BEGIN
+			SET @sTempFilter = @sTemp;
+			SET @sTemp = '';
+		END
+
+		/* Rip out the filter definition parameters. */
+		SET @iFieldID = 0;
+		SET @iOperator = 0;
+		SET @sValue = '';
+		SET @iCount = 0;
+		
+		WHILE LEN(@sTempFilter) > 0
+		BEGIN
+			IF CHARINDEX('||', @sTempFilter) > 0
+			BEGIN
+				SET @sFilterParam = LEFT(@sTempFilter, CHARINDEX('||', @sTempFilter) - 1);
+				SET @sTempFilter = RIGHT(@sTempFilter, LEN(@sTempFilter) - CHARINDEX('||', @sTempFilter) - 1);
+			END
+			ELSE
+			BEGIN
+				SET @sFilterParam = @sTempFilter;
+				SET @sTempFilter = '';
+			END
+
+			IF @iCount = 0 SET @iFieldID = convert(integer, @sFilterParam);
+			IF @iCount = 1 SET @iOperator = convert(integer, @sFilterParam);
+			IF @iCount = 2 SET @sValue = @sFilterParam;
+
+			SET @iCount = @iCount + 1;
+		END
+
+		INSERT ASRSysOrganisationReportFilters (OrganisationID, FieldID, Operator, Value)
+			VALUES (@piID, @iFieldID, @iOperator, @sValue);
+
+	END
+
+	-- Access permissions
+	DELETE FROM ASRSysOrganisationReportAccess WHERE ID = @piID;
+	INSERT INTO ASRSysOrganisationReportAccess (ID, groupName, access)
+		(SELECT @piID, sysusers.name,
+			CASE
+				WHEN (SELECT count(*)
+					FROM ASRSysGroupPermissions
+					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+						AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+						OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
+					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
+					WHERE sysusers.Name = ASRSysGroupPermissions.groupname
+						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN 'RW'
+				ELSE 'HD'
+			END
+		FROM sysusers
+		WHERE sysusers.uid = sysusers.gid
+			AND sysusers.name <> 'ASRSysGroup'
+			AND convert(integer, sysusers.uid) <> 0);
+
+	SET @sTemp = @psAccess;
+	
+	WHILE LEN(@sTemp) > 0
+	BEGIN
+		IF CHARINDEX(char(9), @sTemp) > 0
+		BEGIN
+			SET @sGroup = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1);
+			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)));
+	
+			SET @sAccess = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1);
+			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)));
+	
+			IF EXISTS (SELECT * FROM ASRSysOrganisationReportAccess
+				WHERE ID = @piID
+				AND groupName = @sGroup
+				AND access <> 'RW')
+				UPDATE ASRSysOrganisationReportAccess
+					SET access = @sAccess
+					WHERE ID = @piID
+						AND groupName = @sGroup;
+		END
+	END
+
+	IF (@fIsNew = 1)
+	BEGIN
+		/* Update the util access log. */
+		INSERT INTO ASRSysUtilAccessLog 
+			(type, utilID, createdBy, createdDate, createdHost, savedBy, savedDate, savedHost)
+		VALUES (39, @piID, system_user, getdate(), host_name(), system_user, getdate(), host_name());
+	END
+	ELSE
+	BEGIN
+		/* Update the last saved log. */
+		/* Is there an entry in the log already? */
+		SELECT @iCount = COUNT(*) 
+		FROM ASRSysUtilAccessLog
+		WHERE utilID = @piID
+			AND type = 39;
+
+		IF @iCount = 0 
+		BEGIN
+			INSERT INTO ASRSysUtilAccessLog	(type, utilID, savedBy, savedDate, savedHost)
+			VALUES (39, @piID, system_user, getdate(), host_name());
+		END
+		ELSE
+		BEGIN
+			UPDATE ASRSysUtilAccessLog 
+			SET savedBy = system_user,
+				savedDate = getdate(), 
+				savedHost = host_name() 
+			WHERE utilID = @piID AND type = 39;
+		END
+	END
+END
 GO
 
 /*---------------------------------------------*/

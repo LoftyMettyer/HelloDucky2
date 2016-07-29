@@ -123,6 +123,13 @@ BEGIN
 		END
 	END
 
+	IF @piUtilityType = 39 /* Organisation Report*/
+	BEGIN
+		SET @sTableName = 'ASRSysOrganisationReport';
+		SET @sAccessTableName = 'ASRSysOrganisationReportAccess';
+		SET @sIDColumnName = 'ID';
+	END
+
 	IF len(@sTableName) > 0
 	BEGIN
 		SET @sSQL = 'SELECT @sValue = 
