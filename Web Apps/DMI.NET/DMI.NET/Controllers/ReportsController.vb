@@ -1131,9 +1131,17 @@ Namespace Controllers
          Dim objReport As OrganisationReportModel
          objReport = CType(objReportRepository.RetrieveParent(objOrgModel), OrganisationReportModel)
 
-         objReport.Filters.Add(objOrgModel)
+         objReport.FiltersFieldList.Add(objOrgModel)
 
       End Sub
+
+      <HttpGet>
+      Function GetFilterColumns(ViewID As Integer) As JsonResult
+         Dim objResults = objReportRepository.GetFilterColumns(ViewID)
+         objResults.RemoveAll(Function(m) (m.FieldDataType = ColumnDataType.sqlOle Or m.FieldDataType = ColumnDataType.sqlVarBinary))
+         Return Json(objResults, JsonRequestBehavior.AllowGet)
+
+      End Function
 
    End Class
 

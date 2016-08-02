@@ -8,6 +8,8 @@ Imports System.ComponentModel
 Imports DMI.NET.Classes
 Imports DMI.NET.Code.Attributes
 Imports HR.Intranet.Server.Structures
+Imports DMI.NET.ViewModels.Reports
+
 
 Namespace Models
    Public Class OrganisationReportModel
@@ -21,10 +23,15 @@ Namespace Models
 
       Public Property BaseViewFilterID As Integer
 
-      Public Property Filters As New List(Of OrganisationReportFilterItem)
+      Public Property FiltersFieldList As New List(Of OrganisationReportFilterItem)
+
+      'Property FiltersFieldList() As List(Of OrganisationReportFilterItem)
+
 
       <MinLength(3, ErrorMessage:="You must select at least one column for your report.")>
       Public Overrides Property ColumnsAsString As String
+
+      Public Property FilterColoumnList As New Collection(Of SelectListItem)
 
       Public Overrides Sub SetBaseTable(TableID As Integer)
       End Sub

@@ -2197,7 +2197,8 @@ Namespace Repository
 
             If action = UtilityActionType.New Then
                'Need to fetch hierachy table id
-               objModel.BaseViewTableID = SettingsConfig.Hierarchy_TableID
+               objModel.BaseViewTableID = 1
+               'SettingsConfig.Hierarchy_TableID
                objModel.Owner = _username
 
             Else
@@ -2220,11 +2221,11 @@ Namespace Repository
             End If
 
             ' if copy the definition then check if group access needs to be hidden
-            If objModel.ActionType = UtilityActionType.Copy Then
-               If objModel.BaseViewAccess = "HD" Then
-                  objModel.IsGroupAccessHiddenWhenCopyTheDefinition = True
-               End If
-            End If
+            'If objModel.ActionType = UtilityActionType.Copy Then
+            '   If objModel.BaseViewAccess = "HD" Then
+            '      objModel.IsGroupAccessHiddenWhenCopyTheDefinition = True
+            '   End If
+            'End If
 
             objModel.GroupAccess = GetUtilityAccess(objModel, action)
             objModel.IsReadOnly = (action = UtilityActionType.View)
@@ -2258,7 +2259,7 @@ Namespace Repository
                outputModel.Description = row("description").ToString
                outputModel.Owner = row("owner").ToString
                outputModel.Timestamp = CLng(row("Timestamp"))
-               outputModel.BaseViewAccess = row("BaseViewAccess").ToString()
+               'outputModel.BaseViewAccess = row("BaseViewAccess").ToString()
             End If
 
          Catch ex As Exception
@@ -2277,7 +2278,7 @@ Namespace Repository
             For Each objRow As DataRow In data.Rows
 
                Dim objItem As New ReportColumnItem() With {
-                .ColumnID = CInt(objRow("ColumnID")),
+                .ColumnID = CInt(objRow("ID")),
                 .Prefix = HttpUtility.HtmlEncode(objRow("Prefix").ToString),
                 .Suffix = HttpUtility.HtmlEncode(objRow("Suffix").ToString),
                 .FontSize = CInt(objRow("FontSize")),
@@ -2300,16 +2301,18 @@ Namespace Repository
       Private Sub PopulateOrganisationReportFilters(outputModel As OrganisationReportModel, data As DataTable)
 
          Try
-            outputModel.Filters = New List(Of OrganisationReportFilterItem)
+            outputModel.FiltersFieldList = New List(Of OrganisationReportFilterItem)
 
             For Each objRow As DataRow In data.Rows
 
                Dim objItem As New OrganisationReportFilterItem() With {
-               .FilterFieldID = CInt(objRow("FilterFieldID")),
-               .FilterOperator = CInt(objRow("FilterOperator")),
-               .FilterValue = HttpUtility.HtmlEncode(objRow("FilterValue").ToString)}
+               .FieldID = CInt(objRow("FieldID")),
+               .OperatorID = CInt(objRow("Operator")),
+               .FilterValue = HttpUtility.HtmlEncode(objRow("Value").ToString),
+               .FieldName = HttpUtility.HtmlEncode(objRow("FieldName").ToString),
+               .FieldDataType = CInt(objRow("FieldDataType"))}
 
-               outputModel.Filters.Add(objItem)
+               outputModel.FiltersFieldList.Add(objItem)
 
             Next
 
@@ -2328,7 +2331,7 @@ Namespace Repository
             Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
             Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
             Dim sColumns = OrganisationReportColumnsAsString(objModel.Columns)
-            Dim sFilters = OrganisationReportFiltersAsString(objModel.Filters)
+            Dim sFilters = OrganisationReportFiltersAsString(objModel.FiltersFieldList)
 
 
             _objDataAccess.ExecuteSP("spASRIntSaveorganisationReport" _
@@ -2379,7 +2382,7 @@ Namespace Repository
          For Each objItem In objFilters
 
             sFilters += String.Format("{0}||{1}||{2}||{3}**" _
-                                       , iCount, objItem.FilterFieldID, objItem.FilterOperator, HttpUtility.HtmlEncode(objItem.FilterValue))
+                                       , iCount, objItem.FieldID, objItem.OperatorID, HttpUtility.HtmlEncode(objItem.FilterValue))
             iCount += 1
          Next
 
@@ -2417,6 +2420,43 @@ Namespace Repository
          Return objSaveMessage
 
       End Function
+
+      Public Function GetFilterColumns(ViewID As Integer) As List(Of OrganisationReportFilterItem)
+
+         Dim objOrgFilter As New List(Of OrganisationReportFilterItem)
+
+         Try
+
+            Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)  'Set session info
+            Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
+            Dim psRealSource As New SqlParameter("@psRealSource", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = 8000}
+            Dim dtFilterColumns As DataTable = objDataAccess.GetDataTable("sp_ASRIntGetFilterColumns",
+                                       CommandType.StoredProcedure,
+                                       New SqlParameter("@plngTableID", SqlDbType.Int) With {.Value = 0},
+                                       New SqlParameter("@plngViewID ", SqlDbType.Int) With {.Value = ViewID},
+                                       psRealSource
+                                       )
+
+            For Each objRow As DataRow In dtFilterColumns.Rows
+
+               objOrgFilter.Add(New OrganisationReportFilterItem() With {
+                           .FieldID = CInt(objRow("columnID")),
+                           .FieldName = Replace(objRow("columnName").ToString, "_", " "),
+                           .FieldDataType = CInt(objRow("dataType")),
+                           .FieldColumnSize = CInt(objRow("size")),
+                           .FieldDecimals = CInt(objRow("decimals"))
+                           })
+            Next
+
+         Catch ex As Exception
+            Throw
+
+         End Try
+
+         Return objOrgFilter
+
+      End Function
+
 
    End Class
 End Namespace
