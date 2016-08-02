@@ -177,9 +177,9 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
     strOutput = vbNullString
     
     iEndColumn = UBound(strArray, 1)
-    If mblnDisableSeparatorInHeaderAndFooter And lngGridRow = 0 Then
-      iEndColumn = 0
-    End If
+'    If mblnDisableSeparatorInHeaderAndFooter And lngGridRow = 0 Then
+'      iEndColumn = 0
+'    End If
     
     For lngGridCol = 0 To iEndColumn
       
