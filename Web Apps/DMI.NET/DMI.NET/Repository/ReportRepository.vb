@@ -1703,44 +1703,47 @@ Namespace Repository
 
 		End Function
 
-		Public Function RetrieveCalendarReport(id As Integer) As CalendarReportModel
+      Public Function RetrieveCalendarReport(id As Integer) As CalendarReportModel
 
-			Try
-				Return _calendarreports.Where(Function(m) m.ID = id).FirstOrDefault
+         Try
+            Return _calendarreports.Where(Function(m) m.ID = id).FirstOrDefault
 
-			Catch ex As Exception
-				Return New CalendarReportModel
+         Catch ex As Exception
+            Return New CalendarReportModel
 
-			End Try
+         End Try
 
-		End Function
+      End Function
 
-		Public Function RetrieveParent(reportID As Integer, reportType As UtilityType) As IReport
+      Public Function RetrieveParent(reportID As Integer, reportType As UtilityType) As IReport
 
-			Try
+         Try
 
-				Select Case reportType
-					Case UtilityType.utlCalendarReport
-						Return _calendarreports.Where(Function(m) m.ID = reportID).FirstOrDefault
+            Select Case reportType
+               Case UtilityType.utlCalendarReport
+                  Return _calendarreports.Where(Function(m) m.ID = reportID).FirstOrDefault
 
-					Case UtilityType.utlMailMerge
-						Return _mailmerges.Where(Function(m) m.ID = reportID).FirstOrDefault
+               Case UtilityType.utlMailMerge
+                  Return _mailmerges.Where(Function(m) m.ID = reportID).FirstOrDefault
 
-					Case UtilityType.utlCrossTab
-						Return _crosstabs.Where(Function(m) m.ID = reportID).FirstOrDefault
+               Case UtilityType.utlCrossTab
+                  Return _crosstabs.Where(Function(m) m.ID = reportID).FirstOrDefault
 
-					Case UtilityType.utlNineBoxGrid
-						Return _nineboxgrids.Where(Function(m) m.ID = reportID).FirstOrDefault
+               Case UtilityType.utlNineBoxGrid
+                  Return _nineboxgrids.Where(Function(m) m.ID = reportID).FirstOrDefault
 
-					Case UtilityType.TalentReport
-						Return _talentreports.Where(Function(m) m.ID = reportID).FirstOrDefault
+               Case UtilityType.TalentReport
+                  Return _talentreports.Where(Function(m) m.ID = reportID).FirstOrDefault
 
-					Case Else
-						Return _customreports.Where(Function(m) m.ID = reportID).FirstOrDefault
+               Case UtilityType.OrgReporting
+                  Return _organisationreports.Where(Function(m) m.ID = reportID).FirstOrDefault
 
-				End Select
+               Case Else
+                  Return _customreports.Where(Function(m) m.ID = reportID).FirstOrDefault
 
-			Catch ex As Exception
+            End Select
+
+         Catch ex As Exception
 				Throw
 			End Try
 
@@ -2195,12 +2198,12 @@ Namespace Repository
             objModel.Attach(_objSessionInfo)
             objModel.ActionType = action
 
-            If action = UtilityActionType.New Then
-               'Need to fetch hierachy table id
-               objModel.BaseViewTableID = 1
-               'SettingsConfig.Hierarchy_TableID
-               objModel.Owner = _username
+            'Populate view list based on the table id
+            objModel.BaseViewTableID = SettingsConfig.Hierarchy_TableID
+            objModel.BaseViewList = objModel.GetAvailableTableViews(objModel.BaseViewTableID)
 
+            If action = UtilityActionType.New Then
+               objModel.Owner = _username
             Else
 
                objModel.ID = ID

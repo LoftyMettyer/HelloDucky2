@@ -28,9 +28,9 @@ Namespace Models
 
 		<Required(ErrorMessage:="A base table must be selected.")>
 		Public Property BaseTableID As Integer Implements IReport.BaseTableID
-		Public Property BaseViewAccess As String
+      Public Property BaseViewAccess As String
 
-		<Required(ErrorMessage:="Definition name is required.")>
+      <Required(ErrorMessage:="Definition name is required.")>
 		<MaxLength(50, ErrorMessage:="Definition name cannot be longer than 50 characters.")>
 		<DisplayName("Name :")>
 		<AllowHtml>
@@ -84,7 +84,7 @@ Namespace Models
 		Public Property DefinitionAccessBasedOnSelectedCalculationColumns As String
       Public Property IsGroupAccessHiddenWhenCopyTheDefinition As Boolean
       Public Property BaseViewTableID As Integer
-      Public Property BaseViewID As Integer
+      Public Property BaseViewID As Integer Implements IReport.BaseViewID
 
 
       Public Overridable ReadOnly Property SortOrdersAvailable As Integer Implements IReport.SortOrdersAvailable
@@ -105,9 +105,9 @@ Namespace Models
 		Public Property SessionContext As SessionInfo Implements IDataAccess.SessionContext
 
 		Public Property SessionInfo As SessionInfo Implements IReport.SessionInfo
-		Public MustOverride Sub SetBaseTable(BaseTableID As Integer) Implements IReport.SetBaseTable
+      Public MustOverride Sub SetBaseTable(BaseTableID As Integer) Implements IReport.SetBaseTable
 
-		Public Overridable Function GetAvailableSortColumns(Self As SortOrderViewModel) As IEnumerable(Of ReportColumnItem) Implements IReport.GetAvailableSortColumns
+      Public Overridable Function GetAvailableSortColumns(Self As SortOrderViewModel) As IEnumerable(Of ReportColumnItem) Implements IReport.GetAvailableSortColumns
 
 			Dim objItems As New Collection(Of ReportColumnItem)
 

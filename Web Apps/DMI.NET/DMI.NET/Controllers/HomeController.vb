@@ -1106,90 +1106,92 @@ Namespace Controllers
 
 			Dim objSession = CType(Session("SessionContext"), SessionInfo)
 
-			' Validate permission (should only be hit if user "hacked" the accordian)
-			If Not objSession.IsCategoryGranted(value.utiltype) Then
-				Return RedirectToAction("PermissionsError", "Error")
-			End If
+         ' Validate permission (should only be hit if user "hacked" the accordian)
+         If Not objSession.IsCategoryGranted(value.utiltype) Then
+            Return RedirectToAction("PermissionsError", "Error")
+         End If
 
-			Session("defseltype") = value.utiltype
-			Session("utilTableID") = IIf(value.txtTableID = -1, SettingsConfig.Personnel_EmpTableID, value.txtTableID)
-			Session("fromMenu") = IIf(value.txtGotoFromMenu, "1", "0") ' No idea what this is doing, just placed for backward compatability. Candidate for removal!
-			Session("singleRecordID") = value.RecordID
-			Session("multipleRecordIDs") = value.MultipleRecordIDs
+         Session("defseltype") = value.utiltype
+         Session("utilTableID") = IIf(value.txtTableID = -1, SettingsConfig.Personnel_EmpTableID, value.txtTableID)
+         Session("fromMenu") = IIf(value.txtGotoFromMenu, "1", "0") ' No idea what this is doing, just placed for backward compatability. Candidate for removal!
+         Session("singleRecordID") = value.RecordID
+         Session("multipleRecordIDs") = value.MultipleRecordIDs
 
-			If (value.ResetCategoryAndOwner) Then
-				Session("defsel_categoryId_" & value.utiltype) = -1
-				Session("defsel_ownerName_" & value.utiltype) = ""
-			End If
+         If (value.ResetCategoryAndOwner) Then
+            Session("defsel_categoryId_" & value.utiltype) = -1
+            Session("defsel_ownerName_" & value.utiltype) = ""
+         End If
 
-			If (value.txtGotoFromMenu) Or ((Not Session("multipleRecordIDs") Is Nothing AndAlso Session("multipleRecordIDs").ToString().Length > 0) Or (Not Session("singleRecordID") Is Nothing AndAlso Session("singleRecordID") > 0)) Then
-				Session("OnlyMine") = CBool(objSession.GetUserSetting("defsel", "onlymine " + value.utiltype.ToSecurityPrefix, False))
-			Else
-				Session("OnlyMine") = value.OnlyMine
-			End If
+         If (value.txtGotoFromMenu) Or ((Not Session("multipleRecordIDs") Is Nothing AndAlso Session("multipleRecordIDs").ToString().Length > 0) Or (Not Session("singleRecordID") Is Nothing AndAlso Session("singleRecordID") > 0)) Then
+            Session("OnlyMine") = CBool(objSession.GetUserSetting("defsel", "onlymine " + value.utiltype.ToSecurityPrefix, False))
+         Else
+            Session("OnlyMine") = value.OnlyMine
+         End If
 
-			Return View()
+         Return View()
 
-		End Function
+      End Function
 
-		<HttpPost()>
-		<ValidateAntiForgeryToken>
-		Function DefSel_Submit(value As DefSelModel)
+      <HttpPost()>
+      <ValidateAntiForgeryToken>
+      Function DefSel_Submit(value As DefSelModel)
 
-			Try
+         Try
 
-				Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
-				Dim objSession = CType(Session("SessionContext"), SessionInfo)
+            Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+            Dim objSession = CType(Session("SessionContext"), SessionInfo)
 
-				Dim sRequiredPermission = value.Action
+            Dim sRequiredPermission = value.Action
 
-				If value.Action = "copy" Then sRequiredPermission = "NEW"
+            If value.Action = "copy" Then sRequiredPermission = "NEW"
 
-				' Validate permission (should only be hit if user "hacked" the button properties)
-				If Not objSession.IsPermissionGranted(value.utiltype.ToSecurityPrefix, sRequiredPermission) Then
-					Return RedirectToAction("PermissionsError", "Error")
-				End If
+            ' Validate permission (should only be hit if user "hacked" the button properties)
+            If Not objSession.IsPermissionGranted(value.utiltype.ToSecurityPrefix, sRequiredPermission) Then
+               Return RedirectToAction("PermissionsError", "Error")
+            End If
 
-				' Set some session variables used by all the util pages
-				Session("utiltype") = value.utiltype
-				Session("utilid") = value.utilID
-				Session("utilname") = value.utilName
-				Session("action") = value.Action
-				Session("utilTableID") = value.txtTableID
+            ' Set some session variables used by all the util pages
+            Session("utiltype") = value.utiltype
+            Session("utilid") = value.utilID
+            Session("utilname") = value.utilName
+            Session("action") = value.Action
+            Session("utilTableID") = value.txtTableID
 
-				' Reset ownername and categoryid sessions
-				Session("defsel_categoryId_" & value.utiltype) = value.CategoryId
-				Session("defsel_ownerName_" & value.utiltype) = value.OwnerName
+            ' Reset ownername and categoryid sessions
+            Session("defsel_categoryId_" & value.utiltype) = value.CategoryId
+            Session("defsel_ownerName_" & value.utiltype) = value.OwnerName
 
-				' Now examine what we are doing and redirect as appropriate
-				If (Session("action") = "new") Or _
-				 (Session("action") = "edit") Or _
-				 (Session("action") = "view") Or _
-				 (Session("action") = "copy") Then
-					Select Case Session("utiltype")
-						Case UtilityType.utlCrossTab
-							Return RedirectToAction("util_def_crosstab", "reports")
-						Case UtilityType.utlCustomReport
-							Return RedirectToAction("util_def_customreport", "reports")
-						Case UtilityType.utlMailMerge
-							Return RedirectToAction("util_def_mailmerge", "reports")
-						Case UtilityType.utlPicklist
-							Return RedirectToAction("util_def_picklist")
-						Case UtilityType.utlFilter
-							Return PartialView("util_def_expression")
-						Case UtilityType.utlCalculation
-							Return PartialView("util_def_expression")
-						Case UtilityType.utlCalendarReport
-							Return RedirectToAction("util_def_calendarreport", "reports")
-						Case UtilityType.utlNineBoxGrid
-							Return RedirectToAction("util_def_9boxgrid", "reports")
-						Case UtilityType.TalentReport
-							Return RedirectToAction("util_def_talentreport", "reports")
-					End Select
+            ' Now examine what we are doing and redirect as appropriate
+            If (Session("action") = "new") Or
+               (Session("action") = "edit") Or
+               (Session("action") = "view") Or
+               (Session("action") = "copy") Then
+               Select Case Session("utiltype")
+                  Case UtilityType.utlCrossTab
+                     Return RedirectToAction("util_def_crosstab", "reports")
+                  Case UtilityType.utlCustomReport
+                     Return RedirectToAction("util_def_customreport", "reports")
+                  Case UtilityType.utlMailMerge
+                     Return RedirectToAction("util_def_mailmerge", "reports")
+                  Case UtilityType.utlPicklist
+                     Return RedirectToAction("util_def_picklist")
+                  Case UtilityType.utlFilter
+                     Return PartialView("util_def_expression")
+                  Case UtilityType.utlCalculation
+                     Return PartialView("util_def_expression")
+                  Case UtilityType.utlCalendarReport
+                     Return RedirectToAction("util_def_calendarreport", "reports")
+                  Case UtilityType.utlNineBoxGrid
+                     Return RedirectToAction("util_def_9boxgrid", "reports")
+                  Case UtilityType.TalentReport
+                     Return RedirectToAction("util_def_talentreport", "reports")
+                  Case UtilityType.OrgReporting
+                     Return RedirectToAction("util_def_organisationreport", "reports")
+               End Select
 
-				ElseIf Session("action") = "delete" Then
+            ElseIf Session("action") = "delete" Then
 
-					Dim rstUsage = objDatabase.GetUtilityUsage(value.utiltype, value.utilID)
+               Dim rstUsage = objDatabase.GetUtilityUsage(value.utiltype, value.utilID)
 
 					If rstUsage.Rows.Count = 0 Then
 						Return RedirectToAction("util_delete", value)

@@ -17,14 +17,18 @@ Namespace Code.Interfaces
 
 		Property BaseTableID As Integer
 
-		Sub SetBaseTable(TableID As Integer)
-		Function GetAvailableSortColumns(Self As SortOrderViewModel) As IEnumerable(Of ReportColumnItem)
+      Sub SetBaseTable(TableID As Integer)
+
+      Property BaseViewID As Integer
+
+      Function GetAvailableSortColumns(Self As SortOrderViewModel) As IEnumerable(Of ReportColumnItem)
 		Function GetAvailableTables() As IEnumerable(Of ReportTableItem)
 		Property Columns() As List(Of ReportColumnItem)
 
 		Property SortOrders As List(Of SortOrderViewModel)
 		ReadOnly Property SortOrdersAvailable As Integer
 
-		Property Dependencies() As ReportDependencies
-	End Interface
+      Property Dependencies() As ReportDependencies
+
+   End Interface
 End Namespace

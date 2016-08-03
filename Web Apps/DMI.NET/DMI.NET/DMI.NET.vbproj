@@ -1884,9 +1884,9 @@
     <Content Include="Views\Reports\_OutputTalentReport.vbhtml" />
     <Content Include="Views\Reports\_TalentManagementColumnSelection.vbhtml" />
     <Content Include="Views\Reports\Util_Def_OrganisationReport.vbhtml" />
-    <Content Include="Views\Reports\_OrgColumnSelection.vbhtml" />
     <Content Include="Views\Reports\_OrgDefinition.vbhtml" />
     <Content Include="Views\Reports\_OrgFilterSelect.vbhtml" />
+    <Content Include="Views\Reports\_OrgColumnSelection.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

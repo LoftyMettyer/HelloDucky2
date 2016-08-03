@@ -1,14 +1,11 @@
 ﻿Option Explicit On
 Option Strict On
 
-Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel.DataAnnotations
 Imports System.Collections.ObjectModel
-Imports System.ComponentModel
 Imports DMI.NET.Classes
-Imports DMI.NET.Code.Attributes
-Imports HR.Intranet.Server.Structures
-Imports DMI.NET.ViewModels.Reports
+Imports HR.Intranet.Server
+Imports HR.Intranet.Server.Metadata
 
 
 Namespace Models
@@ -33,6 +30,8 @@ Namespace Models
 
       Public Property FilterColoumnList As New Collection(Of SelectListItem)
 
+      Public Property BaseViewList As New List(Of ReportTableItem)
+
       Public Overrides Sub SetBaseTable(TableID As Integer)
       End Sub
 
@@ -48,25 +47,17 @@ Namespace Models
 
       End Function
 
-      Public Function GetAvailableTableViews() As IEnumerable(Of ReportTableItem)
+      Friend Function GetAvailableTableViews(tableId As Integer) As List(Of ReportTableItem)
 
-         'Dim objMenu As HR.Intranet.Server.Menu
+         Dim objView = SessionInfo.GetTableAssociatedViews(tableId)
          Dim objItems As New Collection(Of ReportTableItem)
+         For Each item As View In objView
+            objItems.Add(New ReportTableItem With {.id = item.ViewId, .Name = item.ViewName, .Relation = ReportRelationType.Base})
+         Next
 
-         Dim objMenu = New HR.Intranet.Server.Menu()
-         Dim avPrimaryMenuInfo As List(Of MenuInfo)
-         objMenu.SessionInfo = SessionContext
-         avPrimaryMenuInfo = objMenu.GetPrimaryTableMenu
-
-         ' Add base table
-         Dim objView = objMenu.GetPrimaryTableMenu.Where(Function(m) m.TableID = BaseTableID).FirstOrDefault
-         objItems.Add(New ReportTableItem With {.id = objView.ViewID, .Name = objView.ViewName, .Relation = ReportRelationType.Base})
-
-         Return objItems.OrderBy(Function(m) m.Name)
+         Return objItems.OrderBy(Function(m) m.Name).ToList
 
       End Function
-
-
 
    End Class
 

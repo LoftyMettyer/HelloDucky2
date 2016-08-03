@@ -21,8 +21,9 @@ Public Class SessionInfo
 	Friend BankHolidayModule As modBankHolidaySpecifics
 	Friend PersonnelModule As modPersonnelSpecifics
 
-	Public Tables As ICollection(Of Table)
-	Public Columns As ICollection(Of Column)
+   Public Tables As ICollection(Of Table)
+   Public Views As ICollection(Of View)
+   Public Columns As ICollection(Of Column)
 	Public Relations As List(Of Relation)
 
 	Friend ModuleSettings As ICollection(Of ModuleSetting)
@@ -348,239 +349,257 @@ Public Class SessionInfo
 
 	End Sub
 
-	Friend Sub SetupTablesCollection()
+   Friend Sub SetupTablesCollection()
 
-		Const SecurityTable = 0
-		Const SecurityPermissions = 1
-		Const ViewTable = 2
+      Const SecurityTable = 0
+      Const SecurityPermissions = 1
+      Const ViewTable = 2
 
-		' Read the list of tables the current user has permission to see.
-		Dim fSysSecManager As Boolean
-		Dim sSQL As String
+      ' Read the list of tables the current user has permission to see.
+      Dim fSysSecManager As Boolean
+      Dim sSQL As String
 
-		Dim aryRealSource As DataTable
+      Dim aryRealSource As DataTable
 
-		Dim sTableViewName As String
+      Dim sTableViewName As String
 
-		Dim objDataAccess As New clsDataAccess(_objLogin)
-		Dim dsPermissions As DataSet
+      Dim objDataAccess As New clsDataAccess(_objLogin)
+      Dim dsPermissions As DataSet
 
-		Dim dtInfo As DataTable
-		Dim objTableView As TablePrivilege
-		Dim objColumnPrivileges As CColumnPrivileges
-		Dim colTablePermissions As IList(Of TablePermission)
-		Dim objTablePermission As TablePermission
+      Dim dtInfo As DataTable
+      Dim objTableView As TablePrivilege
+      Dim objColumnPrivileges As CColumnPrivileges
+      Dim colTablePermissions As IList(Of TablePermission)
+      Dim objTablePermission As TablePermission
 
-		Dim sLastTableView As String
-		Dim sColumnName As String
-		Dim objItem As TablePrivilege
+      Dim sLastTableView As String
+      Dim sColumnName As String
+      Dim objItem As TablePrivilege
 
-		' Don't need to recreate the tables & columns collections if they already exist.
-		If Not gcoTablePrivileges Is Nothing Then
-			Exit Sub
-		End If
+      ' Don't need to recreate the tables & columns collections if they already exist.
+      If Not gcoTablePrivileges Is Nothing Then
+         Exit Sub
+      End If
 
-		' Instantiate a new collection of table privileges.
-		gcoTablePrivileges = New Collection(Of TablePrivilege)()
+      ' Instantiate a new collection of table privileges.
+      gcoTablePrivileges = New Collection(Of TablePrivilege)()
 
-		dsPermissions = objDataAccess.GetDataSet("spASRIntSetupTablesCollection")
+      dsPermissions = objDataAccess.GetDataSet("spASRIntSetupTablesCollection")
 
-		Dim objSecurityRow = dsPermissions.Tables(SecurityTable).Rows(0)
-		fSysSecManager = CBool(objSecurityRow("IsSysSecMgr"))
+      Dim objSecurityRow = dsPermissions.Tables(SecurityTable).Rows(0)
+      fSysSecManager = CBool(objSecurityRow("IsSysSecMgr"))
 
-		' Initialise the collection with items for each TABLE in the system.
-		For Each objTable In Tables
-			objItem = New TablePrivilege()
-			objItem.TableName = UCase(objTable.Name)
-			objItem.TableID = objTable.ID
-			objItem.TableType = objTable.TableType
-			objItem.DefaultOrderID = objTable.DefaultOrderID
-			objItem.RecordDescriptionID = objTable.RecordDescExprID
-			objItem.IsTable = True
-			objItem.ViewID = 0
-			objItem.ViewName = ""
-			objItem.RealSource = UCase(objTable.Name)
-			gcoTablePrivileges.Add(objItem)
-		Next
+      ' Initialise the collection with items for each TABLE in the system.
+      For Each objTable In Tables
+         objItem = New TablePrivilege()
+         objItem.TableName = UCase(objTable.Name)
+         objItem.TableID = objTable.ID
+         objItem.TableType = objTable.TableType
+         objItem.DefaultOrderID = objTable.DefaultOrderID
+         objItem.RecordDescriptionID = objTable.RecordDescExprID
+         objItem.IsTable = True
+         objItem.ViewID = 0
+         objItem.ViewName = ""
+         objItem.RealSource = UCase(objTable.Name)
+         gcoTablePrivileges.Add(objItem)
+      Next
 
-		' Initialise the collection with items for each VIEW in the system.
-		For Each objRow As DataRow In dsPermissions.Tables(ViewTable).Rows
-			objItem = New TablePrivilege()
-			objItem.TableName = objRow("TableName").ToString()
-			objItem.TableID = CInt(objRow("TableID"))
-			objItem.TableType = objRow("TableType")
-			objItem.DefaultOrderID = CInt(objRow("DefaultOrderID"))
-			objItem.RecordDescriptionID = CInt(objRow("RecordDescExprID"))
-			objItem.IsTable = False
-			objItem.ViewID = CInt(objRow("ViewID"))
-			objItem.ViewName = objRow("ViewName").ToString()
-			objItem.RealSource = objRow("ViewName").ToString()
-			gcoTablePrivileges.Add(objItem)
-		Next
+      ' Initialise the collection with items for each VIEW in the system.
+      For Each objRow As DataRow In dsPermissions.Tables(ViewTable).Rows
+         objItem = New TablePrivilege()
+         objItem.TableName = objRow("TableName").ToString()
+         objItem.TableID = CInt(objRow("TableID"))
+         objItem.TableType = objRow("TableType")
+         objItem.DefaultOrderID = CInt(objRow("DefaultOrderID"))
+         objItem.RecordDescriptionID = CInt(objRow("RecordDescExprID"))
+         objItem.IsTable = False
+         objItem.ViewID = CInt(objRow("ViewID"))
+         objItem.ViewName = objRow("ViewName").ToString()
+         objItem.RealSource = objRow("ViewName").ToString()
+         gcoTablePrivileges.Add(objItem)
+      Next
 
 
-		Dim lngTableId As Long
+      Dim lngTableId As Long
 
-		' Get the 'realSource' and permissions for each table or view.
-		If fSysSecManager Then
+      ' Get the 'realSource' and permissions for each table or view.
+      If fSysSecManager Then
 
-			For Each objTableView In gcoTablePrivileges
-				objTableView.AllowSelect = True
-				objTableView.AllowUpdate = True
-				objTableView.AllowDelete = True
-				objTableView.AllowInsert = True
-			Next
+         For Each objTableView In gcoTablePrivileges
+            objTableView.AllowSelect = True
+            objTableView.AllowUpdate = True
+            objTableView.AllowDelete = True
+            objTableView.AllowInsert = True
+         Next
 
-			sSQL = "SELECT tableid, childViewID FROM ASRSysChildViews2 WHERE role = '" & Replace(LoginInfo.UserGroup, "'", "''") & "'"
-			dtInfo = objDataAccess.GetDataTable(sSQL, CommandType.Text)
+         sSQL = "SELECT tableid, childViewID FROM ASRSysChildViews2 WHERE role = '" & Replace(LoginInfo.UserGroup, "'", "''") & "'"
+         dtInfo = objDataAccess.GetDataTable(sSQL, CommandType.Text)
 
-			For Each objRow As DataRow In dtInfo.Rows
-				lngTableId = CInt(objRow("tableid"))
-				objTableView = gcoTablePrivileges.GetItemByTableId(lngTableId)
+         For Each objRow As DataRow In dtInfo.Rows
+            lngTableId = CInt(objRow("tableid"))
+            objTableView = gcoTablePrivileges.GetItemByTableId(lngTableId)
 
-				If objTableView.TableType = TableTypes.tabChild Then
-					objTableView.RealSource = Left("ASRSysCV" & Trim(objRow("childViewID").ToString) & "#" & Replace(objTableView.TableName, " ", "_") & "#" & Replace(LoginInfo.UserGroup, " ", "_"), 255)
-				Else
-					objTableView.RealSource = CStr(IIf(objTableView.IsTable, objTableView.TableName, objTableView.ViewName))
+            If objTableView.TableType = TableTypes.tabChild Then
+               objTableView.RealSource = Left("ASRSysCV" & Trim(objRow("childViewID").ToString) & "#" & Replace(objTableView.TableName, " ", "_") & "#" & Replace(LoginInfo.UserGroup, " ", "_"), 255)
+            Else
+               objTableView.RealSource = CStr(IIf(objTableView.IsTable, objTableView.TableName, objTableView.ViewName))
 
-				End If
+            End If
 
-			Next
+         Next
 
-		Else
-			' If the user is NOT a 'system manager' or 'security manager'
-			' read the table permissions from the server.
-			sSQL = "exec spASRIntAllTablePermissions '" & Replace(LoginInfo.Username, "'", "''") & "'"
-			dtInfo = objDataAccess.GetDataTable(sSQL, CommandType.Text)
+      Else
+         ' If the user is NOT a 'system manager' or 'security manager'
+         ' read the table permissions from the server.
+         sSQL = "exec spASRIntAllTablePermissions '" & Replace(LoginInfo.Username, "'", "''") & "'"
+         dtInfo = objDataAccess.GetDataTable(sSQL, CommandType.Text)
 
-			colTablePermissions = New List(Of TablePermission)
-			For Each objRow As DataRow In dtInfo.Rows
-				objTablePermission = New TablePermission()
-				objTablePermission.Name = objRow("Name").ToString()
-				objTablePermission.Action = CInt(objRow("Action"))
-				objTablePermission.TableID = CInt(objRow("TableID"))
+         colTablePermissions = New List(Of TablePermission)
+         For Each objRow As DataRow In dtInfo.Rows
+            objTablePermission = New TablePermission()
+            objTablePermission.Name = objRow("Name").ToString()
+            objTablePermission.Action = CInt(objRow("Action"))
+            objTablePermission.TableID = CInt(objRow("TableID"))
 
-				objTableView = Nothing
+            objTableView = Nothing
 
-				If Left(objTablePermission.Name, 8) = "ASRSYSCV" Then
-					' Determine which table the child view is for.
-					objTableView = gcoTablePrivileges.FindTableID(objTablePermission.TableID)
+            If Left(objTablePermission.Name, 8) = "ASRSYSCV" Then
+               ' Determine which table the child view is for.
+               objTableView = gcoTablePrivileges.FindTableID(objTablePermission.TableID)
 
-				Else
-					If Left(objTablePermission.Name, 6) <> "ASRSYS" Then
-						objTableView = gcoTablePrivileges.Item(objTablePermission.Name)
-					End If
-				End If
+            Else
+               If Left(objTablePermission.Name, 6) <> "ASRSYS" Then
+                  objTableView = gcoTablePrivileges.Item(objTablePermission.Name)
+               End If
+            End If
 
-				If Not objTableView Is Nothing Then
-					objTableView.RealSource = objTablePermission.Name
+            If Not objTableView Is Nothing Then
+               objTableView.RealSource = objTablePermission.Name
 
-					Select Case objTablePermission.Action
-						Case 193 ' Select permission.
-							objTableView.AllowSelect = True
-						Case 195 ' Insert permission.
-							objTableView.AllowInsert = True
-						Case 196 ' Delete permission.
-							objTableView.AllowDelete = True
-						Case 197 ' Update permission.
-							objTableView.AllowUpdate = True
-					End Select
-				End If
+               Select Case objTablePermission.Action
+                  Case 193 ' Select permission.
+                     objTableView.AllowSelect = True
+                  Case 195 ' Insert permission.
+                     objTableView.AllowInsert = True
+                  Case 196 ' Delete permission.
+                     objTableView.AllowDelete = True
+                  Case 197 ' Update permission.
+                     objTableView.AllowUpdate = True
+               End Select
+            End If
 
-				colTablePermissions.Add(objTablePermission)
+            colTablePermissions.Add(objTablePermission)
 
-			Next
-		End If
+         Next
+      End If
 
-		' Get the column permissions for each table/view.
-		aryRealSource = New DataTable()
-		'	Dim objblah = gcoTablePrivileges.WithRealSource()
+      ' Get the column permissions for each table/view.
+      aryRealSource = New DataTable()
+      '	Dim objblah = gcoTablePrivileges.WithRealSource()
 
-		'	aryRealSource = gcoTablePrivileges.WithRealSource()
+      '	aryRealSource = gcoTablePrivileges.WithRealSource()
 
-		aryRealSource.Columns.Add("tablename", Type.GetType("System.String"))
-		For Each objTableView In gcoTablePrivileges.Collection
+      aryRealSource.Columns.Add("tablename", Type.GetType("System.String"))
+      For Each objTableView In gcoTablePrivileges.Collection
 
-			If Len(objTableView.RealSource) > 0 Then
+         If Len(objTableView.RealSource) > 0 Then
 
-				Dim objRealSourceRow = aryRealSource.NewRow()
-				objRealSourceRow("tablename") = objTableView.RealSource.ToUpper()
+            Dim objRealSourceRow = aryRealSource.NewRow()
+            objRealSourceRow("tablename") = objTableView.RealSource.ToUpper()
 
-				aryRealSource.Rows.Add(objRealSourceRow)
+            aryRealSource.Rows.Add(objRealSourceRow)
 
-			End If
-		Next objTableView
-		'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objTableView = Nothing
+         End If
+      Next objTableView
+      'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+      objTableView = Nothing
 
-		' JPD20030313 Don't need to recreate the columns collection if it already exists.
-		If Not gcolColumnPrivilegesCollection Is Nothing Then
-			Exit Sub
-		End If
+      ' JPD20030313 Don't need to recreate the columns collection if it already exists.
+      If Not gcolColumnPrivilegesCollection Is Nothing Then
+         Exit Sub
+      End If
 
-		If gcoTablePrivileges.Count > 0 Then
-			' Instantiate  the Column Privileges collection if it does not already exist.
-			If gcolColumnPrivilegesCollection Is Nothing Then
-				gcolColumnPrivilegesCollection = New Collection
-			End If
+      If gcoTablePrivileges.Count > 0 Then
+         ' Instantiate  the Column Privileges collection if it does not already exist.
+         If gcolColumnPrivilegesCollection Is Nothing Then
+            gcolColumnPrivilegesCollection = New Collection
+         End If
 
-			' Get the list of all columns in all tables/views.
-			dtInfo = objDataAccess.GetDataTable("spASRIntGetColumnsFromTablesAndViews", CommandType.Text)
+         ' Get the list of all columns in all tables/views.
+         dtInfo = objDataAccess.GetDataTable("spASRIntGetColumnsFromTablesAndViews", CommandType.Text)
 
-			For Each objRow As DataRow In dtInfo.Rows
+         For Each objRow As DataRow In dtInfo.Rows
 
-				' If the current column's collection is NOT already instantiated, instantiate it.
-				If sLastTableView <> objRow("tableviewname").ToString() Then
-					sLastTableView = objRow("tableviewname").ToString()
-					objColumnPrivileges = New CColumnPrivileges
-					objColumnPrivileges.Tag = objRow("tableviewname").ToString()
-					gcolColumnPrivilegesCollection.Add(objColumnPrivileges, objRow("tableviewname").ToString())
-				End If
+            ' If the current column's collection is NOT already instantiated, instantiate it.
+            If sLastTableView <> objRow("tableviewname").ToString() Then
+               sLastTableView = objRow("tableviewname").ToString()
+               objColumnPrivileges = New CColumnPrivileges
+               objColumnPrivileges.Tag = objRow("tableviewname").ToString()
+               gcolColumnPrivilegesCollection.Add(objColumnPrivileges, objRow("tableviewname").ToString())
+            End If
 
-				sColumnName = objRow("ColumnName").ToString()
-				If Not objColumnPrivileges.IsValid(sColumnName) Then
-					' Add the column object to the collection.
-					' If the current user is a system/security maneger then set column privileges to TRUE,
-					' else set them to FALSE.
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					objColumnPrivileges.Add(fSysSecManager, fSysSecManager, sColumnName, objRow("ColumnType"), objRow("DataType"), objRow("ColumnID"), IIf(IsDBNull(objRow("UniqueCheckType")), False, objRow("UniqueCheckType") <> 0))
+            sColumnName = objRow("ColumnName").ToString()
+            If Not objColumnPrivileges.IsValid(sColumnName) Then
+               ' Add the column object to the collection.
+               ' If the current user is a system/security maneger then set column privileges to TRUE,
+               ' else set them to FALSE.
+               'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+               objColumnPrivileges.Add(fSysSecManager, fSysSecManager, sColumnName, objRow("ColumnType"), objRow("DataType"), objRow("ColumnID"), IIf(IsDBNull(objRow("UniqueCheckType")), False, objRow("UniqueCheckType") <> 0))
 
-				End If
+            End If
 
-			Next
+         Next
 
-			' If the current user is not a system/security manager then read the column permissions from SQL.
-			If Not fSysSecManager Then
+         ' If the current user is not a system/security manager then read the column permissions from SQL.
+         If Not fSysSecManager Then
 
-				sLastTableView = ""
+            sLastTableView = ""
 
-				dtInfo = objDataAccess.GetDataTable("spASRIntGetColumnPermissions", "SourceList", aryRealSource)
-				For Each objRow As DataRow In dtInfo.Rows
+            dtInfo = objDataAccess.GetDataTable("spASRIntGetColumnPermissions", "SourceList", aryRealSource)
+            For Each objRow As DataRow In dtInfo.Rows
 
-					If sLastTableView <> objRow("tableviewname").ToString() Then
-						sLastTableView = objRow("tableviewname").ToString()
+               If sLastTableView <> objRow("tableviewname").ToString() Then
+                  sLastTableView = objRow("tableviewname").ToString()
 
-						objTableView = gcoTablePrivileges.FindRealSource(objRow("tableviewname").ToString())
-						If objTableView.IsTable Then
-							sTableViewName = objTableView.TableName
-						Else
-							sTableViewName = objRow("tableviewname").ToString()
-						End If
+                  objTableView = gcoTablePrivileges.FindRealSource(objRow("tableviewname").ToString())
+                  If objTableView.IsTable Then
+                     sTableViewName = objTableView.TableName
+                  Else
+                     sTableViewName = objRow("tableviewname").ToString()
+                  End If
 
-						objColumnPrivileges = gcolColumnPrivilegesCollection.Item(sTableViewName)
-					End If
+                  objColumnPrivileges = gcolColumnPrivilegesCollection.Item(sTableViewName)
+               End If
 
-					If CInt(objRow("Action")) = 193 Then
-						objColumnPrivileges.Item(objRow("ColumnName")).AllowSelect = CBool(objRow("Permission"))
-					Else
-						objColumnPrivileges.Item(objRow("ColumnName")).AllowUpdate = CBool(objRow("Permission"))
-					End If
+               If CInt(objRow("Action")) = 193 Then
+                  objColumnPrivileges.Item(objRow("ColumnName")).AllowSelect = CBool(objRow("Permission"))
+               Else
+                  objColumnPrivileges.Item(objRow("ColumnName")).AllowUpdate = CBool(objRow("Permission"))
+               End If
 
-				Next
-			End If
-		End If
+            Next
+         End If
+      End If
 
-	End Sub
+   End Sub
+
+   Public Function GetTableAssociatedViews(tableId As Integer) As List(Of View)     ' Instantiate a new collection of table privileges.
+
+      Dim views As New List(Of View)
+
+      For Each objTableView As TablePrivilege In gcoTablePrivileges
+         If (Not objTableView.IsTable) AndAlso (objTableView.TableID = tableId) AndAlso (objTableView.AllowSelect) Then
+            Dim view As New View
+            view.TableId = tableId
+            view.TableName = objTableView.TableName
+            view.ViewId = objTableView.ViewID
+            view.ViewName = objTableView.ViewName
+            views.Add(view)
+         End If
+      Next
+      Return views
+
+   End Function
 
 #End Region
 

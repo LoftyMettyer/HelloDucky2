@@ -23,11 +23,11 @@ End Code
             <li><a href="#report_definition_tab_columns">Columns</a></li>
          </ul>
 
-         @*<div id="tabs-1">
+         <div id="tabs-1">
             @Code
                Html.RenderPartial("_OrgDefinition", Model)
             End Code
-         </div>*@
+         </div>
 
          <div id="tabs-2">
             @Code
@@ -35,11 +35,11 @@ End Code
             End Code
          </div>
 
-         @*<div id="report_definition_tab_columns">
-            @Code
+         <div id="report_definition_tab_columns">
+            @*@Code
                Html.RenderPartial("_OrgColumnSelection", Model)
-            End Code
-         </div>*@
+            End Code*@
+         </div>
       </div>
       @Html.AntiForgeryToken()
                End Using

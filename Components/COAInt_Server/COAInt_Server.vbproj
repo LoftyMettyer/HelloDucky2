@@ -130,6 +130,7 @@
     <Compile Include="Extensions\TalentChartExtensions.vb" />
     <Compile Include="Extensions\UtilityTypeExtension.vb" />
     <Compile Include="MatchReportRun.vb" />
+    <Compile Include="Metadata\View.vb" />
     <Compile Include="Structures\Competency.vb" />
     <Compile Include="Metadata\DisplayColumn.vb" />
     <Compile Include="ReportOutput\BaseOutputFormat.vb" />

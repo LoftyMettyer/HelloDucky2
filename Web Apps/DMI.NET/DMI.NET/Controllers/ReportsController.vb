@@ -1143,6 +1143,14 @@ Namespace Controllers
 
       End Function
 
+      <HttpPost>
+      <ValidateAntiForgeryToken>
+      Sub ChangeBaseView(ReportID As Integer, ReportType As UtilityType, BaseViewId As Integer)
+
+         Dim objReport = objReportRepository.RetrieveParent(ReportID, ReportType)
+         objReport.BaseViewID = BaseViewId
+      End Sub
+
    End Class
 
 End Namespace
