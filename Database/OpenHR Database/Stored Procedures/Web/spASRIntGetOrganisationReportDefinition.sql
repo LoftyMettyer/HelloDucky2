@@ -74,9 +74,12 @@ BEGIN
 		--convert(varchar(MAX), t.tableName + '.' + c.columnName) AS [name],
 		r.FieldID AS [FieldID],
 		r.Operator  AS Operator,
-		r.Value AS [Value]		
+		r.Value AS [Value],
+		c.ColumnName AS [FieldName],
+		c.datatype  AS [FieldDataType]		
 	FROM ASRSysOrganisationReportFilters r
-	WHERE r.OrganisationID	= @piReportID ;	
+	INNER JOIN ASRSysColumns c ON r.FieldID = c.columnId
+	WHERE r.OrganisationID	= @piReportID;	
 
 	-- Columns
 	SELECT r.ColumnID AS [ID],		

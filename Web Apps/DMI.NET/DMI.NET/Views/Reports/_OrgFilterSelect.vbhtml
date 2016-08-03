@@ -13,8 +13,8 @@
             <table id="DBGridFilterRecords"></table>        
       </div>
       <div class="tablecell floatright" id="gridButton">
-         <input id="btnRemove" name="btnRemove" type="button" value="Remove" style="width: 100px; margin-top: 10px;" class="btn" />
-         <input id="btnRemoveAll" name="btnRemoveAll" type="button" value="Remove All" style="margin-top: 10px;" class="btn" />
+         <input id="btnRemove" name="btnRemove" type="button" value="Remove" style="width: 100px; margin-top: 10px;" class="btn" onclick="FilterSelect_remove()" />
+         <input id="btnRemoveAll" name="btnRemoveAll" type="button" value="Remove All" style="margin-top: 10px;" class="btn" onclick="FilterSelect_removeAll()" />
       </div>
    </fieldset>   
   
@@ -80,7 +80,7 @@
             </td>
             <td></td>
             <td style="width: 175px; text-align: right">
-               <input id="btnAddToList" name="btnAddToList" type="button" value="Add To List" />              
+               <input id="btnAddToList" name="btnAddToList" type="button" value="Add To List" onclick="AddToList()" />              
             </td>
          </tr>
       </table>
@@ -134,7 +134,7 @@
 
       //Populate Filter Field dropdown
       GetFilterColumns();
-      $("select#selectColumn").focus();     
+      $("select#selectColumn").focus();
 
       //Determine if the grid already exists...
       if ($("#DBGridFilterRecords").getGridParam("reccount") == undefined) { //It doesn't exist, create it
@@ -154,8 +154,8 @@
             editurl: 'clientArray'
          }).jqGrid('hideCol', 'cb');
       }
-      
-      if ('Edit' == '@UtilityActionType.Edit') {         
+
+      if ($("#ActionType").val() === '@UtilityActionType.Edit') {
          var datastr = '@Model.FiltersFieldList.ToJsonResult';
          GetExistingFilterDefinition(datastr);
       }
@@ -167,7 +167,7 @@
 
       // Gets view id of selected base view
       //var viewID = $("#BaseTableID").val();
-      var viewID = 1;  
+      var viewID = 1;
       var optionOfAllType;
 
       $.ajax({
@@ -185,13 +185,13 @@
 
    }
 
-   function refreshSelectColumnCombo() {      
-      if ($("#selectColumn option:selected")[0] != undefined) {        
+   function refreshSelectColumnCombo() {
+      if ($("#selectColumn option:selected")[0] != undefined) {
          var dropDown = $("#selectColumn option:selected")[0];
          var iDataType = dropDown.attributes["data-datatype"].value;
          displayOperatorSelector(iDataType);
          button_disable($("#btnAddToList")[0], false);
-      }     
+      }
    }
 
    function displayOperatorSelector(piDataType) {
@@ -1097,7 +1097,7 @@
          $("#DBGridFilterRecords").jqGrid('setSelection', 1);
       }
 
-   }  
+   }
 </script>
 
 

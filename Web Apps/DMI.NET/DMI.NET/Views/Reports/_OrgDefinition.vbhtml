@@ -2,6 +2,9 @@
 @Imports DMI.NET.Helpers
 @Imports DMI.NET.Models
 @Inherits System.Web.Mvc.WebViewPage(Of OrganisationReportModel)
+@Html.HiddenFor(Function(m) m.ID, New With {.id = "txtReportID"})
+@Html.HiddenFor(Function(m) m.ReportType, New With {.id = "txtReportType"})
+@Html.HiddenFor(Function(m) m.ActionType)
 
 
    <div class="width100">
