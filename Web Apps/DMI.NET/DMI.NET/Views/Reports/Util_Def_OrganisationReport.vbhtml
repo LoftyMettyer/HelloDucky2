@@ -36,9 +36,9 @@ End Code
          </div>
 
          <div id="report_definition_tab_columns">
-            @*@Code
+            @Code
                Html.RenderPartial("_OrgColumnSelection", Model)
-            End Code*@
+            End Code
          </div>
       </div>
       @Html.AntiForgeryToken()
@@ -48,9 +48,22 @@ End Code
 
 <script type="text/javascript">
 
+   // A $( document ).ready() block.
+   $(document).ready(function () {
+      getAvailableTableViewColumns();
+      attachGridToSelectedColumns();
+   });
+
    $(function () {
       $("#tabs").tabs({
          activate: function (event, ui) {
+            //Tab click event fired
+            if (ui.newTab.text() == "Columns") {
+               var topID = $("#SelectedColumns").getDataIDs()[0]
+               $('#SelectedColumns').jqGrid('resetSelection');
+               $("#SelectedColumns").jqGrid('setSelection', topID);
+               resizeColumnGrids();
+            }
             if (ui.newTab.text() == "Filter") {
                refreshSelectColumnCombo();
             }

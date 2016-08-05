@@ -13,9 +13,16 @@ Namespace Classes
 		Public Property ReportType As UtilityType Implements IReportDetail.ReportType
 
 		Public Property ID As Integer Implements IJsonSerialize.ID
-		Public Property TableID As Integer
-		Public Property IsExpression As Boolean
-		Public Property Name As String
+      Public Property TableID As Integer
+
+      Public Property ViewID As Integer
+
+      Public Property ViewName As String
+
+      Public Property IsViewColumn As Boolean
+
+      Public Property IsExpression As Boolean
+      Public Property Name As String
 		Public Property Sequence As Integer
 
 		<ExcludeChar("/,.!@#$%")>

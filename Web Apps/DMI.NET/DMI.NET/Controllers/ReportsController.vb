@@ -1151,6 +1151,98 @@ Namespace Controllers
          objReport.BaseViewID = BaseViewId
       End Sub
 
+      <HttpGet>
+      Function GetAvailableItemsForView(ReportID As Integer, viewOrTableId As Integer, Optional IsTable As Boolean = False) As JsonResult
+
+         Dim objReport = objReportRepository.RetrieveOrganisationReport(ReportID)
+         Dim objResults As New List(Of ReportColumnItem)
+
+         ' Based on selected view or table fetch all permitted columns associated to it.
+         If (IsTable) Then
+            objResults = objReportRepository.GetColumnsForTable(viewOrTableId)
+         Else
+            Dim getViewId As Integer = If(viewOrTableId > 0, viewOrTableId, (objReport.BaseViewList.First()).id)
+            objResults = objReportRepository.GetViewFilterColumns(getViewId)
+         End If
+
+         For Each item As ReportColumnItem In objReport.Columns
+            If item IsNot Nothing Then
+               If IsTable Then
+                  objResults.RemoveAll(Function(m) m.ID = item.ID)
+               Else
+                  objResults.Remove(item)
+               End If
+
+            End If
+         Next
+
+         Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objResults}
+         Return Json(results, JsonRequestBehavior.AllowGet)
+
+      End Function
+
+      <HttpPost>
+      <ValidateAntiForgeryToken>
+      Sub AddOrganisationReportColumn(objModel As ReportColumnItem)
+
+         Dim objReport As OrganisationReportModel
+         objReport = CType(objReportRepository.RetrieveParent(objModel), OrganisationReportModel)
+         objReport.Columns.Add(objModel)
+
+      End Sub
+
+      'Add all available organisation report columns to selected columns
+      <HttpPost>
+      <ValidateAntiForgeryToken>
+      Sub AddAllOrganisationReportColumn(objModel As ReportColumnCollection, viewId As Integer, Optional IsTable As Boolean = False)
+
+         Dim objReport As OrganisationReportModel
+         objReport = CType(objReportRepository.RetrieveParent(objModel), OrganisationReportModel)
+         Dim objAllObjects As List(Of ReportColumnItem)
+
+         If (IsTable) Then
+            objAllObjects = objReportRepository.GetColumnsForTable(viewId)
+         Else
+            Dim getViewId As Integer = If(viewId > 0, viewId, (objReport.BaseViewList.First()).id)
+            objAllObjects = objReportRepository.GetViewFilterColumns(getViewId)
+         End If
+
+         For Each ObjectID In objModel.Columns
+
+            Dim objColumn = objAllObjects.First(Function(m) m.ID = ObjectID)
+
+            If objColumn IsNot Nothing Then
+               objReport.Columns.Add(objColumn)
+            End If
+         Next
+
+      End Sub
+
+      'Remove all selected organisation report column from selected columns
+      <HttpPost>
+      <ValidateAntiForgeryToken>
+      Sub RemoveOrganisationReportColumn(objModel As ReportColumnCollection)
+
+         Dim objReport As ReportBaseModel
+         objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+
+         For Each iColumnID In objModel.Columns
+            objReport.Columns.RemoveAll(Function(m) m.ID = iColumnID)
+         Next
+
+      End Sub
+
+      'Remove all available organisation report columns from selected columns
+      <HttpPost>
+      <ValidateAntiForgeryToken>
+      Sub RemoveAllOrganisationReportColumns(objModel As ReportColumnItem)
+
+         Dim objReport As ReportBaseModel
+         objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+         objReport.Columns.Clear()
+
+      End Sub
+
    End Class
 
 End Namespace

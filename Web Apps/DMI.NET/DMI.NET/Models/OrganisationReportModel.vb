@@ -32,6 +32,14 @@ Namespace Models
 
       Public Property BaseViewList As New List(Of ReportTableItem)
 
+      Public Property BaseViewColumnList As New List(Of ReportColumnItem)
+
+      Public Property AllAvailableViewList As New List(Of ReportTableItem)
+
+      Public Property PostBasedTableName As String
+
+      Public Property PostBasedTableId As Integer
+
       Public Overrides Sub SetBaseTable(TableID As Integer)
       End Sub
 

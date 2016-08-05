@@ -188,7 +188,10 @@
       function changeReportBaseViewCompleted(json) {
 
          // Remove filters.
+         FilterSelect_removeAll();
+
          // Remove Columns.
+         removeAllSelectedColumns(true);
 
          // Enables save button
          enableSaveButton();
