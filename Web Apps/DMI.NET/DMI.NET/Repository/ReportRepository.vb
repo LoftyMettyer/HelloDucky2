@@ -2278,14 +2278,14 @@ Namespace Repository
             Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)  'Set session info
             Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
             Dim psRealSource As New SqlParameter("@psRealSource", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = 8000}
-            Dim dtViewColumns As DataTable = objDataAccess.GetDataTable("sp_ASRIntGetFilterColumns",
+                Dim dtViewColumns As DataTable = objDataAccess.GetDataTable("sp_ASRIntGetViewColumns",
                                           CommandType.StoredProcedure,
                                           New SqlParameter("@plngTableID", SqlDbType.Int) With {.Value = 0},
                                           New SqlParameter("@plngViewID ", SqlDbType.VarChar) With {.Value = viewId},
                                           psRealSource
                                           )
 
-            For Each objRow As DataRow In dtViewColumns.Rows
+                For Each objRow As DataRow In dtViewColumns.Rows
 
                objOrgViewColumns.Add(New ReportColumnItem() With {
                   .ID = CInt(objRow("columnID")),

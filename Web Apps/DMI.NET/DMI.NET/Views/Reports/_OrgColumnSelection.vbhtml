@@ -56,30 +56,29 @@
             <div id="definitionColumnProperties">
                <div class="formfieldfill OrgReportsOnly">
                   <label for="SelectedColumnPrefix">Prefix :</label>
-                  <span><input type='text' id="SelectedColumnPrefix" maxlength="20" onchange="" /></span>
+                  <span><input type='text' id="SelectedColumnPrefix" maxlength="20" onchange="updateColumnsSelectedGrid();" /></span>
                </div>
                <div class="formfieldfill OrgReportsOnly">
                   <label for="SelectedColumnSuffix">Suffix :</label>
-                  <span><input type='text' id="SelectedColumnSuffix" maxlength="20" onchange="" /></span>
+                  <span><input type='text' id="SelectedColumnSuffix" maxlength="20" onchange="updateColumnsSelectedGrid();" /></span>
                </div>
-               <div class="formfieldfill fontSizeOnly">
-                  <label for="SelectedColumnFontSize">Font Size :</label>
-                  <span><input class="selectFullText" id="SelectedColumnFontSize" onchange="" /></span>
-                  <div class="formfieldfill HeightOnly">
-                     <label for="SelectedColumnHeight"> &nbsp; Height (Rows) :</label>
-                     <span><input class="selectFullText" id="SelectedColumnHeight" onchange="" /></span>
-                  </div>
-
-               </div>
+                <div class="formfieldfill fontsizeOnly">
+                    <label for="SelectedColumnFontSize">Font Size :</label>
+                    <span><input type="number" class="selectFontSize" id="SelectedColumnFontSize"  maxlength="2" onchange="updateColumnsSelectedGrid();" /></span>
+                    <div class="formfieldfill HeightOnly">
+                        <label for="SelectedColumnHeight"> &nbsp; Height (Rows) :</label>
+                        <span><input type="number" class="selectHeight" id="SelectedColumnHeight"  maxlength="1" onchange="updateColumnsSelectedGrid();" /></span>
+                    </div>
+                </div>
                <div class="formfieldfill decimalsOnly">
                   <label for="SelectedColumnDecimals">Decimals :</label>
-                  <span><input class="selectFullText" id="SelectedColumnDecimals" onchange="" /></span>
+                  <span><input class="selectFullText" id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" /></span>
                </div>
 
                <div class="tablelayout customReportsOnly colAggregates">
                   <div class="tablerow">
                      <div class="tablecell canGroupWithNext" style="color: rgb(0, 0, 0);">
-                        <input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="" type="checkbox">
+                        <input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="changeColumnIsGroupWithNext();" type="checkbox">
                         <label id="labelSelectedColumnIsGroupWithNext" for="SelectedColumnIsGroupWithNext">Concatenate with next</label>
                      </div>
                   </div>
@@ -117,7 +116,8 @@
 		var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
 		var isBottomRow = (rowId == allRows[allRows.length - 1]);
 		if (isBottomRow) {
-			$('#SelectedColumnIsGroupWithNext').prop('checked', false);
+		    $('#SelectedColumnIsGroupWithNext').prop('checked', false);
+		    updateColumnsSelectedGrid();
 		}
 
 	}
@@ -167,10 +167,13 @@
 		var datarow = $("#AvailableColumns").getRowData(index);
 
 		datarow.ReportType = '@Model.ReportType';
-	   datarow.ReportID = '@Model.ID';
+	    datarow.ReportID = '@Model.ID';
 
+	    datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
+	    
+	    datarow.IsGroupWithNext = false;
 		datarow.ViewID = $("#SelectedTableID option:selected").val();
-
+        
 		return datarow;
 	}
 
@@ -432,8 +435,56 @@
 		}
 	}
 
-	function refreshcolumnPropertiesPanel() {
+	function changeColumnIsGroupWithNext() {
 
+	    var isGroupWithNextChecked = $("#SelectedColumnIsGroupWithNext").is(':checked');
+
+	    refreshcolumnPropertiesPanel();
+	    updateColumnsSelectedGrid();
+
+	    disableColumnOptionsWhenGroupWithNextChecked();
+
+	}
+
+	// Disabled the column options for the current row and uncheck all the column options for the next row
+	// when GroupWithNext is checked for the current row.
+	function disableColumnOptionsWhenGroupWithNextChecked() {
+
+	    var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+
+	    // Gets all row ID'S of selected columns. Here the index begin with zero.
+	    var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
+	    var isBottomRow = (rowId == allRows[allRows.length - 1]);
+	    var currentRowIndex = $("#SelectedColumns").getInd(rowId);
+
+	    // Gets the previous row data
+	    var prevDataRow = $('#SelectedColumns').jqGrid('getRowData', allRows[currentRowIndex - 2]);
+
+	    // If previous row has a GroupWithNext checked then disabled the column options except GroupWithNext for the current row
+	    if (prevDataRow != null && prevDataRow.IsGroupWithNext == "true") {
+
+	        // If last row then disabled the GroupWithNext checkbox else not
+	        if (isBottomRow) {
+	            $(".canGroupWithNext *").prop("disabled", true);
+	        }
+	        else {
+	            $(".canGroupWithNext *").prop("disabled", false);
+	        }
+	        updateColumnsSelectedGrid();
+	    }
+
+	    // If the current row is not the last row, Uncheck all the column options for the next row and update the row to the grid
+	    if (!isBottomRow && $("#SelectedColumnIsGroupWithNext").is(':checked')) {
+
+	        //Gets the next selected columns grid row
+	        var nextDataRow = $('#SelectedColumns').jqGrid('getRowData', allRows[currentRowIndex]);
+
+	        $('#SelectedColumns').jqGrid('setRowData', allRows[currentRowIndex], nextDataRow);
+	    }
+	}
+
+	function refreshcolumnPropertiesPanel() {
+	   
 	   var rowCount = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length;
 	   var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 	   var dataRow = $("#SelectedColumns").getRowData(rowId)
@@ -466,12 +517,12 @@
 	      if (!isReadOnly) {
 	         $("#definitionColumnProperties :input").removeAttr("disabled");
 	      }
-
+	      
 	      var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
 	      var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");
 	      var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
 	      var isSize = (dataRow.DataType == '4');
-	      var isPhotograph = (dataRow.DataType == '-7')
+	      var isPhotograph = (dataRow.DataType == '-3')
 
 	      $(".decimalsOnly *").prop("disabled", !isDecimals || isReadOnly || isSize || isPhotograph);
 	      $(".canGroupWithNext *").prop("disabled", isBottomRow || isReadOnly || isPhotograph);
@@ -496,6 +547,32 @@
 	   button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly || (rowCount > 1));
 	}
 
+	function updateColumnsSelectedGrid() {
+
+	    var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+	    var dataRow = $('#SelectedColumns').jqGrid('getRowData', rowId);
+
+	    dataRow.ColumnID = rowId;
+	    dataRow.TableID = 0;
+	    dataRow.Suffix = $("#SelectedColumnSuffix").val();
+	    dataRow.Prefix = $("#SelectedColumnPrefix").val();
+
+	    dataRow.Decimals = $("#SelectedColumnDecimals").val();
+	    if (dataRow.Decimals == "") { dataRow.Decimals = 0 }; //If Decimals is empty then set to 0
+
+	    dataRow.Height = $("#SelectedColumnHeight").val();
+	    if (dataRow.Height == "" && dataRow.DataType != '-3') { dataRow.Height = 1 }; //If Height is empty then set to 1
+	    if (dataRow.Height == "" && dataRow.DataType == '-3') { dataRow.Height = 3 };
+
+	    dataRow.FontSize = $("#SelectedColumnFontSize").val();
+	    if (dataRow.FontSize == "") { dataRow.FontSize = 11 }; //If fontSize is empty then set to 1
+
+	    dataRow.IsGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
+
+	    $('#SelectedColumns').jqGrid('setRowData', rowId, dataRow);
+
+	}
+
 	function attachGridToSelectedColumns() {
 
 		$("#SelectedColumns").jqGrid({
@@ -510,15 +587,15 @@
 				repeatitems: false,
 				id: "ID" //index of the column with the PK in it
 			},
-			colNames: ['ID', 'TableID', 'Name', 'Prefix', 'Suffix', 'FontSize', 'Height', 'DataType', 'Size', 'Decimals', 'IsGroupWithNext', 'ReportID', 'ReportType', 'Access', 'ViewID'],
+			colNames: ['ID', 'TableID', 'Name', 'Prefix', 'Suffix', 'FontSize', 'Height', 'DataType', 'Size', 'Decimals', 'IsGroupWithNext', 'ReportID', 'ReportType', 'Access', 'ViewID', 'ColumnID'],
 			colModel: [
 				{ name: 'ID', index: 'ID', hidden: true },
 				{ name: 'TableID', index: 'TableID', hidden: true },
-				{ name: 'Name', index: 'Name', sortable: true },
-            { name: 'Prefix', index: 'Prefix', hidden: true },
-            { name: 'Suffix', index: 'Suffix', hidden: true },
-            { name: 'FontSize', index: 'FontSize', hidden: true },
-            { name: 'Height', index: 'Height', hidden: true },
+				{ name: 'Name', index: 'Name', sortable: false },
+                { name: 'Prefix', index: 'Prefix', hidden: true },
+                { name: 'Suffix', index: 'Suffix', hidden: true },
+                { name: 'FontSize', index: 'FontSize', hidden: true },
+                { name: 'Height', index: 'Height', hidden: true },
 				{ name: 'DataType', index: 'DataType', hidden: true },
 				{ name: 'Size', index: 'Size', hidden: true },
 				{ name: 'Decimals', index: 'Decimals', hidden: true },
@@ -526,7 +603,8 @@
 				{ name: 'ReportID', index: 'ReportID', hidden: true },
 				{ name: 'ReportType', index: 'ReportType', hidden: true },
 				{ name: 'Access', index: 'Access', hidden: true },
-            { name: 'ViewID', index: 'ViewID', hidden: true }],
+                { name: 'ViewID', index: 'ViewID', hidden: true },
+                { name: 'ColumnID', index: 'ColumnID', hidden: true }],
 			viewrecords: true,
 			autowidth: false,
 			sortname: 'Name',
@@ -540,7 +618,7 @@
 				// which will stop calling onSelectRow
 				if (!isDefinitionReadOnly()) {
 					if ($('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length == 1) {
-						//updateColumnsSelectedGrid();
+						updateColumnsSelectedGrid();
 					}
 
 					var $this = $(this), rows = this.rows,
@@ -581,11 +659,31 @@
 				}
 			},
 			onSelectRow: function (id) {
-
+			    
 				var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 				var dataRow = $("#SelectedColumns").getRowData(rowId)
+				
+				$("#SelectedColumnPrefix").val(decodeURI(dataRow.Prefix));
+				$("#SelectedColumnSuffix").val(decodeURI(dataRow.Suffix));
+				$("#SelectedColumnDecimals").val(dataRow.Decimals);
+				$("#SelectedColumnFontSize").val(dataRow.FontSize);
+				$("#SelectedColumnHeight").val(dataRow.Height);
 
+				if ($("#SelectedColumnFontSize").val() == "") {
+				    $("#SelectedColumnFontSize").val("11");
+				}
+				if ($("#SelectedColumnHeight").val() == "" && dataRow.DataType != '-3') {
+				    $("#SelectedColumnHeight").val(1);
+				}
+				if ($("#SelectedColumnHeight").val() == "" && dataRow.DataType == '-3') {
+				    $("#SelectedColumnHeight").val(3);
+				}
+
+				$("#SelectedColumnIsGroupWithNext").val(dataRow.isGroupWithNext);
+			   
 				refreshcolumnPropertiesPanel();
+
+			    //disableColumnOptionsWhenGroupWithNextChecked();
 			},
 			ondblClickRow: function () {
 				doubleClickSelectedColumn();
@@ -616,17 +714,11 @@
 	}
 
 	// Initialise
-	$(function () {
+    $(function () {
 
 		// Sets Decimals textbox to allow numeric only
-		$("#SelectedColumnDecimals").autoNumeric({ aSep: '', aNeg: '', mDec: "0", vMax: 999, vMin: 0 });
-
-		$(".spinner").spinner({
-			min: 0,
-			max: 10,
-			showOn: 'both'
-		}).css("width", "15px");
-
+	    $("#SelectedColumnDecimals").autoNumeric({ aSep: '', aNeg: '', mDec: "0", vMax: 999, vMin: 0 });
+	    
 		//Note:-
 		//This solution working in Firefox, Chrome and IE, both with keyboard focus and mouse focus.
 		//It also handles correctly clicks following the focus (it moves the caret and doesn't reselect the text):
@@ -645,6 +737,60 @@
 		}).blur(function () {
 			if (this.value == "") this.value = 0;
 		});
+
+
+        $("#SelectedColumnHeight").bind({
+		    click: function () {
+		        if (this.clicked == 2) this.select(); this.clicked = 0;
+		    },
+		    mousedown: function () {
+		        this.clicked = 1;
+		    },
+		    focus: function () {
+		        if (!this.clicked) this.select(); else this.clicked = 2;
+		    }
+        }).blur(function (sender) {
+            
+		    var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+		    var dataRow = $("#SelectedColumns").getRowData(rowId)
+		    var ColumnName = dataRow.Name;
+		    
+		    if ((dataRow.DataType == '-3')) { var Min = 3 }
+		    else { var Min = 1; }
+		    
+		    var Max = 6;
+
+		    if ((sender.target.value == "") || (sender.target.value < Min) || (sender.target.value > Max)) {
+		        OpenHR.modalMessage("Enter height (rows) between " + Min + " and " + Max); sender.target.value = Min;
+		        $(sender.target.id).focus();
+		    }
+        });
+
+
+        $("#SelectedColumnFontSize").bind({
+		    click: function () {
+		        if (this.clicked == 2) this.select(); this.clicked = 0;
+		    },
+		    mousedown: function () {
+		        this.clicked = 1;
+		    },
+		    focus: function () {
+		        if (!this.clicked) this.select(); else this.clicked = 2;
+		    }
+		}).blur(function (sender) {
+		    var MinSize = 6;
+		    var MaxSize = 30;
+		    if ((sender.target.value == "") || (sender.target.value < MinSize) || (sender.target.value > MaxSize)) {
+		        OpenHR.modalMessage("Enter font size between 6 and 30");
+		        sender.target.value = "11";
+		        $(sender.target.id).focus();
+		    }
+		});
+
+
+		//$('.selectHeight').keypress(function (key) {
+		//    if (key.charCode < 49 || key.charCode > 54) return false;
+		//});
 	});
 
 </script>
