@@ -5,7 +5,7 @@
 @Html.HiddenFor(Function(m) m.ID, New With {.id = "txtReportID"})
 @Html.HiddenFor(Function(m) m.ReportType, New With {.id = "txtReportType"})
 @Html.HiddenFor(Function(m) m.ActionType)
-
+@Html.HiddenFor(Function(m) m.ValidityStatus)
 
    <div class="width100">
       <fieldset class="floatleft width50 bordered">
@@ -241,9 +241,12 @@
       function validateReportDefinition() {
 
          var gridData;
-
+         var gridFitlerData;
          menu_ShowWait("Saving...");
-
+         //Filters selected
+         gridFitlerData = $("#DBGridFilterRecords").getRowData();
+         $('#txtFilterColumns').val(JSON.stringify(gridFitlerData));
+        
          // Columns selected
          gridData = $("#SelectedColumns").getRowData();
          $('#txtCSAAS').val(JSON.stringify(gridData));

@@ -134,4 +134,13 @@ BEGIN
 		DELETE FROM ASRSysRecordProfileAccess WHERE ID = @piUtilID;
 	END
 	
+   IF @piUtilType = 39
+	BEGIN
+		/* Organisation Reports*/
+		DELETE FROM ASRSysOrganisationReport WHERE ID = @piUtilID;
+		DELETE FROM ASRSysOrganisationColumns WHERE OrganisationID = @piUtilID;
+		DELETE FROM ASRSysOrganisationReportFilters WHERE OrganisationID = @piUtilID;
+		DELETE FROM ASRSysOrganisationReportAccess WHERE ID = @piUtilID;
+	END
+
 END

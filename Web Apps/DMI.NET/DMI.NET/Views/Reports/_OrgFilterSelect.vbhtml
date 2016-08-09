@@ -5,6 +5,7 @@
 @Imports DMI.NET.ViewModels.Reports
 @Imports DMI.NET.Code.Extensions
 @Inherits System.Web.Mvc.WebViewPage(Of OrganisationReportModel)
+@Html.HiddenFor(Function(m) m.FilterColumnsAsString, New With {.id = "txtFilterColumns"})
 
 <div class="width100">
    <fieldset id="OrgFilterSelection" class="floatleft width90">
@@ -96,19 +97,19 @@
 
       //Create the column model
       colMode.push({ name: 'ID', hidden: true });
-      colMode.push({ name: 'Field', width: 100 });
-      colMode.push({ name: 'Operator', width: 100 });
-      colMode.push({ name: 'Value', width: 100 });
-      colMode.push({ name: 'ColumnID', hidden: true });
-      colMode.push({ name: 'ConditionID', hidden: true });
+      colMode.push({ name: 'FieldName', width: 100 });
+      colMode.push({ name: 'OperatorName', width: 100 });
+      colMode.push({ name: 'FilterValue', width: 100 });
+      colMode.push({ name: 'FieldID', hidden: true });
+      colMode.push({ name: 'OperatorID', hidden: true });
       colMode.push({ name: 'FieldDataType', hidden: true });
 
       colNames.push('ID');
-      colNames.push('Field');
-      colNames.push('Operator');
-      colNames.push('Value');
-      colNames.push('ColumnID');
-      colNames.push('ConditionID');
+      colNames.push('FieldName');
+      colNames.push('OperatorName');
+      colNames.push('FilterValue');
+      colNames.push('FieldID');
+      colNames.push('OperatorID');
       colNames.push('FieldDataType');
 
       $('table').attr('border', '0'); //Change 0 to 1 to show borders.
@@ -164,10 +165,8 @@
 
 
    function GetFilterColumns() {
-
       // Gets view id of selected base view
-      //var viewID = $("#BaseTableID").val();
-      var viewID = 1;
+      var viewID = $("#BaseViewId").val();
       var optionOfAllType;
 
       $.ajax({
@@ -525,17 +524,19 @@
             sAddString = sAddString.concat(iDataType);
          }
       }
-      if (fOK == true) {
+
+      if (fOK == true) {        
          var items = sAddString.split("\t");
          $("#DBGridFilterRecords").addRowData(
 					$("#DBGridFilterRecords").getGridParam("reccount") + 1, //ID
 					{ //Data
-					   'Field': items[0],
-					   'Operator': items[1],
-					   'Value': $.jgrid.htmlEncode(items[2]),
-					   'ColumnID': items[3],
-					   'ConditionID': items[4],
-					   'FieldDataType': items[5]
+					   'FieldName': items[0],
+					   'OperatorName': items[1],
+					   'FilterValue': $.jgrid.htmlEncode(items[2]),
+					   'FieldID': items[3],
+					   'OperatorID': items[4],
+					   'FieldDataType': items[5],
+                  'ID':0
 					},
 					'last'); //Add the record at the end
 
@@ -544,7 +545,7 @@
 
          FilterSelect_refreshControls();
          $("#selectColumn").focus();
-      }
+      }     
    }
 
    function FilterSelect_removeAll() {
@@ -598,345 +599,7 @@
       FilterSelect_refreshControls();
    }
 
-   function SelectFilter() {
-
-      //var frmFilterForm = document.getElementById("frmFilterForm");
-      var sRealSource;
-      var sColumnName;
-      var sValue;
-      var sFilterValue;
-      var sFilterDef;
-      var sFilterSQL;
-      var sSubFilterSQL;
-      var iIndex;
-      var iColumnID;
-      var iOperatorID;
-      var fOK;
-      var iDataType;
-      var sReqdControlName;
-      //var controlCollection = frmFilterForm.elements;
-      var sDecimalSeparator;
-      var sModifiedFilterValue;
-      var sControlName;
-
-      // Create some regular expressions to be used when replacing characters
-      // in the filter string later on.
-      sDecimalSeparator = "";
-      sDecimalSeparator = '<%:LocaleDecimalSeparator()%>';
-
-      var sApostrophe = "'";
-      var sStar = "*";
-      var sQuestion = "?";
-
-      sFilterSQL = "";
-      sFilterDef = "";
-      sRealSource = $("#txtRealSource").val();
-      sRealSource = sRealSource.concat(".");
-
-      // Loop through the grid records, building the filter code for each record.
-      var allIDs = $('#DBGridFilterRecords').getDataIDs();
-      var rowData;
-      for (iIndex = 0; iIndex < allIDs.length; iIndex++) {
-         rowData = $('#DBGridFilterRecords').getRowData(allIDs[iIndex]);
-         // Get the column name & id and the value used in the filter operation.
-         sColumnName = rowData.Field;
-         sColumnName = OpenHR.replaceAll(sColumnName, " ", "_");
-         sColumnName = sRealSource.concat(sColumnName);
-
-         sValue = rowData.Value;
-         iColumnID = rowData.ColumnID;
-         iOperatorID = rowData.ConditionID;
-
-         fOK = false;
-         iDataType = 12;
-         sSubFilterSQL = "";
-
-         // Get the data type of the column.
-         iDataType = rowData.FieldDataType;
-
-         if (fOK == true) {
-            // If we've found the column's data type go ahead and build the filter code.
-            if (iDataType == -7) {
-               // Logic column (must be the equals operator).
-               sSubFilterSQL = sColumnName.concat(" = ");
-
-               if (sValue.toUpperCase() == "TRUE") {
-                  sSubFilterSQL = sSubFilterSQL.concat("1");
-               }
-               else {
-                  sSubFilterSQL = sSubFilterSQL.concat("0");
-               }
-            }
-
-            if ((iDataType == 2) || (iDataType == 4)) {
-               // Numeric/Integer column.
-               // Replace the locale decimal separator with '.' for SQL's benefit.
-               sFilterValue = OpenHR.replaceAll(sValue, sDecimalSeparator, ".");
-
-               if (iOperatorID == 1) {
-                  // Equals.
-                  sSubFilterSQL = sColumnName.concat(" = ");
-                  sSubFilterSQL = sSubFilterSQL.concat(sFilterValue);
-
-                  if (parseFloat(sValue) == 0) {
-                     sSubFilterSQL = sSubFilterSQL.concat(" OR ");
-                     sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                     sSubFilterSQL = sSubFilterSQL.concat(" IS NULL");
-                  }
-               }
-
-               if (iOperatorID == 2) {
-                  // Not Equal To.
-                  sSubFilterSQL = sColumnName.concat(" <> ");
-                  sSubFilterSQL = sSubFilterSQL.concat(sFilterValue);
-
-                  if (parseFloat(sValue) == 0) {
-                     sSubFilterSQL = sSubFilterSQL.concat(" AND ");
-                     sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                     sSubFilterSQL = sSubFilterSQL.concat(" IS NOT NULL");
-                  }
-               }
-
-               if (iOperatorID == 3) {
-                  // Less than or Equal To.
-                  sSubFilterSQL = sColumnName.concat(" <= ");
-                  sSubFilterSQL = sSubFilterSQL.concat(sFilterValue);
-
-                  if (parseFloat(sValue) >= 0) {
-                     sSubFilterSQL = sSubFilterSQL.concat(" OR ");
-                     sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                     sSubFilterSQL = sSubFilterSQL.concat(" IS NULL");
-                  }
-               }
-
-               if (iOperatorID == 4) {
-                  // Greater than or Equal To.
-                  sSubFilterSQL = sColumnName.concat(" >= ");
-                  sSubFilterSQL = sSubFilterSQL.concat(sFilterValue);
-
-                  if (parseFloat(sValue) <= 0) {
-                     sSubFilterSQL = sSubFilterSQL.concat(" OR ");
-                     sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                     sSubFilterSQL = sSubFilterSQL.concat(" IS NULL");
-                  }
-               }
-
-               if (iOperatorID == 5) {
-                  // Greater than.
-                  sSubFilterSQL = sColumnName.concat(" > ");
-                  sSubFilterSQL = sSubFilterSQL.concat(sFilterValue);
-
-                  if (parseFloat(sValue) < 0) {
-                     sSubFilterSQL = sSubFilterSQL.concat(" OR ");
-                     sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                     sSubFilterSQL = sSubFilterSQL.concat(" IS NULL");
-                  }
-               }
-
-               if (iOperatorID == 6) {
-                  // Less than.
-                  sSubFilterSQL = sColumnName.concat(" < ");
-                  sSubFilterSQL = sSubFilterSQL.concat(sFilterValue);
-
-                  if (parseFloat(sValue) > 0) {
-                     sSubFilterSQL = sSubFilterSQL.concat(" OR ");
-                     sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                     sSubFilterSQL = sSubFilterSQL.concat(" IS NULL");
-                  }
-               }
-            }
-
-            if (iDataType == 11) {
-               // Date column.
-               if (sValue.length > 0) {
-                  // Convert the locale date into the SQL format.
-                  sFilterValue = OpenHR.convertLocaleDateToSQL(sValue);
-               }
-
-               if ((sValue.length == 0) || (sFilterValue.length > 0)) {
-                  // The data is only valid id it is completely empty, or if the
-                  // convertLocaleDateToSQL function has returned a non-empty string.
-                  if (iOperatorID == 1) {
-                     // Equal To.
-                     if (sValue.length > 0) {
-                        sSubFilterSQL = sColumnName.concat(" = '");
-                        sSubFilterSQL = sSubFilterSQL.concat(sFilterValue);
-                        sSubFilterSQL = sSubFilterSQL.concat("'");
-                     }
-                     else {
-                        sSubFilterSQL = sColumnName.concat(" IS NULL");
-                     }
-                  }
-
-                  if (iOperatorID == 2) {
-                     // Not Equal To.
-                     if (sValue.length > 0) {
-                        sSubFilterSQL = sColumnName.concat(" <> '");
-                        sSubFilterSQL = sSubFilterSQL.concat(sFilterValue);
-                        sSubFilterSQL = sSubFilterSQL.concat("'");
-                     }
-                     else {
-                        sSubFilterSQL = sColumnName.concat(" IS NOT NULL");
-                     }
-                  }
-
-                  if (iOperatorID == 3) {
-                     // Less than or Equal To.
-                     if (sValue.length > 0) {
-                        sSubFilterSQL = sColumnName.concat(" <= '");
-                        sSubFilterSQL = sSubFilterSQL.concat(sFilterValue);
-                        sSubFilterSQL = sSubFilterSQL.concat("' OR ");
-                        sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                        sSubFilterSQL = sSubFilterSQL.concat(" IS NULL");
-                     }
-                     else {
-                        sSubFilterSQL = sColumnName.concat(" IS NULL");
-                     }
-                  }
-
-                  if (iOperatorID == 4) {
-                     // Greater than or Equal To.
-                     if (sValue.length > 0) {
-                        sSubFilterSQL = sColumnName.concat(" >= '");
-                        sSubFilterSQL = sSubFilterSQL.concat(sFilterValue);
-                        sSubFilterSQL = sSubFilterSQL.concat("'");
-                     }
-                     else {
-                        sSubFilterSQL = sColumnName.concat(" IS NULL OR ");
-                        sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                        sSubFilterSQL = sSubFilterSQL.concat(" IS NOT NULL");
-                     }
-                  }
-
-                  if (iOperatorID == 5) {
-                     // Greater than.
-                     if (sValue.length > 0) {
-                        sSubFilterSQL = sColumnName.concat(" > '");
-                        sSubFilterSQL = sSubFilterSQL.concat(sFilterValue);
-                        sSubFilterSQL = sSubFilterSQL.concat("'");
-                     }
-                     else {
-                        sSubFilterSQL = sColumnName.concat(" IS NOT NULL");
-                     }
-                  }
-
-                  if (iOperatorID == 6) {
-                     // Less than.
-                     if (sValue.length > 0) {
-                        sSubFilterSQL = sColumnName.concat(" < '");
-                        sSubFilterSQL = sSubFilterSQL.concat(sFilterValue);
-                        sSubFilterSQL = sSubFilterSQL.concat("' OR ");
-                        sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                        sSubFilterSQL = sSubFilterSQL.concat(" IS NULL");
-                     }
-                     else {
-                        sSubFilterSQL = sColumnName.concat(" IS NULL AND ");
-                        sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                        sSubFilterSQL = sSubFilterSQL.concat(" IS NOT NULL");
-                     }
-                  }
-               }
-            }
-
-            if ((iDataType != -7) && (iDataType != 2) && (iDataType != 4) && (iDataType != 11)) {
-               // Character/Working Pattern column.
-               if (iOperatorID == 1) {
-                  // Equal To.
-                  if (sValue.length == 0) {
-                     sSubFilterSQL = sColumnName.concat(" = '' OR ");
-                     sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                     sSubFilterSQL = sSubFilterSQL.concat(" IS NULL");
-                  }
-                  else {
-                     // Replace the standard * and ? characters with the SQL % and _ characters.
-                     sModifiedFilterValue = OpenHR.replaceAll(sValue, sApostrophe, "''");
-                     sModifiedFilterValue = OpenHR.replaceAll(sModifiedFilterValue, sStar, "%");
-                     sModifiedFilterValue = OpenHR.replaceAll(sModifiedFilterValue, sQuestion, "_");
-
-                     sSubFilterSQL = sColumnName.concat(" LIKE '");
-                     sSubFilterSQL = sSubFilterSQL.concat(sModifiedFilterValue);
-                     sSubFilterSQL = sSubFilterSQL.concat("'");
-                  }
-               }
-
-               if (iOperatorID == 2) {
-                  // Not Equal To.
-                  if (sValue.length == 0) {
-                     sSubFilterSQL = sColumnName.concat(" <> '' AND ");
-                     sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                     sSubFilterSQL = sSubFilterSQL.concat(" IS NOT NULL");
-                  }
-                  else {
-                     // Replace the standard * and ? characters with the SQL % and _ characters.
-                     sModifiedFilterValue = OpenHR.replaceAll(sValue, sApostrophe, "''");
-                     sModifiedFilterValue = OpenHR.replaceAll(sModifiedFilterValue, sStar, "%");
-                     sModifiedFilterValue = OpenHR.replaceAll(sModifiedFilterValue, sQuestion, "_");
-
-                     sSubFilterSQL = sColumnName.concat(" NOT LIKE '");
-                     sSubFilterSQL = sSubFilterSQL.concat(sModifiedFilterValue);
-                     sSubFilterSQL = sSubFilterSQL.concat("'");
-                  }
-               }
-
-               if (iOperatorID == 7) {
-                  // Contains.
-                  if (sValue.length == 0) {
-                     sSubFilterSQL = sColumnName.concat(" IS NULL OR ");
-                     sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                     sSubFilterSQL = sSubFilterSQL.concat(" IS NOT NULL");
-                  }
-                  else {
-                     // Replace the standard * and ? characters with the SQL % and _ characters.
-                     sModifiedFilterValue = OpenHR.replaceAll(sValue, sApostrophe, "''");
-
-                     sSubFilterSQL = sColumnName.concat(" LIKE '%");
-                     sSubFilterSQL = sSubFilterSQL.concat(sModifiedFilterValue);
-                     sSubFilterSQL = sSubFilterSQL.concat("%'");
-                  }
-               }
-
-               if (iOperatorID == 8) {
-                  // Does Not Contain.
-                  if (sValue.length == 0) {
-                     sSubFilterSQL = sColumnName.concat(" IS NULL AND ");
-                     sSubFilterSQL = sSubFilterSQL.concat(sColumnName);
-                     sSubFilterSQL = sSubFilterSQL.concat(" IS NOT NULL");
-                  }
-                  else {
-                     // Replace the standard * and ? characters with the SQL % and _ characters.
-                     sModifiedFilterValue = OpenHR.replaceAll(sValue, sApostrophe, "''");
-
-                     sSubFilterSQL = sColumnName.concat(" NOT LIKE '%");
-                     sSubFilterSQL = sSubFilterSQL.concat(sModifiedFilterValue);
-                     sSubFilterSQL = sSubFilterSQL.concat("%'");
-                  }
-               }
-            }
-
-            if (sSubFilterSQL.length > 0) {
-               // Add the filter code for this grid record into the complete filter code.
-               if (sFilterSQL.length > 0) {
-                  sFilterSQL = sFilterSQL.concat(" AND (");
-               }
-               else {
-                  sFilterSQL = sFilterSQL.concat("(");
-               }
-
-               sFilterSQL = sFilterSQL.concat(sSubFilterSQL);
-               sFilterSQL = sFilterSQL.concat(")");
-
-               // Add the definition to the definition string (colID<tab>opID<tab>value<tab>).
-               sFilterDef = sFilterDef.concat(iColumnID);
-               sFilterDef = sFilterDef.concat("	");
-               sFilterDef = sFilterDef.concat(iOperatorID);
-               sFilterDef = sFilterDef.concat("	");
-               sFilterDef = sFilterDef.concat(((iDataType == 2) || (iDataType == 4)) ? sFilterValue : sValue);
-               sFilterDef = sFilterDef.concat("	");
-            }
-         }
-      }
-
-   }
+   
 
    function FilterSelect_refreshControls() {
 
@@ -1069,17 +732,18 @@
                      editurl: 'clientArray'
                   }).jqGrid('hideCol', 'cb');
                }
-
-               var items = sAddString.split("\t");
+              
+               var items = sAddString.split("\t");              
                $("#DBGridFilterRecords").addRowData(
                      $("#DBGridFilterRecords").getGridParam("reccount") + 1, //ID
                      { //Data
-                        'Field': items[0],
-                        'Operator': items[1],
-                        'Value': items[2],
-                        'ColumnID': items[3],
-                        'ConditionID': items[4],
-                        'FieldDataType': items[5]
+                        'FieldName': items[0],
+                        'OperatorName': items[1],
+                        'FilterValue': $.jgrid.htmlEncode(items[2]),
+                        'FieldID': items[3],
+                        'OperatorID': items[4],
+                        'FieldDataType': items[5],
+                        'ID': 0
                      },
                      'last'); //Add the record at the end
 

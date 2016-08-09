@@ -2344,6 +2344,7 @@ Namespace Repository
                Dim objItem As New ReportColumnItem() With {
                 .ColumnID = CInt(objRow("ID")),
                 .ID = .ColumnID,
+                .Name = objRow("name").ToString,
                 .Prefix = HttpUtility.HtmlEncode(objRow("Prefix").ToString),
                 .Suffix = HttpUtility.HtmlEncode(objRow("Suffix").ToString),
                 .FontSize = CInt(objRow("FontSize")),
@@ -2408,10 +2409,7 @@ Namespace Repository
                , New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess} _
                , New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = sFilters} _
                , New SqlParameter("psColumns", SqlDbType.VarChar, -1) With {.Value = sColumns} _
-               , New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.JobIDsToHide} _
-               , New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()} _
                , prmID)
-
             _organisationreports.Remove(objModel.ID)
             objModel.ID = CInt(prmID.Value)
 
@@ -2428,13 +2426,9 @@ Namespace Repository
       Private Function OrganisationReportColumnsAsString(objColumns As IEnumerable(Of ReportColumnItem)) As String
 
          Dim sColumns As String = ""
-         Dim iCount As Integer = 1
          For Each objItem In objColumns
-
             sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}**" _
-                                       , iCount, objItem.ColumnID, HttpUtility.HtmlEncode(objItem.Prefix), HttpUtility.HtmlEncode(objItem.Suffix), objItem.Decimals, objItem.Height, objItem.IsGroupWithNext)
-
-            iCount += 1
+                                       , objItem.ColumnID, HttpUtility.HtmlEncode(objItem.Prefix), HttpUtility.HtmlEncode(objItem.Suffix), objItem.FontSize, objItem.Decimals, objItem.Height, objItem.IsGroupWithNext)
          Next
 
          Return sColumns
@@ -2445,12 +2439,9 @@ Namespace Repository
       Private Function OrganisationReportFiltersAsString(objFilters As IEnumerable(Of OrganisationReportFilterItem)) As String
 
          Dim sFilters As String = ""
-         Dim iCount As Integer = 1
          For Each objItem In objFilters
-
-            sFilters += String.Format("{0}||{1}||{2}||{3}**" _
-                                       , iCount, objItem.FieldID, objItem.OperatorID, HttpUtility.HtmlEncode(objItem.FilterValue))
-            iCount += 1
+            sFilters += String.Format("{0}||{1}||{2}**" _
+                                       , objItem.FieldID, objItem.OperatorID, HttpUtility.HtmlEncode(objItem.FilterValue))
          Next
 
          Return sFilters

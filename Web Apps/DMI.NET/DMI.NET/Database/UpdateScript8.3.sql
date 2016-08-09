@@ -37767,6 +37767,15 @@ BEGIN
 		DELETE FROM ASRSysRecordProfileTables WHERE RecordProfileID = @piUtilID;
 		DELETE FROM ASRSysRecordProfileAccess WHERE ID = @piUtilID;
 	END
+
+   IF @piUtilType = 39
+	BEGIN
+		/* Organisation Reports*/
+		DELETE FROM ASRSysOrganisationReport WHERE ID = @piUtilID;
+		DELETE FROM ASRSysOrganisationColumns WHERE OrganisationID = @piUtilID;
+		DELETE FROM ASRSysOrganisationReportFilters WHERE OrganisationID = @piUtilID;
+		DELETE FROM ASRSysOrganisationReportAccess WHERE ID = @piUtilID;
+	END
 	
 END
 GO
@@ -60635,6 +60644,14 @@ BEGIN
 		SET @sIDColumnName = 'picklistID';
   END
 
+  IF @piUtilityType = 39 /* Organisation Report*/
+	BEGIN
+		SET @sTableName = 'ASRSysOrganisationReport';
+		SET @sAccessTableName = 'ASRSysOrganisationReportAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;		
+ 	END
+
 	IF len(@sTableName) > 0
 	BEGIN
 		SET @sSQL = 'SELECT @iCount = COUNT(*)
@@ -61661,8 +61678,8 @@ BEGIN
 			IF @iCount = 2 SET @sSuffix = @sColumnParam;
 			IF @iCount = 3 SET @iFontSize = convert(integer, @sColumnParam);
 			IF @iCount = 4 SET @iDP = convert(integer, @sColumnParam);
-			IF @iCount = 4 SET @iHeight = convert(integer, @sColumnParam);
-			IF @iCount = 5 SET @fConcatenateWithNext = convert(bit, @sColumnParam);
+			IF @iCount = 5 SET @iHeight = convert(integer, @sColumnParam);
+			IF @iCount = 6 SET @fConcatenateWithNext = convert(bit, @sColumnParam);
 
 			SET @iCount = @iCount + 1;
 		END

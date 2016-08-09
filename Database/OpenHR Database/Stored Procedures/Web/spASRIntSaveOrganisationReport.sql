@@ -126,8 +126,8 @@ BEGIN
 			IF @iCount = 2 SET @sSuffix = @sColumnParam;
 			IF @iCount = 3 SET @iFontSize = convert(integer, @sColumnParam);
 			IF @iCount = 4 SET @iDP = convert(integer, @sColumnParam);
-			IF @iCount = 4 SET @iHeight = convert(integer, @sColumnParam);
-			IF @iCount = 5 SET @fConcatenateWithNext = convert(bit, @sColumnParam);
+			IF @iCount = 5 SET @iHeight = convert(integer, @sColumnParam);
+			IF @iCount = 6 SET @fConcatenateWithNext = convert(bit, @sColumnParam);
 
 			SET @iCount = @iCount + 1;
 		END

@@ -133,6 +133,14 @@ BEGIN
 		SET @sIDColumnName = 'picklistID';
   END
 
+  IF @piUtilityType = 39 /* Organisation Report*/
+	BEGIN
+		SET @sTableName = 'ASRSysOrganisationReport';
+		SET @sAccessTableName = 'ASRSysOrganisationReportAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;		
+ 	END
+
 	IF len(@sTableName) > 0
 	BEGIN
 		SET @sSQL = 'SELECT @iCount = COUNT(*)

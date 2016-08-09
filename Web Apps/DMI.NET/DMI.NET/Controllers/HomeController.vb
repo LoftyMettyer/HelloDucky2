@@ -1281,9 +1281,12 @@ Namespace Controllers
 					sUtilTypeName = "9-box grid report"
 
  				Case UtilityType.TalentReport
-					sUtilTypeName = "talent report"
+               sUtilTypeName = "talent report"
 
-			End Select
+            Case UtilityType.OrgReporting
+               sUtilTypeName = "organisation report"
+
+         End Select
 
 			Try
 

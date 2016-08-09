@@ -1087,11 +1087,17 @@ Namespace Controllers
          Dim objSaveWarning As SaveWarningModel
          Dim deserializer = New JavaScriptSerializer()
 
-         objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlMailMerge)
+         objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.OrgReporting)
 
          If objModel.ColumnsAsString IsNot Nothing Then
             If objModel.ColumnsAsString.Length > 0 Then
                objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
+            End If
+         End If
+
+         If objModel.FilterColumnsAsString IsNot Nothing Then
+            If objModel.FilterColumnsAsString.Length > 0 Then
+               objModel.FiltersFieldList = deserializer.Deserialize(Of List(Of OrganisationReportFilterItem))(objModel.FilterColumnsAsString)
             End If
          End If
 

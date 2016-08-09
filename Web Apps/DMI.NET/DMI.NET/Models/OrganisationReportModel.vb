@@ -19,17 +19,10 @@ Namespace Models
       End Property
 
       Public Property BaseViewFilterID As Integer
-
       Public Property FiltersFieldList As New List(Of OrganisationReportFilterItem)
-
-      'Property FiltersFieldList() As List(Of OrganisationReportFilterItem)
-
-
       <MinLength(3, ErrorMessage:="You must select at least one column for your report.")>
       Public Overrides Property ColumnsAsString As String
-
-      Public Property FilterColoumnList As New Collection(Of SelectListItem)
-
+      Public Property FilterColumnsAsString As String
       Public Property BaseViewList As New List(Of ReportTableItem)
 
       Public Property BaseViewColumnList As New List(Of ReportColumnItem)
