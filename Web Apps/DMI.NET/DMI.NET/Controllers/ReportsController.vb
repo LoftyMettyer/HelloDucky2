@@ -1093,21 +1093,29 @@ Namespace Controllers
             If objModel.ColumnsAsString.Length > 0 Then
                objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
             End If
+
+            For Each columnItem As ReportColumnItem In objModel.Columns
+               ' Check the column font size has value in range.
+               If (columnItem.FontSize < 6) AndAlso (columnItem.FontSize > 30) AndAlso (columnItem.FontSize = Nothing) Then
+                  ModelState.AddModelError("IsFontSizeEmpty", "The '" & columnItem.Name & "' column does not have valid font size.")
+               End If
+
+               ' Check the column height has value in range.
+               If (columnItem.DataType = -3) AndAlso (columnItem.Height < 3) AndAlso (columnItem.Height > 6) AndAlso (columnItem.Height = Nothing) Then
+                  ModelState.AddModelError("IsHeightEmpty", "The '" & columnItem.Name & "' column does not have valid Height (Rows).")
+               End If
+
+               If (columnItem.DataType <> -3) AndAlso (columnItem.Height < 1) AndAlso (columnItem.Height > 6) AndAlso (columnItem.Height = Nothing) Then
+                  ModelState.AddModelError("IsHeightEmpty", "The '" & columnItem.Name & "' column does not have valid Height (Rows).")
+               End If
+            Next
+
          End If
 
          If objModel.FilterColumnsAsString IsNot Nothing Then
             If objModel.FilterColumnsAsString.Length > 0 Then
                objModel.FiltersFieldList = deserializer.Deserialize(Of List(Of OrganisationReportFilterItem))(objModel.FilterColumnsAsString)
             End If
-         End If
-
-         If objModel.Columns.Count > 250 Then
-            objSaveWarning = New SaveWarningModel With {
-               .ReportType = objModel.ReportType,
-               .ID = objModel.ID,
-               .ErrorCode = ReportValidationStatus.InvalidOnClient,
-               .ErrorMessage = "A maximum of 250 columns are allowed for your mail merge."}
-            Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
          End If
 
          If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then

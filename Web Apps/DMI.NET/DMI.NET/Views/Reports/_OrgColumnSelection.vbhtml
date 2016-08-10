@@ -62,14 +62,14 @@
                   <label for="SelectedColumnSuffix">Suffix :</label>
                   <span><input type='text' id="SelectedColumnSuffix" maxlength="20" onchange="updateColumnsSelectedGrid();" /></span>
                </div>
-                <div class="formfieldfill fontsizeOnly">
-                    <label for="SelectedColumnFontSize">Font Size :</label>
-                    <span><input type="number" class="selectFontSize" id="SelectedColumnFontSize"  maxlength="2" onchange="updateColumnsSelectedGrid();" /></span>
-                    <div class="formfieldfill HeightOnly">
-                        <label for="SelectedColumnHeight"> &nbsp; Height (Rows) :</label>
-                        <span><input type="number" class="selectHeight" id="SelectedColumnHeight"  maxlength="1" onchange="updateColumnsSelectedGrid();" /></span>
-                    </div>
-                </div>
+               <div class="formfieldfill fontsizeOnly">
+                  <label for="SelectedColumnFontSize">Font Size :</label>
+                  <span><input type="number" class="selectFontSize" id="SelectedColumnFontSize" maxlength="2" onchange="updateColumnsSelectedGrid();" /></span>
+                  <div class="formfieldfill HeightOnly">
+                     <label for="SelectedColumnHeight"> &nbsp; Height (Rows) :</label>
+                     <span><input type="number" class="selectHeight" id="SelectedColumnHeight" maxlength="1" onchange="updateColumnsSelectedGrid();" /></span>
+                  </div>
+               </div>
                <div class="formfieldfill decimalsOnly">
                   <label for="SelectedColumnDecimals">Decimals :</label>
                   <span><input class="selectFullText" id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" /></span>
@@ -78,8 +78,8 @@
                <div class="tablelayout customReportsOnly colAggregates">
                   <div class="tablerow">
                      <div class="tablecell canGroupWithNext" style="color: rgb(0, 0, 0);">
-                        <input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="changeColumnIsGroupWithNext();" type="checkbox">
-                        <label id="labelSelectedColumnIsGroupWithNext" for="SelectedColumnIsGroupWithNext">Concatenate with next</label>
+                        <input class="ui-widget ui-corner-all" id="SelectedColumnIsConcatenateWithNext" onchange="changeColumnIsConcatenateWithNext();" type="checkbox">
+                        <label id="labelSelectedColumnIsConcatenateWithNext" for="SelectedColumnIsConcatenateWithNext">Concatenate with next</label>
                      </div>
                   </div>
                </div>
@@ -89,6 +89,7 @@
    </div>
 </div>
 
+<input type='hidden' id="SelectedColumnHeading" maxlength="50" />
 <input type="hidden" name="Columns.BaseTableID" value="@Model.BaseTableID" />
 <input type="hidden" name="Columns.BaseViewID" value="@Model.BaseViewID" />
 <input type="hidden" id="PostBasedTableId" value="@Model.PostBasedTableId" />
@@ -96,193 +97,218 @@
 
 <script type="text/javascript">
 
-	function removeSelectedColumnsFromAvailable() {
-		//Find row in Sort Order columns to see if Value On Change or Suppress Repeated Values is ticked.
-		var SelectedRows = $("#SelectedColumns").getRowData();
-		var AvailableRows = $("#AvailableColumns").getRowData();
+   function removeSelectedColumnsFromAvailable() {
+      //Find row in Sort Order columns to see if Value On Change or Suppress Repeated Values is ticked.
+      var SelectedRows = $("#SelectedColumns").getRowData();
+      var AvailableRows = $("#AvailableColumns").getRowData();
 
-		for (i = 0; i < AvailableRows.length; i++) {
-			for (x = 0; x < SelectedRows.length; x++) {
-				if (AvailableRows[i].ID == SelectedRows[x].ID) {
-					$("#AvailableColumns").delRowData(AvailableRows[i].ID);
-				}
-			}
-		}
-	}
+      for (i = 0; i < AvailableRows.length; i++) {
+         for (x = 0; x < SelectedRows.length; x++) {
+            if (AvailableRows[i].ID == SelectedRows[x].ID) {
+               $("#AvailableColumns").delRowData(AvailableRows[i].ID);
+            }
+         }
+      }
+   }
 
-	function moveSelectedColumn(direction) {
-		OpenHR.MoveItemInGrid($("#SelectedColumns"), direction);
-		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
-		var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
-		var isBottomRow = (rowId == allRows[allRows.length - 1]);
-		if (isBottomRow) {
-		    $('#SelectedColumnIsGroupWithNext').prop('checked', false);
-		    updateColumnsSelectedGrid();
-		}
+   function moveSelectedColumn(direction) {
+      OpenHR.MoveItemInGrid($("#SelectedColumns"), direction);
+      var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 
-	}
+      var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
+      var isBottomRow = (rowId == allRows[allRows.length - 1]);
+      if (isBottomRow) {
+         $('#SelectedColumnIsConcatenateWithNext').prop('checked', false);
+         updateColumnsSelectedGrid();
+      }
+      ClearConcatenateCheckbox();
+      var dataRow = $("#SelectedColumns").getRowData(rowId)
+      if (dataRow.IsGroupWithNext == "true") {
+         $("#SelectedColumnIsConcatenateWithNext").prop('checked', true);
+      }
+      else {
+         $("#SelectedColumnIsConcatenateWithNext").prop('checked', false);
+      }
+   }
 
-	function ChangeColumnTableView(target) {
-	   getAvailableTableViewColumns();
-	}
+   function ChangeColumnTableView(target) {
+      getAvailableTableViewColumns();
+   }
 
-	function addColumnToSelected() {
+   function addColumnToSelected() {
 
-		var rowID;
+      var rowID;
 
-		$('#SelectedColumns').jqGrid('resetSelection');
+      $('#SelectedColumns').jqGrid('resetSelection');
 
-		var selectedRows = $('#AvailableColumns').jqGrid('getGridParam', 'selarrrow');
+      var selectedRows = $('#AvailableColumns').jqGrid('getGridParam', 'selarrrow');
 
-		for (var i = 0; i <= selectedRows.length - 1; i++) {
-			rowID = selectedRows[i];
-			var datarow = getDatarowFromAvailable(selectedRows[i]);
+      for (var i = 0; i <= selectedRows.length - 1; i++) {
+         rowID = selectedRows[i];
+         var datarow = getDatarowFromAvailable(selectedRows[i]);
 
-			datarow["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
-			OpenHR.postData("Reports/AddOrganisationReportColumn", datarow);
+         datarow["__RequestVerificationToken"] = $('[name="__RequestVerificationToken"]').val();
+         OpenHR.postData("Reports/AddOrganisationReportColumn", datarow);
 
-			$("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
-			$('#SelectedColumns').jqGrid("setSelection", rowID);
+         $("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
+         $('#SelectedColumns').jqGrid("setSelection", rowID);
 
-		}
+      }
 
-		var ids = $("#AvailableColumns").getDataIDs();
-		var nextIndex = $("#AvailableColumns").getInd(rowID);
+      var ids = $("#AvailableColumns").getDataIDs();
+      var nextIndex = $("#AvailableColumns").getInd(rowID);
 
-		// Position next selected column
-		var recordCount = $("#AvailableColumns").jqGrid('getGridParam', 'records')
-		if (nextIndex >= recordCount) { nextIndex = 0; }
+      // Position next selected column
+      var recordCount = $("#AvailableColumns").jqGrid('getGridParam', 'records')
+      if (nextIndex >= recordCount) { nextIndex = 0; }
 
-		// Remove selected columns from available
-		for (var i = selectedRows.length - 1; i >= 0; i--) {
-			$("#AvailableColumns").delRowData(selectedRows[i]);
-		}
+      // Remove selected columns from available
+      for (var i = selectedRows.length - 1; i >= 0; i--) {
+         $("#AvailableColumns").delRowData(selectedRows[i]);
+      }
 
-		$("#AvailableColumns").jqGrid("setSelection", ids[nextIndex], true);
-		refreshcolumnPropertiesPanel();
-	}
+      $("#AvailableColumns").jqGrid("setSelection", ids[nextIndex], true);
+      refreshcolumnPropertiesPanel();
+      updateColumnsSelectedGrid();
+   }
 
-	function getDatarowFromAvailable(index) {
+   function getDatarowFromAvailable(index) {
 
-		var datarow = $("#AvailableColumns").getRowData(index);
+      var datarow = $("#AvailableColumns").getRowData(index);
+      datarow.Heading = datarow.Name.substr(0, 50).replace(/_/g, ' ');
+      datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
+      datarow.ReportType = '@Model.ReportType';
+      datarow.ReportID = '@Model.ID';
 
-		datarow.ReportType = '@Model.ReportType';
-	    datarow.ReportID = '@Model.ID';
+      var bIsTable = false;
+      var ViewID = $("#SelectedTableID").val();
 
-	    datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
-	    
-	    datarow.IsGroupWithNext = false;
-		datarow.ViewID = $("#SelectedTableID option:selected").val();
-        
-		return datarow;
-	}
+      //For storing TableID and ViewID
+      if (($("#PostBasedTableId").val() != undefined &&
+          $("#PostBasedTableId").val() == ViewID) &&
+          ($("#PostBasedTableName").val() != undefined &&
+          $("#PostBasedTableName").val() == $("#SelectedTableID option:selected")[0].text)) {
+         bIsTable = true;
+      }
 
-	function addAllColumnsToSelected() {
-	   
-	   var allRows = $('#AvailableColumns').jqGrid('getDataIDs');
+      if (bIsTable) {
+         datarow.TableID = $("#SelectedTableID option:selected").val();
+      }
+      else {
+         datarow.ViewID = $("#SelectedTableID option:selected").val();
+      }
 
-	   var bIsTable = 'false';
-	   var ViewID = $("#SelectedTableID").val();
-	   
-	   if (($("#PostBasedTableId").val() != undefined &&
-      $("#PostBasedTableId").val() == ViewID) &&
-      ($("#PostBasedTableName").val() != undefined &&
-      $("#PostBasedTableName").val() == $("#SelectedTableID option:selected")[0].text)) {
-	      bIsTable = true;
-	   }
+      return datarow;
+   }
 
-		var postData = {
-			ReportID: '@Model.ID',
-			ReportType: '@Model.ReportType',
-			SelectionType: 'C',
-			ColumnsTableID: $("#SelectedTableID").val(),
-			TableName: $("#SelectedTableID option:selected").text(),
-			Columns: allRows,
-			viewId: $("#SelectedTableID option:selected").val(),
+   function addAllColumnsToSelected() {
+
+      var allRows = $('#AvailableColumns').jqGrid('getDataIDs');
+
+      var bIsTable = 'false';
+      var ViewID = $("#SelectedTableID").val();
+
+      if (($("#PostBasedTableId").val() != undefined &&
+     $("#PostBasedTableId").val() == ViewID) &&
+     ($("#PostBasedTableName").val() != undefined &&
+     $("#PostBasedTableName").val() == $("#SelectedTableID option:selected")[0].text)) {
+         bIsTable = true;
+      }
+
+      var postData = {
+         ReportID: '@Model.ID',
+         ReportType: '@Model.ReportType',
+         SelectionType: 'C',
+         ColumnsTableID: $("#SelectedTableID").val(),
+         TableName: $("#SelectedTableID option:selected").text(),
+         Columns: allRows,
+         viewId: $("#SelectedTableID option:selected").val(),
          IsTable: bIsTable,
-			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
-		};
-	   OpenHR.postData("Reports/AddAllOrganisationReportColumn", postData);
+         __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+      };
+      OpenHR.postData("Reports/AddAllOrganisationReportColumn", postData);
 
-		for (var i = 0; i <= allRows.length - 1; i++) {
-			rowID = allRows[i];
-			var datarow = getDatarowFromAvailable(allRows[i]);
+      for (var i = 0; i <= allRows.length - 1; i++) {
+         rowID = allRows[i];
+         var datarow = getDatarowFromAvailable(allRows[i]);
 
-			$("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
+         $("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
 
-		}
+      }
 
-		$('#SelectedColumns').jqGrid("setSelection", rowID);
-		$('#AvailableColumns').jqGrid('clearGridData');
+      $('#SelectedColumns').jqGrid("setSelection", rowID);
+      $('#AvailableColumns').jqGrid('clearGridData');
 
-		refreshcolumnPropertiesPanel();
+      refreshcolumnPropertiesPanel();
 
-	}
+   }
 
-	function requestRemoveAllSelectedColumns() {
-			removeAllSelectedColumns(true);
-		}
+   function requestRemoveAllSelectedColumns() {
+      removeAllSelectedColumns(true);
+      ClearConcatenateCheckbox();
+   }
 
-	function requestRemoveSelectedColumns() {
+   function requestRemoveSelectedColumns() {
 
-			removeSelectedColumns();
-			enableSaveButton();
-		}
+      removeSelectedColumns();
+      enableSaveButton();
+      ClearConcatenateCheckbox();
+   }
 
-	function removeSelectedColumns() {
+   function removeSelectedColumns() {
 
-		var thisIndex = 0;
-		var selectedRows = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow');
+      var thisIndex = 0;
+      var selectedRows = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow');
 
-		var postData = {
-			ReportID: '@Model.ID',
-			ReportType: '@Model.ReportType',
-			ColumnsTableID: $("#SelectedTableID").val(),
-			Columns: selectedRows,
-			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
-		};
+      var postData = {
+         ReportID: '@Model.ID',
+         ReportType: '@Model.ReportType',
+         ColumnsTableID: $("#SelectedTableID").val(),
+         Columns: selectedRows,
+         __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+      };
 
-	   OpenHR.postData("Reports/RemoveOrganisationReportColumn", postData);
-		getAvailableTableViewColumns();
+      OpenHR.postData("Reports/RemoveOrganisationReportColumn", postData);
+      getAvailableTableViewColumns();
 
-		// Position next selected column
-		var recordCount = $("#SelectedColumns").jqGrid('getGridParam', 'records')
-		var ids = $("#SelectedColumns").getDataIDs();
-		if (thisIndex >= recordCount) { thisIndex = 0; }
+      // Position next selected column
+      var recordCount = $("#SelectedColumns").jqGrid('getGridParam', 'records')
+      var ids = $("#SelectedColumns").getDataIDs();
+      if (thisIndex >= recordCount) { thisIndex = 0; }
 
-		// Remove removed columns
-		for (var i = selectedRows.length - 1; i >= 0; i--) {
-			$("#SelectedColumns").delRowData(selectedRows[i]);
-		}
+      // Remove removed columns
+      for (var i = selectedRows.length - 1; i >= 0; i--) {
+         $("#SelectedColumns").delRowData(selectedRows[i]);
+      }
 
-		$("#SelectedColumns").jqGrid("setSelection", ids[thisIndex], true);
+      $("#SelectedColumns").jqGrid("setSelection", ids[thisIndex], true);
 
-		// If records available and no row selected then select the first row
-		if (($("#SelectedColumns").getGridParam("records") > 0) && ($("#SelectedColumns").jqGrid('getGridParam', 'selrow') == null)) {
-			selectGridTopRow($('#SelectedColumns'));
-		}
+      // If records available and no row selected then select the first row
+      if (($("#SelectedColumns").getGridParam("records") > 0) && ($("#SelectedColumns").jqGrid('getGridParam', 'selrow') == null)) {
+         selectGridTopRow($('#SelectedColumns'));
+      }
 
-		refreshcolumnPropertiesPanel();
+      refreshcolumnPropertiesPanel();
 
-	}
+   }
 
-	function removeAllSelectedColumns(reloadColumns) {
+   function removeAllSelectedColumns(reloadColumns) {
 
-		var dataSend = {
-			ReportID: '@Model.ID',
-			ReportType: '@Model.ReportType',
-			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
-		};
+      var dataSend = {
+         ReportID: '@Model.ID',
+         ReportType: '@Model.ReportType',
+         __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+      };
 
-	   OpenHR.postData("Reports/RemoveAllOrganisationReportColumns", dataSend);
-		$('#SelectedColumns').jqGrid('clearGridData');
+      OpenHR.postData("Reports/RemoveAllOrganisationReportColumns", dataSend);
+      $('#SelectedColumns').jqGrid('clearGridData');
 
-		if (reloadColumns == true) {
-		   getAvailableTableViewColumns();
-		}
+      if (reloadColumns == true) {
+         getAvailableTableViewColumns();
+      }
 
-		refreshcolumnPropertiesPanel();
-	}
+      refreshcolumnPropertiesPanel();
+   }
 
 
    function getAvailableTableViewColumns() {
@@ -291,12 +317,11 @@
       var bIsTable = 'false';
       var ViewID = $("#SelectedTableID").val();
       var url;
-      
+
       if (($("#PostBasedTableId").val() != undefined &&
       $("#PostBasedTableId").val() == ViewID) &&
       ($("#PostBasedTableName").val() != undefined &&
-      $("#PostBasedTableName").val() == $("#SelectedTableID option:selected")[0].text))
-      {
+      $("#PostBasedTableName").val() == $("#SelectedTableID option:selected")[0].text)) {
          bIsTable = true;
       }
 
@@ -316,13 +341,13 @@
          },
          colNames: ['ID', 'Name', 'DataType', 'Size', 'Decimals', 'Access', 'ViewID'],
          colModel: [
-			{ name: 'ID', index: 'ID', hidden: true },
-			{ name: 'Name', index: 'Name', width: 40, sortable: false },
-			{ name: 'DataType', index: 'DataType', hidden: true },
-			{ name: 'Size', index: 'Size', hidden: true },
-			{ name: 'Decimals', index: 'Decimals', hidden: true },
-         { name: 'Access', index: 'Access', hidden: true },
-         { name: 'ViewID', index: 'ViewID', hidden: true }],
+            { name: 'ID', index: 'ID', hidden: true },
+            { name: 'Name', index: 'Name', width: 40, sortable: false },
+            { name: 'DataType', index: 'DataType', hidden: true },
+            { name: 'Size', index: 'Size', hidden: true },
+            { name: 'Decimals', index: 'Decimals', hidden: true },
+            { name: 'Access', index: 'Access', hidden: true },
+            { name: 'ViewID', index: 'ViewID', hidden: true }],
          viewrecords: true,
          autowidth: false,
          sortname: 'Name',
@@ -336,9 +361,9 @@
             // which will stop calling onSelectRow
             if (!isDefinitionReadOnly()) {
                var $this = $(this), rows = this.rows,
-		    				// get id of the previous selected row
-		    				startId = $this.jqGrid('getGridParam', 'selrow'),
-		    				startRow, endRow, iStart, iEnd, i, rowidIndex;
+                            // get id of the previous selected row
+                            startId = $this.jqGrid('getGridParam', 'selrow'),
+                            startRow, endRow, iStart, iEnd, i, rowidIndex;
 
                if (!e.ctrlKey && !e.shiftKey) {
                   $this.jqGrid('resetSelection');
@@ -400,397 +425,421 @@
       });
 
       resizeColumnGrids(); //should be in scope; this function resides in Util_Def_CustomReport.vbhtml
-	}
+   }
 
-	function doubleClickAvailableColumn() {
-		if (!isDefinitionReadOnly()) {
-			var grid = $('#AvailableColumns');
-			var currentScrollPos = grid.parent().parent().scrollTop();
-			var rowid = grid.jqGrid('getGridParam', 'selrow');
-			addColumnToSelected(rowid);
-			enableSaveButton();
+   function doubleClickAvailableColumn() {
+      if (!isDefinitionReadOnly()) {
+         var grid = $('#AvailableColumns');
+         var currentScrollPos = grid.parent().parent().scrollTop();
+         var rowid = grid.jqGrid('getGridParam', 'selrow');
+         addColumnToSelected(rowid);
+         enableSaveButton();
 
-			if ((grid.getGridParam("records") > 0) && (grid.jqGrid('getGridParam', 'selrow') == null)) {
-				OpenHR.gridSelectLastRow(grid);	// assume last row has been removed from grid
-			}
-			grid.focus();
-			grid.parent().parent().scrollTop(currentScrollPos);
+         if ((grid.getGridParam("records") > 0) && (grid.jqGrid('getGridParam', 'selrow') == null)) {
+            OpenHR.gridSelectLastRow(grid);	// assume last row has been removed from grid
+         }
+         grid.focus();
+         grid.parent().parent().scrollTop(currentScrollPos);
 
-			return false;
-		}
-	}
+         return false;
+      }
+   }
 
-	// Removes a selected column from the selectedColumn grid on double click of column
-	function doubleClickSelectedColumn() {
-		if (!isDefinitionReadOnly()) {
-			var grid = $('#SelectedColumns');
-			var currentScrollPos = grid.parent().parent().scrollTop();
-			var rowid = grid.jqGrid('getGridParam', 'selrow');
-			requestRemoveSelectedColumns();
+   // Removes a selected column from the selectedColumn grid on double click of column
+   function doubleClickSelectedColumn() {
+      if (!isDefinitionReadOnly()) {
+         var grid = $('#SelectedColumns');
+         var currentScrollPos = grid.parent().parent().scrollTop();
+         var rowid = grid.jqGrid('getGridParam', 'selrow');
+         requestRemoveSelectedColumns();
 
-			grid.focus();
-			grid.parent().parent().scrollTop(currentScrollPos);
+         grid.focus();
+         grid.parent().parent().scrollTop(currentScrollPos);
 
-			return false;
-		}
-	}
+         return false;
+      }
+   }
 
-	function changeColumnIsGroupWithNext() {
+   function refreshcolumnPropertiesPanel() {
 
-	    var isGroupWithNextChecked = $("#SelectedColumnIsGroupWithNext").is(':checked');
+      var rowCount = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length;
+      var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+      var dataRow = $("#SelectedColumns").getRowData(rowId)
+      var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
+      var bDisableAdd = ($("#AvailableColumns").getGridParam("reccount") == 0);
+      var isTopRow = true;
+      var isBottomRow = true;
+      var isReadOnly = isDefinitionReadOnly();
+      var bRowSelected = false;
 
-	    refreshcolumnPropertiesPanel();
-	    updateColumnsSelectedGrid();
+      if (allRows.length > 0) {
+         bRowSelected = true;
+         isTopRow = (rowId == allRows[0]);
+         isBottomRow = (rowId == allRows[allRows.length - 1]);
+      }
 
-	    disableColumnOptionsWhenGroupWithNextChecked();
+      if (rowCount > 1 || allRows.length == 0) {
+         $("#definitionColumnProperties :input").attr("disabled", true);
+         $("#SelectedColumnPrefix").val("");
+         $("#SelectedColumnSuffix").val("");
+         $("#SelectedColumnHeight").val("");
+         $("#SelectedColumnFontSize").val("");
+         $("#SelectedColumnDecimals").val("");
+         $('#SelectedColumnIsConcatenateWithNext').prop('checked', false);
 
-	}
+         $(".canGroupWithNext").css("color", "#A59393");
+      }
+      else {
 
-	// Disabled the column options for the current row and uncheck all the column options for the next row
-	// when GroupWithNext is checked for the current row.
-	function disableColumnOptionsWhenGroupWithNextChecked() {
+         if (!isReadOnly) {
+            $("#definitionColumnProperties :input").removeAttr("disabled");
+         }
 
-	    var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+         var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
+         var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");
+         var isGroupWithNext = $("#SelectedColumnIsConcatenateWithNext").is(':checked');
+         var isSize = (dataRow.DataType == '4');
+         var isPhotograph = (dataRow.DataType == -3)
 
-	    // Gets all row ID'S of selected columns. Here the index begin with zero.
-	    var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
-	    var isBottomRow = (rowId == allRows[allRows.length - 1]);
-	    var currentRowIndex = $("#SelectedColumns").getInd(rowId);
+         $(".decimalsOnly *").prop("disabled", !isDecimals || isReadOnly || isSize || isPhotograph);
+         $(".canGroupWithNext *").prop("disabled", isBottomRow || isReadOnly || isPhotograph);
+         $("#SelectedColumnPrefix").prop("disabled", isReadOnly || isPhotograph);
+         $("#SelectedColumnSuffix").prop("disabled", isReadOnly || isPhotograph);
+         $("#SelectedColumnHeight").prop("disabled", isReadOnly);
+         $("#SelectedColumnFontSize").prop("disabled", isReadOnly || isPhotograph);
 
-	    // Gets the previous row data
-	    var prevDataRow = $('#SelectedColumns').jqGrid('getRowData', allRows[currentRowIndex - 2]);
+         if (isBottomRow || isReadOnly) {
+            $(".canGroupWithNext").css("color", "#A59393");
+         } else {
+            $(".canGroupWithNext").css("color", "#000000");
+         }
+      }
 
-	    // If previous row has a GroupWithNext checked then disabled the column options except GroupWithNext for the current row
-	    if (prevDataRow != null && prevDataRow.IsGroupWithNext == "true") {
+      // Enable / Disable relevant buttons
+      button_disable($("#btnColumnAdd")[0], bDisableAdd || isReadOnly);
+      button_disable($("#btnColumnAddAll")[0], bDisableAdd || isReadOnly);
+      button_disable($("#btnColumnRemove")[0], !bRowSelected || isReadOnly);
+      button_disable($("#btnColumnRemoveAll")[0], !bRowSelected || isReadOnly);
+      button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly || (rowCount > 1));
+      button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly || (rowCount > 1));
+   }
 
-	        // If last row then disabled the GroupWithNext checkbox else not
-	        if (isBottomRow) {
-	            $(".canGroupWithNext *").prop("disabled", true);
-	        }
-	        else {
-	            $(".canGroupWithNext *").prop("disabled", false);
-	        }
-	        updateColumnsSelectedGrid();
-	    }
+   function updateColumnsSelectedGrid() {
 
-	    // If the current row is not the last row, Uncheck all the column options for the next row and update the row to the grid
-	    if (!isBottomRow && $("#SelectedColumnIsGroupWithNext").is(':checked')) {
+      var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+      var dataRow = $('#SelectedColumns').jqGrid('getRowData', rowId);
 
-	        //Gets the next selected columns grid row
-	        var nextDataRow = $('#SelectedColumns').jqGrid('getRowData', allRows[currentRowIndex]);
+      dataRow.ColumnID = rowId;
+      dataRow.TableID = 0;
+      dataRow.Decimals = $("#SelectedColumnDecimals").val();
+      if (dataRow.Decimals == "") { dataRow.Decimals = 0 }; //If Decimals is empty then set to 0
 
-	        $('#SelectedColumns').jqGrid('setRowData', allRows[currentRowIndex], nextDataRow);
-	    }
-	}
+      dataRow.Height = $("#SelectedColumnHeight").val();
+      if (dataRow.Height == "" && dataRow.DataType != -3) { dataRow.Height = 1 }; //If Height is empty then set to 1
+      if (dataRow.Height == "" && dataRow.DataType == -3) { dataRow.Height = 3 };
 
-	function refreshcolumnPropertiesPanel() {
-	   
-	   var rowCount = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length;
-	   var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
-	   var dataRow = $("#SelectedColumns").getRowData(rowId)
-	   var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
-	   var bDisableAdd = ($("#AvailableColumns").getGridParam("reccount") == 0);
-	   var isTopRow = true;
-	   var isBottomRow = true;
-	   var isReadOnly = isDefinitionReadOnly();
-	   var bRowSelected = false;
+      dataRow.FontSize = $("#SelectedColumnFontSize").val();
+      if (dataRow.FontSize == "") { dataRow.FontSize = 11 }; //If fontSize is empty then set to 1
 
-	   if (allRows.length > 0) {
-	      bRowSelected = true;
-	      isTopRow = (rowId == allRows[0]);
-	      isBottomRow = (rowId == allRows[allRows.length - 1]);
-	   }
+      dataRow.Suffix = $("#SelectedColumnSuffix").val();
+      dataRow.Prefix = $("#SelectedColumnPrefix").val();
 
-	   if (rowCount > 1 || allRows.length == 0) {
-	      $("#definitionColumnProperties :input").attr("disabled", true);
-	      $("#SelectedColumnPrefix").val("");
-	      $("#SelectedColumnSuffix").val("");
-	      $("#SelectedColumnHeight").val("");
-	      $("#SelectedColumnFontSize").val("");
-	      $("#SelectedColumnDecimals").val("");
-	      $('#SelectedColumnIsGroupWithNext').prop('checked', false);
+      dataRow.IsGroupWithNext = $("#SelectedColumnIsConcatenateWithNext").is(':checked');
+      dataRow.Heading = encodeURI($("#SelectedColumnHeading").val());
 
-	      $(".canGroupWithNext").css("color", "#A59393");
-	   }
-	   else {
+      $('#SelectedColumns').jqGrid('setRowData', rowId, dataRow);
 
-	      if (!isReadOnly) {
-	         $("#definitionColumnProperties :input").removeAttr("disabled");
-	      }
-	      
-	      var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
-	      var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");
-	      var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
-	      var isSize = (dataRow.DataType == '4');
-	      var isPhotograph = (dataRow.DataType == '-3')
+   }
 
-	      $(".decimalsOnly *").prop("disabled", !isDecimals || isReadOnly || isSize || isPhotograph);
-	      $(".canGroupWithNext *").prop("disabled", isBottomRow || isReadOnly || isPhotograph);
-	      $("#SelectedColumnPrefix").prop("disabled", isReadOnly || isPhotograph);
-	      $("#SelectedColumnSuffix").prop("disabled", isReadOnly || isPhotograph);
-	      $("#SelectedColumnHeight").prop("disabled", isReadOnly);
-	      $("#SelectedColumnFontSize").prop("disabled", isReadOnly || isPhotograph);
+   function ClearConcatenateCheckbox() {
 
-	      if (isBottomRow || isReadOnly) {
-	         $(".canGroupWithNext").css("color", "#A59393");
-	      } else {
-	         $(".canGroupWithNext").css("color", "#000000");
-	      }
-	   }
+      var allRows = $('#SelectedColumns').jqGrid('getRowData');
+      var rowid;
+      for (var i = 0; i <= allRows.length - 1; i++) {
+         if (allRows[i].IsGroupWithNext == "true") {
+            allRows[i].IsGroupWithNext = "false";
+            rowid = allRows[i].ID
+            $('#SelectedColumns').jqGrid('setRowData', rowid, allRows[i]);
+         }
+      }
 
-	   // Enable / Disable relevant buttons
-	   button_disable($("#btnColumnAdd")[0], bDisableAdd || isReadOnly);
-	   button_disable($("#btnColumnAddAll")[0], bDisableAdd || isReadOnly);
-	   button_disable($("#btnColumnRemove")[0], !bRowSelected || isReadOnly);
-	   button_disable($("#btnColumnRemoveAll")[0], !bRowSelected || isReadOnly);
-	   button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly || (rowCount > 1));
-	   button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly || (rowCount > 1));
-	}
+   }
 
-	function updateColumnsSelectedGrid() {
+   function attachGridToSelectedColumns() {
 
-	    var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
-	    var dataRow = $('#SelectedColumns').jqGrid('getRowData', rowId);
+      $("#SelectedColumns").jqGrid({
+         datatype: "jsonstring",
+         datastr: '@Model.Columns.ToJsonResult',
+         mtype: 'GET',
+         jsonReader: {
+            root: "rows", //array containing actual data
+            page: "page", //current page
+            total: "total", //total pages for the query
+            records: "records", //total number of records
+            repeatitems: false,
+            id: "ID" //index of the column with the PK in it
+         },
+         colNames: ['ID', 'TableID', 'Name', 'Prefix', 'Suffix', 'FontSize', 'Height', 'DataType', 'Size', 'Decimals', 'IsGroupWithNext', 'ReportID', 'ReportType', 'Access', 'ViewID', 'ColumnID', 'Heading'],
+         colModel: [
+         { name: 'ID', index: 'ID', hidden: true },
+         { name: 'TableID', index: 'TableID', hidden: true },
+         { name: 'Name', index: 'Name', sortable: false },
+         { name: 'Prefix', index: 'Prefix', hidden: true },
+         { name: 'Suffix', index: 'Suffix', hidden: true },
+         { name: 'FontSize', index: 'FontSize', hidden: true },
+         { name: 'Height', index: 'Height', hidden: true },
+         { name: 'DataType', index: 'DataType', hidden: true },
+         { name: 'Size', index: 'Size', hidden: true },
+         { name: 'Decimals', index: 'Decimals', hidden: true },
+         { name: 'IsGroupWithNext', index: 'IsGroupWithNext', hidden: true },
+         { name: 'ReportID', index: 'ReportID', hidden: true },
+         { name: 'ReportType', index: 'ReportType', hidden: true },
+         { name: 'Access', index: 'Access', hidden: true },
+         { name: 'ViewID', index: 'ViewID', hidden: true },
+         { name: 'ColumnID', index: 'ColumnID', hidden: true },
+         { name: 'Heading', index: 'Heading', hidden: true }],
+         viewrecords: true,
+         autowidth: false,
+         sortname: 'Name',
+         sortorder: "asc",
+         rowNum: 10000,
+         scrollrows: true,
+         multiselect: true,
+         beforeSelectRow: function (rowid, e) {
 
-	    dataRow.ColumnID = rowId;
-	    dataRow.TableID = 0;
-	    dataRow.Suffix = $("#SelectedColumnSuffix").val();
-	    dataRow.Prefix = $("#SelectedColumnPrefix").val();
+            // If defination is readonly then skip this opertion and it will result in return false
+            // which will stop calling onSelectRow
+            if (!isDefinitionReadOnly()) {
+               if ($('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length == 1) {
+                  updateColumnsSelectedGrid();
+               }
 
-	    dataRow.Decimals = $("#SelectedColumnDecimals").val();
-	    if (dataRow.Decimals == "") { dataRow.Decimals = 0 }; //If Decimals is empty then set to 0
+               var $this = $(this), rows = this.rows,
+                // get id of the previous selected row
+                startId = $this.jqGrid('getGridParam', 'selrow'),
+                startRow, endRow, iStart, iEnd, i, rowidIndex;
 
-	    dataRow.Height = $("#SelectedColumnHeight").val();
-	    if (dataRow.Height == "" && dataRow.DataType != '-3') { dataRow.Height = 1 }; //If Height is empty then set to 1
-	    if (dataRow.Height == "" && dataRow.DataType == '-3') { dataRow.Height = 3 };
+               if (!e.ctrlKey && !e.shiftKey) {
+                  $this.jqGrid('resetSelection');
+               } else if (startId && e.shiftKey) {
+                  $this.jqGrid('resetSelection');
 
-	    dataRow.FontSize = $("#SelectedColumnFontSize").val();
-	    if (dataRow.FontSize == "") { dataRow.FontSize = 11 }; //If fontSize is empty then set to 1
+                  // get DOM elements of the previous selected and the currect selected rows
+                  startRow = rows.namedItem(startId);
+                  endRow = rows.namedItem(rowid);
+                  if (startRow && endRow) {
+                     // get min and max from the indexes of the previous selected
+                     // and the currect selected rows
+                     iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
+                     rowidIndex = endRow.rowIndex;
+                     iEnd = Math.max(startRow.rowIndex, rowidIndex);
+                     for (i = iStart; i <= iEnd; i++) {
+                        // the row with rowid will be selected by jqGrid, so:
+                        if (i != rowidIndex) {
+                           $this.jqGrid('setSelection', rows[i].id, false);
+                        }
+                     }
+                  }
 
-	    dataRow.IsGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
+                  // clear text selection
+                  if (document.selection && document.selection.empty) {
+                     document.selection.empty();
+                  } else if (window.getSelection) {
+                     window.getSelection().removeAllRanges();
+                  }
+               }
+               return true;
+            }
+         },
+         onSelectRow: function (id) {
 
-	    $('#SelectedColumns').jqGrid('setRowData', rowId, dataRow);
+            var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+            var dataRow = $("#SelectedColumns").getRowData(rowId)
 
-	}
+            $("#SelectedColumnHeading").val(decodeURI(dataRow.Heading));
+            $("#SelectedColumnPrefix").val(decodeURI(dataRow.Prefix));
+            $("#SelectedColumnSuffix").val(decodeURI(dataRow.Suffix));
+            $("#SelectedColumnDecimals").val(dataRow.Decimals);
+            $("#SelectedColumnFontSize").val(dataRow.FontSize);
+            $("#SelectedColumnHeight").val(dataRow.Height);
 
-	function attachGridToSelectedColumns() {
+            if ($("#SelectedColumnFontSize").val() == "") {
+               $("#SelectedColumnFontSize").val("11");
+            }
+            if ($("#SelectedColumnHeight").val() == "" && dataRow.DataType != -3) {
+               $("#SelectedColumnHeight").val(1);
+            }
+            if ($("#SelectedColumnHeight").val() == "" && dataRow.DataType == -3) {
+               $("#SelectedColumnHeight").val(3);
+            }
 
-		$("#SelectedColumns").jqGrid({
-			datatype: "jsonstring",
-			datastr: '@Model.Columns.ToJsonResult',
-			mtype: 'GET',
-			jsonReader: {
-				root: "rows", //array containing actual data
-				page: "page", //current page
-				total: "total", //total pages for the query
-				records: "records", //total number of records
-				repeatitems: false,
-				id: "ID" //index of the column with the PK in it
-			},
-			colNames: ['ID', 'TableID', 'Name', 'Prefix', 'Suffix', 'FontSize', 'Height', 'DataType', 'Size', 'Decimals', 'IsGroupWithNext', 'ReportID', 'ReportType', 'Access', 'ViewID', 'ColumnID'],
-			colModel: [
-				{ name: 'ID', index: 'ID', hidden: true },
-				{ name: 'TableID', index: 'TableID', hidden: true },
-				{ name: 'Name', index: 'Name', sortable: false },
-                { name: 'Prefix', index: 'Prefix', hidden: true },
-                { name: 'Suffix', index: 'Suffix', hidden: true },
-                { name: 'FontSize', index: 'FontSize', hidden: true },
-                { name: 'Height', index: 'Height', hidden: true },
-				{ name: 'DataType', index: 'DataType', hidden: true },
-				{ name: 'Size', index: 'Size', hidden: true },
-				{ name: 'Decimals', index: 'Decimals', hidden: true },
-				{ name: 'IsGroupWithNext', index: 'IsGroupWithNext', hidden: true },
-				{ name: 'ReportID', index: 'ReportID', hidden: true },
-				{ name: 'ReportType', index: 'ReportType', hidden: true },
-				{ name: 'Access', index: 'Access', hidden: true },
-                { name: 'ViewID', index: 'ViewID', hidden: true },
-                { name: 'ColumnID', index: 'ColumnID', hidden: true }],
-			viewrecords: true,
-			autowidth: false,
-			sortname: 'Name',
-			sortorder: "asc",
-			rowNum: 10000,
-			scrollrows: true,
-			multiselect: true,
-			beforeSelectRow: function (rowid, e) {
+            if (dataRow.IsGroupWithNext == "true") {
+               $("#SelectedColumnIsConcatenateWithNext").prop('checked', true);
+            }
+            else {
+               $("#SelectedColumnIsConcatenateWithNext").prop('checked', false);
+            }
 
-				// If defination is readonly then skip this opertion and it will result in return false
-				// which will stop calling onSelectRow
-				if (!isDefinitionReadOnly()) {
-					if ($('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length == 1) {
-						updateColumnsSelectedGrid();
-					}
+            refreshcolumnPropertiesPanel();
+            disableColumnOptionsWhenConcatenateWithNextChecked();
+         },
+         ondblClickRow: function () {
+            doubleClickSelectedColumn();
+         },
+         loadComplete: function (data) {
+            var topID = $("#SelectedColumns").getDataIDs()[0]
+            $("#SelectedColumns").jqGrid("setSelection", topID);
 
-					var $this = $(this), rows = this.rows,
-							// get id of the previous selected row
-							startId = $this.jqGrid('getGridParam', 'selrow'),
-							startRow, endRow, iStart, iEnd, i, rowidIndex;
+         }
+      });
 
-					if (!e.ctrlKey && !e.shiftKey) {
-						$this.jqGrid('resetSelection');
-					} else if (startId && e.shiftKey) {
-						$this.jqGrid('resetSelection');
+      $("#SelectedColumns").jqGrid('hideCol', 'cb');
 
-						// get DOM elements of the previous selected and the currect selected rows
-						startRow = rows.namedItem(startId);
-						endRow = rows.namedItem(rowid);
-						if (startRow && endRow) {
-							// get min and max from the indexes of the previous selected
-							// and the currect selected rows
-							iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
-							rowidIndex = endRow.rowIndex;
-							iEnd = Math.max(startRow.rowIndex, rowidIndex);
-							for (i = iStart; i <= iEnd; i++) {
-								// the row with rowid will be selected by jqGrid, so:
-								if (i != rowidIndex) {
-									$this.jqGrid('setSelection', rows[i].id, false);
-								}
-							}
-						}
+      $('#SelectedColumns').keydown(function (event) {
+         event.preventDefault(); //prevent grid scrolling.
+         var keyPressed = event.which;
+         var grid = $('#SelectedColumns');
+         //Enter key
+         if (keyPressed == 13) {
+            //handle this locally
+            requestRemoveSelectedColumns();
+         }
+         else {
+            OpenHR.gridKeyboardEvent(keyPressed, grid);
+         }
+      });
 
-						// clear text selection
-						if (document.selection && document.selection.empty) {
-							document.selection.empty();
-						} else if (window.getSelection) {
-							window.getSelection().removeAllRanges();
-						}
-					}
-					return true;
-				}
-			},
-			onSelectRow: function (id) {
-			    
-				var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
-				var dataRow = $("#SelectedColumns").getRowData(rowId)
-				
-				$("#SelectedColumnPrefix").val(decodeURI(dataRow.Prefix));
-				$("#SelectedColumnSuffix").val(decodeURI(dataRow.Suffix));
-				$("#SelectedColumnDecimals").val(dataRow.Decimals);
-				$("#SelectedColumnFontSize").val(dataRow.FontSize);
-				$("#SelectedColumnHeight").val(dataRow.Height);
+   }
+   function changeColumnIsConcatenateWithNext() {
 
-				if ($("#SelectedColumnFontSize").val() == "") {
-				    $("#SelectedColumnFontSize").val("11");
-				}
-				if ($("#SelectedColumnHeight").val() == "" && dataRow.DataType != '-3') {
-				    $("#SelectedColumnHeight").val(1);
-				}
-				if ($("#SelectedColumnHeight").val() == "" && dataRow.DataType == '-3') {
-				    $("#SelectedColumnHeight").val(3);
-				}
+      var IsGroupWithNext = $("#SelectedColumnIsConcatenateWithNext").is(':checked');
 
-				$("#SelectedColumnIsGroupWithNext").val(dataRow.isGroupWithNext);
-			   
-				refreshcolumnPropertiesPanel();
+      refreshcolumnPropertiesPanel();
+      updateColumnsSelectedGrid();
+      disableColumnOptionsWhenConcatenateWithNextChecked();
 
-			    //disableColumnOptionsWhenGroupWithNextChecked();
-			},
-			ondblClickRow: function () {
-				doubleClickSelectedColumn();
-			},
-			loadComplete: function (data) {
-				var topID = $("#SelectedColumns").getDataIDs()[0]
-				$("#SelectedColumns").jqGrid("setSelection", topID);
+   }
 
-			}
-		});
+   // Disabled the column options for the current row and uncheck all the column options for the next row
+   // when ConcatenateWithNext is checked for the current row.
+   function disableColumnOptionsWhenConcatenateWithNextChecked() {
 
-		$("#SelectedColumns").jqGrid('hideCol', 'cb');
+      var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 
-		$('#SelectedColumns').keydown(function (event) {
-			event.preventDefault(); //prevent grid scrolling.
-			var keyPressed = event.which;
-			var grid = $('#SelectedColumns');
-			//Enter key
-			if (keyPressed == 13) {
-				//handle this locally
-				requestRemoveSelectedColumns();
-			}
-			else {
-				OpenHR.gridKeyboardEvent(keyPressed, grid);
-			}
-		});
+      // Gets all row ID'S of selected columns. Here the index begin with zero.
+      var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
+      var dataRow = $("#SelectedColumns").getRowData(rowId)
+      var isBottomRow = (rowId == allRows[allRows.length - 1]);
+      var currentRowIndex = $("#SelectedColumns").getInd(rowId);
+      var CanConcatenate = true;
+      var PreviousRowConcatenate = false; //Checks if previous row Concatenate checked
+      var isPhotograph = (dataRow.DataType == -3)
 
-	}
+      var NextRowIndex = $('#SelectedColumns').jqGrid('getRowData', allRows[currentRowIndex]);     //Get Next Column's data
+      var prevDataRow = $('#SelectedColumns').jqGrid('getRowData', allRows[currentRowIndex - 2]);  //Get Previous Column's data
 
-	// Initialise
-    $(function () {
+      if (prevDataRow.IsGroupWithNext == "true") {
 
-		// Sets Decimals textbox to allow numeric only
-	    $("#SelectedColumnDecimals").autoNumeric({ aSep: '', aNeg: '', mDec: "0", vMax: 999, vMin: 0 });
-	    
-		//Note:-
-		//This solution working in Firefox, Chrome and IE, both with keyboard focus and mouse focus.
-		//It also handles correctly clicks following the focus (it moves the caret and doesn't reselect the text):
-		//With keyboard focus, only onfocus triggers which selects the text because this.clicked is not set. With mouse focus, onmousedown triggers, then onfocus and then onclick which selects the text in onclick but not in onfocus (Chrome requires this).
-		//Mouse clicks when the field is already focused don't trigger onfocus which results in not selecting anything.
-		$(".selectFullText").bind({
-			click: function () {
-				if (this.clicked == 2) this.select(); this.clicked = 0;
-			},
-			mousedown: function () {
-				this.clicked = 1;
-			},
-			focus: function () {
-				if (!this.clicked) this.select(); else this.clicked = 2;
-			}
-		}).blur(function () {
-			if (this.value == "") this.value = 0;
-		});
+         PreviousRowConcatenate = true;
+         $("#SelectedColumnFontSize").val(prevDataRow.FontSize); //Set FontSize As Previous Column
+         $("#SelectedColumnHeight").val(prevDataRow.Height);  //  Set Height As Previous Column
+      }
 
+      // Check ViewID of next column
+      // Check TableID of Next Column
+      // Check If Selected Column or Next Column is not PhotoType
+      if (dataRow.ViewID == NextRowIndex.ViewID && dataRow.TableID == NextRowIndex.TableID && dataRow.DataType != -3 && NextRowIndex.DataType != -3) {
+         CanConcatenate = true;
+      }
+      else {
+         CanConcatenate = false;
+      }
 
-        $("#SelectedColumnHeight").bind({
-		    click: function () {
-		        if (this.clicked == 2) this.select(); this.clicked = 0;
-		    },
-		    mousedown: function () {
-		        this.clicked = 1;
-		    },
-		    focus: function () {
-		        if (!this.clicked) this.select(); else this.clicked = 2;
-		    }
-        }).blur(function (sender) {
-            
-		    var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
-		    var dataRow = $("#SelectedColumns").getRowData(rowId)
-		    var ColumnName = dataRow.Name;
-		    
-		    if ((dataRow.DataType == '-3')) { var Min = 3 }
-		    else { var Min = 1; }
-		    
-		    var Max = 6;
+      $(".canGroupWithNext *").prop("disabled", !CanConcatenate);
+      $("#SelectedColumnPrefix").prop("disabled", PreviousRowConcatenate || isPhotograph);
+      $("#SelectedColumnSuffix").prop("disabled", isPhotograph);
+      $("#SelectedColumnHeight").prop("disabled", PreviousRowConcatenate);
+      $("#SelectedColumnFontSize").prop("disabled", PreviousRowConcatenate || isPhotograph);
 
-		    if ((sender.target.value == "") || (sender.target.value < Min) || (sender.target.value > Max)) {
-		        OpenHR.modalMessage("Enter height (rows) between " + Min + " and " + Max); sender.target.value = Min;
-		        $(sender.target.id).focus();
-		    }
-        });
+      if (!CanConcatenate) {
+         $(".canGroupWithNext").css("color", "#A59393");
+      } else {
+         $(".canGroupWithNext").css("color", "#000000");
+      }
+   }
 
+   // Initialise
+   $(function () {
 
-        $("#SelectedColumnFontSize").bind({
-		    click: function () {
-		        if (this.clicked == 2) this.select(); this.clicked = 0;
-		    },
-		    mousedown: function () {
-		        this.clicked = 1;
-		    },
-		    focus: function () {
-		        if (!this.clicked) this.select(); else this.clicked = 2;
-		    }
-		}).blur(function (sender) {
-		    var MinSize = 6;
-		    var MaxSize = 30;
-		    if ((sender.target.value == "") || (sender.target.value < MinSize) || (sender.target.value > MaxSize)) {
-		        OpenHR.modalMessage("Enter font size between 6 and 30");
-		        sender.target.value = "11";
-		        $(sender.target.id).focus();
-		    }
-		});
+      // Sets Decimals textbox to allow numeric only
+      $("#SelectedColumnDecimals").autoNumeric({ aSep: '', aNeg: '', mDec: "0", vMax: 999, vMin: 0 });
+
+      //Note:-
+      //This solution working in Firefox, Chrome and IE, both with keyboard focus and mouse focus.
+      //It also handles correctly clicks following the focus (it moves the caret and doesn't reselect the text):
+      //With keyboard focus, only onfocus triggers which selects the text because this.clicked is not set. With mouse focus, onmousedown triggers, then onfocus and then onclick which selects the text in onclick but not in onfocus (Chrome requires this).
+      //Mouse clicks when the field is already focused don't trigger onfocus which results in not selecting anything.
+      $(".selectFullText").bind({
+         click: function () {
+            if (this.clicked == 2) this.select(); this.clicked = 0;
+         },
+         mousedown: function () {
+            this.clicked = 1;
+         },
+         focus: function () {
+            if (!this.clicked) this.select(); else this.clicked = 2;
+         }
+      }).blur(function () {
+         if (this.value == "") this.value = 0;
+      });
 
 
-		//$('.selectHeight').keypress(function (key) {
-		//    if (key.charCode < 49 || key.charCode > 54) return false;
-		//});
-	});
+      $("#SelectedColumnHeight").bind({
+         click: function () {
+            if (this.clicked == 2) this.select(); this.clicked = 0;
+         },
+         mousedown: function () {
+            this.clicked = 1;
+         },
+         focus: function () {
+            if (!this.clicked) this.select(); else this.clicked = 2;
+         }
+      }).blur(function (sender) {
 
+         var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+         var dataRow = $("#SelectedColumns").getRowData(rowId)
+         var ColumnName = dataRow.Name;
+
+         if ((dataRow.DataType == -3)) { var Min = 3 }
+         else { var Min = 1; }
+
+         var Max = 6;
+
+         if ((sender.target.value == "") || (sender.target.value < Min) || (sender.target.value > Max)) {
+            OpenHR.modalMessage("Enter height (rows) between " + Min + " and " + Max); sender.target.value = Min;
+            $(sender.target.id).focus();
+         }
+      });
+
+
+      $("#SelectedColumnFontSize").bind({
+         click: function () {
+            if (this.clicked == 2) this.select(); this.clicked = 0;
+         },
+         mousedown: function () {
+            this.clicked = 1;
+         },
+         focus: function () {
+            if (!this.clicked) this.select(); else this.clicked = 2;
+         }
+      }).blur(function (sender) {
+         var MinSize = 6;
+         var MaxSize = 30;
+         if ((sender.target.value == "") || (sender.target.value < MinSize) || (sender.target.value > MaxSize)) {
+            OpenHR.modalMessage("Enter font size between 6 and 30");
+            sender.target.value = "11";
+            $(sender.target.id).focus();
+         }
+      });
+   });
 </script>
