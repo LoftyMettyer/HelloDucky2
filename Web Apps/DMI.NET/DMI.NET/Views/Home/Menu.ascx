@@ -367,7 +367,7 @@
 				<li id="mnutoolCrossTabs"><a href="#">Cross Tabs</a></li>
 				<li id="mnutoolNineBox"><a href="#">9-Box Grid Reports</a></li>
 				<li id="mnutoolTalentReports"><a href="#">Talent Reports</a></li>
-            <li id="mnutoolOrgReporting"><a href="#">Organisation Reporting</a></li>
+            <li id="mnutoolOrgReporting"><a href="#">Organisation Reports</a></li>
 				<li class="hidden" id="mnutoolStdRpt_AbsenceBreakdown"><a href="#">Absence Breakdown...</a></li>
 				<li class="hidden" id="mnutoolStdRpt_BradfordFactor"><a href="#">Bradford Factor...</a></li>
 				<li class="hidden" id="mnutoolStdRpt_StabilityReport"><a href="#">Stability Report...</a></li>

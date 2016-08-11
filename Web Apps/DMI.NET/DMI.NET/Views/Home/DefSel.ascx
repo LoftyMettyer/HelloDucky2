@@ -599,7 +599,7 @@
                                ElseIf iDefSelType = UtilityType.TalentReport Then
                                   Response.Write("Talent Reports")
                                ElseIf iDefSelType = UtilityType.OrgReporting Then
-                                  Response.Write("Organisation Reporting")
+                                  Response.Write("Organisation Reports")
                                End If
                             %>
                         </span>

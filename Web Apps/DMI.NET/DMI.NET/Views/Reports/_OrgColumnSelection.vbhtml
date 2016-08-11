@@ -122,13 +122,7 @@
          updateColumnsSelectedGrid();
       }
       ClearConcatenateCheckbox();
-      var dataRow = $("#SelectedColumns").getRowData(rowId)
-      if (dataRow.IsGroupWithNext == "true") {
-         $("#SelectedColumnIsConcatenateWithNext").prop('checked', true);
-      }
-      else {
-         $("#SelectedColumnIsConcatenateWithNext").prop('checked', false);
-      }
+      
    }
 
    function ChangeColumnTableView(target) {
@@ -169,17 +163,27 @@
 
       $("#AvailableColumns").jqGrid("setSelection", ids[nextIndex], true);
       refreshcolumnPropertiesPanel();
-      updateColumnsSelectedGrid();
    }
 
    function getDatarowFromAvailable(index) {
-
+      
       var datarow = $("#AvailableColumns").getRowData(index);
       datarow.Heading = datarow.Name.substr(0, 50).replace(/_/g, ' ');
       datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
       datarow.ReportType = '@Model.ReportType';
       datarow.ReportID = '@Model.ID';
 
+      datarow.ColumnID = datarow.ID;
+      datarow.FontSize = 11;
+      
+      if (datarow.DataType == -3) {
+         datarow.Height = 3
+      }
+      else {
+         datarow.Height = 1;
+      }
+
+      datarow.IsGroupWithNext = false;
       var bIsTable = false;
       var ViewID = $("#SelectedTableID").val();
 
@@ -193,9 +197,11 @@
 
       if (bIsTable) {
          datarow.TableID = $("#SelectedTableID option:selected").val();
+         datarow.ViewID = 0;
       }
       else {
          datarow.ViewID = $("#SelectedTableID option:selected").val();
+         datarow.TableID = 0;
       }
 
       return datarow;
@@ -240,7 +246,7 @@
       $('#AvailableColumns').jqGrid('clearGridData');
 
       refreshcolumnPropertiesPanel();
-
+      
    }
 
    function requestRemoveAllSelectedColumns() {
@@ -339,7 +345,7 @@
             repeatitems: false,
             id: "ID"
          },
-         colNames: ['ID', 'Name', 'DataType', 'Size', 'Decimals', 'Access', 'ViewID'],
+         colNames: ['ID', 'Name', 'DataType', 'Size', 'Decimals', 'Access', 'ViewID', 'TableID'],
          colModel: [
             { name: 'ID', index: 'ID', hidden: true },
             { name: 'Name', index: 'Name', width: 40, sortable: false },
@@ -347,7 +353,8 @@
             { name: 'Size', index: 'Size', hidden: true },
             { name: 'Decimals', index: 'Decimals', hidden: true },
             { name: 'Access', index: 'Access', hidden: true },
-            { name: 'ViewID', index: 'ViewID', hidden: true }],
+            { name: 'ViewID', index: 'ViewID', hidden: true },
+            { name: 'TableID', index: 'TableID', hidden: true }],
          viewrecords: true,
          autowidth: false,
          sortname: 'Name',
@@ -424,7 +431,7 @@
          }
       });
 
-      resizeColumnGrids(); //should be in scope; this function resides in Util_Def_CustomReport.vbhtml
+      resizeColumnGrids(); 
    }
 
    function doubleClickAvailableColumn() {
@@ -530,7 +537,6 @@
       var dataRow = $('#SelectedColumns').jqGrid('getRowData', rowId);
 
       dataRow.ColumnID = rowId;
-      dataRow.TableID = 0;
       dataRow.Decimals = $("#SelectedColumnDecimals").val();
       if (dataRow.Decimals == "") { dataRow.Decimals = 0 }; //If Decimals is empty then set to 0
 
@@ -563,6 +569,7 @@
          }
       }
 
+      $("#SelectedColumnIsConcatenateWithNext").prop('checked', false);
    }
 
    function attachGridToSelectedColumns() {
@@ -756,7 +763,7 @@
       }
 
       $(".canGroupWithNext *").prop("disabled", !CanConcatenate);
-      $("#SelectedColumnPrefix").prop("disabled", PreviousRowConcatenate || isPhotograph);
+      $("#SelectedColumnPrefix").prop("disabled", isPhotograph);
       $("#SelectedColumnSuffix").prop("disabled", isPhotograph);
       $("#SelectedColumnHeight").prop("disabled", PreviousRowConcatenate);
       $("#SelectedColumnFontSize").prop("disabled", PreviousRowConcatenate || isPhotograph);

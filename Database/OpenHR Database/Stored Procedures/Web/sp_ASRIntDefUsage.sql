@@ -61,7 +61,7 @@ BEGIN
 		DEALLOCATE expr_cursor
 	END
 
-	IF @intType IN(1, 2, 9, 17, 35, 38)
+	IF @intType IN(1, 2, 9, 17, 35, 38, 39)
 	BEGIN
 		/* Reports & Utilities
 		Check for usage in Batch Jobs */
