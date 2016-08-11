@@ -106,74 +106,76 @@ Namespace Controllers
 				Session("ExprNodeMode") = nodesize
 				Session("FindRecords") = blocksize
 
-				'--------------------------------------------
-				' Save the DefSel 'only mine' settings.
-				'--------------------------------------------
-				For i = 0 To 22
-					Select Case i
-						Case 0
-							sType = "BatchJobs"
-						Case 1
-							sType = "Calculations"
-						Case 2
-							sType = "CrossTabs"
-						Case 3
-							sType = "CustomReports"
-						Case 4
-							sType = "DataTransfer"
-						Case 5
-							sType = "Export"
-						Case 6
-							sType = "Filters"
-						Case 7
-							sType = "GlobalAdd"
-						Case 8
-							sType = "GlobalUpdate"
-						Case 9
-							sType = "GlobalDelete"
-						Case 10
-							sType = "Import"
-						Case 11
-							sType = "MailMerge"
-						Case 12
-							sType = "Picklists"
-						Case 13
-							sType = "CalendarReports"
-						Case 14
-							sType = "Labels"
-						Case 15
-							sType = "LabelDefinition"
-						Case 16
-							sType = "MatchReports"
-						Case 17
-							sType = "CareerProgression"
-						Case 18
-							sType = "EmailGroups"
-						Case 19
-							sType = "RecordProfile"
-						Case 20
-							sType = "SuccessionPlanning"
-						Case 21
-							sType = "NineBoxGrid"
-			      Case 22
-				      sType ="TalentReports"
+            '--------------------------------------------
+            ' Save the DefSel 'only mine' settings.
+            '--------------------------------------------
+            For i = 0 To 23
+               Select Case i
+                  Case 0
+                     sType = "BatchJobs"
+                  Case 1
+                     sType = "Calculations"
+                  Case 2
+                     sType = "CrossTabs"
+                  Case 3
+                     sType = "CustomReports"
+                  Case 4
+                     sType = "DataTransfer"
+                  Case 5
+                     sType = "Export"
+                  Case 6
+                     sType = "Filters"
+                  Case 7
+                     sType = "GlobalAdd"
+                  Case 8
+                     sType = "GlobalUpdate"
+                  Case 9
+                     sType = "GlobalDelete"
+                  Case 10
+                     sType = "Import"
+                  Case 11
+                     sType = "MailMerge"
+                  Case 12
+                     sType = "Picklists"
+                  Case 13
+                     sType = "CalendarReports"
+                  Case 14
+                     sType = "Labels"
+                  Case 15
+                     sType = "LabelDefinition"
+                  Case 16
+                     sType = "MatchReports"
+                  Case 17
+                     sType = "CareerProgression"
+                  Case 18
+                     sType = "EmailGroups"
+                  Case 19
+                     sType = "RecordProfile"
+                  Case 20
+                     sType = "SuccessionPlanning"
+                  Case 21
+                     sType = "NineBoxGrid"
+                  Case 22
+                     sType = "TalentReports"
+                  Case 23
+                     sType = "orgreporting"
 
-					End Select
+               End Select
 
-					sControlName = "txtOwner_" & sType
-					sTemp = "onlymine " & sType
+               sControlName = "txtOwner_" & sType
+               sTemp = "onlymine " & sType
 
-					Dim controlValue As String = Request.Form(sControlName)
-					If controlValue <> "0" And controlValue <> "1" Then Throw New Exception("The user configuration settings could not be saved.")
+               Dim controlValue As String = Request.Form(sControlName)
+               If controlValue <> "0" And controlValue <> "1" Then Throw New Exception("The user configuration settings could not be saved.")
 
-					objDatabase.SaveUserSetting("defsel", sTemp, controlValue)
+               objDatabase.SaveUserSetting("defsel", sTemp, controlValue)
 
-				Next
+            Next
 
-				'--------------------------------------------
-				' Save the Utility Warning settings.
-				'--------------------------------------------
-				For i = 0 To 4
+            '--------------------------------------------
+            ' Save the Utility Warning settings.
+            '--------------------------------------------
+            For i = 0 To 4
 					Select Case i
 						Case 0
 							sType = "DataTransfer"
