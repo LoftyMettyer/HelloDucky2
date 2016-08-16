@@ -40,11 +40,12 @@ Namespace Classes
       Public Property IsRepeated As Boolean
 
       ''Organisation Columns Properties
-      Public Property ColumnID As Integer
+      Public Property ColumnID As Integer = 0
       Public Property Prefix As String
       Public Property Suffix As String
-      Public Property FontSize As Integer
-      Public Property Height As Integer
+      Public Property FontSize As Integer = 11
+      Public Property Height As Integer = 1
+      Public Property DefaultHeight As Integer = 1
       'Public Property ConcatenateWithNext As Boolean
 
       ''' <summary>

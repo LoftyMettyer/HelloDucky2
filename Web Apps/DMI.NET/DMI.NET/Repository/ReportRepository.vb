@@ -2232,6 +2232,9 @@ Namespace Repository
 
             If action = UtilityActionType.New Then
                objModel.Owner = _username
+               If objModel.BaseViewList.Count > 0 Then
+                  objModel.BaseViewID = objModel.BaseViewList(0).id
+               End If
             Else
 
                objModel.ID = ID
@@ -2346,6 +2349,9 @@ Namespace Repository
                 .ID = .ColumnID,
                 .ViewID = CInt(objRow("ViewID")),
                 .Name = objRow("name").ToString,
+                .Heading = objRow("Heading").ToString,
+                .TableID = CInt(objRow("TableID")),
+                .DataType = CType(objRow("DataType"), ColumnDataType),
                 .Prefix = HttpUtility.HtmlEncode(objRow("Prefix").ToString),
                 .Suffix = HttpUtility.HtmlEncode(objRow("Suffix").ToString),
                 .FontSize = CInt(objRow("FontSize")),

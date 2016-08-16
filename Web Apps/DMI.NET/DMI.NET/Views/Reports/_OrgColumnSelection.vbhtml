@@ -49,7 +49,14 @@
       </div>
    </div>
    <div class="tablerow coldefinition">
-      <div class="tablecell"></div>
+      <div class="tablecell">
+         <fieldset>
+            <div id="OrganisationPreview" class="OrganisationReportsOnly">
+               <br />
+               <input type="button" id="btnOrgPreview" class="enableSaveButtonOnClick" value="Preview" onclick="ShowPreview();" />
+            </div>
+         </fieldset>
+      </div>
       <div class="tablecell"></div>
       <div class="tablecell">
          <fieldset>
@@ -97,6 +104,41 @@
 
 <script type="text/javascript">
 
+   $('#divPopupPreview').dialog({
+      overflow: true,
+      autoOpen: false,
+      width: 'auto',
+      height: 'auto',
+      resizable: false,
+      modal: true,
+      title: 'Organisation Report Preview'
+   });
+
+   function ShowPreview() {
+      var gridData = $('#SelectedColumns').jqGrid('getRowData');
+      var postData = {
+         ReportID: "@Model.ID",
+         GridData: JSON.stringify(gridData),
+         __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+      };
+
+      $.ajax({
+         type: "POST",
+         url: "Reports/ValidateSelectedColumn",
+         data: postData,
+         success: function (result) {
+            OpenHR.OpenDialog("Reports/showPreviewPopup", "divPopupPreview", postData, '400', '400');
+         },
+         error: function (xhr, status, error) {
+            var err = "Error " + " " + status + " " + error;
+            if (xhr.responseText && xhr.responseText[0] == "{")
+               err = JSON.parse(xhr.responseText).ErrorMessage;
+
+            OpenHR.modalMessage(err);
+         }
+      });
+   }
+
    function removeSelectedColumnsFromAvailable() {
       //Find row in Sort Order columns to see if Value On Change or Suppress Repeated Values is ticked.
       var SelectedRows = $("#SelectedColumns").getRowData();
@@ -123,7 +165,7 @@
       }
       ClearConcatenateCheckbox();
       
-   }
+      }
 
    function ChangeColumnTableView(target) {
       getAvailableTableViewColumns();
@@ -166,9 +208,9 @@
    }
 
    function getDatarowFromAvailable(index) {
-      
+
       var datarow = $("#AvailableColumns").getRowData(index);
-      datarow.Heading = datarow.Name.substr(0, 50).replace(/_/g, ' ');
+      datarow.Heading = datarow.Name;
       datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
       datarow.ReportType = '@Model.ReportType';
       datarow.ReportID = '@Model.ID';
@@ -246,7 +288,7 @@
       $('#AvailableColumns').jqGrid('clearGridData');
 
       refreshcolumnPropertiesPanel();
-      
+
    }
 
    function requestRemoveAllSelectedColumns() {
@@ -529,6 +571,7 @@
       button_disable($("#btnColumnRemoveAll")[0], !bRowSelected || isReadOnly);
       button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly || (rowCount > 1));
       button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly || (rowCount > 1));
+      button_disable($("#btnOrgPreview")[0], !bRowSelected || isReadOnly);
    }
 
    function updateColumnsSelectedGrid() {
@@ -551,7 +594,7 @@
       dataRow.Prefix = $("#SelectedColumnPrefix").val();
 
       dataRow.IsGroupWithNext = $("#SelectedColumnIsConcatenateWithNext").is(':checked');
-      dataRow.Heading = encodeURI($("#SelectedColumnHeading").val());
+      dataRow.Heading = $("#SelectedColumnHeading").val();
 
       $('#SelectedColumns').jqGrid('setRowData', rowId, dataRow);
 

@@ -35,6 +35,7 @@ Namespace App_Start
             "~/Scripts/jquery.maskedinput_MODIFIED.js",
             "~/Scripts/jquery.mousewheel.js",
             "~/Scripts/jquery.numeric.js",
+            "~/Scripts/jquery.dotdotdot.js",
             "~/Scripts/jquery/jOrgChart/prettify.js",
             "~/Scripts/jquery/jOrgChart/jquery.jOrgChart.js",
             "~/Scripts/officebar/jquery.officebar_MODIFIED.js"))

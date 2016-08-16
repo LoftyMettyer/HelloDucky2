@@ -84,6 +84,7 @@ BEGIN
 	SELECT   r.ColumnID	AS [ID],					
 			   r.ViewID	   AS [ViewID],		
 			   c.tableID,
+            c.columnName AS [Heading],
 			   CASE
 					   WHEN r.ViewID > 0 THEN	v.ViewName + '.' + c.columnName
 					   WHEN r.ViewID = 0 THEN	t.tableName + '.' + c.columnName			

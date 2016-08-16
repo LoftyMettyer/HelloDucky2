@@ -1364,6 +1364,7 @@
     <Content Include="Scripts\jquery-2.1.4.min.js" />
     <Content Include="Scripts\jquery-ui-1.11.4.js" />
     <Content Include="Scripts\jquery-ui-1.11.4.min.js" />
+    <Content Include="Scripts\jquery.dotdotdot.js" />
     <Content Include="Scripts\jquery.gridster.js" />
     <Content Include="Scripts\jquery.gridster.min.js" />
     <Content Include="Scripts\jquery.gridster.with-extras.js" />
@@ -1887,6 +1888,8 @@
     <Content Include="Views\Reports\_OrgDefinition.vbhtml" />
     <Content Include="Views\Reports\_OrgFilterSelect.vbhtml" />
     <Content Include="Views\Reports\_OrgColumnSelection.vbhtml" />
+    <Content Include="Views\Reports\_PreviewOrganisation.vbhtml" />
+    <Content Include="Views\Reports\_PreviewOrganisationColumn.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

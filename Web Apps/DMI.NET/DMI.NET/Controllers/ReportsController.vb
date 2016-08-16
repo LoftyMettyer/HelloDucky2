@@ -1257,6 +1257,80 @@ Namespace Controllers
 
       End Sub
 
+      <HttpPost>
+      <ValidateAntiForgeryToken>
+      Function ValidateSelectedColumn(ReportID As Integer, GridData As String) As JsonResult
+
+         Dim isValidSelection = True
+
+         Try
+            If GridData IsNot Nothing Then
+               If GridData.Length > 0 Then
+                  Dim deserializer = New JavaScriptSerializer()
+                  Dim columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(GridData)
+
+                  ' Check the column font size has value in range.
+                  For Each columnItem As ReportColumnItem In columns
+                     If (columnItem.FontSize < 6) AndAlso (columnItem.FontSize > 30) AndAlso (columnItem.FontSize = Nothing) Then
+                        isValidSelection = False
+                        Response.StatusCode = System.Net.HttpStatusCode.BadRequest
+                        Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = "Error", .ErrorMessage = "The '" & columnItem.Name & "' column does not have valid font size."}
+                        Return Json(data)
+                        Exit For
+                     End If
+
+                     If (columnItem.DataType = -3) AndAlso (columnItem.Height < 3) AndAlso (columnItem.Height > 6) AndAlso (columnItem.Height = Nothing) Then
+                        isValidSelection = False
+                        Response.StatusCode = System.Net.HttpStatusCode.BadRequest
+                        Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = "Error", .ErrorMessage = "The '" & columnItem.Name & "' column does not have valid Height (Rows)."}
+                        Return Json(data)
+                        Exit For
+                     End If
+
+                     If (columnItem.DataType <> -3) AndAlso (columnItem.Height < 1) AndAlso (columnItem.Height > 6) AndAlso (columnItem.Height = Nothing) Then
+                        isValidSelection = False
+                        Response.StatusCode = System.Net.HttpStatusCode.BadRequest
+                        Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = "Error", .ErrorMessage = "The '" & columnItem.Name & "' column does not have valid Height (Rows)."}
+                        Return Json(data)
+                        Exit For
+                     End If
+                  Next
+
+               End If
+            End If
+
+         Catch ex As Exception
+            Response.StatusCode = System.Net.HttpStatusCode.BadRequest
+            Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = "Error", .ErrorMessage = ex.Message}
+            Return Json(data)
+         End Try
+
+         Return Json(isValidSelection)
+      End Function
+
+      <HttpPost>
+      <ValidateAntiForgeryToken>
+      Function ShowPreviewPopup(ReportID As Integer, GridData As String) As ActionResult
+
+         Try
+
+            Dim objReport = objReportRepository.RetrieveOrganisationReport(ReportID)
+            Dim objModel As New OrganisationReportModel
+
+            If GridData IsNot Nothing Then
+               If GridData.Length > 0 Then
+                  Dim deserializer = New JavaScriptSerializer()
+                  Dim columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(GridData)
+                  objModel.PreviewColumnList = objReport.ProcessColumnsForPreview(columns)
+                  objModel.BaseViewID = objReport.BaseViewID
+               End If
+            End If
+            Return PartialView("_PreviewOrganisation", objModel)
+         Catch ex As Exception
+
+         End Try
+      End Function
+
    End Class
 
 End Namespace

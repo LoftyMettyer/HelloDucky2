@@ -40,7 +40,9 @@ End Code
                Html.RenderPartial("_OrgColumnSelection", Model)
             End Code
          </div>
+          <div id="divPopupPreview" style="display: none;"></div>
       </div>
+
       @Html.AntiForgeryToken()
                End Using
 
