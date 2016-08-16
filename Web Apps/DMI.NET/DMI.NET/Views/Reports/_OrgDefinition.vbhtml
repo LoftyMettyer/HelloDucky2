@@ -3,6 +3,7 @@
 @Imports DMI.NET.Models
 @Inherits System.Web.Mvc.WebViewPage(Of OrganisationReportModel)
 @Html.HiddenFor(Function(m) m.ID, New With {.id = "txtReportID"})
+@Html.HiddenFor(Function(m) m.Timestamp)
 @Html.HiddenFor(Function(m) m.ReportType, New With {.id = "txtReportType"})
 @Html.HiddenFor(Function(m) m.ActionType)
 @Html.HiddenFor(Function(m) m.ValidityStatus)

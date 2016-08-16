@@ -8,7 +8,7 @@
 	@psAccess					varchar(MAX),
 	@psFilterDef				varchar(MAX),
 	@psColumns					varchar(MAX),
-	@piID						integer					OUTPUT
+	@piID						   integer			OUTPUT
 	
 )
 AS
@@ -17,24 +17,25 @@ BEGIN
 	SET NOCOUNT ON;
 
 	DECLARE	@sTemp					varchar(MAX),
-			@sColumnDefn			varchar(MAX),
-			@sColumnParam			varchar(MAX),
-			@iColumnID				integer,
-			@sPrefix				varchar(50),
-			@sSuffix				varchar(50),
-			@iFontSize				integer,
-			@iHeight				integer,
-			@iDP					integer,
+			@sColumnDefn			   varchar(MAX),
+			@sColumnParam			   varchar(MAX),
+			@iColumnID				   integer,
+			@iViewID				      integer,
+			@sPrefix				      varchar(50),
+			@sSuffix				      varchar(50),
+			@iFontSize				   integer,
+			@iHeight				      integer,
+			@iDP					      integer,
 			@fConcatenateWithNext	bit,
-			@iCount					integer,
-			@fIsNew					bit,
-			@sGroup					varchar(255),
-			@sAccess				varchar(MAX),
-			@sTempFilter			varchar(MAX),
-			@sFilterParam			varchar(MAX),
-			@iFieldID				integer,
-			@iOperator				integer,
-			@sValue					varchar(Max);
+			@iCount					   integer,
+			@fIsNew					   bit,
+			@sGroup					   varchar(255),
+			@sAccess				      varchar(MAX),
+			@sTempFilter			   varchar(MAX),
+			@sFilterParam			   varchar(MAX),
+			@iFieldID				   integer,
+			@iOperator				   integer,
+			@sValue					   varchar(Max);
 
 			DECLARE	@outputTable table (id int NOT NULL);
 
@@ -107,7 +108,8 @@ BEGIN
 		SET @iHeight = 0;
 		Set @fConcatenateWithNext = 0;
 		SET @iCount = 0;
-		
+		SET @iViewID = 0;
+
 		WHILE LEN(@sColumnDefn) > 0
 		BEGIN
 			IF CHARINDEX('||', @sColumnDefn) > 0
@@ -128,12 +130,13 @@ BEGIN
 			IF @iCount = 4 SET @iDP = convert(integer, @sColumnParam);
 			IF @iCount = 5 SET @iHeight = convert(integer, @sColumnParam);
 			IF @iCount = 6 SET @fConcatenateWithNext = convert(bit, @sColumnParam);
+			IF @iCount = 7 SET @iViewID = convert(integer, @sColumnParam);
 
 			SET @iCount = @iCount + 1;
 		END
 
-		INSERT ASRSysOrganisationColumns (OrganisationID, ColumnID, Prefix, Suffix, FontSize, Decimals, Height, ConcatenateWithNext)
-			VALUES (@piID, @iColumnID, @sPrefix, @sSuffix, @iFontSize, @iDP, @iHeight, @fConcatenateWithNext);
+		INSERT ASRSysOrganisationColumns (OrganisationID,ViewID, ColumnID, Prefix, Suffix, FontSize, Decimals, Height, ConcatenateWithNext)
+			VALUES (@piID, @iViewID,@iColumnID, @sPrefix, @sSuffix, @iFontSize, @iDP, @iHeight, @fConcatenateWithNext);
 
 	END
 
@@ -258,5 +261,4 @@ BEGIN
 			WHERE utilID = @piID AND type = 39;
 		END
 	END
-
 END

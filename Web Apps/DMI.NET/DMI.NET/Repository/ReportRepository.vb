@@ -2344,6 +2344,7 @@ Namespace Repository
                Dim objItem As New ReportColumnItem() With {
                 .ColumnID = CInt(objRow("ID")),
                 .ID = .ColumnID,
+                .ViewID = CInt(objRow("ViewID")),
                 .Name = objRow("name").ToString,
                 .Prefix = HttpUtility.HtmlEncode(objRow("Prefix").ToString),
                 .Suffix = HttpUtility.HtmlEncode(objRow("Suffix").ToString),
@@ -2427,8 +2428,8 @@ Namespace Repository
 
          Dim sColumns As String = ""
          For Each objItem In objColumns
-            sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}**" _
-                                       , objItem.ColumnID, HttpUtility.HtmlEncode(objItem.Prefix), HttpUtility.HtmlEncode(objItem.Suffix), objItem.FontSize, objItem.Decimals, objItem.Height, objItem.IsGroupWithNext)
+            sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}**" _
+                                       , objItem.ColumnID, HttpUtility.HtmlEncode(objItem.Prefix), HttpUtility.HtmlEncode(objItem.Suffix), objItem.FontSize, objItem.Decimals, objItem.Height, objItem.IsGroupWithNext, objItem.ViewID)
          Next
 
          Return sColumns

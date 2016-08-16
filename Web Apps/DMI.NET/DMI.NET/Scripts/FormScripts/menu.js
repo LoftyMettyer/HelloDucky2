@@ -1110,9 +1110,9 @@ function menu_MenuClick(sTool) {
 					toggle_Leaf(sTool);
 					return false;
 				}
-
+				
 	hasChanged = menu_saveChanges(sToolName, true, false);
-	if (hasChanged == 0) { // Prompt for navigation
+	if (hasChanged == 0) { // Prompt for navigation	  
 
 		if (sToolName.substr(0, 7) == "mnutool") {
 
@@ -1158,7 +1158,7 @@ function menu_MenuClick(sTool) {
 
 function saveChangesPrompt(sToolName, followonfunction) {
 
-	var hasChanged = menu_saveChanges(sToolName, true, false);
+   var hasChanged = menu_saveChanges(sToolName, true, false);  
 	if (hasChanged === 0) { // Prompt for navigation
 		OpenHR.modalPrompt(GetPromptMessage(), 1, "Confirm").then(function (answer) {
 			if (answer === 1) { // OK			
@@ -2465,7 +2465,7 @@ function menu_enableFindMenu() {
 	}
 }
 
-function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
+function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {  
 	// Prompt the user to save changes if required.
 	var iResult;
 	var sCurrentPage;
@@ -2558,11 +2558,12 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	}
 
 	else if ((sCurrentPage == "UTIL_DEF_CUSTOMREPORTS") ||
-					(sCurrentPage == "UTIL_DEF_CROSSTABS") ||
-					(sCurrentPage == "UTIL_DEF_9BOXGRID") ||
-					(sCurrentPage == "UTIL_DEF_CALENDARREPORT") ||
-    		  (sCurrentPage == "UTIL_DEF_TALENTREPORT") ||
-					(sCurrentPage == "UTIL_DEF_MAILMERGE")) {
+				(sCurrentPage == "UTIL_DEF_CROSSTABS") ||
+				(sCurrentPage == "UTIL_DEF_9BOXGRID") ||
+				(sCurrentPage == "UTIL_DEF_CALENDARREPORT") ||
+    		   (sCurrentPage == "UTIL_DEF_TALENTREPORT") ||
+				(sCurrentPage == "UTIL_DEF_MAILMERGE") ||
+	         (sCurrentPage == "UTIL_DEF_ORGANISATIONREPORT")) {
 		iResult = saveReportDefinition(true);
 		}
 

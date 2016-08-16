@@ -762,8 +762,8 @@
          CanConcatenate = false;
       }
 
-      $(".canGroupWithNext *").prop("disabled", !CanConcatenate);
-      $("#SelectedColumnPrefix").prop("disabled", isPhotograph);
+      $(".canGroupWithNext *").prop("disabled", !CanConcatenate);      
+      $("#SelectedColumnPrefix").prop("disabled", PreviousRowConcatenate || isPhotograph);
       $("#SelectedColumnSuffix").prop("disabled", isPhotograph);
       $("#SelectedColumnHeight").prop("disabled", PreviousRowConcatenate);
       $("#SelectedColumnFontSize").prop("disabled", PreviousRowConcatenate || isPhotograph);

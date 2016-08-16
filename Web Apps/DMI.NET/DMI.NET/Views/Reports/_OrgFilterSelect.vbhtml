@@ -46,26 +46,26 @@
                <input type="text" id="txtConditionLogic" Class="text textdisabled" name="selectConditionLogic" disabled="disabled" value="is equal to">
 
                <select id="selectConditionDate" name="selectConditionDate" Class="combo" style="width: 100%; left: 0; position: absolute; top: 0; visibility: hidden;">
-                  <option value="1">Is equal To</option>
-                  <option value="2">Is Not equal To</option>
-                  <option value="5"> after</option>
-                  <option value="6"> before</option>
-                  <option value="4">Is equal To Or after</option>
-                  <option value="3">Is equal To Or before</option>
+                  <option value="1">is equal to</option>
+                  <option value="2">is NOT equal to</option>
+                  <option value="5">after</option>
+                  <option value="6">before</option>
+                  <option value="4">is equal to or after</option>
+                  <option value="3">is equal to or before</option>
                </select>
 
                <select id="selectConditionNum" name="selectConditionNum" Class="combo" style="width: 100%; left: 0; position: absolute; top: 0; visibility: hidden;">
-                  <option value="1">Is equal To</option>
-                  <option value="2">Is Not equal To</option>
-                  <option value="5">Is greater than</option>
-                  <option value="4">Is greater than Or equal To</option>
-                  <option value="6">Is less than</option>
-                  <option value="3">Is less than Or equal To</option>
+                  <option value="1">is equal to</option>
+                  <option value="2">is NOT equal to</option>
+                  <option value="5">is greater than</option>
+                  <option value="4">is greater than or equal to</option>
+                  <option value="6">is less than</option>
+                  <option value="3">is less than or equal to</option>
                </select>
 
                <select id="selectConditionChar" name="selectConditionChar" Class="combo" style="width: 100%; left: 0; position: absolute; top: 0; visibility: hidden;">
-                  <option value="1">Is equal To</option>
-                  <option value="2">Is Not equal To</option>
+                  <option value="1">is equal to</option>
+                  <option value="2">is Not equal to</option>
                   <option value="7"> contains</option>
                   <option value="8"> does Not contain</option>
                </select>
@@ -105,9 +105,9 @@
       colMode.push({ name: 'FieldDataType', hidden: true });
 
       colNames.push('ID');
-      colNames.push('FieldName');
-      colNames.push('OperatorName');
-      colNames.push('FilterValue');
+      colNames.push('Field');
+      colNames.push('Operator');
+      colNames.push('Value');
       colNames.push('FieldID');
       colNames.push('OperatorID');
       colNames.push('FieldDataType');
@@ -156,11 +156,11 @@
          }).jqGrid('hideCol', 'cb');
       }
 
-      if ($("#ActionType").val() === '@UtilityActionType.Edit') {
+      if ( $("#ActionType").val() === '@UtilityActionType.Edit' || $("#ActionType").val() == '@UtilityActionType.Copy' ) {
          var datastr = '@Model.FiltersFieldList.ToJsonResult';
          GetExistingFilterDefinition(datastr);
       }
-
+      FilterSelect_refreshControls();
    })
 
 
@@ -525,7 +525,7 @@
          }
       }
 
-      if (fOK == true) {        
+      if (fOK == true) {
          var items = sAddString.split("\t");
          $("#DBGridFilterRecords").addRowData(
 					$("#DBGridFilterRecords").getGridParam("reccount") + 1, //ID
@@ -545,7 +545,7 @@
 
          FilterSelect_refreshControls();
          $("#selectColumn").focus();
-      }     
+      }
    }
 
    function FilterSelect_removeAll() {
@@ -599,14 +599,14 @@
       FilterSelect_refreshControls();
    }
 
-   
 
-   function FilterSelect_refreshControls() {
 
+   function FilterSelect_refreshControls() {     
+     
       if ($("#DBGridFilterRecords").getGridParam("reccount") > 0) {
          button_disable($("#btnRemoveAll")[0], false);
 
-         if ($('#DBGridFilterRecords').jqGrid('getGridParam', 'selrow') != null && $('#DBGridFilterRecords').jqGrid('getGridParam', 'selrow').length > 0) {
+         if ($('#DBGridFilterRecords').jqGrid('getGridParam', 'selrow') != null && $('#DBGridFilterRecords').jqGrid('getGridParam', 'selrow').length > 0) {                      
             button_disable($("#btnRemove")[0], false);
          }
          else {
@@ -617,6 +617,9 @@
          button_disable($("#btnRemoveAll")[0], true);
          button_disable($("#btnRemove")[0], true);
       }
+
+      var topID = $("#DBGridFilterRecords").getDataIDs()[0]
+      $("#DBGridFilterRecords").jqGrid("setSelection", topID);
    }
 
    function GetExistingFilterDefinition(sFilterDef)
@@ -732,8 +735,8 @@
                      editurl: 'clientArray'
                   }).jqGrid('hideCol', 'cb');
                }
-              
-               var items = sAddString.split("\t");              
+
+               var items = sAddString.split("\t");
                $("#DBGridFilterRecords").addRowData(
                      $("#DBGridFilterRecords").getGridParam("reccount") + 1, //ID
                      { //Data

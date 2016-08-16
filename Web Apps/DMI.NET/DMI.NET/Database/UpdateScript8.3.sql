@@ -61329,12 +61329,12 @@ BEGIN
 
 	DECLARE @psErrorMsg				varchar(MAX) = '',	
 			@psBaseViewName			varchar(255) = '',			
-			@pfBaseViewHidden		bit = 0,			
-			@psWarningMsg			varchar(255) = '',
-			@psReportOwner			varchar(255),
-			@psReportName			varchar(255),
-			@piBaseViewID			integer = 0,			
-			@piCategoryID			integer;
+			@pfBaseViewHidden		   bit = 0,			
+			@psWarningMsg			   varchar(255) = '',
+			@psReportOwner			   varchar(255),
+			@psReportName			   varchar(255),
+			@piBaseViewID			   integer = 0,			
+			@piCategoryID			   integer;
 
 	EXEC [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT;
 
@@ -61375,7 +61375,7 @@ BEGIN
 	WHERE objectid = @piReportID AND objecttype = 39;
 
 	-- Definition
-	SELECT    @psReportName AS [Name],
+	SELECT  @psReportName AS [Name],
 			  @piBaseViewID AS [BaseViewID],
 			  @piCategoryID AS [CategoryID], 
 			  m.[description], 
@@ -61385,31 +61385,35 @@ BEGIN
 	WHERE m.ID = @piReportID;
 
 	---- Filter
-	SELECT r.OrganisationID AS [OrganisationID],
-		--convert(varchar(MAX), t.tableName + '.' + c.columnName) AS [name],
-		r.FieldID AS [FieldID],
-		r.Operator  AS Operator,
-		r.Value AS [Value],
-		c.ColumnName AS [FieldName],
-		c.datatype  AS [FieldDataType]		
+	SELECT r.OrganisationID    AS [OrganisationID],		
+		    r.FieldID           AS [FieldID],
+		    r.Operator          AS [Operator],
+		    r.Value             AS [Value],
+		    c.ColumnName        AS [FieldName],
+		    c.datatype          AS [FieldDataType]		
 	FROM ASRSysOrganisationReportFilters r
 	INNER JOIN ASRSysColumns c ON r.FieldID = c.columnId
-	WHERE r.OrganisationID	= @piReportID;		
+	WHERE r.OrganisationID	= @piReportID;	
 
 	-- Columns
-	SELECT r.ColumnID AS [ID],		
-		c.tableID,
-		t.tableName + '.' + c.columnName AS [name],		
-		c.DataType,
-		r.Prefix AS [Prefix],
-		r.Suffix AS [Suffix],
-		r.FontSize AS [FontSize],
-		r.Decimals AS [Decimals],
-		r.Height AS [Height],
-		r.ConcatenateWithNext AS [ConcatenateWithNext]		
+	SELECT   r.ColumnID	AS [ID],					
+			   r.ViewID	   AS [ViewID],		
+			   c.tableID,
+			   CASE
+					   WHEN r.ViewID > 0 THEN	v.ViewName + '.' + c.columnName
+					   WHEN r.ViewID = 0 THEN	t.tableName + '.' + c.columnName			
+			   END			AS [name],					
+			   c.DataType,
+			   r.Prefix	   AS [Prefix],
+			   r.Suffix	   AS [Suffix],
+			   r.FontSize	AS [FontSize],
+			   r.Decimals	AS [Decimals],
+			   r.Height	   AS [Height],
+			   r.ConcatenateWithNext AS [ConcatenateWithNext]				
 	FROM ASRSysOrganisationColumns r	
 	INNER JOIN ASRSysColumns c ON r.ColumnID = c.columnId		
 	INNER JOIN ASRSysTables t ON c.tableID = t.tableID		
+	LEFT JOIN ASRSysViews v ON r.ViewID = v.ViewID
 	WHERE r.OrganisationID = @piReportID;
 
 END
@@ -61560,7 +61564,7 @@ CREATE PROCEDURE [dbo].[spASRIntSaveOrganisationReport] (
 	@psAccess					varchar(MAX),
 	@psFilterDef				varchar(MAX),
 	@psColumns					varchar(MAX),
-	@piID						integer					OUTPUT
+	@piID						   integer			OUTPUT
 	
 )
 AS
@@ -61569,24 +61573,25 @@ BEGIN
 	SET NOCOUNT ON;
 
 	DECLARE	@sTemp					varchar(MAX),
-			@sColumnDefn			varchar(MAX),
-			@sColumnParam			varchar(MAX),
-			@iColumnID				integer,
-			@sPrefix				varchar(50),
-			@sSuffix				varchar(50),
-			@iFontSize				integer,
-			@iHeight				integer,
-			@iDP					integer,
+			@sColumnDefn			   varchar(MAX),
+			@sColumnParam			   varchar(MAX),
+			@iColumnID				   integer,
+			@iViewID				      integer,
+			@sPrefix				      varchar(50),
+			@sSuffix				      varchar(50),
+			@iFontSize				   integer,
+			@iHeight				      integer,
+			@iDP					      integer,
 			@fConcatenateWithNext	bit,
-			@iCount					integer,
-			@fIsNew					bit,
-			@sGroup					varchar(255),
-			@sAccess				varchar(MAX),
-			@sTempFilter			varchar(MAX),
-			@sFilterParam			varchar(MAX),
-			@iFieldID				integer,
-			@iOperator				integer,
-			@sValue					varchar(Max);
+			@iCount					   integer,
+			@fIsNew					   bit,
+			@sGroup					   varchar(255),
+			@sAccess				      varchar(MAX),
+			@sTempFilter			   varchar(MAX),
+			@sFilterParam			   varchar(MAX),
+			@iFieldID				   integer,
+			@iOperator				   integer,
+			@sValue					   varchar(Max);
 
 			DECLARE	@outputTable table (id int NOT NULL);
 
@@ -61659,7 +61664,8 @@ BEGIN
 		SET @iHeight = 0;
 		Set @fConcatenateWithNext = 0;
 		SET @iCount = 0;
-		
+		SET @iViewID = 0;
+
 		WHILE LEN(@sColumnDefn) > 0
 		BEGIN
 			IF CHARINDEX('||', @sColumnDefn) > 0
@@ -61680,12 +61686,13 @@ BEGIN
 			IF @iCount = 4 SET @iDP = convert(integer, @sColumnParam);
 			IF @iCount = 5 SET @iHeight = convert(integer, @sColumnParam);
 			IF @iCount = 6 SET @fConcatenateWithNext = convert(bit, @sColumnParam);
+			IF @iCount = 7 SET @iViewID = convert(integer, @sColumnParam);
 
 			SET @iCount = @iCount + 1;
 		END
 
-		INSERT ASRSysOrganisationColumns (OrganisationID, ColumnID, Prefix, Suffix, FontSize, Decimals, Height, ConcatenateWithNext)
-			VALUES (@piID, @iColumnID, @sPrefix, @sSuffix, @iFontSize, @iDP, @iHeight, @fConcatenateWithNext);
+		INSERT ASRSysOrganisationColumns (OrganisationID,ViewID, ColumnID, Prefix, Suffix, FontSize, Decimals, Height, ConcatenateWithNext)
+			VALUES (@piID, @iViewID,@iColumnID, @sPrefix, @sSuffix, @iFontSize, @iDP, @iHeight, @fConcatenateWithNext);
 
 	END
 
