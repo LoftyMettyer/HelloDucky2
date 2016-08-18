@@ -45,7 +45,8 @@ WHERE master..sysprocesses.spid = @@spid
 /* -------------------------------------- */
 /* Check SQL Server version compatibility */
 /* -------------------------------------- */
-SELECT @iSQLVersion = convert(int,convert(float,substring(@@version,charindex('-',@@version)+2,2)))
+SELECT @iSQLVersion = convert(numeric(3,1), convert(nvarchar(4), SERVERPROPERTY('ProductVersion')));
+
 IF (@iSQLVersion < 10)
 BEGIN
     Print '+--------------------------------------------------------------------------+'

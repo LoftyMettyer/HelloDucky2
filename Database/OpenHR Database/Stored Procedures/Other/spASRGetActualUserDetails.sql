@@ -10,7 +10,7 @@ BEGIN
 	DECLARE @iFound		int
 	DECLARE @sSQLVersion int
 
-	SET @sSQLVersion = convert(int,convert(float,substring(@@version,charindex('-',@@version)+2,2)))
+   SET @sSQLVersion = convert(numeric(3,1), convert(nvarchar(4), SERVERPROPERTY('ProductVersion')));
 
 	SELECT @iFound = COUNT(*) 
 	FROM sysusers usu 

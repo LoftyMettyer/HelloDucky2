@@ -1202,7 +1202,7 @@ Private Function CreateUDF_SQLVersion() As Boolean
     "RETURNS integer" & vbNewLine & _
     "AS" & vbNewLine & _
     "BEGIN" & vbNewLine & _
-    "  RETURN convert(int,convert(float,substring(@@version,charindex('-',@@version)+2,2)))" & vbNewLine & _
+    "  RETURN convert(numeric(3,1), convert(nvarchar(4), SERVERPROPERTY('ProductVersion')))" & vbNewLine & _
     "END"
 
   gADOCon.Execute sUDFSQL, , adExecuteNoRecords

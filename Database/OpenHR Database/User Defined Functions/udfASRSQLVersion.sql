@@ -1,8 +1,6 @@
-CREATE FUNCTION [dbo].[udfASRSQLVersion]
-	(
-	)
+CREATE FUNCTION [dbo].[udfASRSQLVersion]()
 	RETURNS integer
 	AS
 	BEGIN
-		RETURN convert(int,convert(float,substring(@@version,charindex('-',@@version)+2,2)))
+		RETURN convert(numeric(3,1), convert(nvarchar(4), SERVERPROPERTY('ProductVersion')))
 	END
