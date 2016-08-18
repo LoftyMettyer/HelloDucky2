@@ -5109,8 +5109,6 @@ ErrorTrap:
 End Function
 
 
-
-
 Public Function CreateSP_WorkflowWebFormValidation() As Boolean
 
   Const strSPName As String = "spASRSysWorkflowWebFormValidation"
@@ -5122,6 +5120,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
   Dim fOK As Boolean
   Dim iValueType As ExpressionValueTypes
   Dim iSQLDataType As SQLDataType
+  Dim strIdentifier As String
   
   On Error GoTo ErrorTrap
 
@@ -5243,6 +5242,8 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                           iValueType = giEXPRVALUE_NUMERIC
                       End Select
                       
+                      strIdentifier = Replace(recWorkflowElementItemEdit!Identifier, "'", "''")
+                      
                       Select Case iValueType
                         Case giEXPRVALUE_CHARACTER
                           strWebFormSQL = strWebFormSQL & _
@@ -5250,7 +5251,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                             String(3, vbTab) & "BEGIN" & vbNewLine & _
                             String(4, vbTab) & "INSERT INTO @messages" & vbNewLine & _
                             String(5, vbTab) & "([message], [failureType])" & vbNewLine & _
-                            String(4, vbTab) & "VALUES ('The ''" & recWorkflowElementItemEdit!Identifier & "'' item is mandatory.', 0)" & vbNewLine & _
+                            String(4, vbTab) & "VALUES ('The ''" & strIdentifier & "'' item is mandatory.', 0)" & vbNewLine & _
                             String(3, vbTab) & "END" & vbNewLine & vbNewLine
                         
                         Case giEXPRVALUE_NUMERIC
@@ -5261,14 +5262,14 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                             String(4, vbTab) & "BEGIN" & vbNewLine & _
                             String(5, vbTab) & "INSERT INTO @messages" & vbNewLine & _
                             String(6, vbTab) & "([message], [failureType])" & vbNewLine & _
-                            String(5, vbTab) & "VALUES ('The ''" & recWorkflowElementItemEdit!Identifier & "'' item is mandatory.', 0)" & vbNewLine & _
+                            String(5, vbTab) & "VALUES ('The ''" & strIdentifier & "'' item is mandatory.', 0)" & vbNewLine & _
                             String(4, vbTab) & "END" & vbNewLine & _
                             String(3, vbTab) & "END" & vbNewLine & _
                             String(3, vbTab) & "ELSE" & vbNewLine & _
                             String(3, vbTab) & "BEGIN" & vbNewLine & _
                             String(4, vbTab) & "INSERT INTO @messages" & vbNewLine & _
                             String(5, vbTab) & "([message], [failureType])" & vbNewLine & _
-                            String(4, vbTab) & "VALUES ('The ''" & recWorkflowElementItemEdit!Identifier & "'' item is mandatory.', 0)" & vbNewLine & _
+                            String(4, vbTab) & "VALUES ('The ''" & strIdentifier & "'' item is mandatory.', 0)" & vbNewLine & _
                             String(3, vbTab) & "END" & vbNewLine & vbNewLine
 
                         Case giEXPRVALUE_DATE
@@ -5278,7 +5279,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                             String(3, vbTab) & "BEGIN" & vbNewLine & _
                             String(4, vbTab) & "INSERT INTO @messages" & vbNewLine & _
                             String(5, vbTab) & "([message], [failureType])" & vbNewLine & _
-                            String(4, vbTab) & "VALUES ('The ''" & recWorkflowElementItemEdit!Identifier & "'' item is mandatory.', 0)" & vbNewLine & _
+                            String(4, vbTab) & "VALUES ('The ''" & strIdentifier & "'' item is mandatory.', 0)" & vbNewLine & _
                             String(3, vbTab) & "END" & vbNewLine & vbNewLine
                       End Select
                     End If
