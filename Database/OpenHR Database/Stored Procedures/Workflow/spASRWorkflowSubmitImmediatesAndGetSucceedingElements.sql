@@ -59,7 +59,7 @@ BEGIN
 	SET @iDEADLOCKERRORNUMBER = 1205;
 	SET @iMAXRETRIES = 5;
 					
-	SELECT @iSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2));
+   SELECT @iSQLVersion = dbo.udfASRSQLVersion();
 					
 	DECLARE @elements table
 	(

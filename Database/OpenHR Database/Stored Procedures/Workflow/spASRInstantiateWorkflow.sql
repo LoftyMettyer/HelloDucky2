@@ -49,8 +49,8 @@ CREATE PROCEDURE [dbo].[spASRInstantiateWorkflow]
 				@fSaveForLater			bit,
 				@fResult	bit;
 		
-			SELECT @iSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2));
-		
+   	   SET @iSQLVersion = dbo.udfASRSQLVersion();
+
 			DECLARE @succeedingElements table(elementID int);
 			DECLARE	@outputTable table (id int NOT NULL);
 		

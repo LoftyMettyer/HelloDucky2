@@ -49,9 +49,9 @@ CREATE PROCEDURE [dbo].[spASRMobileInstantiateWorkflow]
 				@iFailureFlows			integer,
 				@fSaveForLater			bit,
 				@fResult	bit;
-		
-			SELECT @iSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2));
-		
+			
+         SELECT @iSQLVersion = dbo.udfASRSQLVersion();
+
 			DECLARE @succeedingElements table(elementID int);
 			DECLARE	@outputTable table (id int NOT NULL);
 		
