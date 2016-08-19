@@ -71,10 +71,10 @@
                </div>
                <div class="formfieldfill fontsizeOnly">
                   <label for="SelectedColumnFontSize">Font Size :</label>
-                  <span><input type="number" class="selectFontSize" id="SelectedColumnFontSize" maxlength="2" onchange="updateColumnsSelectedGrid();" /></span>
+                  <span><input type="tel" class="selectFontSize" id="SelectedColumnFontSize" maxlength="2" onchange="updateColumnsSelectedGrid();" /></span>
                   <div class="formfieldfill HeightOnly">
                      <label for="SelectedColumnHeight"> &nbsp; Height (Rows) :</label>
-                     <span><input type="number" class="selectHeight" id="SelectedColumnHeight" maxlength="1" onchange="updateColumnsSelectedGrid();" /></span>
+                     <span><input type="tel" class="selectHeight" id="SelectedColumnHeight" maxlength="1" onchange="updateColumnsSelectedGrid();" /></span>
                   </div>
                </div>
                <div class="formfieldfill decimalsOnly">
@@ -891,5 +891,25 @@
             $(sender.target.id).focus();
          }
       });
+
+      $("#SelectedColumnFontSize").bind('keypress', function (event) {
+         var regex = new RegExp("^[0-9]+$");
+         var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+         // Keycode = 8(backspace), 9(tab), 46(delete) // Will work for firefox
+         if (!regex.test(key) && event.keyCode != 8 && event.keyCode != 9 && event.keyCode != 46 && event.keyCode != 39) {
+            event.preventDefault();
+            return false;
+         }
+      });
+
+      $("#SelectedColumnHeight").bind('keypress', function (event) {
+         var regex = new RegExp("^[0-9]+$");
+         var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+         if (!regex.test(key) && event.keyCode != 8 && event.keyCode != 9 && event.keyCode != 46 && event.keyCode != 39) {
+            event.preventDefault();
+            return false;
+         }
+      });
+
    });
 </script>
