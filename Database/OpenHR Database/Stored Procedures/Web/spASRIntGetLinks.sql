@@ -138,6 +138,7 @@ BEGIN
 			AND (id NOT IN (SELECT linkid 
 								FROM ASRSysSSIHiddenGroups
 								WHERE groupName = @sGroupName));
+
 	/* Remove any utility links from the temp table where the utility has been deleted or hidden from the current user.*/
 	/* Or if the user does not permission to run them. */	
 	DECLARE utilitiesCursor CURSOR LOCAL FAST_FORWARD FOR 
@@ -166,6 +167,7 @@ BEGIN
 								@sAccess	OUTPUT;
 			IF @sAccess = 'HD' 
 			BEGIN
+
 				/* Report/utility is hidden from the user. */
 				--HERE FOR CHARTs **************************************************************************************************************************************
 				IF @iElement_Type = 2
@@ -195,6 +197,7 @@ BEGIN
 								WHEN @iUtilType = 25 THEN 'WORKFLOW'
 								WHEN @iUtilType = 35 THEN 'NINEBOXGRID'
 								WHEN @iUtilType = 38 THEN 'TALENTREPORTS'
+								WHEN @iUtilType = 39 THEN 'ORGREPORTING'
 
 								ELSE ''
 							END
@@ -204,6 +207,7 @@ BEGIN
 					WHERE ASRSysPermissionItems.itemKey = 'RUN';
 					IF (@pfPermitted IS null) OR (@pfPermitted = 0)
 					BEGIN
+
 						/* User does not have system permission to run this type of report/utility. */
 						--HERE FOR CHARTS**************************************************************************************************************************************
 						IF @iElement_Type = 2
@@ -218,6 +222,7 @@ BEGIN
 					END
 				END
 			END
+
 			IF @fUtilOK = 1
 			BEGIN
 				/* Check if the user has read permission on the report/utility base table or any views on it. */
@@ -252,6 +257,15 @@ BEGIN
 					SELECT @iBaseTableID = MatchTableID
 					FROM ASRSysTalentReports WHERE ID = @iUtilID;
 				END
+
+			    IF @iUtilType = 39 -- Organisation Reports
+				BEGIN
+					SELECT @iBaseTableID = v.ViewTableID
+					FROM ASRSysOrganisationReport r
+						INNER JOIN ASRSysViews v ON v.ViewID = r.BaseViewID
+						WHERE r.ID = @iUtilID;
+				END
+
 				/* Not check required for reports/utilities without a base table.
 				OR reports/utilities based on the top-level table if the user has read permission on the current view. */
 				IF (@iBaseTableID > 0)
@@ -390,7 +404,6 @@ BEGIN
 	WHERE section = 'MODULE_WORKFLOW'		
 		AND settingKey = 'Param_URL';	
 	
-	
 	IF LEN(@sURL) = 0
 	BEGIN
 		DELETE FROM @Links
@@ -403,6 +416,7 @@ BEGIN
 			WHEN ASRSysSSIntranetLinks.utilityType = 17 THEN ASRSysCalendarReports.baseTable
 			WHEN ASRSysSSIntranetLinks.utilityType = 35 THEN ASRSysCrossTab.TableID
 			WHEN ASRSysSSIntranetLinks.utilityType = 38 THEN ASRSysTalentReports.MatchTableID
+			WHEN ASRSysSSIntranetLinks.utilityType = 39 THEN ASRSysOrganisationReport.BaseViewID
 			WHEN ASRSysSSIntranetLinks.utilityType = 25 THEN 0
 			ELSE null
 		END AS [baseTable],
@@ -419,6 +433,8 @@ BEGIN
 				ON ASRSysSSIntranetLinks.utilityID = ASRSysCustomReportsName.ID	AND ASRSysSSIntranetLinks.utilityType = 2
 			LEFT OUTER JOIN ASRSysTalentReports 
 				ON ASRSysSSIntranetLinks.utilityID = ASRSysTalentReports.ID AND ASRSysSSIntranetLinks.utilityType = 38
+			LEFT OUTER JOIN ASRSysOrganisationReport 
+				ON ASRSysSSIntranetLinks.utilityID = ASRSysOrganisationReport.ID AND ASRSysSSIntranetLinks.utilityType = 39
 			LEFT OUTER JOIN ASRSysColumns
 				ON ASRSysSSIntranetLinks.Chart_ColumnID = ASRSysColumns.columnId		
 			LEFT OUTER JOIN @Links tvL

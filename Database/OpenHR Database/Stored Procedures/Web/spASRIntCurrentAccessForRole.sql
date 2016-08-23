@@ -90,13 +90,19 @@ BEGIN
 		SET @sAccessTableName = 'ASRSysTalentReportAccess';
 		SET @sIDColumnName = 'ID';
  	END
-
     
 	IF (@piUtilityType = 20) /* Record Profile */
 	BEGIN
 		SET @sTableName = 'ASRSysRecordProfileName';
 		SET @sAccessTableName = 'ASRSysRecordProfileAccess';
 		SET @sIDColumnName = 'recordProfileID';
+ 	END
+
+	IF (@piUtilityType = 39) -- Organisation Report
+	BEGIN
+		SET @sTableName = 'ASRSysOrganisationReport';
+		SET @sAccessTableName = 'ASRSysOrganisationReportAccess';
+		SET @sIDColumnName = 'ID';
  	END
     
 	IF (@piUtilityType = 14) OR (@piUtilityType = 23) OR (@piUtilityType = 24) /* Match Report, Succession, Career */
