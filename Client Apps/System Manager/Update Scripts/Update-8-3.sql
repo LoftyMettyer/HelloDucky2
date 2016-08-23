@@ -1958,6 +1958,35 @@ END'
 
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - General Updates'
+/* ------------------------------------------------------- */
+
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRPostSystemSave]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRPostSystemSave];
+
+	EXEC sp_executesql N'CREATE PROCEDURE [dbo].[spASRPostSystemSave]
+		AS
+		BEGIN
+
+		   SET NOCOUNT ON;
+
+			IF OBJECT_ID(''ASRSysProtectsCache'') IS NOT NULL 
+				DELETE FROM ASRSysProtectsCache;
+
+					INSERT ASRSysProtectsCache ([ID], [Action], [Columns], [ProtectType], [UID])
+						SELECT p.ID, Action, Columns, ProtectType , p.uid
+							FROM sys.sysprotects p
+							INNER JOIN sys.sysobjects o ON o.id = p.id
+							WHERE o.xtype = ''V'' AND o.name NOT LIKE ''ASRSys%''
+							ORDER BY p.uid, name;
+
+		END';
+
+
+
+
 PRINT 'Final Step - Updating Versions'
 
 	EXEC spsys_setsystemsetting 'database', 'version', '8.3';

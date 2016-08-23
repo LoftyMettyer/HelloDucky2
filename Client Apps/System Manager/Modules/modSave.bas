@@ -2346,6 +2346,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
+  OutputError "Error Applying Post Save Processing"
   bOK = False
   GoTo TidyUpAndExit
 

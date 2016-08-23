@@ -2,11 +2,16 @@
 AS
 BEGIN
 
+   SET NOCOUNT ON;
+
 	IF OBJECT_ID('ASRSysProtectsCache') IS NOT NULL 
 		DELETE FROM ASRSysProtectsCache;
 
-	INSERT ASRSysProtectsCache 
-	SELECT ID, Action, Columns, ProtectType , uid
-       FROM sysprotects;
+			INSERT ASRSysProtectsCache ([ID], [Action], [Columns], [ProtectType], [UID])
+				SELECT p.ID, Action, Columns, ProtectType , p.uid
+					FROM sys.sysprotects p
+					INNER JOIN sys.sysobjects o ON o.id = p.id
+					WHERE o.xtype = 'V' AND o.name NOT LIKE 'ASRSys%'
+					ORDER BY p.uid, name;
 
 END
