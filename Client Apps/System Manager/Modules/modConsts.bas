@@ -261,6 +261,7 @@ Public Const gsPARAMETERKEY_REPORTSTO = "Param_FieldReportsTo"
 Public Const gsPARAMETERKEY_POSTALLOCATIONTABLE = "Param_TablePostAllocation"
 Public Const gsPARAMETERKEY_POSTALLOCSTARTDATE = "Param_FieldStartDate"
 Public Const gsPARAMETERKEY_POSTALLOCENDDATE = "Param_FieldEndDate"
+Public Const gsPARAMETERKEY_DISABLESIMPLEORGCHART = "Param_DisableSimpleChart"
 
 ' PAYROLL MODULE CONSTANTS
 Public Const gsMODULEKEY_ACCORD = "MODULE_ACCORD"

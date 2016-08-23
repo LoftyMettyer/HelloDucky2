@@ -39,35 +39,51 @@ Begin VB.Form frmPersonnelSetup
       _ExtentY        =   14843
       _Version        =   393216
       Style           =   1
+      Tab             =   2
       TabHeight       =   520
       TabCaption(0)   =   "&Personnel"
       TabPicture(0)   =   "frmPersonnelSetup.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraTableDefinition"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "C&areer Change"
       TabPicture(1)   =   "frmPersonnelSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraWorkingPattern"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraRegion"
-      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Hierarchy"
       TabPicture(2)   =   "frmPersonnelSetup.frx":0044
-      Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraPostAllocationTable"
+      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).Control(0)=   "fraHierarchyTable"
       Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraHierarchyTable"
+      Tab(2).Control(1)=   "fraPostAllocationTable"
       Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).ControlCount=   2
+      Tab(2).Control(2)=   "fraMisc"
+      Tab(2).Control(2).Enabled=   0   'False
+      Tab(2).ControlCount=   3
+      Begin VB.Frame fraMisc 
+         Caption         =   "Organisation :"
+         Height          =   960
+         Left            =   150
+         TabIndex        =   76
+         Top             =   4365
+         Width           =   5400
+         Begin VB.CheckBox chkDisableSimpleOrgChart 
+            Caption         =   "&Disable simple Organisation Chart"
+            Height          =   330
+            Left            =   135
+            TabIndex        =   37
+            Top             =   330
+            Width           =   3450
+         End
+      End
       Begin VB.Frame fraPostAllocationTable 
          Caption         =   "Post Allocation Table :"
          Enabled         =   0   'False
          Height          =   1860
-         Left            =   -74850
-         TabIndex        =   69
+         Left            =   150
+         TabIndex        =   70
          Top             =   2400
          Width           =   5400
          Begin VB.ComboBox cboPostAllocationTable 
@@ -108,7 +124,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Post Allocation Table :"
             Height          =   195
             Left            =   195
-            TabIndex        =   39
+            TabIndex        =   40
             Top             =   360
             Width           =   2040
          End
@@ -118,7 +134,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "End Date Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   65
+            TabIndex        =   66
             Top             =   1410
             Width           =   1785
          End
@@ -128,7 +144,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Start Date Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   70
+            TabIndex        =   71
             Top             =   1005
             Width           =   1875
          End
@@ -137,8 +153,8 @@ Begin VB.Form frmPersonnelSetup
          Caption         =   "Hierarchy Table :"
          Enabled         =   0   'False
          Height          =   1860
-         Left            =   -74850
-         TabIndex        =   64
+         Left            =   150
+         TabIndex        =   65
          Top             =   400
          Width           =   5400
          Begin VB.ComboBox cboHierarchyTable 
@@ -179,7 +195,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Identifying Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   68
+            TabIndex        =   69
             Top             =   1005
             Width           =   1905
          End
@@ -189,7 +205,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Hierarchy Table :"
             Height          =   195
             Left            =   195
-            TabIndex        =   67
+            TabIndex        =   68
             Top             =   360
             Width           =   1680
          End
@@ -199,7 +215,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Reports To Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   66
+            TabIndex        =   67
             Top             =   1410
             Width           =   1920
          End
@@ -209,7 +225,7 @@ Begin VB.Form frmPersonnelSetup
          Enabled         =   0   'False
          Height          =   2850
          Left            =   -74850
-         TabIndex        =   55
+         TabIndex        =   56
          Top             =   3345
          Width           =   5400
          Begin VB.ComboBox cboWorkingPattern 
@@ -273,7 +289,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Working Pattern Column :"
             Height          =   195
             Left            =   435
-            TabIndex        =   59
+            TabIndex        =   60
             Top             =   1980
             Width           =   2340
          End
@@ -283,7 +299,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Effective Date Column :"
             Height          =   195
             Left            =   435
-            TabIndex        =   58
+            TabIndex        =   59
             Top             =   2385
             Width           =   2205
          End
@@ -293,7 +309,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Working Pattern Column :"
             Height          =   195
             Left            =   435
-            TabIndex        =   57
+            TabIndex        =   58
             Top             =   765
             Width           =   2250
          End
@@ -303,7 +319,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Table :"
             Height          =   195
             Left            =   435
-            TabIndex        =   56
+            TabIndex        =   57
             Top             =   1575
             Width           =   990
          End
@@ -313,7 +329,7 @@ Begin VB.Form frmPersonnelSetup
          Enabled         =   0   'False
          Height          =   2850
          Left            =   -74850
-         TabIndex        =   50
+         TabIndex        =   51
          Top             =   400
          Width           =   5400
          Begin VB.ComboBox cboRegionEffectiveDate 
@@ -377,7 +393,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Table :"
             Height          =   195
             Left            =   435
-            TabIndex        =   54
+            TabIndex        =   55
             Top             =   1575
             Width           =   945
          End
@@ -387,7 +403,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Region Column :"
             Height          =   195
             Left            =   435
-            TabIndex        =   53
+            TabIndex        =   54
             Top             =   765
             Width           =   1710
          End
@@ -397,7 +413,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Effective Date Column :"
             Height          =   195
             Left            =   435
-            TabIndex        =   52
+            TabIndex        =   53
             Top             =   2385
             Width           =   2160
          End
@@ -407,7 +423,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Region Column :"
             Height          =   195
             Left            =   435
-            TabIndex        =   51
+            TabIndex        =   52
             Top             =   1980
             Width           =   1620
          End
@@ -415,15 +431,15 @@ Begin VB.Form frmPersonnelSetup
       Begin VB.Frame fraTableDefinition 
          Caption         =   "Personnel Records :"
          Height          =   7890
-         Left            =   120
-         TabIndex        =   38
+         Left            =   -74880
+         TabIndex        =   39
          Top             =   400
          Width           =   5415
          Begin VB.ComboBox cboSecurityGroup 
             Height          =   315
             Left            =   2715
             Style           =   2  'Dropdown List
-            TabIndex        =   73
+            TabIndex        =   74
             Top             =   7365
             Width           =   2505
          End
@@ -579,7 +595,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "User Group :"
             Height          =   300
             Left            =   210
-            TabIndex        =   74
+            TabIndex        =   75
             Top             =   7395
             Width           =   1935
          End
@@ -588,7 +604,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Self-service Photo :"
             Height          =   225
             Left            =   195
-            TabIndex        =   72
+            TabIndex        =   73
             Top             =   5400
             Width           =   1905
             WordWrap        =   -1  'True
@@ -598,7 +614,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Self-service Welcome Column :"
             Height          =   450
             Left            =   195
-            TabIndex        =   71
+            TabIndex        =   72
             Top             =   4860
             Width           =   1905
             WordWrap        =   -1  'True
@@ -608,7 +624,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Job Title Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   63
+            TabIndex        =   64
             Top             =   6585
             Width           =   2355
          End
@@ -617,7 +633,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Manager Staff No. Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   62
+            TabIndex        =   63
             Top             =   6180
             Width           =   2370
          End
@@ -626,7 +642,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Grade Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   61
+            TabIndex        =   62
             Top             =   5775
             Width           =   2190
          End
@@ -635,7 +651,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Login Name Column(s) :"
             Height          =   195
             Left            =   195
-            TabIndex        =   60
+            TabIndex        =   61
             Top             =   4200
             Width           =   2775
          End
@@ -644,7 +660,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Personnel Table :"
             Height          =   195
             Left            =   195
-            TabIndex        =   49
+            TabIndex        =   50
             Top             =   360
             Width           =   1575
          End
@@ -654,7 +670,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Staff No. Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   48
+            TabIndex        =   49
             Top             =   1005
             Width           =   2415
          End
@@ -664,7 +680,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Forename Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   47
+            TabIndex        =   48
             Top             =   1395
             Width           =   2475
          End
@@ -674,7 +690,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Start Date Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   46
+            TabIndex        =   47
             Top             =   2205
             Width           =   2505
          End
@@ -684,7 +700,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Surname Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   45
+            TabIndex        =   46
             Top             =   1800
             Width           =   2385
          End
@@ -694,7 +710,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Leaving Date Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   44
+            TabIndex        =   45
             Top             =   2595
             Width           =   2700
          End
@@ -704,7 +720,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Full / Part Time Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   43
+            TabIndex        =   44
             Top             =   3000
             Width           =   2820
          End
@@ -714,7 +730,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Department Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   42
+            TabIndex        =   43
             Top             =   3405
             Width           =   2610
          End
@@ -724,7 +740,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Work Email Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   41
+            TabIndex        =   42
             Top             =   6975
             Width           =   1830
          End
@@ -734,7 +750,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Date of Birth Column :"
             Height          =   195
             Left            =   195
-            TabIndex        =   40
+            TabIndex        =   41
             Top             =   3795
             Width           =   2670
          End
@@ -754,7 +770,7 @@ Begin VB.Form frmPersonnelSetup
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   4575
-      TabIndex        =   37
+      TabIndex        =   38
       Top             =   8655
       Width           =   1200
    End
@@ -811,6 +827,7 @@ Private mvar_lngOriginalPersonnelTableID As Long
 Private mvar_lngOriginalHierarchyTableID As Long
 Private mvar_lngOriginalHierarchyIdentifyingColumnID As Long
 Private mvar_lngOriginalHierarchyReportsToColumnID As Long
+Private mvar_DisableSimpleOrgchartReport As Boolean
 
 Private mblnReadOnly As Boolean
 Private mbLoading As Boolean
@@ -929,6 +946,10 @@ Private Sub cboSecurityGroup_Click()
   Changed = True
 End Sub
 
+Private Sub chkDisableSimpleOrgChart_Click()
+  Changed = True
+End Sub
+
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 Select Case KeyCode
   Case vbKeyF1
@@ -964,6 +985,8 @@ Private Sub Form_Load()
 
   ' Initialise all controls with the current settings, or defaults.
   InitialiseBaseTableCombos
+
+  chkDisableSimpleOrgChart.value = IIf(mvar_DisableSimpleOrgchartReport, vbChecked, vbUnchecked)
 
   ' Set the correct option button (and therefore disable correct combos)
   If mvar_lngRegionID > 0 Then optRegionStatic.value = True Else optRegionHistory.value = True
@@ -2277,6 +2300,7 @@ Private Function SaveChanges() As Boolean
   SaveModuleSetting gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_POSTALLOCATIONTABLE, gsPARAMETERTYPE_TABLEID, mvar_lngPostAllocationTableID
   SaveModuleSetting gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_POSTALLOCSTARTDATE, gsPARAMETERTYPE_COLUMNID, mvar_lngPostAllocationStartDateColumnID
   SaveModuleSetting gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_POSTALLOCENDDATE, gsPARAMETERTYPE_COLUMNID, mvar_lngPostAllocationEndDateColumnID
+  SaveModuleSetting gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_DISABLESIMPLEORGCHART, gsPARAMETERTYPE_OTHER, (chkDisableSimpleOrgChart.value = vbChecked)
 
   'NPG20090225 Fault 13502
   SaveModuleSetting gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_LOGINNAME, gsPARAMETERTYPE_COLUMNID, mvar_lngLoginNameID
@@ -2524,7 +2548,8 @@ Private Sub ReadParameters()
   mvar_lngOriginalHierarchyTableID = mvar_lngHierarchyTableID
   mvar_lngOriginalHierarchyIdentifyingColumnID = mvar_lngHierarchyIdentifyingColumnID
   mvar_lngOriginalHierarchyReportsToColumnID = mvar_lngHierarchyReportsToColumnID
-  
+  mvar_DisableSimpleOrgchartReport = GetModuleSetting(gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_DISABLESIMPLEORGCHART, 0)
+    
 End Sub
 
 
