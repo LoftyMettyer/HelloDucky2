@@ -39,6 +39,7 @@ Public Enum UtilityType
   utlColumn = 34
   utlNineBoxGrid = 35
   utlTalent = 38
+  utlOrganisation = 39
 End Enum
 
 

@@ -2251,6 +2251,7 @@ function menu_refreshMenu() {
 	menu_enableMenuItem("mnutoolCrossTabs", $("#txtCrossTabsGranted").val());
 	menu_enableMenuItem("mnutoolNineBox", $("#txtNineBoxGridGranted").val());
 	menu_enableMenuItem("mnutoolTalentReports", $("#txtTalentReportsGranted").val());
+	menu_enableMenuItem("mnutoolOrgReporting", $("#txtOrganisationReportsGranted").val());
 	menu_enableMenuItem("mnutoolMatchReports", $("#txtMatchReportsGranted").val());
 	menu_enableMenuItem("mnutoolCalendarReports", $("#txtCalendarReportsGranted").val());
 	menu_enableMenuItem("mnutoolMailMerge", $("#txtMailMergeGranted").val());

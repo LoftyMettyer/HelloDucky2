@@ -280,6 +280,7 @@
   Dim iNineBoxGridGranted As Integer = 0
   Dim iMatchReportsGranted as integer = 0
   Dim iTalentReportsGranted as integer = 0
+  Dim iOrganisationReportsGranted As Integer = 0
   Dim iCalendarReportsGranted As Integer = 0
   Dim iMailMergeGranted As Integer = 0
   Dim iDataTransferGranted As Integer = 0
@@ -301,6 +302,7 @@
     If Left(objPermission.CategoryKey, 15) = "CALENDARREPORTS" And objPermission.IsPermitted Then iCalendarReportsGranted = 1
     If Left(objPermission.CategoryKey, 12) = "MATCHREPORTS" And objPermission.IsPermitted Then iMatchReportsGranted = 1
     If Left(objPermission.CategoryKey, 13) = "TALENTREPORTS" And objPermission.IsPermitted Then iTalentReportsGranted = 1
+    If Left(objPermission.CategoryKey, 12) = "ORGREPORTING" And objPermission.IsPermitted Then iOrganisationReportsGranted = 1
     If Left(objPermission.CategoryKey, 9) = "MAILMERGE" And objPermission.IsPermitted Then iMailMergeGranted = 1
     If Left(objPermission.CategoryKey, 8) = "WORKFLOW" And objPermission.IsPermitted Then iWorkflowGranted = 1
     If Left(objPermission.CategoryKey, 12) = "DATATRANSFER" And objPermission.IsPermitted Then iDataTransferGranted = 1
@@ -331,6 +333,7 @@
   Response.Write("<input type='hidden' id=txtEventLogGranted name=txtEventLogGranted value=" & iEventLogGranted & ">")
   Response.Write("<input type='hidden' id=txtNineBoxGridGranted name=txtNineboxGridGranted value=" & iNineBoxGridGranted & ">")
   Response.Write("<input type='hidden' id=txtTalentReportsGranted name=txtTalentReportsGranted value=" & iTalentReportsGranted & ">")
+  Response.Write("<input type='hidden' id=txtOrganisationReportsGranted name=txtOrganisationReportsGranted value=" & iOrganisationReportsGranted & ">")
   Response.Write("<input type='hidden' id=txtMatchReportsGranted name=txtMatchReportsGranted value=" & iMatchReportsGranted & ">")  
   Response.Write("<input type='hidden' id=txtQuickAccessGranted name=txtQuickAccessGranted value=" & IIf(avQuickEntryMenuInfo.Count > 0, "1", "0").ToString & ">")
   Response.Write("<input type='hidden' id=txtEditableGridGranted name=txtEditableGridGranted value=" & IIf(bEditableGridEnabled, "1", "0") & ">")
