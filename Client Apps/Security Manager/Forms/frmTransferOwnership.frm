@@ -506,6 +506,10 @@ Private Function BuildReportSQL(sUserName As String) As String
     sWhere = "WHERE LOWER(Username) = '" & Replace(LCase(sUserName), "'", "''") & "' " & vbCrLf
   End If
   
+  sSQL = sSQL & "SELECT  ID, 'ORGANISATION REPORT' AS Type, Name, Username " & vbCrLf
+  sSQL = sSQL & "From ASRSysOrganisationReport " & vbCrLf
+  sSQL = sSQL & sWhere
+  sSQL = sSQL & "Union " & vbCrLf
   sSQL = sSQL & "SELECT  ID, 'TALENT REPORT' AS Type, Name, Username " & vbCrLf
   sSQL = sSQL & "From ASRSysTalentReports " & vbCrLf
   sSQL = sSQL & sWhere
@@ -894,6 +898,13 @@ Private Function DoTransfer() As Boolean
   ' Match Reports
   Progress "Transferring Match Reports..."
   strCommand = "UPDATE ASRSysMatchReportName SET Username = '" & strTo & "'"
+  strCommand = strCommand & sWhere
+  gADOCon.Execute strCommand
+  DoEvents
+
+  ' Talent Reports
+  Progress "Transferring Organisation Reports..."
+  strCommand = "UPDATE ASRSysOrganisationReport SET Username = '" & strTo & "'"
   strCommand = strCommand & sWhere
   gADOCon.Execute strCommand
   DoEvents
