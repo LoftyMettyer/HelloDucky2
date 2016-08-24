@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "sstree.ocx"
+Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
 Begin VB.Form frmViewMgr 
    Caption         =   "View Manager"
    ClientHeight    =   3825
@@ -1258,6 +1258,7 @@ Private Sub DeleteViews()
   Dim fUsed As Boolean
   Dim sColumnName As String
   Dim sTableName As String
+  Dim rsUtils1 As ADODB.Recordset
   
   ReDim aLngViewID(0)
   fDeleteAll = False
@@ -1359,6 +1360,24 @@ Private Sub DeleteViews()
       ' Close the recordset.
       rsModules.Close
       Set rsModules = Nothing
+      
+      ' Now Check if the view is used in a Organisation Report
+      sSQL = "SELECT DISTINCT r.Name, r.ID, r.Username" & _
+             " FROM ASRSysOrganisationReport r" & _
+             " WHERE r.BaseViewId = " & Trim(Str(lngViewID))
+      Set rsUtils1 = New ADODB.Recordset
+      rsUtils1.Open sSQL, gADOCon, adOpenStatic, adLockReadOnly
+      With rsUtils1
+        If Not (.EOF And .BOF) Then
+          fUsed = True
+          Do Until .EOF
+            frmUse.AddToList ("Organisation Report : " & !Name)
+            .MoveNext
+          Loop
+        End If
+        .Close
+      End With
+      Set rsUtils1 = Nothing
       
       ' Find any columns that use this expression as a link - default view value.
       sSQL = "SELECT DISTINCT tmpColumns.columnName, tmpColumns.tableID" & _

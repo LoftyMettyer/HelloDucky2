@@ -940,6 +940,25 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   End With
   Set rsUtils1 = Nothing
     
+  ' Now Check if the column is used in a Organisation Report
+  sSQL = "SELECT DISTINCT r.Name, r.ID, r.Username" & _
+         " FROM ASRSysOrganisationReport r" & _
+         " INNER JOIN ASRSysOrganisationColumns d" & _
+         "   ON r.ID = d.OrganisationID" & _
+         " WHERE d.ColumnId = " & Trim(Str(gLngColumnID))
+  Set rsUtils1 = New ADODB.Recordset
+  rsUtils1.Open sSQL, gADOCon, adOpenStatic, adLockReadOnly
+  With rsUtils1
+    If Not (.EOF And .BOF) Then
+      fUsed = True
+      Do Until .EOF
+        mfrmUse.AddToList ("Organisation Report : " & !Name)
+        .MoveNext
+      Loop
+    End If
+    .Close
+  End With
+  Set rsUtils1 = Nothing
     
   ' Now Check if the column is used in a Calendar Report
   sSQL = "SELECT DISTINCT ASRSysCalendarReports.Name, ASRSysCalendarReports.Username, ASRSysCalendarReports.ID" & _
