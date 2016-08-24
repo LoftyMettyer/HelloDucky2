@@ -392,6 +392,9 @@ Public Sub Initialise(piAction As groupAction)
     .AddItem "Match Report" & _
       vbTab & AccessDescription(ACCESS_HIDDEN) & _
       vbTab & utlMatchReport
+    .AddItem "Organisation Report" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlOrganisation
     .AddItem "Record Profile" & _
       vbTab & AccessDescription(ACCESS_HIDDEN) & _
       vbTab & utlRecordProfile
