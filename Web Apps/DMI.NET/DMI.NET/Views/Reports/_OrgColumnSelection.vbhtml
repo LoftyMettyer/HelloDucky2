@@ -164,8 +164,8 @@
          updateColumnsSelectedGrid();
       }
       ClearConcatenateCheckbox();
-      
-      }
+
+   }
 
    function ChangeColumnTableView(target) {
       getAvailableTableViewColumns();
@@ -217,7 +217,7 @@
 
       datarow.ColumnID = datarow.ID;
       datarow.FontSize = 11;
-      
+
       if (datarow.DataType == -3) {
          datarow.Height = 3
       }
@@ -473,7 +473,7 @@
          }
       });
 
-      resizeColumnGrids(); 
+      resizeColumnGrids();
    }
 
    function doubleClickAvailableColumn() {
@@ -805,7 +805,7 @@
          CanConcatenate = false;
       }
 
-      $(".canGroupWithNext *").prop("disabled", !CanConcatenate);      
+      $(".canGroupWithNext *").prop("disabled", !CanConcatenate);
       $("#SelectedColumnPrefix").prop("disabled", PreviousRowConcatenate || isPhotograph);
       $("#SelectedColumnSuffix").prop("disabled", isPhotograph);
       $("#SelectedColumnHeight").prop("disabled", PreviousRowConcatenate);
@@ -815,6 +815,23 @@
          $(".canGroupWithNext").css("color", "#A59393");
       } else {
          $(".canGroupWithNext").css("color", "#000000");
+      }
+   }
+
+   function getUnauthorisedColumns()
+   {
+      var count = 0;
+      var columnsString = "";
+      var invalidColumns = @Html.Raw(Json.Encode(Model.InvalidColumnList));
+      for (var i = 0; i < invalidColumns.length; i++) {
+         count++;
+         columnsString += invalidColumns[i].Heading + ", ";
+      }
+      if (count > 0 )
+      {
+         columnsString = columnsString.substring(0, columnsString.length - 2);
+         OpenHR.modalMessage("You do not have access to following columns : " + columnsString + ".");
+         enableSaveButton();
       }
    }
 

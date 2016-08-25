@@ -2252,6 +2252,8 @@ Namespace Repository
 
                PopulateOrganisationReportColumns(objModel, dsDefinition.Tables(2))
 
+               objModel.RemoveInvalidColumns()
+
             End If
 
             objModel.GroupAccess = GetUtilityAccess(objModel, action)

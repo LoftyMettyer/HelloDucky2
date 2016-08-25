@@ -601,6 +601,35 @@ Public Class SessionInfo
 
    End Function
 
+   Public Function ValidateColumnPermissions(psTableViewName As String, columnName As String) As Boolean     ' Instantiate a new collection of table privileges.
+
+      Dim iLoop As Integer
+      Dim objColumnPrivileges As New CColumnPrivileges
+      Dim isValidColumn As Boolean
+
+      Try
+         ' If the given table/view's column privilege collection has already been read then simply return it.
+         For iLoop = 1 To gcolColumnPrivilegesCollection.Count()
+            If UCase(gcolColumnPrivilegesCollection.Item(iLoop).Tag) = UCase(psTableViewName) Then
+               objColumnPrivileges = gcolColumnPrivilegesCollection.Item(iLoop)
+               Exit For
+            End If
+         Next iLoop
+
+         If objColumnPrivileges.IsValid(columnName) Then
+            If objColumnPrivileges.Item(columnName).AllowSelect Then
+               isValidColumn = True
+            End If
+         End If
+
+         Return isValidColumn
+
+      Catch ex As Exception
+         Return isValidColumn
+      End Try
+
+   End Function
+
 #End Region
 
 End Class

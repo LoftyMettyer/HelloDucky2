@@ -27,6 +27,8 @@ Namespace Models
 
       Public Property PreviewColumnList As New List(Of ReportColumnItem)
 
+      Public Property InvalidColumnList As New List(Of ReportColumnItem)
+
       Public Property AllAvailableViewList As New List(Of ReportTableItem)
 
       Public Property PostBasedTableName As String
@@ -60,7 +62,36 @@ Namespace Models
 
       End Function
 
-         Friend Function ProcessColumnsForPreview(Columns As List(Of ReportColumnItem)) As List(Of ReportColumnItem)
+      Sub RemoveInvalidColumns()
+
+         InvalidColumnList.Clear()
+
+         For Each column As ReportColumnItem In Columns
+            Dim delimiter As Char = "."c
+            Dim substrings() As String = column.Name.Split(delimiter)
+            Dim isValidColumn = SessionInfo.ValidateColumnPermissions(substrings(0), column.Heading)
+            If (isValidColumn = False) Then
+               InvalidColumnList.Add(column)
+            End If
+         Next
+
+         If InvalidColumnList.Count > 0 Then
+
+            'Remove from selected column and filters for that column
+            For Each column As ReportColumnItem In InvalidColumnList
+               Columns.Remove(column)
+               FiltersFieldList.RemoveAll(Function(f) f.FieldID = column.ID AndAlso f.FieldName = column.Heading)
+            Next
+
+            'Remove group with next for all columns
+            For Each column As ReportColumnItem In Columns
+               column.IsGroupWithNext = False
+            Next
+         End If
+
+      End Sub
+
+      Friend Function ProcessColumnsForPreview(Columns As List(Of ReportColumnItem)) As List(Of ReportColumnItem)
          Dim space As String = " "
          Dim count As Integer
          Dim openBracket As String = "< "

@@ -54,6 +54,7 @@ End Code
    $(document).ready(function () {
       getAvailableTableViewColumns();
       attachGridToSelectedColumns();
+      getUnauthorisedColumns();
    });
 
    $(function () {
@@ -69,7 +70,7 @@ End Code
             if (ui.newTab.text() == "Filter") {
                refreshSelectColumnCombo();
             }
-            
+
          }
       });
 
@@ -95,6 +96,6 @@ End Code
 
       //column aggregate widths
       $('.colAggregates').find('.tablecell').css('width', gridWidth / 3);
-   }   
-
+   }
+   
 </script>
