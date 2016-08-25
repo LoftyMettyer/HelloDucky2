@@ -4,5 +4,6 @@
 	[IDRange] [varchar](255) NULL,
 	[StartDate] [datetime] NULL,
 	[EndDate] [datetime] NULL,
-	[DurationMins] [int] NULL
+	[DurationMins] [int] NULL, 
+    [DurationSecs] INT NULL
 ) ON [PRIMARY]
