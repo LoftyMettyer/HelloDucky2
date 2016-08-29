@@ -3,7 +3,7 @@
 
 @If (Model.DataType = ColumnDataType.sqlOle Or Model.DataType = ColumnDataType.sqlVarBinary) Then
     @<div style="text-align: center;padding:8px">
-        <img src="/Content/Images/anonymous.png" style="height:@Model.Height.ToString()px;">
+        <img src="../Content/Images/anonymous.png" style="height:@Model.Height.ToString()px;">
     </div>  Else
    If (Model.DefaultHeight = 1) Then
         @<div class="truncate" style="min-height:20px;height:@Model.Height.ToString()px;text-align: center;margin:2px;">
