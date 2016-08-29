@@ -416,6 +416,7 @@ Public Class SessionInfo
          objItem.ViewID = CInt(objRow("ViewID"))
          objItem.ViewName = objRow("ViewName").ToString()
          objItem.RealSource = objRow("ViewName").ToString()
+         objItem.OriginalViewName = objRow("OriginalViewName").ToString()
          gcoTablePrivileges.Add(objItem)
       Next
 
@@ -593,7 +594,7 @@ Public Class SessionInfo
             view.TableId = tableId
             view.TableName = objTableView.TableName
             view.ViewId = objTableView.ViewID
-            view.ViewName = objTableView.ViewName
+            view.ViewName = objTableView.OriginalViewName
             views.Add(view)
          End If
       Next

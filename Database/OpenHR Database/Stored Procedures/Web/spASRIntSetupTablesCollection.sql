@@ -40,7 +40,7 @@ BEGIN
 
 
 	-- Views
-	SELECT v.viewID, UPPER(v.viewName) AS [viewname], t.tableID
+	SELECT v.viewID, UPPER(v.viewName) AS [viewname], v.ViewName AS OriginalViewName, t.tableID
 		, UPPER(t.tableName) AS [tablename], t.tableType, t.defaultOrderID, t.recordDescExprID
 		FROM ASRSysViews v
 			INNER JOIN ASRSysTables t ON v.viewTableID = t.tableID;

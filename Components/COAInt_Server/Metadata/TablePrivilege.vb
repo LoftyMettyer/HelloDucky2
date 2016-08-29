@@ -14,8 +14,9 @@ Namespace Metadata
 		Friend Property RealSource() As String
 		Friend Property IsTable() As Boolean
 		Friend Property TableName() As String
-		Friend Property ViewName() As String
-		Friend Property TableType() As TableTypes
+      Friend Property OriginalViewName() As String
+      Friend Property ViewName() As String
+      Friend Property TableType() As TableTypes
 		Friend Property DefaultOrderID() As Integer
 		Friend Property RecordDescriptionID() As Integer
 	End Class
