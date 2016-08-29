@@ -74,7 +74,7 @@
                   <span><input type="tel" class="selectFontSize" id="SelectedColumnFontSize" maxlength="2" onchange="updateColumnsSelectedGrid();" /></span>
                   <div class="formfieldfill HeightOnly">
                      <label for="SelectedColumnHeight"> &nbsp; Height (Rows) :</label>
-                     <span><input type="tel" class="selectHeight" id="SelectedColumnHeight" maxlength="1" onchange="updateColumnsSelectedGrid();" /></span>
+                     <span><input type="tel" class="selectHeight" id="SelectedColumnHeight" style="width:94%" maxlength="1" onchange="updateColumnsSelectedGrid();" /></span>
                   </div>
                </div>
                <div class="formfieldfill decimalsOnly">
