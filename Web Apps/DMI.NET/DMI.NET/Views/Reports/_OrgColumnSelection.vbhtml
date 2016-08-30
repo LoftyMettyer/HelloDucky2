@@ -793,6 +793,7 @@
          PreviousRowConcatenate = true;
          $("#SelectedColumnFontSize").val(prevDataRow.FontSize); //Set FontSize As Previous Column
          $("#SelectedColumnHeight").val(prevDataRow.Height);  //  Set Height As Previous Column
+         $("#SelectedColumnPrefix").val(""); // Clear Prefix value
       }
 
       // Check ViewID of next column
