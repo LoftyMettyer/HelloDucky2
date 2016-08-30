@@ -98,6 +98,7 @@ BEGIN
 			FROM ASRSysColumns
 			INNER JOIN ASRSysViewColumns ON ASRSysColumns.columnId = ASRSysViewColumns.columnID
 			WHERE ASRSysColumns.tableID = @lngTableID
+            AND ASRSysColumns.columnType <> 3
 				AND ASRSysViewColumns.viewID = @plngViewID
 				AND ASRSysViewColumns.inView=1);
 		END
@@ -141,7 +142,8 @@ BEGIN
 				ASRSysColumns.size,
 				ASRSysColumns.decimals				
 			FROM ASRSysColumns
-			WHERE ASRSysColumns.tableID = @lngTableID);
+			WHERE ASRSysColumns.tableID = @lngTableID
+               AND columnType <> 3);
 		END
 	END
 	ELSE
@@ -204,6 +206,7 @@ BEGIN
 		WHERE p.action = 193 
 			AND p.uid = @iUserGroupID
 			AND ASRSysColumns.tableID = @lngTableID
+         AND ASRSysColumns.columnType <> 3
 			AND syscolumns.name <> 'timestamp'
 			AND sysobjects.name = @sRealSource
 			AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
