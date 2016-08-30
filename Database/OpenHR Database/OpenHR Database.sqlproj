@@ -670,6 +670,7 @@
     <Build Include="Stored Procedures\Web\spASRIntValidateOrganisationReport.sql" />
     <Build Include="Stored Procedures\Web\spASRIntSaveOrganisationReport.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetViewColumns.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetOrganisationReport.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
