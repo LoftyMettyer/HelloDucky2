@@ -489,7 +489,6 @@
     <Build Include="Tables\tbstat_componentdependancy.sql" />
     <Build Include="Tables\tbstat_effectivedates.sql" />
     <Build Include="Tables\ASRSysColumns.sql" />
-    <Build Include="Tables\tbsys_intransactiontrigger.sql" />
     <Build Include="Tables\tbsys_mobileformelements.sql" />
     <Build Include="Tables\tbsys_mobileformlayout.sql" />
     <Build Include="Tables\tbsys_mobilegroupworkflows.sql" />
@@ -670,6 +669,10 @@
     <Build Include="Stored Procedures\Web\spASRIntValidateOrganisationReport.sql" />
     <Build Include="Stored Procedures\Web\spASRIntSaveOrganisationReport.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetViewColumns.sql" />
+    <Build Include="User Defined Functions\udfsysGetContextTable.sql" />
+    <Build Include="Views\InTriggerContext.sql" />
+    <Build Include="Stored Procedures\System Manager\spsys_TrackTriggerInsert.sql" />
+    <Build Include="Stored Procedures\System Manager\spsys_TrackTriggerClear.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetOrganisationReport.sql" />
   </ItemGroup>
   <ItemGroup>
