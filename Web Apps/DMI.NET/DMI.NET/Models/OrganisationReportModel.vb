@@ -6,7 +6,6 @@ Imports System.Collections.ObjectModel
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server
 Imports HR.Intranet.Server.Metadata
-Imports System.Web.Script.Serialization
 
 Namespace Models
    Public Class OrganisationReportModel
@@ -19,10 +18,14 @@ Namespace Models
       End Property
 
       Public Property BaseViewFilterID As Integer
+
       Public Property FiltersFieldList As New List(Of OrganisationReportFilterItem)
+
       <MinLength(3, ErrorMessage:="You must select at least one column for your report.")>
       Public Overrides Property ColumnsAsString As String
+
       Public Property FilterColumnsAsString As String
+
       Public Property BaseViewList As New List(Of ReportTableItem)
 
       Public Property PreviewColumnList As New List(Of ReportColumnItem)
@@ -93,9 +96,9 @@ Namespace Models
 
       Friend Function ProcessColumnsForPreview(Columns As List(Of ReportColumnItem)) As List(Of ReportColumnItem)
          Dim space As String = " "
-         Dim count As Integer
-         Dim openBracket As String = "< "
-         Dim closeBracket As String = " >"
+         Dim recordCount As Integer
+         Dim openBracket As String = "<" + space
+         Dim closeBracket As String = space + ">"
          Dim ignoreNextItem As Boolean = False
          PreviewColumnList.Clear()
          Dim BaseViewColumns As New List(Of ReportColumnItem)
@@ -111,22 +114,23 @@ Namespace Models
             BaseViewColumns = Columns
          End If
 
-         While (count < BaseViewColumns.Count)
+         While (recordCount < BaseViewColumns.Count)
 
-            Dim item = BaseViewColumns(count)
+            Dim item = BaseViewColumns(recordCount)
             item.Heading = (openBracket + item.Prefix + space + item.Heading).Trim
 
             If item.IsGroupWithNext Then
 
-               'set row height
+               'Set row height
                item.DefaultHeight = item.Height
                item.Height = Convert.ToInt32(item.Height * Math.Round(item.FontSize * 1.5))
                Dim suffix = String.Empty
-               While (count < BaseViewColumns.Count)
-                  count = count + 1
-                  Dim nextItem = BaseViewColumns(count)
 
-                  'set group name with next
+               While (recordCount < BaseViewColumns.Count)
+                  recordCount = recordCount + 1
+                  Dim nextItem = BaseViewColumns(recordCount)
+
+                  'Set group name with next
                   item.Heading = item.Heading + space + nextItem.Heading
                   suffix = nextItem.Suffix
 
@@ -135,14 +139,15 @@ Namespace Models
                   End If
                End While
 
-               item.Heading = (item.Heading + suffix + closeBracket).Trim
+               item.Heading = (item.Heading + space + suffix + closeBracket).Trim
+               recordCount = recordCount + 1
 
             Else
-               'set row height
+               'Set row height
                item.DefaultHeight = item.Height
                item.Height = Convert.ToInt32(item.Height * Math.Round(item.FontSize * 1.5))
                item.Heading = (item.Heading + space + item.Suffix + closeBracket).Trim
-               count = count + 1
+               recordCount = recordCount + 1
 
             End If
 
