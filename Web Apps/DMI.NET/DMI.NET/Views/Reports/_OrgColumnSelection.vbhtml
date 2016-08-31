@@ -450,8 +450,8 @@
             doubleClickAvailableColumn();
          },
          loadComplete: function (data) {
-            refreshcolumnPropertiesPanel();
             removeSelectedColumnsFromAvailable();
+            refreshcolumnPropertiesPanel();
             var topID = $("#AvailableColumns").getDataIDs()[0]
             $("#AvailableColumns").jqGrid("setSelection", topID);
          }

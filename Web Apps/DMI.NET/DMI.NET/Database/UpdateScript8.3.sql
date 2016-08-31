@@ -61948,7 +61948,8 @@ BEGIN
 			FROM ASRSysColumns
 			INNER JOIN ASRSysViewColumns ON ASRSysColumns.columnId = ASRSysViewColumns.columnID
 			WHERE ASRSysColumns.tableID = @lngTableID
-            AND ASRSysColumns.columnType <> 3
+            AND ASRSysColumns.columnType <> 3   -- Remove ID Columns
+            AND ASRSysColumns.dataType <> -4    -- Remove OLE columns
 				AND ASRSysViewColumns.viewID = @plngViewID
 				AND ASRSysViewColumns.inView=1);
 		END
@@ -61993,7 +61994,8 @@ BEGIN
 				ASRSysColumns.decimals				
 			FROM ASRSysColumns
 			WHERE ASRSysColumns.tableID = @lngTableID
-               AND columnType <> 3);
+               AND columnType <> 3
+               AND dataType <> -4);
 		END
 	END
 	ELSE
@@ -62057,6 +62059,7 @@ BEGIN
 			AND p.uid = @iUserGroupID
 			AND ASRSysColumns.tableID = @lngTableID
          AND ASRSysColumns.columnType <> 3
+         AND ASRSysColumns.dataType <> -4
 			AND syscolumns.name <> 'timestamp'
 			AND sysobjects.name = @sRealSource
 			AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
