@@ -2450,7 +2450,7 @@ Namespace Repository
          Dim sFilters As String = ""
          For Each objItem In objFilters
             sFilters += String.Format("{0}||{1}||{2}**" _
-                                       , objItem.FieldID, objItem.OperatorID, HttpUtility.HtmlEncode(objItem.FilterValue))
+                                       , objItem.FieldID, objItem.OperatorID, HttpUtility.HtmlEncode(objItem.FilterValue.Replace("*", "*ALL")))
          Next
 
          Return sFilters

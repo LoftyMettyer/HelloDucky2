@@ -181,10 +181,10 @@
             $("select#selectColumn").html(optionOfAllType);
          }
       });
-
+   
    }
 
-   function refreshSelectColumnCombo() {
+   function refreshSelectColumnCombo() {      
       if ($("#selectColumn option:selected")[0] != undefined) {
          var dropDown = $("#selectColumn option:selected")[0];
          var iDataType = dropDown.attributes["data-datatype"].value;
@@ -544,13 +544,37 @@
          $("#DBGridFilterRecords").jqGrid('setSelection', $("#DBGridFilterRecords").getGridParam("reccount"));
 
          FilterSelect_refreshControls();
-         $("#selectColumn").focus();
+         $("select#selectColumn").focus();
+         $("select#selectColumn")[0].selectedIndex = 0;
+         $("#txtValue").val('');
+         var resetdropDown = $("select#selectColumn option:selected")[0];
+         var iResetDataType = resetdropDown.attributes["data-datatype"].value;
+         refreshSelectColumnCombo();         
+         if (iResetDataType == -7)
+         {
+            $("select#selectValue")[0].selectedIndex = 0;
+         }
+         else if ((iResetDataType == 2) || (iDataType == 4))
+         {
+            $("select#selectConditionNum")[0].selectedIndex = 0;
+         }
+         else if (iResetDataType == 11) // Date column.
+         {
+            $("select#selectConditionDate")[0].selectedIndex = 0;
+         } 
+         else if ((iResetDataType != -7) && (iResetDataType != 2) && (iResetDataType != 4) && (iResetDataType != 11))  // Character/Working Pattern column.
+         {
+            $("select#selectConditionChar")[0].selectedIndex = 0;
+         }
+         
+         enableSaveButton();
       }
    }
 
    function FilterSelect_removeAll() {
       $("#DBGridFilterRecords").jqGrid('clearGridData');
       FilterSelect_refreshControls();
+      enableSaveButton();
    }
 
    function FilterSelect_remove() {
@@ -597,6 +621,7 @@
       }
 
       FilterSelect_refreshControls();
+      enableSaveButton();
    }
 
 
@@ -641,7 +666,8 @@
             iColumnID = ar.rows[i].FieldID;
             sColumnName = ar.rows[i].FieldName;
             iOperatorID = ar.rows[i].OperatorID;
-            sValue = ar.rows[i].FilterValue;
+            sValue = ar.rows[i].FilterValue                        
+            sValue = sValue.replace(/\*ALL/g, '*');
             iColumnDataType = ar.rows[i].FieldDataType;
 
             fFilterOK = true;

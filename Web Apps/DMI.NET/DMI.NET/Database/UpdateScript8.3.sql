@@ -62266,10 +62266,10 @@ BEGIN
 								END
 						 WHEN ((c.datatype <> -7) AND (c.datatype <> 2) AND (c.datatype <> 4) AND (c.datatype <> 11)) THEN /* Character/Working Pattern column. */
 								CASE
-									   WHEN oc.Operator = 1 THEN '(' + t.TableName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' = '''' OR ' + t.TableName + '.'+ c.ColumnName + ' IS NULL' ELSE ' LIKE ''' + replace(replace(replace(oc.Value, '''', ''''''),'*', '%'),'?', '_' ) END + 	+ ')'
-									   WHEN oc.Operator = 2	THEN '(' + t.TableName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' <> '''' AND ' + t.TableName + '.'+ c.ColumnName + ' IS NOT NULL' ELSE ' NOT LIKE ''' + replace(replace(replace(oc.Value, '''', ''''''),'*', '%'),'?', '_' ) END + 	+ ')'
-									   WHEN oc.Operator = 7	THEN '(' + t.TableName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' IS NULL OR ' + t.TableName + '.'+ c.ColumnName + ' IS NOT NULL' ELSE ' LIKE ''%' + replace(oc.Value, '''', '''''') + '%''' END + 	+ ')'
-									   WHEN oc.Operator = 8 THEN '(' + t.TableName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' IS NULL AND ' + t.TableName + '.'+ c.ColumnName + ' IS NOT NULL' ELSE ' NOT LIKE ''%' +  replace(oc.Value, '''', '''''') + '%''' END + 	+ ')'					   
+									   WHEN oc.Operator = 1 THEN '(' + t.TableName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' = '''' OR ' + t.TableName + '.'+ c.ColumnName + ' IS NULL' ELSE ' LIKE ''' + replace(replace(replace(oc.Value, '''', ''''''), '*ALL', '%'),'?', '_' ) + '''' END + 	+ ')'									  
+									   WHEN oc.Operator = 2	THEN '(' + t.TableName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' <> '''' AND ' + t.TableName + '.'+ c.ColumnName + ' IS NOT NULL' ELSE ' NOT LIKE ''' + replace(replace(replace(oc.Value, '''', ''''''), '*ALL', '%'),'?', '_' ) + '''' END  	+ ')'
+									   WHEN oc.Operator = 7	THEN '(' + t.TableName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' IS NULL OR ' + t.TableName + '.'+ c.ColumnName + ' IS NOT NULL' ELSE ' LIKE ''%' + replace(oc.Value, '''', '''''') + '%''' + '''' END 	+ ')'
+									   WHEN oc.Operator = 8 THEN '(' + t.TableName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' IS NULL AND ' + t.TableName + '.'+ c.ColumnName + ' IS NOT NULL' ELSE ' NOT LIKE ''%' +  replace(oc.Value, '''', '''''') + '%''' + '''' END  	+ ')'					   					   
 								END
 									
 					  END		AS WhereCondition

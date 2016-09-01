@@ -184,6 +184,7 @@
          OpenHR.postData("Reports/ChangeBaseView", dataSend, changeReportBaseViewCompleted);
          $("#OriginalBaseViewId").val($('#BaseViewId')[0].selectedIndex);
          $("#SelectedTableID").val($("#BaseViewId option:selected").val());
+         GetFilterColumns();
       }
 
       function changeReportBaseViewCompleted(json) {
