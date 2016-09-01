@@ -189,7 +189,7 @@
          var dropDown = $("#selectColumn option:selected")[0];
          var iDataType = dropDown.attributes["data-datatype"].value;
          displayOperatorSelector(iDataType);
-         button_disable($("#btnAddToList")[0], false);
+         button_disable($("#btnAddToList")[0], isDefinitionReadOnly());
       }
    }
 

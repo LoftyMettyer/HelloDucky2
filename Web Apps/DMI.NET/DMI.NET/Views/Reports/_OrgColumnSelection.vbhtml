@@ -510,7 +510,7 @@
    }
 
    function refreshcolumnPropertiesPanel() {
-
+      
       var rowCount = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length;
       var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
       var dataRow = $("#SelectedColumns").getRowData(rowId)
@@ -552,10 +552,10 @@
 
          $(".decimalsOnly *").prop("disabled", !isDecimals || isReadOnly || isSize || isPhotograph);
          $(".canGroupWithNext *").prop("disabled", isBottomRow || isReadOnly || isPhotograph);
-         $("#SelectedColumnPrefix").prop("disabled", isReadOnly || isPhotograph);
-         $("#SelectedColumnSuffix").prop("disabled", isReadOnly || isPhotograph);
-         $("#SelectedColumnHeight").prop("disabled", isReadOnly);
-         $("#SelectedColumnFontSize").prop("disabled", isReadOnly || isPhotograph);
+         $(".OrgReportsOnly *").prop("disabled", isReadOnly || isPhotograph);
+         $(".fontsizeOnly *").prop("disabled", isReadOnly || isPhotograph);
+         $(".HeightOnly *").prop("disabled", isReadOnly);
+       
 
          if (isBottomRow || isReadOnly) {
             $(".canGroupWithNext").css("color", "#A59393");
