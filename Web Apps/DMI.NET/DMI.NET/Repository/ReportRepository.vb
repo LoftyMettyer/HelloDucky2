@@ -2383,8 +2383,8 @@ Namespace Repository
                Dim objItem As New OrganisationReportFilterItem() With {
                .FieldID = CInt(objRow("FieldID")),
                .OperatorID = CInt(objRow("Operator")),
-               .FilterValue = HttpUtility.HtmlEncode(objRow("Value").ToString),
-               .FieldName = HttpUtility.HtmlEncode(objRow("FieldName").ToString),
+               .FilterValue = HttpUtility.HtmlDecode(objRow("Value").ToString),
+               .FieldName = HttpUtility.HtmlDecode(objRow("FieldName").ToString),
                .FieldDataType = CInt(objRow("FieldDataType"))}
 
                outputModel.FiltersFieldList.Add(objItem)
