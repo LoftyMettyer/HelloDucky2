@@ -380,7 +380,7 @@ Public Class [Default]
                            .Text = General.ConvertSqlDateToLocale(formItem.Value)
                         End If
                      Case Else   'Text
-                        .Text = formItem.Value
+                        .Text = formItem.Value.Replace(Environment.NewLine, "<br />")
                   End Select
                   .Style.Add("z-index", "3")
                End With
