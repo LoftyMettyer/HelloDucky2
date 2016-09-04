@@ -2103,6 +2103,120 @@ PRINT 'Step - Overnight Metrics'
 	END'
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - Performance Improvements'
+/* ------------------------------------------------------- */
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_intransactiontrigger]') AND xtype = 'U')
+		DROP TABLE [dbo].[tbsys_intransactiontrigger];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[InTriggerContext]') AND xtype = 'V')
+		DROP VIEW [dbo].[InTriggerContext];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spsys_TrackTriggerInsert]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].spsys_TrackTriggerInsert;
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spsys_TrackTriggerClear]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].spsys_TrackTriggerClear;
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsysGetContextTable]') AND xtype = 'TF')
+		DROP FUNCTION [dbo].udfsysGetContextTable;
+
+
+	EXEC sp_executesql N'CREATE FUNCTION [dbo].udfsysGetContextTable()
+	  RETURNS @Context TABLE([TableFromId] integer, [NestLevel] tinyint, [ActionType] tinyint)
+	  WITH SCHEMABINDING
+	AS
+	BEGIN
+
+	  DECLARE @buffer varchar(128) = rtrim(replace(convert(varchar(128),CONTEXT_INFO()), char(0), char(32)));
+	  DECLARE @fPtr1 int = CHARINDEX(CHAR(2),@buffer),
+			  @rPtr int = CHARINDEX(CHAR(3),@buffer);
+	  DECLARE @fPtr2 int = CHARINDEX(CHAR(2),@buffer, @fPtr1+1);
+		  
+	  WHILE @rPtr > 0
+	  BEGIN
+
+		INSERT INTO @Context
+			SELECT convert(integer, SUBSTRING(@buffer,1,abs(@fPtr1-1))),
+				convert(tinyint, SUBSTRING(@buffer, @fPtr1+1, @fPtr2-@fPtr1-1)), 
+				convert(tinyint, SUBSTRING(@buffer, @fPtr2+1, @rPtr-@fPtr2-1))
+			WHERE @rPtr > NULLIF(@fPtr1,0)+1;
+
+		SET @buffer = SUBSTRING(@buffer,@rPtr+1,128);
+		SET @fPtr1 = CHARINDEX(CHAR(2),@buffer);
+		SET @fPtr2 = CHARINDEX(CHAR(2),@buffer, @fPtr1+1);
+		SET @rPtr = CHARINDEX(CHAR(3),@buffer);
+
+	  END
+
+	  RETURN;
+
+	END';
+
+
+	EXEC sp_executesql N'CREATE VIEW [dbo].InTriggerContext
+	  WITH SCHEMABINDING
+	AS
+	SELECT TOP 16 [TableFromId], [NestLevel], [ActionType]
+	   FROM dbo.udfsysGetContextTable()';
+
+
+	EXEC sp_executesql N'CREATE PROCEDURE [dbo].[spsys_TrackTriggerInsert](@TableFromID integer, @NestLevel tinyint, @actionType tinyint)
+	AS
+	BEGIN
+
+	   BEGIN TRY
+
+		IF ISNULL(len(@TableFromID),0) = 0
+		   RAISERROR(''Context Key may not by null or empty.'',11,1);
+
+		DECLARE @buffer varchar(128) = '''';
+
+		SELECT @buffer += convert(varchar(125),[TableFromId]) + CHAR(2) + convert(varchar(3),[NestLevel]) + CHAR(2) + convert(varchar(3),[ActionType]) + CHAR(3)
+		  FROM [InTriggerContext]
+		  WHERE [TableFromId] != @TableFromID;
+
+		IF LEN(@buffer) + LEN(@TableFromID) + LEN(@NestLevel)  > 126
+		   RAISERROR(''Context buffer overflow.'',11,1);
+
+		IF ISNULL(len(@NestLevel),0) > 0
+		   SELECT @buffer += convert(varchar(125), @TableFromID) + CHAR(2) + convert(varchar(3),@NestLevel) + CHAR(2) + convert(varchar(3), @actionType) + CHAR(3)
+
+		DECLARE @varbin varbinary(128) = convert(varbinary(128),@buffer);
+		SET CONTEXT_INFO @varbin;
+
+	  END TRY
+	  BEGIN CATCH
+		DECLARE @ErrMsg nvarchar(4000)=isnull(ERROR_MESSAGE(),''Error caught in setContextValue''), @ErrSeverity int=ERROR_SEVERITY();
+	  END CATCH
+
+	  FINALLY:
+
+	  if @ErrSeverity > 0  RAISERROR(@ErrMsg, @ErrSeverity, 1);
+
+	  RETURN isnull(len(@buffer),0);
+
+	END';
+
+	EXEC sp_executesql N'CREATE PROCEDURE dbo.spsys_TrackTriggerClear(@TableFromID integer)
+	AS
+	BEGIN
+
+		DECLARE @buffer varchar(128) = '''',
+				  @varBin varbinary(128);
+
+		SELECT @buffer += convert(varchar(125),[TableFromId]) + CHAR(2) + convert(varchar(3),[NestLevel]) + CHAR(2) + convert(varchar(3),[ActionType]) + CHAR(3)
+			  FROM [InTriggerContext]
+			  WHERE [TableFromId] <> @TableFromID
+
+		SET @varBin = convert(varbinary(128), @buffer);
+	   SET CONTEXT_INFO @varBin;
+
+	END';
+
+
+
 
 
 /* ------------------------------------------------------- */

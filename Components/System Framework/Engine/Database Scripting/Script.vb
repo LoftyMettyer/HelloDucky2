@@ -352,7 +352,6 @@ Namespace ScriptDB
 
       Dim sSqlSpecialUpdate As String
       Dim sSqlCategoryUpdate As String
-      Dim sSqlFusionCode As String
 
       Dim sSqlHeadcountCheck As String = ""
 
@@ -418,10 +417,6 @@ Namespace ScriptDB
           objAuditIndex.IncludePrimaryKey = True
           objAuditIndex.Name = "IDX_AuditFields"
 
-
-          ' Build fusion messages
-          sSqlFusionCode = SpecialTrigger_Fusion(objTable)
-
           ' Add any relationship columns
           For Each objRelation In objTable.Relations
 
@@ -439,13 +434,13 @@ Namespace ScriptDB
               Next
 
               If aryColumns.Count > 0 Then
-                aryParentsToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [tablefromid] FROM {2} WHERE [tablefromid] = {1})" & vbNewLine &
+                aryParentsToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [tablefromid] FROM dbo.InTriggerContext WHERE [tablefromid] = {1})" & vbNewLine &
                     "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine _
-                    , objRelation.PhysicalName, objRelation.ParentId, Consts.SysTriggerTransaction))
+                    , objRelation.PhysicalName, objRelation.ParentId))
 
-                aryParentsToUpdateDelete.Add(String.Format("    IF NOT EXISTS(SELECT [tablefromid] FROM {2} WHERE [tablefromid] = {1})" & vbNewLine &
+                aryParentsToUpdateDelete.Add(String.Format("    IF NOT EXISTS(SELECT [tablefromid] FROM dbo.InTriggerContext WHERE [tablefromid] = {1})" & vbNewLine &
                     "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM deleted)" & vbNewLine _
-                    , objRelation.PhysicalName, objRelation.ParentId, Consts.SysTriggerTransaction))
+                    , objRelation.PhysicalName, objRelation.ParentId))
 
               End If
 
@@ -466,13 +461,13 @@ Namespace ScriptDB
               Next
 
               If aryColumns.Count > 0 Then
-                aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [tablefromid] FROM {5} WHERE [tablefromid] = {3})" & vbNewLine &
+                aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [tablefromid] FROM dbo.InTriggerContext WHERE [tablefromid] = {3})" & vbNewLine &
                     "            AND EXISTS(SELECT i.ID FROM dbo.[{2}] i" & vbNewLine &
                     "                INNER JOIN deleted d ON d.ID = i.ID " & vbNewLine &
                     "                WHERE {4})" & vbNewLine &
                     "        UPDATE dbo.[{0}] SET [updflag] = 1 WHERE ID_{1} IN (SELECT i.ID FROM inserted i);" _
                     , objRelatedTable.PhysicalName, objTable.Id, objTable.PhysicalName, objRelatedTable.Id _
-                    , String.Join(" OR ", aryColumns.ToArray()), Consts.SysTriggerTransaction))
+                    , String.Join(" OR ", aryColumns.ToArray())))
                 objTable.Indexes.Add(objIndex)
               End If
             End If
@@ -619,27 +614,16 @@ Namespace ScriptDB
 
           ' Validation
           sValidation = String.Format("    /* Validation */" & vbNewLine &
-              "    IF @isovernight = 0 AND (SELECT TOP 1 [tablefromid] FROM {2} ORDER BY [nestlevel] ASC) = {0}" & vbNewLine &
+              "    IF @isovernight = 0 AND (SELECT TOP 1 [tablefromid] FROM dbo.InTriggerContext ORDER BY [nestlevel] ASC) = {0}" & vbNewLine &
               "    BEGIN" & vbNewLine &
-              "        DELETE FROM fusion.ValidationWarnings" & vbNewLine &
-              "            WHERE RecordID IN (SELECT ID FROM inserted) AND tableid = {0}" & vbNewLine & vbNewLine &
               "        SET @sValidation = '';" & vbNewLine &
               "        SELECT @sValidation = @sValidation + dbo.[udfvalid_{1}](ID, [_description]) FROM inserted" & vbNewLine &
-              "        IF LEN(@sValidation) > 0 AND @bIsFusionMessage = 0" & vbNewLine &
+              "        IF LEN(@sValidation) > 0" & vbNewLine &
               "        BEGIN" & vbNewLine &
               "            RAISERROR(@sValidation, 16, 1);" & vbNewLine &
               "            ROLLBACK;" & vbNewLine &
               "        END" & vbNewLine _
-              , objTable.Id, objTable.Name, Consts.SysTriggerTransaction)
-
-          If objTable.FusionMessages.Count > 0 Then
-            sValidation = sValidation & vbNewLine & String.Format("        IF LEN(@sValidation) > 0 AND @bIsFusionMessage = 1" & vbNewLine &
-                "        BEGIN" & vbNewLine &
-                "            INSERT fusion.ValidationWarnings (TableID, RecordID, MessageName, ValidationMessage, CreatedDateTime)" & vbNewLine &
-                "            SELECT '1',ID,@fusionMessageName,@sValidation,GETDATE()" & vbNewLine &
-                "                FROM inserted" & vbNewLine &
-                "        END" & vbNewLine)
-          End If
+              , objTable.Id, objTable.Name)
 
           sValidation = sValidation & "    END" & vbNewLine
 
@@ -793,13 +777,13 @@ Namespace ScriptDB
 
           ' INSTEAD OF INSERT
           sSql = sSqlHeadcountCheck & vbNewLine & vbNewLine & String.Format("    DECLARE @sValidation nvarchar(MAX) = '';" & vbNewLine & vbNewLine &
-              "    INSERT {1} ([tablefromid], [actiontype], [nestlevel])" & vbNewLine &
-              "       VALUES ({0}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine &
+              "    EXEC sp_executeSQL N'spsys_TrackTriggerInsert {0}, 1, @@NESTLEVEL';" & vbNewLine & vbNewLine &
               sqlInsteadOfInsertColumns & vbNewLine & vbNewLine &
-              "    SELECT @localID = ID FROM @insertedRow;" & vbNewLine &
+              "    SELECT @localID = ID FROM @insertedRow;" & vbNewLine & _             
               "    SET CONTEXT_INFO @localID;" & vbNewLine _
-              , objTable.Id, Consts.SysTriggerTransaction)
+              , objTable.Id)
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSql, existingTriggers, objTable.InsertTriggerDisabled)
+         
 
           ' AFTER INSERT
           sSql = String.Format("    DECLARE @audit TABLE ([username] varchar(255), [changedate] datetime, [id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine &
@@ -810,29 +794,28 @@ Namespace ScriptDB
               sSqlCodeAudit &
               sSqlPostAuditCalcs &
               sValidation & vbNewLine &
-              "    DELETE {5} WHERE [tablefromid] = {3};" & vbNewLine & vbNewLine &
+              "    EXEC sp_executeSQL N'spsys_TrackTriggerClear {3}';" & vbNewLine & vbNewLine &
               "{4}" & vbNewLine & vbNewLine &
               "{1}" & vbNewLine & vbNewLine _
-              , objTable.Name, ssqlPostInsertTriggerCode, sSqlCodeAuditInsert, objTable.Id, objTable.SysMgrInsertTrigger, Consts.SysTriggerTransaction)
+              , objTable.Name, ssqlPostInsertTriggerCode, sSqlCodeAuditInsert, objTable.Id, objTable.SysMgrInsertTrigger)
           ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSql, existingTriggers, False)
-
+         
           ' INSTEAD OF UPDATE
           sSql = String.Format("    DECLARE @sValidation nvarchar(MAX) = '';" & vbNewLine & vbNewLine &
             sSqlCodeBypass &
-            "    INSERT [dbo].[{2}] ([tablefromid], [actiontype], [nestlevel]) VALUES ({3}, 2, @@NESTLEVEL);" & vbNewLine & vbNewLine &
+            "    EXEC sp_executeSQL N'spsys_TrackTriggerInsert {0}, 2, @@NESTLEVEL';" & vbNewLine & vbNewLine &
             "{1}" & vbNewLine & vbNewLine &
             sValidation & vbNewLine & vbNewLine &
-            "    DELETE [dbo].[{2}] WHERE [tablefromid] = {0};" & vbNewLine _
+            "    EXEC sp_executeSQL N'spsys_TrackTriggerClear {0}';" & vbNewLine _
             , objTable.Id _
-            , sqlWriteableColumns _
-            , Consts.SysTriggerTransaction, objTable.Id)
+            , sqlWriteableColumns)
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSql, existingTriggers, objTable.UpdateTriggerDisabled)
 
           ' AFTER UPDATE
           sSql = String.Format("    DECLARE @audit TABLE ([username] varchar(255), [changedate] datetime, [id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine &
               "    DECLARE @sValidation nvarchar(MAX) = '';" & vbNewLine & vbNewLine &
-              "    SELECT TOP 1 @startingtrigger = ISNULL([actiontype],2) FROM {1} WHERE [tablefromid] = {0} ORDER BY [nestlevel] ASC;" & vbNewLine &
-              "    SELECT TOP 1 @startingtriggertable = ISNULL([tablefromid],0) FROM {1} ORDER BY [nestlevel] ASC;" & vbNewLine & vbNewLine &
+              "    SELECT TOP 1 @startingtrigger = ISNULL([actiontype],2), @startingtriggertable = ISNULL([tablefromid],0)" & vbNewLine &
+              "        FROM dbo.InTriggerContext WHERE [tablefromid] = {0} ORDER BY [nestlevel] ASC;" & vbNewLine &
               sSqlCalculatedColumns & vbNewLine & vbNewLine &
               sSqlParentColumns & vbNewLine &
               sSqlChildColumns & vbNewLine & vbNewLine &
@@ -840,19 +823,19 @@ Namespace ScriptDB
               sSqlCodeAudit &
               sSqlSpecialUpdate &
               "{4}" & vbNewLine & vbNewLine &
-              "{7}" & vbNewLine & vbNewLine &
-              "{5}" & vbNewLine & vbNewLine &
               "{6}" & vbNewLine & vbNewLine &
+              "{5}" & vbNewLine & vbNewLine &
               "{2}" & vbNewLine & vbNewLine _
-              , objTable.Id, Consts.SysTriggerTransaction _
+              , objTable.Id, "" _
               , sSqlPostUpdateTriggerCode _
-              , sSqlCodeAuditUpdate, sSqlPostAuditCalcs, objTable.SysMgrUpdateTrigger, sSqlFusionCode, sSqlPostAuditCalcsAlsoAudited) & vbNewLine & vbNewLine
+              , sSqlCodeAuditUpdate, sSqlPostAuditCalcs, objTable.SysMgrUpdateTrigger, sSqlPostAuditCalcsAlsoAudited)
           ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSql, existingTriggers, objTable.UpdateTriggerDisabled)
 
+         
           ' INSTEAD OF DELETE
           sSql = String.Format("	   DECLARE @audit TABLE ([username] varchar(255), [changedate] datetime, [id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & vbNewLine &
-              "    INSERT [dbo].[{3}] ([tablefromid], [actiontype], [nestlevel]) VALUES ({4}, 3, @@NESTLEVEL);" & vbNewLine & vbNewLine &
-           "     /* Purge if already deleted */" & vbNewLine &
+              "    EXEC sp_executeSQL N'spsys_TrackTriggerInsert {4}, 3, @@NESTLEVEL';" & vbNewLine & vbNewLine &
+              "    /* Purge if already deleted */" & vbNewLine &
               "    WITH base AS (SELECT * FROM dbo.[{0}]" & vbNewLine &
               "        WHERE [id] IN (SELECT DISTINCT [id] FROM deleted WHERE [_deleted] = 1))" & vbNewLine &
               "        DELETE FROM base;" & vbNewLine & vbNewLine &
@@ -867,10 +850,9 @@ Namespace ScriptDB
               "{2}" & vbNewLine & vbNewLine &
               "{5}" & vbNewLine & vbNewLine &
               "{6}" &
-              "    /* Clear the temporary trigger status table */" & vbNewLine &
-              "    DELETE [dbo].[{3}] WHERE [tablefromid] = {4};" & vbNewLine & vbNewLine _
+              "    EXEC sp_executeSQL N'spsys_TrackTriggerClear {4}';" & vbNewLine _
               , objTable.PhysicalName, sSqlCodeAuditDelete, sSqlParentColumnsDelete _
-              , Consts.SysTriggerTransaction, objTable.Id, objTable.SysMgrDeleteTrigger, sSqlCategoryUpdate)
+              , "", objTable.Id, objTable.SysMgrDeleteTrigger, sSqlCategoryUpdate)
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfDelete, sSql, existingTriggers, objTable.DeleteTriggerDisabled)
 
           ' AFTER DELETE
@@ -989,19 +971,13 @@ Namespace ScriptDB
           "            @isovernight           bit," & vbNewLine &
           "            @startingtrigger       tinyint," & vbNewLine &
           "            @startingtriggertable  integer," & vbNewLine &
-          "            @fusionMessageName     varchar(128)," & vbNewLine &
-          "            @bIsFusionMessage      bit," & vbNewLine &
           "            @username              varchar(255);" & vbNewLine & vbNewLine &
           "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine &
-          "    SELECT @fusionMessageName = RTRIM(LTRIM(ISNULL(SUBSTRING(CAST(CONTEXT_INFO() AS varchar(128)),0,128),'')));" & vbNewLine &
-          "    SELECT @bIsFusionMessage = CASE SUBSTRING(@fusionMessageName,1,6) WHEN 'Fusion' THEN 1 ELSE 0 END;" & vbNewLine &
           "    SELECT @username =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'OPENHR WORKFLOW' THEN 'OpenHR Workflow'" & vbNewLine &
           "          ELSE CASE WHEN @isovernight = 1 THEN 'OpenHR Overnight Process' ELSE RTRIM(SYSTEM_USER) END END" & vbNewLine & vbNewLine &
-          "    IF OBJECT_ID('tempdb..#intransactiontrigger') IS NULL" & vbNewLine &
-          "        CREATE TABLE {5}([tablefromid] [int] NOT NULL, [nestlevel] [int] NOT NULL, [actiontype] [tinyint] NOT NULL);" & vbNewLine &
           "{4}" & vbNewLine & vbNewLine &
           "END" _
-          , sTriggerName, [role], table.PhysicalName, sTriggerType, [bodyCode], Consts.SysTriggerTransaction)
+          , sTriggerName, [role], table.PhysicalName, sTriggerType, [bodyCode])
 
         Dim existingTrigger As ScriptedMetadata = Nothing
         existingTriggers.TryGetValue(sTriggerName, existingTrigger)
@@ -1488,7 +1464,7 @@ Namespace ScriptDB
           If Not objAbsenceTable Is Nothing Then
 
             sCode = String.Format("    -- Statutory Sick Pay" & vbNewLine _
-                    & "    IF EXISTS(SELECT [tablefromid] FROM {1} WHERE [tablefromid] = {0})" & vbNewLine _
+                    & "    IF EXISTS(SELECT [tablefromid] FROM dbo.InTriggerContext WHERE [tablefromid] = {0})" & vbNewLine _
                     & "        AND EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('spsys_absencessp') AND sysstat & 0xf = 4)" & vbNewLine _
                     & "    BEGIN" & vbNewLine _
                     & "        SET @iCount = 0;" & vbNewLine _
@@ -1497,7 +1473,7 @@ Namespace ScriptDB
                     & "            EXEC dbo.[spsys_absencessp] @iCount;" & vbNewLine _
                     & "            SELECT @iCount=(SELECT MIN([ID]) FROM inserted WHERE [ID] > @iCount);" & vbNewLine _
                     & "        END" & vbNewLine _
-                    & "    END;", objAbsenceTable.Id, Consts.SysTriggerTransaction)
+                    & "    END;", objAbsenceTable.Id)
           End If
 
           Dim selfServiceColumn = ModuleSetup.Setting("MODULE_PERSONNEL", "Param_FieldsLoginName").Column
