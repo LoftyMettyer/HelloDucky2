@@ -639,14 +639,14 @@ Namespace ScriptDB
           If aryBaseTableColumns.ToArray.Length > 0 Then
             sqlWriteableColumns = String.Format("    /* Update any columns specified in the update clause */" & vbNewLine &
                 "    UPDATE [dbo].[{0}]" & vbNewLine &
-                "        SET [updflag] = base.[updflag], [_deleted] = base.[_deleted], [_deleteddate] = base.[_deleteddate]," & vbNewLine &
+                "        SET [updflag] = base.[updflag]," & vbNewLine &
                 "        {1}" & vbNewLine &
                 "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
                 , objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryBaseTableColumns.ToArray()))
           Else
             sqlWriteableColumns = String.Format("    /* Update any columns specified in the update clause */" & vbNewLine &
                 "    UPDATE [dbo].[{0}]" & vbNewLine &
-                "        SET [updflag] = base.[updflag], [_deleted] = base.[_deleted], [_deleteddate] = base.[_deleteddate]" & vbNewLine &
+                "        SET [updflag] = base.[updflag]" & vbNewLine &
                 "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
                 , objTable.PhysicalName)
           End If
@@ -783,7 +783,7 @@ Namespace ScriptDB
               "    SET CONTEXT_INFO @localID;" & vbNewLine _
               , objTable.Id)
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSql, existingTriggers, objTable.InsertTriggerDisabled)
-         
+
 
           ' AFTER INSERT
           sSql = String.Format("    DECLARE @audit TABLE ([username] varchar(255), [changedate] datetime, [id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine &
@@ -799,7 +799,7 @@ Namespace ScriptDB
               "{1}" & vbNewLine & vbNewLine _
               , objTable.Name, ssqlPostInsertTriggerCode, sSqlCodeAuditInsert, objTable.Id, objTable.SysMgrInsertTrigger)
           ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSql, existingTriggers, False)
-         
+
           ' INSTEAD OF UPDATE
           sSql = String.Format("    DECLARE @sValidation nvarchar(MAX) = '';" & vbNewLine & vbNewLine &
             sSqlCodeBypass &
@@ -830,19 +830,10 @@ Namespace ScriptDB
               , sSqlPostUpdateTriggerCode _
               , sSqlCodeAuditUpdate, sSqlPostAuditCalcs, objTable.SysMgrUpdateTrigger, sSqlPostAuditCalcsAlsoAudited)
           ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSql, existingTriggers, objTable.UpdateTriggerDisabled)
-
          
-          ' INSTEAD OF DELETE
+          ' AFTER DELETE
           sSql = String.Format("	   DECLARE @audit TABLE ([username] varchar(255), [changedate] datetime, [id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & vbNewLine &
               "    EXEC sp_executeSQL N'spsys_TrackTriggerInsert {4}, 3, @@NESTLEVEL';" & vbNewLine & vbNewLine &
-              "    /* Purge if already deleted */" & vbNewLine &
-              "    WITH base AS (SELECT * FROM dbo.[{0}]" & vbNewLine &
-              "        WHERE [id] IN (SELECT DISTINCT [id] FROM deleted WHERE [_deleted] = 1))" & vbNewLine &
-              "        DELETE FROM base;" & vbNewLine & vbNewLine &
-              "    /* Mark records as deleted. */" & vbNewLine &
-              "    WITH base AS (SELECT [_deleted], [_deleteddate] FROM dbo.[{0}]" & vbNewLine &
-              "        WHERE [id] IN (SELECT DISTINCT [id] FROM deleted))" & vbNewLine &
-              "        UPDATE base SET [_deleted] = 1, [_deleteddate] = GETDATE();" & vbNewLine & vbNewLine &
               "    /* Audit Trail */" & vbNewLine &
               "{1}" & vbNewLine & vbNewLine &
               sSqlCodeAudit &
@@ -853,10 +844,7 @@ Namespace ScriptDB
               "    EXEC sp_executeSQL N'spsys_TrackTriggerClear {4}';" & vbNewLine _
               , objTable.PhysicalName, sSqlCodeAuditDelete, sSqlParentColumnsDelete _
               , "", objTable.Id, objTable.SysMgrDeleteTrigger, sSqlCategoryUpdate)
-          ScriptTrigger("dbo", objTable, TriggerType.InsteadOfDelete, sSql, existingTriggers, objTable.DeleteTriggerDisabled)
-
-          ' AFTER DELETE
-          DropTrigger(objTable, TriggerType.AfterDelete, existingTriggers)
+          ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSql, existingTriggers, objTable.DeleteTriggerDisabled)
 
         Next
 

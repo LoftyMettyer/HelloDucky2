@@ -5,7 +5,6 @@
 DECLARE @iRecCount integer,
 	@sDBVersion varchar(10),
 	@DBName varchar(255),
-	@Command varchar(MAX),
 	@iSQLVersion numeric(3,1),
 	@NVarCommand nvarchar(MAX),
 	@sObject sysname,
@@ -2215,6 +2214,53 @@ PRINT 'Step - Performance Improvements'
 
 	END';
 
+
+
+/* ------------------------------------------------------- */
+PRINT 'Step - Data Protection Enhancements'
+/* ------------------------------------------------------- */
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udf_ASRFn_IsPersonnelSubordinateOfUser]') AND xtype = 'TF')
+		DROP FUNCTION [dbo].[udf_ASRFn_ByID_HasPersonnelSubordinateUser]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udf_ASRFn_ByID_HasPostSubordinateUser]') AND xtype = 'TF')
+		DROP FUNCTION [dbo].[udf_ASRFn_ByID_HasPostSubordinateUser]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udf_ASRFn_ByID_IsPersonnelSubordinateOfUser]') AND xtype = 'TF')
+		DROP FUNCTION [dbo].[udf_ASRFn_ByID_IsPersonnelSubordinateOfUser]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udf_ASRFn_ByID_IsPostSubordinateOfUser]') AND xtype = 'TF')
+		DROP FUNCTION [dbo].[udf_ASRFn_ByID_IsPostSubordinateOfUser]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udf_ASRFn_HasPersonnelSubordinateUser]') AND xtype = 'TF')
+		DROP FUNCTION [dbo].[udf_ASRFn_HasPersonnelSubordinateUser]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udf_ASRFn_HasPostSubordinateUser]') AND xtype = 'TF')
+		DROP FUNCTION [dbo].[udf_ASRFn_HasPostSubordinateUser]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udf_ASRFn_IsPersonnelSubordinateOfUser]') AND xtype = 'TF')
+		DROP FUNCTION [dbo].[udf_ASRFn_IsPersonnelSubordinateOfUser]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udf_ASRFn_IsPostSubordinateOfUser]') AND xtype = 'TF')
+		DROP FUNCTION [dbo].[udf_ASRFn_IsPostSubordinateOfUser]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_getfieldfromdatabaserecord]') AND xtype = 'FN')
+		DROP FUNCTION [dbo].[udfsys_getfieldfromdatabaserecord];
+
+	-- Remove table views and re-instantiate direct table access
+	SET @NVarCommand = '';
+	SELECT @NVarCommand = @NVarCommand + 'IF EXISTS(SELECT * FROM dbo.sysobjects WHERE name = ''trsys_' + TableName + '_d01'' AND xtype = ''TR'')
+			DROP TRIGGER [dbo].[trsys_' + TableName + '_d01];' + CHAR(13)
+		FROM ASRSysTables;
+	EXECUTE sp_executeSQL @NVarCommand;
+
+	SET @NVarCommand = '';
+	SELECT @NVarCommand = @NVarCommand + 'IF EXISTS(SELECT * FROM sys.syscolumns c INNER JOIN ASRSysTables t ON OBJECT_NAME(c.id) LIKE ''tbuser_' + TableName + ''' WHERE c.name = ''_deleted'')
+			BEGIN
+				DELETE FROM dbo.tbuser_' + TableName + ' WHERE _deleted = 1;
+			END' + CHAR(13)
+		FROM ASRSysTables;
+	EXECUTE sp_executeSQL @NVarCommand;
 
 
 

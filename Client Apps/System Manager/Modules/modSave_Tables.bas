@@ -511,8 +511,6 @@ Private Function TableNew() As Boolean
     ' Add custom columns
     sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "[updflag] integer"
     sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "[_description] nvarchar(MAX)"
-    sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "[_deleted] bit"
-    sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "[_deleteddate] datetime"
     sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "TimeStamp"
    
     sCreateView.Append IIf(sCreateView.Length <> 0, ", ", vbNullString) & "TimeStamp"
@@ -521,8 +519,7 @@ Private Function TableNew() As Boolean
     sSQL = "CREATE TABLE dbo." & sPhysicalTableName & " (" & sTableCreate.ToString & ")"
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
-    sSQL = "CREATE VIEW dbo." & sTableName & " WITH SCHEMABINDING AS SELECT " & sCreateView.ToString & " FROM dbo." & sPhysicalTableName & vbNewLine & _
-           "WHERE [_deleted] IS NULL OR [_deleted] = 0"
+    sSQL = "CREATE VIEW dbo." & sTableName & " WITH SCHEMABINDING AS SELECT " & sCreateView.ToString & " FROM dbo." & sPhysicalTableName & vbNewLine
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
     ' Add an index
@@ -942,8 +939,8 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
     ' now, instead of the 'execute' method which did not work under SQL Server 7.0.
     gADOCon.Execute _
         "SET IDENTITY_INSERT " & sPhysicalTableName & " ON" & vbNewLine & _
-        "INSERT INTO " & sPhysicalTableName & " (" & Join(asColumnList, ",") & ", [_deleted], [_deleteddate])" & _
-        " SELECT " & Join(asValueList, ",") & ", [_deleted], [_deleteddate] FROM " & sTempName & vbNewLine & _
+        "INSERT INTO " & sPhysicalTableName & " (" & Join(asColumnList, ",") & ")" & _
+        " SELECT " & Join(asValueList, ",") & " FROM " & sTempName & vbNewLine & _
         "SET IDENTITY_INSERT " & sPhysicalTableName & " OFF", , adCmdText + adExecuteNoRecords
   End If
 

@@ -14386,7 +14386,7 @@ BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysCategories
-		WHERE id = @piCategoryID And _deleted = 1;
+		WHERE id = @piCategoryID;
 
 		IF @iCount = 1
 		BEGIN
@@ -38488,7 +38488,7 @@ BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysCategories
-		WHERE id = @piCategoryID And _deleted = 1;
+		WHERE id = @piCategoryID;
 
 		IF @iCount = 1
 		BEGIN
@@ -43133,7 +43133,7 @@ BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysCategories
-		WHERE id = @piCategoryID And _deleted = 1;
+		WHERE id = @piCategoryID;
 
 		IF @iCount = 1
 		BEGIN
@@ -43590,7 +43590,7 @@ BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysCategories
-		WHERE id = @piCategoryID And _deleted = 1;
+		WHERE id = @piCategoryID;
 
 		IF @iCount = 1
 		BEGIN
@@ -44347,7 +44347,7 @@ BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysCategories
-		WHERE id = @piCategoryID And _deleted = 1;
+		WHERE id = @piCategoryID;
 
 		IF @iCount = 1
 		BEGIN
@@ -44879,7 +44879,7 @@ BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysCategories
-		WHERE id = @piCategoryID And _deleted = 1;
+		WHERE id = @piCategoryID;
 
 		IF @iCount = 1
 		BEGIN
@@ -61562,7 +61562,7 @@ BEGIN
 		/* Check that the category exists. */
 		SELECT @iCount = COUNT(*)
 		FROM ASRSysCategories
-		WHERE id = @piCategoryID And _deleted = 1;
+		WHERE id = @piCategoryID;
 
 		IF @iCount = 1
 		BEGIN
