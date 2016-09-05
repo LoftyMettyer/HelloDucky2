@@ -2299,7 +2299,7 @@ Private Function SetTableTriggers_SpecialFunctions( _
             fTableDone = True
             sTableName = GetTableName(alngTables_AbsenceBetween2Dates(iCount))
             sUpdateUpdate.Append _
-              "    IF NOT EXISTS(SELECT * FROM dbo.InTriggerContext WHERE [tablefromid] = " & CStr(alngTables_AbsenceBetween2Dates(iCount)) & ")" & vbNewLine & _
+              "    IF @isovernight = 0 AND NOT EXISTS(SELECT * FROM dbo.InTriggerContext WHERE [tablefromid] = " & CStr(alngTables_AbsenceBetween2Dates(iCount)) & ")" & vbNewLine & _
               "        UPDATE dbo." & sTableName & vbNewLine & _
               "            SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
               "            WHERE " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
@@ -2307,8 +2307,8 @@ Private Function SetTableTriggers_SpecialFunctions( _
               "                FROM inserted)" & vbNewLine & _
               "            OR " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
               "                (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-              "                FROM deleted)" & vbNewLine
-                
+              "                FROM deleted);"
+
             sInsertUpdate.Append _
               "    IF NOT EXISTS(SELECT * FROM dbo.InTriggerContext WHERE [tablefromid] = " & CStr(alngTables_AbsenceBetween2Dates(iCount)) & ")" & vbNewLine & _
               "        UPDATE dbo." & sTableName & vbNewLine & _
