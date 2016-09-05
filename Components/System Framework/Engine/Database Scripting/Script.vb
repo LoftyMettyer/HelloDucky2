@@ -1583,10 +1583,18 @@ Namespace ScriptDB
       Dim lngPayrollPeriod As Long
       Dim lngPayrollPeriodType As AccordPurgeType
       Dim bRefreshAll As Boolean
+      Dim lngBatchSize As Long
+      Dim lngArchiveColumnId As Long
+      Dim sArchiveColumnName As String
+      Dim bIgnoreArchive As Boolean
 
       Try
 
         bRefreshAll = CBool(SystemSettings.Setting("overnight", "refreshalltables").Value)
+        lngBatchSize = CLng(SystemSettings.Setting("overnight", "batchsize").Value)
+        bIgnoreArchive = CBool(SystemSettings.Setting("overnight", "ignorearchived").Value)
+        lngArchiveColumnId = clng(SystemSettings.Setting("overnight", "archivecolumn").Value)
+        sArchiveColumnName = Columns.FirstOrDefault(Function(c) c.Id = lngArchiveColumnId).Name
 
         For Each objTable In Tables.Where(Function(f) f.State <> DataRowState.Deleted)
           aryColumns = New ArrayList
@@ -1604,8 +1612,16 @@ Namespace ScriptDB
           If aryColumns.ToArray.Length > 0 Or bRefreshAll Then
 
             ' Each table with somethine time dependant
-            sSqlOvernightJob = sSqlOvernightJob & String.Format("    EXEC dbo.[spASRSysOvernightTableUpdate] '{0}', 'updflag', 1000;" & vbNewLine _
-              , objTable.PhysicalName)
+            sSqlOvernightJob &= String.Format("    EXEC dbo.[spASRSysOvernightTableUpdate] '{0}', 'updflag', {1}" _
+              , objTable.PhysicalName, lngBatchSize)
+            
+            If bIgnoreArchive And objTable Is ModuleSetup.Setting("MODULE_PERSONNEL", "Param_TablePersonnel").Table And lngArchiveColumnId > 0  Then
+               sSqlOvernightJob &= ", '" & sArchiveColumnName & " IS NULL OR " & sArchiveColumnName & " > GETDATE()'"
+            else
+               sSqlOvernightJob &= ", ''"
+            End If
+
+            sSqlOvernightJob &= ";" & vbNewLine
 
           End If
 

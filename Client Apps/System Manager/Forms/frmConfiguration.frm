@@ -75,12 +75,13 @@ Begin VB.Form frmConfiguration
       _ExtentY        =   9869
       _Version        =   393216
       Style           =   1
-      Tabs            =   7
+      Tabs            =   8
+      Tab             =   7
       TabsPerRow      =   10
       TabHeight       =   520
       TabCaption(0)   =   "&Email"
       TabPicture(0)   =   "frmConfiguration.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraTestSQLMail"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraEmailOptions"
@@ -103,18 +104,15 @@ Begin VB.Form frmConfiguration
       TabCaption(3)   =   "Dev"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraQuickAddress"
-      Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "frmDeveloperAFD"
-      Tab(3).Control(1).Enabled=   0   'False
+      Tab(3).Control(0)=   "frmDeveloperAFD"
+      Tab(3).Control(1)=   "fraQuickAddress"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Advanced"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraAdvancedSettings"
       Tab(4).Control(1)=   "fraOutlookCalendar"
-      Tab(4).Control(2)=   "fraTime"
-      Tab(4).ControlCount=   3
+      Tab(4).ControlCount=   2
       TabCaption(5)   =   "Desi&gners"
       TabPicture(5)   =   "frmConfiguration.frx":0098
       Tab(5).ControlEnabled=   0   'False
@@ -124,20 +122,158 @@ Begin VB.Form frmConfiguration
       TabPicture(6)   =   "frmConfiguration.frx":00B4
       Tab(6).ControlEnabled=   0   'False
       Tab(6).Control(0)=   "Frame2"
-      Tab(6).Control(0).Enabled=   0   'False
       Tab(6).ControlCount=   1
+      TabCaption(7)   =   "&Overnight"
+      TabPicture(7)   =   "frmConfiguration.frx":00D0
+      Tab(7).ControlEnabled=   -1  'True
+      Tab(7).Control(0)=   "fraOvernight"
+      Tab(7).Control(0).Enabled=   0   'False
+      Tab(7).ControlCount=   1
+      Begin VB.Frame fraOvernight 
+         Caption         =   "Overnight Job :"
+         Height          =   3285
+         Left            =   150
+         TabIndex        =   87
+         Top             =   400
+         Width           =   6465
+         Begin VB.ComboBox cboArchiveColumn 
+            Height          =   315
+            Left            =   2355
+            Style           =   2  'Dropdown List
+            TabIndex        =   93
+            Top             =   2040
+            Width           =   2505
+         End
+         Begin VB.CheckBox chkIgnoreArchived 
+            Caption         =   "Ignore archi&ved personnel records"
+            Height          =   285
+            Left            =   195
+            TabIndex        =   92
+            Top             =   1650
+            Width           =   3510
+         End
+         Begin COASpinner.COA_Spinner spnBatchSize 
+            Height          =   300
+            Left            =   1545
+            TabIndex        =   89
+            Top             =   735
+            Width           =   1035
+            _ExtentX        =   1826
+            _ExtentY        =   529
+            BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            Increment       =   100
+            MaximumValue    =   10000
+            Text            =   "0"
+         End
+         Begin VB.CheckBox chkReorganiseIndexes 
+            Caption         =   "De&fragment indexes in overnight job"
+            Height          =   285
+            Left            =   195
+            TabIndex        =   91
+            Top             =   1200
+            Width           =   3660
+         End
+         Begin TDBMask6Ctl.TDBMask TDBMaskTime 
+            Height          =   300
+            Left            =   1560
+            TabIndex        =   88
+            Top             =   300
+            Width           =   1035
+            _Version        =   65536
+            _ExtentX        =   1826
+            _ExtentY        =   529
+            Caption         =   "frmConfiguration.frx":00EC
+            BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            Keys            =   "frmConfiguration.frx":0151
+            AlignHorizontal =   0
+            AlignVertical   =   0
+            Appearance      =   1
+            AllowSpace      =   -1
+            AutoConvert     =   -1
+            BackColor       =   -2147483643
+            BorderStyle     =   1
+            ClipMode        =   0
+            CursorPosition  =   -1
+            DataProperty    =   0
+            EditMode        =   0
+            Enabled         =   -1
+            ErrorBeep       =   0
+            ForeColor       =   -2147483640
+            Format          =   "99:99:99"
+            HighlightText   =   0
+            IMEMode         =   0
+            IMEStatus       =   0
+            LookupMode      =   0
+            LookupTable     =   ""
+            MarginBottom    =   1
+            MarginLeft      =   1
+            MarginRight     =   1
+            MarginTop       =   1
+            MousePointer    =   0
+            MoveOnLRKey     =   0
+            OLEDragMode     =   0
+            OLEDropMode     =   0
+            PromptChar      =   "0"
+            ReadOnly        =   0
+            ShowContextMenu =   -1
+            ShowLiterals    =   0
+            TabAction       =   0
+            Text            =   "00:00:00"
+            Value           =   ""
+         End
+         Begin VB.Label lblArchivedColumn 
+            Caption         =   "Archive Date Column :"
+            Height          =   300
+            Left            =   195
+            TabIndex        =   95
+            Top             =   2100
+            Width           =   2115
+         End
+         Begin VB.Label lblBatchSize 
+            Caption         =   "Batch Size :"
+            Height          =   315
+            Left            =   195
+            TabIndex        =   94
+            Top             =   765
+            Width           =   1245
+         End
+         Begin VB.Label lblOccurs 
+            Caption         =   "Start Time : "
+            Height          =   255
+            Left            =   195
+            TabIndex        =   90
+            Top             =   360
+            Width           =   1215
+         End
+      End
       Begin VB.Frame Frame2 
          Caption         =   "Web Information :"
          Height          =   5020
          Left            =   -74850
-         TabIndex        =   88
+         TabIndex        =   84
          Top             =   400
          Width           =   6465
          Begin VB.TextBox txtWebSiteAddress 
             Height          =   315
             IMEMode         =   3  'DISABLE
             Left            =   1950
-            TabIndex        =   89
+            TabIndex        =   85
             Top             =   300
             Width           =   4275
          End
@@ -145,7 +281,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "Web Site Address :"
             Height          =   240
             Left            =   195
-            TabIndex        =   90
+            TabIndex        =   86
             Top             =   360
             Width           =   1665
          End
@@ -154,14 +290,14 @@ Begin VB.Form frmConfiguration
          Caption         =   "Defaults :"
          Height          =   5020
          Left            =   -74850
-         TabIndex        =   84
+         TabIndex        =   80
          Top             =   400
          Width           =   6465
          Begin VB.CommandButton cmdDefaultScreenFont 
             Caption         =   "..."
             Height          =   315
             Left            =   3750
-            TabIndex        =   87
+            TabIndex        =   83
             ToolTipText     =   "Select Path"
             Top             =   285
             Width           =   330
@@ -171,7 +307,7 @@ Begin VB.Form frmConfiguration
             Enabled         =   0   'False
             Height          =   300
             Left            =   1065
-            TabIndex        =   86
+            TabIndex        =   82
             Top             =   300
             Width           =   2700
          End
@@ -179,7 +315,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "Font :"
             Height          =   255
             Left            =   195
-            TabIndex        =   85
+            TabIndex        =   81
             Top             =   360
             Width           =   885
          End
@@ -188,14 +324,14 @@ Begin VB.Form frmConfiguration
          Caption         =   "Database Settings : "
          Height          =   2055
          Left            =   -74850
-         TabIndex        =   77
+         TabIndex        =   73
          Top             =   3375
          Width           =   6465
          Begin VB.CheckBox chkDisableSpecialFunctionAutoUpdate 
             Caption         =   "Di&sable immediate update of columns using the following functions :"
             Height          =   285
             Left            =   180
-            TabIndex        =   78
+            TabIndex        =   74
             Top             =   315
             Width           =   6180
          End
@@ -203,14 +339,14 @@ Begin VB.Form frmConfiguration
             Caption         =   "Manual Recursion Level :"
             Height          =   285
             Left            =   180
-            TabIndex        =   80
+            TabIndex        =   76
             Top             =   1515
             Width           =   2445
          End
          Begin COASpinner.COA_Spinner spnTriggelLevel 
             Height          =   315
             Left            =   2700
-            TabIndex        =   81
+            TabIndex        =   77
             Top             =   1515
             Width           =   915
             _ExtentX        =   1614
@@ -230,10 +366,10 @@ Begin VB.Form frmConfiguration
             Text            =   "8"
          End
          Begin VB.Label chkSpecialFunctions 
-            Caption         =   $"frmConfiguration.frx":00D0
+            Caption         =   $"frmConfiguration.frx":0193
             Height          =   795
             Left            =   615
-            TabIndex        =   79
+            TabIndex        =   75
             Top             =   615
             Width           =   3000
             WordWrap        =   -1  'True
@@ -255,7 +391,7 @@ Begin VB.Form frmConfiguration
             _Version        =   65536
             _ExtentX        =   1667
             _ExtentY        =   529
-            Caption         =   "frmConfiguration.frx":0161
+            Caption         =   "frmConfiguration.frx":0224
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -265,7 +401,7 @@ Begin VB.Form frmConfiguration
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            Keys            =   "frmConfiguration.frx":01C6
+            Keys            =   "frmConfiguration.frx":0289
             AlignHorizontal =   0
             AlignVertical   =   0
             Appearance      =   1
@@ -311,7 +447,7 @@ Begin VB.Form frmConfiguration
             _Version        =   65536
             _ExtentX        =   1826
             _ExtentY        =   529
-            Caption         =   "frmConfiguration.frx":0208
+            Caption         =   "frmConfiguration.frx":02CB
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -321,7 +457,7 @@ Begin VB.Form frmConfiguration
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            Keys            =   "frmConfiguration.frx":026D
+            Keys            =   "frmConfiguration.frx":0330
             AlignHorizontal =   0
             AlignVertical   =   0
             Appearance      =   1
@@ -367,7 +503,7 @@ Begin VB.Form frmConfiguration
             _Version        =   65536
             _ExtentX        =   1667
             _ExtentY        =   529
-            Caption         =   "frmConfiguration.frx":02AF
+            Caption         =   "frmConfiguration.frx":0372
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -377,7 +513,7 @@ Begin VB.Form frmConfiguration
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            Keys            =   "frmConfiguration.frx":0314
+            Keys            =   "frmConfiguration.frx":03D7
             AlignHorizontal =   0
             AlignVertical   =   0
             Appearance      =   1
@@ -423,7 +559,7 @@ Begin VB.Form frmConfiguration
             _Version        =   65536
             _ExtentX        =   1826
             _ExtentY        =   529
-            Caption         =   "frmConfiguration.frx":0356
+            Caption         =   "frmConfiguration.frx":0419
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -433,7 +569,7 @@ Begin VB.Form frmConfiguration
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            Keys            =   "frmConfiguration.frx":03BB
+            Keys            =   "frmConfiguration.frx":047E
             AlignHorizontal =   0
             AlignVertical   =   0
             Appearance      =   1
@@ -507,86 +643,6 @@ Begin VB.Form frmConfiguration
             Width           =   1470
          End
       End
-      Begin VB.Frame fraTime 
-         Caption         =   "Overnight Processing :"
-         Height          =   1365
-         Left            =   -74850
-         TabIndex        =   73
-         Top             =   1920
-         Width           =   6465
-         Begin VB.CheckBox chkReorganiseIndexes 
-            Caption         =   "De&fragment indexes in overnight job"
-            Height          =   285
-            Left            =   225
-            TabIndex        =   76
-            Top             =   675
-            Width           =   3660
-         End
-         Begin TDBMask6Ctl.TDBMask TDBMaskTime 
-            Height          =   300
-            Left            =   1560
-            TabIndex        =   75
-            Top             =   300
-            Width           =   1035
-            _Version        =   65536
-            _ExtentX        =   1826
-            _ExtentY        =   529
-            Caption         =   "frmConfiguration.frx":03FD
-            BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            Keys            =   "frmConfiguration.frx":0462
-            AlignHorizontal =   0
-            AlignVertical   =   0
-            Appearance      =   1
-            AllowSpace      =   -1
-            AutoConvert     =   -1
-            BackColor       =   -2147483643
-            BorderStyle     =   1
-            ClipMode        =   0
-            CursorPosition  =   -1
-            DataProperty    =   0
-            EditMode        =   0
-            Enabled         =   -1
-            ErrorBeep       =   0
-            ForeColor       =   -2147483640
-            Format          =   "99:99:99"
-            HighlightText   =   0
-            IMEMode         =   0
-            IMEStatus       =   0
-            LookupMode      =   0
-            LookupTable     =   ""
-            MarginBottom    =   1
-            MarginLeft      =   1
-            MarginRight     =   1
-            MarginTop       =   1
-            MousePointer    =   0
-            MoveOnLRKey     =   0
-            OLEDragMode     =   0
-            OLEDropMode     =   0
-            PromptChar      =   "0"
-            ReadOnly        =   0
-            ShowContextMenu =   -1
-            ShowLiterals    =   0
-            TabAction       =   0
-            Text            =   "00:00:00"
-            Value           =   ""
-         End
-         Begin VB.Label lblOccurs 
-            Caption         =   "Start Time : "
-            Height          =   255
-            Left            =   195
-            TabIndex        =   74
-            Top             =   360
-            Width           =   1215
-         End
-      End
       Begin VB.Frame frmDeveloperAFD 
          Caption         =   "AFD Evaluation :"
          Height          =   1250
@@ -657,9 +713,9 @@ Begin VB.Form frmConfiguration
          Width           =   6465
          Begin VB.ComboBox cboNodeSize 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":04A4
+            ItemData        =   "frmConfiguration.frx":04C0
             Left            =   1920
-            List            =   "frmConfiguration.frx":04A6
+            List            =   "frmConfiguration.frx":04C2
             Style           =   2  'Dropdown List
             TabIndex        =   48
             Top             =   700
@@ -667,9 +723,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboColours 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":04A8
+            ItemData        =   "frmConfiguration.frx":04C4
             Left            =   1920
-            List            =   "frmConfiguration.frx":04AA
+            List            =   "frmConfiguration.frx":04C6
             Style           =   2  'Dropdown List
             TabIndex        =   46
             Top             =   300
@@ -758,9 +814,9 @@ Begin VB.Form frmConfiguration
          Width           =   6465
          Begin VB.ComboBox cboProcessMethod 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":04AC
+            ItemData        =   "frmConfiguration.frx":04C8
             Left            =   2010
-            List            =   "frmConfiguration.frx":04AE
+            List            =   "frmConfiguration.frx":04CA
             Style           =   2  'Dropdown List
             TabIndex        =   25
             Top             =   300
@@ -805,7 +861,7 @@ Begin VB.Form frmConfiguration
             ForeColor       =   &H000000FF&
             Height          =   915
             Left            =   225
-            TabIndex        =   83
+            TabIndex        =   79
             Top             =   1980
             Visible         =   0   'False
             Width           =   4650
@@ -816,7 +872,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "Method :"
             Height          =   195
             Left            =   195
-            TabIndex        =   82
+            TabIndex        =   78
             Top             =   360
             Width           =   645
          End
@@ -965,7 +1021,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraEmailSetup 
          Caption         =   "Setup :"
          Height          =   2535
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
          Top             =   400
          Width           =   6465
@@ -979,9 +1035,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboEmailMethod 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":04B0
+            ItemData        =   "frmConfiguration.frx":04CC
             Left            =   1875
-            List            =   "frmConfiguration.frx":04B2
+            List            =   "frmConfiguration.frx":04CE
             Style           =   2  'Dropdown List
             TabIndex        =   2
             Top             =   270
@@ -989,9 +1045,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboEmailProfile 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":04B4
+            ItemData        =   "frmConfiguration.frx":04D0
             Left            =   1875
-            List            =   "frmConfiguration.frx":04B6
+            List            =   "frmConfiguration.frx":04D2
             Style           =   2  'Dropdown List
             TabIndex        =   4
             Top             =   700
@@ -1055,7 +1111,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraEmailOptions 
          Caption         =   "Options :"
          Height          =   1190
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   14
          Top             =   4240
          Width           =   6465
@@ -1101,9 +1157,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboEmailDateFormat 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":04B8
+            ItemData        =   "frmConfiguration.frx":04D4
             Left            =   1875
-            List            =   "frmConfiguration.frx":04BA
+            List            =   "frmConfiguration.frx":04D6
             Style           =   2  'Dropdown List
             TabIndex        =   16
             Top             =   300
@@ -1133,7 +1189,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraTestSQLMail 
          Caption         =   "Test :"
          Height          =   1190
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   10
          Top             =   3000
          Width           =   6465
@@ -1227,6 +1283,13 @@ Private Sub cboBitmapLocation_Populate()
   AddItemToComboBox cboBitmapLocation, "Bottom Tile", 6
   AddItemToComboBox cboBitmapLocation, "Tile", 7
 
+End Sub
+
+Private Sub cboArchiveColumn_Click()
+  If Not mblnLoading Then
+    Application.ChangedOvernightJobSchedule = True
+    Changed = True
+  End If
 End Sub
 
 Private Sub cboBitmapLocation_Click()
@@ -1479,6 +1542,13 @@ Private Sub chkAllowQAddressEvaluation_Click()
 If Not mblnLoading Then Changed = True
 End Sub
 
+Private Sub chkIgnoreArchived_Click()
+  If Not mblnLoading Then
+    Application.ChangedOvernightJobSchedule = True
+    Changed = True
+  End If
+End Sub
+
 Private Sub chkDisableSpecialFunctionAutoUpdate_Click()
   If Not mblnLoading Then Changed = True
 End Sub
@@ -1550,7 +1620,7 @@ If Changed = True Or cmdOK.Enabled Then
     'after its been unloaded in cmdOK_Click, changed to Screen.MousePointer
     'Me.MousePointer = vbHourglass
     Screen.MousePointer = vbHourglass
-    cmdOK_Click 'This is just like saving
+    cmdOk_Click 'This is just like saving
     Screen.MousePointer = vbDefault
     'Me.MousePointer = vbNormal
     Exit Sub
@@ -1640,7 +1710,7 @@ ErrorTrap:
 
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
 
   Dim lngMethod As Long
   Dim iTestProcess As ProcessAccountStatus
@@ -1764,7 +1834,10 @@ Private Sub cmdOK_Click()
   SaveSystemSetting "Development", "QAddress_Evaluation_Seed", txtQAddressSeedValue.Text
   
   glngOvernightJobTime = ConvertStringToTime(TDBMaskTime.Text)
-  
+  SaveSystemSetting "Overnight", "batchsize", spnBatchSize.value
+  SaveSystemSetting "Overnight", "ignorearchived", IIf(chkIgnoreArchived.value = vbChecked, 1, 0)
+  SaveSystemSetting "Overnight", "archivecolumn", cboArchiveColumn.ItemData(cboArchiveColumn.ListIndex)
+
   
   'MH20040301
   glngAMStartTime = ConvertStringToTime(TDBAMStartTime.Text)
@@ -2068,11 +2141,17 @@ Private Sub Form_Load()
   txtQAddressSeedValue.Text = GetSystemSetting("Development", "QAddress_Evaluation_Seed", "AL1 5ST")
 
   'Overnight Job Schedule Tab
-  fraTime.Enabled = ((Not blnReadonly) And (blnIsSAUser))
+  fraOvernight.Enabled = ((Not blnReadonly) And (blnIsSAUser))
   lblOccurs.Enabled = ((Not blnReadonly) And (blnIsSAUser))
   TDBMaskTime.Enabled = ((Not blnReadonly) And (blnIsSAUser))
   TDBMaskTime.Text = ConvertTimeToString(glngOvernightJobTime, 6)
   chkReorganiseIndexes.value = IIf(gbReorganiseIndexesInOvernightJob, vbChecked, vbUnchecked)
+  lblBatchSize.Enabled = ((Not blnReadonly) And (blnIsSAUser))
+  spnBatchSize.Enabled = ((Not blnReadonly) And (blnIsSAUser))
+  spnBatchSize.value = GetSystemSetting("overnight", "batchsize", 1000)
+  chkIgnoreArchived.Enabled = ((Not blnReadonly) And (blnIsSAUser))
+  chkIgnoreArchived.value = IIf(GetSystemSetting("overnight", "ignorearchived", 0), vbChecked, vbUnchecked)
+  cboArchiveColumn_Populate (GetSystemSetting("overnight", "archivecolumn", 0))
   
   'MH20040301
   TDBAMStartTime.Text = ConvertTimeToString(glngAMStartTime, 4)
@@ -2258,6 +2337,13 @@ Private Sub Form_Resize()
 
 End Sub
 
+Private Sub spnBatchSize_Click()
+  If Not mblnLoading Then
+    Application.ChangedOvernightJobSchedule = True
+    Changed = True
+  End If
+End Sub
+
 Private Sub spnTriggelLevel_Click()
   If Not mblnLoading Then Changed = True
 End Sub
@@ -2277,9 +2363,10 @@ Private Sub SSTab1_Click(PreviousTab As Integer)
     frmDeveloperAFD.Enabled = (SSTab1.Tab = 3)
     fraQuickAddress.Enabled = (SSTab1.Tab = 3)
     
-    fraTime.Enabled = (SSTab1.Tab = 4)
     fraOutlookCalendar.Enabled = (SSTab1.Tab = 4)
     fraAdvancedSettings.Enabled = (SSTab1.Tab = 4)
+
+    fraOvernight.Enabled = (SSTab1.Tab = 7)
 
 End Sub
 
@@ -2658,3 +2745,44 @@ End Property
 Private Sub txtWebSiteAddress_Change()
   If Not mblnLoading Then Changed = True
 End Sub
+
+Private Sub cboArchiveColumn_Populate(ByVal defaultColumnId As Long)
+
+  Dim lngPersonnelTableID As Long
+  lngPersonnelTableID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE, 0)
+
+
+  cboArchiveColumn.Clear
+
+  With recColEdit
+    .Index = "idxName"
+    .Seek ">=", lngPersonnelTableID
+
+    If Not .NoMatch Then
+      ' Add items to the combos for each column that has not been deleted,
+      ' or is a system or link column.
+      Do While Not .EOF
+        If !TableID <> lngPersonnelTableID Then
+          Exit Do
+        End If
+        
+        If (Not !Deleted) And _
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
+          
+          ' Only load boolean fields into the list
+          If !DataType = dtTIMESTAMP Then
+            cboArchiveColumn.AddItem !ColumnName
+            cboArchiveColumn.ItemData(cboArchiveColumn.NewIndex) = !ColumnID
+          End If
+        End If
+        
+        .MoveNext
+      Loop
+    End If
+  End With
+
+  SetComboItem cboArchiveColumn, defaultColumnId
+
+End Sub
+
