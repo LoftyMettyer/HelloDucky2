@@ -749,32 +749,35 @@ Public Function EncryptQueryString(plngInstanceID As Long, _
   Dim sEncryptedString As String
   Dim sSourceString As String
   Dim sServerName As String
-  Dim sSQL As String
-  Dim rsTemp As ADODB.Recordset
-  Dim datData As clsDataAccess
+  Dim sDBName As String
+  Dim cmADO As ADODB.Command
+  Dim pmADO As ADODB.Parameter
 
   Const ENCRYPTIONKEY = "jmltn"
   
-  'JPD 20060713 Fault 11324
-  ' Get the server name - gsServerName may be '.'
-  ' which screws up the Workflow queryString if the web site is not
-  ' on the same server as the SQL database.
-  Set datData = New DataMgr.clsDataAccess
-  'sSQL = "SELECT @@SERVERNAME AS [serverName]"
-  sSQL = "SELECT SERVERPROPERTY('servername') AS [serverName]"
-  Set rsTemp = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
+  ' (NPG)TFS 23821: Fetch database and server name from shared stored proc
+  ' to ensure that they remain consistent between apps.
+  Set cmADO = New ADODB.Command
+  With cmADO
+    .CommandText = "spASRGetSQLMetaData"
+    .CommandType = adCmdStoredProc
+    .CommandTimeout = 0
+    Set .ActiveConnection = gADOCon
 
-  If Not (rsTemp.BOF And rsTemp.EOF) Then
-    If IsNull(rsTemp!serverName) Then
-      sServerName = gsServerName
-    Else
-      sServerName = rsTemp!serverName
-    End If
-  Else
-    sServerName = gsServerName
-  End If
-  Set rsTemp = Nothing
-  Set datData = Nothing
+    Set pmADO = .CreateParameter("ServerName", adVarChar, adParamOutput, 128)
+    .Parameters.Append pmADO
+
+    Set pmADO = .CreateParameter("DBName", adVarChar, adParamOutput, 128)
+    .Parameters.Append pmADO
+
+    Set pmADO = Nothing
+
+    .Execute
+    
+    sServerName = .Parameters(0).Value
+    sDBName = .Parameters(1).Value
+  End With
+  Set cmADO = Nothing
 
   sKey = ENCRYPTIONKEY
   sSourceString = CStr(plngInstanceID) & _
@@ -782,13 +785,8 @@ Public Function EncryptQueryString(plngInstanceID As Long, _
     vbTab & psUser & _
     vbTab & psPassword & _
     vbTab & sServerName & _
-    vbTab & gsDatabaseName
+    vbTab & sDBName
     
-  'JPD 20070501 Fault 11784
-  ''JPD 20060918 Fault 11502
-  ''sEncryptedString = EncryptString(sSourceString, sKey, True)
-  'sEncryptedString = EncryptString(sSourceString, sKey, False)
-  'sEncryptedString = ProcessEncryptString(sEncryptedString)
   sEncryptedString = EncryptString(sSourceString, sKey, True)
   sEncryptedString = CompactString(sEncryptedString)
 

@@ -64,13 +64,41 @@ Public Class Database
         End Using
     End Function
 
-    Public Function ServiceLoginIsSameAsWorkflowURL(url As WorkflowUrl) As Boolean
-      Return (url.Database = App.Config.Database And url.Server = App.Config.Server) _
-        Or (url.Database = "" And url.Server = "")
-      Return True
-    End Function
+   Public Function SQLDetailsMatchWorkflowUrl(url As WorkflowUrl) As Boolean
 
-    Public Function IsMobileModuleInstalled() As Boolean
+      Dim _sqlMetaData As SQLMetaData
+      _sqlMetaData = GetSQLMetaData()
+
+      Return (url.Database = _sqlMetaData.DatabaseName And url.Server = _sqlMetaData.ServerName)
+
+   End Function
+
+   Public Function GetSQLMetaData() As SQLMetaData
+
+      Using conn As New SqlConnection(_connectionString)
+         conn.Open()
+
+         Dim cmd As New SqlCommand("spASRGetSQLMetadata", conn)
+         cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
+
+         cmd.Parameters.Add("@sServerName", SqlDbType.NVarChar, 128).Direction = ParameterDirection.Output
+
+         cmd.Parameters.Add("@sDBName", SqlDbType.NVarChar, 128).Direction = ParameterDirection.Output
+
+         cmd.ExecuteNonQuery()
+
+         Dim result As New SQLMetaData
+         result.ServerName = NullSafeString(cmd.Parameters("@sServerName").Value())
+         result.DatabaseName = NullSafeString(cmd.Parameters("@sDBName").Value())
+         Return result
+
+      End Using
+
+   End Function
+
+
+   Public Function IsMobileModuleInstalled() As Boolean
 
         Using conn As New SqlConnection(_connectionString)
             conn.Open()
@@ -993,49 +1021,54 @@ Public Class WorkflowForm
 End Class
 
 Public Class FormItem
-	Public Id As Integer
-	Public Value As String
-	Public ItemType As Integer
-	Public Caption As String
-	Public InputSize As Integer
-	Public InputDecimals As Integer
-	Public Left As Integer
-	Public Top As Integer
-	Public Width As Integer
-	Public Height As Integer
-	Public TabIndex As Short
-	Public PageNo As Integer
-	Public PictureId As Integer
-	Public PictureBorder As Boolean
-	Public FontName As String
-	Public FontSize As Integer
-	Public FontBold As Boolean
-	Public FontItalic As Boolean
-	Public FontUnderline As Boolean
-	Public FontStrikeThru As Boolean
-	Public ForeColor As Integer
-	Public BackStyle As Integer
-	Public BackColor As Integer
-	Public LookupFilterColumnName As String
-	Public LookupFilterColumnDataType As Integer
-	Public LookupFilterOperator As Integer
-	Public LookupFilterValueId As String
-	Public LookupFilterValueType As String
-	Public ColumnHeaders As Boolean
-	Public HeadFontSize As Integer
-	Public HeadLines As Integer
-	Public HeaderBackColor As Integer
-	Public ForeColorEven As Integer
-	Public ForeColorOdd As Integer
-	Public BackColorEven As Integer
-	Public BackColorOdd As Integer
-	Public ForeColorHighlight As Integer?
-	Public BackColorHighlight As Integer?
-	Public SourceItemType As Integer
-	Public CaptionType As Integer
-	Public PasswordType As Boolean
-	Public Orientation As Integer
-	Public Alignment As Integer
-	Public HotSpotIdentifier As String
-	Public Identifier As String
+   Public Id As Integer
+   Public Value As String
+   Public ItemType As Integer
+   Public Caption As String
+   Public InputSize As Integer
+   Public InputDecimals As Integer
+   Public Left As Integer
+   Public Top As Integer
+   Public Width As Integer
+   Public Height As Integer
+   Public TabIndex As Short
+   Public PageNo As Integer
+   Public PictureId As Integer
+   Public PictureBorder As Boolean
+   Public FontName As String
+   Public FontSize As Integer
+   Public FontBold As Boolean
+   Public FontItalic As Boolean
+   Public FontUnderline As Boolean
+   Public FontStrikeThru As Boolean
+   Public ForeColor As Integer
+   Public BackStyle As Integer
+   Public BackColor As Integer
+   Public LookupFilterColumnName As String
+   Public LookupFilterColumnDataType As Integer
+   Public LookupFilterOperator As Integer
+   Public LookupFilterValueId As String
+   Public LookupFilterValueType As String
+   Public ColumnHeaders As Boolean
+   Public HeadFontSize As Integer
+   Public HeadLines As Integer
+   Public HeaderBackColor As Integer
+   Public ForeColorEven As Integer
+   Public ForeColorOdd As Integer
+   Public BackColorEven As Integer
+   Public BackColorOdd As Integer
+   Public ForeColorHighlight As Integer?
+   Public BackColorHighlight As Integer?
+   Public SourceItemType As Integer
+   Public CaptionType As Integer
+   Public PasswordType As Boolean
+   Public Orientation As Integer
+   Public Alignment As Integer
+   Public HotSpotIdentifier As String
+   Public Identifier As String
+End Class
+
+Public Class SQLMetaData
+   Public DatabaseName As String
+   Public ServerName As String
 End Class

@@ -1991,6 +1991,20 @@ BEGIN
 END'
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - SQL Metadata Stored Proc'
+/* ------------------------------------------------------- */
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRSQLMetadata]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].spASRSQLMetadata;
+	EXEC sp_executesql N'CREATE PROCEDURE [dbo].[spASRGetSQLMetadata](
+	@sServerName nvarchar(128) OUTPUT,
+	@sDBName nvarchar(128) OUTPUT)
+	AS
+	BEGIN
+			SET @sServerName = CONVERT(nvarchar(128), SERVERPROPERTY(''ServerName''));
+			SET @sDBName = db_name();
+	END'
 
 
 /* ------------------------------------------------------- */
