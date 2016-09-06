@@ -35,7 +35,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="IisConfiguration.wxs" />
-    <Compile Include="OpenHRWorkflow.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="UIDialogs.wxs" />
     <Compile Include="WixUI_OpenHRWorkflow.wxs" />
@@ -88,6 +87,6 @@
   <Target Name="AfterBuild">
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>"c:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /f "$(ProjectDir)AdvancedPrivateCertificate.pfx" /p fowler /t http://timestamp.verisign.com/scripts/timstamp.dll /d "$(TargetFileName)" "$(TargetDir)$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>"C:\Program Files (x86)\Windows Kits\10\bin\x86\signtool" sign /f "$(ProjectDir)AdvancedPrivateCertificate.pfx" /p fowler /t http://timestamp.verisign.com/scripts/timstamp.dll /d "$(TargetFileName)" "$(TargetDir)$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
