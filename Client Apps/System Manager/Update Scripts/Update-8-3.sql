@@ -2296,7 +2296,8 @@ PRINT 'Step - Performance Improvements'
 
 	-- Default the overnight stop process to the personnel leaving date
 	DECLARE @overnightColumn int,
-			@batchsize int;
+			@batchsize int,
+			@ignoreArchive bit;
 
 	SELECT @overnightColumn = SettingValue
 		FROM ASRSysSystemSettings
@@ -2318,6 +2319,14 @@ PRINT 'Step - Performance Improvements'
 
 	IF @batchsize IS NULL
 		EXEC spsys_setsystemsetting 'overnight', 'batchsize', 1000;
+
+
+	SELECT @ignoreArchive = SettingValue
+		FROM ASRSysSystemSettings
+		WHERE Section = 'overnight' AND SettingKey = 'ignorearchived';
+
+	IF @ignoreArchive IS NULL
+		EXEC spsys_setsystemsetting 'overnight', 'ignorearchived', 0;
 
 
 /* ------------------------------------------------------- */
