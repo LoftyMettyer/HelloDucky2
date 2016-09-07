@@ -8,7 +8,9 @@ Namespace API
       End Sub
 
       Public Shared Sub RegisterRoutes()
-         RouteTable.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{action}/{id}", New With {.id = RouteParameter.Optional})
+            'Routes
+            RouteTable.Routes.MapHttpRoute("Route1", "api/{controller}/{action}/{id}", New With {.id = RouteParameter.Optional}) 'For requests with the format "/api/task/"
+            RouteTable.Routes.MapHttpRoute("Route2", "{controller}/{action}", New With {.id = RouteParameter.Optional}) 'For requests with the format "/api/manage/ping"
       End Sub
    End Class
 End Namespace

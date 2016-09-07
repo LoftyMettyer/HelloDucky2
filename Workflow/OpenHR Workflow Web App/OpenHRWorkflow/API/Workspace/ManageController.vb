@@ -7,17 +7,21 @@ Namespace API.Workspace
    Public Class ManageController
       Inherits ApiController
 
-      Private Class FeedParticipantPingResponse
+      Public Class FeedParticipantPingResponse
          Inherits FeedParticipantResponseBase
 
          Public data As String
       End Class
 
-      <HttpGet>
-      Function Ping() As String
-         Dim FeedParticipantResponse As New FeedParticipantPingResponse With {.result = "SUCCESS", .message = "Ping Response", .data = Nothing}
+      Public Class FeedParticipantPingResponseWrapper
+         Public FeedParticipantPingResponse As FeedParticipantPingResponse
+      End Class
 
-         Return JsonConvert.SerializeObject(New With {FeedParticipantResponse})
+      <HttpGet>
+      Public Function Ping() As FeedParticipantPingResponseWrapper
+         Dim FeedParticipantPingResponse As New FeedParticipantPingResponse With {.result = "SUCCESS", .message = "Ping Response", .data = Nothing}
+
+         Return New FeedParticipantPingResponseWrapper() With {.FeedParticipantPingResponse = FeedParticipantPingResponse}
       End Function
    End Class
- End Namespace
+End Namespace
