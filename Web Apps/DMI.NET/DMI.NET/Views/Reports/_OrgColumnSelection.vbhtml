@@ -219,7 +219,7 @@
       datarow.FontSize = 11;
 
       if (datarow.DataType == -3) {
-         datarow.Height = 3
+         datarow.Height = 4
       }
       else {
          datarow.Height = 1;
@@ -586,7 +586,7 @@
 
       dataRow.Height = $("#SelectedColumnHeight").val();
       if (dataRow.Height == "" && dataRow.DataType != -3) { dataRow.Height = 1 }; //If Height is empty then set to 1
-      if (dataRow.Height == "" && dataRow.DataType == -3) { dataRow.Height = 3 };
+      if (dataRow.Height == "" && dataRow.DataType == -3) { dataRow.Height = 4 };
 
       dataRow.FontSize = $("#SelectedColumnFontSize").val();
       if (dataRow.FontSize == "") { dataRow.FontSize = 11 }; //If fontSize is empty then set to 1
@@ -721,7 +721,7 @@
                $("#SelectedColumnHeight").val(1);
             }
             if ($("#SelectedColumnHeight").val() == "" && dataRow.DataType == -3) {
-               $("#SelectedColumnHeight").val(3);
+               $("#SelectedColumnHeight").val(4);
             }
 
             if (dataRow.IsGroupWithNext == "true") {
@@ -800,7 +800,7 @@
       // Check ViewID of next column
       // Check TableID of Next Column
       // Check If Selected Column or Next Column is not PhotoType
-      if (dataRow.ViewID == NextRowIndex.ViewID && dataRow.TableID == NextRowIndex.TableID && dataRow.DataType != -3 && NextRowIndex.DataType != -3) {
+      if (dataRow.ViewID == NextRowIndex.ViewID && dataRow.DataType != -3 && NextRowIndex.DataType != -3) {
          CanConcatenate = true;
       }
       else {
@@ -883,9 +883,12 @@
          else { var Min = 1; }
 
          var Max = 6;
+         var DefaultValue = 4;
 
          if ((sender.target.value == "") || (sender.target.value < Min) || (sender.target.value > Max)) {
-            OpenHR.modalMessage("Enter height (rows) between " + Min + " and " + Max); sender.target.value = Min;
+            OpenHR.modalMessage("Enter height (rows) between " + Min + " and " + Max); 
+            sender.target.value = Min;
+            if ((dataRow.DataType == -3)) {sender.target.value = 4 };
             $(sender.target.id).focus();
          }
       });
