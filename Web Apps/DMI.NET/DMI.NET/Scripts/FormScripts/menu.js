@@ -5310,7 +5310,7 @@ function RefreshFindWindowRibbonButtons(isNonMultiFindLinkType, isNonEditableGri
 			selectedRecordId = 0;
 		}
 
-		var fMnutoolNewRecordFind = (frmFind.txtInsertGranted.value.toUpperCase() == "TRUE" && isDmiUser);
+		var fMnutoolNewRecordFind = (frmFind.txtInsertGranted.value.toUpperCase() == "TRUE");
 		menu_toolbarEnableItem("mnutoolNewRecordFind", fMnutoolNewRecordFind);
 		menu_toolbarEnableItem("mnutoolCopyRecordFind", (fMnutoolNewRecordFind && selectedRecordId > 0));
 		menu_toolbarEnableItem("mnutoolEditRecordFind", (selectedRecordId > 0));
