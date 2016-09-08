@@ -26,12 +26,14 @@ DECLARE @iCount integer,
     @sSQL varchar(8000),
     @iCurrentUserCount integer,
     @iHRProLockCount integer,
-    @iSQLVersion integer;
+    @iSQLVersion integer,
+    @sRequiredDBVersion varchar(10);
 
 /* -------------------------- */
 /* Set the new version number */
 /* -------------------------- */
 SET @sVersion = '8.1.13'
+SET @sRequiredDBVersion = '8.3'; --increment this with version
 SET NOCOUNT ON;
 
 /* ------------------------------------ */
@@ -41,6 +43,46 @@ SELECT @sDBName = master..sysdatabases.name
 FROM master..sysdatabases
 INNER JOIN master..sysprocesses ON master..sysdatabases.dbid = master..sysprocesses.dbid
 WHERE master..sysprocesses.spid = @@spid
+
+/* Check if the 'ASRSysSystemSettings' table exists. */
+SELECT @iCount = count(Name)
+FROM sysobjects 
+WHERE name = 'ASRSysSystemSettings';
+
+/* --------------------------------------- */
+/* Get the version of the current database */
+/* --------------------------------------- */
+IF @iCount = 1
+BEGIN
+   SELECT @sDBVersion = SettingValue
+   FROM ASRSysSystemSettings
+   WHERE Section = 'database'
+   AND SettingKey = 'version';
+
+   IF @sDBVersion <> @sRequiredDBVersion
+      BEGIN
+          Print '+--------------------------------------------------------------------------+'
+          Print '|                                                                          |'
+          Print '|                            SCRIPT FAILURE                                |'
+          Print '|                                                                          |'
+          Print '| This script should only be run on an up to date database.                |'
+          Print '| Please upgrade the database before running this script.                  |'
+          Print '|                                                                          |'
+          Print '+--------------------------------------------------------------------------+'
+	      SET NOEXEC ON;
+      END
+END
+ELSE
+BEGIN
+   Print '+--------------------------------------------------------------------------+'
+   Print '|                                                                          |'
+   Print '|                            SCRIPT FAILURE                                |'
+   Print '|                                                                          |'
+   Print '| There was an error checking system settings.                             |'
+   Print '|                                                                          |'
+   Print '+--------------------------------------------------------------------------+'
+   SET NOEXEC ON;   
+END
 
 /* -------------------------------------- */
 /* Check SQL Server version compatibility */
