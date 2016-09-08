@@ -46,7 +46,7 @@ Public Enum UtilityType
   utlCustomReport = 2
   utlDataTransfer = 3
   utlExport = 4
-  UtlGlobalAdd = 5
+  utlGlobalAdd = 5
   utlGlobalDelete = 6
   utlGlobalUpdate = 7
   utlImport = 8

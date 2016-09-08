@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmGlobalFunctions 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Global "
@@ -638,11 +638,11 @@ End Property
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOk.Enabled = blnChanged
+  cmdOK.Enabled = blnChanged
 End Property
 
 
@@ -2202,7 +2202,7 @@ End If
     InsertFunction strName, txtDesc, Mid$(Me.Caption, 8, 1), cboTables.ItemData(cboTables.ListIndex), _
       optAllRecords, lFilterID, lPicklistID, lChildID
   
-    Call UtilUpdateLastSaved(iUtilityType, mlFunctionID)
+    Call UtilCreated(iUtilityType, mlFunctionID)
     
   End If
   
@@ -2396,8 +2396,8 @@ Private Function RetreiveDefinition() As Boolean
     mblnReadOnly = False
   Else
     txtName.Text = rsTemp!Name
-    txtUserName = StrConv(Trim$(rsTemp!UserName), vbProperCase)
-    mblnDefinitionCreator = (LCase$(Trim$(rsTemp!UserName)) = LCase$(gsUserName))
+    txtUserName = StrConv(Trim$(rsTemp!userName), vbProperCase)
+    mblnDefinitionCreator = (LCase$(Trim$(rsTemp!userName)) = LCase$(gsUserName))
   End If
   
   If rsTemp!FilterID > 0 Then
@@ -2695,11 +2695,11 @@ Private Sub txtDesc_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtDesc_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtName_Change()
@@ -2756,8 +2756,8 @@ Private Sub FormatForm()
       cmdCancel.Move lngLeft, lngTop
 
       'Command OK
-      lngLeft = lngLeft - (cmdOk.Width + GAP)
-      cmdOk.Move lngLeft, lngTop
+      lngLeft = lngLeft - (cmdOK.Width + GAP)
+      cmdOK.Move lngLeft, lngTop
     End With
 
     SSTab1.Visible = False
@@ -2844,7 +2844,7 @@ Private Function CheckMandatoryColumns() As Boolean
                 strMandatoryColumns & vbCrLf & _
                 "Please enter a source to populate these columns."
     intMBButtons = vbExclamation + vbOKOnly
-    strTitle = App.ProductName
+    strTitle = app.ProductName
     'NHRD14032012 JIRA HRPRO-1852
     SSTab1.Tab = 1
     COAMsgBox strMBText, intMBButtons, strTitle
@@ -2900,7 +2900,7 @@ Public Sub PrintDef(typeGlobal As GlobalType, lFunctionID As Long)
     
         .PrintNormal "Category : " & GetObjectCategory(iUtilityType, mlFunctionID)
         .PrintNormal "Description : " & rsTemp!Description
-        .PrintNormal "Owner : " & rsTemp!UserName
+        .PrintNormal "Owner : " & rsTemp!userName
         
         ' Access section --------------------------------------------------------
         .PrintTitle "Access"
@@ -3098,7 +3098,7 @@ Private Function InsertGlobalFunction(pstrSQL As String) As Long
               
     If Not fSavedOK Then
       COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
-        Err.Description, vbOKOnly + vbExclamation, App.ProductName
+        Err.Description, vbOKOnly + vbExclamation, app.ProductName
         InsertGlobalFunction = 0
         Set cmADO = Nothing
         Exit Function
