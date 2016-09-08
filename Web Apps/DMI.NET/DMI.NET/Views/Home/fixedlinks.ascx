@@ -1128,6 +1128,30 @@
             <%-- Org Reports--%>
             <li class="ui-corner-top"><a id="toolbarOrgReports" href="#" rel="Find">Organisation Reports</a>
                <ul>
+                  <li>
+                     <span>Output</span>
+                     <div class="button" id="divBtnPrintOrgReports">
+                        <a class="mnuBtnPrintOrgChart" href="#" rel="paste" title="Print Organisation Report">
+                           <img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png")%>" alt="" />
+                           <i class="icon-print"></i>
+                           <h6>Print</h6>
+                        </a>
+                     </div>
+                     <div class="button" id="divBtnPrintPreviewOrgReports">
+                        <a class="mnuBtnPrintPreviewOrgChart" href="#" rel="paste" title="Print Preview">
+                           <img src="<%: Url.Content("~/Scripts/officebar/winkit/preview64HOVER.png")%>" alt="" />
+                           <i class="icon-file-alt"></i>
+                           <h6>Print Preview</h6>
+                        </a>
+                     </div>
+                     <%--   <div id="mnutoolSaveRecordOrgReports" class="button">
+                        <a href="#" rel="table" title="Save">
+                           <img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png") %>" alt="" />
+                           <i class="icon-save"></i>
+                           <h6>Save To File</h6>
+                        </a>
+                     </div>--%>
+                  </li>
                   <li><span>Interact</span>
                      <div id="mnutoolOrgReportsExpand" class="button">
                         <a href="#" rel="table" title="Expand all nodes">
