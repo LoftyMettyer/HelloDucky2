@@ -523,7 +523,7 @@ Private Function CreateSP_ResetPassword() As Boolean
     "    ELSE" & vbNewLine & _
     "    BEGIN" & vbNewLine & _
     "      SET @sMessage = 'To reset your password click the link shown below. This will take you to a web page where you can enter a new password.' + CHAR(13) + CHAR(10) +" & vbNewLine & _
-    "            'If you weren''t trying to reset your password, don''t worry — your account is still secure and no one has been given access to it.' + CHAR(13) + CHAR(10) + CHAR(13) + CHAR(10) +" & vbNewLine & _
+    "            'If you weren''t trying to reset your password, don''t worry â€” your account is still secure and no one has been given access to it.' + CHAR(13) + CHAR(10) + CHAR(13) + CHAR(10) +" & vbNewLine & _
     "            '<' + @psWebsiteURL + '?' + @psEncryptedLink + '>';" & vbNewLine & vbNewLine
     
   sProcSQL = sProcSQL & "      INSERT [dbo].[ASRSysEmailQueue](" & vbNewLine & _
@@ -592,22 +592,6 @@ Private Function CreateSP_OrgChart() As Boolean
     "       DECLARE @staff_number VARCHAR(MAX);" & vbNewLine & _
     "       DECLARE @today DATETIME = DATEADD(dd, 0, DATEDIFF(dd, 0,  getdate()));" & vbNewLine & _
     vbNewLine & _
-    "       -- Fetch Absences from DB" & vbNewLine & _
-    "       DECLARE @ids TABLE (id INT, TYPE VARCHAR(50), reason VARCHAR(50));" & vbNewLine & _
-    vbNewLine & _
-    "       -- Get top level manager" & vbNewLine & _
-    "       SELECT @RootID = dbo.udfASRIntOrgChartGetTopLevelID( @RootID);" & vbNewLine & _
-    vbNewLine & _
-    "       INSERT @ids" & vbNewLine & _
-    "       SELECT id_" & CStr(mvar_lngEmployeeTableColumnID) & ", " & mvar_sAbsenceTypeColumn & ", " & mvar_sAbsenceReasonColumn & " FROM " & mvar_sAbsenceTable & " a WHERE a." & mvar_sAbsenceStartDateColumn & " <= @today AND (" & mvar_sAbsenceEndDateColumn & " >= @today OR isnull(" & mvar_sAbsenceEndDateColumn & ", '') = '')" & vbNewLine & _
-    vbNewLine
-
-  sProcSQL = sProcSQL & _
-    "--       -- Fetch Training bookings from DB" & vbNewLine & _
-    "--       DECLARE @trainingIDs TABLE (id INT, course_title VARCHAR(50))" & vbNewLine & _
-    "--       INSERT @trainingIDs" & vbNewLine & _
-    "--              SELECT id_" & CStr(mvar_lngEmployeeTableColumnID) & ", " & mvar_sTBCourseTitleColumn & " FROM " & mvar_sTBTable & vbNewLine & _
-    "--              WHERE " & mvar_sTBStartDateColumn & " <= @today and (" & mvar_sTBEndDateColumn & " >= @today or ISNULL(" & mvar_sTBEndDateColumn & ", '') = '')" & vbNewLine & _
     vbNewLine & _
     "       SELECT @staff_number = " & mvar_sEmployeeNumberColumn & " FROM " & mvar_sEmployeeTable & " WHERE id=@RootID;" & vbNewLine & _
     vbNewLine & _
@@ -624,9 +608,7 @@ Private Function CreateSP_OrgChart() As Boolean
     "       )" & vbNewLine
 
   sProcSQL = sProcSQL & _
-    "       SELECT p.*, a.[type], a.[reason], '' AS course_title FROM Emp_CTE p" & vbNewLine & _
-    "       LEFT JOIN @ids a ON a.id = p.id" & vbNewLine & _
-    "       --LEFT JOIN @trainingIDs t ON t.id = p.ID" & vbNewLine & _
+    "       SELECT p.*, '' AS [type], '' AS [reason], '' AS course_title FROM Emp_CTE p" & vbNewLine & _
     vbNewLine & _
     "    UNION" & vbNewLine & _
     "      SELECT id, " & mvar_sEmployeeForenameColumn & ", " & mvar_sEmployeeSurnameColumn & " AS name, " & mvar_sEmployeeNumberColumn & ", " & mvar_sManagerEmployeeNumberColumn & ", " & mvar_sEmployeeJobTitleColumn & ", 0 AS HierarchyLevel, " & mvar_sEmployeePhotographColumn & "," & vbNewLine & _
