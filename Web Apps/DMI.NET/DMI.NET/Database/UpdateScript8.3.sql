@@ -62237,7 +62237,7 @@ BEGIN
 		   SET @sPost_ID = (SELECT * FROM @sPost_IDColumnVal);		
 		
 		   SET @sSQL = 'WITH Emp_CTE AS (' + CHAR(13) + ' SELECT '+ @sHierarchyLevel + ',' + @sPersonnelTableName+'.ID' + ',' +
-						   @sHierarchyIdentifierColumn + ',' + + @sHierarchyReportsToColumn + ',' + @sPersonnelJobTitle;	
+						   @sHierarchyIdentifierColumn + ',' + @sHierarchyReportsToColumn + ',' + @sPersonnelJobTitle;	
 	   END
 
       -- Build a filter string based on filters selected on filter tab.
@@ -62361,7 +62361,7 @@ BEGIN
 					END
 				ELSE IF CHARINDEX(UPPER(@sHierarchyTableName), UPPER(@sTableString)) > 0
 					BEGIN							
-						SET @sFromString = SUBSTRING ( @sUnionAllSQL ,CHARINDEX('FROM', UPPER(@sUnionAllSQL)) , LEN(@sUnionAllSQL) );
+						SET @sFromString = SUBSTRING ( @sUnionAllSQL ,CHARINDEX(' FROM ', UPPER(@sUnionAllSQL)) , LEN(@sUnionAllSQL) );
 						SET @sUnionAllSQL = REPLACE(@sUnionAllSQL, @sFromString,'');
 						Set @sFromString = REPLACE(UPPER(@sFromString) , @sHierarchyTableName ,' (' + @sHierarchyTableName + 
 						' INNER JOIN Emp_CTE ecte ON '+ UPPER(@sHierarchyCTEColumn) + ' = ' + UPPER(@sHierarchyReportsToColumn) + ')' ) ;							
@@ -62386,7 +62386,7 @@ BEGIN
 			BEGIN				
 				IF @psOrganisationReportType = 'COMMERCIAL'	
 				BEGIN
-					SET @sFromString = SUBSTRING ( @sUnionAllSQL ,CHARINDEX('FROM', UPPER(@sUnionAllSQL)) , LEN(@sUnionAllSQL) );
+					SET @sFromString = SUBSTRING ( @sUnionAllSQL ,CHARINDEX(' FROM ', UPPER(@sUnionAllSQL)) , LEN(@sUnionAllSQL) );
 					SET @sUnionAllSQL = REPLACE(@sUnionAllSQL, @sFromString,'');
 										Set @sFromString = REPLACE(UPPER(@sFromString) , @sPersonnelTableName ,' (' + @sPersonnelTableName + 
 						' INNER JOIN Emp_CTE ecte ON  ' + @sPersonnelCTEColumn + ' = ' + @sPersonnelReportToStaffNoColumn +')' );
