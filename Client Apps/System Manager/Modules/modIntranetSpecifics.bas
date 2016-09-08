@@ -593,6 +593,9 @@ Private Function CreateSP_OrgChart() As Boolean
     "       DECLARE @today DATETIME = DATEADD(dd, 0, DATEDIFF(dd, 0,  getdate()));" & vbNewLine & _
     vbNewLine & _
     vbNewLine & _
+    "       -- Get top level manager" & vbNewLine & _
+    "       SELECT @RootID = dbo.udfASRIntOrgChartGetTopLevelID( @RootID);" & vbNewLine & _
+    vbNewLine & _
     "       SELECT @staff_number = " & mvar_sEmployeeNumberColumn & " FROM " & mvar_sEmployeeTable & " WHERE id=@RootID;" & vbNewLine & _
     vbNewLine & _
     "       WITH Emp_CTE AS (" & vbNewLine & _
