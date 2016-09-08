@@ -69,9 +69,9 @@
                   <label for="SelectedColumnSuffix">Suffix :</label>
                   <span><input type='text' id="SelectedColumnSuffix" maxlength="20" onchange="updateColumnsSelectedGrid();" /></span>
                </div>
-               <div class="formfieldfill fontsizeOnly">
-                  <label for="SelectedColumnFontSize">Font Size :</label>
-                  <span><input type="tel" class="selectFontSize" id="SelectedColumnFontSize" maxlength="2" onchange="updateColumnsSelectedGrid();" /></span>
+               <div class="formfieldfill">
+                  <label class="fontsizeOnly" for="SelectedColumnFontSize">Font Size :</label>
+                  <span><input class="fontsizeOnly" type="tel" id="SelectedColumnFontSize" maxlength="2" onchange="updateColumnsSelectedGrid();" /></span>
                   <div class="formfieldfill HeightOnly">
                      <label for="SelectedColumnHeight"> &nbsp; Height (Rows) :</label>
                      <span><input type="tel" class="selectHeight" id="SelectedColumnHeight" style="width:94%" maxlength="1" onchange="updateColumnsSelectedGrid();" /></span>
@@ -554,6 +554,7 @@
          $(".canGroupWithNext *").prop("disabled", isBottomRow || isReadOnly || isPhotograph);
          $(".OrgReportsOnly *").prop("disabled", isReadOnly || isPhotograph);
          $(".fontsizeOnly *").prop("disabled", isReadOnly || isPhotograph);
+         //$("#SelectedColumnFontSize").prop("disabled", isReadOnly || isPhotograph);
          $(".HeightOnly *").prop("disabled", isReadOnly);
        
 

@@ -454,11 +454,10 @@
 	}
 
 	function setrun(answer) {
-
 		if (answer === 6) {
 
 			var postData;
-
+			
 			if (!$("#mnutillRunUtil").hasClass("disabled")) {
 				var frmDefSel = document.getElementById('frmDefSel');
 
@@ -472,7 +471,19 @@
 
 					OpenHR.submitForm(null, "optionframe", null, postData, "util_run_workflow");
 
-				} else {
+				}
+				else if (frmDefSel.utiltype.value == 39) {
+				    postData = {
+				        UtilType: frmDefSel.utiltype.value,
+				        ID: frmDefSel.utilid.value,
+				        Name: $("#utilname").val(),
+				        __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+				    }
+
+				    CleanToolsFrameAndResetPageSource();
+				    OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+				}
+				else {
 
 					postData = {
 						UtilType: frmDefSel.utiltype.value,
@@ -481,7 +492,6 @@
 						__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 					}
 					OpenHR.submitForm(null, "reportframe", false, postData, "util_run_promptedValues");
-
 				}
 			}
 		}

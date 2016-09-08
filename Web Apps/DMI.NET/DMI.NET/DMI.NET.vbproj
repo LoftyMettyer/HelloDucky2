@@ -253,10 +253,12 @@
     <Compile Include="Code\EncryptionService.vb" />
     <Compile Include="Infrastructure\AllowJWTAccessAttribute.vb" />
     <Compile Include="Infrastructure\ClaimsAuthorizationAttribute.vb" />
+    <Compile Include="Models\OrganisationReportChartModel.vb" />
     <Compile Include="Models\OrganisationReportFilterItem.vb" />
     <Compile Include="Models\DefinitionSearchResultModel.vb" />
     <Compile Include="Models\ForgotPasswordModel.vb" />
     <Compile Include="Models\OrganisationReportModel.vb" />
+    <Compile Include="Models\OrgReportChartNode.vb" />
     <Compile Include="Models\TalentReportModel.vb" />
     <Compile Include="Models\UserModel.vb" />
     <Compile Include="Classes\jqGridHelper.vb" />
@@ -1889,6 +1891,8 @@
     <Content Include="Views\Reports\_OrgFilterSelect.vbhtml" />
     <Content Include="Views\Reports\_OrgColumnSelection.vbhtml" />
     <Content Include="Views\Reports\_PreviewOrganisation.vbhtml" />
+    <Content Include="Views\Home\OrganisationReports.vbhtml" />
+    <Content Include="Views\Home\_OrganisationReportColumnNode.vbhtml" />
     <Content Include="Views\Reports\_PreviewOrganisationColumn.vbhtml" />
   </ItemGroup>
   <ItemGroup>

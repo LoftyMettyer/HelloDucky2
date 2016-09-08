@@ -25,11 +25,13 @@ Namespace Classes
       Public Property Name As String
 		Public Property Sequence As Integer
 
-		<ExcludeChar("/,.!@#$%")>
-		Public Property Heading As String
+      <ExcludeChar("/,.!@#$%")>
+      Public Property Heading As String
 
-		Public Property DataType As ColumnDataType
-		Public Property Size As Long
+      Public Property ColumnValue As String
+
+      Public Property DataType As ColumnDataType
+      Public Property Size As Long
 		Public Property ColumnSize As Long
 		Public Property Decimals As Integer
 		Public Property IsAverage As Boolean
@@ -91,6 +93,8 @@ Namespace Classes
 				Return CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 			End Get
 		End Property
-
-	End Class
+        Public Function Clone() As ReportColumnItem
+            Return DirectCast(Me.MemberwiseClone, ReportColumnItem)
+        End Function
+    End Class
 End Namespace
