@@ -1996,7 +1996,7 @@ PRINT 'Step - SQL Metadata Stored Proc'
 /* ------------------------------------------------------- */
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGetSQLMetadata]') AND xtype = 'P')
-		DROP PROCEDURE [dbo].spASRSQLMetadata;
+		DROP PROCEDURE [dbo].spASRGetSQLMetadata;
 	EXEC sp_executesql N'CREATE PROCEDURE [dbo].[spASRGetSQLMetadata](
 	@sServerName nvarchar(128) OUTPUT,
 	@sDBName nvarchar(128) OUTPUT)
@@ -2374,23 +2374,22 @@ PRINT 'Step - Data Protection Enhancements'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_getfieldfromdatabaserecord]') AND xtype = 'FN')
 		DROP FUNCTION [dbo].[udfsys_getfieldfromdatabaserecord];
 
-	-- Remove table views and re-instantiate direct table access
+	-- Remove deleted flag direct table access
 	SET @NVarCommand = '';
 	SELECT @NVarCommand = @NVarCommand + 'IF EXISTS(SELECT * FROM dbo.sysobjects WHERE name = ''trsys_' + TableName + '_d01'' AND xtype = ''TR'')
 			DROP TRIGGER [dbo].[trsys_' + TableName + '_d01];' + CHAR(13)
 		FROM ASRSysTables;
 	EXECUTE sp_executeSQL @NVarCommand;
 
-	SET @NVarCommand = '';
-	SELECT @NVarCommand = @NVarCommand + 'IF EXISTS(SELECT * FROM sys.syscolumns c INNER JOIN ASRSysTables t ON OBJECT_NAME(c.id) LIKE ''tbuser_' + TableName + ''' WHERE c.name = ''_deleted'')
-			BEGIN
-				DELETE FROM dbo.tbuser_' + TableName + ' WHERE _deleted = 1;
-			END' + CHAR(13)
-		FROM ASRSysTables;
-	EXECUTE sp_executeSQL @NVarCommand;
-
-	
-
+	IF EXISTS(SELECT * FROM sys.syscolumns c
+		INNER JOIN ASRSysTables t ON OBJECT_NAME(c.id) LIKE 'tbuser_' + TableName
+		WHERE c.name = '_deleted')
+	BEGIN
+		SET @NVarCommand = '';
+		SELECT @NVarCommand = @NVarCommand + 'DELETE FROM dbo.tbuser_' + TableName + ' WHERE _deleted = 1;' + CHAR(13)
+			FROM ASRSysTables;
+		EXECUTE sp_executeSQL @NVarCommand;
+	END
 
 /* ------------------------------------------------------- */
 PRINT 'Final Step - Updating Versions'
