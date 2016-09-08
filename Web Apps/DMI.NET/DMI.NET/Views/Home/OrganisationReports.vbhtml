@@ -89,6 +89,8 @@
                $(this).find("#divPostTitle").css("min-width", totalEmpDiv * 170);
                $(this).find("#divPostColumns div").css("width", totalEmpDiv * 180);
                $(this).find("#divPostColumns div").css("display", "inline-block");
+               $(this).find("#divPostEmployees").css("padding-left", 8);
+               $(this).find("#divPostEmployees").css("padding-right", 8);
             }
             else {
                $(this).parent().css("max-width", 200);
@@ -103,7 +105,7 @@
             }
          });
 
-         //$('.printSelect').toggle().prop('checked', true);
+         $('.printSelect').toggle().prop('checked', true);
 
 
          //($("#divPostEmployees").children().length * 195) + "px !important"

@@ -1124,7 +1124,30 @@
 						</li>
 					</ul>
 				</li>
-				
+
+            <%-- Org Reports--%>
+            <li class="ui-corner-top"><a id="toolbarOrgReports" href="#" rel="Find">Organisation Reports</a>
+               <ul>
+                  <li><span>Interact</span>
+                     <div id="mnutoolOrgReportsExpand" class="button">
+                        <a href="#" rel="table" title="Expand all nodes">
+                           <img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt="" />
+                           <i class="icon-plus"></i>
+                           <h6>Expand All Nodes</h6>
+                        </a>
+                     </div>
+                     <div class="button" id="divBtnSelectOrgReports">
+                        <a class="mnuBtnSelectOrgChart" href="#" rel="table" title="Select nodes">
+                           <img src="<%: Url.Content("~/Scripts/officebar/winkit/Checkmark64HOVER.png")%>" alt="" />
+                           <i class="icon-check"></i>
+                           <h6>Select Nodes</h6>
+                        </a>
+                     </div>
+                  </li>
+               </ul>
+            </li>
+
+
 				<%-- EventLog Find--%>
 				<li class="ui-corner-top"><a id="toolbarEventLogFind" href="#" rel="Find">Find</a>
 					<ul>

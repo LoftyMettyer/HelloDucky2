@@ -163,6 +163,7 @@
 
 				//enable/disable expand all nodes button
 				menu_toolbarEnableItem("mnutoolOrgChartExpand", ($('.contracted').find('.expandNode:visible').length > 0));
+				menu_toolbarEnableItem("mnutoolOrgReportsExpand", ($('.contracted').find('.expandNode:visible').length > 0));
 
 
 			});

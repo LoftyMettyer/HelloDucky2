@@ -1105,6 +1105,26 @@ function menu_MenuClick(sTool) {
 		return false;
 	}
 
+	if (sTool == 'mnutoolOrgReportsExpand') {
+	   //Expand all nodes.
+	   $('.contracted').each(function () {
+	      $(this).removeClass('contracted').addClass('expanded');
+	      $(this).nextAll("tr").find(".node").show("blind");
+	      $(this).nextAll("tr").css('visibility', '');
+	      $(this).nextAll('tr').css('display', '');
+	      // Update the <li> appropriately so that if the tree redraws collapsed/non-collapsed nodes
+	      // maintain their appearance
+	      $(this).removeClass('collapsed');
+	   });
+
+	   $('.expandNode').attr('src', window.ROOT + 'Content/images/minus.gif');
+
+	   //enable/disable expand all nodes button
+	   menu_toolbarEnableItem("mnutoolOrgReportsExpand", ($('.contracted').length > 0));
+
+	   return false;
+	}
+
 	// Has the user clicked on a parent node?
 				if ($("#" + sTool).is(".jstree-closed, .jstree-open")) {
 					toggle_Leaf(sTool);
@@ -1311,7 +1331,7 @@ function showDefaultRibbon() {
 	$("#toolbarWFPendingStepsFind").parent().hide();
 	$("#toolbarAdminConfig").parent().hide();
 	$("#toolbarStandardReportConfig").parent().hide();
-	
+	$("#toolbarOrgReports").parent().hide();
 
 	// Hide the Self-service or OpenHR button, as appropriate	
 	if (menu_isSSIMode()) {
@@ -2152,8 +2172,7 @@ function menu_refreshMenu() {
 									(sCurrentWorkPage == "CONFIGURATION")) {
 									// handled in configuration.configuration_window_onload()
 									menu_toolbarEnableItem('mnutoolSaveAdminConfig', !definitionChanged());
-								} else {
-									if (sCurrentWorkPage == "ORGCHART") {
+								} else if (sCurrentWorkPage == "ORGCHART") {
 										$("#toolbarOrgChart").parent().show();
 										$("#toolbarOrgChart").click();
 
@@ -2161,7 +2180,17 @@ function menu_refreshMenu() {
 											//show the additional 'select nodes' button
 											$('#toolbarOrgChart').parent().find('.notwinkit').show();
 										}
-									}
+								}
+								else {
+								   if (sCurrentWorkPage == "ORGREPORTS") {
+								      $("#toolbarOrgReports").parent().show();
+								      $("#toolbarOrgReports").click();
+
+								      if (window.currentLayout != "winkit") {
+								         //show the additional 'select nodes' button
+								         $('#toolbarOrgReports').parent().find('.notwinkit').show();
+								      }
+								   }
 								}
 						}
 					}
