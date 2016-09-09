@@ -2375,16 +2375,17 @@ PRINT 'Step - Data Protection Enhancements'
 		DROP FUNCTION [dbo].[udfsys_getfieldfromdatabaserecord];
 
 	-- Remove deleted flag direct table access
-	SET @NVarCommand = '';
-	SELECT @NVarCommand = @NVarCommand + 'IF EXISTS(SELECT * FROM dbo.sysobjects WHERE name = ''trsys_' + TableName + '_d01'' AND xtype = ''TR'')
-			DROP TRIGGER [dbo].[trsys_' + TableName + '_d01];' + CHAR(13)
-		FROM ASRSysTables;
-	EXECUTE sp_executeSQL @NVarCommand;
-
 	IF EXISTS(SELECT * FROM sys.syscolumns c
 		INNER JOIN ASRSysTables t ON OBJECT_NAME(c.id) LIKE 'tbuser_' + TableName
 		WHERE c.name = '_deleted')
 	BEGIN
+
+		SET @NVarCommand = '';
+		SELECT @NVarCommand = @NVarCommand + 'IF EXISTS(SELECT * FROM dbo.sysobjects WHERE name = ''trsys_' + TableName + '_d01'' AND xtype = ''TR'')
+				DROP TRIGGER [dbo].[trsys_' + TableName + '_d01];' + CHAR(13)
+			FROM ASRSysTables;
+		EXECUTE sp_executeSQL @NVarCommand;
+
 		SET @NVarCommand = '';
 		SELECT @NVarCommand = @NVarCommand + 'DELETE FROM dbo.tbuser_' + TableName + ' WHERE _deleted = 1;' + CHAR(13)
 			FROM ASRSysTables;

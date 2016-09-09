@@ -830,6 +830,14 @@ Namespace ScriptDB
               , sSqlPostUpdateTriggerCode _
               , sSqlCodeAuditUpdate, sSqlPostAuditCalcs, objTable.SysMgrUpdateTrigger, sSqlPostAuditCalcsAlsoAudited)
           ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSql, existingTriggers, objTable.UpdateTriggerDisabled)
+
+
+          ' INSTEAD OF DELETE ( required for SQL MERGE statements to work)
+          sSql = String.Format("    WITH base AS (SELECT * FROM dbo.[{0}]" & vbNewLine &
+              "        WHERE [id] IN (SELECT DISTINCT [id] FROM deleted))" & vbNewLine &
+              "        DELETE FROM base;", objTable.PhysicalName)
+          ScriptTrigger("dbo", objTable, TriggerType.InsteadOfDelete, sSql, existingTriggers, objTable.DeleteTriggerDisabled)
+
          
           ' AFTER DELETE
           sSql = String.Format("	   DECLARE @audit TABLE ([username] varchar(255), [changedate] datetime, [id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & vbNewLine &
@@ -962,7 +970,7 @@ Namespace ScriptDB
           "            @username              varchar(255);" & vbNewLine & vbNewLine &
           "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine &
           "    SELECT @username =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'OPENHR WORKFLOW' THEN 'OpenHR Workflow'" & vbNewLine &
-          "          ELSE CASE WHEN @isovernight = 1 THEN 'OpenHR Overnight Process' ELSE RTRIM(SYSTEM_USER) END END" & vbNewLine & vbNewLine &
+          "          ELSE CASE WHEN @isovernight = 1 THEN 'OpenHR Overnight Process' ELSE RTRIM(SYSTEM_USER) END END;" & vbNewLine & vbNewLine &
           "{4}" & vbNewLine & vbNewLine &
           "END" _
           , sTriggerName, [role], table.PhysicalName, sTriggerType, [bodyCode])
