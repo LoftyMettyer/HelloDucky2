@@ -59,19 +59,19 @@ Public Class MvcApplication
 
 		' get the SELF_SERVICE_LAYOUT setting from web config.
 		Session("ui-self-service-layout") = ApplicationSettings.UI_Self_Service_Layout
-		If Session("ui-self-service-layout") Is Nothing Or Len(Session("ui-self-service-layout")) <= 0 Then Session("ui-self-service-layout") = "winkit"
+      If Session("ui-self-service-layout") Is Nothing Or Len(Session("ui-self-service-layout")) <= 0 Then Session("ui-self-service-layout") = "winkit"
 
-		' get the ADMIN (DMI) theme out of web config.
-		Session("ui-admin-theme") = ApplicationSettings.UI_Admin_Theme
-		If Session("ui-admin-theme") Is Nothing Or Len(Session("ui-admin-theme")) <= 0 Then Session("ui-admin-theme") = "redmond-segoe"
+      ' get the ADMIN (DMI) theme out of web config.
+      Session("ui-admin-theme") = ApplicationSettings.UI_Admin_Theme
+      If Session("ui-admin-theme") Is Nothing Or Len(Session("ui-admin-theme")) <= 0 Then Session("ui-admin-theme") = "redmond-segoe"
 
-		' Check for a valid themename, then default to redmond-segoe if not valid.
-		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")) Then
-			Session("ui-admin-theme") = "redmond-segoe"
-		End If
+      ' Check for a valid themename, then default to redmond-segoe if not valid.
+      If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")) Then
+         Session("ui-admin-theme") = "redmond-segoe"
+      End If
 
-		' get list of available themes
-		Dim arrThemes as new List(Of String)
+      ' get list of available themes
+      Dim arrThemes as new List(Of String)
 		Dim excludeTheme As Boolean
 		Dim currentTheme As String
 
@@ -119,13 +119,8 @@ Public Class MvcApplication
 		Session("Config-banner-justification") = ApplicationSettings.UI_Banner_Justification
 		If Session("Config-banner-justification") Is Nothing Or Len(Session("Config-banner-justification")) <= 0 Then Session("Config-banner-justification") = "justify"
 
-		' Set browser compatibility
-		Session("AdminRequiresIE") = ApplicationSettings.AdminRequiresIE
-		If Session("AdminRequiresIE") Is Nothing Or Len(Session("AdminRequiresIE")) <= 0 Then Session("AdminRequiresIE") = "true"
-		Session("AdminRequiresIE") = Session("AdminRequiresIE").ToString().ToUpper()
-
-		' Set valid file extensions for OLE Uploads.
-		Session("ValidFileExtensions") = ApplicationSettings.ValidFileExtensions
+      ' Set valid file extensions for OLE Uploads.
+      Session("ValidFileExtensions") = ApplicationSettings.ValidFileExtensions
 		If Session("ValidFileExtensions") Is Nothing Or Len(Session("ValidFileExtensions")) <= 0 Then Session("ValidFileExtensions") = "" ' nothing by default!
 		Session("ValidFileExtensions") = Session("ValidFileExtensions").ToString().ToUpper()
 

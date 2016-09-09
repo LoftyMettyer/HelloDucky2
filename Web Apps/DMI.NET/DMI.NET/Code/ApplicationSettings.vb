@@ -6,22 +6,22 @@ Namespace Code
 		Public Shared Property LoginPage_Database As String
 		Public Shared Property LoginPage_Server As String
 
-		Public Shared ReadOnly Property UI_Admin_Theme As String
-			Get
-				Return ConfigurationManager.AppSettings("UI_Admin_Theme")
-			End Get
-		End Property
-		Public Shared ReadOnly Property UI_Tiles_Theme As String
-			Get
-				Return ConfigurationManager.AppSettings("UI_Tiles_Theme")
-			End Get
-		End Property
-		Public Shared ReadOnly Property UI_Wireframe_Theme As String
-			Get
-				Return ConfigurationManager.AppSettings("UI_Wireframe_Theme")
-			End Get
-		End Property
-		Public Shared ReadOnly Property UI_Winkit_Theme As String
+      Public Shared ReadOnly Property UI_Admin_Theme As String
+         Get
+            Return ConfigurationManager.AppSettings("UI_Admin_Theme")
+         End Get
+      End Property
+      Public Shared ReadOnly Property UI_Tiles_Theme As String
+         Get
+            Return ConfigurationManager.AppSettings("UI_Tiles_Theme")
+         End Get
+      End Property
+      Public Shared ReadOnly Property UI_Wireframe_Theme As String
+         Get
+            Return ConfigurationManager.AppSettings("UI_Wireframe_Theme")
+         End Get
+      End Property
+      Public Shared ReadOnly Property UI_Winkit_Theme As String
 			Get
 				Return ConfigurationManager.AppSettings("UI_Winkit_Theme")
 			End Get
@@ -52,19 +52,13 @@ Namespace Code
 				Return ConfigurationManager.AppSettings("UI_Layout_Selectable")
 			End Get
 		End Property
-		Public Shared ReadOnly Property AdminRequiresIE As String	'Strictly speaking this property should return a Boolean, but it has been used as a string throughout the application, so String it is
-			Get
-				Return ConfigurationManager.AppSettings("AdminRequiresIE")
-			End Get
-		End Property
+      Public Shared ReadOnly Property ValidFileExtensions As String
+         Get
+            Return ConfigurationManager.AppSettings("ValidFileExtensions")
+         End Get
+      End Property
 
-		Public Shared ReadOnly Property ValidFileExtensions As String
-			Get
-				Return ConfigurationManager.AppSettings("ValidFileExtensions")
-			End Get
-		End Property
-
- 		Public Shared ReadOnly Property EnableViewCurrentUsers As Boolean
+      Public Shared ReadOnly Property EnableViewCurrentUsers As Boolean
 			Get
         Dim setting = ConfigurationManager.AppSettings("EnableViewCurrentUsers")
         
