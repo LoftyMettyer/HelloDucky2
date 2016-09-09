@@ -135,7 +135,7 @@
 
       //Populate Filter Field dropdown
       GetFilterColumns();
-      $("select#selectColumn").focus();
+      //$("select#selectColumn").focus();
 
       //Determine if the grid already exists...
       if ($("#DBGridFilterRecords").getGridParam("reccount") == undefined) { //It doesn't exist, create it
