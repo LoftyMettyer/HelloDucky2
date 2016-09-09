@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DMI.NET", "DMI.NET\DMI.NET.vbproj", "{52FBD57B-87C8-40D3-A5DA-6A6174F4A871}"
 EndProject
@@ -14,6 +14,11 @@ EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OpenHR Wix Extensions", "OpenHR Wix Extensions\OpenHR Wix Extensions.vbproj", "{EAC8EB36-A66D-4441-9025-6C28879CBADD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayPilot", "..\..\Components\DayPilot\DayPilot.csproj", "{5D7983A4-CCFF-46F6-920F-F184A031D7E1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FFFAD05C-14CA-4624-A993-C6098E75AA61}"
+	ProjectSection(SolutionItems) = preProject
+		.tfignore.txt = .tfignore.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
