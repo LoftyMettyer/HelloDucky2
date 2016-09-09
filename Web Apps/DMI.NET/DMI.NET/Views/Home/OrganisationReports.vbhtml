@@ -16,7 +16,7 @@
    }
 
    .jOrgChart .node {
-      height: 200px !important;
+      height: auto;
       width: auto;
       min-width: 200px;
       border: 1px solid gray;
@@ -89,8 +89,7 @@
                $(this).find("#divPostTitle").css("min-width", totalEmpDiv * 170);
                $(this).find("#divPostColumns div").css("width", totalEmpDiv * 180);
                $(this).find("#divPostColumns div").css("display", "inline-block");
-               $(this).find("#divPostEmployees").css("padding-left", 8);
-               $(this).find("#divPostEmployees").css("padding-right", 8);
+               $(this).find("#divPostEmployees div div").css("width", 176 + totalEmpDiv);
             }
             else {
                $(this).parent().css("max-width", 200);
@@ -219,8 +218,9 @@
          newWin.document.write('le>');
          newWin.document.write('body {font-family: "Segoe UI", Verdana; }');
          newWin.document.write('h2 {page-break-before: always;}'); //adds page breaks as required.
-         newWin.document.write('.jOrgChart .node {height: 200px !important;width: auto;min-width: 200px;border: 1px solid gray;padding: 5px 0px 0px 0px;overflow: auto;font-weight: bold !important;}');
-         newWin.document.write('#divPostEmployees {margin-top:5px !important;}');
+         newWin.document.write('.jOrgChart .node {height: auto;width: auto;min-width: 200px;border: 1px solid gray;padding: 5px 0px 0px 0px;overflow: auto;font-weight: bold !important;}');
+         newWin.document.write('#divPostColumns div {margin:5px !important;}');
+         newWin.document.write('#divPostColumns div {height:auto !important;}');
          newWin.document.write('</sty');
          newWin.document.write('le>');
          newWin.document.write('<h1 style="width: 400px;">Organisation Reports</h1>');
@@ -298,7 +298,7 @@
                @<li hierarchyLevel="@item.HierarchyLevel"
                     id="@item.LineManagerStaffNo"
                     class="ui-corner-all ui-state-default">
-                  <div style="overflow-x:hidden;overflow-y: auto;max-height: 185px;padding-right: 0px;padding-left: 0px;" id="divMainContainer" class="centered">
+                  <div style="overflow-x:hidden;overflow-y: auto;padding-right: 0px;padding-left: 0px;" id="divMainContainer" class="centered">
                      <div id="divPostTitle" class="truncate centered" style="min-height:20px;text-align: center;display:inline-block;">
                         <span title="@item.PostTitle">@item.PostTitle</span>
                      </div>
@@ -307,7 +307,7 @@
                            Html.RenderPartial("_OrganisationReportColumnNode", colitem)
                         Next
                      </div>
-                     <div style="display:table;padding: 0px 5px;" id="divPostEmployees">
+                     <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
                         @For Each childitem In item.PostWiseNodeList
                         @<div style="min-width:180px;display:table-cell;" class="centered">
                            @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
