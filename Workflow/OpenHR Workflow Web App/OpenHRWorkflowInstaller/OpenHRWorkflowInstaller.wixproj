@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="IisConfiguration.wxs" />
+    <Compile Include="OpenHRWorkflow.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="UIDialogs.wxs" />
     <Compile Include="WixUI_OpenHRWorkflow.wxs" />
