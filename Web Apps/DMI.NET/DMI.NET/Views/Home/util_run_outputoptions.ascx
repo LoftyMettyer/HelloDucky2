@@ -704,29 +704,35 @@
 		menu_ShowWait('Generating output...');
 		setTimeout('updateProgressMsg()', 50);
 		$("body").addClass("loading");
+
 		fileDownloadCheckTimer = window.setInterval(function () {
-			var cookieValue = $.cookie('fileDownloadToken');
-			if (cookieValue == token) {
-				finishDownload();
-			} else {
-				$('#txtProgressMessage').val('Generating output...');
-				$("body").addClass("loading");  //Overlapping ajax calls may have closed the spinner.
-				updateProgressMsg();
-			}
+
+		   OpenHR.readCookie("fileDownloadToken").then(function (cookieValue) {
+
+		      if (cookieValue == token) {
+		         finishDownload();
+		      } else {
+		         $('#txtProgressMessage').val('Generating output...');
+		         $("body").addClass("loading");  //Overlapping ajax calls may have closed the spinner.
+		         updateProgressMsg();
+		      }
+		   });
+
 		}, 1000);
 	}
 
 	function finishDownload() {
-		window.clearInterval(fileDownloadCheckTimer);
-		$.removeCookie('fileDownloadToken'); //clears this cookie value		
+	   window.clearInterval(fileDownloadCheckTimer);
+	   OpenHR.deleteCookie("fileDownloadToken"); //clears this cookie value		
 		$("body").removeClass("loading");
 		menu_ShowWait('Please wait...');
 		
 		//check for errors.
-		var cookieDownloadErrors = $.cookie('fileDownloadErrors');
-		if (cookieDownloadErrors.length > 0) {			
-			OpenHR.modalPrompt(cookieDownloadErrors, 2, "<%:Session("utilname")%>");
-		}
+		OpenHR.readCookie('fileDownloadErrors').then(function (cookieDownloadErrors) {
+		   if (cookieDownloadErrors.length > 0) {			
+			   OpenHR.modalPrompt(cookieDownloadErrors, 2, "<%:Session("utilname")%>");
+		   }
+		});
 	}
 
 </script>
@@ -760,7 +766,7 @@
 								<tr height=10 class="hidden"> 
 									<td colspan=4></td>
 								</tr>
-<% if Session("utilType") <> 17 and Session("utilType") <> 16 then %>																	
+<%       If Session("utilType") <> 17 and Session("utilType") <> 16 then %>																	
 								<tr height=20 class="hidden">
 									<td width=5>&nbsp</td>
 									<td align=left width=15>

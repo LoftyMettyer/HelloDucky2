@@ -172,20 +172,23 @@
 		setTimeout('updateProgressMsg()', 50);
 		$("body").addClass("loading");
 		fileDownloadCheckTimer = window.setInterval(function () {
-			var cookieValue = $.cookie('fileDownloadToken');
-			if (cookieValue == token) {
-				finishDownload();
-			} else {
-				$('#txtProgressMessage').val('Generating output...');
-				$("body").addClass("loading");  //Overlapping ajax calls may have closed the spinner.
-				updateProgressMsg();
-			}
+
+		   OpenHR.readCookie("fileDownloadToken").then(function (cookieValue) {
+		      if (cookieValue == token) {
+		         finishDownload();
+		      } else {
+		         $('#txtProgressMessage').val('Generating output...');
+		         $("body").addClass("loading");  //Overlapping ajax calls may have closed the spinner.
+		         updateProgressMsg();
+		      }
+		   });
+
 		}, 1000);
 	}
 
 	function finishDownload() {
 		window.clearInterval(fileDownloadCheckTimer);
-		$.removeCookie('fileDownloadToken'); //clears this cookie value		
+		OpenHR.deleteCookie("fileDownloadToken"); //clears this cookie value
 		$("body").removeClass("loading");
 		menu_ShowWait('Please wait...');		
 	}

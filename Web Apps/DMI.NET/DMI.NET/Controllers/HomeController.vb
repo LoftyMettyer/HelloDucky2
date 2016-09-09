@@ -2640,6 +2640,40 @@ Namespace Controllers
 
       End Function
 
+      <HttpGet>
+      Public Function ReadCookie(CookieName As String)
+
+         Dim CookieValue As String
+         Try
+            CookieValue = Request.Cookies(CookieName).Value
+         Catch ex As Exception
+            CookieValue = ""
+         End Try
+
+         Return CookieValue
+
+      End Function
+
+      <HttpDelete>
+      Public Function DeleteCookie(CookieName As String)
+         ' You can only delete a cookie by setting expiration date to the past.
+         ' See https://msdn.microsoft.com/en-us/library/ms178195.aspx
+
+         Try
+            If (Not Request.Cookies(CookieName) Is Nothing) Then
+               Dim myCookie As HttpCookie
+               myCookie = New HttpCookie(CookieName)
+               myCookie.Expires = DateTime.Now.AddDays(-1D)
+               Response.Cookies.Add(myCookie)
+            End If
+         Catch ex As Exception
+            Return New HttpStatusCodeResult(HttpStatusCode.NotFound)
+         End Try
+
+         Return new HttpStatusCodeResult(HttpStatusCode.OK)
+
+      End Function
+
       <HttpPost>
       <ValidateAntiForgeryToken>
       Public Function util_run_talentreport_downloadoutput() As FilePathResult
