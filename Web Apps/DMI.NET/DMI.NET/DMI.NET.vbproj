@@ -1387,7 +1387,6 @@
     <Content Include="Scripts\jquery\grid.locale-en.js" />
     <Content Include="Scripts\jquery\jquery.hotkeys.js" />
     <Content Include="Scripts\FormScripts\OptionDataGrid.js" />
-    <Content Include="lpks\ssmain.lpk" />
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.woff" />
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.eot" />
