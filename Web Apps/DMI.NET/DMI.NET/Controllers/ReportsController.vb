@@ -1094,25 +1094,30 @@ Namespace Controllers
                objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
             End If
 
+            'Only 50 columns selections are allowed
+            If objModel.Columns.Count > 50 Then
+               ModelState.AddModelError("IsSelectedColumnsCountValid", "A maximum of 50 columns are allowed for your organisation report.")
+            End If
+
             For Each columnItem As ReportColumnItem In objModel.Columns
-               ' Check the column font size has value in range.
-               If (columnItem.FontSize < 6) AndAlso (columnItem.FontSize > 30) AndAlso (columnItem.FontSize = Nothing) Then
-                  ModelState.AddModelError("IsFontSizeEmpty", "The '" & columnItem.Name & "' column does not have valid font size.")
-               End If
+                  ' Check the column font size has value in range.
+                  If (columnItem.FontSize < 6) AndAlso (columnItem.FontSize > 30) AndAlso (columnItem.FontSize = Nothing) Then
+                     ModelState.AddModelError("IsFontSizeEmpty", "The '" & columnItem.Name & "' column does not have valid font size.")
+                  End If
 
-               ' Check the column height has value in range.
-               If (columnItem.DataType = -3) AndAlso (columnItem.Height < 3) AndAlso (columnItem.Height > 6) AndAlso (columnItem.Height = Nothing) Then
-                  ModelState.AddModelError("IsHeightEmpty", "The '" & columnItem.Name & "' column does not have valid Height (Rows).")
-               End If
+                  ' Check the column height has value in range.
+                  If (columnItem.DataType = -3) AndAlso (columnItem.Height < 3) AndAlso (columnItem.Height > 6) AndAlso (columnItem.Height = Nothing) Then
+                     ModelState.AddModelError("IsHeightEmpty", "The '" & columnItem.Name & "' column does not have valid Height (Rows).")
+                  End If
 
-               If (columnItem.DataType <> -3) AndAlso (columnItem.Height < 1) AndAlso (columnItem.Height > 6) AndAlso (columnItem.Height = Nothing) Then
-                  ModelState.AddModelError("IsHeightEmpty", "The '" & columnItem.Name & "' column does not have valid Height (Rows).")
-               End If
-            Next
+                  If (columnItem.DataType <> -3) AndAlso (columnItem.Height < 1) AndAlso (columnItem.Height > 6) AndAlso (columnItem.Height = Nothing) Then
+                     ModelState.AddModelError("IsHeightEmpty", "The '" & columnItem.Name & "' column does not have valid Height (Rows).")
+                  End If
+               Next
 
-         End If
+            End If
 
-         If objModel.FilterColumnsAsString IsNot Nothing Then
+            If objModel.FilterColumnsAsString IsNot Nothing Then
             If objModel.FilterColumnsAsString.Length > 0 Then
                objModel.FiltersFieldList = deserializer.Deserialize(Of List(Of OrganisationReportFilterItem))(objModel.FilterColumnsAsString)
             End If

@@ -117,36 +117,34 @@ Namespace Models
          While (recordCount < BaseViewColumns.Count)
 
             Dim item = BaseViewColumns(recordCount)
-            item.Heading = (openBracket + item.Prefix + space + item.Heading).Trim
+            item.Heading = (openBracket + item.Prefix + item.Heading + item.Suffix).Trim
 
             If item.IsGroupWithNext Then
 
                'Set row height
                item.DefaultHeight = item.Height
                item.Height = Convert.ToInt32(item.Height * Math.Round(item.FontSize * 1.5))
-               Dim suffix = String.Empty
 
                While (recordCount < BaseViewColumns.Count)
                   recordCount = recordCount + 1
                   Dim nextItem = BaseViewColumns(recordCount)
 
                   'Set group name with next
-                  item.Heading = item.Heading + space + nextItem.Heading
-                  suffix = nextItem.Suffix
+                  item.Heading = item.Heading + space + nextItem.Prefix + nextItem.Heading + nextItem.Suffix
 
                   If nextItem.IsGroupWithNext = False Then
                      Exit While
                   End If
                End While
 
-               item.Heading = (item.Heading + space + suffix + closeBracket).Trim
+               item.Heading = (item.Heading + closeBracket).Trim
                recordCount = recordCount + 1
 
             Else
                'Set row height
                item.DefaultHeight = item.Height
                item.Height = Convert.ToInt32(item.Height * Math.Round(item.FontSize * 1.5))
-               item.Heading = (item.Heading + space + item.Suffix + closeBracket).Trim
+               item.Heading = (item.Heading + closeBracket).Trim
                recordCount = recordCount + 1
 
             End If

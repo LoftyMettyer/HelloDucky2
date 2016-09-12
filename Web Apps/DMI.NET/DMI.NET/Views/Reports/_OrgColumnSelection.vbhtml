@@ -71,10 +71,10 @@
                </div>
                <div class="formfieldfill">
                   <label class="fontsizeOnly" for="SelectedColumnFontSize">Font Size :</label>
-                  <span><input class="fontsizeOnly" type="tel" id="SelectedColumnFontSize" maxlength="2" onchange="updateColumnsSelectedGrid();" /></span>
-                  <div class="formfieldfill HeightOnly">
-                     <label for="SelectedColumnHeight"> &nbsp; Height (Rows) :</label>
-                     <span><input type="tel" class="selectHeight" id="SelectedColumnHeight" style="width:94%" maxlength="1" onchange="updateColumnsSelectedGrid();" /></span>
+                  <span><input class="fontsizeOnly" type="tel" id="SelectedColumnFontSize" style="width:92%" maxlength="2" onchange="updateColumnsSelectedGrid();" /></span>
+                  <div class="formfieldfill HeightOnly" style="max-width:98%">
+                     <label for="SelectedColumnHeight">&nbsp; Height (Rows) :</label>
+                     <span><input class="selectHeight" id="SelectedColumnHeight" maxlength="1" onchange="updateColumnsSelectedGrid();" /></span>
                   </div>
                </div>
                <div class="formfieldfill decimalsOnly">
@@ -115,6 +115,13 @@
    });
 
    function ShowPreview() {
+
+      var recordCount = $("#SelectedColumns").jqGrid('getGridParam', 'records')
+      if(recordCount > 50){
+         OpenHR.modalMessage("A maximum of 50 columns are allowed for your organisation report.");
+         return false;
+      }
+
       var gridData = $('#SelectedColumns').jqGrid('getRowData');
       var postData = {
          ReportID: "@Model.ID",
@@ -138,6 +145,7 @@
          }
       });
    }
+
 
    function removeSelectedColumnsFromAvailable() {
       //Find row in Sort Order columns to see if Value On Change or Suppress Repeated Values is ticked.
@@ -794,7 +802,7 @@
          PreviousRowConcatenate = true;
          $("#SelectedColumnFontSize").val(prevDataRow.FontSize); //Set FontSize As Previous Column
          $("#SelectedColumnHeight").val(prevDataRow.Height);  //  Set Height As Previous Column
-         $("#SelectedColumnPrefix").val(""); // Clear Prefix value
+         //$("#SelectedColumnPrefix").val(""); // Clear Prefix value
       }
 
       // Check ViewID of next column
@@ -808,7 +816,7 @@
       }
 
       $(".canGroupWithNext *").prop("disabled", !CanConcatenate);
-      $("#SelectedColumnPrefix").prop("disabled", PreviousRowConcatenate || isPhotograph);
+      $("#SelectedColumnPrefix").prop("disabled", isPhotograph);
       $("#SelectedColumnSuffix").prop("disabled", isPhotograph);
       $("#SelectedColumnHeight").prop("disabled", PreviousRowConcatenate);
       $("#SelectedColumnFontSize").prop("disabled", PreviousRowConcatenate || isPhotograph);

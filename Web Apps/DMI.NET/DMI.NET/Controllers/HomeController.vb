@@ -2670,7 +2670,7 @@ Namespace Controllers
             Return New HttpStatusCodeResult(HttpStatusCode.NotFound)
          End Try
 
-         Return new HttpStatusCodeResult(HttpStatusCode.OK)
+         Return New HttpStatusCodeResult(HttpStatusCode.OK)
 
       End Function
 
@@ -6118,28 +6118,27 @@ Namespace Controllers
          While (count < BaseViewColumns.Count)
 
             Dim item = BaseViewColumns(count)
-            item.ColumnValue = (item.Prefix + space + item.ColumnValue).Trim
+            item.ColumnValue = (item.Prefix + item.ColumnValue + item.Suffix).Trim
 
             If item.IsGroupWithNext Then
 
-               Dim suffix = String.Empty
+
                While (count < BaseViewColumns.Count)
                   count = count + 1
                   Dim nextItem = BaseViewColumns(count)
 
                   'set group name with next
-                  item.ColumnValue = item.ColumnValue + space + nextItem.ColumnValue
-                  suffix = nextItem.Suffix
+                  item.ColumnValue = item.ColumnValue + space + nextItem.Prefix + nextItem.ColumnValue + nextItem.Suffix
 
                   If nextItem.IsGroupWithNext = False Then
                      Exit While
                   End If
                End While
 
-               item.ColumnValue = (item.ColumnValue + space + suffix).Trim
+               item.ColumnValue = (item.ColumnValue).Trim
                count = count + 1
             Else
-               item.ColumnValue = (item.ColumnValue + space + item.Suffix).Trim
+               item.ColumnValue = (item.ColumnValue).Trim
                count = count + 1
 
             End If
