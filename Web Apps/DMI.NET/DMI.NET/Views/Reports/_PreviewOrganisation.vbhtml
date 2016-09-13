@@ -13,16 +13,23 @@
 </style>
 
 <div style="width:300px;border:1px solid gray;padding:5px;overflow:auto;max-height:300px" id="divMainContainer" class="centered">
-   @For Each item In Model.PreviewColumnList.Where(Function(m) m.ViewID = Model.BaseViewID)
-      Html.RenderPartial("_PreviewOrganisationColumn", item)
-   Next
-   @If (Model.PreviewColumnList.Where(Function(m) m.ViewID <> Model.BaseViewID).Count > 0) Then
-   @<div Style = "margin:10px;border:1px solid gray;padding:5px;" Class="centered">
-      @For Each itemchild In Model.PreviewColumnList.Where(Function(m) m.ViewID <> Model.BaseViewID)
-         Html.RenderPartial("_PreviewOrganisationColumn", itemchild)
+   @If (Model.PostBasedTableId > 0) Then
+      For Each item In Model.PreviewColumnList.Where(Function(m) m.ViewID = Model.BaseViewID)
+         Html.RenderPartial("_PreviewOrganisationColumn", item)
       Next
-   </div>
-   End If   
+      @If (Model.PreviewColumnList.Where(Function(m) m.ViewID <> Model.BaseViewID).Count > 0) Then
+      @<div Style="margin:10px;border:1px solid gray;padding:5px;" Class="centered">
+         @For Each itemchild In Model.PreviewColumnList.Where(Function(m) m.ViewID <> Model.BaseViewID)
+            Html.RenderPartial("_PreviewOrganisationColumn", itemchild)
+         Next
+      </div>
+      End If
+   Else
+      For Each item In Model.PreviewColumnList
+         Html.RenderPartial("_PreviewOrganisationColumn", item)
+      Next
+   End If
+
 </div>
 <br /><br />
 <table class="centered">

@@ -1328,6 +1328,7 @@ Namespace Controllers
                   Dim columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(GridData)
                   objModel.PreviewColumnList = objReport.ProcessColumnsForPreview(columns)
                   objModel.BaseViewID = objReport.BaseViewID
+                  objModel.PostBasedTableId = objReport.PostBasedTableId
                End If
             End If
             Return PartialView("_PreviewOrganisation", objModel)
