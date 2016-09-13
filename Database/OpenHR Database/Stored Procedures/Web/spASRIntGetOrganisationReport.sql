@@ -17,8 +17,8 @@ BEGIN
 			   @iColumnID							   integer,
 			   @iTableID							   integer,
 			   @iOrganisationID					   integer,
-			   @sColumnName						   varchar(50),
-			   @sTableName							   varchar(50),
+			   @sColumnName						   varchar(MAX),
+			   @sTableName							   varchar(MAX),
 			   @sSQL								      nvarchar(MAX) = '',
 			   @sUnionAllSql						   nvarchar(MAX) = '',
 			   @sUnionSql							   nvarchar(MAX) = '',
@@ -28,26 +28,26 @@ BEGIN
 			   @sTableString						   varchar(MAX)  = '',
 			   @sFilterWhereCondition				varchar(MAX)  = '',
 			   @sWhereCondition					   varchar(MAX)  = '',
-			   @sPreviousTableName					varchar(50)   = '',
-			   @sNextTableName						varchar(50)   = '',
+			   @sPreviousTableName					varchar(MAX)   = '',
+			   @sNextTableName						varchar(MAX)   = '',
 			   @sOrgColumnTableName				   varchar(50)	  = 'ASRSysOrganisationColumns',
 			   @dTodayDate							   datetime	  = DATEADD(dd, 0, DATEDIFF(dd, 0,  getdate())),
 			   @sHierarchyLevel					   varchar(50)	  = '1 AS HierarchyLevel',
-			   @sPersonnelTableName				   varchar(50),
+			   @sPersonnelTableName				   varchar(MAX),
 			   @iPersonnelTableID					integer,
-			   @sPersonnelStartDateColumn			varchar(50),
-			   @sPersonnelLeavingDateColumn		varchar(50),
-			   @sPersonnelStaffNumberColumn		varchar(50),
-			   @sPersonnelReportToStaffNoColumn	varchar(50),
-			   @sPersonnelCTEColumn				   varchar(50),
-			   @sHierarchyTableName				   varchar(50),
-			   @sPostAllocationTableName			varchar(50),
-			   @sHierarchyIdentifierColumn		varchar(50),
-			   @sHierarchyReportsToColumn			varchar(50),
-			   @sHierarchyCTEColumn				   varchar(50),
-			   @sPostAllocationStartDateColumn	varchar(50),
-			   @sPostAllocationEndDateColumn		varchar(50),
-            @sPersonnelJobTitle              varchar(50),
+			   @sPersonnelStartDateColumn			varchar(MAX),
+			   @sPersonnelLeavingDateColumn		varchar(MAX),
+			   @sPersonnelStaffNumberColumn		varchar(MAX),
+			   @sPersonnelReportToStaffNoColumn	varchar(MAX),
+			   @sPersonnelCTEColumn				   varchar(MAX),
+			   @sHierarchyTableName				   varchar(MAX),
+			   @sPostAllocationTableName			varchar(MAX),
+			   @sHierarchyIdentifierColumn		varchar(MAX),
+			   @sHierarchyReportsToColumn			varchar(MAX),
+			   @sHierarchyCTEColumn				   varchar(MAX),
+			   @sPostAllocationStartDateColumn	varchar(MAX),
+			   @sPostAllocationEndDateColumn		varchar(MAX),
+            @sPersonnelJobTitle              varchar(MAX),
 			   @iHierarchyTableID					integer,
 			   @iPostAllocationTableID				integer,
 			   @iHierarchyIdentifierColumnID		integer,
@@ -229,24 +229,24 @@ BEGIN
 			BEGIN
 			
 				IF @sColumnString ='' 
-					SET @sColumnString = CONVERT(varchar(50), @sTableName) + '.' + CONVERT(varchar(50), @sColumnName)+ ' AS ' + '''' + CONVERT(varchar(50), @sColumnName) + '**' + CONVERT(varchar(50), @iColumnID)  +'''';
+					SET @sColumnString = CONVERT(varchar(MAX), @sTableName) + '.' + CONVERT(varchar(MAX), @sColumnName)+ ' AS ' + '''' + CONVERT(varchar(MAX), @sColumnName) + '**' + CONVERT(varchar(50), @iColumnID)  +'''';
 				ELSE
-					SET @sColumnString = @sColumnString + ', ' + CONVERT(varchar(50), @sTableName) + '.' + CONVERT(varchar(50), @sColumnName) + ' AS ' + '''' + CONVERT(varchar(50), @sColumnName) + '**' +  CONVERT(varchar(50), @iColumnID) +'''';
+					SET @sColumnString = @sColumnString + ', ' + CONVERT(varchar(MAX), @sTableName) + '.' + CONVERT(varchar(MAX), @sColumnName) + ' AS ' + '''' + CONVERT(varchar(MAX), @sColumnName) + '**' +  CONVERT(varchar(50), @iColumnID) +'''';
 			
 				IF @sTableString = ''
 					BEGIN
-						SET @sTableString =  CONVERT(varchar(50), @sTableName);	
-						SET @sPreviousTableName = CONVERT(varchar(50), @sTableName);
+						SET @sTableString =  CONVERT(varchar(MAX), @sTableName);	
+						SET @sPreviousTableName = CONVERT(varchar(MAX), @sTableName);
 					END
 				ELSE
 					BEGIN				
 					IF @sPreviousTableName <> @sNextTableName				
-						SET @sTableString =  @sTableString + ', ' + CONVERT(varchar(50), @sTableName);
+						SET @sTableString =  @sTableString + ', ' + CONVERT(varchar(MAX), @sTableName);
 					END
 
-				SET @sPreviousTableName =  CONVERT(varchar(50), @sTableName);
+				SET @sPreviousTableName =  CONVERT(varchar(MAX), @sTableName);
 				FETCH NEXT FROM columnnames_cursor INTO @iColumnID, @sColumnName,@sTableName;
-				SET @sNextTableName = CONVERT(varchar(50), @sTableName);
+				SET @sNextTableName = CONVERT(varchar(MAX), @sTableName);
 			END	
 
 			IF @sColumnString <> ''
