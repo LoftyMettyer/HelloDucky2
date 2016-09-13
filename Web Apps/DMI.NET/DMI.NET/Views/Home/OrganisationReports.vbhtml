@@ -42,8 +42,8 @@
 
       if ('@Model.OrgReportChartNodeList.Any()' == 'False') {
          $('#noData').show();
-         menu_toolbarEnableItem('divBtnPrintOrgChart', false);
-         menu_toolbarEnableItem('divBtnPrintPreviewOrgChart', false);
+         menu_toolbarEnableItem('divBtnPrintOrgReports', false);
+         menu_toolbarEnableItem('divBtnPrintPreviewOrgReports', false);
          menu_toolbarEnableItem('mnutoolOrgReportsExpand', false);
          menu_toolbarEnableItem('divBtnSelectOrgReports', false);
          $('.mnuBtnPrintOrgChart>span').prop('disabled', true);
@@ -100,9 +100,6 @@
             }
          });
 
-         $('.printSelect').toggle().prop('checked', true);
-
-
          //($("#divPostEmployees").children().length * 195) + "px !important"
          $("#optionframe").hide();
          $("#workframe").show();
@@ -110,9 +107,13 @@
          // Print selected nodes and kill checkbox bubbling (so the nodes don't expand aswell)
          $(document).off('click', '.printSelect').on('click', '.printSelect', function (event) { event.stopPropagation(); printSelectClick(this); });
 
+         //Select all nodes by default on the load
+         $('.printSelect').toggle();
+         $("#chart").find(".printSelect").first().click();
+
          //Set up print options on ribbon
-         $(document).off('click', '.mnuBtnPrintOrgChart').on('click', '.mnuBtnPrintOrgChart', function () { printOrgChart(); });	// print all nodes
-         $(document).off('click', '.mnuBtnPrintPreviewOrgChart').on('click', '.mnuBtnPrintPreviewOrgChart', function () { printOrgChart(true); });	// print preview all nodes
+         $(document).off('click', '.mnuBtnPrintOrgChart').on('click', '.mnuBtnPrintOrgChart', function () { printOrgReport(); });	// print all nodes
+         $(document).off('click', '.mnuBtnPrintPreviewOrgChart').on('click', '.mnuBtnPrintPreviewOrgChart', function () { printOrgReport(true); });	// print preview all nodes
 
          //Enable org chart nodes to be selected for printing.
          $(document).off('click', '.mnuBtnSelectOrgChart').on('click', '.mnuBtnSelectOrgChart', function () {
@@ -185,7 +186,7 @@
 
    }
 
-   function printOrgChart(pfPreview) {
+   function printOrgReport(pfPreview) {
 
       //calculate fPrintAll flag based on selection
       var fPrintAll = ($('.printSelect').css('display') == "none");
