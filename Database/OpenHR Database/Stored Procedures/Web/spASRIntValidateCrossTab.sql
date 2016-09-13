@@ -209,7 +209,7 @@ BEGIN
 		FROM ASRSysCategories
 		WHERE id = @piCategoryID;
 
-		IF @iCount = 1
+		IF @iCount = 0
 		BEGIN
 			SET @psErrorMsg = 'The category has been deleted by another user.';
 			SET @piErrorCode = 1;
