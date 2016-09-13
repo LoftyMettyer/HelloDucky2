@@ -30,12 +30,6 @@
       right: 4px;
    }
 
-   .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
-      /*background: none !important;*/
-      /*color: black !important;*/
-   }
-
-   /*margin: 0px !important;*/
 </style>
 <script>
 
@@ -89,6 +83,8 @@
                $(this).find("#divPostTitle").css("min-width", totalEmpDiv * 170);
                $(this).find("#divPostColumns div").css("width", totalEmpDiv * 180);
                $(this).find("#divPostColumns div").css("display", "inline-block");
+               $(this).find("#divPostColumns div").css("margin-top", 1);
+               $(this).find("#divPostColumns div").css("margin-bottom", 0);
                $(this).find("#divPostEmployees div div").css("width", 176 + totalEmpDiv);
             }
             else {
@@ -219,8 +215,11 @@
          newWin.document.write('body {font-family: "Segoe UI", Verdana; }');
          newWin.document.write('h2 {page-break-before: always;}'); //adds page breaks as required.
          newWin.document.write('.jOrgChart .node {height: auto;width: auto;min-width: 200px;border: 1px solid gray;padding: 5px 0px 0px 0px;overflow: auto;font-weight: bold !important;}');
-         newWin.document.write('#divPostColumns div {margin:5px !important;}');
+         newWin.document.write('#divPostColumns div {margin-top:1px !important;}');
+         newWin.document.write('#divPostColumns div {margin-bottom:0px !important;}');
          newWin.document.write('#divPostColumns div {height:auto !important;}');
+         newWin.document.write('.truncate {white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}');
+         newWin.document.write('.expandNode {bottom: 4px;right: 4px;}');
          newWin.document.write('</sty');
          newWin.document.write('le>');
          newWin.document.write('<h1 style="width: 400px;">Organisation Reports</h1>');
@@ -281,50 +280,50 @@
    <ul id='tempList' style="display: none;">
       @Code For Each item In Model.OrgReportChartNodeList
             If Model.IsPostBasedSystem = False Then
-            @<li hierarchyLevel="@item.HierarchyLevel"
-                 id="@item.LineManagerStaffNo"
-                 class="@item.NodeTypeClass">
-               <div style="overflow: auto;max-height: 190px;" id="divMainContainer" class="centered">
-                  @For Each childitem In item.ReportColumnItemList
-                     Html.RenderPartial("_OrganisationReportColumnNode", childitem)
-                  Next
-               </div>
-               <input type="checkbox" class="printSelect" />
-               <img title="expand/contract this node" class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' />
-               <ul id="@item.EmployeeStaffNo" />
-            </li>
+      @<li hierarchyLevel="@item.HierarchyLevel"
+           id="@item.LineManagerStaffNo"
+           class="@item.NodeTypeClass">
+         <div style="overflow-x:hidden;overflow-y: hidden;" id="divMainContainer" class="centered">
+            @For Each childitem In item.ReportColumnItemList
+               Html.RenderPartial("_OrganisationReportColumnNode", childitem)
+            Next
+         </div>
+         <input type="checkbox" class="printSelect" />
+         <img title="expand/contract this node" class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' />
+         <ul id="@item.EmployeeStaffNo" />
+      </li>
             Else
                ''Post based system goes here...
-               @<li hierarchyLevel="@item.HierarchyLevel"
-                    id="@item.LineManagerStaffNo"
-                    class="ui-corner-all ui-state-default">
-                  <div style="overflow-x:hidden;overflow-y: auto;padding-right: 0px;padding-left: 0px;" id="divMainContainer" class="centered">
-                     <div id="divPostTitle" class="truncate centered" style="min-height:20px;text-align: center;display:inline-block;">
-                        <span title="@item.PostTitle">@item.PostTitle</span>
-                     </div>
-                     <div id="divPostColumns">
-                        @For Each colitem In item.ReportColumnItemList.Where(Function(m) m.TableID = Model.Hierarchy_TableID)
-                           Html.RenderPartial("_OrganisationReportColumnNode", colitem)
-                        Next
-                     </div>
-                     <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
-                        @For Each childitem In item.PostWiseNodeList
-                        @<div style="min-width:180px;display:table-cell;" class="centered">
-                           @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
-                           @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
-                              @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
-                                 Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
-                              Next
-                           </div>
-                           End If
-                        </div>
-                        Next
-                     </div>
-                  </div>
-                  <input type="checkbox" class="printSelect" />
-                  <img title="expand/contract this node" class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' />
-                  <ul id="@item.EmployeeStaffNo" />
-               </li>
+      @<li hierarchyLevel="@item.HierarchyLevel"
+           id="@item.LineManagerStaffNo"
+           class="ui-corner-all ui-state-default">
+         <div style="overflow-x:hidden;overflow-y: hidden;padding-right: 0px;padding-left: 0px;" id="divMainContainer" class="centered">
+            <div id="divPostTitle" class="truncate centered" style="min-height:20px;text-align: center;display:inline-block;">
+               <span title="@item.PostTitle">@item.PostTitle</span>
+            </div>
+            <div id="divPostColumns">
+               @For Each colitem In item.ReportColumnItemList.Where(Function(m) m.TableID = Model.Hierarchy_TableID)
+                  Html.RenderPartial("_OrganisationReportColumnNode", colitem)
+               Next
+            </div>
+            <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
+               @For Each childitem In item.PostWiseNodeList
+               @<div style="min-width:180px;display:table-cell;" class="centered">
+                  @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
+               @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
+                  @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
+                     Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
+                  Next
+               </div>
+                  End If
+               </div>
+               Next
+            </div>
+         </div>
+         <input type="checkbox" class="printSelect" />
+         <img title="expand/contract this node" class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' />
+         <ul id="@item.EmployeeStaffNo" />
+      </li>
             End If
          Next
       End Code
