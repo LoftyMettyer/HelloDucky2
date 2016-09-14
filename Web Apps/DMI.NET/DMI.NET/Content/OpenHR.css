@@ -1544,8 +1544,9 @@ overflow-x : hidden !important;
 /* Session timeout warning.*/
 div#sessionWarning {
 	display: none;
-	position: relative;
-	top: 0;
+	position: fixed;
+	top: 50%;
+	left: 35%;
 	width: 30%;
 	font-weight: bold;
 	text-align: center;
