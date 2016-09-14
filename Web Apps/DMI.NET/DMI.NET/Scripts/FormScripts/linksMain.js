@@ -226,7 +226,7 @@ function goScreen(psScreenInfo) {
 	//window.frames("linksworkframe").location.replace(sDestination);
 }
 
-function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {	
+function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 	if (!dragged) {
 
 		if (sUtilityType === utilityType.Workflow) {
@@ -240,7 +240,18 @@ function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 
 			OpenHR.submitForm(null, "divWorkflow", null, postData, "util_run_workflow");
 					
-		} else {
+		}
+        //Load the organisation report in workframe
+		else if (sUtilityType === 39) {
+		   var postData = {
+		      UtilType: sUtilityType,
+		      ID: sUtilityID,
+		      Name: sUtilityName,
+		      __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		   };
+		   OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+		}
+		else {
 			
 			//Not a workflow!
 			$('#SSILinksFrame').fadeOut();
