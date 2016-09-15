@@ -251,6 +251,7 @@
     <Compile Include="Code\Captcha\CaptchaImage.vb" />
     <Compile Include="Code\Captcha\Letter.vb" />
     <Compile Include="Code\EncryptionService.vb" />
+    <Compile Include="Code\OpenAmRestCalls.vb" />
     <Compile Include="Infrastructure\AllowJWTAccessAttribute.vb" />
     <Compile Include="Infrastructure\ClaimsAuthorizationAttribute.vb" />
     <Compile Include="Models\OrganisationReportChartModel.vb" />

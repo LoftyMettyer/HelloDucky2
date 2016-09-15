@@ -1,13 +1,13 @@
 ﻿<appSettings>
-   <add key="UI_Admin_Theme" value="redmond-segoe" />
-   <add key="UI_Layout_Selectable" value="false" />
-   <add key="UI_Self_Service_Layout" value="winkit" />
-   <add key="UI_Wireframe_Theme" value="redmond-segoe" />
-   <add key="UI_Winkit_Theme" value="redmond-segoe" />
-   <add key="UI_Tiles_Theme" value="start" />
-
-   <add key="UI_Banner_Colour" value="" />
-   <add key="UI_Banner_Justification" value="" />
+	<add key="UI_Admin_Theme" value="redmond-segoe" />
+	<add key="UI_Layout_Selectable" value="false" />
+	<add key="UI_Self_Service_Layout" value="winkit" />
+	<add key="UI_Wireframe_Theme" value="redmond-segoe" />
+	<add key="UI_Winkit_Theme" value="redmond-segoe" />
+	<add key="UI_Tiles_Theme" value="start" />
+		
+	<add key="UI_Banner_Colour" value="" />
+	<add key="UI_Banner_Justification" value="" />
 
    <add key="ValidFileExtensions" value="doc,dot,docx,dotx,xls,xlt,xlsx,xltx,ppt,pot,pps,pptx,potx,ppsx,sldx,pub,jpeg,jpg,gif,bmp,png,pdf"/>
    <add key="EnableViewCurrentUsers" value="false" />
@@ -16,6 +16,8 @@
    <add key="as:AudienceId" value="" />
    <add key="as:AudienceSecret" value="" />
 
-
-
+  <!--The following section is for Workspace users only-->
+  <add key="OpenAmAuthenticateUri" value="" />
+  <add key="OpenAmGetIdFromSessionUri" value="" />
+  
 </appSettings>

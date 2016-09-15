@@ -103,81 +103,104 @@ Namespace Controllers
 			Return (From collectionItem As Object In objButtonInfo Select New navigationLinks(collectionItem.linkType, collectionItem.linkOrder, collectionItem.prompt, collectionItem.text, collectionItem.element_Type, collectionItem.ID)).ToList()
 		End Function
 
-		Function DBValue(iChartTableID As Long,
-		 iChartColumnID As Long,
-		 iChartFilterID As Long,
-		 iChartAggregateType As Long,
-		 iChartElementType As Long,
-		 iChartSortOrderID As Long,
-		 iChartSortDirection As Long,
-		 iChartColourID As Long) As String
+      Function DBValue(iChartTableID As Long,
+       iChartColumnID As Long,
+       iChartFilterID As Long,
+       iChartAggregateType As Long,
+       iChartElementType As Long,
+       iChartSortOrderID As Long,
+       iChartSortDirection As Long,
+       iChartColourID As Long) As String
 
-			Dim objChart = New HR.Intranet.Server.clsChart
-			objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+         Dim objChart = New HR.Intranet.Server.clsChart
+         objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-			Dim mrstDBValueData As DataTable
+         Dim mrstDBValueData As DataTable
 
-			Try
-				mrstDBValueData = objChart.GetChartData(iChartTableID, iChartColumnID, iChartFilterID, iChartAggregateType,
-					iChartElementType, 0, 0, 0, 0, iChartSortOrderID, iChartSortDirection, iChartColourID)
+         Try
+            mrstDBValueData = objChart.GetChartData(iChartTableID, iChartColumnID, iChartFilterID, iChartAggregateType,
+               iChartElementType, 0, 0, 0, 0, iChartSortOrderID, iChartSortDirection, iChartColourID)
 
-			Catch ex As Exception
-				Session("ErrorTitle") = "The Database Values could not be retrieved." & vbCrLf & ex.Message.RemoveSensitive()
+         Catch ex As Exception
+            Session("ErrorTitle") = "The Database Values could not be retrieved." & vbCrLf & ex.Message.RemoveSensitive()
 
-			End Try
+         End Try
 
-			Dim sText As String = ""
+         Dim sText As String = ""
 
-			If Len(Session("ErrorTitle")) = 0 Then
-				Try
+         If Len(Session("ErrorTitle")) = 0 Then
+            Try
 
-					If mrstDBValueData.Rows.Count > 0 Then
-						For Each objRow As DataRow In mrstDBValueData.Rows
-							sText = objRow(0).ToString()
-						Next
+               If mrstDBValueData.Rows.Count > 0 Then
+                  For Each objRow As DataRow In mrstDBValueData.Rows
+                     sText = objRow(0).ToString()
+                  Next
 
-					Else ' no results - return zero
-						sText = "No Data"
-					End If
-				Catch ex As Exception
-					sText = "No Data"
-				End Try
+               Else ' no results - return zero
+                  sText = "No Data"
+               End If
+            Catch ex As Exception
+               sText = "No Data"
+            End Try
 
-			End If
+         End If
 
-			Return sText
-		End Function
+         Return sText
+      End Function
 
-		' GET: /Account/Login
-		<HttpGet>
-		Function Login() As ActionResult
+      ' GET: /Account/Login
+      <HttpGet>
+      Function Login() As ActionResult      
+         
+         Try
 
-			Try
+            If Not DatabaseHub.DatabaseOK Then
+               Return RedirectToAction("Configuration", "Error")
+            End If
 
-				If Not DatabaseHub.DatabaseOK Then
-					Return RedirectToAction("Configuration", "Error")
-				End If
+            Session("ErrorText") = Nothing
+            Session("action") = ""
+            Session("selectSQL") = ""
+            Session("optionAction") = OptionActionType.Empty
 
-				Session("ErrorText") = Nothing
-				Session("action") = ""
-				Session("selectSQL") = ""
-				Session("optionAction") = OptionActionType.Empty
+         Catch ex As Exception
+            Session("ErrorText") = FormatError(ex.Message)
+            Return RedirectToAction("LoginMessage")
+         End Try
 
-			Catch ex As Exception
-				Session("ErrorText") = FormatError(ex.Message)
-				Return RedirectToAction("LoginMessage")
-			End Try
+         Session("dfltTempMenuFilePath") = "<NONE>"
 
-			Session("dfltTempMenuFilePath") = "<NONE>"
+         Dim objLoginView As New LoginViewModel
+         objLoginView.ReadFromCookie()
 
-			Dim objLoginView As New LoginViewModel
-			objLoginView.ReadFromCookie()
+         If Request.Cookies("workspaceLogoff") Is Nothing AndAlso Request.Cookies("iplanetdirectorypro") IsNot Nothing Then
+            ' A Workspace cookie exists. Validate it and attempt to log in with windows authentication...
+            Dim workspaceUserId
+            Dim workspaceTokenId = Request.Cookies("iplanetdirectorypro").Value
+            Try
+               workspaceUserId = OpenAmRestCalls.GetIdFromSession(workspaceTokenId)
+               ' Validate the cookie.
+               If workspaceUserId Is Nothing Then Return View(objLoginView)
+            Catch ex As Exception
+               ' Redirect to login page
+               Return View(objLoginView)
+            End Try
+            ' Successfully validated the cookie. 
+            Return RedirectToAction("ActualLogin", "Account", New With {Key .linkRef = "winAuth"})
+         End If
 
-			Return View(objLoginView)
+         ' Now remove the cookie which would prevent a workspace auto-login (added when Log Off clicked)
+         Dim logoffCookie As HttpCookie = New HttpCookie("workspaceLogoff") With {
+               .HttpOnly = True,
+               .Expires = DateTime.Now.AddDays(-1)
+            }
 
-		End Function
+         Response.Cookies.Add(logoffCookie)
 
-		<HttpPost()>
+         Return View(objLoginView)
+      End Function
+
+      <HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function Login(LoginViewModel As LoginViewModel) As ActionResult
 
@@ -272,38 +295,34 @@ Namespace Controllers
 				Dim objCrypt As New clsCrypt
 				Dim loginviewmodel As LoginViewModel
 
-				Session("isPortalLogin") = False
+            Session("isPortalLogin") = False
 
-				If linkRef Is Nothing Then
-					Try
+            If linkRef = "winAuth" Then
+               Try
 
-						Dim identity = TryCast(User.Identity, ClaimsIdentity)
+                  Dim identity = TryCast(User.Identity, ClaimsIdentity)
 
-						' NB: identity.IsAuthenticated does not mean openHR authenticated.
-						If Not identity.IsAuthenticated Then
-							Dim objErrors = New ViewModels.Account.ConfigurationErrorsModel
-							objErrors.Errors.Add(New ConfigurationError With {.Code = "0001",
-																				.Message = "Authorization failed",
-																				.Detail = ""})
-							Return View("~/views/error/PermissionsError.vbhtml", objErrors)
-						End If
+                  ' NB: identity.IsAuthenticated is WINDOWS authentication, not OpenHR authentication.
+                  ' todo: check identity isn't IUSR
+                  If Not identity.IsAuthenticated Then
+                     Dim objErrors = New ViewModels.Account.ConfigurationErrorsModel
+                     objErrors.Errors.Add(New ConfigurationError With {.Code = "0001",
+                                                            .Message = "Authorization failed",
+                                                            .Detail = ""})
+                     Return View("~/views/error/PermissionsError.vbhtml", objErrors)
+                  End If
 
-						If portalRedirectTo = "testlogin" Then Return Json(User.Identity.Name, JsonRequestBehavior.AllowGet)
+                  If portalRedirectTo = "testlogin" Then Return Json(User.Identity.Name, JsonRequestBehavior.AllowGet)
 
-						loginviewmodel = New LoginViewModel()
+                  loginviewmodel = New LoginViewModel()
 
-						Dim claim As Claim = identity.Claims.FirstOrDefault(Function(c) c.Type = "ohr:username")    ' case sensitive
-						If claim Is Nothing Then Return New HttpStatusCodeResult(HttpStatusCode.Unauthorized)
-						loginviewmodel.UserName = claim.Value
+                  loginviewmodel.WindowsAuthentication = True
+                  loginviewmodel.UserName = identity.Name
 
-						claim = identity.Claims.FirstOrDefault(Function(c) c.Type = "ohr:password") ' case sensitive
-						If claim Is Nothing Then Return New HttpStatusCodeResult(HttpStatusCode.Unauthorized)
-						loginviewmodel.Password = EncryptionService.DecryptString(claim.Value, vbNullString)
-
-						loginviewmodel.txtLocaleCulture = Thread.CurrentThread.CurrentCulture.ToString()
-						loginviewmodel.txtLocaleDecimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator
+                  loginviewmodel.txtLocaleCulture = Thread.CurrentThread.CurrentCulture.ToString()
+                  loginviewmodel.txtLocaleDecimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator
 						loginviewmodel.txtLocaleThousandSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator
-						Session("isPortalLogin") = True
+						'Session("isPortalLogin") = True
 
 					Catch ex As Exception
 						Return New HttpStatusCodeResult(400, "Incorrect details.")
@@ -663,9 +682,17 @@ Namespace Controllers
 				Session("sessionContext") = Nothing
 
 				Session("Username") = vbNullString
-				Session("Usergroup") = vbNullString
+            Session("Usergroup") = vbNullString
 
-			Catch ex As Exception
+            ' Create a cookie to prevent a workspace auto-login recurring
+            Dim logoffCookie As HttpCookie = New HttpCookie("workspaceLogoff") With {
+               .HttpOnly = True,
+               .Expires = DateTime.Now.AddDays(1)
+            }
+
+            Response.Cookies.Add(logoffCookie)
+
+         Catch ex As Exception
 				Throw
 
 			End Try
