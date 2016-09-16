@@ -5979,8 +5979,13 @@ Namespace Controllers
                      If (columnitem.DataType <> ColumnDataType.sqlVarBinary) Then
                         If Not IsDBNull(objRow(strColumnName)) Then
                            columnitem.ColumnValue = objRow(strColumnName)
+                           If (columnitem.ColumnValue.Length > 200) Then
+                              columnitem.ColumnTitle = columnitem.ColumnValue.Substring(0, 200) + "..."
+                           Else
+                              columnitem.ColumnTitle = columnitem.ColumnValue
+                           End If
                         Else
-                           columnitem.ColumnValue = String.Empty
+                              columnitem.ColumnValue = String.Empty
                         End If
                      Else
 

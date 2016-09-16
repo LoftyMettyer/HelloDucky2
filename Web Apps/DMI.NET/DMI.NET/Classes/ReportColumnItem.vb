@@ -30,6 +30,8 @@ Namespace Classes
 
       Public Property ColumnValue As String
 
+      Public Property ColumnTitle As String
+
       Public Property DataType As ColumnDataType
       Public Property Size As Long
 		Public Property ColumnSize As Long
