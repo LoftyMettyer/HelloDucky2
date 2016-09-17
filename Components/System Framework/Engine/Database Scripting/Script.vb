@@ -1602,8 +1602,7 @@ Namespace ScriptDB
         lngBatchSize = CLng(SystemSettings.Setting("overnight", "batchsize").Value)
         bIgnoreArchive = CBool(SystemSettings.Setting("overnight", "ignorearchived").Value)
         lngArchiveColumnId = clng(SystemSettings.Setting("overnight", "archivecolumn").Value)
-        sArchiveColumnName = Columns.FirstOrDefault(Function(c) c.Id = lngArchiveColumnId).Name
-
+       
         For Each objTable In Tables.Where(Function(f) f.State <> DataRowState.Deleted)
           aryColumns = New ArrayList
           For Each objColumn In objTable.Columns
@@ -1624,6 +1623,7 @@ Namespace ScriptDB
               , objTable.PhysicalName, lngBatchSize)
             
             If bIgnoreArchive And objTable Is ModuleSetup.Setting("MODULE_PERSONNEL", "Param_TablePersonnel").Table And lngArchiveColumnId > 0  Then
+               sArchiveColumnName = Columns.FirstOrDefault(Function(c) c.Id = lngArchiveColumnId).Name
                sSqlOvernightJob &= ", '" & sArchiveColumnName & " IS NULL OR " & sArchiveColumnName & " > GETDATE()'"
             else
                sSqlOvernightJob &= ", ''"
