@@ -2,9 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
-    <TargetDatabaseName>Assembly</TargetDatabaseName>
+    <TargetDatabaseName>OpenHR</TargetDatabaseName>
     <DeployScriptFileName>Assembly.sql</DeployScriptFileName>
-    <TargetConnectionString>Data Source=harpdev02;Persist Security Info=True;User ID=sa;Pooling=False</TargetConnectionString>
+    <TargetConnectionString>Data Source=.\sql2014;Persist Security Info=True;User ID=sa;Pooling=False</TargetConnectionString>
     <ProfileVersionNumber>1</ProfileVersionNumber>
   </PropertyGroup>
 </Project>

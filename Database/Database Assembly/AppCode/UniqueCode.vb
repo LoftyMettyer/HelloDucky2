@@ -1,117 +1,115 @@
-﻿Imports System
-Imports System.Data
+﻿Option Explicit On
+Option Strict On
+
 Imports System.Data.SqlClient
+Imports Assembly.Classes
 Imports Microsoft.SqlServer.Server
+Imports System.Collections.Generic
+Imports System.Linq
+Imports System.Collections.ObjectModel
 
 Partial Public Class Functions
 
-	Public Class UniqueCode
-		Public Code As String
-		Public Value As Integer
-		Public LastRecordID As Integer
-	End Class
+   Public Shared Numbers As New Collection(Of UniqueCode)
 
-	Public Shared Numbers As New ArrayList
+   <SqlProcedure(Name:="spstat_flushuniquecode")>
+   Public Shared Sub FlushUniqueCode()
 
-	Private Shared IsInstanciated As Boolean = False
-	
-	Private Shared Sub LoadUniqueCodes()
+      Dim UniqueCode As UniqueCode
+      Dim cmd As SqlCommand
+      Dim command As String
+      Dim objectName As String
 
-		Using conn As New SqlConnection("context connection=true")
-			conn.Open()
+      Using conn As New SqlConnection("context connection=true")
+         conn.Open()
 
-			' If no numbers in process get next number from database
-			Dim cmd As New SqlCommand("SELECT [CodePrefix], [MaxCodeSuffix] FROM dbo.[tbsys_uniquecodes]", conn)
+         Try
 
-			Dim dr As SqlDataReader = cmd.ExecuteReader()
-			Dim uniqueCode As Functions.UniqueCode
+            For Each UniqueCode In Numbers.Where(Function(u) u.IsNew = True)
 
-			Do While dr.Read()
-				uniqueCode = New Functions.UniqueCode
-				uniqueCode.Code = dr.Item(0).ToString.ToUpper
-				uniqueCode.Value = CInt(dr.Item(1).ToString)
-				uniqueCode.LastRecordID = 0
-				Numbers.Add(uniqueCode)
-			Loop
-		End Using
+               objectName = String.Format("sequence_{0}", UniqueCode.Code)
+               command = String.Format("IF NOT EXISTS (SELECT * FROM sys.sequences WHERE name = N'{0}') " &
+                     "BEGIN " &
+                     "CREATE SEQUENCE [{0}] START WITH {1}; " &
+                     "GRANT UPDATE ON [{0}] TO ASRSysGroup; " &
+                     "SELECT NEXT VALUE FOR {0}; " & 
+                     "END", objectName, UniqueCode.Value)
 
-	End Sub
+               cmd = New SqlCommand(command, conn)
+               cmd.ExecuteNonQuery()
 
-	<Microsoft.SqlServer.Server.SqlProcedure(Name:="spstat_flushuniquecode")> _
-	Public Shared Sub FlushUniqueCode()
+            Next
 
-		Dim cmd As SqlCommand
-		Dim sUpdate As String
-		Dim objReader As SqlDataReader
-		Dim UniqueCode As Functions.UniqueCode
+         Catch ex As Exception
 
-		Try
-			If Not IsInstanciated Then
-				LoadUniqueCodes()
-				IsInstanciated = True
-			Else
-				Using conn As New SqlConnection("context connection=true")
-					conn.Open()
-					' Flush current values to database
-					For Each UniqueCode In Numbers
-						UniqueCode.LastRecordID = 0
-						sUpdate = String.Format("IF EXISTS(SELECT * FROM dbo.[tbsys_uniquecodes] WHERE CodePrefix = '{1}') " & _
-						  "UPDATE dbo.[tbsys_uniquecodes] SET MaxCodeSuffix = {0} WHERE CodePrefix = '{1}' AND MaxCodeSuffix <> {0} " & _
-						  "ELSE INSERT dbo.[tbsys_uniquecodes] (codeprefix, maxcodesuffix) VALUES ('{1}', {0})" _
-						  , CInt(UniqueCode.Value), UniqueCode.Code)
-						cmd = New SqlCommand(sUpdate, conn)
-						cmd.ExecuteNonQuery()
-					Next
-				End Using
-			End If
+         End Try
 
-		Catch ex As Exception
-			'   strMessage = ex.Message
+      End Using
 
-		End Try
+      Numbers.Clear()
 
-	End Sub
+   End Sub
 
-	<Microsoft.SqlServer.Server.SqlFunction(Name:="udfstat_getuniquecode", DataAccess:=DataAccessKind.Read)> _
-	Public Shared Function GetUniqueCode(ByVal Prefix As String, ByVal RootValue As Long, ByVal RecordID As Integer) As SqlTypes.SqlString
+   <SqlFunction(Name:="udfstat_getuniquecode", DataAccess:=DataAccessKind.Read)> _
+   Public Shared Function GetUniqueCode(Prefix As String, RootValue As Long, RecordID As Integer) As SqlTypes.SqlString
 
-		Dim sUniqueCode As String = ""
-		Dim UniqueCode As UniqueCode
-		Dim bFound As Boolean = False
+      Dim returnVal As Long
+      Dim UniqueCode As UniqueCode
+      Dim bFound As Boolean = False
 
-		Try
-			If Not IsInstanciated Then
-				LoadUniqueCodes()
-				IsInstanciated = True
-			End If
+      Try
 
-			For Each UniqueCode In Numbers
-				If UniqueCode.Code = Prefix.ToUpper Then
-					bFound = True
-					If Not UniqueCode.LastRecordID = RecordID Then
-						UniqueCode.Value = UniqueCode.Value + 1
-					End If
-					UniqueCode.LastRecordID = RecordID
-					sUniqueCode = UniqueCode.Value.ToString
-					Exit For
-				End If
-			Next
+         Dim code As UniqueCode = Numbers.FirstOrDefault(Function(n) n.Code = Prefix And n.LastRecordID = RecordID)
 
-			If Not bFound Then
-				UniqueCode = New Functions.UniqueCode
-				UniqueCode.Code = Prefix.ToUpper
-				UniqueCode.Value = CInt(RootValue)
-				UniqueCode.LastRecordID = RecordID
-				Numbers.Add(UniqueCode)
-				sUniqueCode = UniqueCode.Value.ToString
-			End If
+         If code Is Nothing
+            code = New UniqueCode With {
+               .Code = Prefix,
+               .LastRecordID = RecordID,
+               .Value = GetNextSequence(Prefix, RootValue),
+               .IsNew = True}
+            Numbers.Add(code)
 
-		Catch ex As Exception
-			sUniqueCode = ex.Message
-		End Try
+         End If
 
-		Return sUniqueCode
+         returnVal = code.Value
 
-	End Function
+      Catch ex As Exception
+         Return ex.Message
+      End Try
+
+      Return returnVal.ToString
+
+   End Function
+
+   Private Shared Function GetNextSequence(Prefix As String, RootValue As Long) As Long
+
+      Dim command As String
+      Dim objectName As String
+      Dim cmd As SqlCommand
+      Dim nextValue As Long = RootValue
+
+      Try
+
+         Using conn As New SqlConnection("context connection=true")
+            conn.Open()
+
+            objectName = String.Format("sequence_{0}", Prefix)
+
+            command = String.Format("IF OBJECT_ID('{0}') IS NOT NULL " & _
+               "SELECT NEXT VALUE FOR {0} ELSE SELECT {1}", objectName, RootValue)
+            cmd = New SqlCommand(command, conn)
+            nextValue = CType(cmd.ExecuteScalar(), Long)
+
+         End Using
+
+      Catch ex As Exception
+         Return RootValue
+
+      End Try
+
+      Return nextValue
+
+   End Function
 
 End Class
+

@@ -1,8 +1,0 @@
-﻿CREATE TABLE [dbo].[tbsys_uniquecodes](
-	[CodePrefix] [varchar](20) NOT NULL,
-	[MaxCodeSuffix] [int] NULL,
- CONSTRAINT [PK_ASRSysUniqueCodes] PRIMARY KEY CLUSTERED 
-(
-	[CodePrefix] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-)

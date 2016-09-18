@@ -2392,6 +2392,26 @@ PRINT 'Step - Data Protection Enhancements'
 		EXECUTE sp_executeSQL @NVarCommand;
 	END
 
+
+/* ------------------------------------------------------- */
+PRINT 'Step - Unique Code Enhancements'
+/* ------------------------------------------------------- */
+
+	GRANT CREATE SEQUENCE ON SCHEMA::dbo TO [ASRSysGroup] 
+
+	SET @NVarCommand = '';
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_uniquecodes]') AND xtype = 'U')
+	BEGIN
+		SELECT @NVarCommand = @NVarCommand + 'IF NOT EXISTS (SELECT * FROM sys.sequences WHERE name = N''sequence_' + CodePrefix + ''')
+			CREATE SEQUENCE [dbo].[sequence_' + CodePrefix + '] START WITH ' + convert(nvarchar(MAX), MaxCodeSuffix) + ';' + CHAR(13)
+			FROM tbsys_uniquecodes
+			WHERE ISNULL(CodePrefix, '') <> '';
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		EXECUTE sp_executeSQL N'DROP TABLE dbo.tbsys_uniquecodes';
+	END
+
+
 /* ------------------------------------------------------- */
 PRINT 'Final Step - Updating Versions'
 /* ------------------------------------------------------- */
