@@ -2800,7 +2800,7 @@ Public Function ExpressionIsUsed(plngExprID As Long) As Boolean
         Else
           sTableName = "<unknown>"
         End If
-        mfrmUse.AddToList ("View Filter : " & rsDAOCheck!ViewName & " <" & sTableName & ">")
+        mfrmUse.AddToList ("View Filter : " & rsDAOCheck!viewName & " <" & sTableName & ">")
         rsDAOCheck.MoveNext
       Loop
     End If
@@ -4386,15 +4386,13 @@ Public Function CreateDefaultValueStoredProcedure() As Boolean
       "    /* for these other stored procedures to run in. */" & vbNewLine & _
       "    IF @@nestlevel >= 30 RETURN" & vbNewLine & vbNewLine & _
       "    /* Declare local variables. */" & vbNewLine & _
-      "    DECLARE @hResult integer," & vbNewLine & _
+      "    DECLARE @hResult integer = 0," & vbNewLine & _
+      "        @piInstanceID integer = 0," & vbNewLine & _
       "        @source varChar(30)," & vbNewLine & _
       "        @desc varChar(200)," & vbNewLine & _
       "        @loopCounter float," & vbNewLine & _
       "        @filterRecordID integer," & vbNewLine & _
       "        @filterResult integer" & vbNewLine & vbNewLine
-
-    sSQL.Append _
-      "    SET @hResult = 0" & vbNewLine & vbNewLine
       
     ' Add the expression's stored procedure code (ie. the code for the individual components).
     sSQL.Append _

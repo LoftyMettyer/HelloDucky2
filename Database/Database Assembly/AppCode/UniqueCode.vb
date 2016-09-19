@@ -30,8 +30,8 @@ Partial Public Class Functions
                objectName = String.Format("sequence_{0}", UniqueCode.Code)
                command = String.Format("IF NOT EXISTS (SELECT * FROM sys.sequences WHERE name = N'{0}') " &
                      "BEGIN " &
-                     "CREATE SEQUENCE [{0}] START WITH {1}; " &
-                     "GRANT UPDATE ON [{0}] TO ASRSysGroup; " &
+                     "CREATE SEQUENCE dbo.[{0}] START WITH {1}; " &
+                     "GRANT UPDATE ON dbo.[{0}] TO ASRSysGroup; " &
                      "SELECT NEXT VALUE FOR {0}; " & 
                      "END", objectName, UniqueCode.Value)
 
@@ -54,7 +54,6 @@ Partial Public Class Functions
    Public Shared Function GetUniqueCode(Prefix As String, RootValue As Long, RecordID As Integer) As SqlTypes.SqlString
 
       Dim returnVal As Long
-      Dim UniqueCode As UniqueCode
       Dim bFound As Boolean = False
 
       Try

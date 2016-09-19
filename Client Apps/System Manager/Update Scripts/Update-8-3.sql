@@ -2411,6 +2411,22 @@ PRINT 'Step - Unique Code Enhancements'
 		EXECUTE sp_executeSQL N'DROP TABLE dbo.tbsys_uniquecodes';
 	END
 
+	UPDATE ASRSysFunctions SET spName = 'sp_ASRFn_GetUniqueCode @piInstanceID,' WHERE functionID = 43
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_GetUniqueCode]') AND xtype = 'p')
+		DROP PROCEDURE [dbo].[sp_ASRFn_GetUniqueCode];
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRFn_GetUniqueCode]
+		(
+			@piInstanceID	int,
+			@piResult		int OUTPUT,
+			@psCodePrefix	varchar(MAX) = '''',
+			@piSuffixRoot	int=1
+		)
+		AS
+		BEGIN
+			SELECT @piResult = [dbo].[udfstat_getuniquecode] (@psCodePrefix, @piSuffixRoot, @piInstanceID);
+		END';
+
 
 /* ------------------------------------------------------- */
 PRINT 'Final Step - Updating Versions'
