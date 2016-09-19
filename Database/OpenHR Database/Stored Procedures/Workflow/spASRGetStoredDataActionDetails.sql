@@ -73,6 +73,7 @@ BEGIN
 		@dtResult					datetime,
 		@fltResult					float,
 		@iCalcID					integer,
+      @maxSize                float,
 		@iSize						integer,
 		@iDecimals					integer,
 		@iTriggerTableID			integer;
@@ -722,8 +723,9 @@ BEGIN
 				IF @iColumnDataType = 12 SET @sResult = LEFT(@sResult, @iSize); -- Character
 				IF @iColumnDataType = 2 -- Numeric
 				BEGIN
-					IF @fltResult >= power(10, @iSize - @iDecimals) SET @fltResult = 0;
-					IF @fltResult <= (-1 * power(10, @iSize - @iDecimals)) SET @fltResult = 0;
+					SET @maxSize = convert(float, '1' + REPLICATE('0', @iSize - @iDecimals))
+					IF @fltResult >= @maxSize SET @fltResult = 0;
+					IF @fltResult <= (-1 * @maxSize) SET @fltResult = 0;
 				END
 
 				SET @sValue = 
