@@ -864,6 +864,31 @@
     <Content Include="Content\themes\mint-choc\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\mint-choc\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\mint-choc\jquery.ui.tooltip.min.css" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_diagonals-thick_18_b81900_40x40.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_diagonals-thick_20_666666_40x40.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_glass_100_f6f6f6_1x400.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_glass_100_fdf5ce_1x400.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_glass_100_ffffff_1x400.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_gloss-wave_100_bcbcb9_500x100.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_gloss-wave_35_f3f3f3_500x100.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_gloss-wave_35_f6a828_500x100.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_gloss-wave_65_ED8B00_500x100.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_highlight-hard_80_f3f3f3_1x100.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_highlight-soft_100_eeeeee_1x100.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_highlight-soft_100_ffffff_1x100.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_highlight-soft_75_ffe45c_1x100.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-icons_000000_256x240.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-icons_228ef1_256x240.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-icons_ED8B00_256x240.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-icons_ef8c08_256x240.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-icons_ffd27a_256x240.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Content\themes\oneAdvanced\jquery-ui.min.css" />
+    <Content Include="Content\themes\oneAdvanced\jquery-ui.min.js" />
+    <Content Include="Content\themes\oneAdvanced\jquery-ui.structure.min.css" />
+    <Content Include="Content\themes\oneAdvanced\jquery-ui.theme.min.css" />
     <Content Include="Content\themes\overcast\images\animated-overlay.gif" />
     <Content Include="Content\themes\overcast\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\overcast\images\ui-bg_flat_0_eeeeee_40x100.png" />
@@ -1320,6 +1345,13 @@
     <Content Include="Scripts\FormScripts\customreport.js" />
     <Content Include="Scripts\FormScripts\BulkBooking.js" />
     <Content Include="Scripts\FormScripts\BulkBookingSelection.js" />
+    <Content Include="Content\fonts\Advanced\OpenSans-Regular.ttf" />
+    <Content Include="Content\fonts\Advanced\OpenSans-Semibold.ttf" />
+    <Content Include="Content\fonts\Advanced\MyriadPro-Regular.otf" />
+    <Content Include="Content\fonts\Advanced\OpenSans-Bold.ttf" />
+    <Content Include="Content\fonts\Advanced\OpenSans-Italic.ttf" />
+    <Content Include="Content\fonts\Advanced\OpenSans-Light.ttf" />
+    <Content Include="Content\fonts\Advanced\OpenSans-LightItalic.ttf" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\i18n\grid.locale-ar.js" />
     <Content Include="Scripts\i18n\grid.locale-bg.js" />
@@ -1474,7 +1506,9 @@
     <Content Include="Views\Account\CurrentUsers.ascx" />
     <Content Include="Views\Home\util_run_bradford_factor.ascx" />
     <Content Include="Views\Home\_showChart.ascx" />
-    <Content Include="custom.config.template" />
+    <Content Include="custom.config.template">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="connectionStrings.config.template">
       <SubType>Designer</SubType>
     </Content>

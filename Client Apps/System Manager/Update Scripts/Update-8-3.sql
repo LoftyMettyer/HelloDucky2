@@ -3451,6 +3451,19 @@ PRINT 'Step - Unique Code Enhancements'
 
 
 /* ------------------------------------------------------- */
+PRINT 'Step - Updating Support Information'
+/* ------------------------------------------------------- */
+   IF (SELECT COUNT(SettingValue) FROM ASRSysSystemSettings WHERE Section = 'support' AND SettingKey = 'email') = 1
+			UPDATE ASRSysSystemSettings SET SettingValue = 'ohrsupport@oneadvanced.com' WHERE Section = 'support' AND SettingKey = 'email';
+	ELSE
+	   	INSERT INTO ASRSysSystemSettings (Section, SettingKey, SettingValue) VALUES ('support','email','ohrsupport@oneadvanced.com');
+
+   IF (SELECT COUNT(SettingValue) FROM ASRSysSystemSettings WHERE Section = 'support' AND SettingKey = 'webpage') = 1
+			UPDATE ASRSysSystemSettings SET SettingValue = 'https://customers.oneadvanced.com' WHERE Section = 'support' AND SettingKey = 'webpage';
+	ELSE
+	   	INSERT INTO ASRSysSystemSettings (Section, SettingKey, SettingValue) VALUES ('support','webpage','https://customers.oneadvanced.com');
+
+/* ------------------------------------------------------- */
 PRINT 'Final Step - Updating Versions'
 /* ------------------------------------------------------- */
 

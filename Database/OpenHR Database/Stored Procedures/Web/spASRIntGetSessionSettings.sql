@@ -13,10 +13,10 @@ BEGIN
 			@ExprColourMode			integer	= 2,
 			@ExprNodeMode			tinyint	= 1;
 
-	DECLARE @SupportTelNo			varchar(50) = '+44 (0)1582 714820',
+	DECLARE @SupportTelNo			varchar(50) = '+44 (0)8451 609 999',
 			@SupportFax				varchar(50) = '+44 (0)1582 714814',
-			@SupportEmail			varchar(50) = 'ohrsupport@advancedcomputersoftware.com',
-			@SupportWebpage			varchar(50)	= 'http://webfirst.advancedcomputersoftware.com',
+			@SupportEmail			varchar(50) = 'ohrsupport@oneadvanced.com',
+			@SupportWebpage			varchar(50)	= 'https://customers.oneadvanced.com',
 			@DesktopColour			varchar(20) = 2147483660;
 
 

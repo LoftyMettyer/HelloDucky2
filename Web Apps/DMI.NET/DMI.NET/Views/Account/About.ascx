@@ -19,8 +19,8 @@
 		<label>User Locale :</label>
 		<span id="spnAbout_LocaleCultureName"></span>		
 
-		<h4>Copyright © Advanced Business Software and Solutions Ltd 2015</h4>
-		<a target="Advanced Website" href="http://www.advancedcomputersoftware.com/abs" class="hypertext">http://www.advancedcomputersoftware.com/abs</a>
+		<h4>Copyright © Advanced</h4>
+		<a target="Advanced Website" href="http://www.oneadvanced.com" class="hypertext">http://www.oneadvanced.com</a>
 		<h4>Contacts for Customer Services : </h4>
 		<label>Telephone :</label>
 		<%If Session("SupportTelNo") = "" Then%>
@@ -31,14 +31,14 @@
 		<br/>
 		<label>Email :</label>
 		<%If Session("SupportEmail") = "" Then%>
-		<a href="mailto://ohrsupport@advancedcomputersoftware.com?subject=OpenHR Support Query - Web Login" class="hypertext">ohrsupport@advancedcomputersoftware.com</a>
+		<a href="mailto://ohrsupport@oneadvanced.com?subject=OpenHR Support Query - Web Login" class="hypertext">ohrsupport@oneadvanced.com</a>
 		<%Else%>
 		<a href="mailto://<%:session("SupportEmail") %>?subject=OpenHR Support Query - Web Login" class="hypertext"><%:session("SupportEmail") %></a>
 		<%End If%>
 		<br/>
 		<label>Web site :</label>
 		<%If Session("SupportWebpage") = "" Then%>
-		<a target="AdvancedSupportWebsite" href="http://webfirst.advancedcomputersoftware.com" class="hypertext">http://webfirst.advancedcomputersoftware.com</a>
+		<a target="AdvancedSupportWebsite" href="https://customers.oneadvanced.com/" class="hypertext">https://customers.oneadvanced.com/</a>
 		<%Else%>
 		<a target="AdvancedSupportWebsite" href="<%:session("SupportWebpage") %>" class="hypertext"><%:session("SupportWebpage") %></a>
 		<%End If%>
