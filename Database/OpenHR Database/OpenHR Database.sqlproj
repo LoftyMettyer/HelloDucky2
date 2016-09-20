@@ -319,7 +319,6 @@
     <Build Include="Stored Procedures\Other\spASRGetWindowsUsers.sql" />
     <Build Include="Stored Procedures\Other\spASRInstantiateTriggeredWorkflows.sql" />
     <Build Include="Stored Procedures\Other\spASRLockWriteBatch.sql" />
-    <Build Include="Stored Procedures\Other\spASRMakeLoginsProcessAdmin.sql" />
     <Build Include="Stored Procedures\Other\spASRMaternityExpectedReturn.sql" />
     <Build Include="Stored Procedures\Other\spASRNetOutlookBatch.sql" />
     <Build Include="Stored Procedures\Other\spASROutlookEventRefresh.sql" />

@@ -473,7 +473,6 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       DoEvents
       fOK = ApplyPermissions
       fOK = fOK And Not gobjProgress.Cancelled
-      ApplyProcessAdminToLogins
     End If
      
     ' Save and check module specifics and configure any stored procedures.
@@ -1743,44 +1742,6 @@ ErrorTrap:
   Resume TidyUpAndExit
 
 End Function
-
-
-Private Function ApplyProcessAdminToLogins() As Boolean
-
-  On Error GoTo ErrorTrap
-
-  Dim cmdMakeProcessAdmin As New ADODB.Command
-  Dim bOK As Boolean
-
-  bOK = True
-
-  If Not gbCurrentUserIsSysSecMgr Then
-    bOK = False
-    GoTo TidyUpAndExit
-  End If
-
-  With cmdMakeProcessAdmin
-    .CommandText = "spASRMakeLoginsProcessAdmin"
-    .CommandType = adCmdStoredProc
-    .CommandTimeout = 0
-    Set .ActiveConnection = gADOCon
-    
-    .Execute
-  End With
-  
-  Set cmdMakeProcessAdmin = Nothing
-
-TidyUpAndExit:
-  ApplyProcessAdminToLogins = bOK
-  Exit Function
-
-ErrorTrap:
-  bOK = False
-  GoTo TidyUpAndExit
-
-
-End Function
-
 
 Private Function ConfigureModuleSpecifics() As Boolean
   ' Configure module specific objects (eg. stored procedures)

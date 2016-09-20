@@ -3056,6 +3056,27 @@ PRINT 'Step - General Updates'
 		END';
 
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRMakeLoginsProcessAdmin]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRMakeLoginsProcessAdmin];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfASRIsServer64Bit]') AND xtype = 'FN')
+		DROP FUNCTION [dbo].[udfASRIsServer64Bit]
+
+	EXEC sp_executesql N'CREATE FUNCTION [dbo].[udfASRIsServer64Bit]()
+		RETURNS int
+		AS
+		BEGIN
+
+			DECLARE @bIs64Bit bit
+			SELECT @bIs64Bit = CASE PATINDEX (''%X64)%'' , @@version)
+					WHEN 0 THEN 0
+					ELSE 1
+				END
+			RETURN @bIs64Bit
+
+		END'
+
+
 /* ------------------------------------------------------- */
 PRINT 'Step - Overnight Metrics'
 /* ------------------------------------------------------- */
