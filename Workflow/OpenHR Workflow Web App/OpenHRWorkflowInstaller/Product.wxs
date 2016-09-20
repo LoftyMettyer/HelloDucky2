@@ -16,9 +16,9 @@
 		 Language="1033"
 		 Version="$(var.FullProductVersion)"
 		 Manufacturer="Advanced Computer Software"
-		 UpgradeCode="{02616BEA-2CDE-4CCB-A908-7896813063E3}" >
+		 UpgradeCode="{DDD310B3-F2C8-460D-B5FB-74F05A1762DE}" >
 
-		<Package Id="0F659B6E-66F0-454D-AEE6-988659D82C23" InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+		<Package Id="F2A4C2FB-8F35-409A-9E78-8859CBB5C533" InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<Media Id="1" Cabinet="OpenHRWorkflowInstaller.cab" EmbedCab="yes" />
 
