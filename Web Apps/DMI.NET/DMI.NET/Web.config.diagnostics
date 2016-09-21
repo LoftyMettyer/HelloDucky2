@@ -15,9 +15,10 @@
 	<connectionStrings configSource="connectionStrings.config" />
 
 	<system.web>
+      <httpCookies httpOnlyCookies="true" />
 		<customErrors></customErrors>
 		<machineKey validation="HMACSHA512" compatibilityMode="Framework45" />
-		<compilation debug="true" defaultLanguage="vb" targetFramework="4.5.1" batch="false">
+    <compilation debug="true" defaultLanguage="vb" targetFramework="4.6.1" batch="false">
 			<assemblies>
 				<add assembly="System.Web.Abstractions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
 				<add assembly="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
@@ -26,7 +27,7 @@
 				<add assembly="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
 			</assemblies>
 		</compilation>
-		<httpRuntime requestValidationMode="2.0" encoderType="System.Web.Security.AntiXss.AntiXssEncoder,System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" enableVersionHeader="false" />
+    <httpRuntime requestValidationMode="2.0" encoderType="System.Web.Security.AntiXss.AntiXssEncoder,System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" enableVersionHeader="false" targetFramework="4.6.1" />
 		<pages controlRenderingCompatibilityVersion="4.0" viewStateEncryptionMode="Always" enableViewStateMac="true">
 			<namespaces>
 				<add namespace="System.Web.Helpers" />
@@ -42,7 +43,6 @@
 		<authentication mode="Windows" />
 		<identity impersonate="true" />
 		<globalization culture="auto" uiCulture="auto" enableClientBasedCulture="true" />
-		<sessionState timeout="30" />
 		<httpModules>
 			<add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" />
 			<add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" />
@@ -99,7 +99,7 @@
 				<remove name="X-Powered-By" />
 				<add name="X-Content-Type-Options" value="nosniff" />
 				<add name="X-XSS-Protection" value="1; mode=block" />
-            <add name="X-Frame-Options" value="Deny" />
+				<add name="X-Frame-Options" value="SameOrigin" />
 			</customHeaders>
 		</httpProtocol>
 	</system.webServer>
