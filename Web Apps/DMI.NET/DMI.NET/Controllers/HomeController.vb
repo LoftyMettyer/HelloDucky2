@@ -6070,6 +6070,12 @@ Namespace Controllers
                         If firstEmp.EmployeeID = 0 Then
                            item.IsVacantPost = True
                            If (IsDBNull(firstEmp.ReportColumnItemList) = False AndAlso firstEmp.ReportColumnItemList.Count > 0) Then
+                              For Each column In firstEmp.ReportColumnItemList
+                                 If (column.DataType <> ColumnDataType.sqlVarBinary) Then
+                                    column.ColumnValue = String.Empty
+                                    column.ColumnTitle = String.Empty
+                                 End If
+                              Next
                               firstEmp.ReportColumnItemList.FirstOrDefault().ColumnValue = "Vacant"
                               firstEmp.ReportColumnItemList.FirstOrDefault().ColumnTitle = "Vacant"
                            End If

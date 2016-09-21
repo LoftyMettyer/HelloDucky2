@@ -62541,6 +62541,12 @@ BEGIN
 		WHERE oc.OrganisationID =@iOrganisationID
 		ORDER BY t.TableName;
 
+      UPDATE ASRSysUtilAccessLog SET 
+              RunBy = system_user, 
+              RunDate = getdate(), 
+              RunHost = host_name() 
+     WHERE UtilID = @iOrganisationID AND Type = 39;
+
 END
 GO
 /*---------------------------------------------*/

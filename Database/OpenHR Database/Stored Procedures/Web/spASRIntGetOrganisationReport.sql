@@ -414,6 +414,12 @@ BEGIN
 		INNER JOIN ASRSysTables t ON c.tableID = t.tableID		
 		LEFT JOIN ASRSysViews v ON oc.ViewID = v.ViewID
 		WHERE oc.OrganisationID =@iOrganisationID
-		ORDER BY t.TableName;
+		ORDER BY t.TableName;      
+    
+     UPDATE ASRSysUtilAccessLog SET 
+              RunBy = system_user, 
+              RunDate = getdate(), 
+              RunHost = host_name() 
+     WHERE UtilID = @iOrganisationID AND Type = 39;
 
 END
