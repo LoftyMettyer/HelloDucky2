@@ -5977,17 +5977,22 @@ Namespace Controllers
                      Dim strColumnName As String = String.Format("{0}**{1}", columnitem.Heading, columnitem.ColumnID)
 
                      If (columnitem.DataType <> ColumnDataType.sqlVarBinary) Then
-                        If Not IsDBNull(objRow(strColumnName)) Then
-                           columnitem.ColumnValue = objRow(strColumnName)
-                           If (columnitem.ColumnValue.Length > 200) Then
-                              columnitem.ColumnTitle = columnitem.ColumnValue.Substring(0, 200) + "..."
-                           Else
-                              columnitem.ColumnTitle = columnitem.ColumnValue
-                           End If
-                        Else
-                           columnitem.ColumnValue = String.Empty
-                        End If
-                     Else
+                                If Not IsDBNull(objRow(strColumnName)) Then
+                                    If (columnitem.Decimals > 0) Then
+                                        Dim mask = "{0:#0." & New String("0", columnitem.Decimals) & "}"
+                                        columnitem.ColumnValue = String.Format(mask, CDbl(objRow(strColumnName)))
+                                    Else
+                                        columnitem.ColumnValue = objRow(strColumnName)
+                                    End If
+                                    If (columnitem.ColumnValue.Length > 200) Then
+                                        columnitem.ColumnTitle = columnitem.ColumnValue.Substring(0, 200) + "..."
+                                    Else
+                                        columnitem.ColumnTitle = columnitem.ColumnValue
+                                    End If
+                                Else
+                                    columnitem.ColumnValue = String.Empty
+                                End If
+                            Else
 
                         'Update height for photo column. So, it would render correctly on UI
                         columnitem.Height = columnitem.Height * 1.5
@@ -6070,14 +6075,14 @@ Namespace Controllers
                         If firstEmp.EmployeeID = 0 Then
                            item.IsVacantPost = True
                            If (IsDBNull(firstEmp.ReportColumnItemList) = False AndAlso firstEmp.ReportColumnItemList.Count > 0) Then
-                              For Each column In firstEmp.ReportColumnItemList
-                                 If (column.DataType <> ColumnDataType.sqlVarBinary) Then
-                                    column.ColumnValue = String.Empty
-                                    column.ColumnTitle = String.Empty
-                                 End If
-                              Next
-                              firstEmp.ReportColumnItemList.FirstOrDefault().ColumnValue = "Vacant"
-                              firstEmp.ReportColumnItemList.FirstOrDefault().ColumnTitle = "Vacant"
+                                        For Each column In firstEmp.ReportColumnItemList
+                                            If (column.DataType <> ColumnDataType.sqlVarBinary) Then
+                                                column.ColumnValue = String.Empty
+                                                column.ColumnTitle = String.Empty
+                                            End If
+                                        Next
+                                        firstEmp.ReportColumnItemList.FirstOrDefault().ColumnValue = "Vacant"
+                                        firstEmp.ReportColumnItemList.FirstOrDefault().ColumnTitle = "Vacant"
                            End If
                         End If
                      End If
