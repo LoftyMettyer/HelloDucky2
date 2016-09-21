@@ -5985,7 +5985,7 @@ Namespace Controllers
                               columnitem.ColumnTitle = columnitem.ColumnValue
                            End If
                         Else
-                              columnitem.ColumnValue = String.Empty
+                           columnitem.ColumnValue = String.Empty
                         End If
                      Else
 
@@ -6065,7 +6065,17 @@ Namespace Controllers
                                                                     }).ToList()
 
                   For Each item As OrgReportChartNode In postList
-                     If (IsDBNull(item.PostWiseNodeList) = False And item.PostWiseNodeList.Count > 0) Then
+                     If IsDBNull(item.PostWiseNodeList) = False AndAlso item.PostWiseNodeList.Count = 1 Then
+                        Dim firstEmp = item.PostWiseNodeList.FirstOrDefault()
+                        If firstEmp.EmployeeID = 0 Then
+                           item.IsVacantPost = True
+                           If (IsDBNull(firstEmp.ReportColumnItemList) = False AndAlso firstEmp.ReportColumnItemList.Count > 0) Then
+                              firstEmp.ReportColumnItemList.FirstOrDefault().ColumnValue = "Vacant"
+                              firstEmp.ReportColumnItemList.FirstOrDefault().ColumnTitle = "Vacant"
+                           End If
+                        End If
+                     End If
+                     If IsDBNull(item.PostWiseNodeList) = False AndAlso item.PostWiseNodeList.Count > 0 Then
                         Dim firstObj = item.PostWiseNodeList.FirstOrDefault()
 
                         item.LineManagerStaffNo = firstObj.LineManagerStaffNo
@@ -6154,7 +6164,6 @@ Namespace Controllers
 
          Return PreviewColumnList
       End Function
-
 #End Region
 
    End Class

@@ -48,6 +48,10 @@ BEGIN
 			   @sPostAllocationStartDateColumn	varchar(MAX),
 			   @sPostAllocationEndDateColumn		varchar(MAX),
             @sPersonnelJobTitle              varchar(MAX),
+            @sReportsToPostIDColumn				varchar(MAX),
+				@sJobTitleColumn					   varchar(MAX),
+            @sBaseViewName					      varchar(MAX),
+				@sBaseViewTableName					varchar(MAX),
 			   @iHierarchyTableID					integer,
 			   @iPostAllocationTableID				integer,
 			   @iHierarchyIdentifierColumnID		integer,
@@ -61,10 +65,20 @@ BEGIN
 	-- Get RootID of top level based on loggedIn userID from user defined scalar function udfASRIntOrgChartGetTopLevelID.
 	SELECT @RootID = dbo.udfASRIntOrgChartGetTopLevelID(@piRootID); 
 
+   -- Get BaseViewName, BaseViewTableName base on organisationID
+	SELECT  @sBaseViewName =v.ViewName,			
+			  @sBaseViewTableName=t.TableName 
+	FROM ASRSysOrganisationReport AS r
+	INNER JOIN ASRSysViews v ON  r.BaseViewID = v.ViewID
+	INNER JOIN ASRSysTables t ON v.ViewTableID = t.tableID
+	WHERE r.ID = @iOrganisationID;
+
 	SELECT  @iPersonnelTableID=t.tableID, @sPersonnelTableName = t.TableName FROM ASRSysModuleSetup s 	 
 	INNER JOIN ASRSysTables t ON s.ParameterValue = t.tableID WHERE s.parameterKey like 'Param_Table%' AND s.moduleKey = 'MODULE_PERSONNEL';
 
-   SELECT  @sPersonnelJobTitle = t.TableName + '.' + c.ColumnName FROM ASRSysModuleSetup s 
+   SELECT  @sPersonnelJobTitle = t.TableName + '.' + c.ColumnName 
+          ,@sJobTitleColumn = c.ColumnName
+   FROM ASRSysModuleSetup s 
    INNER JOIN ASRSysColumns c ON s.ParameterValue = c.columnID 
 	INNER JOIN ASRSysTables t ON c.tableID = t.tableID WHERE s.moduleKey = 'MODULE_PERSONNEL' 
 	AND UPPER(s.ParameterKey) = 'PARAM_FIELDSJOBTITLE';
@@ -122,6 +136,7 @@ BEGIN
 
 		   SELECT    @sHierarchyReportsToColumn = t.TableName + '.' + c.ColumnName
 				      ,@iHierarchyReportsToColumnID = c.columnID
+                  ,@sReportsToPostIDColumn = c.ColumnName
 		   FROM ASRSysModuleSetup s INNER JOIN ASRSysColumns c ON s.ParameterValue = c.columnID
 		   INNER JOIN ASRSysTables t ON c.tableID = t.tableID 	WHERE s.moduleKey = 'MODULE_HIERARCHY' 
 		   AND UPPER(s.ParameterKey) = 'PARAM_FIELDREPORTSTO'; 		
@@ -152,7 +167,7 @@ BEGIN
 		   INSERT @sPost_IDColumnVal  EXEC sp_executesql @sPost_IDTemp;
 		   SET @sPost_ID = (SELECT * FROM @sPost_IDColumnVal);		
 		
-		   SET @sSQL = 'WITH Emp_CTE AS (' + CHAR(13) + ' SELECT '+ @sHierarchyLevel + ',' + @sPersonnelTableName+'.ID' + ',' +
+		    SET @sSQL = 'WITH Emp_CTE AS (' + CHAR(13) + ' SELECT '+ @sHierarchyLevel + ',' + @sPersonnelTableName+'.ID' + ',' + @sHierarchyTableName +'.ID AS HierarchyID' + ',' +
 						   @sHierarchyIdentifierColumn + ',' +  @sHierarchyReportsToColumn + ',' +@sPersonnelJobTitle;	
 	   END
 
@@ -251,8 +266,8 @@ BEGIN
 
 			IF @sColumnString <> ''
 				BEGIN					
-					SET @sUnionAllSQL = replace(replace(@sSQL, @sHierarchyLevel ,'ecte.HierarchyLevel + 1 AS HierarchyLevel'),'WITH Emp_CTE AS (','')  + ' ,' + @sColumnString + ' FROM '+ @sTableString;
-					SET @sUnionSql= replace(replace(@sSQL, @sHierarchyLevel ,'0 AS HierarchyLevel'),'WITH Emp_CTE AS (','')  + ' ,' + @sColumnString + ' FROM '+ @sTableString ;
+					SET @sUnionAllSQL = REPLACE(REPLACE(@sSQL, @sHierarchyLevel ,'ecte.HierarchyLevel + 1 AS HierarchyLevel'),'WITH Emp_CTE AS (','')  + ' ,' + @sColumnString + ' FROM '+ @sTableString;
+					SET @sUnionSql= REPLACE(REPLACE(@sSQL, @sHierarchyLevel ,'0 AS HierarchyLevel'),'WITH Emp_CTE AS (','')  + ' ,' + @sColumnString + ' FROM '+ @sTableString ;
 					SET @sSQL = @sSQL  + ' ,' + @sColumnString + ' FROM '+ @sTableString ;
 				END
 
@@ -320,18 +335,32 @@ BEGIN
 						@sPostAllocationStartDateColumn + '<=' + '''' + CONVERT(varchar(50),@dTodayDate) + '''' 
 						+ @sFilterWhereCondition;
 
-					SET @sSQL = @sSQL + ' WHERE UPPER(' + @sHierarchyReportsToColumn + ') = ''' + UPPER(CONVERT(varchar(100),@sPost_ID)) + ''' AND ' + @sWhereConditionSql;
-					Set @sUnionAllSQL = @sUnionAllSQL +  ' WHERE ' + @sWhereConditionSql;
+					SET @sSQL = @sSQL + ', ' + @sBaseViewName + ' WHERE UPPER(' + @sHierarchyReportsToColumn + ') = ''' + UPPER(CONVERT(varchar(100),@sPost_ID)) + ''' AND ' + @sWhereConditionSql 
+					+ ' AND ' + @sBaseViewTableName + '.ID = ' + @sBaseViewName+ '.ID';
 					
-					SET @sUnionSql = @sUnionSql + ' WHERE ' + @sPersonnelTableName + '.ID ='  + CONVERT(varchar(10), @RootID) 
+					SET @sUnionAllSQL = @sUnionAllSQL + ', ' + @sBaseViewName +  ' WHERE ' + @sWhereConditionSql
+					+ ' AND ' + @sBaseViewTableName + '.ID = ' + @sBaseViewName+ '.ID';
+					
+					SET @sUnionSql = @sUnionSql + ', ' + @sBaseViewName +  ' WHERE ' + @sPersonnelTableName + '.ID ='  + CONVERT(varchar(10), @RootID) 
 					+ ' AND (' + @sPersonnelTableName + '.ID = ' + @sPostAllocationTableName + '.ID_'+CONVERT(varchar(10),@iPersonnelTableID)+') 
-					AND (' + @sHierarchyTableName + '.ID = ' + @sPostAllocationTableName + '.ID_'+ CONVERT(varchar(10),@iHierarchyTableID)+')'  ;	
+					AND (' + @sHierarchyTableName + '.ID = ' + @sPostAllocationTableName + '.ID_'+ CONVERT(varchar(10),@iHierarchyTableID)+')' 
+					+ ' AND ' + @sBaseViewTableName + '.ID = ' + @sBaseViewName+ '.ID';	
 					
 					SET @sFinalOrgReportSql =   @sSQL + CHAR(13) + ' UNION ALL '	+ CHAR(13) + @sUnionAllSQL	+ ')' 
+										+ CHAR(13) +' SELECT * INTO #OrgReportTemp FROM ( '
 										+ CHAR(13) +' SELECT p.* FROM Emp_CTE p' + CHAR(13)
-										+ 'UNION ' + @sUnionSql
-										+ ' ORDER BY  hierarchylevel, ' + REPLACE(@sHierarchyReportsToColumn,@sHierarchyTableName+'.','');	
-
+										+ 'UNION ' + @sUnionSql + CHAR(13)
+										+ ') orgRpt'  + CHAR(13)
+                              /* Query for fetching vacant post */
+										+ ' SELECT * INTO #NoAppointmentForPostID  FROM ( '+ CHAR(13) + 'SELECT DISTINCT  ot.HierarchyLevel,ot.'+@sReportsToPostIDColumn+' FROM #OrgReportTemp  ot WHERE ot.'+@sReportsToPostIDColumn+' IN' + CHAR(13)+ '( ' + CHAR(13)
+										+ ' SELECT ' + @sHierarchyReportsToColumn + ' FROM ' + @sHierarchyTableName 
+										+ CHAR(13) + ' WHERE '+ @sHierarchyIdentifierColumn + ' NOT IN ( Select ' + @sPostAllocationTableName + REPLACE(@sHierarchyIdentifierColumn,@sHierarchyTableName,'') + ' FROM ' + @sPostAllocationTableName +' ))' + CHAR(13)+')a'										
+										+ CHAR(13) +' INSERT INTO #OrgReportTemp ( '+ REPLACE(@sHierarchyLevel,'1 AS ', '') + ',' + @sPersonnelTableName+'.ID' + ', HierarchyID ,' + @sHierarchyIdentifierColumn + ',' + @sHierarchyReportsToColumn + ',' + @sHierarchyTableName+'.'+@sJobTitleColumn + ' )' + CHAR(13)
+										+ CHAR(13) + ' SELECT nafp.' + REPLACE(@sHierarchyLevel,'1 AS ', '') + ', 0 , 0 AS HierarchyID,' + @sHierarchyIdentifierColumn + ',' + @sHierarchyReportsToColumn + ',' + @sHierarchyTableName+'.'+@sJobTitleColumn
+										+ CHAR(13) + ' FROM ' + @sHierarchyTableName  + ' INNER JOIN #NoAppointmentForPostID nafp ON nafp.'+@sReportsToPostIDColumn +'='+ @sHierarchyTableName +'.'+ @sReportsToPostIDColumn
+										+ CHAR(13) + ' WHERE '+ @sHierarchyIdentifierColumn + ' NOT IN ( Select ' + @sPostAllocationTableName + REPLACE(@sHierarchyIdentifierColumn,@sHierarchyTableName,'') + ' FROM ' + @sPostAllocationTableName +' )'
+                              /* End of fetching vacant post */
+										+ CHAR(13) + ' SELECT * FROM #OrgReportTemp  ORDER BY  hierarchylevel, ' + REPLACE(@sHierarchyReportsToColumn,@sHierarchyTableName+'.','');
 			
 				END
 			ELSE
@@ -341,9 +370,15 @@ BEGIN
 						@sPersonnelStartDateColumn +' <=' + '''' + CONVERT(varchar(50),@dTodayDate) + '''' 
 						+ @sFilterWhereCondition;
 
-					SET @sSQL = @sSQL + ' WHERE UPPER(' + @sPersonnelReportToStaffNoColumn+ ') = '+ CONVERT(varchar(100),@staff_number) + ' AND ' + @sWhereConditionSql;
-					Set @sUnionAllSQL = @sUnionAllSQL +  ' WHERE ' + @sWhereConditionSql;
-					SET @sUnionSql = @sUnionSql + ' WHERE ' + @sPersonnelTableName + '.ID ='  + CONVERT(varchar(10), @RootID); 
+					SET @sSQL = @sSQL + ', ' + @sBaseViewName + ' WHERE UPPER(' + @sPersonnelReportToStaffNoColumn+ ') = '+ CONVERT(varchar(100),@staff_number) + ' AND ' + @sWhereConditionSql
+					+ ' AND ' + @sBaseViewTableName + '.ID = ' + @sBaseViewName+ '.ID';
+
+					SET @sUnionAllSQL = @sUnionAllSQL + ', ' + @sBaseViewName +   ' WHERE ' + @sWhereConditionSql
+					+ ' AND ' + @sBaseViewTableName + '.ID = ' + @sBaseViewName+ '.ID';
+
+					SET @sUnionSql = @sUnionSql + ', ' + @sBaseViewName +  ' WHERE ' + @sPersonnelTableName + '.ID ='  + CONVERT(varchar(10), @RootID)
+					+ ' AND ' + @sBaseViewTableName + '.ID = ' + @sBaseViewName+ '.ID'; 
+
 					SET @sFinalOrgReportSql =   @sSQL + CHAR(13) + ' UNION ALL '	+ CHAR(13) + @sUnionAllSQL	+ ')' 
 										+ CHAR(13) +' SELECT p.* FROM Emp_CTE p' + CHAR(13)
 										+ 'UNION ' + @sUnionSql
@@ -352,7 +387,11 @@ BEGIN
 				END
 		
 		EXEC (@sFinalOrgReportSql);
-			
+		IF OBJECT_ID('tempdb..#OrgReportTemp') IS NOT NULL
+		BEGIN
+			DROP TABLE #NoAppointmentForPostID;
+			DROP TABLE #OrgReportTemp;
+		END  
 		CLOSE columnnames_cursor;		
 		DEALLOCATE columnnames_cursor;
 
@@ -367,8 +406,8 @@ BEGIN
 				,oc.ConcatenateWithNext
 				,t.TableID
 				,t.TableName
-				,ISNULL(v.ViewID,0) as ViewID
-				,ISNULL(v.ViewName,'') as ViewName
+				,ISNULL(v.ViewID,0) AS ViewID
+				,ISNULL(v.ViewName,'') AS ViewName
 				,c.datatype
 		FROM  ASRSysOrganisationColumns oc
 		INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId		
