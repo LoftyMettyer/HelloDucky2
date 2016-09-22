@@ -72,9 +72,9 @@
                <div class="formfieldfill">
                   <label class="fontsizeOnly" for="SelectedColumnFontSize">Font Size :</label>
                   <span><input class="fontsizeOnly" type="tel" id="SelectedColumnFontSize" style="width:92%" maxlength="2" onchange="updateColumnsSelectedGrid();" /></span>
-                  <div class="formfieldfill HeightOnly" style="max-width:98%">
+                  <div class="formfieldfill " style="max-width:98%">
                      <label for="SelectedColumnHeight">&nbsp; Height (Rows) :</label>
-                     <span><input class="selectHeight" id="SelectedColumnHeight" maxlength="1" onchange="updateColumnsSelectedGrid();" /></span>
+                     <span><input class="HeightOnly" id="SelectedColumnHeight" maxlength="1" onchange="updateColumnsSelectedGrid();" /></span>
                   </div>
                </div>
                <div class="formfieldfill decimalsOnly">
@@ -84,10 +84,10 @@
 
                <div class="tablelayout customReportsOnly colAggregates">
                   <div class="tablerow">
-                     <div class="tablecell canGroupWithNext" style="color: rgb(0, 0, 0);">
-                        <input class="ui-widget ui-corner-all" id="SelectedColumnIsConcatenateWithNext" onchange="changeColumnIsConcatenateWithNext();" type="checkbox">
-                        <label id="labelSelectedColumnIsConcatenateWithNext" for="SelectedColumnIsConcatenateWithNext">Concatenate with next</label>
-                     </div>
+                      <div class="tablecell canGroupWithNext" style="color: rgb(0, 0, 0);">
+                          <input class="ui-widget ui-corner-all" id="SelectedColumnIsConcatenateWithNext" onchange="changeColumnIsConcatenateWithNext();" type="checkbox">
+                          <label id="labelSelectedColumnIsConcatenateWithNext" for="SelectedColumnIsConcatenateWithNext">Concatenate with next</label>
+                      </div>
                   </div>
                </div>
             </div>
@@ -557,13 +557,12 @@
          var isGroupWithNext = $("#SelectedColumnIsConcatenateWithNext").is(':checked');
          var isSize = (dataRow.DataType == '4');
          var isPhotograph = (dataRow.DataType == -3)
-
+          
          $(".decimalsOnly *").prop("disabled", !isDecimals || isReadOnly || isSize || isPhotograph);
          $(".canGroupWithNext *").prop("disabled", isBottomRow || isReadOnly || isPhotograph);
          $(".OrgReportsOnly *").prop("disabled", isReadOnly || isPhotograph);
-         $(".fontsizeOnly *").prop("disabled", isReadOnly || isPhotograph);
-         //$("#SelectedColumnFontSize").prop("disabled", isReadOnly || isPhotograph);
-         $(".HeightOnly *").prop("disabled", isReadOnly);
+         $("#SelectedColumnFontSize").prop("disabled", isReadOnly || isPhotograph);
+         $("SelectedColumnHeight").prop("disabled", isReadOnly);
        
 
          if (isBottomRow || isReadOnly) {
@@ -772,11 +771,10 @@
    function changeColumnIsConcatenateWithNext() {
 
       var IsGroupWithNext = $("#SelectedColumnIsConcatenateWithNext").is(':checked');
-
+      
       refreshcolumnPropertiesPanel();
       updateColumnsSelectedGrid();
       disableColumnOptionsWhenConcatenateWithNextChecked();
-
    }
 
    // Disabled the column options for the current row and uncheck all the column options for the next row
@@ -793,7 +791,7 @@
       var CanConcatenate = true;
       var PreviousRowConcatenate = false; //Checks if previous row Concatenate checked
       var isPhotograph = (dataRow.DataType == -3)
-
+      var isReadOnly = isDefinitionReadOnly();
       var NextRowIndex = $('#SelectedColumns').jqGrid('getRowData', allRows[currentRowIndex]);     //Get Next Column's data
       var prevDataRow = $('#SelectedColumns').jqGrid('getRowData', allRows[currentRowIndex - 2]);  //Get Previous Column's data
 
@@ -814,12 +812,10 @@
       else {
          CanConcatenate = false;
       }
-
-      $(".canGroupWithNext *").prop("disabled", !CanConcatenate);
-      $("#SelectedColumnPrefix").prop("disabled", isPhotograph);
-      $("#SelectedColumnSuffix").prop("disabled", isPhotograph);
-      $("#SelectedColumnHeight").prop("disabled", PreviousRowConcatenate);
-      $("#SelectedColumnFontSize").prop("disabled", PreviousRowConcatenate || isPhotograph);
+       
+      $(".canGroupWithNext *").prop("disabled", !CanConcatenate || isReadOnly);
+      $("#SelectedColumnHeight").prop("disabled", PreviousRowConcatenate || isReadOnly);
+      $("#SelectedColumnFontSize").prop("disabled", PreviousRowConcatenate || isPhotograph || isReadOnly);
 
       if (!CanConcatenate) {
          $(".canGroupWithNext").css("color", "#A59393");

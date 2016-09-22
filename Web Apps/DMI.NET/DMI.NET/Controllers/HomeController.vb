@@ -5978,19 +5978,19 @@ Namespace Controllers
 
                      If (columnitem.DataType <> ColumnDataType.sqlVarBinary) Then
                                 If Not IsDBNull(objRow(strColumnName)) Then
-                                    If (columnitem.Decimals > 0) Then
+                                    If (columnitem.DataType = 2 Or columnitem.DataType = 4) Then
                                         Dim mask = "{0:#0." & New String("0", columnitem.Decimals) & "}"
                                         columnitem.ColumnValue = String.Format(mask, CDbl(objRow(strColumnName)))
                                     Else
                                         columnitem.ColumnValue = objRow(strColumnName)
                                     End If
                                     If (columnitem.ColumnValue.Length > 200) Then
-                                        columnitem.ColumnTitle = columnitem.ColumnValue.Substring(0, 200) + "..."
+                                            columnitem.ColumnTitle = columnitem.ColumnValue.Substring(0, 200) + "..."
+                                        Else
+                                            columnitem.ColumnTitle = columnitem.ColumnValue
+                                        End If
                                     Else
-                                        columnitem.ColumnTitle = columnitem.ColumnValue
-                                    End If
-                                Else
-                                    columnitem.ColumnValue = String.Empty
+                                        columnitem.ColumnValue = String.Empty
                                 End If
                             Else
 
