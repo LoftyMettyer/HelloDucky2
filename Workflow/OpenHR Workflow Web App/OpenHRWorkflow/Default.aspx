@@ -10,8 +10,8 @@
 		<meta name="format-detection" content="telephone=no"/>
     
 		<link rel="shortcut icon" href="images/logo.ico"/>
-		<link href="Content/default.css" rel="stylesheet" type="text/css" />
-		<link href="Content/themes/base/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css" />
+		<link href="~/Content/default.css" rel="stylesheet" type="text/css" />
+		<link href="~/Content/themes/base/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css" />
 		  
 		<script src="Scripts/jquery-2.1.4.min.js" type="text/javascript"> </script>
 		<script src="Scripts/jquery-ui-1.11.4.min.js" type="text/javascript"> </script>
