@@ -5936,11 +5936,13 @@ Namespace Controllers
             If OrgReportRecords.Tables(0).Rows.Count = 0 Then
                ' No records returned
                Session("ErrorText") = "No matching records found."
+            ElseIf OrgReportRecords.Tables(0).Rows.Count = 1 AndAlso OrgReportRecords.Tables(1).Rows.Count = 0 Then
+               Session("ErrorText") = "No matching records found."
             Else
                Dim ColumnList As New List(Of ReportColumnItem)
 
                'Get all the column properties for selected columns
-               For Each objRow As DataRow In OrgReportRecords.Tables(1).Rows
+               For Each objRow As DataRow In OrgReportRecords.Tables(2).Rows
                   ColumnList.Add(New ReportColumnItem() With
                                     {
                                         .ID = CInt(objRow("ColumnID")),

@@ -62184,7 +62184,8 @@ BEGIN
 			   @iHierarchyReportsToColumnID		integer,
 			   @iPostAllocationStartDateColumnID	integer,
 			   @iPostAllocationEndDateColumnID		integer,
-            @sFromString                        nvarchar(MAX) ='';
+            @sFromString                        nvarchar(MAX) ='',
+            @sExcludeSql					         nvarchar(MAX)='';
 
 	SET @iOrganisationID = @piReportID;
 
@@ -62470,7 +62471,15 @@ BEGIN
 					SET @sUnionSql = @sUnionSql + ', ' + @sBaseViewName +  ' WHERE ' + @sPersonnelTableName + '.ID ='  + CONVERT(varchar(10), @RootID) 
 					+ ' AND (' + @sPersonnelTableName + '.ID = ' + @sPostAllocationTableName + '.ID_'+CONVERT(varchar(10),@iPersonnelTableID)+') 
 					AND (' + @sHierarchyTableName + '.ID = ' + @sPostAllocationTableName + '.ID_'+ CONVERT(varchar(10),@iHierarchyTableID)+')' 
-					+ ' AND ' + @sBaseViewTableName + '.ID = ' + @sBaseViewName+ '.ID';		
+					+ ' AND ' + @sBaseViewTableName + '.ID = ' + @sBaseViewName+ '.ID';	
+               
+               /* Data return from @sExcludeSql is use only to check whether we have to display hierachy level 0's data or not on org report.
+					   If hierachy level 0's data match filter criteria and also there is no subordinate(child) level to it then we show hierachy level 0. */
+					SET @sExcludeSql = REPLACE(@sUnionSql,'0 AS HierarchyLevel','-1 AS HierarchyLevel') 
+									+ ' AND (' + @sPostAllocationEndDateColumn + ' IS NULL OR '  +
+										@sPostAllocationEndDateColumn +'>= ''' + CONVERT(varchar(50),@dTodayDate) + ''') AND ' +  
+										@sPostAllocationStartDateColumn + '<=' + '''' + CONVERT(varchar(50),@dTodayDate) + '''' 
+										+ CHAR(13) + @sFilterWhereCondition;	
 					
 					SET @sFinalOrgReportSql =   @sSQL + CHAR(13) + ' UNION ALL '	+ CHAR(13) + @sUnionAllSQL	+ ')' 
 										+ CHAR(13) +' SELECT * INTO #OrgReportTemp FROM ( '
@@ -62504,6 +62513,9 @@ BEGIN
 
 					SET @sUnionSql = @sUnionSql + ', ' + @sBaseViewName +  ' WHERE ' + @sPersonnelTableName + '.ID ='  + CONVERT(varchar(10), @RootID)
 					+ ' AND ' + @sBaseViewTableName + '.ID = ' + @sBaseViewName+ '.ID'; 
+                
+                SET @sExcludeSql = REPLACE(@sUnionSql,'0 AS HierarchyLevel','-1 AS HierarchyLevel') + ' AND ' + @sWhereConditionSql;
+
 					SET @sFinalOrgReportSql =   @sSQL + CHAR(13) + ' UNION ALL '	+ CHAR(13) + @sUnionAllSQL	+ ')' 
 										+ CHAR(13) +' SELECT p.* FROM Emp_CTE p' + CHAR(13)
 										+ 'UNION ' + @sUnionSql
@@ -62512,6 +62524,7 @@ BEGIN
 				END
 		
 		EXEC (@sFinalOrgReportSql);
+      EXEC (@sExcludeSql);
 		IF OBJECT_ID('tempdb..#OrgReportTemp') IS NOT NULL
 		BEGIN
 			DROP TABLE #NoAppointmentForPostID;
