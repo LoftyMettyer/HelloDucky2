@@ -473,15 +473,30 @@
 
 				}
 				else if (frmDefSel.utiltype.value == 39) {
-				    postData = {
-				        UtilType: frmDefSel.utiltype.value,
-				        ID: frmDefSel.utilid.value,
-				        Name: $("#utilname").val(),
-				        __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
-				    }
+				   postData = {
+				      UtilType: frmDefSel.utiltype.value,
+				      ID: frmDefSel.utilid.value,
+				      Name: $("#utilname").val(),
+				      __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+				   }
 
-				    CleanToolsFrameAndResetPageSource();
-				    OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+				    $.ajax({
+				       url: 'ValidateOrgDefinitionColumns',
+				       type: "POST",
+				       cache: false,
+                   data:postData,
+				       success: function (json) {
+                      CleanToolsFrameAndResetPageSource();
+				          OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+				       },
+				       error: function (xhr, status, error) {
+				          var err = "Error " + " " + status + " " + error;
+				          if (xhr.responseText && xhr.responseText[0] == "{")
+				             err = JSON.parse(xhr.responseText).ErrorMessage;
+
+				          OpenHR.modalMessage(err);
+				       }
+				    });  
 				}
 				else {
 

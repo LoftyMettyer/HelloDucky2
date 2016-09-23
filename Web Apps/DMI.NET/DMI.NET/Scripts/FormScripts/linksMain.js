@@ -249,7 +249,24 @@ function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 		      Name: sUtilityName,
 		      __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		   };
-		   OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+		   
+		   $.ajax({
+		      url: 'ValidateOrgDefinitionColumns',
+		      type: "POST",
+		      cache: false,
+		      data: postData,
+		      success: function (json) {
+		         CleanToolsFrameAndResetPageSource();
+		         OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+		      },
+		      error: function (xhr, status, error) {
+		         var err = "Error " + " " + status + " " + error;
+		         if (xhr.responseText && xhr.responseText[0] == "{")
+		            err = JSON.parse(xhr.responseText).ErrorMessage;
+
+		         OpenHR.modalMessage(err);
+		      }
+		   });
 		}
 		else {
 			

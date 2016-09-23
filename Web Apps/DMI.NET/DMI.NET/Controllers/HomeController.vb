@@ -5882,8 +5882,12 @@ Namespace Controllers
 
 #Region "OrganisationReports"
 
+      <HttpPost()>
+      <ValidateAntiForgeryToken>
       Public Function OrganisationReports(value As PromptedValuesModel) As PartialViewResult
          Dim model As New OrganisationReportChartModel
+         Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
+         Dim objErrorLog = New clsEventLog(CType(Session("SessionContext"), SessionInfo).LoginInfo)
 
          Try
             Session("utiltype") = CInt(value.UtilType)
@@ -5898,6 +5902,8 @@ Namespace Controllers
                model.IsPostBasedSystem = False
             End If
 
+            'objErrorLog.AddHeader(EventLog_Type.eltOrgReporting, value.Name)
+
             model.OrgReportChartNodeList = LoadDataForOrganisationReport(model.IsPostBasedSystem)
 
             model.Hierarchy_TableID = SettingsConfig.Hierarchy_TableID
@@ -5907,6 +5913,57 @@ Namespace Controllers
          End Try
 
          Return PartialView(model)
+      End Function
+
+      <HttpPost()>
+      <ValidateAntiForgeryToken>
+      Public Function ValidateOrgDefinitionColumns(value As PromptedValuesModel) As JsonResult
+
+         Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
+         Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
+         Dim isPostBasedSystem As Boolean
+         Dim isInvalidColumnFound As Boolean
+         Dim columnsString As String
+         Dim columnName As String
+         Dim tableOrViewName As String
+
+         'Check if system is PostBase or Commercial
+         If SettingsConfig.Hierarchy_TableID <> SettingsConfig.Personnel_EmpTableID Then
+            isPostBasedSystem = True
+         Else
+            isPostBasedSystem = False
+         End If
+
+         Try
+            Dim OrgReportRecords = objDataAccess.GetFromSP("spASRIntGetAllRequiredOrganisationColumns" _
+                              , New SqlParameter("@piOrganisationID", SqlDbType.Int) With {.value = value.ID} _
+                              , New SqlParameter("@psOrganisationReportType", SqlDbType.VarChar) With {.value = IIf(isPostBasedSystem, "POSTBASE", "COMMERCIAL")})
+
+
+            For Each objRow As DataRow In OrgReportRecords.Rows
+               columnName = HttpUtility.HtmlEncode(objRow("ColumnName").ToString())
+               tableOrViewName = objRow("TableOrViewName").ToString()
+               Dim isValidColumn = objSession.ValidateColumnPermissions(tableOrViewName, columnName)
+               If (isValidColumn = False) Then
+                  isInvalidColumnFound = True
+                  columnsString += columnName + ", "
+               End If
+            Next
+
+            If isInvalidColumnFound = True AndAlso columnsString.Length > 2 Then
+               columnsString = columnsString.Substring(0, columnsString.Length - 2)
+               Response.StatusCode = System.Net.HttpStatusCode.BadRequest
+               Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = "You do not have permission to see the column(s) " & columnsString & "." & vbNewLine}
+               Return Json(data, JsonRequestBehavior.AllowGet)
+            End If
+
+         Catch ex As Exception
+            Response.StatusCode = System.Net.HttpStatusCode.BadRequest
+            Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = "Some problem occured during columns security checks. Please contact your administrator." & vbNewLine}
+            Return Json(data, JsonRequestBehavior.AllowGet)
+         End Try
+
+         Return Json(True)
       End Function
 
       Private Function LoadDataForOrganisationReport(IsPostBasedSystem As Boolean) As List(Of OrgReportChartNode)
@@ -5979,22 +6036,22 @@ Namespace Controllers
                      Dim strColumnName As String = String.Format("{0}**{1}", columnitem.Heading, columnitem.ColumnID)
 
                      If (columnitem.DataType <> ColumnDataType.sqlVarBinary) Then
-                                If Not IsDBNull(objRow(strColumnName)) Then
-                                    If (columnitem.DataType = 2 Or columnitem.DataType = 4) Then
-                                        Dim mask = "{0:#0." & New String("0", columnitem.Decimals) & "}"
-                                        columnitem.ColumnValue = String.Format(mask, CDbl(objRow(strColumnName)))
-                                    Else
-                                        columnitem.ColumnValue = objRow(strColumnName)
-                                    End If
-                                    If (columnitem.ColumnValue.Length > 200) Then
-                                            columnitem.ColumnTitle = columnitem.ColumnValue.Substring(0, 200) + "..."
-                                        Else
-                                            columnitem.ColumnTitle = columnitem.ColumnValue
-                                        End If
-                                    Else
-                                        columnitem.ColumnValue = String.Empty
-                                End If
-                            Else
+                        If Not IsDBNull(objRow(strColumnName)) Then
+                           If (columnitem.DataType = 2 Or columnitem.DataType = 4) Then
+                              Dim mask = "{0:#0." & New String("0", columnitem.Decimals) & "}"
+                              columnitem.ColumnValue = String.Format(mask, CDbl(objRow(strColumnName)))
+                           Else
+                              columnitem.ColumnValue = objRow(strColumnName)
+                           End If
+                           If (columnitem.ColumnValue.Length > 200) Then
+                              columnitem.ColumnTitle = columnitem.ColumnValue.Substring(0, 200) + "..."
+                           Else
+                              columnitem.ColumnTitle = columnitem.ColumnValue
+                           End If
+                        Else
+                           columnitem.ColumnValue = String.Empty
+                        End If
+                     Else
 
                         'Update height for photo column. So, it would render correctly on UI
                         columnitem.Height = columnitem.Height * 1.5
@@ -6025,10 +6082,6 @@ Namespace Controllers
                               End Try
                            ElseIf oleType = 3 Then 'Link
                               photoSource = "../Content/images/anonymous.png"
-                              'Dim unc As String = Trim(Encoding.UTF8.GetString(objRow(strColName), 290, 60))
-                              'Dim fileName As String = Trim(Path.GetFileName(Encoding.UTF8.GetString(objRow(strColName), 10, 70))).Replace("\", "/")
-                              'Dim fullPath As String = Trim(Encoding.UTF8.GetString(objRow(strColName), 80, 210)).Replace("\", "/")
-                              'photoSource = "file:///" & unc & "/" & fullPath & "/" & fileName
                            End If
                         Else 'No picture is defined for user, use anonymous one
                            photoSource = "../Content/images/anonymous.png"
@@ -6077,14 +6130,14 @@ Namespace Controllers
                         If firstEmp.EmployeeID = 0 Then
                            item.IsVacantPost = True
                            If (IsDBNull(firstEmp.ReportColumnItemList) = False AndAlso firstEmp.ReportColumnItemList.Count > 0) Then
-                                        For Each column In firstEmp.ReportColumnItemList
-                                            If (column.DataType <> ColumnDataType.sqlVarBinary) Then
-                                                column.ColumnValue = String.Empty
-                                                column.ColumnTitle = String.Empty
-                                            End If
-                                        Next
-                                        firstEmp.ReportColumnItemList.FirstOrDefault().ColumnValue = "Vacant"
-                                        firstEmp.ReportColumnItemList.FirstOrDefault().ColumnTitle = "Vacant"
+                              For Each column In firstEmp.ReportColumnItemList
+                                 If (column.DataType <> ColumnDataType.sqlVarBinary) Then
+                                    column.ColumnValue = String.Empty
+                                    column.ColumnTitle = String.Empty
+                                 End If
+                              Next
+                              firstEmp.ReportColumnItemList.FirstOrDefault().ColumnValue = "Vacant"
+                              firstEmp.ReportColumnItemList.FirstOrDefault().ColumnTitle = "Vacant"
                            End If
                         End If
                      End If
