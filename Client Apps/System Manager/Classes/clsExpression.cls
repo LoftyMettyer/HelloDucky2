@@ -4119,12 +4119,10 @@ Public Function CreateStoredProcedure() As Boolean
     Select Case miExpressionType
       Case giEXPR_WORKFLOWCALCULATION
         sSPCode.Append _
-          "    @piInstanceID int," & vbNewLine & _
           "    @piTempElement int)" & vbNewLine
       Case giEXPR_WORKFLOWSTATICFILTER
         sSPCode.Append _
           "    @id int," & vbNewLine & _
-          "    @piInstanceID int," & vbNewLine & _
           "    @piTempElement int)" & vbNewLine
       Case Else
         sSPCode.Append _
@@ -4139,7 +4137,8 @@ Public Function CreateStoredProcedure() As Boolean
       "    SET NOCOUNT ON" & vbNewLine & _
       "    IF @@nestlevel >= 30 RETURN" & vbNewLine & vbNewLine & _
       "    /* Declare local variables. */" & vbNewLine & _
-      "    DECLARE @hResult integer," & vbNewLine & _
+      "    DECLARE @hResult integer = 0," & vbNewLine & _
+      "        @piInstanceID integer = 0," & vbNewLine & _
       "        @source varChar(30)," & vbNewLine & _
       "        @desc varChar(200)," & vbNewLine & _
       "        @loopCounter float," & vbNewLine & _
@@ -4176,8 +4175,6 @@ Public Function CreateStoredProcedure() As Boolean
         "        @fValidRecordID bit," & vbNewLine & _
         "        @iCount integer" & vbNewLine & vbNewLine
     End If
-
-    sSPCode.Append "    SET @hResult = 0" & vbNewLine & vbNewLine
       
     ' Add the expression's stored procedure code (ie. the code for the individual components).
     sSPCode.Append StoredProcedureCode("@result") & vbNewLine & vbNewLine
