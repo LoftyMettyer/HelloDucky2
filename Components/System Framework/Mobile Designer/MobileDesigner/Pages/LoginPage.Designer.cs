@@ -234,7 +234,7 @@
             this.copyRightLabel.Size = new System.Drawing.Size(270, 35);
             this.copyRightLabel.TabIndex = 4;
             this.copyRightLabel.Tag = "NOSELECT";
-            this.copyRightLabel.Text = "Copyright © Advanced Business Software and Solutions Ltd 2013";
+            this.copyRightLabel.Text = "© Advanced";
             this.copyRightLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.copyRightLabel.UseMnemonic = false;
             // 
