@@ -836,7 +836,7 @@
       if (count > 0 )
       {
          columnsString = columnsString.substring(0, columnsString.length - 2);
-         OpenHR.modalMessage("You do not have access to following columns : " + columnsString + ".");
+         OpenHR.modalMessage("You do not have permission to see the column(s) : " + columnsString + ".");
          enableSaveButton();
       }
    }

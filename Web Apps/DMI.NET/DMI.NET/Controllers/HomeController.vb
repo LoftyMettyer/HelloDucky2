@@ -5953,7 +5953,7 @@ Namespace Controllers
             If isInvalidColumnFound = True AndAlso columnsString.Length > 2 Then
                columnsString = columnsString.Substring(0, columnsString.Length - 2)
                Response.StatusCode = System.Net.HttpStatusCode.BadRequest
-               Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = "You do not have permission to see the column(s) " & columnsString & "." & vbNewLine}
+               Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = "You do not have permission to see the column(s) : " & columnsString & "." & vbNewLine}
                Return Json(data, JsonRequestBehavior.AllowGet)
             End If
 
