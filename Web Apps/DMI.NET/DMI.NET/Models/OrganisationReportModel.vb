@@ -78,6 +78,24 @@ Namespace Models
             End If
          Next
 
+         Dim baseViewName = BaseViewList.FirstOrDefault(Function(x) x.id = BaseViewID).Name
+         If baseViewName <> String.Empty Then
+            For Each column As OrganisationReportFilterItem In FiltersFieldList
+               Dim delimiter As Char = "."c
+               Dim substrings() As String = column.FieldName.Split(delimiter)
+               Dim isValidColumn = SessionInfo.ValidateColumnPermissions(baseViewName, column.FieldName)
+               If (isValidColumn = False) Then
+                  If (InvalidColumnList.Exists(Function(x) x.Heading = column.FieldName AndAlso x.ID = column.FieldID) = False) Then
+                     Dim reportColumn As New ReportColumnItem
+                     reportColumn.Heading = column.FieldName
+                     reportColumn.ID = column.FieldID
+                     reportColumn.ColumnValue = column.FilterValue
+                     InvalidColumnList.Add(reportColumn)
+                  End If
+               End If
+            Next
+         End If
+
          If InvalidColumnList.Count > 0 Then
 
             'Remove from selected column and filters for that column
