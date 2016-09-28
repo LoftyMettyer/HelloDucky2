@@ -1,2 +1,3 @@
 \packages
 !\packages\repositories.config
+\OpenHR Installer\DMI.NET.wxs
