@@ -46,6 +46,9 @@ CREATE VIEW [dbo].[ASRSysAllObjectAccessForOpenHRWeb]
 		SELECT 17 AS [objectType], * FROM ASRSysCalendarReportAccess
 		UNION
 		SELECT 20 AS [objectType], * FROM [ASRSysRecordProfileAccess]
+		UNION
+		SELECT 39 AS [objectType], a.* FROM ASRSysOrganisationReportAccess a
+			INNER JOIN ASRSysOrganisationReport m ON a.ID = m.ID
 GO
 
 

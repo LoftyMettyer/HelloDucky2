@@ -61245,6 +61245,9 @@ CREATE VIEW [dbo].[ASRSysAllObjectAccessForOpenHRWeb]
 		SELECT 17 AS [objectType], * FROM ASRSysCalendarReportAccess
 		UNION
 		SELECT 20 AS [objectType], * FROM [ASRSysRecordProfileAccess]
+		UNION
+		SELECT 39 AS [objectType], a.* FROM ASRSysOrganisationReportAccess a
+			INNER JOIN ASRSysOrganisationReport m ON a.ID = m.ID
 GO
 
 
@@ -61303,7 +61306,9 @@ AS
 		UNION
 		SELECT 31 AS [objectType], 0 AS ID, 'Stability Index', '' AS Username, '' AS Description
 		UNION
-		SELECT 38 AS [objectType], ID, Name, Username, description FROM ASRSysTalentReports;
+		SELECT 38 AS [objectType], ID, Name, Username, description FROM ASRSysTalentReports
+		UNION
+		SELECT 39 AS [objectType], ID, Name, Username, description FROM ASRSysOrganisationReport;
 
 GO
 
@@ -61341,7 +61346,8 @@ BEGIN
 			WHEN 9 THEN 'Mail Merge: ' + son.name 
 			WHEN 17 THEN 'Calendar Report: ' + son.name 
 			WHEN 35 THEN '9-Box Grid Report: ' + son.name 
-			WHEN 38 THEN 'Talent Report: ' + son.name 
+			WHEN 38 THEN 'Talent Report: ' + son.name
+			WHEN 39 THEN 'Organisation Report: ' + son.name 
 		END TextToDisplay, 
 		son.description AS [description],
 		Access
@@ -61351,7 +61357,7 @@ BEGIN
 					  soa.groupname = @sRoleName AND 
 					  (soa.access <> 'HD' OR son.userName = SYSTEM_USER) 
 	WHERE	soa.objecttype = son.objecttype AND 
-			  son.objecttype IN (1,2,9,17,35,38) AND 
+			  son.objecttype IN (1,2,9,17,35,38,39) AND 
 			  son.name LIKE '%' + @searchText + '%'
 	ORDER By TextToDisplay
 

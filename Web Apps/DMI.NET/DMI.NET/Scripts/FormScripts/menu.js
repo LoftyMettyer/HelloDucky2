@@ -5460,26 +5460,59 @@ function SelectAccordianSearchResultItem(event, ui) {
 
 // Run the report or Utilities
 function RunReportsOrUtilities(sTool) {
+    
+    if (!sTool) return false;
 
-	if (!sTool) return false;
+    // CrossTab 1, Custom Report 2, Calendar 17, 9-box grid 35, Mail merge
+    var reports = [1, 2, 17, 35, 9, 38, 39];
+    var reportORutilityType = sTool.ReportType;
 
-	// CrossTab 1, Custom Report 2, Calendar 17, 9-box grid 35, Mail merge
-	var reports = [1, 2, 17, 35, 9, 38];
-	var reportORutilityType = sTool.ReportType;
+    if (jQuery.inArray(reportORutilityType, reports) != -1 && sTool.ReportType != 39) {
 
-	if (jQuery.inArray(reportORutilityType, reports) != -1) {
+        var postData = {
+            UtilType: sTool.ReportType,
+            ID: sTool.Id,
+            Name: sTool.Name,
+            __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+        }
 
-		var postData = {
-			UtilType: sTool.ReportType,
-			ID: sTool.Id,
-			Name: sTool.Name,
-			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
-		}
+        OpenHR.submitForm(null, "reportframe", true, postData, "util_run_promptedValues");
+    }
+    else if (sTool.ReportType == 39) {
+        var hasChanged = menu_saveChanges("ORGREPORTING", true, false);
+        if (hasChanged === 0) { // Prompt to cancel
+            OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes and create a new record, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+                if (answer == 1) { // OK - Ignore changes
+                    window.onbeforeunload = null;
+                    var postData = {
+                        UtilType: sTool.ReportType,
+                        ID: sTool.Id,
+                        Name: sTool.Name,
+                        __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+                    }
 
-		OpenHR.submitForm(null, "reportframe", true, postData, "util_run_promptedValues");
-	}
+                    OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+                    return false;
+                } else {
+                    return false;
+                }
+            });
+        }
+        else {
+            var postData = {
+                UtilType: sTool.ReportType,
+                ID: sTool.Id,
+                Name: sTool.Name,
+                __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+            }
 
-	return false;
+            OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+        }
+        //var defaultPromptMessage = "You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.";
+
+    }
+
+    return false;
 }
 
 /******* End Changes for the User Story 19519:As a user, I want to be able to assign categories to Reports and Utilities *********/

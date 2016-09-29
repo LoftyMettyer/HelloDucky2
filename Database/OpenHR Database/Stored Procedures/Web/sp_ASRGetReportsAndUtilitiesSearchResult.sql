@@ -28,6 +28,7 @@ BEGIN
 			WHEN 17 THEN 'Calendar Report: ' + son.name 
 			WHEN 35 THEN '9-Box Grid Report: ' + son.name 
 			WHEN 38 THEN 'Talent Report: ' + son.name
+			WHEN 39 THEN 'Organisation Report: ' + son.name
 		END TextToDisplay, 
 		son.description AS [description],
 		Access
@@ -37,7 +38,7 @@ BEGIN
 					soa.groupname = @sRoleName AND 
 					(soa.access <> 'HD' OR son.userName = SYSTEM_USER) 
 	WHERE	soa.objecttype = son.objecttype AND 
-			son.objecttype IN (1,2,9,17,35,38) AND 
+			son.objecttype IN (1,2,9,17,35,38,39) AND 
 			son.name LIKE '%' + @searchText + '%'
 	ORDER By TextToDisplay
 

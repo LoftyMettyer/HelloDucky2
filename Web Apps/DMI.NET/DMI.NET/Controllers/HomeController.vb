@@ -5814,14 +5814,15 @@ Namespace Controllers
             Dim isCrossTabReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCrossTab.ToSecurityPrefix, "RUN").ToString.ToLower
             Dim isNineBoxGridRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlNineBoxGrid.ToSecurityPrefix, "RUN").ToString.ToLower AndAlso Licence.IsModuleLicenced(SoftwareModule.NineBoxGrid)
                 Dim isTalentRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.TalentReport.ToSecurityPrefix, "RUN").ToString.ToLower
+                Dim isOrganisationRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.OrgReporting.ToSecurityPrefix, "RUN").ToString.ToLower
 
                 Dim isRunAllowed As Boolean = False
                 Dim reportType As UtilityType
 
-            For Each datarow As DataRow In outputResult.Rows
+                For Each datarow As DataRow In outputResult.Rows
 
-               isRunAllowed = False
-               reportType = datarow("objectType")
+                    isRunAllowed = False
+                    reportType = datarow("objectType")
 
                     Select Case reportType
                         Case UtilityType.utlMailMerge
@@ -5836,6 +5837,8 @@ Namespace Controllers
                             isRunAllowed = isNineBoxGridRunPermitted
                         Case UtilityType.TalentReport
                             isRunAllowed = isTalentRunPermitted
+                        Case UtilityType.OrgReporting
+                            isRunAllowed = isOrganisationRunPermitted
                     End Select
 
                     ' If edit/view allowed for the MailMerge and RUN allowed for the customreport, calendarreport, crosstab and ninebox grid then 
