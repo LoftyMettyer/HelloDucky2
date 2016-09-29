@@ -5813,34 +5813,34 @@ Namespace Controllers
             Dim isCalendarReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCalendarReport.ToSecurityPrefix, "RUN").ToString.ToLower
             Dim isCrossTabReportRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlCrossTab.ToSecurityPrefix, "RUN").ToString.ToLower
             Dim isNineBoxGridRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.utlNineBoxGrid.ToSecurityPrefix, "RUN").ToString.ToLower AndAlso Licence.IsModuleLicenced(SoftwareModule.NineBoxGrid)
-            Dim isTalentRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.TalentReport.ToSecurityPrefix, "RUN").ToString.ToLower
+                Dim isTalentRunPermitted = objSessionInfo.IsPermissionGranted(UtilityType.TalentReport.ToSecurityPrefix, "RUN").ToString.ToLower
 
-            Dim isRunAllowed As Boolean = False
-            Dim reportType As UtilityType
+                Dim isRunAllowed As Boolean = False
+                Dim reportType As UtilityType
 
             For Each datarow As DataRow In outputResult.Rows
 
                isRunAllowed = False
                reportType = datarow("objectType")
 
-               Select Case reportType
-                  Case UtilityType.utlMailMerge
-                     isRunAllowed = isMailMergeRunPermitted
-                  Case UtilityType.utlCustomReport
-                     isRunAllowed = isCustomReportRunPermitted
-                  Case UtilityType.utlCalendarReport
-                     isRunAllowed = isCalendarReportRunPermitted
-                  Case UtilityType.utlCrossTab
-                     isRunAllowed = isCrossTabReportRunPermitted
-                  Case UtilityType.utlNineBoxGrid
-                     isRunAllowed = isNineBoxGridRunPermitted
-                  Case UtilityType.TalentReport
-                     isRunAllowed = isTalentRunPermitted
-               End Select
+                    Select Case reportType
+                        Case UtilityType.utlMailMerge
+                            isRunAllowed = isMailMergeRunPermitted
+                        Case UtilityType.utlCustomReport
+                            isRunAllowed = isCustomReportRunPermitted
+                        Case UtilityType.utlCalendarReport
+                            isRunAllowed = isCalendarReportRunPermitted
+                        Case UtilityType.utlCrossTab
+                            isRunAllowed = isCrossTabReportRunPermitted
+                        Case UtilityType.utlNineBoxGrid
+                            isRunAllowed = isNineBoxGridRunPermitted
+                        Case UtilityType.TalentReport
+                            isRunAllowed = isTalentRunPermitted
+                    End Select
 
-               ' If edit/view allowed for the MailMerge and RUN allowed for the customreport, calendarreport, crosstab and ninebox grid then 
-               '	only show those definition in the accordian menu search output
-               If (isRunAllowed) Then
+                    ' If edit/view allowed for the MailMerge and RUN allowed for the customreport, calendarreport, crosstab and ninebox grid then 
+                    '	only show those definition in the accordian menu search output
+                    If (isRunAllowed) Then
                   searchResultRow = New DefinitionSearchResultModel
                   searchResultRow.ReportType = datarow("objectType")
                   searchResultRow.Id = datarow("ID")
@@ -6092,16 +6092,17 @@ Namespace Controllers
                   Next
 
                   If (IsPostBasedSystem) Then
-                     orgCharts.Add(New OrgReportChartNode() With {
+                            orgCharts.Add(New OrgReportChartNode() With {
                                .EmployeeID = CInt(objRow("ID")),
+                               .PostID = CInt(objRow("HierarchyID")),
                                .EmployeeStaffNo = objRow("Post_ID").ToString().Replace(" ", "_"),
                                .LineManagerStaffNo = objRow("Reports_To_Post_ID").ToString().Replace(" ", "_"),
                                .HierarchyLevel = CInt(objRow("HierarchyLevel")),
                                .PostTitle = objRow("Post_Title").ToString(),
                                .ReportColumnItemList = ProcessColumnsForOrgReport(cloneList, IsPostBasedSystem),
                                .NodeTypeClass = HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(additionalClasses))})
-                  Else
-                     orgCharts.Add(New OrgReportChartNode() With {
+                        Else
+                            orgCharts.Add(New OrgReportChartNode() With {
                                .EmployeeID = CInt(objRow("ID")),
                                .EmployeeStaffNo = objRow("Staff_Number").ToString().Replace(" ", "_"),
                                .LineManagerStaffNo = objRow("Reports_To_Staff_Number").ToString().Replace(" ", "_"),
@@ -6109,14 +6110,14 @@ Namespace Controllers
                                .PostTitle = objRow("Job_Title").ToString(),
                                .ReportColumnItemList = ProcessColumnsForOrgReport(cloneList, IsPostBasedSystem),
                                .NodeTypeClass = HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(additionalClasses))})
-                  End If
+                        End If
 
-               Next
+                    Next
 
 #Region "PostBased System"
 
-               If (IsPostBasedSystem) Then
-                  Dim postList = orgCharts.OrderBy(Function(s) s.EmployeeStaffNo) _
+                    If (IsPostBasedSystem) Then
+                        Dim postList = orgCharts.OrderBy(Function(s) s.EmployeeStaffNo) _
                                                 .GroupBy(Function(a) a.EmployeeStaffNo) _
                                                 .Select(Function(x) New OrgReportChartNode() With
                                                                     {
@@ -6124,34 +6125,35 @@ Namespace Controllers
                                                                         .PostWiseNodeList = x.ToList()
                                                                     }).ToList()
 
-                  For Each item As OrgReportChartNode In postList
-                     If IsDBNull(item.PostWiseNodeList) = False AndAlso item.PostWiseNodeList.Count = 1 Then
-                        Dim firstEmp = item.PostWiseNodeList.FirstOrDefault()
-                        If firstEmp.EmployeeID = 0 Then
-                           item.IsVacantPost = True
-                           If (IsDBNull(firstEmp.ReportColumnItemList) = False AndAlso firstEmp.ReportColumnItemList.Count > 0) Then
-                              For Each column In firstEmp.ReportColumnItemList
-                                 If (column.DataType <> ColumnDataType.sqlVarBinary) Then
-                                    column.ColumnValue = String.Empty
-                                    column.ColumnTitle = String.Empty
-                                 End If
-                              Next
-                              firstEmp.ReportColumnItemList.FirstOrDefault().ColumnValue = "Vacant"
-                              firstEmp.ReportColumnItemList.FirstOrDefault().ColumnTitle = "Vacant"
-                           End If
-                        End If
-                     End If
-                     If IsDBNull(item.PostWiseNodeList) = False AndAlso item.PostWiseNodeList.Count > 0 Then
-                        Dim firstObj = item.PostWiseNodeList.FirstOrDefault()
+                        For Each item As OrgReportChartNode In postList
+                            If IsDBNull(item.PostWiseNodeList) = False AndAlso item.PostWiseNodeList.Count = 1 Then
+                                Dim firstEmp = item.PostWiseNodeList.FirstOrDefault()
+                                If firstEmp.EmployeeID = 0 Then
+                                    item.IsVacantPost = True
+                                    If (IsDBNull(firstEmp.ReportColumnItemList) = False AndAlso firstEmp.ReportColumnItemList.Count > 0) Then
+                                        For Each column In firstEmp.ReportColumnItemList
+                                            If (column.DataType <> ColumnDataType.sqlVarBinary) Then
+                                                column.ColumnValue = String.Empty
+                                                column.ColumnTitle = String.Empty
+                                            End If
+                                        Next
+                                        firstEmp.ReportColumnItemList.FirstOrDefault().ColumnValue = "Vacant"
+                                        firstEmp.ReportColumnItemList.FirstOrDefault().ColumnTitle = "Vacant"
+                                    End If
+                                End If
+                            End If
+                            If IsDBNull(item.PostWiseNodeList) = False AndAlso item.PostWiseNodeList.Count > 0 Then
+                                Dim firstObj = item.PostWiseNodeList.FirstOrDefault()
 
-                        item.LineManagerStaffNo = firstObj.LineManagerStaffNo
-                        item.HierarchyLevel = firstObj.HierarchyLevel
-                        item.PostTitle = firstObj.PostTitle
-                        item.ReportColumnItemList = firstObj.ReportColumnItemList '.Where(Function(s) s.TableID = SettingsConfig.Hierarchy_TableID).ToList()
-                     End If
-                  Next
+                                item.LineManagerStaffNo = firstObj.LineManagerStaffNo
+                                item.HierarchyLevel = firstObj.HierarchyLevel
+                                item.PostTitle = firstObj.PostTitle
+                                item.ReportColumnItemList = firstObj.ReportColumnItemList '.Where(Function(s) s.TableID = SettingsConfig.Hierarchy_TableID).ToList()
+                                item.PostID = firstObj.PostID
+                            End If
+                        Next
 
-                  orgCharts = postList.OrderBy(Function(s) s.HierarchyLevel).ToList()
+                        orgCharts = postList.OrderBy(Function(s) s.HierarchyLevel).ToList()
                End If
 #End Region
             End If

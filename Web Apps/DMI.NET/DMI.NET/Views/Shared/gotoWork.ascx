@@ -26,4 +26,4 @@
 <input type="hidden" id="txtGotoPageID" name="txtGotoPageID">
 <input type="hidden" id="txtGotoPageSortColumn" name="txtGotoPageSortColumn">
 <input type="hidden" id="txtGotoPageSortOrder" name="txtGotoPageSortOrder">
-
+<input type="hidden" id="txtOrgReportTableID" name="txtOrgReportTableID">

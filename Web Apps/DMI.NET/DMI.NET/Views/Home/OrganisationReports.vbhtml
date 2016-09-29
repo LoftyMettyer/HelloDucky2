@@ -33,8 +33,9 @@
 </style>
 <script>
 
-   $(document).ready(function () {
-
+    $(document).ready(function () {
+        
+      
       // Common logic to show desired ribbon and menu
       $("#workframe").attr("data-framesource", "ORGREPORTS");
       showDefaultRibbon();
@@ -178,12 +179,18 @@
    }
 
    function printSelectClick(clickObj, event) {
-
+       //Disable Utility Buttons if no record selected
+       if ($('.printSelect:checked:enabled').length === 0 ) {
+           menu_toolbarEnableItem('mnuSectionReportsAndUtilityForOrgReports', false);
+       }
+       else{
+           menu_toolbarEnableItem('mnuSectionReportsAndUtilityForOrgReports', true);
+       }
       var fChecked = $(clickObj).prop('checked');
 
       $(clickObj).parent().parent().parent().nextAll("tr").find(".printSelect").prop('checked', fChecked);
       $(clickObj).parent().parent().parent().nextAll("tr").find(".printSelect").prop('disabled', fChecked);
-
+      GetSelectedEmployeeIDs();
    }
 
    function printOrgReport(pfPreview) {
@@ -274,37 +281,67 @@
       }
    }
 
+    //Get id's of selected records
+   function GetSelectedEmployeeIDs() {
+       var SelectedIds=[];
+       if ('@Model.IsPostBasedSystem'=='True') {
+           $('.printSelect:checked').each(function() {
+               SelectedIds.push($(this).attr("postid"));
+           });
+           $("#txtSelectedRecordsInFindGrid")[0].value = SelectedIds;
+           $("#txtOrgReportTableID")[0].value = @Model.Hierarchy_TableID;
+       }
+    else{
+           $('.printSelect:checked').each(function () {
+               SelectedIds.push($(this).attr("employeeid"));
+           });
+           $("#txtSelectedRecordsInFindGrid")[0].value = SelectedIds;
+           $("#txtOrgReportTableID")[0].value = @Model.Hierarchy_TableID;
+    }
+   }
+
+    function refreshData()
+    {
+        $("#toolbarReportFind").parent().hide();
+    }
+
+    //Disable Utility buttons(Custom,Calender,Mail-Merge) for SSI mode.
+    if(menu_isSSIMode() == true){
+        $("#mnuSectionReportsAndUtilityForOrgReports").hide();
+    }else{
+        $("#mnuSectionReportsAndUtilityForOrgReports").show();
+    }
 </script>
 
 <div>
    <ul id='org' style="display: none;"></ul>
    <ul id='tempList' style="display: none;">
       @Code For Each item In Model.OrgReportChartNodeList
-            If Model.IsPostBasedSystem = False Then
+              If Model.IsPostBasedSystem = False Then
       @<li hierarchyLevel="@item.HierarchyLevel"
            id="@item.LineManagerStaffNo"
            class="@item.NodeTypeClass">
          <div style="overflow-x:hidden;overflow-y: hidden;" id="divMainContainer" class="centered">
             @For Each childitem In item.ReportColumnItemList
-               Html.RenderPartial("_OrganisationReportColumnNode", childitem)
+                Html.RenderPartial("_OrganisationReportColumnNode", childitem)
             Next
          </div>
-         <input type="checkbox" class="printSelect" />
+         <input type="checkbox" class="printSelect" employeeid="@item.EmployeeID"/>
          <img title="expand/contract this node" class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' />
          <ul id="@item.EmployeeStaffNo" />
       </li>
-            Else
-               ''Post based system goes here...
+              Else
+                  ''Post based system goes here...
       @<li hierarchyLevel="@item.HierarchyLevel"
            id="@item.LineManagerStaffNo"
            class="ui-corner-all ui-state-default">
          <div style="overflow-x:hidden;overflow-y: hidden;padding-right: 0px;padding-left: 0px;" id="divMainContainer" class="centered">
-            <div id="divPostTitle" class="truncate centered" style="min-height:20px;text-align: center;display:inline-block;">
+            @*<div id="divPostTitle" class="truncate centered" style="min-height:20px;text-align: center;display:inline-block;">
                <span title="@item.PostTitle">@item.PostTitle</span>
-            </div>
+            </div>*@
             <div id="divPostColumns">
                @For Each colitem In item.ReportColumnItemList.Where(Function(m) m.TableID = Model.Hierarchy_TableID)
-                  Html.RenderPartial("_OrganisationReportColumnNode", colitem)
+                   Html.RenderPartial("_OrganisationReportColumnNode", colitem)
                Next
             </div>
             <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
@@ -313,7 +350,7 @@
                   @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
                @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
                   @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
-                     Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
+                      Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
                   Next
                </div>
                   End If
@@ -321,12 +358,14 @@
                Next
             </div>
          </div>
-         <input type="checkbox" class="printSelect" />
-         <img title="expand/contract this node" class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' />
-         <ul id="@item.EmployeeStaffNo" />
+       @If item.IsVacantPost = False Then
+           @<input type = "checkbox" Class="printSelect" postid="@item.PostID"/>
+       End If
+         <img title = "expand/contract this node" Class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' />
+         <ul id = "@item.EmployeeStaffNo" />
       </li>
-            End If
-         Next
+       End If
+          Next
       End Code
    </ul>
 </div>

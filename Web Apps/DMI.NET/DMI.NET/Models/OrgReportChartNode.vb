@@ -8,18 +8,19 @@ Imports DMI.NET.Classes
 
 Namespace Models
 
-   Public Class OrgReportChartNode
+    Public Class OrgReportChartNode
 
-      Public Property EmployeeID() As Integer
-      Public Property EmployeeStaffNo() As String
-      Public Property LineManagerStaffNo() As String
-      Public Property HierarchyLevel() As Integer
-      Public Property ReportColumnItemList As New List(Of ReportColumnItem)
-      Public Property NodeTypeClass() As String
-      Public Property PostTitle() As String
-      Public Property PostWiseNodeList As New List(Of OrgReportChartNode)
-      Public Property IsVacantPost() As Boolean = False
+        Public Property EmployeeID() As Integer
+        Public Property EmployeeStaffNo() As String
+        Public Property LineManagerStaffNo() As String
+        Public Property HierarchyLevel() As Integer
+        Public Property ReportColumnItemList As New List(Of ReportColumnItem)
+        Public Property NodeTypeClass() As String
+        Public Property PostTitle() As String
+        Public Property PostWiseNodeList As New List(Of OrgReportChartNode)
+        Public Property IsVacantPost() As Boolean = False
+        Public Property PostID As Integer
 
-   End Class
+    End Class
 
 End Namespace

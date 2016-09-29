@@ -995,8 +995,23 @@ function menu_MenuClick(sTool) {
 			return false;
 		}
 
-		
-	/******* End Changes related to user story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
+    if (sToolName == "mnutoolCustomReportsFindForOrgReports") {
+        LoadReportOrUtilityScreenForOrgReport(2);
+        return false;
+    }
+
+    if (sToolName == "mnutoolCalendarReportsFindForOrgReports") {
+        LoadReportOrUtilityScreenForOrgReport(17);
+        return false;
+    }
+
+
+    if (sToolName == "mnutoolMailMergeFindForOrgReports") {
+        LoadReportOrUtilityScreenForOrgReport(9);
+        return false;
+    }
+
+    /******* End Changes related to user story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
 
 
 	// Administration Menu -------------------------------------------------------------------------------------------------------------------
@@ -5352,8 +5367,33 @@ function LoadReportOrUtilityScreen(utilityType) {
 			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
 
-		OpenHR.submitForm(null, "optionframe", null, postData, "DefSel");
-	}
+        OpenHR.submitForm(null, "optionframe", null, postData, "DefSel");
+    }
+}
+
+//Load report or utility screen from the Org Reports
+function LoadReportOrUtilityScreenForOrgReport(utilityType) {
+    var multiSelectedRecords = $("#txtSelectedRecordsInFindGrid").val();
+    var TableID = $("#txtOrgReportTableID").val();
+
+    if (multiSelectedRecords === "" || multiSelectedRecords.split(",").length < 1) {
+        OpenHR.modalMessage("Please select at least one record to run the report or utility");
+    } else {
+
+        var frmFind = OpenHR.getForm("workframe", "frmWorkAreaRefresh");
+        // Load the required definition selection screen
+        var postData = {
+            txtTableID: TableID,
+            utiltype: utilityType,
+            utilID: 0,
+            RecordID: 0,
+            MultipleRecordIDs: multiSelectedRecords,
+            __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+        };
+
+        OpenHR.submitForm(null, "optionframe", null, postData, "DefSel");
+        $("#toolbarOrgReports").parent().hide();
+    }
 }
 
 /******* End Changes for the user story 19436: As a user, I want to run reports and utilities from the Find Window  *********/
