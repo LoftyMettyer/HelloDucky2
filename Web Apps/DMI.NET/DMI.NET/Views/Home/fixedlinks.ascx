@@ -1199,14 +1199,14 @@
                                         Reports</h6>
                                 </a>
                             </div>
-                            <%--<div id="mnutoolMailMergeFindForOrgReports" class="button">
+                            <div id="mnutoolMailMergeFindForOrgReports" class="button">
                                 <a href="#" rel="table" title="Mail Merge">
                                     <img src="<%: Url.Content("~/Scripts/officebar/winkit/MailMerge64HOVER.png") %>"
                                         alt="" />
                                     <h6>Mail<br />
                                         Merge</h6>
                                 </a>
-                            </div>--%>
+                            </div>
                         </li>
 
                     </ul>
