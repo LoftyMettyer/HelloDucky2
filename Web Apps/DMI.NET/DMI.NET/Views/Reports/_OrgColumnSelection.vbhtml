@@ -12,7 +12,7 @@
    <div class="tablerow">
       <fieldset id="selectedTable">
          <legend class="fontsmalltitle width100">View/Table(s) :</legend>
-         @Html.DropDownListFor(Function(m) m.BaseViewID, New SelectList(Model.AllAvailableViewList, "Id", "Name"), New With {.class = "width70 floatright", .id = "SelectedTableID", .name = "SelectedTableID", .onchange = "ChangeColumnTableView(event.target);"})
+         @Html.DropDownListFor(Function(m) m.SelectViewOnColumnsTab, New SelectList(Model.AllAvailableViewList, "Id", "Name"), New With {.class = "width70 floatright", .id = "SelectedTableID", .name = "SelectedTableID", .onchange = "ChangeColumnTableView(event.target);"})
       </fieldset>
    </div>
 
@@ -833,12 +833,32 @@
          count++;
          columnsString += invalidColumns[i].Heading + ", ";
       }
-      if (count > 0 )
+      if (count > 0)
       {
          columnsString = columnsString.substring(0, columnsString.length - 2);
          OpenHR.modalMessage("You do not have permission to see the column(s) : " + columnsString + ".");
          enableSaveButton();
       }
+   }
+
+   function PopulateAllAvailableViews() {
+
+      $.ajax({
+         url: 'Reports/GetAllAvailableViews?ReportID=' + @Model.ID,
+         datatype: 'json',
+         mtype: 'GET',
+         cache: false,
+         success: function (json) {
+            $('#SelectedTableID').empty();
+            var optionHtml = '';
+            for (var i = 0; i < json.length; i++) {
+               optionHtml += '<option value=' + json[i].id + '>' + json[i].Name + '</option>'
+            }
+            $('#SelectedTableID').append(optionHtml);
+            $("#SelectedTableID").val($("#BaseViewId option:selected").val());
+            getAvailableTableViewColumns();
+         }
+      });
    }
 
    // Initialise

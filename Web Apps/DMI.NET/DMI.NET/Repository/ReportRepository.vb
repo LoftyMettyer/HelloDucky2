@@ -2214,21 +2214,8 @@ Namespace Repository
             'Populate view list based on the table id
             objModel.BaseViewTableID = SettingsConfig.Hierarchy_TableID
             objModel.BaseViewList = objModel.GetAvailableTableViews(objModel.BaseViewTableID)
-            objModel.AllAvailableViewList.AddRange(objModel.BaseViewList)
 
-            ' If post based system then add personal table views
-            If SettingsConfig.Hierarchy_TableID <> SettingsConfig.Personnel_EmpTableID Then
-               objModel.AllAvailableViewList.AddRange(objModel.GetAvailableTableViews(SettingsConfig.Personnel_EmpTableID))
-
-               ' Get post allocation table and add to list
-               Dim table As Table = objModel.SessionInfo.GetTable(SettingsConfig.PostAllocation_TableID)
-
-               ' Storing PostAllocation tableId and Name for differentiate view and table in columns view/Table dropdown
-               objModel.PostBasedTableId = table.ID
-               objModel.PostBasedTableName = table.Name
-
-               objModel.AllAvailableViewList.Add(New ReportTableItem With {.id = table.ID, .Name = table.Name, .Relation = ReportRelationType.Parent1})
-            End If
+            FilterValidBaseViews(objModel)
 
             If action = UtilityActionType.New Then
                objModel.Owner = _username
@@ -2248,14 +2235,46 @@ Namespace Repository
 
                PopulateOrganisationDefinition(objModel, dsDefinition.Tables(0))
 
-               PopulateOrganisationReportFilters(objModel, dsDefinition.Tables(1))
+               'Check if baseview access is available
+               If objModel.BaseViewList.Exists(Function(x) x.id = objModel.BaseViewID) Then
 
-               PopulateOrganisationReportColumns(objModel, dsDefinition.Tables(2))
+                  PopulateOrganisationReportFilters(objModel, dsDefinition.Tables(1))
 
-               objModel.RemoveInvalidColumns()
+                  PopulateOrganisationReportColumns(objModel, dsDefinition.Tables(2))
+
+                  objModel.RemoveInvalidColumns()
+               Else
+                  objModel.IsBaseViewAccessDenied = True
+                  If objModel.BaseViewList.Count > 0 Then
+                     objModel.BaseViewID = objModel.BaseViewList(0).id
+                  End If
+               End If
+            End If
+
+            ' Add the available base view for the columns tab
+            If objModel.BaseViewList.Exists(Function(x) x.id = objModel.BaseViewID) Then
+               objModel.AllAvailableViewList.Add(objModel.BaseViewList.FirstOrDefault(Function(x) x.id = objModel.BaseViewID))
+            End If
+
+            ' If post based system then add personal table views
+            If SettingsConfig.Hierarchy_TableID <> SettingsConfig.Personnel_EmpTableID Then
+
+               ' Add all personal record views
+               objModel.AllAvailableViewList.AddRange(objModel.GetAvailableTableViews(SettingsConfig.Personnel_EmpTableID))
+
+               ' Get post allocation table and add to list
+               Dim postAllocationTable As Table = objModel.SessionInfo.GetTable(SettingsConfig.PostAllocation_TableID)
+
+               ' Storing PostAllocation tableId and Name for differentiate view and table in columns view/Table dropdown
+               objModel.PostBasedTableId = postAllocationTable.ID
+               objModel.PostBasedTableName = postAllocationTable.Name
+
+               ' Add appointment table
+               objModel.AllAvailableViewList.Add(New ReportTableItem With {.id = postAllocationTable.ID, .Name = postAllocationTable.Name, .Relation = ReportRelationType.Parent1})
 
             End If
 
+            objModel.SelectViewOnColumnsTab = objModel.BaseViewID
             objModel.GroupAccess = GetUtilityAccess(objModel, action)
             objModel.IsReadOnly = (action = UtilityActionType.View)
             objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
@@ -2273,6 +2292,35 @@ Namespace Repository
 
       End Function
 
+      ''' <summary>
+      ''' Filter the views which has access to all required mandatory fields.
+      ''' </summary>
+      ''' <param name="objModel"></param>
+      Private Sub FilterValidBaseViews(objModel As OrganisationReportModel)
+         Try
+            Dim OrgReportRecords = _objDataAccess.GetFromSP("spASRIntGetAllRequiredOrganisationColumns" _
+                                 , New SqlParameter("@piOrganisationID", SqlDbType.Int) With {.Value = 0} _
+                                 , New SqlParameter("@psOrganisationReportType", SqlDbType.VarChar) With
+                                 {.Value = IIf(SettingsConfig.Hierarchy_TableID <> SettingsConfig.Personnel_EmpTableID, "POSTBASE", "COMMERCIAL")})
+
+            Dim cloneOfBaseViewList As New List(Of ReportTableItem)
+            cloneOfBaseViewList.AddRange(objModel.BaseViewList)
+
+            For Each objRow As DataRow In OrgReportRecords.Rows
+               For Each viewItem As ReportTableItem In cloneOfBaseViewList
+                  If objModel.BaseViewList.Exists(Function(x) x.id = viewItem.id) Then
+                     Dim isValidColumn = objModel.SessionInfo.ValidateColumnPermissions(viewItem.Name, HttpUtility.HtmlEncode(objRow("ColumnName").ToString()))
+                     If (isValidColumn = False) Then
+                        objModel.BaseViewList.Remove(viewItem)
+                     End If
+                  End If
+               Next
+            Next
+         Catch ex As Exception
+            Throw
+         End Try
+      End Sub
+
       'Get all permitted columns for respected view
       Friend Function GetViewFilterColumns(viewId As Integer) As List(Of ReportColumnItem)
 
@@ -2283,14 +2331,14 @@ Namespace Repository
             Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)  'Set session info
             Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
             Dim psRealSource As New SqlParameter("@psRealSource", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = 8000}
-                Dim dtViewColumns As DataTable = objDataAccess.GetDataTable("sp_ASRIntGetViewColumns",
+            Dim dtViewColumns As DataTable = objDataAccess.GetDataTable("sp_ASRIntGetViewColumns",
                                           CommandType.StoredProcedure,
                                           New SqlParameter("@plngTableID", SqlDbType.Int) With {.Value = 0},
                                           New SqlParameter("@plngViewID ", SqlDbType.VarChar) With {.Value = viewId},
                                           psRealSource
                                           )
 
-                For Each objRow As DataRow In dtViewColumns.Rows
+            For Each objRow As DataRow In dtViewColumns.Rows
 
                objOrgViewColumns.Add(New ReportColumnItem() With {
                   .ID = CInt(objRow("columnID")),

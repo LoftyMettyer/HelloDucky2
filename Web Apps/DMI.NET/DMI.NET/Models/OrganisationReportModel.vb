@@ -38,6 +38,10 @@ Namespace Models
 
       Public Property PostBasedTableId As Integer
 
+      Public Property IsBaseViewAccessDenied As Boolean
+
+      Public Property SelectViewOnColumnsTab As Integer
+
       Public Overrides Sub SetBaseTable(TableID As Integer)
       End Sub
 
@@ -78,7 +82,11 @@ Namespace Models
             End If
          Next
 
-         Dim baseViewName = BaseViewList.FirstOrDefault(Function(x) x.id = BaseViewID).Name
+         Dim baseViewName = String.Empty
+         If BaseViewList.Exists(Function(x) x.id = BaseViewID) Then
+            baseViewName = BaseViewList.Find(Function(x) x.id = BaseViewID).Name
+         End If
+
          If baseViewName <> String.Empty Then
             For Each column As OrganisationReportFilterItem In FiltersFieldList
                Dim delimiter As Char = "."c

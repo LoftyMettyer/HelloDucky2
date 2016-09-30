@@ -117,6 +117,15 @@
          }
       });
 
+      function validateBaseView()
+      {
+         if ('@Model.IsBaseViewAccessDenied' == 'True')
+         {
+            OpenHR.modalMessage("You do not have permission to the Base View. It will be removed from the definition.");
+            enableSaveButton();
+         }
+      }
+
       function isDefinitionReadOnly() {
          return ($("#IsReadOnly").val() == "True");
       }
@@ -194,7 +203,10 @@
          FilterSelect_removeAll();
 
          // Remove Columns.
-         removeAllSelectedColumns(true);
+         removeAllSelectedColumns(false);
+
+         //Populate all availabe views in columns tab
+         PopulateAllAvailableViews();
 
          // Enables save button
          enableSaveButton();

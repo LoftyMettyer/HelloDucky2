@@ -1099,6 +1099,11 @@ Namespace Controllers
                ModelState.AddModelError("IsSelectedColumnsCountValid", "A maximum of 50 columns are allowed for your organisation report.")
             End If
 
+            'Check if base view is selected or not
+            If objModel.BaseViewID = 0 Then
+               ModelState.AddModelError("IsBaseViewSelected", "A base view must be selected.")
+            End If
+
             For Each columnItem As ReportColumnItem In objModel.Columns
                   ' Check the column font size has value in range.
                   If (columnItem.FontSize < 6) AndAlso (columnItem.FontSize > 30) AndAlso (columnItem.FontSize = Nothing) Then
@@ -1166,9 +1171,24 @@ Namespace Controllers
       <ValidateAntiForgeryToken>
       Sub ChangeBaseView(ReportID As Integer, ReportType As UtilityType, BaseViewId As Integer)
 
-         Dim objReport = objReportRepository.RetrieveParent(ReportID, ReportType)
+         Dim objReport = objReportRepository.RetrieveOrganisationReport(ReportID)
+         'Remove previous selected base view
+         objReport.AllAvailableViewList.RemoveAll(Function(x) x.id = objReport.BaseViewID)
+
+         Dim availableViewList As New List(Of ReportTableItem)
+         availableViewList.Add(objReport.BaseViewList.FirstOrDefault(Function(x) x.id = BaseViewId))
+         availableViewList.AddRange(objReport.AllAvailableViewList)
+         objReport.AllAvailableViewList = availableViewList
+
+         'Set new baseview id
          objReport.BaseViewID = BaseViewId
       End Sub
+
+      <HttpGet>
+      Function GetAllAvailableViews(ReportID As Integer) As JsonResult
+         Dim objReport = objReportRepository.RetrieveOrganisationReport(ReportID)
+         Return Json(objReport.AllAvailableViewList, JsonRequestBehavior.AllowGet)
+      End Function
 
       <HttpGet>
       Function GetAvailableItemsForView(ReportID As Integer, viewOrTableId As Integer, Optional IsTable As Boolean = False) As JsonResult

@@ -62576,13 +62576,55 @@ GO
 CREATE PROCEDURE [dbo].[spASRIntGetAllrequiredOrganisationColumns] 
 (
 	@piOrganisationID				integer,
-	@psOrganisationReportType		varchar(50)
+	@psOrganisationReportType	varchar(50)
 )
 AS
 BEGIN
 
 	DECLARE @iBaseViewID int = (select BaseViewID from ASRSysOrganisationReport where ID = @piOrganisationID);
-
+	
+	IF @piOrganisationID = 0
+	BEGIN
+			IF @psOrganisationReportType = 'COMMERCIAL'
+				SELECT c.columnID, c.ColumnName
+				FROM ASRSysModuleSetup As s 
+				INNER JOIN ASRSysColumns As c ON s.ParameterValue = c.columnID 
+				WHERE s.moduleKey = 'MODULE_PERSONNEL' 
+				AND UPPER(s.ParameterKey) = 'PARAM_FIELDSEMPLOYEENUMBER'
+				UNION
+				SELECT c.columnID, c.ColumnName
+				FROM ASRSysModuleSetup As s 
+				INNER JOIN ASRSysColumns As c ON s.ParameterValue = c.columnID 
+				WHERE s.moduleKey = 'MODULE_PERSONNEL' 
+				AND UPPER(s.ParameterKey) = 'PARAM_FIELDSMANAGERSTAFFNO'
+				UNION
+				SELECT   c.columnID, c.ColumnName
+				FROM ASRSysModuleSetup As s 
+				INNER JOIN ASRSysColumns As c ON s.ParameterValue = c.columnID 
+				WHERE s.moduleKey = 'MODULE_PERSONNEL' 
+				AND UPPER(s.ParameterKey) = 'PARAM_FIELDSLEAVINGDATE'
+				UNION 
+				SELECT c.columnID, c.ColumnName
+				FROM ASRSysModuleSetup As s 
+				INNER JOIN ASRSysColumns As c ON s.ParameterValue = c.columnID 
+				WHERE s.moduleKey = 'MODULE_PERSONNEL' 
+				AND UPPER(s.ParameterKey) = 'PARAM_FIELDSSTARTDATE'
+			ELSE
+				--Non Commercial	
+				SELECT c.columnID, c.ColumnName
+				FROM ASRSysModuleSetup As s 
+				INNER JOIN ASRSysColumns As c ON s.ParameterValue = c.columnID 
+				WHERE s.moduleKey = 'MODULE_HIERARCHY' 
+				AND UPPER(s.ParameterKey) = 'PARAM_FIELDIDENTIFIER'
+				UNION
+				SELECT c.columnID, c.ColumnName
+				FROM ASRSysModuleSetup As s 
+				INNER JOIN ASRSysColumns As c ON s.ParameterValue = c.columnID 
+				WHERE s.moduleKey = 'MODULE_HIERARCHY' 
+				AND UPPER(s.ParameterKey) = 'PARAM_FIELDREPORTSTO'	
+			END
+	ELSE
+	BEGIN
 	IF @psOrganisationReportType = 'COMMERCIAL'
 		BEGIN
 			SELECT c.columnID, c.ColumnName, v1.ViewName As TableOrViewName
@@ -62667,6 +62709,7 @@ BEGIN
 		RunDate = getdate(), 
 		RunHost = host_name() 
 		WHERE UtilID = @piOrganisationID AND Type = 39;
+	END
 END
 GO
 

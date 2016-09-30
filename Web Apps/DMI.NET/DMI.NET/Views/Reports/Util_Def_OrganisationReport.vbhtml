@@ -55,6 +55,7 @@ End Code
       getAvailableTableViewColumns();
       attachGridToSelectedColumns();
       getUnauthorisedColumns();
+      validateBaseView();
    });
 
    $(function () {
@@ -97,5 +98,5 @@ End Code
       //column aggregate widths
       $('.colAggregates').find('.tablecell').css('width', gridWidth / 3);
    }
-   
+
 </script>
