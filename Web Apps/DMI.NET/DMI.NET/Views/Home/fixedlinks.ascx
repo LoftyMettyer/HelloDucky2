@@ -1191,14 +1191,14 @@
                                         Reports</h6>
                                 </a>
                             </div>
-                            <%--<div id="mnutoolCalendarReportsFindForOrgReports" class="button">
+                            <div id="mnutoolCalendarReportsFindForOrgReports" class="button">
                                 <a href="#" rel="table" title="Calendar Reports">
                                     <img src="<%: Url.Content("~/Scripts/officebar/winkit/CalendarReports64HOVER.png") %>"
                                         alt="" />
                                     <h6>Calendar<br />
                                         Reports</h6>
                                 </a>
-                            </div>--%>
+                            </div>
                             <%--<div id="mnutoolMailMergeFindForOrgReports" class="button">
                                 <a href="#" rel="table" title="Mail Merge">
                                     <img src="<%: Url.Content("~/Scripts/officebar/winkit/MailMerge64HOVER.png") %>"
