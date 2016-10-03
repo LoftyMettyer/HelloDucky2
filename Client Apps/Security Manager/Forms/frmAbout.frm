@@ -108,7 +108,7 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":59AB
+      MouseIcon       =   "frmAbout.frx":25DE
       MousePointer    =   99  'Custom
       TabIndex        =   10
       Top             =   5520
@@ -117,7 +117,7 @@ Begin VB.Form frmAbout
    Begin VB.Label lblURL 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "http://www.advancedcomputersoftware.com/abs"
+      Caption         =   "https://www.oneadvanced.com"
       BeginProperty Font 
          Name            =   "Verdana"
          Size            =   8.25
@@ -130,11 +130,11 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":5AFD
+      MouseIcon       =   "frmAbout.frx":2730
       MousePointer    =   99  'Custom
       TabIndex        =   9
       Top             =   5115
-      Width           =   4185
+      Width           =   2670
    End
    Begin VB.Label lblDatabase 
       AutoSize        =   -1  'True
@@ -190,13 +190,13 @@ Begin VB.Form frmAbout
    Begin VB.Label lblCopyRight 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Copyright © Advanced Business Software and Solutions Limited"
+      Caption         =   "Copyright © Advanced"
       ForeColor       =   &H00000000&
       Height          =   195
       Left            =   150
       TabIndex        =   3
       Top             =   4785
-      Width           =   5490
+      Width           =   1965
    End
 End
 Attribute VB_Name = "frmAbout"
@@ -278,7 +278,7 @@ Private Sub Form_Load()
   lblUser.Caption = "Current User : " & Trim(gsUserName)
   lblSecurity.Caption = "User Group : " & gsUserGroup
   lblSql.Caption = GetSqlVersion
-  lblCopyRight.Caption = "Copyright © Advanced Business Software and Solutions Ltd 2012"
+  lblCopyRight.Caption = "Copyright © Advanced"
   
   sngMaxX = lblTitle.Left + lblTitle.Width
   sngMaxX = IIf(lblDatabase.Left + lblDatabase.Width > sngMaxX, lblDatabase.Left + lblDatabase.Width, sngMaxX)

@@ -110,11 +110,11 @@ Begin VB.Form frmLogin
       Width           =   3285
    End
    Begin VB.Image imgASRLogo 
-      Height          =   1050
+      Height          =   1065
       Left            =   240
       Picture         =   "frmLogin.frx":000C
       Top             =   120
-      Width           =   3135
+      Width           =   4575
    End
    Begin VB.Label lblDevelopmentMode 
       AutoSize        =   -1  'True
@@ -495,7 +495,7 @@ End Sub
 
 Public Sub Login()
 
-  Dim fOK As Boolean
+  Dim fOk As Boolean
   Dim iLoop As Integer
   Dim sSQL As String
   Dim sConnect As String
@@ -506,7 +506,7 @@ Public Sub Login()
   Dim objNET As New SystemMgr.Net
   Dim sMsg As String
 
-  fOK = True
+  fOk = True
 
   On Error GoTo ErrorTrap
   
@@ -973,7 +973,7 @@ Private Function CheckSQLDriver() As Boolean
   ' Check that the SQL ODBC Driver is installed.
   On Error GoTo ErrorTrap
     
-  Dim fOK As Boolean
+  Dim fOk As Boolean
   Dim iReturnCode As Integer
   Dim iDriverDescLen As Integer
   Dim iDriverAttribLen As Integer
@@ -982,12 +982,12 @@ Private Function CheckSQLDriver() As Boolean
   Dim sDriverDesc As String * 1024
   Dim sDriverAttrib As String * 1024
 
-  fOK = False
+  fOk = False
   
   ' Get the DSN and driver information.
   If SQLAllocEnv(lngEnvironmentHandle) <> -1 Then
   
-    Do Until (iReturnCode <> SQL_SUCCESS) Or fOK
+    Do Until (iReturnCode <> SQL_SUCCESS) Or fOk
       
       sDriverDesc = Space(1024)
       
@@ -999,18 +999,18 @@ Private Function CheckSQLDriver() As Boolean
                 
       If Len(sDriver) > 0 Then
         If sDriver = UCase(ODBCDRIVER) Then
-          fOK = True
+          fOk = True
         End If
       End If
     Loop
   End If
   
 TidyUpAndExit:
-  CheckSQLDriver = fOK
+  CheckSQLDriver = fOk
   Exit Function
   
 ErrorTrap:
-  fOK = False
+  fOk = False
   Resume TidyUpAndExit
   
 End Function

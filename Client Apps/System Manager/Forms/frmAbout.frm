@@ -110,7 +110,7 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   120
-      MouseIcon       =   "frmAbout.frx":8E26
+      MouseIcon       =   "frmAbout.frx":5AD4
       MousePointer    =   99  'Custom
       TabIndex        =   10
       Top             =   5490
@@ -119,7 +119,7 @@ Begin VB.Form frmAbout
    Begin VB.Label lblURL 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "http://www.advancedcomputersoftware.com/abs"
+      Caption         =   "https://www.oneadvanced.com"
       BeginProperty Font 
          Name            =   "Verdana"
          Size            =   8.25
@@ -132,11 +132,11 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   120
-      MouseIcon       =   "frmAbout.frx":8F78
+      MouseIcon       =   "frmAbout.frx":5C26
       MousePointer    =   99  'Custom
       TabIndex        =   9
       Top             =   5085
-      Width           =   4185
+      Width           =   2670
    End
    Begin VB.Label lblDatabase 
       AutoSize        =   -1  'True
@@ -181,13 +181,13 @@ Begin VB.Form frmAbout
    Begin VB.Label lblCopyRight 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Copyright © Advanced Business Software and Solutions Ltd 2012"
+      Caption         =   "Copyright © Advanced"
       ForeColor       =   &H00000000&
       Height          =   195
       Left            =   120
       TabIndex        =   4
       Top             =   4755
-      Width           =   5610
+      Width           =   1965
    End
    Begin VB.Label lblTitle 
       AutoSize        =   -1  'True
@@ -238,7 +238,7 @@ Private Sub cmdSysInfo_Click()
   
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   
   ' Unload the form.
   UnLoad Me
@@ -271,7 +271,7 @@ Private Sub Form_Load()
   lblUser.Caption = "Current User : " & Trim(gsUserName)
   lblSecurity.Caption = "User Group : " & gsSecurityGroup
   lblSql.Caption = GetSqlVersion
-  lblCopyRight.Caption = "Copyright © Advanced Business Software and Solutions Ltd 2012"
+  lblCopyRight.Caption = "Copyright © Advanced"
 
   sngMaxX = lblTitle.Left + lblTitle.Width
   sngMaxX = IIf(lblDatabase.Left + lblDatabase.Width > sngMaxX, lblDatabase.Left + lblDatabase.Width, sngMaxX)
@@ -319,7 +319,7 @@ End Function
 Public Sub StartSysInfo()
     On Error GoTo SysInfoErr
   
-    Dim Rc As Long
+    Dim rc As Long
     Dim SysInfoPath As String
     
     ' Try To Get System Info Program Path\Name From Registry...
@@ -348,7 +348,7 @@ End Sub
 
 Public Function GetKeyValue(KeyRoot As Long, KeyName As String, SubKeyRef As String, ByRef KeyVal As String) As Boolean
     Dim i As Long                                           ' Loop Counter
-    Dim Rc As Long                                          ' Return Code
+    Dim rc As Long                                          ' Return Code
     Dim hKey As Long                                        ' Handle To An Open Registry Key
     Dim hDepth As Long                                      '
     Dim KeyValType As Long                                  ' Data Type Of A Registry Key
@@ -357,9 +357,9 @@ Public Function GetKeyValue(KeyRoot As Long, KeyName As String, SubKeyRef As Str
     '------------------------------------------------------------
     ' Open RegKey Under KeyRoot {HKEY_LOCAL_MACHINE...}
     '------------------------------------------------------------
-    Rc = RegOpenKeyEx(KeyRoot, KeyName, 0, KEY_ALL_ACCESS, hKey) ' Open Registry Key
+    rc = RegOpenKeyEx(KeyRoot, KeyName, 0, KEY_ALL_ACCESS, hKey) ' Open Registry Key
     
-    If (Rc <> ERROR_SUCCESS) Then GoTo GetKeyError          ' Handle Error...
+    If (rc <> ERROR_SUCCESS) Then GoTo GetKeyError          ' Handle Error...
     
     tmpVal = String$(1024, 0)                             ' Allocate Variable Space
     KeyValSize = 1024                                       ' Mark Variable Size
@@ -367,10 +367,10 @@ Public Function GetKeyValue(KeyRoot As Long, KeyName As String, SubKeyRef As Str
     '------------------------------------------------------------
     ' Retrieve Registry Key Value...
     '------------------------------------------------------------
-    Rc = RegQueryValueEx(hKey, SubKeyRef, 0, _
+    rc = RegQueryValueEx(hKey, SubKeyRef, 0, _
                          KeyValType, tmpVal, KeyValSize)    ' Get/Create Key Value
                         
-    If (Rc <> ERROR_SUCCESS) Then GoTo GetKeyError          ' Handle Errors
+    If (rc <> ERROR_SUCCESS) Then GoTo GetKeyError          ' Handle Errors
     
     If (Asc(Mid(tmpVal, KeyValSize, 1)) = 0) Then           ' Win95 Adds Null Terminated String...
         tmpVal = Left(tmpVal, KeyValSize - 1)               ' Null Found, Extract From String
@@ -391,13 +391,13 @@ Public Function GetKeyValue(KeyRoot As Long, KeyName As String, SubKeyRef As Str
     End Select
     
     GetKeyValue = True                                      ' Return Success
-    Rc = RegCloseKey(hKey)                                  ' Close Registry Key
+    rc = RegCloseKey(hKey)                                  ' Close Registry Key
     Exit Function                                           ' Exit
     
 GetKeyError:      ' Cleanup After An Error Has Occured...
     KeyVal = ""                                             ' Set Return Val To Empty String
     GetKeyValue = False                                     ' Return Failure
-    Rc = RegCloseKey(hKey)                                  ' Close Registry Key
+    rc = RegCloseKey(hKey)                                  ' Close Registry Key
 End Function
 
 

@@ -186,11 +186,11 @@ Begin VB.Form frmLogin
       Y2              =   1515
    End
    Begin VB.Image imgLogo 
-      Height          =   1050
+      Height          =   1065
       Left            =   120
       Picture         =   "frmLogin.frx":000C
       Top             =   120
-      Width           =   3135
+      Width           =   4575
    End
 End
 Attribute VB_Name = "frmLogin"

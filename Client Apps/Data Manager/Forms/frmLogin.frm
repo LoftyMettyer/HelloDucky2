@@ -169,11 +169,11 @@ Begin VB.Form frmLogin
       Y2              =   1515
    End
    Begin VB.Image imgASR 
-      Height          =   1050
+      Height          =   1065
       Left            =   120
       Picture         =   "frmLogin.frx":000C
       Top             =   120
-      Width           =   3135
+      Width           =   4575
    End
    Begin VB.Label lblVersion 
       AutoSize        =   -1  'True
@@ -318,7 +318,7 @@ Private Sub Form_Load()
   End If
   
   ' Get the details of the last connection from the registry.
-  sUsername = GetPCSetting("Login", "DataMgr_UserName", Net.UserName)
+  sUsername = GetPCSetting("Login", "DataMgr_UserName", Net.userName)
   sDatabaseName = GetPCSetting("Login", "DataMgr_Database", vbNullString)
   sServerName = GetPCSetting("Login", "DataMgr_Server", vbNullString)
   bUseWindowsAuthentication = GetPCSetting("Login", "DataMgr_AuthenticationMode", 0)
@@ -582,7 +582,7 @@ Private Sub CheckRegistrySettings()
         
         fContinue = COAMsgBox("One or more data paths have not yet been defined for this database." & vbNewLine & _
                            "OpenHR may not function correctly without these paths defined." & vbNewLine & _
-                           "Would you like to define these now?", vbYesNo + vbQuestion + vbDefaultButton2, app.title) = vbYes
+                           "Would you like to define these now?", vbYesNo + vbQuestion + vbDefaultButton2, app.Title) = vbYes
       End If
       
     End If
@@ -856,7 +856,7 @@ Private Sub CheckPassword()
   
 Check_ERROR:
   
-  COAMsgBox "Error checking passwords." & vbNewLine & vbNewLine & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.title
+  COAMsgBox "Error checking passwords." & vbNewLine & vbNewLine & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.Title
   
 End Sub
 
@@ -886,7 +886,7 @@ Private Sub UpdateConfig()
 Update_ERROR:
 
   COAMsgBox "Error updating AsrSysPasswords." & vbNewLine & vbNewLine & _
-         "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.title
+         "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.Title
 
   Set rsInfo = Nothing
          

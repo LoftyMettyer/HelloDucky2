@@ -118,7 +118,7 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":55C1
+      MouseIcon       =   "frmAbout.frx":2401
       MousePointer    =   99  'Custom
       TabIndex        =   11
       Top             =   5520
@@ -127,7 +127,7 @@ Begin VB.Form frmAbout
    Begin VB.Label lblURL 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "http://www.advancedcomputersoftware.com/abs"
+      Caption         =   "https://www.oneadvanced.com"
       BeginProperty Font 
          Name            =   "Verdana"
          Size            =   8.25
@@ -140,11 +140,11 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":5713
+      MouseIcon       =   "frmAbout.frx":2553
       MousePointer    =   99  'Custom
       TabIndex        =   10
       Top             =   5115
-      Width           =   4185
+      Width           =   2670
    End
    Begin VB.Label lblDatabase 
       AutoSize        =   -1  'True
@@ -189,13 +189,13 @@ Begin VB.Form frmAbout
    Begin VB.Label lblCopyRight 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Copyright © Advanced Business Software and Solutions Limited"
+      Caption         =   "Copyright © Advanced"
       ForeColor       =   &H00000000&
       Height          =   195
       Left            =   150
       TabIndex        =   4
       Top             =   4785
-      Width           =   5490
+      Width           =   1965
    End
    Begin VB.Label lblTitle 
       AutoSize        =   -1  'True
@@ -298,7 +298,7 @@ Private Sub Form_Load()
   
   lblSecurity = "User Group : " & gsUserGroup
   lblSql = datGeneral.GetSqlVersion
-  lblCopyRight.Caption = "Copyright © Advanced Business Software and Solutions Ltd 2012"
+  lblCopyRight.Caption = "Copyright © Advanced"
   
   Set datGeneral = Nothing
   Screen.MousePointer = vbDefault
@@ -412,7 +412,7 @@ GetKeyError:      ' Cleanup After An Error Has Occured...
     rc = RegCloseKey(hKey)                                  ' Close Registry Key
 End Function
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Redo link colour
   lblURL.ForeColor = &HFF0000
   lblAdvancedConnectURL.ForeColor = &HFF0000
@@ -461,7 +461,7 @@ ErrTrap:
 
 End Sub
 
-Private Sub lblURL_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub lblURL_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Highlight the link
   lblURL.ForeColor = vbRed
   DoEvents
@@ -495,7 +495,7 @@ ErrTrap:
 
 End Sub
 
-Private Sub lblAdvancedConnectURL_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub lblAdvancedConnectURL_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Highlight the link
   lblAdvancedConnectURL.ForeColor = vbRed
   DoEvents
