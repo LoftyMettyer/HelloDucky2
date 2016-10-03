@@ -62,7 +62,7 @@
 	<%--stylesheet for slide-out dmi menu--%>
 	<link href="<%: Url.LatestContent("~/Content/contextmenustyle.css")%>" rel="stylesheet" type="text/css" />
 
-	<%--ThemeRoller stylesheet--%>
+  	<%--ThemeRoller stylesheet--%>
 	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
 
 	<%--jQuery Grid Stylesheet--%>
@@ -71,7 +71,7 @@
 	<link href="<%: Url.LatestContent("~/Content/table.css")%>" rel="stylesheet" type="text/css" />
 
 	<%--Placeholders for theme and layout--%>
-	<link id="layoutLink" href="" rel="stylesheet" type="text/css" />
+	<link id="layoutLink" href="~/Content/DashboardStyles/layouts/winkit.css" rel="stylesheet" type="text/css" />
 	<link id="themeLink" href="" rel="stylesheet" type="text/css" />
 	<link id="WireframethemeLink" href="" rel="stylesheet" type="text/css" />
 
@@ -86,7 +86,7 @@
 	<script src="<%: ResolveUrl("~/signalr/hubs") %>" type="text/javascript"></script>
 					
 	<script type="text/javascript">
-
+	   
 		window.LocaleDateFormat = "";
 		window.SSIMode = '<%=session("SSIMode")%>';
 		window.isMobileDevice = '<%=Session("isMobileDevice")%>';
@@ -716,21 +716,21 @@
 		<table id="LookupForEditableGrid_Table"></table>
 	</div>
 
-	<div id="dialog-confirm">
+	<div id="dialog-confirm" style="display:none;">
 		<p><span class="ui-icon ui-icon-help" style="float: left; margin: 0 7px 20px 0;"></span></p>
 	</div>
 
 	<div id="divthemeRoller"></div>
 	
 
-	<div id="divSignalRMessage" style="display: block;">
+	<div id="divSignalRMessage" style="display: none;">
 		<div id="SignalRDialogTitleContent">
 			<h1 id="SignalRDialogTitle"></h1>
 		</div>
 		<div id="SignalRDialogContent">
 			<p id="SignalRDialogContentText"></p>
 		</div>
-		<input type="button" class="button" value="OK" id="SignalRDialogClick" style="float: right" />
+		<input type="button" class="button" value="OK" id="SignalRDialogClick" style="float: right; " />
 	</div>
 
 	<iframe name="submit-iframe" style="display: none;"></iframe>
