@@ -5975,6 +5975,7 @@ Namespace Controllers
 
          Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
          Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
+         Dim PostAllocationSysGeneratedViewName As String = ""
 
          Dim orgCharts = New List(Of OrgReportChartNode)
          Dim sErrorDescription = ""
@@ -5985,10 +5986,17 @@ Namespace Controllers
             Return orgCharts
          End If
 
+         If IsPostBasedSystem Then
+            Dim PostAllocationTableID As Integer = 0
+            PostAllocationTableID = SettingsConfig.PostAllocation_TableID
+            PostAllocationSysGeneratedViewName = objSession.GetSystemViewName(PostAllocationTableID)
+         End If
+
          Try
             Dim OrgReportRecords = objDataAccess.GetDataSet("spASRIntGetOrganisationReport" _
                             , New SqlParameter("piRootID", SqlDbType.Int) With {.Value = iLoggedInUser} _
                             , New SqlParameter("piReportID", SqlDbType.Int) With {.Value = Session("utilid")} _
+                            , New SqlParameter("psPostAllocationViewName", SqlDbType.VarChar) With {.Value = PostAllocationSysGeneratedViewName.ToString()} _
                             , New SqlParameter("psOrganisationReportType", SqlDbType.VarChar) With {.Value = IIf(IsPostBasedSystem, "POSTBASE", "COMMERCIAL")})
 
             Dim additionalClasses As String
@@ -6113,12 +6121,12 @@ Namespace Controllers
                                .NodeTypeClass = HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(additionalClasses))})
                   End If
 
-                    Next
+               Next
 
 #Region "PostBased System"
 
-                    If (IsPostBasedSystem) Then
-                        Dim postList = orgCharts.OrderBy(Function(s) s.EmployeeStaffNo) _
+               If (IsPostBasedSystem) Then
+                  Dim postList = orgCharts.OrderBy(Function(s) s.EmployeeStaffNo) _
                                                 .GroupBy(Function(a) a.EmployeeStaffNo) _
                                                 .Select(Function(x) New OrgReportChartNode() With
                                                                     {
@@ -6126,35 +6134,35 @@ Namespace Controllers
                                                                         .PostWiseNodeList = x.ToList()
                                                                     }).ToList()
 
-                        For Each item As OrgReportChartNode In postList
-                            If IsDBNull(item.PostWiseNodeList) = False AndAlso item.PostWiseNodeList.Count = 1 Then
-                                Dim firstEmp = item.PostWiseNodeList.FirstOrDefault()
-                                If firstEmp.EmployeeID = 0 Then
-                                    item.IsVacantPost = True
-                                    If (IsDBNull(firstEmp.ReportColumnItemList) = False AndAlso firstEmp.ReportColumnItemList.Count > 0) Then
-                                        For Each column In firstEmp.ReportColumnItemList
-                                            If (column.DataType <> ColumnDataType.sqlVarBinary) Then
-                                                column.ColumnValue = String.Empty
-                                                column.ColumnTitle = String.Empty
-                                            End If
-                                        Next
-                                        firstEmp.ReportColumnItemList.FirstOrDefault().ColumnValue = "Vacant"
-                                        firstEmp.ReportColumnItemList.FirstOrDefault().ColumnTitle = "Vacant"
-                                    End If
-                                End If
-                            End If
-                            If IsDBNull(item.PostWiseNodeList) = False AndAlso item.PostWiseNodeList.Count > 0 Then
-                                Dim firstObj = item.PostWiseNodeList.FirstOrDefault()
+                  For Each item As OrgReportChartNode In postList
+                     If IsDBNull(item.PostWiseNodeList) = False AndAlso item.PostWiseNodeList.Count = 1 Then
+                        Dim firstEmp = item.PostWiseNodeList.FirstOrDefault()
+                        If firstEmp.EmployeeID = 0 Then
+                           item.IsVacantPost = True
+                           If (IsDBNull(firstEmp.ReportColumnItemList) = False AndAlso firstEmp.ReportColumnItemList.Count > 0) Then
+                              For Each column In firstEmp.ReportColumnItemList
+                                 If (column.DataType <> ColumnDataType.sqlVarBinary) Then
+                                    column.ColumnValue = String.Empty
+                                    column.ColumnTitle = String.Empty
+                                 End If
+                              Next
+                              firstEmp.ReportColumnItemList.FirstOrDefault().ColumnValue = "Vacant"
+                              firstEmp.ReportColumnItemList.FirstOrDefault().ColumnTitle = "Vacant"
+                           End If
+                        End If
+                     End If
+                     If IsDBNull(item.PostWiseNodeList) = False AndAlso item.PostWiseNodeList.Count > 0 Then
+                        Dim firstObj = item.PostWiseNodeList.FirstOrDefault()
 
-                                item.LineManagerStaffNo = firstObj.LineManagerStaffNo
-                                item.HierarchyLevel = firstObj.HierarchyLevel
-                                item.PostTitle = firstObj.PostTitle
-                                item.ReportColumnItemList = firstObj.ReportColumnItemList '.Where(Function(s) s.TableID = SettingsConfig.Hierarchy_TableID).ToList()
-                                item.PostID = firstObj.PostID
-                            End If
-                        Next
+                        item.LineManagerStaffNo = firstObj.LineManagerStaffNo
+                        item.HierarchyLevel = firstObj.HierarchyLevel
+                        item.PostTitle = firstObj.PostTitle
+                        item.ReportColumnItemList = firstObj.ReportColumnItemList '.Where(Function(s) s.TableID = SettingsConfig.Hierarchy_TableID).ToList()
+                        item.PostID = firstObj.PostID
+                     End If
+                  Next
 
-                        orgCharts = postList.OrderBy(Function(s) s.HierarchyLevel).ToList()
+                  orgCharts = postList.OrderBy(Function(s) s.HierarchyLevel).ToList()
                End If
 #End Region
             End If

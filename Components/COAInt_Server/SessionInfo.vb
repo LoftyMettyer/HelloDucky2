@@ -631,6 +631,26 @@ Public Class SessionInfo
 
    End Function
 
+   Public Function GetSystemViewName(piTableID As String) As String
+
+      Dim SystemViewName As String = ""
+
+      Try
+         For Each objTableView In gcoTablePrivileges.Collection
+            If (objTableView.TableID = piTableID) And (objTableView.AllowSelect) Then
+               SystemViewName = objTableView.RealSource
+               Exit For
+            End If
+         Next objTableView
+
+         Return SystemViewName.ToString()
+
+      Catch ex As Exception
+         Return SystemViewName.ToString()
+      End Try
+
+   End Function
+
 #End Region
 
 End Class
