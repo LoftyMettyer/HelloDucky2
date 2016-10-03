@@ -15,7 +15,7 @@
 		 Name="OpenHR Workflow Web Site $(var.MajorAndMinorProductVersion)"
 		 Language="1033"
 		 Version="$(var.FullProductVersion)"
-		 Manufacturer="Advanced Computer Software"
+		 Manufacturer="Advanced"
 		 UpgradeCode="{DDD310B3-F2C8-460D-B5FB-74F05A1762DE}" >
 
 		<Package Id="F2A4C2FB-8F35-409A-9E78-8859CBB5C533" InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
@@ -30,8 +30,8 @@
 		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
 
 		<!-- Set some properties for the MSI installer -->
-		<Property Id="ARPHELPLINK">http://webfirst.advancedcomputersoftware.com</Property> <!-- This property appears as the "Help link" in the "Programs and Features" Windows screen -->
-		<Property Id="ARPURLINFOABOUT">http://www.advancedcomputersoftware.com/abs</Property> <!-- This property appears as the "Support link" in the "Programs and Features" Windows screen -->
+		<Property Id="ARPHELPLINK">https://customers.oneadvanced.com</Property> <!-- This property appears as the "Help link" in the "Programs and Features" Windows screen -->
+		<!--<Property Id="ARPURLINFOABOUT">http://www.advancedcomputersoftware.com/abs</Property> --><!-- This property appears as the "Support link" in the "Programs and Features" Windows screen -->
 		
 		<!-- Creating directories -->
 		<Directory Id="TARGETDIR" Name="SourceDir">

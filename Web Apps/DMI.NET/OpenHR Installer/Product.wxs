@@ -15,7 +15,7 @@
 			 Name="OpenHR Web $(var.MajorAndMinorProductVersion)"
 			 Language="1033"
 			 Version="$(var.FullProductVersion)"
-			 Manufacturer="Advanced Computer Software"
+			 Manufacturer="Advanced"
 			 UpgradeCode="{A94E455C-83D9-4AFF-B75F-C6BCC280601E}" >
 
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
@@ -30,8 +30,8 @@
 		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
 
 		<!-- Set some properties for the MSI installer -->
-		<Property Id="ARPHELPLINK">http://webfirst.advancedcomputersoftware.com</Property> <!-- This property appears as the "Help link" in the "Programs and Features" Windows screen -->
-		<Property Id="ARPURLINFOABOUT">http://www.advancedcomputersoftware.com/abs</Property> <!-- This property appears as the "Support link" in the "Programs and Features" Windows screen -->
+		<Property Id="ARPHELPLINK">https://customers.oneadvanced.com</Property> <!-- This property appears as the "Help link" in the "Programs and Features" Windows screen -->
+		<!--<Property Id="ARPURLINFOABOUT">http://www.advancedcomputersoftware.com/abs</Property> --><!-- This property appears as the "Support link" in the "Programs and Features" Windows screen -->
 		
 		<!-- Creating directories -->
 		<Directory Id="TARGETDIR" Name="SourceDir">
