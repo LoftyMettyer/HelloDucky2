@@ -33,8 +33,8 @@
 </style>
 <script>
 
-    $(document).ready(function () {
-        
+   $(document).ready(function () {
+
       
       // Common logic to show desired ribbon and menu
       $("#workframe").attr("data-framesource", "ORGREPORTS");
@@ -317,31 +317,28 @@
    <ul id='org' style="display: none;"></ul>
    <ul id='tempList' style="display: none;">
       @Code For Each item In Model.OrgReportChartNodeList
-              If Model.IsPostBasedSystem = False Then
+            If Model.IsPostBasedSystem = False Then
       @<li hierarchyLevel="@item.HierarchyLevel"
            id="@item.LineManagerStaffNo"
            class="@item.NodeTypeClass">
          <div style="overflow-x:hidden;overflow-y: hidden;" id="divMainContainer" class="centered">
             @For Each childitem In item.ReportColumnItemList
-                Html.RenderPartial("_OrganisationReportColumnNode", childitem)
+               Html.RenderPartial("_OrganisationReportColumnNode", childitem)
             Next
          </div>
          <input type="checkbox" class="printSelect" employeeid="@item.EmployeeID"/>
          <img title="expand/contract this node" class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' />
          <ul id="@item.EmployeeStaffNo" />
       </li>
-              Else
-                  ''Post based system goes here...
+            Else
+               ''Post based system goes here...
       @<li hierarchyLevel="@item.HierarchyLevel"
            id="@item.LineManagerStaffNo"
            class="ui-corner-all ui-state-default">
          <div style="overflow-x:hidden;overflow-y: hidden;padding-right: 0px;padding-left: 0px;" id="divMainContainer" class="centered">
-            @*<div id="divPostTitle" class="truncate centered" style="min-height:20px;text-align: center;display:inline-block;">
-               <span title="@item.PostTitle">@item.PostTitle</span>
-            </div>*@
             <div id="divPostColumns">
                @For Each colitem In item.ReportColumnItemList.Where(Function(m) m.TableID = Model.Hierarchy_TableID)
-                   Html.RenderPartial("_OrganisationReportColumnNode", colitem)
+                  Html.RenderPartial("_OrganisationReportColumnNode", colitem)
                Next
             </div>
             <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
@@ -350,7 +347,7 @@
                   @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
                @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
                   @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
-                      Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
+                     Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
                   Next
                </div>
                   End If
@@ -364,8 +361,8 @@
          <img title = "expand/contract this node" Class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' />
          <ul id = "@item.EmployeeStaffNo" />
       </li>
-       End If
-          Next
+            End If
+         Next
       End Code
    </ul>
 </div>

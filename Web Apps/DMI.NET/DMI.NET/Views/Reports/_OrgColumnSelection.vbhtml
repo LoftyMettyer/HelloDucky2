@@ -101,6 +101,8 @@
 <input type="hidden" name="Columns.BaseViewID" value="@Model.BaseViewID" />
 <input type="hidden" id="PostBasedTableId" value="@Model.PostBasedTableId" />
 <input type="hidden" id="PostBasedTableName" value="@Model.PostBasedTableName" />
+<input type="hidden" id="SelectViewID" value="@Model.SelectViewOnColumnsTab" />
+
 
 <script type="text/javascript">
 
@@ -176,7 +178,68 @@
    }
 
    function ChangeColumnTableView(target) {
-      getAvailableTableViewColumns();
+
+      var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
+      var selectedView = $("#SelectedTableID").val();
+      var isChangeAllowed = true;
+      var rowID;
+      var bIsTable = false;
+      var bIsBaseView = false;
+      var foundViewId = 0;
+
+      if (($("#PostBasedTableId").val() != undefined && $("#PostBasedTableId").val() == selectedView) && ($("#PostBasedTableName").val() != undefined && $("#PostBasedTableName").val() == $("#SelectedTableID option:selected")[0].text)) {
+         bIsTable = true;
+      }
+      else if($("#BaseViewId option:selected").val() == selectedView)
+      {
+         bIsBaseView = true;
+      }
+      else
+      {
+         // Check for personal record views.
+         for (var i = 0; i <= allRows.length - 1; i++) {
+
+            rowID = allRows[i];
+            var datarow = $("#SelectedColumns").getRowData(rowID);
+            bIsBaseView = $("#BaseViewId option:selected").val() == datarow.ViewID;
+            bIsTable = $("#PostBasedTableId").val() != undefined && $("#PostBasedTableId").val() == datarow.TableID;
+
+            if(!bIsBaseView && !bIsTable)
+               if(selectedView != datarow.ViewID)
+               {
+                  foundViewId = datarow.ViewID;
+                  isChangeAllowed = false;
+                  break;
+               }
+            }
+         }
+
+      if (isChangeAllowed)
+      {
+         getAvailableTableViewColumns();
+         $("#SelectViewID").val(selectedView);
+      }
+      else{
+         OpenHR.modalPrompt("Changing the View will reset selected columns.<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+            if (answer == 6) { // Yes
+
+               $('#SelectedColumns').jqGrid('resetSelection');
+               for (var i = 0; i <= allRows.length - 1; i++) {
+                  rowID = allRows[i];
+                  var datarow = $("#SelectedColumns").getRowData(rowID);
+                  if(datarow.ViewID == foundViewId)
+                  {
+                     $('#SelectedColumns').jqGrid("setSelection", rowID);
+                  }
+               }
+               requestRemoveSelectedColumns();
+               $("#SelectViewID").val(selectedView);
+            }
+            else {
+               $('#SelectedTableID').val($("#SelectViewID").val());
+            }
+         });
+      }
    }
 
    function addColumnToSelected() {
@@ -265,9 +328,9 @@
       var ViewID = $("#SelectedTableID").val();
 
       if (($("#PostBasedTableId").val() != undefined &&
-     $("#PostBasedTableId").val() == ViewID) &&
-     ($("#PostBasedTableName").val() != undefined &&
-     $("#PostBasedTableName").val() == $("#SelectedTableID option:selected")[0].text)) {
+           $("#PostBasedTableId").val() == ViewID) &&
+           ($("#PostBasedTableName").val() != undefined &&
+           $("#PostBasedTableName").val() == $("#SelectedTableID option:selected")[0].text)) {
          bIsTable = true;
       }
 
@@ -518,7 +581,7 @@
    }
 
    function refreshcolumnPropertiesPanel() {
-      
+
       var rowCount = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length;
       var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
       var dataRow = $("#SelectedColumns").getRowData(rowId)
@@ -557,13 +620,13 @@
          var isGroupWithNext = $("#SelectedColumnIsConcatenateWithNext").is(':checked');
          var isSize = (dataRow.DataType == '4');
          var isPhotograph = (dataRow.DataType == -3)
-          
+
          $(".decimalsOnly *").prop("disabled", !isDecimals || isReadOnly || isSize || isPhotograph);
          $(".canGroupWithNext *").prop("disabled", isBottomRow || isReadOnly || isPhotograph);
          $(".OrgReportsOnly *").prop("disabled", isReadOnly || isPhotograph);
          $("#SelectedColumnFontSize").prop("disabled", isReadOnly || isPhotograph);
          $("SelectedColumnHeight").prop("disabled", isReadOnly);
-       
+
 
          if (isBottomRow || isReadOnly) {
             $(".canGroupWithNext").css("color", "#A59393");
@@ -771,7 +834,7 @@
    function changeColumnIsConcatenateWithNext() {
 
       var IsGroupWithNext = $("#SelectedColumnIsConcatenateWithNext").is(':checked');
-      
+
       refreshcolumnPropertiesPanel();
       updateColumnsSelectedGrid();
       disableColumnOptionsWhenConcatenateWithNextChecked();
@@ -812,7 +875,7 @@
       else {
          CanConcatenate = false;
       }
-       
+
       $(".canGroupWithNext *").prop("disabled", !CanConcatenate || isReadOnly);
       $("#SelectedColumnHeight").prop("disabled", PreviousRowConcatenate || isReadOnly);
       $("#SelectedColumnFontSize").prop("disabled", PreviousRowConcatenate || isPhotograph || isReadOnly);
@@ -910,7 +973,7 @@
          var DefaultValue = 4;
 
          if ((sender.target.value == "") || (sender.target.value < Min) || (sender.target.value > Max)) {
-            OpenHR.modalMessage("Enter height (rows) between " + Min + " and " + Max); 
+            OpenHR.modalMessage("Enter height (rows) between " + Min + " and " + Max);
             sender.target.value = Min;
             if ((dataRow.DataType == -3)) {sender.target.value = 4 };
             $(sender.target.id).focus();
