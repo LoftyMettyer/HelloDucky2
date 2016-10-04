@@ -3446,7 +3446,7 @@ PRINT 'Step - Unique Code Enhancements'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_uniquecodes]') AND xtype = 'U')
 	BEGIN
 		SELECT @NVarCommand = @NVarCommand + 'IF NOT EXISTS (SELECT * FROM sys.sequences WHERE name = N''sequence_' + CodePrefix + ''')
-			CREATE SEQUENCE [dbo].[sequence_' + CodePrefix + '] START WITH ' + convert(nvarchar(MAX), MaxCodeSuffix) + ';' + CHAR(13)
+			CREATE SEQUENCE [dbo].[sequence_' + CodePrefix + '] START WITH ' + convert(nvarchar(MAX), MaxCodeSuffix + 1) + ';' + CHAR(13)
 			FROM tbsys_uniquecodes
 			WHERE ISNULL(CodePrefix, '') <> '';
 		EXECUTE sp_executeSQL @NVarCommand;
