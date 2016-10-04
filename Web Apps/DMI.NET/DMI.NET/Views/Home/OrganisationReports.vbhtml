@@ -1,6 +1,7 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Classes
 
+
 @Inherits System.Web.Mvc.WebViewPage(Of OrganisationReportChartModel)
 
 <link href=@Url.LatestContent("~/Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css") rel="stylesheet" />
@@ -53,13 +54,22 @@
          $('.mnuBtnPrintPreviewOrgChart').prop('disabled', true);
          $('.mnuBtnSelectOrgChart>span').prop('disabled', true);
          $('.mnuBtnSelectOrgChart').prop('disabled', true);
-
+         menu_toolbarEnableItem('mnutoolCustomReportsFindForOrgReports', false);
+         menu_toolbarEnableItem('mnutoolCalendarReportsFindForOrgReports', false);
+         menu_toolbarEnableItem('mnutoolMailMergeFindForOrgReports', false);
       } else {
          $("#tempList").find("li").each(function () {
             var lineManagerStaffNo = $(this).attr("id");
             var hierarchyLevel = $(this).attr("hierarchyLevel");
             var parentNode = hierarchyLevel == "0" ? 'org' : lineManagerStaffNo;
             $('#' + parentNode).append($(this));
+            menu_toolbarEnableItem('divBtnPrintOrgReports', true);
+            menu_toolbarEnableItem('divBtnPrintPreviewOrgReports', true);
+            menu_toolbarEnableItem('mnutoolOrgReportsExpand', true);
+            menu_toolbarEnableItem('divBtnSelectOrgReports', true);
+            menu_toolbarEnableItem('mnutoolCustomReportsFindForOrgReports', true);
+            menu_toolbarEnableItem('mnutoolCalendarReportsFindForOrgReports', true);
+            menu_toolbarEnableItem('mnutoolMailMergeFindForOrgReports', true);
          });
 
          //Add a class to collapse all peer trees.
@@ -181,10 +191,14 @@
    function printSelectClick(clickObj, event) {
        //Disable Utility Buttons if no record selected
        if ($('.printSelect:checked:enabled').length === 0 ) {
-           menu_toolbarEnableItem('mnuSectionReportsAndUtilityForOrgReports', false);
+           menu_toolbarEnableItem('mnutoolCustomReportsFindForOrgReports', false);
+           menu_toolbarEnableItem('mnutoolCalendarReportsFindForOrgReports', false);
+           menu_toolbarEnableItem('mnutoolMailMergeFindForOrgReports', false);
        }
        else{
-           menu_toolbarEnableItem('mnuSectionReportsAndUtilityForOrgReports', true);
+           menu_toolbarEnableItem('mnutoolCustomReportsFindForOrgReports', true);
+           menu_toolbarEnableItem('mnutoolCalendarReportsFindForOrgReports', true);
+           menu_toolbarEnableItem('mnutoolMailMergeFindForOrgReports', true);
        }
       var fChecked = $(clickObj).prop('checked');
 
