@@ -485,9 +485,16 @@
 				       type: "POST",
 				       cache: false,
                    data:postData,
-				       success: function (json) {
-                      CleanToolsFrameAndResetPageSource();
-				          OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+                   success: function (responseMessage) {
+                      if(responseMessage.ErrorMessage == "")
+                      {
+                         CleanToolsFrameAndResetPageSource();
+                         OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+                      }
+                      else
+                      {
+                         OpenHR.modalMessage(responseMessage.ErrorMessage);
+                      }
 				       },
 				       error: function (xhr, status, error) {
 				          var err = "Error " + " " + status + " " + error;

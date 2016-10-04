@@ -5937,7 +5937,10 @@ Namespace Controllers
             isPostBasedSystem = False
          End If
 
+         Dim responseMessage = New ErrMsgJsonAjaxResponse() With {.ErrorMessage = ""}
+
          Try
+
             Dim OrgReportRecords = objDataAccess.GetFromSP("spASRIntGetAllRequiredOrganisationColumns" _
                               , New SqlParameter("@piOrganisationID", SqlDbType.Int) With {.Value = value.ID} _
                               , New SqlParameter("@psOrganisationReportType", SqlDbType.VarChar) With {.Value = IIf(isPostBasedSystem, "POSTBASE", "COMMERCIAL")})
@@ -5955,18 +5958,16 @@ Namespace Controllers
 
             If isInvalidColumnFound = True AndAlso columnsString.Length > 2 Then
                columnsString = columnsString.Substring(0, columnsString.Length - 2)
-               Response.StatusCode = System.Net.HttpStatusCode.BadRequest
-               Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = "You do not have permission to see the column(s) : " & columnsString & "." & vbNewLine}
-               Return Json(data, JsonRequestBehavior.AllowGet)
+               responseMessage = New ErrMsgJsonAjaxResponse() With {.ErrorMessage = "You do not have permission to see the column(s) : " & columnsString & "." & vbNewLine}
+               Return Json(responseMessage, JsonRequestBehavior.AllowGet)
             End If
 
          Catch ex As Exception
-            Response.StatusCode = System.Net.HttpStatusCode.BadRequest
-            Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = "Some problem occured during columns security checks. Please contact your administrator." & vbNewLine}
-            Return Json(data, JsonRequestBehavior.AllowGet)
+            responseMessage = New ErrMsgJsonAjaxResponse() With {.ErrorMessage = "Some problem occured during columns security checks. Please contact your administrator." & vbNewLine}
+            Return Json(responseMessage, JsonRequestBehavior.AllowGet)
          End Try
 
-         Return Json(True)
+         Return Json(responseMessage)
       End Function
 
       Private Function LoadDataForOrganisationReport(IsPostBasedSystem As Boolean) As List(Of OrgReportChartNode)
