@@ -4118,15 +4118,17 @@ Public Function CreateStoredProcedure() As Boolean
     ' Add the standard header code to the stored procedure.
     Select Case miExpressionType
       Case giEXPR_WORKFLOWCALCULATION
-        sSPCode.Append _
-          "    @piTempElement int)" & vbNewLine
-      Case giEXPR_WORKFLOWSTATICFILTER
-        sSPCode.Append _
-          "    @id int," & vbNewLine & _
-          "    @piTempElement int)" & vbNewLine
-      Case Else
-        sSPCode.Append _
-          "    @id int)" & vbNewLine
+       sSPCode.Append _
+            "    @piInstanceID int," & vbNewLine & _
+            "    @piTempElement int)" & vbNewLine
+        Case giEXPR_WORKFLOWSTATICFILTER
+          sSPCode.Append _
+            "    @id int," & vbNewLine & _
+            "    @piInstanceID int," & vbNewLine & _
+            "    @piTempElement int)" & vbNewLine
+        Case Else
+          sSPCode.Append _
+            "    @id int)" & vbNewLine
     End Select
     
     sSPCode.Append "AS" & vbNewLine & vbNewLine & _
@@ -4138,7 +4140,6 @@ Public Function CreateStoredProcedure() As Boolean
       "    IF @@nestlevel >= 30 RETURN" & vbNewLine & vbNewLine & _
       "    /* Declare local variables. */" & vbNewLine & _
       "    DECLARE @hResult integer = 0," & vbNewLine & _
-      "        @piInstanceID integer = 0," & vbNewLine & _
       "        @source varChar(30)," & vbNewLine & _
       "        @desc varChar(200)," & vbNewLine & _
       "        @loopCounter float," & vbNewLine & _
@@ -4174,6 +4175,8 @@ Public Function CreateStoredProcedure() As Boolean
         "        @sValue nvarchar(MAX)," & vbNewLine & _
         "        @fValidRecordID bit," & vbNewLine & _
         "        @iCount integer" & vbNewLine & vbNewLine
+    Else
+      sSPCode.Append "    DECLARE @piInstanceID integer = 0;" & vbNewLine
     End If
       
     ' Add the expression's stored procedure code (ie. the code for the individual components).
