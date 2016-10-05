@@ -1447,7 +1447,7 @@ Public Function CheckBatchNeedsRunning2(lBatchJobNameID As Long, sBatchJobName A
   End With
   
   ' Always run
-  If blnRequiresRunning = 0 Then
+  If iFrequency = 0 Then
     CheckBatchNeedsRunning2 = vbNullString
     Exit Function
   End If
