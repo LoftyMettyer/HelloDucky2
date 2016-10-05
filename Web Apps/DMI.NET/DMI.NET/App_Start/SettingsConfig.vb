@@ -11,6 +11,7 @@ Public Class SettingsConfig
    Public Shared Post_TableID As Integer
    Public Shared Hierarchy_TableID As Integer
    Public Shared PostAllocation_TableID As Integer
+   Public Shared isOrgChartEnabled As Integer
 
    Public Shared Sub Register()
 
@@ -25,6 +26,7 @@ Public Class SettingsConfig
          Post_TableID = CInt(objDataAccess.GetModuleSetting("MODULE_POST", "Param_PostTable", "PType_TableID"))
          Hierarchy_TableID = CInt(objDataAccess.GetModuleSetting("MODULE_HIERARCHY", "Param_TableHierarchy", "PType_TableID"))
          PostAllocation_TableID = CInt(objDataAccess.GetModuleSetting("MODULE_HIERARCHY", "Param_TablePostAllocation", "PType_TableID"))
+         isOrgChartEnabled = CInt(objDataAccess.GetModuleSetting("MODULE_HIERARCHY", "Param_DisableSimpleChart", "PType_Other"))
 
       Catch ex As Exception
       Throw

@@ -30,7 +30,8 @@ BEGIN
 		@fUtilOK			bit,
 		@fDrillDownHidden bit,
 		@iLinkType			integer,		-- 0 = Hypertext, 1 = Button, 2 = Dropdown List
-		@iElement_Type		integer;		-- 2 = chart
+		@iElement_Type		integer,		-- 2 = chart
+		@isOrgChartEnabled	integer;
 
 	/* Get the current user's group ID. */
 	EXEC spASRIntGetActualUserDetails
@@ -409,6 +410,18 @@ BEGIN
 		DELETE FROM @Links
 		WHERE utilityType = 25;
 	END
+
+	/* Remove the organisation chart links if the user does not have run permission from system manager. */
+	SELECT @isOrgChartEnabled = isnull(ParameterValue, -1)
+	FROM ASRSysModuleSetup
+	WHERE ModuleKey = 'MODULE_HIERARCHY' AND ParameterKey = 'Param_DisableSimpleChart';
+
+	IF @isOrgChartEnabled = -1
+	BEGIN
+		DELETE FROM @Links
+		WHERE Element_Type = 6;
+	END
+
 	SELECT ASRSysSSIntranetLinks.*, 
 		CASE 
 			WHEN ASRSysSSIntranetLinks.utilityType = 9 THEN ASRSysMailMergeName.TableID

@@ -2322,6 +2322,7 @@ function menu_refreshMenu() {
 	menu_enableMenuItem("mnutoolEventLog", $("#txtEventLogGranted").val());
 	menu_enableMenuItem("mnutoolNewUser", $("#txtNewUserGranted").val());
 	menu_enableMenuItem("mnutoolQuickEntry", $("#txtQuickAccessGranted").val());
+	menu_enableMenuItem("mnutoolOrgChart", $("#txtOrganisationChartGranted").val());
 
 	try {
 		
