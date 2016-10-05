@@ -100,6 +100,9 @@
             enableSaveButton()
          }
 
+         //Set the selected base view id index value to origionalbaseviewid
+         $("#OriginalBaseViewId").val($('#BaseViewId')[0].selectedIndex);
+
          if (isDefinitionReadOnly()) {
             $("#frmReportDefintion input").prop('disabled', "disabled");
             $("#frmReportDefintion textarea").prop('disabled', "disabled");
