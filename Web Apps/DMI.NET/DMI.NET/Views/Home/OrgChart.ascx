@@ -195,7 +195,7 @@
 			newWin.document.write('<link href=\"' + window.ROOT + 'Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css" rel="stylesheet" />');
 			newWin.document.write('<link href=\"' + window.ROOT + 'Scripts/jquery/jOrgChart/css/custom.css" rel="stylesheet" />');
 			newWin.document.write('<link href=\"' + window.ROOT + 'Scripts/jquery/jOrgChart/css/prettify.css" rel="stylesheet" />');
-			newWin.document.write('<link href=\"' + window.ROOT + 'Content/themes/redmond-segoe/jquery-ui.min.css" rel="stylesheet" />');
+			newWin.document.write('<link href=\"' + window.ROOT + 'Content/themes/oneAdvanced/jquery-ui.min.css" rel="stylesheet" />');
 			newWin.document.write('<sty');
 			newWin.document.write('le>');
 			newWin.document.write('body {font-family: "Segoe UI", Verdana; }');
