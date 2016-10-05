@@ -62420,9 +62420,12 @@ BEGIN
 
 			/* Whilst saving org def we don't have view id for selected columns which are selected from postallocation table.
             So we are replacing postallocation table with postallocation view. for eg: 'Appointment#3' with  ASRSysCV3#APPOINTMENTS#Administrators*/
-			SET @sColumnString =  REPLACE (@sColumnString, (@sPostAllocationTableName + '#' + CONVERT(varchar(MAX),@iPostAllocationTableID)) ,@sPostAllocationViewName);
-			SET @sTableString = REPLACE (@sTableString, (@sPostAllocationTableName + '#' + CONVERT(varchar(MAX),@iPostAllocationTableID)) ,@sPostAllocationViewName);			
-			
+         IF @psOrganisationReportType <> 'COMMERCIAL'
+			   BEGIN  
+			      SET @sColumnString =  REPLACE (@sColumnString, (@sPostAllocationTableName + '#' + CONVERT(varchar(MAX),@iPostAllocationTableID)) ,@sPostAllocationViewName);
+			      SET @sTableString = REPLACE (@sTableString, (@sPostAllocationTableName + '#' + CONVERT(varchar(MAX),@iPostAllocationTableID)) ,@sPostAllocationViewName);			
+			   END
+
 			IF @sColumnString <> ''
 				BEGIN					
 					SET @sUnionAllSQL = REPLACE(REPLACE(@sSQL, @sHierarchyLevel ,'ecte.HierarchyLevel + 1 AS HierarchyLevel'),'WITH Emp_CTE AS (','')  + ' ,' + @sColumnString + ' FROM '+ @sTableString;
