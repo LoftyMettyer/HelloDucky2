@@ -627,7 +627,6 @@ function menu_MenuClick(sTool) {
 		
 	if (sToolName == "mnutoolDeleteRecordFind") {
 			menu_deleteRecord();
-			menu_moveRecord("MOVEFIRST");
 			return;
 	}
 

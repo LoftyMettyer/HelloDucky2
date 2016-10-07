@@ -470,9 +470,8 @@
 					frmFindForm.txtRecordCount.value = frmFindForm.txtRecordCount.value - 1;
 					frmFindForm.txtTotalRecordCount.value = frmFindForm.txtTotalRecordCount.value - 1;
 					frmFindForm.txtCurrentRecCount.value = frmFindForm.txtCurrentRecCount.value - 1;
-
-					// Get menu to refresh the menu.
-					menu_refreshMenu();		  
+				
+					menu_moveRecord("MOVEFIRST");
 				}
 
 
