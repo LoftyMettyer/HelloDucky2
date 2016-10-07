@@ -872,7 +872,7 @@
 									<%End If%>
 								</p>
 							</div>
-							<a style="<%:sTileForeColourStyle%>" href="#">
+							<a class="DBValueCaptionContainer" style="<%:sTileForeColourStyle%>" href="#">
 								<p class="DBValueCaption" style="color: <%=sCFForeColor%>; <%=sCFFontBold%>; <%=sCFFontItalic%>">
 									<%sText = navlink.Text
 										If sText.Length > 30 Then
@@ -901,7 +901,7 @@
 									<%End If%>
 								</p>
 							</div>
-							<a style="<%:sTileForeColourStyle%>" href="#">
+							<a class="DBValueCaptionContainer" style="<%:sTileForeColourStyle%>" href="#">
 								<p class="DBValueCaption">
 									<%sText = navlink.Text
 										If sText.Length > 30 Then

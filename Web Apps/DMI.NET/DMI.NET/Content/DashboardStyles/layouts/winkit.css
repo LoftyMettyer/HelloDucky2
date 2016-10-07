@@ -220,11 +220,14 @@ body
 		list-style-image: none; 
 		}
 
-.linkspagebuttontext {padding-left: 10px; position: relative;}
+.linkspagebuttontext {
+	line-height: 2;
+   padding-left: 10px;
+   position: relative;
+}
 
 .linkspagebuttontext a 
 {
-	line-height: 2;
 	text-decoration: none;
 	margin: 0px;
 	}
@@ -246,6 +249,13 @@ body
 	position: absolute;
 	right: 0px;
 	padding-right: 10px;
+}
+
+.DBValueCaptionContainer {
+	position: absolute;
+	left: 0px;
+	padding-left: 10px;
+
 }
 
 .DBValue {

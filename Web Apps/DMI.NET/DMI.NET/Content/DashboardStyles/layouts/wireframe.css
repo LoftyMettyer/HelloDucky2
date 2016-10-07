@@ -83,7 +83,7 @@ div.officetab li div.button .disabled {
 	 border-width: 2px;*/
 }
 															
-.hypertextlinkseparatorframe ul {padding: 0px;}
+.hypertextlinkseparatorframe ul {padding: 0 0 0 10px;}
 
 .hypertextlink-displaytype
 {
@@ -197,6 +197,11 @@ div.officetab li div.button .disabled {
 	padding-right: 10px;
 }
 
+.DBValueCaptionContainer {
+	position: absolute;
+	left: 0px;
+	padding-left: 10px;
+}
 .DBVSpinner 
 {
 	height: 16px;
