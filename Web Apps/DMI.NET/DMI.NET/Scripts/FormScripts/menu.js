@@ -5484,14 +5484,7 @@ function RunReportsOrUtilities(sTool) {
             OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes and create a new record, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
                 if (answer == 1) { // OK - Ignore changes
                     window.onbeforeunload = null;
-                    var postData = {
-                        UtilType: sTool.ReportType,
-                        ID: sTool.Id,
-                        Name: sTool.Name,
-                        __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
-                    }
-
-                    OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+                    RunOrgReport(sTool);
                     return false;
                 } else {
                     return false;
@@ -5499,20 +5492,43 @@ function RunReportsOrUtilities(sTool) {
             });
         }
         else {
-            var postData = {
-                UtilType: sTool.ReportType,
-                ID: sTool.Id,
-                Name: sTool.Name,
-                __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
-            }
-
-            OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+            RunOrgReport(sTool);
         }
-        //var defaultPromptMessage = "You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.";
-
+       
     }
 
     return false;
+}
+// Run Organisation Report from Accordion Search
+function RunOrgReport(sTool) {
+    var postData = {
+        UtilType: sTool.ReportType,
+        ID: sTool.Id,
+        Name: sTool.Name,
+        __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+    }
+    $.ajax({
+        url: 'ValidateOrgDefinitionColumns',
+        type: "POST",
+        cache: false,
+        data: postData,
+        success: function (responseMessage) {
+            if (responseMessage.ErrorMessage == "") {
+                CleanToolsFrameAndResetPageSource();
+                OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+            }
+            else {
+                OpenHR.modalMessage(responseMessage.ErrorMessage);
+            }
+        },
+        error: function (xhr, status, error) {
+            var err = "Error " + " " + status + " " + error;
+            if (xhr.responseText && xhr.responseText[0] == "{")
+                err = JSON.parse(xhr.responseText).ErrorMessage;
+
+            OpenHR.modalMessage(err);
+        }
+    });
 }
 
 /******* End Changes for the User Story 19519:As a user, I want to be able to assign categories to Reports and Utilities *********/
