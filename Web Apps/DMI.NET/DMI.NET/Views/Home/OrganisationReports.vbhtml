@@ -7,6 +7,7 @@
 <link href=@Url.LatestContent("~/Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css") rel="stylesheet" />
 <link href=@Url.LatestContent("~/Scripts/jquery/jOrgChart/css/custom.css") rel="stylesheet" />
 <link href=@Url.LatestContent("~/Scripts/jquery/jOrgChart/css/prettify.css") rel="stylesheet" />
+<script src=@Url.LatestContent("~/Scripts/html2canvas.js") type="text/javascript"></script>
 
 <style>
    .truncate {
@@ -30,13 +31,12 @@
       bottom: 4px;
       right: 4px;
    }
-
 </style>
 <script>
 
    $(document).ready(function () {
 
-      
+
       // Common logic to show desired ribbon and menu
       $("#workframe").attr("data-framesource", "ORGREPORTS");
       showDefaultRibbon();
@@ -131,6 +131,9 @@
             $('.printSelect').toggle();
          });
 
+         $(document).off('click', '.clsSaveRecordOrgReports').on('click', '.clsSaveRecordOrgReports', function () { SaveRecordOrgReports(true); });
+
+
          $(document).off('click', 'div.node').on('click', 'div.node', function () {
             $('div.node.ui-state-active').removeClass('ui-state-active').addClass('ui-state-default');
             $(this).removeClass('ui-state-default').addClass('ui-state-active');
@@ -187,19 +190,207 @@
 
       } catch (e) { }
    }
+   var divTop;
+   var divLeft;
+   function GetSelectedNodesFromOrgChart(pfPreview) {
+
+      $("#divSaveToFileContainer").empty();
+
+      //calculate fPrintAll flag based on selection
+      var fPrintAll = ($('#chart .printSelect').css('display') == "none");
+      var untickedItemsCount = $('#chart .printSelect:not(:checked)').length;
+
+      if (($('#chart .printSelect:checked:enabled').length === 0) && (!fPrintAll)) {
+         OpenHR.modalMessage("No nodes selected to Save.");
+         return false;
+      } else {
+
+         //Get chart position.
+         divTop = $('#workframeset').scrollTop();
+         divLeft = $('#workframeset').scrollLeft();
+
+         $('#chart .printSelect').hide(); //hide the selection tickboxes.
+         $('#chart .expandNode').hide(); //hide the selection tickboxes.
+
+         //If any individual nodes are selected then save only those.
+         if ((untickedItemsCount > 0) && (fPrintAll !== true)) {
+
+            //Send only selected items to save.
+            $('#chart .printSelect:checked:enabled').closest('table').each(function () {
+               if ($(this).parent().parent().css('visibility') !== "hidden") {
+
+                  //get a handle on the parent table.
+                  $(this).parent().attr('id', 'currentlyPrinting');
+
+                  var divToPrint = document.getElementById('currentlyPrinting');
+
+                  var divnode = $('<div class="jOrgChart"></div>');
+                  divnode.append(divToPrint.innerHTML);
+                  divnode.wrap('<div class="orgChart"></div>');
+
+                  $("#divSaveToFileContainer").append(divnode);
+
+                  // remove handle for the next branch.
+                  $(this).parent().attr('id', '');
+               }
+            });
+         } else {
+
+            if (isIEOrEdgeBrowser()==true){
+
+               if($("#chart").first("table").prop('scrollWidth')>8000 && '@Model.IsPostBasedSystem'=='True'){
+
+                  //In case of IE first save only root and first level nodes.
+                  $("#chart .expandNode[hierarchyLevel='1']").each(function() {
+                     $(this).click();
+                  });
+
+                  $("#divSaveToFileContainer").append($("#chart").clone());
+
+                  $("#chart .expandNode[hierarchyLevel='1']").each(function() {
+                     $(this).click();
+                  });
+
+                  $("#chart").find(".printSelect").first().click();
+                  $("#chart .printSelect[hierarchyLevel='1']").each(function() {
+                     $(this).click();
+                  });
+
+                  //Save nodes first level onwards.
+                  $("#chart .printSelect[hierarchyLevel='1']:checked:enabled").closest('table').each(function () {
+                     if ($(this).parent().parent().css('visibility') !== "hidden") {
+
+                        //get a handle on the parent table.
+                        $(this).parent().attr('id', 'currentlyPrinting');
+
+                        var divToPrint = document.getElementById('currentlyPrinting');
+
+                        var divnode = $('<div class="jOrgChart"></div>');
+                        divnode.append(divToPrint.innerHTML);
+                        divnode.wrap('<div class="orgChart"></div>');
+
+                        $("#divSaveToFileContainer").append(divnode);
+                        $("#divSaveToFileContainer").append($("<br />"));
+                        $("#divSaveToFileContainer").append($("<br />"));
+
+                        // remove handle for the next branch.
+                        $(this).parent().attr('id', '');
+                     }
+                  });
+
+                  $("#chart").find(".printSelect").first().click();
+               }
+               else{
+                  $("#divSaveToFileContainer").append($("#chart").clone());
+               }
+            }
+            else
+            {
+               //If browser othere then IE then save whole chart at onces.
+               $("#divSaveToFileContainer").append($("#chart").clone());
+            }
+         }
+
+         $('#divSaveToFileContainer .printSelect').hide(); //hide the selection tickboxes.
+         $('#divSaveToFileContainer .expandNode').hide();
+
+         $('#chart .printSelect').show(); // redisplay checkboxes.
+         showExpandNodeIcons(); // redisplay expand boxes.
+         return true;
+      }
+   }
+
+   function isIEOrEdgeBrowser(userAgent) {
+      userAgent = userAgent || navigator.userAgent;
+      return userAgent.indexOf("MSIE ") > -1 || userAgent.indexOf("Trident/") > -1 || userAgent.indexOf("Edge/") > -1;
+   }
+
+   function SaveRecordOrgReports() {
+
+      $("body").addClass("loading");
+      menu_ShowWait('Please wait...');
+
+      if (GetSelectedNodesFromOrgChart() == false) {
+         $("body").removeClass("loading");
+         return;
+      }
+
+      setTimeout(function(){
+
+         $('#divSaveToFileParent').show();
+         $("#divSaveToFileContainer .printSelect").hide();
+         $('#divSaveToFileContainer').scrollTop(0).scrollLeft(0);
+         $('#workframeset').scrollTop(0).scrollLeft(0);
+
+         $(".ui-state-active").each(function () {
+            $(this).addClass("ui-state-default");
+            $(this).removeClass("ui-state-active");
+         });
+
+         var useWidth = $('#divSaveToFileParent').prop('scrollWidth') + 500;
+         var useHeight = $('#divSaveToFileParent').prop('scrollHeight') + 300;
+
+         html2canvas($("#divSaveToFileParent"), {
+            useCORS: true,
+            logging: true,
+            onrendered: function (canvas) {
+               //For IE browser the image will download in local folder.
+               if (canvas.msToBlob) {
+
+                  window.navigator.msSaveBlob(new Blob([canvas.msToBlob()],{type:"image/png"}), '@Session("utilname")' + ".png");
+
+                  $('#divSaveToFileParent').hide();
+                  $("body").removeClass("loading");
+
+                  $('#workframeset').scrollTop(divTop).scrollLeft(divLeft);
+               } else {
+
+                  //For all other browser the image will open in new tab window.
+                  $("body").removeClass("loading");
+
+                  var data = canvas.toDataURL("image/png");
+
+                  var div = document.createElement('div');
+                  var img = document.createElement('img');
+                  img.src = data;
+
+                  var newWin = window.open();
+
+                  //First Checking Condition Works For IE & Firefox
+                  //Second Checking Condition Works For Chrome
+                  if(!newWin || newWin.outerHeight === 0) {
+                     OpenHR.modalMessage("Please disable your pop-up blocker and click the 'Save To File' button again.");
+                     return;
+                  }
+
+                  newWin.document.title = 'Organisation Report : Save to File' ;
+                  newWin.document.body.innerHTML = 'Right-click on the image to save it.';
+                  newWin.document.body.appendChild(div);
+                  div.appendChild(img);
+
+                  $('#divSaveToFileParent').hide();
+                  $('#workframeset').scrollTop(divTop).scrollLeft(divLeft);
+               }
+            },
+            width: useWidth,
+            height: useHeight,
+            allowTaint: true
+         });
+      },10);
+   }
 
    function printSelectClick(clickObj, event) {
-       //Disable Utility Buttons if no record selected
-       if ($('.printSelect:checked:enabled').length === 0 ) {
-           menu_toolbarEnableItem('mnutoolCustomReportsFindForOrgReports', false);
-           menu_toolbarEnableItem('mnutoolCalendarReportsFindForOrgReports', false);
-           menu_toolbarEnableItem('mnutoolMailMergeFindForOrgReports', false);
-       }
-       else{
-           menu_toolbarEnableItem('mnutoolCustomReportsFindForOrgReports', true);
-           menu_toolbarEnableItem('mnutoolCalendarReportsFindForOrgReports', true);
-           menu_toolbarEnableItem('mnutoolMailMergeFindForOrgReports', true);
-       }
+      //Disable Utility Buttons if no record selected
+      if ($('.printSelect:checked:enabled').length === 0 ) {
+         menu_toolbarEnableItem('mnutoolCustomReportsFindForOrgReports', false);
+         menu_toolbarEnableItem('mnutoolCalendarReportsFindForOrgReports', false);
+         menu_toolbarEnableItem('mnutoolMailMergeFindForOrgReports', false);
+      }
+      else{
+         menu_toolbarEnableItem('mnutoolCustomReportsFindForOrgReports', true);
+         menu_toolbarEnableItem('mnutoolCalendarReportsFindForOrgReports', true);
+         menu_toolbarEnableItem('mnutoolMailMergeFindForOrgReports', true);
+      }
       var fChecked = $(clickObj).prop('checked');
 
       $(clickObj).parent().parent().parent().nextAll("tr").find(".printSelect").prop('checked', fChecked);
@@ -295,36 +486,36 @@
       }
    }
 
-    //Get id's of selected records
+   //Get id's of selected records
    function GetSelectedEmployeeIDs() {
-       var SelectedIds=[];
-       if ('@Model.IsPostBasedSystem'=='True') {
-           $('.printSelect:checked').each(function() {
-               SelectedIds.push($(this).attr("postid"));
-           });
-           $("#txtSelectedRecordsInFindGrid")[0].value = SelectedIds;
-           $("#txtOrgReportTableID")[0].value = @Model.Hierarchy_TableID;
-       }
-    else{
-           $('.printSelect:checked').each(function () {
-               SelectedIds.push($(this).attr("employeeid"));
-           });
-           $("#txtSelectedRecordsInFindGrid")[0].value = SelectedIds;
-           $("#txtOrgReportTableID")[0].value = @Model.Hierarchy_TableID;
-    }
+      var SelectedIds=[];
+      if ('@Model.IsPostBasedSystem'=='True') {
+         $('.printSelect:checked').each(function() {
+            SelectedIds.push($(this).attr("postid"));
+         });
+         $("#txtSelectedRecordsInFindGrid")[0].value = SelectedIds;
+         $("#txtOrgReportTableID")[0].value = @Model.Hierarchy_TableID;
+      }
+      else{
+         $('.printSelect:checked').each(function () {
+            SelectedIds.push($(this).attr("employeeid"));
+         });
+         $("#txtSelectedRecordsInFindGrid")[0].value = SelectedIds;
+         $("#txtOrgReportTableID")[0].value = @Model.Hierarchy_TableID;
+      }
    }
 
-    function refreshData()
-    {
-        $("#toolbarReportFind").parent().hide();
-    }
+   function refreshData()
+   {
+      $("#toolbarReportFind").parent().hide();
+   }
 
-    //Disable Utility buttons(Custom,Calender,Mail-Merge) for SSI mode.
-    if(menu_isSSIMode() == true){
-        $("#mnuSectionReportsAndUtilityForOrgReports").hide();
-    }else{
-        $("#mnuSectionReportsAndUtilityForOrgReports").show();
-    }
+   //Disable Utility buttons(Custom,Calender,Mail-Merge) for SSI mode.
+   if(menu_isSSIMode() == true){
+      $("#mnuSectionReportsAndUtilityForOrgReports").hide();
+   }else{
+      $("#mnuSectionReportsAndUtilityForOrgReports").show();
+   }
 </script>
 
 <div>
@@ -340,8 +531,8 @@
                Html.RenderPartial("_OrganisationReportColumnNode", childitem)
             Next
          </div>
-         <input type="checkbox" class="printSelect" employeeid="@item.EmployeeID"/>
-         <img title="expand/contract this node" class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' />
+         <input type="checkbox" class="printSelect" employeeid="@item.EmployeeID" hierarchyLevel="@item.HierarchyLevel" />
+         <img title="expand/contract this node" class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' hierarchyLevel="@item.HierarchyLevel" />
          <ul id="@item.EmployeeStaffNo" />
       </li>
             Else
@@ -355,6 +546,7 @@
                   Html.RenderPartial("_OrganisationReportColumnNode", colitem)
                Next
             </div>
+
             <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
                @For Each childitem In item.PostWiseNodeList
                @<div style="min-width:180px;display:table-cell;" class="centered">
@@ -368,12 +560,13 @@
                </div>
                Next
             </div>
+
          </div>
-       @If item.IsVacantPost = False Then
-           @<input type = "checkbox" Class="printSelect" postid="@item.PostID"/>
-       End If
-         <img title = "expand/contract this node" Class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' />
-         <ul id = "@item.EmployeeStaffNo" />
+         @If item.IsVacantPost = False Then
+      @<input type="checkbox" Class="printSelect" postid="@item.PostID" hierarchyLevel="@item.HierarchyLevel" />
+         End If
+         <img title="expand/contract this node" Class="expandNode" hierarchyLevel="@item.HierarchyLevel" src='@Url.Content("~/Content/images/minus.gif")' />
+         <ul id="@item.EmployeeStaffNo" />
       </li>
             End If
          Next
@@ -395,5 +588,10 @@
       <br />
       <p class="centered">@Session("ErrorText")</p>
       <p class="centered">Please contact your system administrator.</p>
+   </div>
+</div>
+<div id="divSaveToFileParent" style="display:none;position:absolute;z-index:-10000;">
+   <h2 style="margin-left:20px;">Organisation Report : @Session("utilname")</h2>
+   <div id="divSaveToFileContainer">
    </div>
 </div>

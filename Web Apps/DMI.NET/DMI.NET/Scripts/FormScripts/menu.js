@@ -197,7 +197,6 @@ function menu_abMainMenu_Click(pTool) {
 }
 
 function menu_MenuClick(sTool) {
-
 	//ignore clicks from 'fixed links' which have no 'id'.
 	if (!sTool) return false;
 	//new ribbon buttons for utils - ignore click.
@@ -1139,6 +1138,9 @@ function menu_MenuClick(sTool) {
 	   return false;
 	}
 
+	if (sTool == 'mnutoolSaveRecordOrgReports') {
+	   return false;
+	}
 	// Has the user clicked on a parent node?
 				if ($("#" + sTool).is(".jstree-closed, .jstree-open")) {
 					toggle_Leaf(sTool);

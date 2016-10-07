@@ -1158,13 +1158,13 @@
                                     <h6>Print Preview</h6>
                                 </a>
                             </div>
-                            <%--<div id="mnutoolSaveRecordOrgReports" class="button">
-                                <a href="#" rel="table" title="Save">
+                        <div id="mnutoolSaveRecordOrgReports" class="button">
+                        <a class="clsSaveRecordOrgReports" href="#" rel="table" title="Save">
                                     <img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png") %>" alt="" />
                                     <i class="icon-save"></i>
                                     <h6>Save To File</h6>
                                 </a>
-                            </div>--%>
+                     </div>
                         </li>
                         <li><span>Interact</span>
                             <div id="mnutoolOrgReportsExpand" class="button">
