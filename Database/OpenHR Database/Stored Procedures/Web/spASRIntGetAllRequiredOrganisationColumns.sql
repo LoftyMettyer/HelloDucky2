@@ -74,7 +74,7 @@ BEGIN
 			UNION
 			SELECT c.columnID, c.ColumnName,v1.ViewName As TableOrViewName		
 			FROM ASRSysOrganisationReportFilters As f INNER JOIN ASRSysColumns As c ON f.FieldID = c.columnID 
-			INNER JOIN ASRSysViews As v1 ON v1.ViewID = @iBaseViewID WHERE f.ID = @piOrganisationID
+			INNER JOIN ASRSysViews As v1 ON v1.ViewID = @iBaseViewID WHERE f.OrganisationID = @piOrganisationID
 			UNION
 			SELECT oc.ColumnID
 					,c.ColumnName				   
@@ -113,7 +113,7 @@ BEGIN
 				UNION
 				SELECT c.columnID, c.ColumnName,v1.ViewName As TableOrViewName		
 				FROM ASRSysOrganisationReportFilters As f INNER JOIN ASRSysColumns As c ON f.FieldID = c.columnID 
-				INNER JOIN ASRSysViews As v1 ON v1.ViewID = @iBaseViewID WHERE f.ID = @piOrganisationID
+				INNER JOIN ASRSysViews As v1 ON v1.ViewID = @iBaseViewID WHERE f.OrganisationID = @piOrganisationID
 				UNION
 				SELECT oc.ColumnID
 						,c.ColumnName				   
