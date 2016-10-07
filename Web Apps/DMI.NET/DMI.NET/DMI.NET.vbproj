@@ -673,6 +673,7 @@
     <Content Include="Content\themes\oneAdvanced\images\ui-bg_glass_100_ffffff_1x400.png" />
     <Content Include="Content\themes\oneAdvanced\images\ui-bg_glass_65_ffffff_1x400.png" />
     <Content Include="Content\themes\oneAdvanced\images\ui-bg_gloss-wave_100_bcbcb9_500x100.png" />
+    <Content Include="Content\themes\oneAdvanced\images\ui-bg_gloss-wave_100_dcdcdb_500x100.png" />
     <Content Include="Content\themes\oneAdvanced\images\ui-bg_gloss-wave_35_f3f3f3_500x100.png" />
     <Content Include="Content\themes\oneAdvanced\images\ui-bg_gloss-wave_35_f6a828_500x100.png" />
     <Content Include="Content\themes\oneAdvanced\images\ui-bg_gloss-wave_65_ED8B00_500x100.png" />
