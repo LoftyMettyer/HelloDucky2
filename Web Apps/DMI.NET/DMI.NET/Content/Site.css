@@ -55,6 +55,7 @@ section {
 	right: 0;
 	bottom: 0;
 	overflow: auto;
+   border: none!important;
 	}
 
 .DMI #menuframe {

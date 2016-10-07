@@ -363,7 +363,7 @@ table.calendarcell
 	right: 30px;
 	top: 0px;
 	bottom:0px;
-	overflow: auto;
+	overflow: hidden;
 
 /*
 background: rgb(122,188,255);
