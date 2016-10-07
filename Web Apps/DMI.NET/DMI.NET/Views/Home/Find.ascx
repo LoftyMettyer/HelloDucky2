@@ -195,49 +195,72 @@
 		<div class="absolutefull">
 			<div id="row1" style="margin-left: 20px; margin-right: 20px">
 				<%
-					Dim sErrorDescription As String = ""
-					Dim sThousSepSummaryFields As String
-					
-					If ViewBag.pageTitle.ToString().Length = 0 Then
-						' DMI View.
-						' Display the appropriate page title.
-						Dim prm_psTitle As New SqlParameter("@psTitle", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = 500}
-						Dim prm_pfQuickEntry As New SqlParameter("@pfQuickEntry ", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-						SPParameters = New SqlParameter() { _
-								prm_psTitle, _
-								prm_pfQuickEntry,
-								New SqlParameter("@plngScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))}, _
-								New SqlParameter("@plngViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}
-						}
+               Dim sErrorDescription As String = ""
+               Dim sThousSepSummaryFields As String
 
-						Try
-							objDataAccess.ExecuteSP("sp_ASRIntGetFindWindowInfo", SPParameters)
-						Catch ex As Exception
-							sErrorDescription = "The page title could not be created." & vbCrLf & FormatError(ex.Message)
-						End Try
-						
-						If Len(sErrorDescription) = 0 Then
-							Dim homelinkURL = "javascript:loadPartialView(""linksMain"", ""Home"", ""workframe"", null);"
+               If ViewBag.pageTitle.ToString().Length = 0 Then
+                  ' DMI View.
+                  ' Display the appropriate page title.
+                  Dim prm_psTitle As New SqlParameter("@psTitle", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = 500}
+                  Dim prm_pfQuickEntry As New SqlParameter("@pfQuickEntry ", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+                  SPParameters = New SqlParameter() { _
+                        prm_psTitle, _
+                        prm_pfQuickEntry,
+                        New SqlParameter("@plngScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))}, _
+                        New SqlParameter("@plngViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}
+                  }
 
-							Response.Write("<div class='pageTitleDiv'>" & vbCrLf)
-							If Session("isPortalLogin") <> True Then Response.Write(String.Format("<a onclick='{0}' title='Back'><i class='pageTitleIcon icon-circle-arrow-left'></i></a>", homelinkURL) & vbCrLf)
-							Response.Write("<span class='pageTitle'>" & Replace(prm_psTitle.Value.ToString, "_", " ") & "</span>" & vbCrLf)
-							
-							response.write("<label id='txtRIE' style='float: right;'></label>")
-							Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & prm_pfQuickEntry.Value.ToString & "></div>" & vbCrLf)
-						End If
-					Else
-						' SSI View.
-						Dim homelinkURL = "javascript:loadPartialView(""linksMain"", ""Home"", ""workframe"", null);"
+                  Try
+                     objDataAccess.ExecuteSP("sp_ASRIntGetFindWindowInfo", SPParameters)
+                  Catch ex As Exception
+                     sErrorDescription = "The page title could not be created." & vbCrLf & FormatError(ex.Message)
+                  End Try
 
-						Response.Write("<div class='pageTitleDiv'>" & vbCrLf)
-						If Session("isPortalLogin") <> True Then Response.Write(String.Format("<a onclick='{0}' title='Back'><i class='pageTitleIcon icon-circle-arrow-left'></i></a>", homelinkURL) & vbCrLf)
-						Response.Write("<span class='pageTitle'>" & ViewBag.pageTitle & "</span>" & vbCrLf)
+                  ' Fetch Record Description to append to page title.
+                  Dim sRecDesc As String = ""
+                  If (Len(sErrorDescription) = 0) Then
+                     Try
+                        Dim prmRecordDesc As New SqlParameter("psRecDesc", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-						
-						
-						Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & ViewBag.pageTitle & "></div>" & vbCrLf)
-					End If
+                        objDataAccess.ExecuteSP("sp_ASRIntGetRecordDescription",
+                                    New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))},
+                                    New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = 0},
+                                    New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))},
+                                    New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))},
+                                    prmRecordDesc)
+
+                        sRecDesc = prmRecordDesc.Value.ToString()
+                     Catch ex As Exception
+                        sRecDesc = ""
+                     End Try
+                  End If
+
+                  If Len(sErrorDescription) = 0 Then
+                     Dim homelinkURL = "javascript:loadPartialView(""linksMain"", ""Home"", ""workframe"", null);"
+
+                     Response.Write("<div class='pageTitleDiv'>" & vbCrLf)
+                     If Session("isPortalLogin") <> True Then Response.Write(String.Format("<a onclick='{0}' title='Back'><i class='pageTitleIcon icon-circle-arrow-left'></i></a>", homelinkURL) & vbCrLf)
+                     If sRecDesc = "" Then
+                        Response.Write("<span class='pageTitle'>" & Replace(prm_psTitle.Value.ToString, "_", " ") & "</span>" & vbCrLf)
+                     Else
+                        Response.Write("<span class='pageTitle'>" & Replace(prm_psTitle.Value.ToString & " - " & sRecDesc, "_", " ") & "</span>" & vbCrLf)
+                     End If
+
+                     Response.write("<label id='txtRIE' style='float: right;'></label>")
+                     Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & prm_pfQuickEntry.Value.ToString & "></div>" & vbCrLf)
+                  End If
+               Else
+                  ' SSI View.
+                  Dim homelinkURL = "javascript:loadPartialView(""linksMain"", ""Home"", ""workframe"", null);"
+
+                  Response.Write("<div class='pageTitleDiv'>" & vbCrLf)
+                  If Session("isPortalLogin") <> True Then Response.Write(String.Format("<a onclick='{0}' title='Back'><i class='pageTitleIcon icon-circle-arrow-left'></i></a>", homelinkURL) & vbCrLf)
+                  Response.Write("<span class='pageTitle'>" & ViewBag.pageTitle & "</span>" & vbCrLf)
+
+
+
+                  Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & ViewBag.pageTitle & "></div>" & vbCrLf)
+               End If
 				%>
 			</div>
 			<div id="findGridRow" style="margin-right: 20px; margin-left: 20px;">
