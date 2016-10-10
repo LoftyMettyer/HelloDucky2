@@ -6238,6 +6238,12 @@ Namespace Controllers
 
             PreviewColumnList.Add(item)
 
+            If (item.ColumnValue.Length > 200) Then
+               item.ColumnTitle = item.ColumnValue.Substring(0, 200) + "..."
+            Else
+               item.ColumnTitle = item.ColumnValue
+            End If
+
          End While
 
          Return PreviewColumnList
