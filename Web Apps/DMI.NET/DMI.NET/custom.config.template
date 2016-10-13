@@ -1,6 +1,6 @@
 ﻿<appSettings>
 	<add key="UI_Admin_Theme" value="oneAdvanced" />
-	<add key="UI_Layout_Selectable" value="false" />
+	<add key="UI_Layout_Selectable" value="true" />
 	<add key="UI_Self_Service_Layout" value="winkit" />
 	<add key="UI_Wireframe_Theme" value="oneAdvanced" />
 	<add key="UI_Winkit_Theme" value="oneAdvanced" />
