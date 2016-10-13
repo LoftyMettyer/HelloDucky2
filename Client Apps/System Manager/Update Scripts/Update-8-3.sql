@@ -3489,6 +3489,15 @@ PRINT 'Step - Updating Support Information'
 	   	INSERT INTO ASRSysSystemSettings (Section, SettingKey, SettingValue) VALUES ('support','webpage','https://customers.oneadvanced.com');
 
 /* ------------------------------------------------------- */
+PRINT 'Step - Updating Module Setup'
+/* ------------------------------------------------------- */
+   IF NOT EXISTS ( SELECT 1 FROM ASRSysModuleSetup WHERE ModuleKey = 'MODULE_HIERARCHY' AND ParameterKey = 'Param_DisableSimpleChart' )
+        BEGIN
+		   INSERT INTO ASRSysModuleSetup (ModuleKey, ParameterKey, ParameterValue, ParameterType)
+		   VALUES ('MODULE_HIERARCHY', 'Param_DisableSimpleChart', 0, 'PType_Other')
+	    END
+
+/* ------------------------------------------------------- */
 PRINT 'Final Step - Updating Versions'
 /* ------------------------------------------------------- */
 
