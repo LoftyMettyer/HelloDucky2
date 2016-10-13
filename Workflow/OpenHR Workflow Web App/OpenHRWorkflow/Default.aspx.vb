@@ -88,6 +88,17 @@ Public Class [Default]
                message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE006)."
             End If
 
+            ' Populate DB & Servername as workspace does not provide these
+            Try
+               Dim _sqlMetadata As New SQLMetaData
+               _sqlMetadata = _db.GetSQLMetaData()
+
+               _url.Server = _sqlMetadata.ServerName
+               _url.Database = _sqlMetadata.DatabaseName
+            Catch ex As Exception
+               message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE007)." 
+            End Try
+
          End If
       End If
 
