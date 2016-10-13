@@ -192,15 +192,12 @@ div.officetab li div.button .disabled {
 
 .DBValueScroller  
 {
-	position: absolute;
-	right: 0px;
 	padding-right: 10px;
+   float: right;
 }
 
 .DBValueCaptionContainer {
-	position: absolute;
-	left: 0px;
-	padding-left: 10px;
+   float:left;
 }
 .DBVSpinner 
 {

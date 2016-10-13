@@ -476,60 +476,60 @@
 							<p class="linkspagebuttontileIcon"><i class="<%=sIconClass%>"></i></p>
 						</li>
 						<%
-								iRowNum += 1
+                        iRowNum += 1
 
-							Case ElementType.Chart
+                     Case ElementType.Chart
 
-								Dim iChart_TableID As Long = navlink.Chart_TableID
-								Dim iChart_ColumnID As Long = navlink.Chart_ColumnID
-								Dim iChart_FilterID As Long = navlink.Chart_FilterID
-								Dim iChart_AggregateType As Long = navlink.Chart_AggregateType
-								Dim iChart_ElementType As ElementType = navlink.Element_Type
-								'Dim fChart_ShowLegend = navlink.Chart_ShowLegend
-								Dim iChart_Type = navlink.Chart_Type
-								'Dim fChart_ShowGrid = navlink.Chart_ShowGrid
-								'Dim fChart_StackSeries = navlink.Chart_StackSeries
-								'Dim fChart_ShowValues = navlink.Chart_ShowValues
-								'Dim sChart_ColumnName = Replace(navlink.Chart_ColumnName, "_", " ")
-								'Dim sChart_ColumnName_2 = Replace(navlink.Chart_ColumnName_2, "_", " ")
+                        Dim iChart_TableID As Long = navlink.Chart_TableID
+                        Dim iChart_ColumnID As Long = navlink.Chart_ColumnID
+                        Dim iChart_FilterID As Long = navlink.Chart_FilterID
+                        Dim iChart_AggregateType As Long = navlink.Chart_AggregateType
+                        Dim iChart_ElementType As ElementType = navlink.Element_Type
+                        'Dim fChart_ShowLegend = navlink.Chart_ShowLegend
+                        Dim iChart_Type = navlink.Chart_Type
+                        'Dim fChart_ShowGrid = navlink.Chart_ShowGrid
+                        'Dim fChart_StackSeries = navlink.Chart_StackSeries
+                        'Dim fChart_ShowValues = navlink.Chart_ShowValues
+                        'Dim sChart_ColumnName = Replace(navlink.Chart_ColumnName, "_", " ")
+                        'Dim sChart_ColumnName_2 = Replace(navlink.Chart_ColumnName_2, "_", " ")
 
-								Dim iChart_TableID_2 As Long = navlink.Chart_TableID_2
-								Dim iChart_ColumnID_2 As Long = navlink.Chart_ColumnID_2
-								Dim iChart_TableID_3 As Long = navlink.Chart_TableID_3
-								Dim iChart_ColumnID_3 As Long = navlink.Chart_ColumnID_3
+                        Dim iChart_TableID_2 As Long = navlink.Chart_TableID_2
+                        Dim iChart_ColumnID_2 As Long = navlink.Chart_ColumnID_2
+                        Dim iChart_TableID_3 As Long = navlink.Chart_TableID_3
+                        Dim iChart_ColumnID_3 As Long = navlink.Chart_ColumnID_3
 
-								'Dim iChartInitialDisplayMode = CleanNumeric(navlink.InitialDisplayMode)
+                        'Dim iChartInitialDisplayMode = CleanNumeric(navlink.InitialDisplayMode)
 
-								Dim iChart_SortOrderID As Long = navlink.Chart_SortOrderID
-								Dim iChart_SortDirection As Integer = navlink.Chart_SortDirection
-								Dim iChart_ColourID As Long = navlink.Chart_ColourID
+                        Dim iChart_SortOrderID As Long = navlink.Chart_SortOrderID
+                        Dim iChart_SortDirection As Integer = navlink.Chart_SortDirection
+                        Dim iChart_ColourID As Long = navlink.Chart_ColourID
 
-								'Dim fChart_ShowPercentages = navlink.Chart_ShowPercentages
+                        'Dim fChart_ShowPercentages = navlink.Chart_ShowPercentages
 
-								Dim fMultiAxis As Boolean
+                        Dim fMultiAxis As Boolean
 
-								If iChart_TableID_2 > 0 Or iChart_TableID_3 > 0 Then
-									fMultiAxis = True
-								Else
-									fMultiAxis = False
-								End If
+                        If iChart_TableID_2 > 0 Or iChart_TableID_3 > 0 Then
+                           fMultiAxis = True
+                        Else
+                           fMultiAxis = False
+                        End If
 
-								'sText = navlink.Text
-								'If navlink.Text.Length > 25 Then
-								'	navlink.Text = navlink.Text.Substring(0, 25) + "..."
-								'End If
+                        'sText = navlink.Text
+                        'If navlink.Text.Length > 25 Then
+                        '	navlink.Text = navlink.Text.Substring(0, 25) + "..."
+                        'End If
 
-								' Drilldown?
-								If navlink.UtilityID > 0 Then
-									' sOnclick = "goUtilityDash('" & navlink.UtilityType & "_" & navlink.UtilityID.ToString() & "_" & navlink.BaseTable
-									sOnClick = "goUtility(" & navlink.UtilityType & ", " & navlink.UtilityID & ", '" & HttpUtility.JavaScriptStringEncode(navlink.Text) & "', " & navlink.BaseTableID & ")"
-								Else
-									sOnClick = ""
-								End If
+                        ' Drilldown?
+                        If navlink.UtilityID > 0 Then
+                           ' sOnclick = "goUtilityDash('" & navlink.UtilityType & "_" & navlink.UtilityID.ToString() & "_" & navlink.BaseTable
+                           sOnClick = "goUtility(" & navlink.UtilityType & ", " & navlink.UtilityID & ", '" & HttpUtility.JavaScriptStringEncode(navlink.Text) & "', " & navlink.BaseTableID & ")"
+                        Else
+                           sOnClick = ""
+                        End If
 
 						%>
 
-						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly">
+						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext <%=sTileColourClass%> displayonly">
 							<a style="<%:sTileForeColourStyle%>" href="#"><%If Session("CurrentLayout").ToString() <> Layout.tiles.ToString() Then Response.Write(navlink.Text)%>
 								<%
 									If navlink.UtilityID > 0 And navlink.DrillDownHidden = False Then
