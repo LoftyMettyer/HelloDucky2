@@ -405,6 +405,7 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\SSI80v194934\style.css" />
+    <Content Include="Content\images\ABSLogo\OneAdvancedArrowsLighter245.jpg" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo1024x768.png" />
     <Content Include="Content\images\ABSLogo\TilesWatermark.png" />
     <Content Include="Content\images\ABSLogo\TopRightBannerImage.png" />

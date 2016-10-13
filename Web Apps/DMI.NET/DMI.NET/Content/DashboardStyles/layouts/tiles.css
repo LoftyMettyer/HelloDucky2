@@ -29,35 +29,13 @@ body
 
 #workframeset
 {
-	background: url(../../images/ABSLogo/TilesWatermark.png) no-repeat center center fixed;
+	background: url(../../images/ABSLogo/OneAdvancedArrowsLighter245.jpg) center repeat-x;
+   background-size: auto 100%;
 	
-	bottom: 40px;
-	background-size: cover;
-	/*background-color: rgb(4, 106, 169);*/
+   /* Not relating to background image */
+   bottom: 0px;
 	top: 0!important;
 	left: 0!important;
-	
-	/*background: #004c99;
-	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -moz-linear-gradient(left, #004c99 0%, #14304c 100%);
-	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -webkit-gradient(linear, left top, right top, color-stop(0%,#004c99), color-stop(100%,#14304c));
-	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -webkit-linear-gradient(left, #004c99 0%,#14304c 100%);
-	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -o-linear-gradient(left, #004c99 0%,#14304c 100%);
-	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, -ms-linear-gradient(left, #004c99 0%,#14304c 100%);
-	background: url(../../images/ABSLogo/TilesWatermark.png) center center no-repeat, linear-gradient(to right, #004c99 0%,#14304c 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#004c99', endColorstr='#14304c',GradientType=1 );*/
-
-	background: rgb(240,249,255); /* Old browsers */
-/* IE9 SVG, needs conditional override of 'filter' to 'none' */
-background: url(../../images/ABSLogo/TilesWatermark.png) no-repeat center center fixed,  url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2YwZjlmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQ3JSIgc3RvcC1jb2xvcj0iI2NiZWJmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNhMWRiZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-background: url(../../images/ABSLogo/TilesWatermark.png) no-repeat center center fixed, -moz-linear-gradient(top,  rgba(240,249,255,1) 0%, rgba(203,235,255,1) 47%, rgba(161,219,255,1) 100%); /* FF3.6+ */
-background: url(../../images/ABSLogo/TilesWatermark.png) no-repeat center center fixed, -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(240,249,255,1)), color-stop(47%,rgba(203,235,255,1)), color-stop(100%,rgba(161,219,255,1))); /* Chrome,Safari4+ */
-background: url(../../images/ABSLogo/TilesWatermark.png) no-repeat center center fixed, -webkit-linear-gradient(top,  rgba(240,249,255,1) 0%,rgba(203,235,255,1) 47%,rgba(161,219,255,1) 100%); /* Chrome10+,Safari5.1+ */
-background: url(../../images/ABSLogo/TilesWatermark.png) no-repeat center center fixed, -o-linear-gradient(top,  rgba(240,249,255,1) 0%,rgba(203,235,255,1) 47%,rgba(161,219,255,1) 100%); /* Opera 11.10+ */
-background: url(../../images/ABSLogo/TilesWatermark.png) no-repeat center center fixed, -ms-linear-gradient(top,  rgba(240,249,255,1) 0%,rgba(203,235,255,1) 47%,rgba(161,219,255,1) 100%); /* IE10+ */
-background: url(../../images/ABSLogo/TilesWatermark.png) no-repeat center center fixed, linear-gradient(to bottom,  rgba(240,249,255,1) 0%,rgba(203,235,255,1) 47%,rgba(161,219,255,1) 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f9ff', endColorstr='#a1dbff',GradientType=0 ); /* IE6-8 */
-
-
 }
 
 .DashContent {	
@@ -106,12 +84,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f9ff', end
 	display: none;
 }
 
-.linkspagebuttontext, .hypertextlinktext, .dropdownlinktext, .docdisplaylinktext .pendingworkflowtext {border: none; color: Black;overflow: hidden;}
+.linkspagebuttontext, .hypertextlinktext, .dropdownlinktext, .docdisplaylinktext .pendingworkflowtext {
+   border: solid 1px silver;
+   overflow: hidden;
+   box-shadow: inset 0 -3px #e0e0e0;
+   cursor: pointer;
+}
 
 	.linkspagebuttontext:hover, .hypertextlinktext:hover, .pendingworkflowtext:hover {
-		-moz-box-shadow: 0 0 10px orange!important; /* FF3.5+ */
-		-webkit-box-shadow: 0 0 10px orange!important; /* Saf3.0+, Chrome */
-		box-shadow: 0 0 10px orange!important; /* Opera 10.5, IE9, Chrome 10+ */
+		box-shadow: inset 0 -3px #e9510e;
 	}
 
 .hypertextlinktext, .pendingworkflowtext {
@@ -192,7 +173,10 @@ width:12em; */
 	/*text-shadow: 0 0 5px #000000;*/
 }
 
-.docdisplaylinkseparator { margin-top: 0;margin-bottom: 10px;}
+.docdisplaylinkseparator {
+   margin-top: 0;
+   margin-bottom: 10px;
+}
 
 .linkspagebuttonseparator h2 {
 	font-size: inherit;
@@ -333,143 +317,11 @@ li {list-style: none;}
 	 color: White;        
 }
 
-/*Original multi-coloured tiles*/
-/*
-.Colour1 {background-color: rgb(0, 142, 0);color: white;}
-.Colour1 a {color: white;}
-.Colour2 { background-color: rgb(0, 127, 156);color: white;}
-.Colour2 a { color: white;}
-.Colour3 {background-color: rgb(0, 157, 0);color: white;}
-.Colour3 a {color: white;}
-.Colour4 {background-color: rgb(141, 0, 150);color: white;}
-.Colour4 a {color: white;}
-.Colour5 {background-color: rgb(211, 73, 39);color: white;}
-.Colour5 a {color: white;}
-.Colour6 {background-color: rgb(73, 27, 198);color: white;}
-.Colour6 a {color: white;}
-.Colour7 {background-color: rgb(255, 236, 0);color: rgb(10, 10, 10);}
-.Colour7 a {color: black;}
-.Colour8 {background-color: rgb(9, 76, 181);color: white;}
-.Colour8 a {color: white;}
-.White { background-color: white;color: gray;}
-.White a { color: gray;}*/
+/* oneAdvanced Colour Scheme */				
+.Colour1, .Colour2, .Colour3, .Colour4, .Colour5, .Colour6, .Colour7, .Colour8 {background-color: white; color: #e9510e;}
 
-/*Just Orange*/
-/*.Colour1 {background-color: rgba(255,0,0,0.8);color: white;} 
-.Colour2 {background-color: rgba(255,0,0,0.8);color: white;} 
-.Colour3 {background-color: rgba(255,0,0,0.8);color: white;} 
-.Colour4 {background-color: rgba(255,0,0,0.8);color: white;} 
-.Colour5 {background-color: rgba(255,0,0,0.8);color: white;} 
-.Colour6 {background-color: rgba(255,0,0,0.8);color: white;} 
-.Colour7 {background-color: rgba(255,0,0,0.8);color: white;} 
-.Colour8 {background-color: rgba(255,0,0,0.8);color: white;}
-*/
-
-/*Just Pantone 542 (iNurse) */
-/*.Colour1 {background-color: rgb(98, 164,211);color: white;} 
-.Colour2 {background-color: rgb(98,164,211);color: white;} 
-.Colour3 {background-color: rgb(98,164,211);color: white;} 
-.Colour4 {background-color: rgb(98,164,211);color: white;} 
-.Colour5 {background-color: rgb(98,164,211);color: white;} 
-.Colour6 {background-color: rgb(98,164,211);color: white;} 
-.Colour7 {background-color: rgb(98,164,211);color: white;} 
-.Colour8 {background-color: rgb(98,164,211);color: white;}*/ 
-/*Just Pantone 262 (Staffplan)*/
-/*.Colour1 {background-color: rgb(93, 0, 74);color: white;}  
-.Colour2 {background-color: rgb(93,0,74);color: white;} 
-.Colour3 {background-color: rgb(93,0,74);color: white;} 
-.Colour4 {background-color: rgb(93,0,74);color: white;} 
-.Colour5 {background-color: rgb(93,0,74);color: white;} 
-.Colour6 {background-color: rgb(93,0,74);color: white;} 
-.Colour7 {background-color: rgb(93,0,74);color: white;} 
-.Colour8 {background-color: rgb(93,0,74);color: white;}*/ 
-/*Just Pantone 3285 (Crosscare)*/
-/*.Colour1 {background-color: rgb(0, 144, 137);color: white;} 
-.Colour2 {background-color: rgb(0,144,137);color: white;} 
-.Colour3 {background-color: rgb(0,144,137);color: white;} 
-.Colour4 {background-color: rgb(0,144,137);color: white;} 
-.Colour5 {background-color: rgb(0,144,137);color: white;} 
-.Colour6 {background-color: rgb(0,144,137);color: white;} 
-.Colour7 {background-color: rgb(0,144,137);color: white;} 
-.Colour8 {background-color: rgb(0,144,137);color: white;}*/ 
-/*Just Pantone 288 (Adastra)*/
-/*.Colour1 {background-color: rgb(0, 70,135);color: white;}  
-.Colour2 {background-color: rgb(0,70,135);color: white;} 
-.Colour3 {background-color: rgb(0,70,135);color: white;} 
-.Colour4 {background-color: rgb(0,70,135);color: white;} 
-.Colour5 {background-color: rgb(0,70,135);color: white;} 
-.Colour6 {background-color: rgb(0,70,135);color: white;} 
-.Colour7 {background-color: rgb(0,70,135);color: white;} 
-.Colour8 {background-color: rgb(0,70,135);color: white;} 
-.Colour1 {background-color: rgb(0,70,135);color: white;}*/ 
-/*Just Pantone 424 (Healthchecks)*/
-/*.Colour1{background-color: rgb(132, 134, 135);color: white;}
-.Colour2 {background-color: rgb(132,134,135);color: white;} 
-.Colour3 {background-color: rgb(132,134,135);color: white;} 
-.Colour4 {background-color: rgb(132,134,135);color: white;} 
-.Colour5 {background-color: rgb(132,134,135);color: white;} 
-.Colour6 {background-color: rgb(132,134,135);color: white;} 
-.Colour7 {background-color: rgb(132,134,135);color: white;} 
-.Colour8 {background-color: rgb(132,134,135);color: white;}*/ 
-/*Just Pantone 194 (Saturn)*/
-/*.Colour1{background-color: rgb(170, 1, 50);color: white;}
-.Colour2 {background-color: rgb(170, 1, 50);color: white;} 
-.Colour3 {background-color: rgb(170, 1, 50);color: white;} 
-.Colour4 {background-color: rgb(170, 1, 50);color: white;} 
-.Colour5 {background-color: rgb(170, 1, 50);color: white;} 
-.Colour6 {background-color: rgb(170, 1, 50);color: white;} 
-.Colour7 {background-color: rgb(170, 1, 50);color: white;} 
-.Colour8 {background-color: rgb(170, 1, 50);color: white;} 
-*/
-/*Just Pantone 7409*/
-/*.Colour1 {background-color: rgb(238, 175, 0);color: white;} 
-.Colour2 {background-color: rgb(238,175,0);color: white;} 
-.Colour3 {background-color: rgb(238,175,0);color: white;} 
-.Colour4 {background-color: rgb(238,175,0);color: white;} 
-.Colour5 {background-color: rgb(238,175,0);color: white;} 
-.Colour6 {background-color: rgb(238,175,0);color: white;} 
-.Colour7 {background-color: rgb(238,175,0);color: white;} 
-.Colour8 {background-color: rgb(238,175,0);color: white;} 
-*/
-/*Just Pantone 2945*/ 
-/*.Colour1 {background-color: rgb(0, 84, 159);color: white;}  
-.Colour2 {background-color: rgb(0,84,159);color: white;} 
-.Colour3 {background-color: rgb(0,84,159);color: white;} 
-.Colour4 {background-color: rgb(0,84,159);color: white;} 
-.Colour5 {background-color: rgb(0,84,159);color: white;} 
-.Colour6 {background-color: rgb(0,84,159);color: white;} 
-.Colour7 {background-color: rgb(0,84,159);color: white;} 
-.Colour8 {background-color: rgb(0,84,159);color: white;}*/ 
-
-/*ABS Colour Scheme for tiles */
-.Colour1 {background-color: rgb(238, 175, 0);color: white;}				
-.Colour2 {background-color: rgb(0, 84, 159);color: white;}				
-.Colour3 {background-color: rgb(98, 164,211);color: white;}
-.Colour4 {background-color: rgb(93, 0, 74);color: white;}					
-.Colour5 {background-color: rgb(0, 144, 137);color: white;}
-.Colour6 {background-color: rgb(0, 70,135);color: white;}					
-.Colour7 {background-color: rgb(132, 134, 135);color: white;} 
-.Colour8 {background-color: rgb(170, 1, 50);color: white;}				
-
-/*Sunnside Colour Scheme for tiles 
-COMMENT OUT COLOURS 1 TO 8 BELOW TO GET ABS COLOURS ABOVE */
-/*.Colour1 {background-color: rgba(238,175,0,1);color: white;}	
-.Colour2 {background-color: rgba(0,84,159,1);color: white;}
-.Colour3 {background-color: rgba(255,0,0,1);color: white;}
-.Colour4 {background-color: rgba(93,0,74,1);color: white;}
-.Colour5 {background-color: rgba(255,0,0,1);color: white;}
-.Colour6 {background-color: rgba(0,70,135,1);color: white;}					
-.Colour7 {background-color: rgba(132,134,135,1);color: white;}
-.Colour8 {background-color: rgba(255,0,0,1);color: white;}*/
-
-.Colour1 a {color: white;}
-.Colour2 a {color: white;}
-.Colour3 a {color: white;}
-.Colour4 a {color: white;}
-.Colour5 a {color: white;}
-.Colour6 a {color: white;}
-.Colour7 a {color: white;}
-.Colour8 a {color: white;}
+/* oneAdvanced */
+.Colour1 a, .Colour2 a, .Colour3 a, .Colour4 a, .Colour5 a, .Colour6 a, .Colour7 a, .Colour8 a { color: rgba(0, 0, 0, .5);  }
 
 .White { background-color: white;color: gray;}
 .White a { color: gray;}
@@ -494,6 +346,7 @@ COMMENT OUT COLOURS 1 TO 8 BELOW TO GET ABS COLOURS ABOVE */
 	right: 0;
 	height: 50px;
 	background-color: black;	
+   color: white;
 }
 
 #fixedlinks {
@@ -627,8 +480,10 @@ div.officetab div.panel > span { display: none;}
 	min-height: 10%;
 }
 
-.wrapuptext p {
+.wrapuptext p, p.docdisplaylinkseparator {
 	margin: 0;
+   color: #e9510e;
+   font-size: large;
 }
 
 .icon-stack {
@@ -812,6 +667,10 @@ div#pwfs {
 	top: 0px;
 	width: auto;
 	z-index: 99;
+}
+
+#userDropdownmenu>a {
+   color: white!important;
 }
 
 #userDropdownmenu ul .has-sub ul a {
