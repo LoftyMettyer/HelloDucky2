@@ -26,6 +26,7 @@
 		eltAccordExport = 24
 		eltWorkflowRebuild = 25
 		elt9GridBox = 35
-    eltTalentReport = 38
-	End Enum
+        eltTalentReport = 38
+        eltOrgReporting = 39
+    End Enum
 End Namespace

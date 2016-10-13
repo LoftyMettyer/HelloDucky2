@@ -529,146 +529,152 @@
 					<td>
 						<select class="width100" id="cboType" name="cboType" onchange="refreshGrid();">
 							<%
-								If Session("CurrentType") = "-1" Then
-									Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
-								Else
-									Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
-								End If
+                                If Session("CurrentType") = "-1" Then
+                                    Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
+                                End If
 
-								If Session("CurrentType") = EventLog_Type.elt9GridBox.ToString Then
-									Response.Write("											<option value=35 selected>9-Box Grid Report" & vbCrLf)
-								Else
-									Response.Write("											<option value=35>9-Box Grid Report" & vbCrLf)
-								End If
+                                If Session("CurrentType") = EventLog_Type.elt9GridBox.ToString Then
+                                    Response.Write("											<option value=35 selected>9-Box Grid Report" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=35>9-Box Grid Report" & vbCrLf)
+                                End If
 
-								If Session("CurrentType") = EventLog_Type.eltCalandarReport.ToString Then
-									Response.Write("											<option value=17 selected>Calendar Report" & vbCrLf)
-								Else
-									Response.Write("											<option value=17>Calendar Report" & vbCrLf)
-								End If
+                                If Session("CurrentType") = EventLog_Type.eltCalandarReport.ToString Then
+                                    Response.Write("											<option value=17 selected>Calendar Report" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=17>Calendar Report" & vbCrLf)
+                                End If
 
-								If Session("CurrentType") = EventLog_Type.eltCareerProgression.ToString Then
-									Response.Write("											<option value=22 selected>Career Progression" & vbCrLf)
-								Else
-									Response.Write("											<option value=22>Career Progression" & vbCrLf)
-								End If
+                                If Session("CurrentType") = EventLog_Type.eltCareerProgression.ToString Then
+                                    Response.Write("											<option value=22 selected>Career Progression" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=22>Career Progression" & vbCrLf)
+                                End If
 
-								If Session("CurrentType") = EventLog_Type.eltCrossTab.ToString Then
-									Response.Write("											<option value=1 selected>Cross Tab" & vbCrLf)
-								Else
-									Response.Write("											<option value=1>Cross Tab" & vbCrLf)
-								End If
-								
-								If Session("CurrentType") = EventLog_Type.eltCustomReport.ToString Then
-									Response.Write("											<option value=2 selected>Custom Report" & vbCrLf)
-								Else
-									Response.Write("											<option value=2>Custom Report" & vbCrLf)
-								End If
-	
-								If Session("CurrentType") = EventLog_Type.eltDataTransfer.ToString Then
-									Response.Write("											<option value=3 selected>Data Transfer" & vbCrLf)
-								Else
-									Response.Write("											<option value=3>Data Transfer" & vbCrLf)
-								End If
-	
-								If Session("CurrentType") = EventLog_Type.eltDiaryRebuild.ToString Then
-									Response.Write("											<option value=11 selected>Diary Rebuild" & vbCrLf)
-								Else
-									Response.Write("											<option value=11>Diary Rebuild" & vbCrLf)
-								End If
-	
-								If Session("CurrentType") = EventLog_Type.eltEmailRebuild.ToString Then
-									Response.Write("											<option value=12 selected>Email Rebuild" & vbCrLf)
-								Else
-									Response.Write("											<option value=12>Email Rebuild" & vbCrLf)
-								End If
+                                If Session("CurrentType") = EventLog_Type.eltCrossTab.ToString Then
+                                    Response.Write("											<option value=1 selected>Cross Tab" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=1>Cross Tab" & vbCrLf)
+                                End If
 
-								If Session("CurrentType") = EventLog_Type.eltLabel.ToString Then
-									Response.Write("											<option value=18 selected>Envelopes & Labels" & vbCrLf)
-								Else
-									Response.Write("											<option value=18>Envelopes & Labels" & vbCrLf)
-								End If
-	
-								If Session("CurrentType") = EventLog_Type.eltExport.ToString Then
-									Response.Write("											<option value=4 selected>Export" & vbCrLf)
-								Else
-									Response.Write("											<option value=4>Export" & vbCrLf)
-								End If
-	
-								If Session("CurrentType") = EventLog_Type.eltGlobalAdd.ToString Then
-									Response.Write("											<option value=5 selected>Global Add" & vbCrLf)
-								Else
-									Response.Write("											<option value=5>Global Add" & vbCrLf)
-								End If
-	
-								If Session("CurrentType") = EventLog_Type.eltGlobalDelete.ToString Then
-									Response.Write("											<option value=6 selected>Global Delete" & vbCrLf)
-								Else
-									Response.Write("											<option value=6>Global Delete" & vbCrLf)
-								End If
-	
-								If Session("CurrentType") = EventLog_Type.eltGlobalUpdate.ToString Then
-									Response.Write("											<option value=7 selected>Global Update" & vbCrLf)
-								Else
-									Response.Write("											<option value=7>Global Update" & vbCrLf)
-								End If
-	
-								If Session("CurrentType") = EventLog_Type.eltImport.ToString Then
-									Response.Write("											<option value=8 selected>Import" & vbCrLf)
-								Else
-									Response.Write("											<option value=8>Import" & vbCrLf)
-								End If
-	
-								If Session("CurrentType") = EventLog_Type.eltMailMerge.ToString Then
-									Response.Write("											<option value=9 selected>Mail Merge" & vbCrLf)
-								Else
-									Response.Write("											<option value=9>Mail Merge" & vbCrLf)
-								End If
+                                If Session("CurrentType") = EventLog_Type.eltCustomReport.ToString Then
+                                    Response.Write("											<option value=2 selected>Custom Report" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=2>Custom Report" & vbCrLf)
+                                End If
 
-								If Session("CurrentType") = EventLog_Type.eltMatchReport.ToString Then
-									Response.Write("											<option value=16 selected>Match Report" & vbCrLf)
-								Else
-									Response.Write("											<option value=16>Match Report" & vbCrLf)
-								End If
-	
-								If Session("CurrentType") = EventLog_Type.eltRecordProfile.ToString Then
-									Response.Write("											<option value=20 selected>Record Profile" & vbCrLf)
-								Else
-									Response.Write("											<option value=20>Record Profile" & vbCrLf)
-								End If
+                                If Session("CurrentType") = EventLog_Type.eltDataTransfer.ToString Then
+                                    Response.Write("											<option value=3 selected>Data Transfer" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=3>Data Transfer" & vbCrLf)
+                                End If
 
-								If Session("CurrentType") = EventLog_Type.eltStandardReport.ToString Then
-									Response.Write("											<option value=13 selected>Standard Report" & vbCrLf)
-								Else
-									Response.Write("											<option value=13>Standard Report" & vbCrLf)
-								End If
+                                If Session("CurrentType") = EventLog_Type.eltDiaryRebuild.ToString Then
+                                    Response.Write("											<option value=11 selected>Diary Rebuild" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=11>Diary Rebuild" & vbCrLf)
+                                End If
 
-								If Session("CurrentType") = EventLog_Type.eltSuccessionPlanning.ToString Then
-									Response.Write("											<option value=21 selected>Succession Planning" & vbCrLf)
-								Else
-									Response.Write("											<option value=21>Succession Planning" & vbCrLf)
-								End If
+                                If Session("CurrentType") = EventLog_Type.eltEmailRebuild.ToString Then
+                                    Response.Write("											<option value=12 selected>Email Rebuild" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=12>Email Rebuild" & vbCrLf)
+                                End If
 
-								If Session("CurrentType") = EventLog_Type.eltSystemError.ToString Then
-									Response.Write("											<option value=15 selected>System Error" & vbCrLf)
-								Else
-									Response.Write("											<option value=15>System Error" & vbCrLf)
-								End If
+                                If Session("CurrentType") = EventLog_Type.eltLabel.ToString Then
+                                    Response.Write("											<option value=18 selected>Envelopes & Labels" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=18>Envelopes & Labels" & vbCrLf)
+                                End If
 
-								If Session("CurrentType") = EventLog_Type.eltTalentReport.ToString Then
-									Response.Write("											<option value=38 selected>Talent Report" & vbCrLf)
-								Else
-									Response.Write("											<option value=38>Talent Report" & vbCrLf)
-								End If
+                                If Session("CurrentType") = EventLog_Type.eltExport.ToString Then
+                                    Response.Write("											<option value=4 selected>Export" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=4>Export" & vbCrLf)
+                                End If
 
-								If Session("WF_Enabled") Then
-									If Session("CurrentType") = EventLog_Type.eltWorkflowRebuild.ToString Then
-										Response.Write("											<option value=25 selected>Workflow Rebuild" & vbCrLf)
-									Else
-										Response.Write("											<option value=25>Workflow Rebuild" & vbCrLf)
-									End If
-								End If
-		
+                                If Session("CurrentType") = EventLog_Type.eltGlobalAdd.ToString Then
+                                    Response.Write("											<option value=5 selected>Global Add" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=5>Global Add" & vbCrLf)
+                                End If
+
+                                If Session("CurrentType") = EventLog_Type.eltGlobalDelete.ToString Then
+                                    Response.Write("											<option value=6 selected>Global Delete" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=6>Global Delete" & vbCrLf)
+                                End If
+
+                                If Session("CurrentType") = EventLog_Type.eltGlobalUpdate.ToString Then
+                                    Response.Write("											<option value=7 selected>Global Update" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=7>Global Update" & vbCrLf)
+                                End If
+
+                                If Session("CurrentType") = EventLog_Type.eltImport.ToString Then
+                                    Response.Write("											<option value=8 selected>Import" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=8>Import" & vbCrLf)
+                                End If
+
+                                If Session("CurrentType") = EventLog_Type.eltMailMerge.ToString Then
+                                    Response.Write("											<option value=9 selected>Mail Merge" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=9>Mail Merge" & vbCrLf)
+                                End If
+
+                                If Session("CurrentType") = EventLog_Type.eltMatchReport.ToString Then
+                                    Response.Write("											<option value=16 selected>Match Report" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=16>Match Report" & vbCrLf)
+                                End If
+
+                                If Session("CurrentType") = EventLog_Type.eltOrgReporting.ToString Then
+                                    Response.Write("											<option value=39 selected>Organisation Report" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=39>Organisation Report" & vbCrLf)
+                                End If
+
+                                If Session("CurrentType") = EventLog_Type.eltRecordProfile.ToString Then
+                                    Response.Write("											<option value=20 selected>Record Profile" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=20>Record Profile" & vbCrLf)
+                                End If
+
+                                If Session("CurrentType") = EventLog_Type.eltStandardReport.ToString Then
+                                    Response.Write("											<option value=13 selected>Standard Report" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=13>Standard Report" & vbCrLf)
+                                End If
+
+                                If Session("CurrentType") = EventLog_Type.eltSuccessionPlanning.ToString Then
+                                    Response.Write("											<option value=21 selected>Succession Planning" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=21>Succession Planning" & vbCrLf)
+                                End If
+
+                                If Session("CurrentType") = EventLog_Type.eltSystemError.ToString Then
+                                    Response.Write("											<option value=15 selected>System Error" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=15>System Error" & vbCrLf)
+                                End If
+
+                                If Session("CurrentType") = EventLog_Type.eltTalentReport.ToString Then
+                                    Response.Write("											<option value=38 selected>Talent Report" & vbCrLf)
+                                Else
+                                    Response.Write("											<option value=38>Talent Report" & vbCrLf)
+                                End If
+
+                                If Session("WF_Enabled") Then
+                                    If Session("CurrentType") = EventLog_Type.eltWorkflowRebuild.ToString Then
+                                        Response.Write("											<option value=25 selected>Workflow Rebuild" & vbCrLf)
+                                    Else
+                                        Response.Write("											<option value=25>Workflow Rebuild" & vbCrLf)
+                                    End If
+                                End If
+
 							%>
 						</select>
 					</td>
@@ -677,29 +683,29 @@
 					<td>
 						<select class="width100" id="cboMode" name="cboMode" onchange="refreshGrid();">
 							<%
-								If Session("CurrentMode") = "-1" Then
-									Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
-								Else
-									Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
-								End If
-	
-								If Session("CurrentMode") = EventLogMode.elsBatch.ToString Then
-									Response.Write("											<option value=1 selected>Batch" & vbCrLf)
-								Else
-									Response.Write("											<option value=1>Batch" & vbCrLf)
-								End If
-	
-								If Session("CurrentMode") = EventLogMode.elsManual.ToString Then
-									Response.Write("											<option value=0 selected>Manual" & vbCrLf)
-								Else
-									Response.Write("											<option value=0>Manual" & vbCrLf)
-								End If
-								
-								If Session("CurrentMode") = EventLogMode.elsPack.ToString Then
-									Response.Write("											<option value=2 selected>Pack" & vbCrLf)
-								Else
-									Response.Write("											<option value=2>Pack" & vbCrLf)
-								End If
+                If Session("CurrentMode") = "-1" Then
+                    Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
+                Else
+                    Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
+                End If
+
+                If Session("CurrentMode") = EventLogMode.elsBatch.ToString Then
+                    Response.Write("											<option value=1 selected>Batch" & vbCrLf)
+                Else
+                    Response.Write("											<option value=1>Batch" & vbCrLf)
+                End If
+
+                If Session("CurrentMode") = EventLogMode.elsManual.ToString Then
+                    Response.Write("											<option value=0 selected>Manual" & vbCrLf)
+                Else
+                    Response.Write("											<option value=0>Manual" & vbCrLf)
+                End If
+
+                If Session("CurrentMode") = EventLogMode.elsPack.ToString Then
+                    Response.Write("											<option value=2 selected>Pack" & vbCrLf)
+                Else
+                    Response.Write("											<option value=2>Pack" & vbCrLf)
+                End If
 							%>
 						</select>
 					</td>
