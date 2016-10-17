@@ -21,8 +21,7 @@ BEGIN
 	   INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId		
 	   INNER JOIN ASRSysTables t ON c.tableID = t.tableID		
 	   LEFT JOIN ASRSysViews v ON oc.ViewID = v.ViewID
-	WHERE oc.OrganisationID = @piReportID
-	ORDER BY t.TableName;      
+	WHERE oc.OrganisationID = @piReportID;      
     
    UPDATE ASRSysUtilAccessLog SET 
             RunBy = system_user, 
