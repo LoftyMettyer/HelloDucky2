@@ -670,7 +670,7 @@ Private Function CreateUDFOrgChartGetTopLevelID() As Boolean
     "  ELSE" & vbNewLine & _
     "    BEGIN" & vbNewLine & _
     "      SELECT @ManagerRecordID = ID FROM [" & mvar_sEmployeeTable & "] WHERE [" & mvar_sEmployeeNumberColumn & "] = @ManagerID;" & vbNewLine & _
-    "      IF ISNULL(@ManagerRecordID,0) = 0 RETURN @StaffRecordID" & vbNewLine & _
+    "      IF ISNULL(@ManagerRecordID,0) = 0 OR @@NESTLEVEL > 31 RETURN @StaffRecordID" & vbNewLine & _
     "      SELECT @ManagerRecordID = dbo.udfASRIntOrgChartGetTopLevelID(@ManagerRecordID);" & vbNewLine & _
     "    END" & vbNewLine & _
     "  RETURN @ManagerRecordID;" & vbNewLine & _
