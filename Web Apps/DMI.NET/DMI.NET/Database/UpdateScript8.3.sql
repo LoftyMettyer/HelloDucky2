@@ -62252,9 +62252,9 @@ BEGIN
 
 
 	-- Generate all the missing nodes (manager records that exist but are not contained in the selected base view)
-	SET @sSQL = 'SELECT DISTINCT 1, Reports_To_Staff_Number, pr.Line_Manager_Staff_Number, ISNULL(pr.ID, 0) FROM @allNodes nodes
+	SET @sSQL = 'SELECT DISTINCT 1, Reports_To_Staff_Number, pr.' + @sPersonnelReportToStaffNoColumn + ' , ISNULL(pr.ID, 0) FROM @allNodes nodes
 				 LEFT JOIN ' + @sBaseViewTableName + ' pr ON pr.' + @sPersonnelStaffNumberColumn + ' = nodes.Reports_To_Staff_Number
-				 WHERE Reports_To_Staff_Number NOT IN (SELECT Staff_Number FROM @allNodes)'
+				 WHERE nodes.Reports_To_Staff_Number NOT IN (SELECT Staff_Number FROM @allNodes)'
 				 
 	WHILE 1=1
 	BEGIN
