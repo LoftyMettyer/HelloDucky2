@@ -78,12 +78,9 @@ Namespace Models
 								Catch exp As ArgumentNullException
 									photoSource = "../Content/images/anonymous.png"
 								End Try
-							ElseIf oleType = 3 Then	'Link
-								Dim unc As String = Trim(Encoding.UTF8.GetString(objRow(7), 290, 60))
-								Dim fileName As String = Trim(Path.GetFileName(Encoding.UTF8.GetString(objRow(7), 10, 70))).Replace("\", "/")
-								Dim fullPath As String = Trim(Encoding.UTF8.GetString(objRow(7), 80, 210)).Replace("\", "/")
-								photoSource = "file:///" & unc & "/" & fullPath & "/" & fileName
-							End If
+							ElseIf oleType = 3 Then 'Link
+                        photoSource = "../Content/images/anonymous.png"
+                     End If
 						Else 'No picture is defined for user, use anonymous one
 							photoSource = "../Content/images/anonymous.png"
 						End If
