@@ -53,7 +53,7 @@
          <fieldset>
             <div id="OrganisationPreview" class="OrganisationReportsOnly">
                <br />
-               <input type="button" id="btnOrgPreview" class="enableSaveButtonOnClick" value="Preview" onclick="ShowPreview();" />
+               <input type="button" id="btnOrgPreview" value="Preview" onclick="ShowPreview();" />
             </div>
          </fieldset>
       </div>
