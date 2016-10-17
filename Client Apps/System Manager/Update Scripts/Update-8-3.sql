@@ -3483,6 +3483,14 @@ PRINT 'Step - Unique Code Enhancements'
 
 
 /* ------------------------------------------------------- */
+PRINT 'Step - Document Management Enhancements'
+/* ------------------------------------------------------- */
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysDocumentManagementTypes', 'U') AND name = 'TargetTitleColumnID')
+		EXEC sp_executesql N'ALTER TABLE ASRSysDocumentManagementTypes ADD TargetTitleColumnID int NULL;';
+
+
+/* ------------------------------------------------------- */
 PRINT 'Step - Updating Support Information'
 /* ------------------------------------------------------- */
    IF (SELECT COUNT(SettingValue) FROM ASRSysSystemSettings WHERE Section = 'support' AND SettingKey = 'email') = 1
