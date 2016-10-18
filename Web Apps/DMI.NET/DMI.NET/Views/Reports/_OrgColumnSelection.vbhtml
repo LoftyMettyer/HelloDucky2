@@ -8,7 +8,7 @@
 @Html.HiddenFor(Function(m) m.ColumnsAsString, New With {.id = "txtCSAAS"})
 @Html.HiddenFor(Function(m) m.DefinitionAccessBasedOnSelectedCalculationColumns, New With {.class = "ViewAccess"})
 
-<div class="nowrap">
+<div class="nowrap" id="orgColumnSelection">
    <div class="tablerow">
       <fieldset id="selectedTable">
          <legend class="fontsmalltitle width100">View/Table(s) :</legend>
@@ -211,8 +211,8 @@
                   isChangeAllowed = false;
                   break;
                }
-            }
          }
+      }
 
       if (isChangeAllowed)
       {
@@ -477,9 +477,9 @@
          multiselect: true,
          beforeSelectRow: function (rowid, e) {
 
-            // If defination is readonly then skip this opertion and it will result in return false
+            // If defination is readonly or no base view access then skip this opertion and it will result in return false
             // which will stop calling onSelectRow
-            if (!isDefinitionReadOnly()) {
+            if (!isDefinitionReadOnly() && $("#BaseViewListCount").val() != 0) {
                var $this = $(this), rows = this.rows,
                             // get id of the previous selected row
                             startId = $this.jqGrid('getGridParam', 'selrow'),
@@ -548,7 +548,7 @@
    }
 
    function doubleClickAvailableColumn() {
-      if (!isDefinitionReadOnly()) {
+      if (!isDefinitionReadOnly() && $("#BaseViewListCount").val() != 0) {
          var grid = $('#AvailableColumns');
          var currentScrollPos = grid.parent().parent().scrollTop();
          var rowid = grid.jqGrid('getGridParam', 'selrow');
@@ -567,7 +567,7 @@
 
    // Removes a selected column from the selectedColumn grid on double click of column
    function doubleClickSelectedColumn() {
-      if (!isDefinitionReadOnly()) {
+      if (!isDefinitionReadOnly() && $("#BaseViewListCount").val() != 0) {
          var grid = $('#SelectedColumns');
          var currentScrollPos = grid.parent().parent().scrollTop();
          var rowid = grid.jqGrid('getGridParam', 'selrow');
@@ -591,6 +591,7 @@
       var isBottomRow = true;
       var isReadOnly = isDefinitionReadOnly();
       var bRowSelected = false;
+      var isBaseViewListEmpty = ($("#BaseViewListCount").val() == 0);
 
       if (allRows.length > 0) {
          bRowSelected = true;
@@ -636,13 +637,13 @@
       }
 
       // Enable / Disable relevant buttons
-      button_disable($("#btnColumnAdd")[0], bDisableAdd || isReadOnly);
-      button_disable($("#btnColumnAddAll")[0], bDisableAdd || isReadOnly);
-      button_disable($("#btnColumnRemove")[0], !bRowSelected || isReadOnly);
-      button_disable($("#btnColumnRemoveAll")[0], !bRowSelected || isReadOnly);
-      button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly || (rowCount > 1));
-      button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly || (rowCount > 1));
-      button_disable($("#btnOrgPreview")[0], !bRowSelected || isReadOnly);
+      button_disable($("#btnColumnAdd")[0], bDisableAdd || isReadOnly || isBaseViewListEmpty);
+      button_disable($("#btnColumnAddAll")[0], bDisableAdd || isReadOnly || isBaseViewListEmpty);
+      button_disable($("#btnColumnRemove")[0], !bRowSelected || isReadOnly || isBaseViewListEmpty);
+      button_disable($("#btnColumnRemoveAll")[0], !bRowSelected || isReadOnly || isBaseViewListEmpty);
+      button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly || (rowCount > 1) || isBaseViewListEmpty);
+      button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly || (rowCount > 1) || isBaseViewListEmpty);
+      button_disable($("#btnOrgPreview")[0], !bRowSelected || isReadOnly || isBaseViewListEmpty);
    }
 
    function updateColumnsSelectedGrid() {
@@ -728,9 +729,9 @@
          multiselect: true,
          beforeSelectRow: function (rowid, e) {
 
-            // If defination is readonly then skip this opertion and it will result in return false
+            // If defination is readonly or no base view access then skip this opertion and it will result in return false
             // which will stop calling onSelectRow
-            if (!isDefinitionReadOnly()) {
+            if (!isDefinitionReadOnly() && $("#BaseViewListCount").val() != 0) {
                if ($('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length == 1) {
                   updateColumnsSelectedGrid();
                }

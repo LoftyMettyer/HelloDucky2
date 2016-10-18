@@ -70,6 +70,8 @@
       </fieldset>
    </div>
 
+<input type="hidden" id="BaseViewListCount" value="@Model.BaseViewList.Count" />
+
    <script type="text/javascript">
 
       $(document).ajaxStop(function () {
@@ -117,6 +119,14 @@
             //bind click event on the css class for the button and change event for the dropdown to enable the save button
             $("#frmReportDefintion .enableSaveButtonOnClick").on("click", function () { enableSaveButton(); });
             $("#frmReportDefintion .enableSaveButtonOnComboChange").on("change", function () { enableSaveButton(); });
+         }
+
+         if($("#BaseViewListCount").val() == 0)
+         {
+            OpenHR.modalMessage("You do not have permission to the Base View.");
+            $("#frmReportDefintion #orgFilterSelect input").prop('disabled', "disabled");
+            $("#frmReportDefintion #orgFilterSelect select").prop('disabled', "disabled");
+            $("#frmReportDefintion #orgColumnSelection select").prop('disabled', "disabled");
          }
       });
 
@@ -255,7 +265,7 @@
          return 0;
       }
 
-     
+
       function validateReportDefinition() {
 
          var gridData;
@@ -264,7 +274,7 @@
          //Filters selected
          gridFitlerData = $("#DBGridFilterRecords").getRowData();
          $('#txtFilterColumns').val(JSON.stringify(gridFitlerData));
-        
+
          // Columns selected
          gridData = $("#SelectedColumns").getRowData();
          $('#txtCSAAS').val(JSON.stringify(gridData));

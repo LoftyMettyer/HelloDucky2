@@ -7,7 +7,7 @@
 @Inherits System.Web.Mvc.WebViewPage(Of OrganisationReportModel)
 @Html.HiddenFor(Function(m) m.FilterColumnsAsString, New With {.id = "txtFilterColumns"})
 
-<div class="width100">
+<div class="width100" id="orgFilterSelect">
    <fieldset id="OrgFilterSelection" class="floatleft width90">
       <legend class="fontsmalltitle">Define Filter :</legend>
       <div class="nowrap tablelayout" style="margin-top: 0;">                 
