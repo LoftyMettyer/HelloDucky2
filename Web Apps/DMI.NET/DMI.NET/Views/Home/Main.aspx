@@ -328,7 +328,7 @@
 	<div class="ui-state-error ui-corner-bottom" id="sessionWarning">
 		<p style="font-size: small;">Your session will time-out in </p>
 		<p id="timerText"></p>
-		<p style="font-size: small;">click <a onclick="OpenHR.ResetSession();" href="#">here</a> to renew it</p>
+		<p style="font-size: small;">click <a onclick="OpenHR.ResetSession(); $('#sessionWarning').dialog('close');" href="#">here</a> to renew it</p>
 	</div>
 
 </asp:Content>

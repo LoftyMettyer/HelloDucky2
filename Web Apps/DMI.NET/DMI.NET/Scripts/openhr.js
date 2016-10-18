@@ -1484,8 +1484,18 @@
              try {
                 if (window.timeoutSecondsLeft < 300) {
                    //If the parent of the element with class "divProgressMessage" (i.e. the "Please wait..." div) is not being shown...
-                   if ($(".divProgressMessage").parent().css("display") === "none")
-                      $("#sessionWarning").show(); //show countdown for the last 5 minutes.
+	                if ($(".divProgressMessage").parent().css("display") === "none") {
+		                $("#sessionWarning") //show countdown for the last 5 minutes.
+			                .dialog({
+				                modal: true,
+				                closeOnEscape: false,
+				                resizable: false
+			                });
+	                	 //Hide the dialog's title
+		                $("#sessionWarning").siblings(".ui-dialog-titlebar").remove();
+		                $("#sessionWarning").css("min-height", 41);
+		                $("#sessionWarning").parent().css("background", "transparent").css("border", "none");
+	                }
                 } else
                    $("#sessionWarning").hide();
 
