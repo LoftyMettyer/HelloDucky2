@@ -37,6 +37,11 @@
       showDefaultRibbon();
       menu_refreshMenu();
 
+      //Disable Utility buttons on first load
+      menu_toolbarEnableItem('mnutoolCustomReportsFindForOrgReports', false);
+      menu_toolbarEnableItem('mnutoolCalendarReportsFindForOrgReports', false);
+      menu_toolbarEnableItem('mnutoolMailMergeFindForOrgReports', false);
+
       if ('@Model.OrgReportChartNodeList.Any()' == 'False') {
          $('#noData').show();
          menu_toolbarEnableItem('divBtnPrintOrgReports', false);
@@ -51,9 +56,6 @@
          $('.mnuBtnPrintPreviewOrgChart').prop('disabled', true);
          $('.mnuBtnSelectOrgChart>span').prop('disabled', true);
          $('.mnuBtnSelectOrgChart').prop('disabled', true);
-         menu_toolbarEnableItem('mnutoolCustomReportsFindForOrgReports', false);
-         menu_toolbarEnableItem('mnutoolCalendarReportsFindForOrgReports', false);
-         menu_toolbarEnableItem('mnutoolMailMergeFindForOrgReports', false);
       } else {
          menu_toolbarEnableItem('divBtnPrintOrgReports', true);
          menu_toolbarEnableItem('divBtnPrintPreviewOrgReports', true);
@@ -67,9 +69,6 @@
          $('.mnuBtnPrintPreviewOrgChart').prop('disabled', false);
          $('.mnuBtnSelectOrgChart>span').prop('disabled', false);
          $('.mnuBtnSelectOrgChart').prop('disabled', false);
-         menu_toolbarEnableItem('mnutoolCustomReportsFindForOrgReports', true);
-         menu_toolbarEnableItem('mnutoolCalendarReportsFindForOrgReports', true);
-         menu_toolbarEnableItem('mnutoolMailMergeFindForOrgReports', true);
 
          //Generate treebased li-ul structure.
          $("#tempList").find("li").each(function () {
@@ -129,10 +128,6 @@
 
          // Print selected nodes and kill checkbox bubbling (so the nodes don't expand aswell)
          $(document).off('click', '.printSelect').on('click', '.printSelect', function (event) { event.stopPropagation(); printSelectClick(this); });
-
-         //Select all nodes by default on the load
-         $('.printSelect').toggle();
-         $("#chart").find(".printSelect").first().click();
 
          //Set up print options on ribbon
          $(document).off('click', '.mnuBtnPrintOrgChart').on('click', '.mnuBtnPrintOrgChart', function () { printOrgReport(); });	// print all nodes
@@ -220,6 +215,11 @@
          //Get chart position.
          divTop = $('#workframeset').scrollTop();
          divLeft = $('#workframeset').scrollLeft();
+
+         var printcheckboxstatus = true;
+         if ( $('#chart .printSelect').css('display') == 'none' ) {
+            printcheckboxstatus = false;
+         }
 
          $('#chart .printSelect').hide(); //hide the selection tickboxes.
          $('#chart .expandNode').hide(); //hide the selection tickboxes.
@@ -315,7 +315,18 @@
          $('#divSaveToFileContainer .printSelect').hide(); //hide the selection tickboxes.
          $('#divSaveToFileContainer .expandNode').hide(); //hide the expand buttons.
 
-         $('#chart .printSelect').show(); // redisplay checkboxes.
+         if(printcheckboxstatus){
+            $('#chart .printSelect').show(); // redisplay checkboxes.
+            menu_toolbarEnableItem('mnutoolCustomReportsFindForOrgReports', true);
+            menu_toolbarEnableItem('mnutoolCalendarReportsFindForOrgReports', true);
+            menu_toolbarEnableItem('mnutoolMailMergeFindForOrgReports', true);
+         }
+         else{
+            menu_toolbarEnableItem('mnutoolCustomReportsFindForOrgReports', false);
+            menu_toolbarEnableItem('mnutoolCalendarReportsFindForOrgReports', false);
+            menu_toolbarEnableItem('mnutoolMailMergeFindForOrgReports', false);
+         }
+
          showExpandNodeIcons(); // redisplay expand boxes.
          return true;
       }
