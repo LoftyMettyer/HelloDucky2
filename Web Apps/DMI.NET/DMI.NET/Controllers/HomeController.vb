@@ -6155,14 +6155,15 @@ Namespace Controllers
                         If firstEmp.EmployeeID = 0 Then
                            item.IsVacantPost = True
                            If (IsDBNull(firstEmp.ReportColumnItemList) = False AndAlso firstEmp.ReportColumnItemList.Count > 0) Then
-                              For Each column In firstEmp.ReportColumnItemList
+                              For Each column In firstEmp.ReportColumnItemList.Where(Function(s) s.TableID <> SettingsConfig.Hierarchy_TableID)
+                                 column.ColumnTitle = String.Empty
+
                                  If (column.DataType <> ColumnDataType.sqlVarBinary) Then
                                     column.ColumnValue = String.Empty
-                                    column.ColumnTitle = String.Empty
+                                 Else
+                                    column.ColumnValue = "../Content/images/vacant-post.png"
                                  End If
                               Next
-                              firstEmp.ReportColumnItemList.FirstOrDefault().ColumnValue = "Vacant"
-                              firstEmp.ReportColumnItemList.FirstOrDefault().ColumnTitle = "Vacant"
                            End If
                         End If
                      End If
