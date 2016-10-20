@@ -6055,8 +6055,14 @@ Namespace Controllers
 
                   For Each columnitem As ReportColumnItem In cloneList
                      Dim strColumnName As String = String.Format("{0}**{1}", columnitem.Heading, columnitem.ColumnID)
+                     If (columnitem.DataType = ColumnDataType.sqlDate) Then
+                        If Not IsDBNull(objRow(strColumnName)) Then
+                           columnitem.ColumnValue = VB6.Format(objRow(strColumnName), Session("LocaleDateFormat"))
+                        Else
+                           columnitem.ColumnValue = String.Empty
+                        End If
 
-                     If (columnitem.DataType <> ColumnDataType.sqlVarBinary) Then
+                     ElseIf (columnitem.DataType <> ColumnDataType.sqlVarBinary) Then
                         If Not IsDBNull(objRow(strColumnName)) Then
                            'For Numeric and Interger type of column set appropriate Decimals format.
                            If (columnitem.DataType = ColumnDataType.sqlNumeric Or columnitem.DataType = ColumnDataType.sqlInteger) Then
