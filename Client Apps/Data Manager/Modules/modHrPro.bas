@@ -3812,6 +3812,7 @@ Public Function GetUtilityType(pintID As Integer) As String
     Case eltWorkflowRebuild: GetUtilityType = "Workflow Rebuild"
     Case elt9BoxGrid: GetUtilityType = "9-Box Grid Report"
     Case eltTalentReport: GetUtilityType = "Talent Report"
+    Case eltOrganisationReport: GetUtilityType = "Organisation Report"
     Case Else: GetUtilityType = "Unknown"
   End Select
 

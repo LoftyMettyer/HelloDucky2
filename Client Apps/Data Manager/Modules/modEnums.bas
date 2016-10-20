@@ -251,6 +251,7 @@ Public Enum EventLog_Type
   eltWorkflowRebuild = 25
   elt9BoxGrid = 35
   eltTalentReport = 38
+  eltOrganisationReport = 39
 End Enum
 
 Public Enum EventLog_Status

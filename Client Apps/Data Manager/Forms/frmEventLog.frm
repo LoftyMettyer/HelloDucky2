@@ -817,6 +817,7 @@ Private Sub Form_Load()
     '.AddItem "Record Editing": .ItemData(.NewIndex) = eltRecordEditing
     .AddItem "System Error": .ItemData(.NewIndex) = eltSystemError
     .AddItem "Match Report": .ItemData(.NewIndex) = eltMatchReport
+    .AddItem "Organisation Report": .ItemData(.NewIndex) = eltOrganisationReport
     .AddItem "Envelopes & Labels": .ItemData(.NewIndex) = eltLabel
 '    .AddItem "Label Definition": .ItemData(.NewIndex) = eltLabelType
     .AddItem "Calendar Report": .ItemData(.NewIndex) = eltCalandarReport
@@ -1072,8 +1073,8 @@ Private Function RefreshGrid() As Boolean
         " WHEN [ASRSysEventLog].[Type] = 17 THEN 'Calendar Report'" & _
         " WHEN [ASRSysEventLog].[Type] = 18 THEN 'Envelopes & Labels'" & _
         " WHEN [ASRSysEventLog].[Type] = 19 THEN 'Label Definition'" & _
-        " WHEN [ASRSysEventLog].[Type] = 20 THEN 'Record Profile'"
-        
+        " WHEN [ASRSysEventLog].[Type] = 20 THEN 'Record Profile'" & _
+        " WHEN [ASRSysEventLog].[Type] = 39 THEN 'Organisation Report'"
       pstrSQL = pstrSQL & _
         " WHEN [ASRSysEventLog].[Type] = 21 THEN 'Succession Planning'" & _
         " WHEN [ASRSysEventLog].[Type] = 22 THEN 'Career Progression'" & _
