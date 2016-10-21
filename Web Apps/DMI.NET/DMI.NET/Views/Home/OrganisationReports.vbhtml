@@ -27,7 +27,19 @@
    .expandNode {
       bottom: 4px;
       right: 4px;
+      pointer-events: auto!important;
    }
+
+   .ghostNode>div {
+      background: url("../Content/images/ghostNodeImage.jpg");
+      background-repeat: no-repeat;
+      background-position: center;
+   }
+
+   .ghostNode img, .rootNode img {
+      visibility: hidden;
+   }
+
 </style>
 <script>
 
