@@ -3038,7 +3038,7 @@ Namespace Controllers
 
                   For lngCount = lngLoopMin To lngLoopMax
                      If objCrossTab.PageBreakColumn = True Then
-                        ClientDLL.AddPage(sOutputGridCaption, Regex.Replace(Left(objCrossTab.ColumnHeading(2, lngCount), 255), "[:\\\/?\*\[\]]", " ")) 'Replace invalid characters with space so Aspose doesn't throw a wobbly when creating the Excel tabs
+                        ClientDLL.AddPage(sOutputGridCaption, HttpUtility.HtmlDecode(Regex.Replace(Left(objCrossTab.ColumnHeading(2, lngCount), 255), "[:\\\/?\*\[\]]", " "))) 'Replace invalid characters with space so Aspose doesn't throw a wobbly when creating the Excel tabs
                      Else
                         If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
                            ClientDLL.AddPage(sOutputGridCaption, "Absence Breakdown")
