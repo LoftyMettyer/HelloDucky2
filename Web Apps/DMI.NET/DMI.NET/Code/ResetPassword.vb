@@ -110,24 +110,35 @@ Namespace Code
 
 			Try
 
-				sSQL = String.Format("SELECT COUNT(*) FROM master..sysprocesses p" & _
-						" WHERE    p.program_name LIKE 'OpenHR%'" & _
-										" AND p.program_name NOT LIKE 'OpenHR Workflow%'" & _
-										" AND p.program_name NOT LIKE 'OpenHR Outlook%'" & _
-										" AND p.program_name NOT LIKE 'OpenHR Server.Net%'" & _
-										" AND p.program_name NOT LIKE 'OpenHR Intranet Embedding%'" & _
-										" AND p.loginame = '{0}'", sUsername.Replace("'", "''"))
-				Dim bLoggedIn = (CInt(_db.GetDataTable(sSQL).Rows(0)(0)) > 0)
+            ' Verify the heartbeat has sufficient priviledges
+            sSQL = "SELECT CASE WHEN IS_SRVROLEMEMBER('sysadmin') = 1 OR IS_SRVROLEMEMBER('securityadmin') = 1 THEN 1 ELSE 0 END"
+				Dim bHasPermission = (CInt(_db.GetDataTable(sSQL).Rows(0)(0)) > 0)
 
-				If Not bLoggedIn Then
-					sSQL = String.Format("IF EXISTS (SELECT * FROM sys.server_principals WHERE name = N'{0}')" & _
-					"ALTER LOGIN [{0}] WITH PASSWORD = '{1}'", sUsername, newPassword.Replace("'", "''"))
+            If Not bHasPermission Then
+               Return "Password not reset (Error Code: CE007)"
 
-					_db.ExecuteSql(sSQL)
-					Return "Password changed successfully"
-				Else
-					Return "User is currently logged in"
-				End If
+            Else
+
+				   sSQL = String.Format("SELECT COUNT(*) FROM master..sysprocesses p" & _
+						   " WHERE    p.program_name LIKE 'OpenHR%'" & _
+										   " AND p.program_name NOT LIKE 'OpenHR Workflow%'" & _
+										   " AND p.program_name NOT LIKE 'OpenHR Outlook%'" & _
+										   " AND p.program_name NOT LIKE 'OpenHR Server.Net%'" & _
+										   " AND p.program_name NOT LIKE 'OpenHR Intranet Embedding%'" & _
+										   " AND p.loginame = '{0}'", sUsername.Replace("'", "''"))
+				   Dim bLoggedIn = (CInt(_db.GetDataTable(sSQL).Rows(0)(0)) > 0)
+
+				   If Not bLoggedIn Then
+					   sSQL = String.Format("IF EXISTS (SELECT * FROM sys.server_principals WHERE name = N'{0}')" & _
+					   "ALTER LOGIN [{0}] WITH PASSWORD = '{1}'", sUsername, newPassword.Replace("'", "''"))
+
+					   _db.ExecuteSql(sSQL)
+					   Return "Password changed successfully"
+				   Else
+					   Return "User is currently logged in"
+				   End If
+
+            End If
 
 			Catch ex As Exception
 				Return ex.Message
