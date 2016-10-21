@@ -83,7 +83,7 @@ var overlay;
 var wait;
 
 function InitialiseWindow() {
-
+   
 	overlay = jQuery('#divOverlay');
 	wait = jQuery('#pleasewaitScreen');
 
@@ -119,6 +119,12 @@ function InitialiseWindow() {
 		catch (e) { }
 
 		launchForms(window.$get("frmMain").hdnSiblingForms.value, false);
+
+      //Allow buttons to be clicked through images.
+		jQuery("img[src^='Image.ashx'], span:not([id]), span[id^='ctl']").css("pointer-events", "none");
+      //Exclude span element children from change as e.g. checkboxes are rendered in spans
+		jQuery("span:not([id])").children().css("pointer-events", "auto");
+
 	}
 	catch (e) { }
 
@@ -426,7 +432,15 @@ function showMessage() {
 		}
 		setPostbackMode(0);
 	}
-	catch (e) { }
+   catch (e) { }
+
+   //Allow buttons to be clicked through images. 
+	//Needs to be reapplied as postback can regenerate controls.
+	jQuery("img[src^='Image.ashx'], span:not([id]), span[id^='ctl']").css("pointer-events", "none");
+   //Exclude span element children from change as e.g. checkboxes are rendered in spans
+	jQuery("span:not([id])").children().css("pointer-events", "auto");
+
+
 }
 
 function showSubmissionMessage() {
