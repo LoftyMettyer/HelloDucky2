@@ -12,7 +12,7 @@
    <div class="tablerow">
       <fieldset id="selectedTable">
          <legend class="fontsmalltitle width100">View/Table(s) :</legend>
-         @Html.DropDownListFor(Function(m) m.SelectViewOnColumnsTab, New SelectList(Model.AllAvailableViewList, "Id", "Name"), New With {.class = "width70 floatright", .id = "SelectedTableID", .name = "SelectedTableID", .onchange = "ChangeColumnTableView(event.target);"})
+         @Html.DropDownListFor(Function(m) m.SelectViewOnColumnsTab, New SelectList(Model.AllAvailableViewList, "Id", "Name"), New With {.class = "width70", .id = "SelectedTableID", .name = "SelectedTableID", .onchange = "ChangeColumnTableView(event.target);"})
       </fieldset>
    </div>
 
