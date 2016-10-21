@@ -5062,7 +5062,7 @@ Private Sub ValidateElement_StoredData(pwfElement As VB.Control, _
   Dim sMessagePrefix As String
   Dim sMessagePrefix2 As String
   Dim iColumnDataType As DataTypes
-  Dim iColumnSize As Integer
+  Dim iColumnSize As Long
   Dim iColumnDecimals As Integer
   Dim lngSpinnerMin As Long
   Dim lngSpinnerMax As Long
@@ -5074,7 +5074,7 @@ Private Sub ValidateElement_StoredData(pwfElement As VB.Control, _
   Dim objMisc As Misc
   Dim sTemp As String
   Dim iDBColumnDataType As DataTypes
-  Dim iDBColumnSize As Integer
+  Dim iDBColumnSize As Long
   Dim iDBColumnDecimals As Integer
   Dim lngDBColumnTableID As Long
   Dim iMaxLength As Integer
