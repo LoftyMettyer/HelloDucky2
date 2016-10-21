@@ -2311,7 +2311,7 @@ function updateControl(lngColumnID, value) {
 
 		if ($(this).is("select")) {
 			//does value exist in the dropdown?
-			if ($(this).find('option[value="' + value + '"]').length) {
+			if ($(this).find('option[value="' + value.replace(/(['"])/g, "\\$1") + '"]').length) { //Escape double quotes
 				$(this).val(value);
 			} else {
 				if ($(this).attr("data-columntype") == "lookup") $(this).empty();	//For lookups, clear out all values, so the newly selected value is all there is.							
