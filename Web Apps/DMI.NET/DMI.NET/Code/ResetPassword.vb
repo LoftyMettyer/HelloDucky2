@@ -115,7 +115,7 @@ Namespace Code
 				Dim bHasPermission = (CInt(_db.GetDataTable(sSQL).Rows(0)(0)) > 0)
 
             If Not bHasPermission Then
-               Return "Password not reset (Error Code: CE007)"
+               Return "Password not reset"
 
             Else
 
