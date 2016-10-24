@@ -344,7 +344,7 @@ BEGIN
 									+ CHAR(13) + ' FROM ' + @sBaseViewName  + ' INNER JOIN #NoAppointmentForPostID nafp ON nafp.'+@sReportsToPostIDColumn +'='+ @sBaseViewName +'.'+ @sReportsToPostIDColumn
 									+ CHAR(13) + ' WHERE '+ @sHierarchyIdentifierColumn + ' NOT IN ( Select ' + @sPostAllocationViewName + '.' + @sHierarchyIdentifierColumn + ' FROM ' + @sPostAllocationViewName +' )'
                            /* End of fetching vacant post */
-									+ CHAR(13) + ' SELECT * FROM #OrgReportTemp  ORDER BY  hierarchylevel, ' + REPLACE(@sHierarchyReportsToColumn,@sHierarchyTableName+'.','');			
+									+ CHAR(13) + ' SELECT 0 AS IsGhostNode, 0 AS IsFilteredNode, * FROM #OrgReportTemp  ORDER BY  hierarchylevel, ' + REPLACE(@sHierarchyReportsToColumn,@sHierarchyTableName+'.','');			
 				
 		
 		EXEC (@sFinalOrgReportSql);
