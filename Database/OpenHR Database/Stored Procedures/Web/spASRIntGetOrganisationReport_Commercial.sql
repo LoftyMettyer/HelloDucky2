@@ -105,31 +105,28 @@ BEGIN
 	-- Generate all the missing nodes (manager records that exist but are not contained in the selected base view)
 	SET @sSQL = 'SELECT DISTINCT 1, Reports_To_Staff_Number, pr.' + @sPersonnelReportToStaffNoColumn + ' , ISNULL(pr.ID, 0) FROM @allNodes nodes
 				 LEFT JOIN ' + @sBaseViewTableName + ' pr ON pr.' + @sPersonnelStaffNumberColumn + ' = nodes.Reports_To_Staff_Number
-				 WHERE nodes.Reports_To_Staff_Number NOT IN (SELECT Staff_Number FROM @allNodes)'
-				 
+				 WHERE nodes.Reports_To_Staff_Number NOT IN (SELECT Staff_Number FROM @allNodes)
+					AND nodes.EmployeeID <> @piRootID';
+
 	WHILE 1=1
 	BEGIN
 
 		INSERT @allNodes (IsGhostNode, Staff_Number, Reports_To_Staff_Number, EmployeeID)
-			EXECUTE sp_executeSQL @sSQL, N'@allNodes OrgChartRelation READONLY', @allNodes=@allNodes
+			EXECUTE sp_executeSQL @sSQL, N'@allNodes OrgChartRelation READONLY, @piRootID int', @allNodes=@allNodes, @piRootID=@piRootID
 
 		IF @@ROWCOUNT < 2
 			BREAK;
 
 	END
 
-
 	-- Data cleasning (to remove?) (somewhere in the above isnulls are not handled properly)
-	UPDATE @allNodes SET Reports_To_Staff_Number = 'RECURSIVE!!!' WHERE Reports_To_Staff_Number = Staff_Number
 	UPDATE @allNodes SET Staff_Number = '00000000' WHERE Staff_Number = ''
 	UPDATE @allNodes SET Reports_To_Staff_Number = '00000000' WHERE ISNULL(Reports_To_Staff_Number,'') = ''
 	UPDATE @allNodes SET Reports_To_Staff_Number = '' WHERE Reports_To_Staff_Number = Staff_Number;
 
-
 	-- Calculate the top most node of this dataset
 	SELECT @topLevelReports_To = Staff_Number
 		FROM @allNodes WHERE ISNULL(Reports_To_Staff_Number, '') NOT IN (SELECT Staff_Number FROM @allNodes);
-
 
 	-- Calculate the hierarchy levels
 	WITH employees AS (	
