@@ -41,7 +41,7 @@ BEGIN
 	WHERE SingleRecordView = 1
 
 	-- Build the column selection definition
-	SELECT @sColumnList = @sColumnList + ', [' + c.ColumnName + '] AS [' + c.ColumnName + '**' + convert(varchar(8), oc.ColumnID) + ']' + CHAR(13)
+	SELECT @sColumnList = @sColumnList + ', base.[' + c.ColumnName + '] AS [' + c.ColumnName + '**' + convert(varchar(8), oc.ColumnID) + ']' + CHAR(13)
 		FROM ASRSysOrganisationColumns oc
 		INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId		
 		WHERE oc.OrganisationID = @piReportID;
@@ -50,32 +50,32 @@ BEGIN
 	SELECT @sFilterList = @sFilterList + CASE WHEN LEN(@sFilterList) > 0 THEN ' AND ' ELSE ' ' END + 
 		CASE WHEN c.datatype = -7 THEN /* Logic column (must be the equals operator).	*/								
             CASE
-				WHEN  oc.Operator = 1 THEN  '(' + c.ColumnName + ' = ' + CASE WHEN  UPPER(oc.Value) = 'TRUE' THEN '1'ELSE '0' END + ')'
+				WHEN  oc.Operator = 1 THEN  '(base.' + c.ColumnName + ' = ' + CASE WHEN  UPPER(oc.Value) = 'TRUE' THEN '1'ELSE '0' END + ')'
 			END	
 		WHEN (c.datatype = 2) OR (c.datatype = 4)  THEN /* Numeric/Integer column. */
 			CASE
-					WHEN oc.Operator = 1 THEN '(' + c.ColumnName + ' = '  + oc.Value + ')'
-					WHEN oc.Operator = 2 THEN '(' + c.ColumnName + ' <> ' + oc.Value	+ ')'
-					WHEN oc.Operator = 3 THEN '(' + c.ColumnName + ' <= ' + oc.Value + ')'
-					WHEN oc.Operator = 4 THEN '(' + c.ColumnName + ' >= ' + oc.Value + ')'
-					WHEN oc.Operator = 5 THEN '(' + c.ColumnName + ' > '  + oc.Value + ')'
-					WHEN oc.Operator = 6 THEN '(' + c.ColumnName + ' < '  + oc.Value	+ ')'
+					WHEN oc.Operator = 1 THEN '(base.' + c.ColumnName + ' = '  + oc.Value + ')'
+					WHEN oc.Operator = 2 THEN '(base.' + c.ColumnName + ' <> ' + oc.Value	+ ')'
+					WHEN oc.Operator = 3 THEN '(base.' + c.ColumnName + ' <= ' + oc.Value + ')'
+					WHEN oc.Operator = 4 THEN '(base.' + c.ColumnName + ' >= ' + oc.Value + ')'
+					WHEN oc.Operator = 5 THEN '(base.' + c.ColumnName + ' > '  + oc.Value + ')'
+					WHEN oc.Operator = 6 THEN '(base.' + c.ColumnName + ' < '  + oc.Value	+ ')'
 			END
 		WHEN (c.datatype = 11) THEN /* Date column. */
 			CASE
-					WHEN oc.Operator = 1 THEN '(' + c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' = '''  + oc.Value + '''' ELSE ' IS NULL' END + ')'	
-					WHEN oc.Operator = 2 THEN '(' + c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' <> ''' + oc.Value + '''' ELSE ' IS NOT NULL' END + ')'	
-					WHEN oc.Operator = 3 THEN '(' + c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' <= ''' + oc.Value + ''' OR ' + c.ColumnName + ' IS NULL' ELSE ' IS NULL' END + ')'	
-					WHEN oc.Operator = 4 THEN '(' + c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' >= ''' + oc.Value + '''' ELSE ' IS NULL OR ' + c.ColumnName + ' IS NOT NULL' END + ')'	
-					WHEN oc.Operator = 5 THEN '(' + c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' > '''  + oc.Value + '''' ELSE ' IS NOT NULL' END + ')'	
-					WHEN oc.Operator = 6 THEN '(' + c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' < '''  + oc.Value + ''' OR ' + '.'+ c.ColumnName + ' IS NULL' ELSE ' IS NULL AND ' + c.ColumnName + ' IS NOT NULL' END + ')'		
+					WHEN oc.Operator = 1 THEN '(base.' + c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' = '''  + oc.Value + '''' ELSE ' IS NULL' END + ')'	
+					WHEN oc.Operator = 2 THEN '(base.' + c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' <> ''' + oc.Value + '''' ELSE ' IS NOT NULL' END + ')'	
+					WHEN oc.Operator = 3 THEN '(base.' + c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' <= ''' + oc.Value + ''' OR base.' + c.ColumnName + ' IS NULL' ELSE ' IS NULL' END + ')'	
+					WHEN oc.Operator = 4 THEN '(base.' + c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' >= ''' + oc.Value + '''' ELSE ' IS NULL OR base.' + c.ColumnName + ' IS NOT NULL' END + ')'	
+					WHEN oc.Operator = 5 THEN '(base.' + c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' > '''  + oc.Value + '''' ELSE ' IS NOT NULL' END + ')'	
+					WHEN oc.Operator = 6 THEN '(base.' + c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' < '''  + oc.Value + ''' OR base.' + c.ColumnName + ' IS NULL' ELSE ' IS NULL AND base.' + c.ColumnName + ' IS NOT NULL' END + ')'		
 			END
 		WHEN ((c.datatype <> -7) AND (c.datatype <> 2) AND (c.datatype <> 4) AND (c.datatype <> 11)) THEN /* Character/Working Pattern column. */
 			CASE
-					WHEN oc.Operator = 1 THEN '(' + c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' = '''' OR ' + c.ColumnName + ' IS NULL' ELSE ' LIKE ''' + replace(replace(replace(oc.Value, '''', ''''''), '*ALL', '%'),'?', '_' ) + '''' END + 	+ ')'									  
-					WHEN oc.Operator = 2 THEN '(' + c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' <> '''' AND ' + c.ColumnName + ' IS NOT NULL' ELSE ' NOT LIKE ''' + replace(replace(replace(oc.Value, '''', ''''''), '*ALL', '%'),'?', '_' ) + '''' END  	+ ')'
-					WHEN oc.Operator = 7 THEN '(' + c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' IS NULL OR ' + c.ColumnName + ' IS NOT NULL' ELSE ' LIKE ''%' + replace(oc.Value, '''', '''''') + '%'''  END 	+ ')'
-					WHEN oc.Operator = 8 THEN '(' + c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' IS NULL AND ' + c.ColumnName + ' IS NOT NULL' ELSE ' NOT LIKE ''%' +  replace(oc.Value, '''', '''''') + '%'''  END  + ')'					   					   
+					WHEN oc.Operator = 1 THEN '(base.' + c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' = '''' OR base.' + c.ColumnName + ' IS NULL' ELSE ' LIKE ''' + replace(replace(replace(oc.Value, '''', ''''''), '*ALL', '%'),'?', '_' ) + '''' END + 	+ ')'									  
+					WHEN oc.Operator = 2 THEN '(base.' + c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' <> '''' AND base.' + c.ColumnName + ' IS NOT NULL' ELSE ' NOT LIKE ''' + replace(replace(replace(oc.Value, '''', ''''''), '*ALL', '%'),'?', '_' ) + '''' END  	+ ')'
+					WHEN oc.Operator = 7 THEN '(base.' + c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' IS NULL OR base.' + c.ColumnName + ' IS NOT NULL' ELSE ' LIKE ''%' + replace(oc.Value, '''', '''''') + '%'''  END 	+ ')'
+					WHEN oc.Operator = 8 THEN '(base.' + c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' IS NULL AND base.' + c.ColumnName + ' IS NOT NULL' ELSE ' NOT LIKE ''%' +  replace(oc.Value, '''', '''''') + '%'''  END  + ')'					   					   
 			END
 									
 			END	
@@ -103,7 +103,8 @@ BEGIN
 
 
 	-- Generate all the missing nodes (manager records that exist but are not contained in the selected base view)
-	SET @sSQL = 'SELECT DISTINCT 1, Reports_To_Staff_Number, pr.' + @sPersonnelReportToStaffNoColumn + ' , ISNULL(pr.ID, 0) FROM @allNodes nodes
+	SET @sSQL = 'SELECT DISTINCT 1, nodes.Reports_To_Staff_Number, pr.' + @sPersonnelReportToStaffNoColumn + ' , ISNULL(pr.ID, 0) 
+				 FROM @allNodes nodes
 				 LEFT JOIN ' + @sBaseViewTableName + ' pr ON pr.' + @sPersonnelStaffNumberColumn + ' = nodes.Reports_To_Staff_Number
 				 WHERE nodes.Reports_To_Staff_Number NOT IN (SELECT Staff_Number FROM @allNodes)
 					AND nodes.EmployeeID <> @piRootID';
@@ -172,6 +173,7 @@ BEGIN
 			RIGHT JOIN @allNodes nodes ON nodes.EmployeeID = base.id 
 			WHERE ID = @piRootID
 		ORDER BY HierarchyLevel';
+
 
 	EXECUTE AS CALLER;
 		EXEC sp_executesql @sSQL,  N'@allNodes OrgChartRelation READONLY, @piRootID int'
