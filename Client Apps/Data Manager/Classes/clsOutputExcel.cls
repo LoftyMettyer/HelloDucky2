@@ -220,7 +220,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
         '
         ' GRID control
         '
-        Set objRecProfTable = pfrmRecProfile.Definition.Item(ctlTemp.Tag)
+        Set objRecProfTable = pfrmRecProfile.Definition.item(ctlTemp.Tag)
 
         ' Check if this grid is preceded or followed IMMEDIATELY by other grids.
         ' ie. if this grid is part of a group of grids that are used to display
@@ -709,6 +709,9 @@ Private Sub Class_Initialize()
   mblnXLExcelHeaders = (GetUserSetting("Output", "ExcelHeaders", "0") = "1")
   mblnXLAutoFitCols = (GetUserSetting("Output", "AutoFitCols", "1") = "1")
   mblnXLLandscape = (GetUserSetting("Output", "Landscape", "1") = "1")
+  
+  mblnXLExcelOmitTopRow = False
+  mblnXLExcelOmitLeftCol = False
    
   mlngDataStartRow = Val(GetUserSetting("Output", "DataRow", "4"))
   mlngDataStartCol = Val(GetUserSetting("Output", "DataCol", "2"))
