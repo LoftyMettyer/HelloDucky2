@@ -6042,20 +6042,24 @@ Namespace Controllers
                'Get all employees data related to selected columns 
                For Each objRow As DataRow In OrgReportRecords.Tables(0).Rows
                   Dim hierarchyLevel = CInt(objRow("HierarchyLevel"))
-                  Dim isGhostNode = CBool(objRow("IsGhostNode"))
-                  additionalClasses = " ui-corner-all"
+                  Dim IsGhostNode = CBool(objRow("IsGhostNode"))
+                  Dim IsFilteredNode = CBool(objRow("IsFilteredNode"))
 
+                  additionalClasses = " ui-corner-all"
 
                   ' highlight the current user's node
                   If CInt(objRow("EmployeeID")) = iLoggedInUser Then
                      additionalClasses &= " ui-state-highlight"
                   Else
-                     If CBool(objRow("IsFilteredNode")) = True Then
+                     If IsFilteredNode = True AndAlso IsGhostNode = True Then
+                        ' Add CSS Classes for filtered nodes (runtime filters) and ghost nodes
+                        additionalClasses &= " ui-state-disabled filteredNode ghostNode"
+                     ElseIf IsFilteredNode = True Then
                         ' Add CSS Classes for filtered nodes (runtime filters)
                         additionalClasses &= " ui-state-disabled filteredNode"
-                     ElseIf isGhostNode Then
+                     ElseIf IsGhostNode = True Then
                         ' Add CSS Classes for ghost nodes
-                        additionalClasses &= " ui-state-disabled ghostNode"
+                        additionalClasses &= " ghostNode"
                      Else
                         additionalClasses &= " ui-state-default"
                      End If
