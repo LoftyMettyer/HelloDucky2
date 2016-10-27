@@ -11,55 +11,57 @@
 <%="" %>
 
 <%
-    Dim SelectedTableID As String = Request.Form("SelectedTableID")
-    Dim fGotId As Boolean
-    Dim iBaseTableID As Integer
-		
-    Dim iDefSelType = CType(Session("defseltype"), UtilityType)
-    Dim isLoadedFromReportDefiniton As Boolean = CType(Session("IsLoadedFromReportDefinition"), Boolean)
+   Dim SelectedTableID As String = Request.Form("SelectedTableID")
+   Dim fGotId As Boolean
+   Dim iBaseTableID As Integer
 
-    Dim objSession As SessionInfo = CType(Session("sessionContext"), SessionInfo)
-	
-    Session("objCalendar" & Session("UtilID")) = Nothing
+   Dim iDefSelType = CType(Session("defseltype"), UtilityType)
+   Dim isLoadedFromReportDefiniton As Boolean = CType(Session("IsLoadedFromReportDefinition"), Boolean)
 
-    If Session("fromMenu") = 0 Then
-        If Session("singleRecordID") < 1 Then
-            If Not String.IsNullOrEmpty(Request.Form("txtTableID")) Then
-                iBaseTableID = Request.Form("txtTableID")
-            Else
+   Dim objSession As SessionInfo = CType(Session("sessionContext"), SessionInfo)
 
-                If Len(Session("tableID")) > 0 Then
-                    If CLng(Session("tableID")) > 0 Then
-                        iBaseTableID = Session("tableID")
-                        fGotId = True
-                    End If
-                End If
+   Session("objCalendar" & Session("UtilID")) = Nothing
 
-                If fGotId = False Then
-                    If (Session("singleRecordID") > 0) Then
-                        iBaseTableID = SettingsConfig.Personnel_EmpTableID
-                    End If
-                End If
-            End If
-        Else
+   If Session("fromMenu") = 0 Then
+      If Session("singleRecordID") < 1 Then
+         If Not String.IsNullOrEmpty(Request.Form("txtTableID")) Then
+            iBaseTableID = Request.Form("txtTableID")
+         Else
+
             If Len(Session("tableID")) > 0 Then
-                iBaseTableID = Session("tableID")
+               If CLng(Session("tableID")) > 0 Then
+                  iBaseTableID = Session("tableID")
+                  fGotId = True
+               End If
             End If
-        End If
-    End If
-	
-    If Session("singleRecordID") = 0 Then
-        If Session("optionTableID") > 0 Then
-            iBaseTableID = Session("optionTableID")
-        End If
-        Session("tableID") = Session("utilTableID")
-    End If
-	
-    Session("optionTableID") = 0
-	
-    If iDefSelType = UtilityType.utlPicklist Or iDefSelType = UtilityType.utlFilter Or iDefSelType = UtilityType.utlCalculation Then
-        iBaseTableID = CInt(Session("utilTableID"))
-    End If
+
+            If fGotId = False Then
+               If (Session("singleRecordID") > 0) Then
+                  iBaseTableID = SettingsConfig.Personnel_EmpTableID
+               End If
+            End If
+         End If
+      Else
+         If Len(Session("tableID")) > 0 Then
+            iBaseTableID = Session("tableID")
+         End If
+      End If
+   Else
+      Session("optionTableID") = 0 'If run from menu then clear TableId.Making it zero before we use it as iBaseTableID in below code.
+   End If
+
+   If Session("singleRecordID") = 0 Then
+      If Session("optionTableID") > 0 Then
+         iBaseTableID = Session("optionTableID")
+      End If
+      Session("tableID") = Session("utilTableID")
+   End If
+
+   Session("optionTableID") = 0
+
+   If iDefSelType = UtilityType.utlPicklist Or iDefSelType = UtilityType.utlFilter Or iDefSelType = UtilityType.utlCalculation Then
+      iBaseTableID = CInt(Session("utilTableID"))
+   End If
 %>
 
 <script type="text/javascript">
@@ -918,8 +920,8 @@
     	//resize grid		
     	var gridWidth = $("#findGridRowDefsel").width();
     	var gridHeight = $("#workframeset").height() * 0.6;	//findGridRow is hardcoded to 60% of workframeset.
-		 
-    	$("#DefSelRecords").jqGrid({			
+		
+    	$("#DefSelRecords").jqGrid({
     		url: 'GetDefinitionsForType?UtilType=' + <%:CInt(iDefSelType)%> + '&&TableID=' + <%=iBaseTableID%> + '&&OnlyMine=' + onlyMine + '&&CategoryID=' + categoryID +'&&OwnerName=' + ownerName,
         	datatype: 'json',
         	mtype: 'GET',
