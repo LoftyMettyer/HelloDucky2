@@ -90,6 +90,11 @@ Private Sub RemoveGroupAccessRecords(psGroupName As String)
   sSQL = "DELETE FROM ASRSysMatchReportAccess" & _
     "  WHERE groupName = '" & psGroupName & "'"
   gADOCon.Execute sSQL, , adExecuteNoRecords
+  
+  sSQL = "DELETE FROM ASRSysOrganisationReportAccess" & _
+    "  WHERE groupName = '" & psGroupName & "'"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+
 
 End Sub
 
@@ -2059,6 +2064,13 @@ Private Function ApplyChanges_NewGroups() As Boolean
             "   WHERE groupName = '" & .AccessCopyGroup & "')"
           gADOCon.Execute sSQL, , adExecuteNoRecords
           
+          sSQL = "INSERT INTO ASRSysOrganisationReportAccess" & _
+            " (groupName, access, id)" & _
+            " (SELECT '" & .Name & "', access, ID" & _
+            "   FROM ASRSysOrganisationReportAccess" & _
+            "   WHERE groupName = '" & .AccessCopyGroup & "')"
+          gADOCon.Execute sSQL, , adExecuteNoRecords
+          
           ' Reset the 'accessCopyGroup' property as the group's access
           ' is now saved and no longer needs to be copied.
           .AccessCopyGroup = vbNullString
@@ -2330,6 +2342,14 @@ Private Function ApplyChanges_NewGroups() As Boolean
                         IIf(LenB(sHiddenJobTypes) <> 0, ",", vbNullString) & _
                         "'Record Profile'"
                     End If
+                    
+                  Case utlOrganisation
+                    sSQL = "INSERT INTO ASRSysOrganisationReportAccess" & _
+                      " (groupName, access, id)" & _
+                      " (SELECT '" & .Name & "', '" & CStr(avAccess(2, iLoop)) & "', ID" & _
+                      "   FROM ASRSysOrganisationReport)"
+                    gADOCon.Execute sSQL, , adExecuteNoRecords
+                    
                 End Select
               Next iLoop
             
@@ -4642,6 +4662,14 @@ Private Function ApplyChanges_CleanUp() As Boolean
   gADOCon.Execute sSQL, , adExecuteNoRecords
   
   sSQL = "DELETE FROM ASRSysMatchReportAccess" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+  
+  sSQL = "DELETE FROM ASRSysOrganisationReportAccess" & _
     " WHERE groupName NOT IN" & _
     "   (SELECT name" & _
     "    FROM sysusers" & _
