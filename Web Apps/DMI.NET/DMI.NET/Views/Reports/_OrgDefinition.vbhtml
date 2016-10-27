@@ -126,6 +126,7 @@
             OpenHR.modalMessage("You do not have permission to the Base View.");
             $("#frmReportDefintion #orgFilterSelect input").prop('disabled', "disabled");
             $("#frmReportDefintion #orgFilterSelect select").prop('disabled', "disabled");
+            $("#frmReportDefintion #orgColumnSelection input").prop('disabled', "disabled");
             $("#frmReportDefintion #orgColumnSelection select").prop('disabled', "disabled");
          }
       });
