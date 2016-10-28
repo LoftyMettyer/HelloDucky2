@@ -27,10 +27,10 @@
    .expandNode {
       bottom: 4px;
       right: 4px;
-      pointer-events: auto!important;
+      pointer-events: auto !important;
    }
 
-   .ghostNode>div {
+   .ghostNode > div {
       background: url("../Content/images/ghostNodeImage.jpg");
       background-repeat: no-repeat;
       background-position: center;
@@ -40,6 +40,9 @@
       visibility: hidden;
    }
 
+   .jOrgChart .ui-state-disabled {
+      opacity: 0.20;
+   }
 </style>
 <script>
 
@@ -481,6 +484,7 @@
          newWin.document.write('#divPostColumns div {margin-top:1px !important;}');
          newWin.document.write('#divPostColumns div {margin-bottom:0px !important;}');
          newWin.document.write('#divPostColumns div {height:auto !important;}');
+         newWin.document.write('.jOrgChart .ui-state-disabled { opacity: 0.20 }');
          newWin.document.write('.truncate {white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}');
          newWin.document.write('.expandNode {bottom: 4px;right: 4px;}');
          newWin.document.write('</sty');
@@ -600,15 +604,15 @@
 
             <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
                @For Each childitem In item.PostWiseNodeList  'Create internal boxes for each employee.
-                        @<div style="min-width:180px;display:table-cell;" class="centered">
-                           @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
-                        @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
-                           @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
-                              Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
-                           Next
-                        </div>
-                           End If
-                        </div>
+               @<div style="min-width:180px;display:table-cell;" class="centered">
+                  @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
+               @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
+                  @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
+                     Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
+                  Next
+               </div>
+                  End If
+               </div>
                Next
             </div>
 
