@@ -6053,7 +6053,7 @@ Namespace Controllers
                   Else
                      If IsFilteredNode = True AndAlso IsGhostNode = True Then
                         ' Add CSS Classes for filtered nodes (runtime filters) and ghost nodes
-                        additionalClasses &= " ui-state-disabled filteredNode ghostNode"
+                        additionalClasses &= " filteredNode ghostNode"
                      ElseIf IsFilteredNode = True Then
                         ' Add CSS Classes for filtered nodes (runtime filters)
                         additionalClasses &= " ui-state-disabled filteredNode"
