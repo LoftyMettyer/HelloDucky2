@@ -421,7 +421,7 @@
 
                   //First Checking Condition Works For IE & Firefox
                   //Second Checking Condition Works For Chrome
-                  if(!newWin || newWin.outerHeight === 0) {
+                  if (newWin == null || typeof(newWin)=='undefined') { 
                      OpenHR.modalMessage("Please disable your pop-up blocker and click the 'Save To File' button again.");
                      return;
                   }
