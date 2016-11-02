@@ -105,7 +105,7 @@
             dragAndDrop: false
          });
 
-         setTimeout(centreMe(true), 500);
+         setTimeout('centreMe(true)', 500);
 
          $("#chart").find("#divMainContainer").each(function () {
 
@@ -159,7 +159,6 @@
          $(document).off('click', 'div.node').on('click', 'div.node', function () {
             $('div.node.ui-state-active').removeClass('ui-state-active').addClass('ui-state-default');
             $(this).removeClass('ui-state-default').addClass('ui-state-active');
-            centreMe(false);
          });
 
          //Show the click to expand plus/minus icon
@@ -189,27 +188,39 @@
 
    function centreMe(fSelf) {
       try {
-         var classToCentre = (fSelf ? '.node.ui-state-highlight' : '.node.ui-state-active');
+
+         //If not highlighted node found  then return.
+         if($("#chart .ui-state-highlight").length ==0){
+            return;
+         }
+
+         var classToCentre = '#chart .ui-state-highlight';
          var menuWidth = 0;
          if (!window.menu_isSSIMode()) menuWidth = $('#menuframe').width();
          var workframe = $('#workframeset');
          if (window.currentLayout == "tiles") workframe = $('#chart');
 
-         var myNodePos = $(classToCentre).offset().left;
+         //Find the closest div with .node class
+         var nodeDive = $(classToCentre).closest('.node');
+
+         var myNodePos = nodeDive.offset().left;
          var workframeWidth = workframe.width();
          workframeWidth += menuWidth;
 
          if ((myNodePos > workframeWidth) || (myNodePos < menuWidth)) {
             workframe.animate({ scrollLeft: 0 }, 0);
-            myNodePos = $(classToCentre).offset().left;
+            myNodePos = nodeDive.offset().left;
             workframeWidth = workframe.width();
 
+            //Calculate the top position of highlighted node.
+            var scrollTopNewPos = $("#banner").height() +$("#fixedlinks").height()+nodeDive.height()-50;
+
+            //Calculate the left position of highlighted node.
             var scrollLeftNewPos = myNodePos - ((workframeWidth / 2) + menuWidth) + 48;
-            workframe.animate({ scrollLeft: scrollLeftNewPos }, 2000);
 
+            //Reposition the main containter div according to left and top position of highlighted node.
+            workframe.animate({ scrollLeft: scrollLeftNewPos, scrollTop: scrollTopNewPos }, 2000);
          }
-
-
       } catch (e) { }
    }
    var divTop;
@@ -604,15 +615,15 @@
 
             <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
                @For Each childitem In item.PostWiseNodeList  'Create internal boxes for each employee.
-               @<div style="min-width:180px;display:table-cell;" class="centered">
-                  @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
-               @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
-                  @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
-                     Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
-                  Next
-               </div>
-                  End If
-               </div>
+                        @<div style="min-width:180px;display:table-cell;" class="centered">
+                           @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
+                        @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
+                           @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
+                        Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
+                     Next
+                        </div>
+                           End If
+                        </div>
                Next
             </div>
 
