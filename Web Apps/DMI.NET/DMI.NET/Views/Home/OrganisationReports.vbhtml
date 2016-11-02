@@ -468,7 +468,7 @@
       var fPrintAll = ($('.printSelect').css('display') == "none");
       var divToPrint;
       var untickedItemsCount = $('.printSelect:not(:checked)').length;
-
+      
       if (($('.printSelect:checked:enabled').length === 0) && (!fPrintAll)) {
          OpenHR.modalMessage("No nodes selected to print.");
       } else {
@@ -500,7 +500,7 @@
          newWin.document.write('.expandNode {bottom: 4px;right: 4px;}');
          newWin.document.write('</sty');
          newWin.document.write('le>');
-         newWin.document.write('<h1 style="width: 400px;">Organisation Reports</h1>');
+         newWin.document.write('<h1>Organisation Reports : ' + '@Session("utilname")' +' </h1>');
 
          $('.printSelect').hide(); //hide the selection tickboxes.
          $('.expandNode').hide(); //hide the selection tickboxes.
