@@ -6011,6 +6011,11 @@ Namespace Controllers
 
             Dim additionalClasses As String
 
+            'Get report definition name and override Session("utilname") to display definition name in SSI.
+            If OrgReportRecords.Tables(3).Rows.Count = 1 Then
+               Session("utilname") = HttpUtility.HtmlDecode(OrgReportRecords.Tables(3).Rows(0)("DefinitionName").ToString())
+            End If
+
             If OrgReportRecords.Tables(0).Rows.Count = 0 Then
                ' No records returned
                Session("ErrorText") = "No matching records found."
