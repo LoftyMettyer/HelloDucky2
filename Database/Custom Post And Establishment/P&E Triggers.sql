@@ -377,7 +377,7 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
    	DECLARE @today datetime =  DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE()));
 	DECLARE @changeDates TABLE(Effective_Date datetime, AppointmentID integer, PersID integer);
 
-	IF NOT EXISTS(SELECT [tablefromid] FROM #intransactiontrigger WHERE [tablefromid] = 252)
+	IF NOT EXISTS(SELECT [tablefromid] FROM dbo.InTriggerContext WHERE [tablefromid] = 252)
 	BEGIN
 		
 		DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_251] IN (SELECT DISTINCT [id] FROM deleted);
