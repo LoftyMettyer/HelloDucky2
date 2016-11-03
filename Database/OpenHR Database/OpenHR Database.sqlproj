@@ -682,6 +682,7 @@
     <Build Include="Types\OrgChartRelation.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetOrganisationReport_Commercial.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetOrganisationReport_Post.sql" />
+    <Build Include="User Defined Functions\udfsys_isnivalid.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
@@ -740,7 +741,6 @@
     <Build Include="Stored Procedures\Other\sp_ASRFn_IsPopulated_3.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRFn_IsPopulated_4.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRFn_IsValidForPayrollCharset.sql" />
-    <Build Include="Stored Procedures\Other\sp_ASRFn_IsValidNINumber.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRFn_LastDayOfMonth.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRFn_LastDayOfYear.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRFn_LengthOfCharacterField.sql" />

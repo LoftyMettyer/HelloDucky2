@@ -77,14 +77,18 @@ PRINT 'Step - Calculation Updates'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_IsValidNINumber]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[sp_ASRFn_IsValidNINumber];
 
-	EXEC sp_executesql N'CREATE PROCEDURE [dbo].[sp_ASRFn_IsValidNINumber]
-		(
-			@result integer OUTPUT,
-			@input varchar(MAX)
-		)
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_isnivalid]') AND xtype = 'FN')
+		DROP FUNCTION [dbo].[udfsys_isnivalid];
+
+	EXEC sp_executesql N'CREATE FUNCTION [dbo].[udfsys_isnivalid](
+			@input AS nvarchar(MAX))
+		RETURNS bit
+		WITH SCHEMABINDING
 		AS
 		BEGIN
-
+		
+			DECLARE @result bit;
+			
 			DECLARE @ValidPrefixes varchar(MAX);
 			DECLARE @ValidSuffixes varchar(MAX);
 			DECLARE @Prefix varchar(MAX);
@@ -92,7 +96,7 @@ PRINT 'Step - Calculation Updates'
 			DECLARE @Numerics varchar(MAX);
 
 			SET @result = 1;
-			IF ISNULL(@input,'''') = '''' RETURN
+			IF ISNULL(@input,'''') = '''' RETURN 1
 
 			SET @ValidPrefixes = 
 				''/AA/AB/AE/AH/AK/AL/AM/AP/AR/AS/AT/AW/AX/AY/AZ'' +
@@ -123,7 +127,9 @@ PRINT 'Step - Calculation Updates'
 
 			IF charindex(@Prefix,@ValidPrefixes) = 0 OR charindex(@Suffix,@ValidSuffixes) = 0 OR ISNUMERIC(@Numerics) = 0
 				SET @result = 0;
-
+				
+			RETURN @result;
+			
 		END';
 
 
