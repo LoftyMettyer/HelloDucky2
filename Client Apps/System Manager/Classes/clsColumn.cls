@@ -284,6 +284,7 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   '   Global Update/Add definitions.
   '   Chart Definitions.
   '   Document Types
+  '   Server Config
 
   On Error GoTo ErrorTrap
   
@@ -1475,6 +1476,10 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   End If
   
   
+  ' Is used as the archive column
+  If GetSystemSetting("overnight", "archivecolumn", 0) = gLngColumnID Then
+    mfrmUse.AddToList ("Overnight Configuration : Cut-off Date")
+  End If
   
   
 TidyUpAndExit:
