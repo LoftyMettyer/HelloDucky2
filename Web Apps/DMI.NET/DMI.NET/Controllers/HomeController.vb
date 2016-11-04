@@ -6133,25 +6133,37 @@ Namespace Controllers
                      End If
                   Next
 
+                  Dim orgReportObj
+
                   If (IsPostBasedSystem) Then
-                     orgCharts.Add(New OrgReportChartNode() With {
+                     orgReportObj = New OrgReportChartNode() With {
                                .EmployeeID = CInt(objRow("HierarchyID")),
                                .PostID = CInt(objRow("HierarchyID")),
                                .EmployeeStaffNo = objRow("Post_ID").ToString().Replace(" ", "_"),
                                .LineManagerStaffNo = objRow("Reports_To_Post_ID").ToString().Replace(" ", "_"),
                                .HierarchyLevel = CInt(objRow("HierarchyLevel")),
                                .ReportColumnItemList = ProcessColumnsForOrgReport(cloneList, IsPostBasedSystem),
-                               .NodeTypeClass = HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(additionalClasses))})
+                               .NodeTypeClass = HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(additionalClasses))}
+
+                     If (CBool(objRow("IsGhostNode") OrElse CBool(objRow("IsFilteredNode")))) Then 'If GhostNode or FilterNode then clear PostID
+                        orgReportObj.PostID = 0
+                     End If
+
                   Else
-                     orgCharts.Add(New OrgReportChartNode() With {
+                     orgReportObj = New OrgReportChartNode() With {
                                .EmployeeID = CInt(objRow("EmployeeID")),
                                .EmployeeStaffNo = objRow("Staff_Number").ToString().Replace(" ", "_"),
                                .LineManagerStaffNo = objRow("Reports_To_Staff_Number").ToString().Replace(" ", "_"),
                                .HierarchyLevel = CInt(objRow("HierarchyLevel")),
                                .ReportColumnItemList = ProcessColumnsForOrgReport(cloneList, IsPostBasedSystem),
-                               .NodeTypeClass = HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(additionalClasses))})
-                  End If
+                               .NodeTypeClass = HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(additionalClasses))}
 
+                     If (CBool(objRow("IsGhostNode") OrElse CBool(objRow("IsFilteredNode")))) Then 'If GhostNode or FilterNode then clear EmployeeID
+                        orgReportObj.EmployeeID = 0
+                     End If
+
+                  End If
+                  orgCharts.Add(orgReportObj)
                Next
 
 #Region "PostBased System"
