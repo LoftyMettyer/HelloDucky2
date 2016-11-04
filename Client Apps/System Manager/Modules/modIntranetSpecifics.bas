@@ -523,7 +523,7 @@ Private Function CreateSP_ResetPassword() As Boolean
     "    ELSE" & vbNewLine & _
     "    BEGIN" & vbNewLine & _
     "      SET @sMessage = 'To reset your password click the link shown below. This will take you to a web page where you can enter a new password.' + CHAR(13) + CHAR(10) +" & vbNewLine & _
-    "            'If you weren''t trying to reset your password, don''t worry — your account is still secure and no one has been given access to it.' + CHAR(13) + CHAR(10) + CHAR(13) + CHAR(10) +" & vbNewLine & _
+    "            'If you weren''t trying to reset your password, don''t worry - your account is still secure and no one has been given access to it.' + CHAR(13) + CHAR(10) + CHAR(13) + CHAR(10) +" & vbNewLine & _
     "            '<' + @psWebsiteURL + '?' + @psEncryptedLink + '>';" & vbNewLine & vbNewLine
     
   sProcSQL = sProcSQL & "      INSERT [dbo].[ASRSysEmailQueue](" & vbNewLine & _
