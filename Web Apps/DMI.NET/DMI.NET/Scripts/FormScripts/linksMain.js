@@ -242,7 +242,7 @@ function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 					
 		}
         //Load the organisation report in workframe
-		else if (sUtilityType === 39) {
+		else if (sUtilityType === 39) {		  
 		   var postData = {
 		      UtilType: sUtilityType,
 		      ID: sUtilityID,
@@ -256,14 +256,20 @@ function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 		      cache: false,
 		      data: postData,
 		      success: function (json) {
-		         CleanToolsFrameAndResetPageSource();
-		         OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+		         if (json.ErrorMessage == "") {
+		            CleanToolsFrameAndResetPageSource();
+		            OpenHR.submitForm(null, "workframe", null, postData, "OrganisationReports");
+		         }
+		         else
+		         {
+		            OpenHR.modalMessage(json.ErrorMessage);
+		         }
 		      },
-		      error: function (xhr, status, error) {
+		      error: function (xhr, status, error) {		       
 		         var err = "Error " + " " + status + " " + error;
 		         if (xhr.responseText && xhr.responseText[0] == "{")
 		            err = JSON.parse(xhr.responseText).ErrorMessage;
-
+		        
 		         OpenHR.modalMessage(err);
 		      }
 		   });
