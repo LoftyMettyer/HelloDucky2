@@ -13,7 +13,8 @@ BEGIN
 		@sBaseViewTableName	nvarchar(255),
 		@singleRecordViewName nvarchar(255),
 		@topLevelRootID		integer,
-		@topLevelReports_To	nvarchar(MAX) = '';
+		@topLevelReports_To	nvarchar(MAX) = '',
+		@staffNoDataType	tinyint;
 
 	DECLARE @sPersonnelStaffNumberColumn nvarchar(255),
 			@sPersonnelReportToStaffNoColumn nvarchar(255);
@@ -25,7 +26,7 @@ BEGIN
 	SELECT @topLevelRootID = dbo.udfASRIntOrgChartGetTopLevelID(@piRootID); 
 
 	-- Get module setup parameters
-	SELECT @sPersonnelStaffNumberColumn = c.ColumnName	
+	SELECT @sPersonnelStaffNumberColumn = c.ColumnName, @staffNoDataType = c.datatype
 		FROM ASRSysModuleSetup s INNER JOIN ASRSysColumns c ON s.ParameterValue = c.columnID 
 		INNER JOIN ASRSysTables t ON c.tableID = t.tableID WHERE s.moduleKey = 'MODULE_PERSONNEL' 
 		AND UPPER(s.ParameterKey) = 'PARAM_FIELDSEMPLOYEENUMBER';
@@ -120,10 +121,22 @@ BEGIN
 
 	END
 
+
 	-- Data cleasning (to remove?) (somewhere in the above isnulls are not handled properly)
-	UPDATE @allNodes SET Staff_Number = '00000000' WHERE Staff_Number = ''
-	UPDATE @allNodes SET Reports_To_Staff_Number = '00000000' WHERE ISNULL(Reports_To_Staff_Number,'') = ''
-	UPDATE @allNodes SET Reports_To_Staff_Number = '' WHERE Reports_To_Staff_Number = Staff_Number;
+   -- Processing logic is different for character and integer data types. This could be clearer to sort out in the above data generation, but for some reason it isn't that
+   -- simple - fix at your own risk!
+	IF @staffNoDataType = 12
+	BEGIN
+		UPDATE @allNodes SET Staff_Number = '00000000' WHERE Staff_Number = ''
+		UPDATE @allNodes SET Reports_To_Staff_Number = '00000000' WHERE ISNULL(Reports_To_Staff_Number,'') = ''
+	END
+	ELSE
+	BEGIN
+	  	UPDATE @allNodes SET Staff_Number = '0' WHERE Staff_Number = ''
+		UPDATE @allNodes SET Reports_To_Staff_Number = '0' WHERE ISNULL(Reports_To_Staff_Number,'') = ''
+	END
+
+   UPDATE @allNodes SET Reports_To_Staff_Number = '' WHERE Reports_To_Staff_Number = Staff_Number;
 
 	-- Calculate the top most node of this dataset
 	SELECT @topLevelReports_To = Staff_Number
