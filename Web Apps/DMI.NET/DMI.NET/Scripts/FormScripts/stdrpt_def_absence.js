@@ -998,10 +998,10 @@ function setcancel() {
 
 // Disable the tools buttons based on the view permission
 function DisableRibbonButtonsForAbsenceBreakdownAndBradfordFactor() {
-	if (frmAbsenceDefinition.txtIsPicklistsGranted.value.toUpperCase() == "FALSE") {
+   if (frmAbsenceDefinition.txtIsPicklistsGranted != undefined && frmAbsenceDefinition.txtIsPicklistsGranted.value.toUpperCase() == "FALSE") {
 		menu_toolbarEnableItem("mnutoolPicklistReportFind", false);
 	}
-	if (frmAbsenceDefinition.txtIsFiltersGranted.value.toUpperCase() == "FALSE") {
+   if (frmAbsenceDefinition.txtIsFiltersGranted != undefined && frmAbsenceDefinition.txtIsFiltersGranted.value.toUpperCase() == "FALSE") {
 		menu_toolbarEnableItem("mnutoolFilterReportFind", false);
 	}	
 }
