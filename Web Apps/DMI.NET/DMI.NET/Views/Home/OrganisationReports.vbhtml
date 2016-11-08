@@ -36,7 +36,7 @@
       background-position: center;
    }
 
-   .ghostNode img, .rootNode img {
+   .ghostNode img:not(.expandNode), .rootNode img:not(.expandNode) {
       visibility: hidden;
    }
 
