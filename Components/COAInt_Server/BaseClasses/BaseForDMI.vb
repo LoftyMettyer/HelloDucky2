@@ -572,7 +572,7 @@ Namespace BaseClasses
 
 		Public ReadOnly Property LocaleDateFormat As String
 			Get
-				If Globalization.CultureInfo.CurrentUICulture.ToString() = "en-US" Or Globalization.CultureInfo.CurrentUICulture.ToString() = "en" Then
+				If System.Globalization.CultureInfo.CurrentUICulture.ToString() = "en-US" Or Globalization.CultureInfo.CurrentUICulture.ToString() = "en" Then
 					' Force 2-digit days and months
 					Return "MM/dd/yyyy"
 				Else

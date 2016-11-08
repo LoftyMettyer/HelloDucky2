@@ -1446,7 +1446,7 @@ Public Class Report
 
 		Dim aryInsertStatements As New List(Of String)
 
-		Dim USCulture = Globalization.CultureInfo.CreateSpecificCulture("en-US") 'Used only for replacing the UI culture's numeric separators with the US ones, so SQL doesn't get confused
+		Dim USCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US") 'Used only for replacing the UI culture's numeric separators with the US ones, so SQL doesn't get confused
 		Dim valueAsDecimal As Decimal	'For use with the above
 
 		Try

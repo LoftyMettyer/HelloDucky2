@@ -576,12 +576,12 @@
                                                 If Mid(sBlankIfZeroColumns, iloop + 1, 1) = "1" Then
                                                     ' blank if zero
                                                     If dec > 0 Then
-                                                        sAddString &= dec.ToString(Globalization.CultureInfo.InvariantCulture)
+                                                        sAddString &= dec.ToString(System.Globalization.CultureInfo.InvariantCulture)
                                                     Else
                                                         sAddString &= ""
                                                     End If
                                                 Else
-                                                    sAddString &= dec.ToString(Globalization.CultureInfo.InvariantCulture)
+                                                    sAddString &= dec.ToString(System.Globalization.CultureInfo.InvariantCulture)
                                                 End If
 
                                             End If
