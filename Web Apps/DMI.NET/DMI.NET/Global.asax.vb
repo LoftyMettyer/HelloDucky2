@@ -53,8 +53,10 @@ Public Class MvcApplication
 
 		Server.ScriptTimeout = 1000
 
-		' get the LAYOUT_SELECTABLE setting from web config.
-		Session("ui-layout-selectable") = ApplicationSettings.UI_Layout_Selectable
+      Dim useOneAdvancedTheme = True
+
+      ' get the LAYOUT_SELECTABLE setting from web config.
+      Session("ui-layout-selectable") = ApplicationSettings.UI_Layout_Selectable
 		If Session("ui-layout-selectable") Is Nothing Or Len(Session("ui-layout-selectable")) <= 0 Then Session("ui-layout-selectable") = "false"
 
 		' get the SELF_SERVICE_LAYOUT setting from web config.
@@ -62,56 +64,57 @@ Public Class MvcApplication
       If Session("ui-self-service-layout") Is Nothing Or Len(Session("ui-self-service-layout")) <= 0 Then Session("ui-self-service-layout") = "winkit"
 
       ' get the ADMIN (DMI) theme out of web config.
-      Session("ui-admin-theme") = ApplicationSettings.UI_Admin_Theme
-      If Session("ui-admin-theme") Is Nothing Or Len(Session("ui-admin-theme")) <= 0 Then Session("ui-admin-theme") = "redmond-segoe"
+      Session("ui-admin-theme") = NullSafeString(ApplicationSettings.UI_Admin_Theme)
+      If Session("ui-admin-theme") <> vbNullString And Session("ui-admin-theme").ToString().ToLower() <> "redmond-segoe" Then useOneAdvancedTheme = False
 
-      ' Check for a valid themename, then default to redmond-segoe if not valid.
+      ' Check for a valid themename, then default to oneAdvanced if not valid.
       If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")) Then
-         Session("ui-admin-theme") = "redmond-segoe"
+         Session("ui-admin-theme") = "oneAdvanced"
+         useOneAdvancedTheme = False
       End If
 
       ' get list of available themes
-      Dim arrThemes as new List(Of String)
-		Dim excludeTheme As Boolean
-		Dim currentTheme As String
+      Dim arrThemes As New List(Of String)
+      Dim excludeTheme As Boolean
+      Dim currentTheme As String
 
-		For Each dir As String In Directory.GetDirectories(Server.MapPath("~/Content/themes/"))
-			currentTheme = dir.Remove(0, Server.MapPath("~/Content/themes/").Length)
-			excludeTheme = currentTheme.ToLower() = "jmetro" Or currentTheme.ToLower() = "jqueryui"
+      For Each dir As String In Directory.GetDirectories(Server.MapPath("~/Content/themes/"))
+         currentTheme = dir.Remove(0, Server.MapPath("~/Content/themes/").Length)
+         excludeTheme = currentTheme.ToLower() = "jmetro" Or currentTheme.ToLower() = "jqueryui"
 
-			If Not excludeTheme Then
-				arrThemes.Add(currentTheme)
-			End If
-		Next
+         If Not excludeTheme Then
+            arrThemes.Add(currentTheme)
+         End If
+      Next
 
-		Session("ui-dynamic-themes") = arrThemes
+      Session("ui-dynamic-themes") = arrThemes
 
-		' get the TILES theme out of web config.
-		Session("ui-tiles-theme") = ApplicationSettings.UI_Tiles_Theme
-		If Session("ui-tiles-theme") Is Nothing Or Len(Session("ui-tiles-theme")) <= 0 Then Session("ui-tiles-theme") = "start"
+      ' get the TILES theme out of web config.
+      Session("ui-tiles-theme") = ApplicationSettings.UI_Tiles_Theme
+      If Session("ui-tiles-theme") Is Nothing Or Len(Session("ui-tiles-theme")) <= 0 Then Session("ui-tiles-theme") = "start"
 
-		' Check for a valid themename, then default to start if not valid.
-		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-tiles-theme").ToString() & "/jquery-ui.min.css")) Then
-			Session("ui-tiles-theme") = "start"
-		End If
+      ' Check for a valid themename, then default to start if not valid.
+      If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-tiles-theme").ToString() & "/jquery-ui.min.css")) Then
+         Session("ui-tiles-theme") = "start"
+      End If
 
-		' get the WIREFRAME theme out the web config.
-		Session("ui-wireframe-theme") = ApplicationSettings.UI_Wireframe_Theme
-		If Session("ui-wireframe-theme") Is Nothing Or Len(Session("ui-wireframe-theme")) <= 0 Then Session("ui-wireframe-theme") = "redmond-segoe"
+      ' get the WIREFRAME theme out the web config.
+      Session("ui-wireframe-theme") = ApplicationSettings.UI_Wireframe_Theme
+      If Session("ui-wireframe-theme") Is Nothing Or Len(Session("ui-wireframe-theme")) <= 0 Then Session("ui-wireframe-theme") = "oneAdvanced"
 
-		' Check for a valid themename, then default to redmond-segoe if not valid.
-		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")) Then
-			Session("ui-wireframe-theme") = "redmond-segoe"
-		End If
+      ' Check for a valid themename, then default to oneAdvanced if not valid.
+      If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")) Then
+         Session("ui-wireframe-theme") = "oneAdvanced"
+      End If
 
-		' get the WINKIT theme out the web config.
-		Session("ui-winkit-theme") = ApplicationSettings.UI_Winkit_Theme
-		If Session("ui-winkit-theme") Is Nothing Or Len(Session("ui-winkit-theme")) <= 0 Then Session("ui-winkit-theme") = "redmond-segoe"
+      ' get the WINKIT theme out the web config.
+      Session("ui-winkit-theme") = ApplicationSettings.UI_Winkit_Theme
+      If Session("ui-winkit-theme") Is Nothing Or Len(Session("ui-winkit-theme")) <= 0 Then Session("ui-winkit-theme") = "oneAdvanced"
 
-		' Check for a valid themename, then default to redmond-segoe if not valid.
-		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-winkit-theme").ToString() & "/jquery-ui.min.css")) Then
-			Session("ui-winkit-theme") = "redmond-segoe"
-		End If
+      ' Check for a valid themename, then default to oneAdvanced if not valid.
+      If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-winkit-theme").ToString() & "/jquery-ui.min.css")) Then
+         Session("ui-winkit-theme") = "oneAdvanced"
+      End If
 
 		Session("Config-banner-colour") = ApplicationSettings.UI_Banner_Colour
 		If Session("Config-banner-colour") Is Nothing Or Len(Session("Config-banner-colour")) <= 0 Then Session("Config-banner-colour") = "white"
@@ -133,8 +136,9 @@ Public Class MvcApplication
 				Dim newImage As Image = Image.FromFile(Server.MapPath("~/Content/images/" & customImageFileName))
 				Dim newImageWidth = newImage.Width
 				Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/" & customImageFileName)
-				Session("Config-banner-graphic-left-width") = newImageWidth
-			Catch ex As Exception
+            Session("Config-banner-graphic-left-width") = newImageWidth
+            useOneAdvancedTheme = False
+         Catch ex As Exception
 				'Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/ABS_TopBar.png")
 				Session("TopBarFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/TopLeftBannerImage.png")
 				Session("Config-banner-graphic-left-width") = "138"
@@ -152,8 +156,9 @@ Public Class MvcApplication
 				Dim newImage As Image = Image.FromFile(Server.MapPath("~/Content/images/" & customImageFileName))
 				Dim newImageWidth = newImage.Width
 				Session("LogoFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/" & customImageFileName)
-				Session("Config-banner-graphic-right-width") = newImageWidth
-			Catch ex As Exception
+            Session("Config-banner-graphic-right-width") = newImageWidth
+            useOneAdvancedTheme = False
+         Catch ex As Exception
 				Session("LogoFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/ABSLogo/TopRightBannerImage.png")
 				Session("Config-banner-graphic-right-width") = "300"
 			End Try
@@ -162,7 +167,12 @@ Public Class MvcApplication
 			Session("Config-banner-graphic-right-width") = "300"
 		End If
 
-	End Sub
+      If useOneAdvancedTheme Then
+         ' Using redmond-segoe (or an invalid) theme and no custom banner images. Set theme to oneAdvanced instead.
+         Session("ui-admin-theme") = "oneAdvanced"
+      End If
+
+   End Sub
 
 	Sub Session_End()
 
