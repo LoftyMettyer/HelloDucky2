@@ -171,8 +171,8 @@
 			}
 		}
 
-		//Is this a browser that supports file API; which is OK for all modern browsers (IE10+ etc)
-		if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
+	   //Is this a browser that supports file API; which is OK for all modern browsers (IE11+ etc)
+		if (!(window.File && window.FileReader && window.FileList && window.Blob && window.devicePixelRatio)) {
 			//Show 'browser not supported' message...
 			$('#ancientBrowser').removeClass('hidden');
 			$('#divLoginDetails').addClass('hidden');
