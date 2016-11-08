@@ -104,15 +104,17 @@
 		<div class="pendingworkflowlinks">
 			<ul class="pendingworkflowsframe cols2">
 				<li class="pendingworkflowlink-displaytype">
-					<div class="wrapupcontainer">
-						<div class="wrapuptext">
-							<p class="pendingworkflowlinkseparator">Pending Workflows (max. four) <a href="#" onclick="relocateURL('WorkflowPendingSteps', 0);" class="icon-inbox" title="Show All Pending Workflows"></a></p>
-						</div>
-					</div>
-					<div class="gridster pendingworkflowlinkcontent" id="gridster_PendingWorkflow">
-						<ul id="pendingworkflowstepstiles">
-						</ul>
-					</div>
+               <div>
+                  <div class="wrapupcontainer">
+                     <div class="wrapuptext">
+                        <p class="pendingworkflowlinkseparator">Pending Workflows (max. four) <a href="#" onclick="relocateURL('WorkflowPendingSteps', 0);" class="icon-inbox" title="Show All Pending Workflows"></a></p>
+                     </div>
+                  </div>
+                  <div class="gridster pendingworkflowlinkcontent" id="gridster_PendingWorkflow">
+                     <ul id="pendingworkflowstepstiles">
+                     </ul>
+                  </div>
+               </div>
 				</li>
 			</ul>
 		</div>
@@ -223,8 +225,10 @@
 									sText = navlink.Text.Substring(0, 30) + "..."
 								End If
 							%>
-							<a class="hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#" title="<%: navlink.Text%>"><%: sText%></a>
-							<p class="hypertextlinktileIcon"><i class="<%=classIcon %>"></i></p>
+                     <div>
+							   <a class="hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#" title="<%: navlink.Text%>"><%: sText%></a>
+							   <p class="hypertextlinktileIcon"><i class="<%=classIcon %>"></i></p>
+                     </div>
 						</li>
 						<%
 							iRowNum += 1
@@ -303,8 +307,10 @@
 						%>
 						<li class="hypertextlinktext Colour4" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
 							data-sizex="1" data-sizey="1" onclick="goURL('<%=sDestination%>', 0, false)">
-							<a class="hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#" title="<%=sText%>"><%=sText%></a>
-							<p class="hypertextlinktileIcon"><i class="icon-external-link-sign"></i></p>
+						   <div>
+							   <a class="hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#" title="<%=sText%>"><%=sText%></a>
+							   <p class="hypertextlinktileIcon"><i class="icon-external-link-sign"></i></p>
+                     </div>
 						</li>
 						<%
 							iRowNum += 1
@@ -471,9 +477,11 @@
 								End If
 								%>
 						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
-							<a style="<%:sTileForeColourStyle%>" class="linkspagebutton-displaytype linkspagebuttontext-alignment linkspagebutton-colourtheme" href="#"><span class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics"><%: navlink.Prompt.Replace("...", "") & " "%></span>
-								<span class="linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics"><%: navlink.Text %></span></a>
-							<p class="linkspagebuttontileIcon"><i class="<%=sIconClass%>"></i></p>
+                     <div>
+                        <a style="<%: sTileForeColourStyle%>" class="linkspagebutton-displaytype linkspagebuttontext-alignment linkspagebutton-colourtheme" href="#"><span class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics"><%: navlink.Prompt.Replace("...", "") & " "%></span>
+                           <span class="linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics"><%: navlink.Text %></span></a>
+                        <p class="linkspagebuttontileIcon"><i class="<%=sIconClass%>"></i></p>
+                     </div>
 						</li>
 						<%
                         iRowNum += 1
@@ -530,215 +538,215 @@
 						%>
 
 						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext <%=sTileColourClass%> displayonly">
-							<a style="<%:sTileForeColourStyle%>" href="#"><%If Session("CurrentLayout").ToString() <> Layout.tiles.ToString() Then Response.Write(navlink.Text)%>
-								<%
-									If navlink.UtilityID > 0 And navlink.DrillDownHidden = False Then
-										iHideableDrillDownIconID += 1
-								%>
-								<img id="drillDownIcon<%=iHideableDrillDownIconID%>" src="<%:Url.Content("~/Content/images/Utilities.gif")%>" style="<%=IIf(Session("CurrentLayout").ToString() = Layout.tiles.ToString(), "background: wheat;", "")%> float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom; margin-right: 5px" alt="Drilldown..." title="Drill down to data..."
-									onclick="<%=sOnClick %>" />
-								<%
-								End If
-								%>
-								<img id="popupIcon<%=iHideablePopupIconID%>" src="<%:Url.Content("~/Content/images/Chart_Popout.png")%>" style="<%=IIf(Session("CurrentLayout").ToString() = Layout.tiles.ToString(), "background: wheat;", "")%> float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom;" alt="Popout chart..." title="View this chart in a pop up"
-									onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>','<%=navlink.Text%>', '<%=Session("ui-admin-theme").ToString() %>')" />
-							</a>
-							<%If Not (navlink.InitialDisplayMode = 0 Or Session("CurrentLayout").ToString() = Layout.tiles.ToString()) Then%>
-							<p class="linkspagebuttontileIcon">
-								<i class="icon-bar-chart"></i>
-							</p>
-							<%End If%>
-							<%
-								iHideablePopupIconID += 1
-								
-								'Set some values that depend on the current layout
-								Dim Height As Integer = 296
-								Dim Width As Integer = 412
-								Dim ShowLegend As Boolean = navlink.Chart_ShowLegend
-								Dim ShowLabels As Boolean = True
-								If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then
-									Height = 120 'Tile height
-									Width = 120	'Tile width
-									ShowLegend = False
-									ShowLabels = False
-								End If
+						   <div class="nomenuitem">
+							   <a style="<%:sTileForeColourStyle%>" href="#"><%If Session("CurrentLayout").ToString() <> Layout.tiles.ToString() Then Response.Write(navlink.Text)%>
+								   <%        If navlink.UtilityID > 0 And navlink.DrillDownHidden = False Then
+                                 iHideableDrillDownIconID += 1
+								   %>
+								   <img id="drillDownIcon<%=iHideableDrillDownIconID%>" src="<%:Url.Content("~/Content/images/Utilities.gif")%>" style="<%=IIf(Session("CurrentLayout").ToString() = Layout.tiles.ToString(), "background: wheat;", "")%> float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom; margin-right: 5px" alt="Drilldown..." title="Drill down to data..."
+									   onclick="<%=sOnClick %>" />
+								   <%
+								   End If
+								   %>
+								   <img id="popupIcon<%=iHideablePopupIconID%>" src="<%:Url.Content("~/Content/images/Chart_Popout.png")%>" style="<%=IIf(Session("CurrentLayout").ToString() = Layout.tiles.ToString(), "background: wheat;", "")%> float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom;" alt="Popout chart..." title="View this chart in a pop up"
+									   onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>','<%=navlink.Text%>', '<%=Session("ui-admin-theme").ToString() %>')" />
+							   </a>
+							   <%If Not (navlink.InitialDisplayMode = 0 Or Session("CurrentLayout").ToString() = Layout.tiles.ToString()) Then%>
+							   <p class="linkspagebuttontileIcon">
+								   <i class="icon-bar-chart"></i>
+							   </p>
+							   <%End If%>
+							   <%     iHideablePopupIconID += 1
 
-								If navlink.InitialDisplayMode = 0 Then%>
-							<div class="widgetplaceholder chart linkspagebuttontext-font" style="<%:sTileForeColourStyle%>" >
-								<%If fMultiAxis Then%>
-								<div>
-									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then Response.Write("<p title=\'" & navlink.Text & "\' class=\'linkspagebuttontileIcon\'><i class=\'icon-bar-chart\'></i></p><p style=\'text-align: center\'>" & navlink.Text & "<br/><br/>(No records)</p>") Else Response.Write("No matching records")%>');" 
-											 src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.Height = Height, .Width = Width, .ShowLegend = ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID, .ShowLabels = ShowLabels})%>"
-											 alt="Chart"
-											 title="<%:navlink.Text%>"
-											 style="cursor: pointer"
-										   onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>','<%=navlink.Text%>', '<%=Session("ui-admin-theme").ToString()%>', '<%=navlink.Chart_ColumnName%>', '<%=navlink.Chart_ColumnName_2%>')"
-										 />
-								</div>
-								<%Else%>
-								<div>
-									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then Response.Write("<p title=\'" & navlink.Text & "\' class=\'linkspagebuttontileIcon\'><i class=\'icon-bar-chart\'></i></p><p style=\'text-align: center\'>" & navlink.Text & "<br/><br/>(No records)</p>") Else Response.Write("No matching records")%>');"
-											 src="<%:Url.Action("GetChart", "Home", New With {.Height = Height, .Width = Width, .ShowLegend = ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID, .ShowLabels = ShowLabels})%>" 
-											 alt="Chart" 
-											 title="<%:navlink.Text%>"
-											 style="cursor: pointer"
-											 onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>','<%=navlink.Text%>', '<%=Session("ui-admin-theme").ToString()%>', '<%=navlink.Chart_ColumnName%>', '<%=navlink.Chart_ColumnName_2%>')"
-										 />
-								</div>
-								<%End If%>
+                           'Set some values that depend on the current layout
+                           Dim Height As Integer = 296
+                           Dim Width As Integer = 412
+                           Dim ShowLegend As Boolean = navlink.Chart_ShowLegend
+                           Dim ShowLabels As Boolean = True
+                           If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then
+                              Height = 120 'Tile height
+                              Width = 120 'Tile width
+                              ShowLegend = False
+                              ShowLabels = False
+                           End If
+
+                           If navlink.InitialDisplayMode = 0 Then%>
+							   <div class="widgetplaceholder chart linkspagebuttontext-font" style="<%:sTileForeColourStyle%>" >
+								   <%If fMultiAxis Then%>
+								   <div>
+									   <img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then Response.Write("<p title=\'" & navlink.Text & "\' class=\'linkspagebuttontileIcon\'><i class=\'icon-bar-chart\'></i></p><p style=\'text-align: center\'>" & navlink.Text & "<br/><br/>(No records)</p>") Else Response.Write("No matching records")%>');" 
+											    src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.Height = Height, .Width = Width, .ShowLegend = ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID, .ShowLabels = ShowLabels})%>"
+											    alt="Chart"
+											    title="<%:navlink.Text%>"
+											    style="cursor: pointer"
+										      onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>','<%=navlink.Text%>', '<%=Session("ui-admin-theme").ToString()%>', '<%=navlink.Chart_ColumnName%>', '<%=navlink.Chart_ColumnName_2%>')"
+										    />
+								   </div>
+								   <%Else%>
+								   <div>
+									   <img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then Response.Write("<p title=\'" & navlink.Text & "\' class=\'linkspagebuttontileIcon\'><i class=\'icon-bar-chart\'></i></p><p style=\'text-align: center\'>" & navlink.Text & "<br/><br/>(No records)</p>") Else Response.Write("No matching records")%>');"
+											    src="<%:Url.Action("GetChart", "Home", New With {.Height = Height, .Width = Width, .ShowLegend = ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID, .ShowLabels = ShowLabels})%>" 
+											    alt="Chart" 
+											    title="<%:navlink.Text%>"
+											    style="cursor: pointer"
+											    onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>','<%=navlink.Text%>', '<%=Session("ui-admin-theme").ToString()%>', '<%=navlink.Chart_ColumnName%>', '<%=navlink.Chart_ColumnName_2%>')"
+										    />
+								   </div>
+								   <%End If%>
 																			
-								<a href="#"></a>
-							</div>
-							<%
-							Else
-								Dim objChart As IChart
-								Dim sErrorDescription As String = ""
-								' Dim fFormatting_Use1000Separator As Boolean = (navlink.Formatting_Use1000Separator = 1)
-																								
-								If fMultiAxis = True Then
-									objChart = New HR.Intranet.Server.clsMultiAxisChart
-								Else
-									objChart = New HR.Intranet.Server.clsChart
-								End If
+								   <a href="#"></a>
+							   </div>
+							   <%     Else
+                              Dim objChart As IChart
+                              Dim sErrorDescription As String = ""
+                              ' Dim fFormatting_Use1000Separator As Boolean = (navlink.Formatting_Use1000Separator = 1)
 
-								objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+                              If fMultiAxis = True Then
+                                 objChart = New HR.Intranet.Server.clsMultiAxisChart
+                              Else
+                                 objChart = New HR.Intranet.Server.clsChart
+                              End If
 
-								Dim mrstChartData As DataTable
-								Err.Clear()
-			
-								If fMultiAxis = True Then
-									mrstChartData = objChart.GetChartData(iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, iChart_TableID_2, iChart_ColumnID_2, iChart_TableID_3, iChart_ColumnID_3, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID)
-								Else
-									mrstChartData = objChart.GetChartData(iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, 0, 0, 0, 0, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID)
-								End If
+                              objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-								If (Err.Number <> 0) Then
-									sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & FormatError(Err.Description)
-								End If
-			
-								If Not mrstChartData Is Nothing Then
-									If mrstChartData.Rows.Count > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
-								End If
+                              Dim mrstChartData As DataTable
+                              Err.Clear()
 
-								Dim Chart_AggregateType As ChartAggregateType = navlink.Chart_AggregateType
+                              If fMultiAxis = True Then
+                                 mrstChartData = objChart.GetChartData(iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, iChart_TableID_2, iChart_ColumnID_2, iChart_TableID_3, iChart_ColumnID_3, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID)
+                              Else
+                                 mrstChartData = objChart.GetChartData(iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, 0, 0, 0, 0, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID)
+                              End If
 
-								If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then 'Put and icon in tile mode
-									If mrstChartData.Rows.Count > 0 AndAlso (TryCast(mrstChartData.Rows(0)(0), String) <> "No Access" And TryCast(mrstChartData.Rows(0)(0), String) <> "No Data") Then
-										Dim popupChartCall As String = "popoutchart('" & fMultiAxis & "', '" & navlink.Chart_ShowLegend & "', '" & navlink.Chart_ShowGrid & "', '" & navlink.Chart_ShowValues & "', '" & navlink.Chart_StackSeries & "', '" & navlink.Chart_ShowPercentages & "', '" & iChart_Type & "', '" & iChart_TableID & "', '" & iChart_ColumnID & "', '" & iChart_FilterID & "', '" & iChart_AggregateType & "', '" & CInt(iChart_ElementType) & "', '" & iChart_TableID_2 & "', '" & iChart_ColumnID_2 & "', '" & iChart_TableID_3 & "', '" & iChart_ColumnID_3 & "', '" & iChart_SortOrderID & "', '" & iChart_SortDirection & "', '" & iChart_ColourID & "',encodeURI('" & navlink.Text & "').replace(/&/g,'%26'),'" & Session("ui-admin-theme").ToString() & "')"
-										Dim popuChartCallOnclick = "onclick=" & Chr(34) & popupChartCall & Chr(34)
-										Response.Write("<p " & popuChartCallOnclick & " title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p " & popupChartCall & " style='text-align: center; margin-top: 0'>" & navlink.Text & "</p>")
-									Else
-										Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size:smaller; text-align: center; margin: 0'>(No records)</p>")
-									End If
-								End If
-								%>
-							<div class="widgetplaceholder datagrid" id="WidgetPlaceHolder<%=iRowNum%>">
-								<table id="DataTable<%=iRowNum%>" cellspacing="0" cellpadding="5" rules="all" frame="box" style="width: 100%; vertical-align: top; border: 3px solid lightgray">
-									<%If mrstChartData.Rows.Count > 0 AndAlso (TryCast(mrstChartData.Rows(0)(0), String) <> "No Access" And TryCast(mrstChartData.Rows(0)(0), String) <> "No Data") Then%>
-									<thead>
-									<tr>
-										<th style="font-weight: normal; text-align: left; cursor: default">
-											<%=Left(NullSafeString(navlink.Chart_ColumnName), 50)%>
-										</th>
-										<%If fMultiAxis Then%>
-										<th style="font-weight: normal; text-align: left; cursor: default">
-											<%=Trim(Left(NullSafeString(navlink.Chart_ColumnName_2), 50))%>
-										</th>
-										<th style="font-weight: normal; text-align: right; cursor: default">
-											<%Else%>
-										<th style="font-weight: normal; text-align: right; cursor: default">
-											<%End If%>
-											<%Response.Write(Chart_AggregateType.ToString())%>
-										</th>
-									</tr>
-									</thead>
-									<tbody>
-									<%
-										If mrstChartData.Rows.Count > 0 Then
-											For Each objRow As DataRow In mrstChartData.Rows
-									%>
-									<tr>
-										<td class="bordered" style="width: 150px; text-align: left; white-space: nowrap">
-											<%
-                        If fMultiAxis Then
-                          Response.Write(FormatLinkData(objRow(1), navlink, 50))
-                        Else
-                          Response.Write(FormatLinkData(objRow(0), navlink, 50))
-                        End If
-                      %>
-										</td>
-										<%If fMultiAxis Then%>
-										<td class="bordered" style="text-align: left; white-space: nowrap">
-											<div style="width: 150px; white-space: nowrap">
-												<%=FormatLinkData(objRow(3), navlink, 50)%>
-											</div>
-										</td>
-										<%End If%>
-										<td class="bordered" style="text-align: right; vertical-align: top; padding-bottom: 0; white-space: nowrap; overflow: hidden">
-											<%
-                        If fMultiAxis Then
-                          Response.Write(FormatLinkData(objRow(4), navlink, 50))
-                        Else
-                          Response.Write(FormatLinkData(objRow(1), navlink, 50))
-                        End If
-                        %>
-										</td>
-									</tr>
-									<%    
+                              If (Err.Number <> 0) Then
+                                 sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & FormatError(Err.Description)
+                              End If
 
-                  Next
-									%>
-										</tbody>
-									<%
-                End If
-              Else
-                If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then 'Put and icon in tile mode
-                  Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size: smaller; text-align: center'>(No records)</p>")
-                Else
-									%>
-									<tr>
-										<td class="bordered" style="text-align: center;" rowspan="3">No matching records found</td>
-									</tr>
-									<%End If%>
-									<script type="text/javascript">
-										// No data on this chart, adjust UI accordingly
-										<%If Session("CurrentLayout").ToString() <> Layout.tiles.ToString() Then%>
-										$("#WidgetPlaceHolder<%=iRowNum%>").css('height', "40px"); //Reduce the size of the parent div ('widgetplaceholder')
-										$("#WidgetPlaceHolder<%=iRowNum%>").children(0).css('border', 'none'); //Remove the border of the table
-										<%End If%>
-										$("#drillDownIcon<%=iHideableDrillDownIconID%>").hide(); //Hide the drilldown icon
-										$("#popupIcon<%=iHideablePopupIconID - 1%>").hide(); //Hide the popup icon
-									</script>
-									<%End If%>
-								</table>
-								<script type="text/javascript">
-									//Attach table sorter to the table
-									$("#DataTable<%=iRowNum%>").tablesorter();
-								</script>
-							</div>
-							<%End If%>
+                              If Not mrstChartData Is Nothing Then
+                                 If mrstChartData.Rows.Count > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
+                              End If
+
+                              Dim Chart_AggregateType As ChartAggregateType = navlink.Chart_AggregateType
+
+                              If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then 'Put and icon in tile mode
+                                 If mrstChartData.Rows.Count > 0 AndAlso (TryCast(mrstChartData.Rows(0)(0), String) <> "No Access" And TryCast(mrstChartData.Rows(0)(0), String) <> "No Data") Then
+                                    Dim popupChartCall As String = "popoutchart('" & fMultiAxis & "', '" & navlink.Chart_ShowLegend & "', '" & navlink.Chart_ShowGrid & "', '" & navlink.Chart_ShowValues & "', '" & navlink.Chart_StackSeries & "', '" & navlink.Chart_ShowPercentages & "', '" & iChart_Type & "', '" & iChart_TableID & "', '" & iChart_ColumnID & "', '" & iChart_FilterID & "', '" & iChart_AggregateType & "', '" & CInt(iChart_ElementType) & "', '" & iChart_TableID_2 & "', '" & iChart_ColumnID_2 & "', '" & iChart_TableID_3 & "', '" & iChart_ColumnID_3 & "', '" & iChart_SortOrderID & "', '" & iChart_SortDirection & "', '" & iChart_ColourID & "',encodeURI('" & navlink.Text & "').replace(/&/g,'%26'),'" & Session("ui-admin-theme").ToString() & "')"
+                                    Dim popuChartCallOnclick = "onclick=" & Chr(34) & popupChartCall & Chr(34)
+                                    Response.Write("<p " & popuChartCallOnclick & " title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p " & popupChartCall & " style='text-align: center; margin-top: 0'>" & navlink.Text & "</p>")
+                                 Else
+                                    Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size:smaller; text-align: center; margin: 0'>(No records)</p>")
+                                 End If
+                              End If
+								   %>
+							   <div class="widgetplaceholder datagrid" id="WidgetPlaceHolder<%=iRowNum%>">
+								   <table id="DataTable<%=iRowNum%>" cellspacing="0" cellpadding="5" rules="all" frame="box" style="width: 100%; vertical-align: top; border: 3px solid lightgray">
+									   <%If mrstChartData.Rows.Count > 0 AndAlso (TryCast(mrstChartData.Rows(0)(0), String) <> "No Access" And TryCast(mrstChartData.Rows(0)(0), String) <> "No Data") Then%>
+									   <thead>
+									   <tr>
+										   <th style="font-weight: normal; text-align: left; cursor: default">
+											   <%=Left(NullSafeString(navlink.Chart_ColumnName), 50)%>
+										   </th>
+										   <%If fMultiAxis Then%>
+										   <th style="font-weight: normal; text-align: left; cursor: default">
+											   <%=Trim(Left(NullSafeString(navlink.Chart_ColumnName_2), 50))%>
+										   </th>
+										   <th style="font-weight: normal; text-align: right; cursor: default">
+											   <%Else%>
+										   <th style="font-weight: normal; text-align: right; cursor: default">
+											   <%End If%>
+											   <%Response.Write(Chart_AggregateType.ToString())%>
+										   </th>
+									   </tr>
+									   </thead>
+									   <tbody>
+									   <%    If mrstChartData.Rows.Count > 0 Then
+                                    For Each objRow As DataRow In mrstChartData.Rows
+									   %>
+									   <tr>
+										   <td class="bordered" style="width: 150px; text-align: left; white-space: nowrap">
+											   <%
+                                       If fMultiAxis Then
+                                          Response.Write(FormatLinkData(objRow(1), navlink, 50))
+                                       Else
+                                          Response.Write(FormatLinkData(objRow(0), navlink, 50))
+                                       End If
+                         %>
+										   </td>
+										   <%If fMultiAxis Then%>
+										   <td class="bordered" style="text-align: left; white-space: nowrap">
+											   <div style="width: 150px; white-space: nowrap">
+												   <%=FormatLinkData(objRow(3), navlink, 50)%>
+											   </div>
+										   </td>
+										   <%End If%>
+										   <td class="bordered" style="text-align: right; vertical-align: top; padding-bottom: 0; white-space: nowrap; overflow: hidden">
+											   <%
+                                       If fMultiAxis Then
+                                          Response.Write(FormatLinkData(objRow(4), navlink, 50))
+                                       Else
+                                          Response.Write(FormatLinkData(objRow(1), navlink, 50))
+                                       End If
+                           %>
+										   </td>
+									   </tr>
+									   <%    
+
+                     Next
+									   %>
+										   </tbody>
+									   <%
+                                    End If
+                                 Else
+                                    If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then 'Put and icon in tile mode
+                                       Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size: smaller; text-align: center'>(No records)</p>")
+                                    Else
+									   %>
+									   <tr>
+										   <td class="bordered" style="text-align: center;" rowspan="3">No matching records found</td>
+									   </tr>
+									   <%End If%>
+									   <script type="text/javascript">
+										   // No data on this chart, adjust UI accordingly
+										   <%If Session("CurrentLayout").ToString() <> Layout.tiles.ToString() Then%>
+										   $("#WidgetPlaceHolder<%=iRowNum%>").css('height', "40px"); //Reduce the size of the parent div ('widgetplaceholder')
+										   $("#WidgetPlaceHolder<%=iRowNum%>").children(0).css('border', 'none'); //Remove the border of the table
+										   <%End If%>
+										   $("#drillDownIcon<%=iHideableDrillDownIconID%>").hide(); //Hide the drilldown icon
+										   $("#popupIcon<%=iHideablePopupIconID - 1%>").hide(); //Hide the popup icon
+									   </script>
+									   <%End If%>
+								   </table>
+								   <script type="text/javascript">
+									   //Attach table sorter to the table
+									   $("#DataTable<%=iRowNum%>").tablesorter();
+								   </script>
+							   </div>
+							   <%End If%>
+                     </div>
 						</li>
 						<%iRowNum += 1%>
 
 						<%Case ElementType.PendingWorkflows And Licence.IsModuleLicenced(SoftwareModule.Workflow)
-								sText = "No pending workflow steps"
-								sText = String.Format("{0} Pending workflow step{1}", _StepCount, IIf(_StepCount <> 1, "s", ""))
+                        sText = "No pending workflow steps"
+                        sText = String.Format("{0} Pending workflow step{1}", _StepCount, IIf(_StepCount <> 1, "s", ""))
 								%>
 						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="2" data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext <%=sTileColourClass%> displayonly pwfslink" onclick="relocateURL('WorkflowPendingSteps', 0)">
-							<div class="pwfTile <%=sTileColourClass%>">
-								<p class="linkspagebuttontileIcon">
-									<i class="icon-inbox"></i>
-									<div class="workflowCount"></div>
-								</p>
-								<div class="widgetplaceholder generaltheme">
-									<div><i class="icon-inbox"></i></div>
-									<a style="<%:sTileForeColourStyle%>" class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics" href="#"><%=sText%></a>
-								</div>
-							</div>
-							<div class="pwfList <%=sTileColourClass%>" style="display: none; <%:sTileBackColourStyle%><%:sTileForeColourStyle%>">
-								<p><span>Pending steps:</span></p>
-								<table></table>
-							</div>
+                     <div class="nomenuitem">
+							   <div class="pwfTile <%=sTileColourClass%>">
+								   <p class="linkspagebuttontileIcon">
+									   <i class="icon-inbox"></i>
+									   <div class="workflowCount"></div>
+								   </p>
+								   <div class="widgetplaceholder generaltheme">
+									   <div><i class="icon-inbox"></i></div>
+									   <a style="<%:sTileForeColourStyle%>" class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics" href="#"><%=sText%></a>
+								   </div>
+							   </div>
+							   <div class="pwfList <%=sTileColourClass%>" style="display: none; <%:sTileBackColourStyle%><%:sTileForeColourStyle%>">
+								   <p><span>Pending steps:</span></p>
+								   <table></table>
+							   </div>
+                     </div>
 						</li>
 						<%
                         iRowNum += 1
@@ -795,8 +803,8 @@
                         objChart.SessionInfo = objSession
 
                         Err.Clear()
-                        Dim mrstDbValueData = objChart.GetChartData(navlink.Chart_TableID, navlink.Chart_ColumnID, navlink.Chart_FilterID, _
-                                                                                          navlink.Chart_AggregateType, navlink.Element_Type, 0, 0, 0, 0, navlink.Chart_SortOrderID, _
+                        Dim mrstDbValueData = objChart.GetChartData(navlink.Chart_TableID, navlink.Chart_ColumnID, navlink.Chart_FilterID,
+                                                                                          navlink.Chart_AggregateType, navlink.Element_Type, 0, 0, 0, 0, navlink.Chart_SortOrderID,
                                                                                           navlink.Chart_SortDirection, navlink.Chart_ColourID)
 
                         If Err.Number <> 0 Then
@@ -863,199 +871,196 @@
 						%>
 						<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
 							data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
-							<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
-								<p class="DBValue" style="color: <%=sCFForeColor%>; <%=sCFFontBold%>; <%=sCFFontItalic%>" id="DBV<%: navlink.id %>">
-									<%If fUseFormatting = True Then%>
-									<span class="DBVSpan"><%=sFormatting_Prefix%><%=FormatNumber(cdbl(sText), iFormatting_DecimalPlaces,,,fFormatting_Use1000Separator)%><%=sFormatting_Suffix%></span>
-									<%Else%>
-									<span class="DBVSpan"><%: sText %></span>
-									<%End If%>
-								</p>
-							</div>
-							<a class="DBValueCaptionContainer" style="<%:sTileForeColourStyle%>" href="#">
-								<p class="DBValueCaption" style="color: <%=sCFForeColor%>; <%=sCFFontBold%>; <%=sCFFontItalic%>">
-									<%sText = navlink.Text
-										If sText.Length > 30 Then
-											sText = sText.Substring(0, 30) + "..."
-										End If
-									sText = sText.Replace("--", "")
-									sText = sText.Replace("'", """")%>
-                           <%-- SSI Tiles Layout - if the Database value label contains a colon at the end then remove it --%>
-                            <% If Session("CurrentLayout").ToString() = Layout.tiles.ToString() AndAlso sText.EndsWith(":") Then
-                              sText = sText.substring(0,sText.length() - 1)
-                             End If%>
-									<%: sText %>
-								</p>
-							</a>
+                     <div>
+							   <div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
+								   <p class="DBValue" style="color: <%=sCFForeColor%>; <%=sCFFontBold%>; <%=sCFFontItalic%>" id="DBV<%: navlink.id %>">
+									   <%If fUseFormatting = True Then%>
+									   <span class="DBVSpan"><%=sFormatting_Prefix%><%=FormatNumber(CDbl(sText), iFormatting_DecimalPlaces,,, fFormatting_Use1000Separator)%><%=sFormatting_Suffix%></span>
+									   <%Else%>
+									   <span class="DBVSpan"><%: sText %></span>
+									   <%End If%>
+								   </p>
+							   </div>
+							   <a class="DBValueCaptionContainer" style="<%:sTileForeColourStyle%>" href="#">
+								   <p class="DBValueCaption" style="color: <%=sCFForeColor%>; <%=sCFFontBold%>; <%=sCFFontItalic%>">
+									   <%sText = navlink.Text
+                                 If sText.Length > 30 Then
+                                    sText = sText.Substring(0, 30) + "..."
+                                 End If
+                                 sText = sText.Replace("--", "")
+                                 sText = sText.Replace("'", """")%>
+                              <%-- SSI Tiles Layout - if the Database value label contains a colon at the end then remove it --%>
+                               <% If Session("CurrentLayout").ToString() = Layout.tiles.ToString() AndAlso sText.EndsWith(":") Then
+                                     sText = sText.Substring(0, sText.Length() - 1)
+                                  End If%>
+									   <%: sText %>
+								   </p>
+							   </a>
+                     </div>
 						</li>
 
 						<%Else%>
 						<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
 							data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
-							<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
-								<p class="DBValue" id="DBV<%: navlink.id %>">
-									<%If fUseFormatting = True Then%>
-									<span class="DBVSpan"><%=sFormatting_Prefix%><%=FormatNumber(cdbl(sText), iFormatting_DecimalPlaces,,,fFormatting_Use1000Separator)%><%=sFormatting_Suffix%></span>
-									<%Else%>
-									<span class="DBVSpan"><%: sText %></span>
-									<%End If%>
-								</p>
-							</div>
-							<a class="DBValueCaptionContainer" style="<%:sTileForeColourStyle%>" href="#">
-								<p class="DBValueCaption">
-									<%sText = navlink.Text
-										If sText.Length > 30 Then
-											sText = sText.Substring(0, 30) + "..."
-										End If
-										sText = sText.Replace("--", "")
-										sText = sText.Replace("'", """")%>
-                              <%-- SSI Tiles Layout - if the Database value label contains a colon at the end then remove it --%>
-                              <% If Session("CurrentLayout").ToString() = Layout.tiles.ToString() AndAlso sText.EndsWith(":") Then
-                                 sText = sText.substring(0,sText.length() - 1)
-                             End If%>
-									<%: sText%>
-								</p>
-							</a>
+                     <div>
+							   <div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
+								   <p class="DBValue" id="DBV<%: navlink.id %>">
+									   <%If fUseFormatting = True Then%>
+									   <span class="DBVSpan"><%=sFormatting_Prefix%><%=FormatNumber(CDbl(sText), iFormatting_DecimalPlaces,,, fFormatting_Use1000Separator)%><%=sFormatting_Suffix%></span>
+									   <%Else%>
+									   <span class="DBVSpan"><%: sText %></span>
+									   <%End If%>
+								   </p>
+							   </div>
+							   <a class="DBValueCaptionContainer" style="<%:sTileForeColourStyle%>" href="#">
+								   <p class="DBValueCaption">
+									   <%sText = navlink.Text
+                                 If sText.Length > 30 Then
+                                    sText = sText.Substring(0, 30) + "..."
+                                 End If
+                                 sText = sText.Replace("--", "")
+                                 sText = sText.Replace("'", """")%>
+                                 <%-- SSI Tiles Layout - if the Database value label contains a colon at the end then remove it --%>
+                                 <% If Session("CurrentLayout").ToString() = Layout.tiles.ToString() AndAlso sText.EndsWith(":") Then
+                                       sText = sText.Substring(0, sText.Length() - 1)
+                                    End If%>
+									   <%: sText%>
+								   </p>
+							   </a>
+                     </div>
 						</li>
 						<%End If
 						End If%>
 
-						<script type="text/javascript">							//loadjscssfile('$.getScript("../scripts/widgetscripts/wdg_oHRDBV.js", function () { initialiseWidget(<%: navlink.id %>, "DBV<%: navlink.id %>", "DBV<%: navlink.Text %>", ""); });', 'ajax');</script>
 						<%iRowNum += 1
 
-						Case ElementType.TodaysEvents%>
+                     Case ElementType.TodaysEvents%>
 						<li data-col="<%=iColNum %>" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" data-row="<%=iRowNum %>" data-sizex="2" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly TELink">
-							<div class="TETile <%=sTileColourClass%>">
-								<p class="linkspagebuttontileIcon">
-									<i class="icon-calendar"></i>
-									<div class="TECount"></div>
-								</p>
-								<p>
-									<a style="<%:sTileForeColourStyle%>" href="#"><%=FormatDateTime(Now, vbLongDate)%></a>
-								</p>
-								<div class="widgetplaceholder generaltheme">
-									<div><i class="icon-calendar"></i></div>
-									<a style="<%:sTileForeColourStyle%>" href="#">Today's Events</a>
-								</div>
-							</div>
-							<div style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="TEList <%=sTileColourClass%>">
-								<p><span>Today's Events:</span></p>
-								<table style="width: 100%;">
-									<%											
-										' ----------------------- DIARY LINKS -----------------------------
-										Dim sErrorDescription As String = ""
-										Dim iRecNum As Integer
-										Dim iNumberOfEvents As Integer = 0
-												
-										' Create the reference to the DLL
-										Dim objDiaryEvents As clsDiary = New clsDiary
-										objDiaryEvents.SessionInfo = CType(Session("SessionContext"), SessionInfo)
-										objDiaryEvents.CheckAccessToSystemEvents()
-			
-										Err.Clear()
-										Dim mrstEventData = objDiaryEvents.GetDiaryData(False, Now.Date, Now.Date)
-																									
-										If (Err.Number() <> 0) Then
-											sErrorDescription = "The Event Data could not be retrieved." & vbCrLf & FormatError(Err.Description)
-										End If
-										iRecNum = 0
-												
-										If sErrorDescription.Length = 0 Then
-											If mrstEventData.Rows.Count Then
-									%>
-									<tr>
-										<td colspan="2" style="font-weight: bold; font-size: small; border-bottom: 1px solid gray">Diary Links</td>
-									</tr>
-									<%    
-										For Each objRow As DataRow In mrstEventData.Rows
-													
-									%>
-									<tr>
-										<td colspan="2" style="font-weight: normal; font-size: small"><%=objRow(3).ToString%></td>
-									</tr>
-									<%                
-										iRecNum = iRecNum + 1
-									Next
-								End If
+                     <div class="nomenuitem">
+							   <div class="TETile <%=sTileColourClass%>">
+								   <p class="linkspagebuttontileIcon">
+									   <i class="icon-calendar"></i>
+									   <div class="TECount"></div>
+								   </p>
+								   <p>
+									   <a style="<%:sTileForeColourStyle%>" href="#"><%=FormatDateTime(Now, vbLongDate)%></a>
+								   </p>
+								   <div class="widgetplaceholder generaltheme">
+									   <div><i class="icon-calendar"></i></div>
+									   <a style="<%:sTileForeColourStyle%>" href="#">Today's Events</a>
+								   </div>
+							   </div>
+							   <div style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="TEList <%=sTileColourClass%>">
+								   <p><span>Today's Events:</span></p>
+								   <table style="width: 100%;">
+									   <%       ' ----------------------- DIARY LINKS -----------------------------
+                                   Dim sErrorDescription As String = ""
+                                   Dim iRecNum As Integer
+                                   Dim iNumberOfEvents As Integer = 0
 
-							End If
-											
-							iNumberOfEvents += iRecNum
-											
-							' ----------------------- OUTLOOK LINKS -----------------------------
-							' Create the reference to the DLL
-							Dim objOutlookEvents As HR.Intranet.Server.clsOutlookLinks = New HR.Intranet.Server.clsOutlookLinks
-							objOutlookEvents.SessionInfo = CType(Session("SessionContext"), SessionInfo)
-			
-							Err.Clear()
-							mrstEventData = objOutlookEvents.GetOutlookLinks()
+                                   ' Create the reference to the DLL
+                                   Dim objDiaryEvents As clsDiary = New clsDiary
+                                   objDiaryEvents.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+                                   objDiaryEvents.CheckAccessToSystemEvents()
 
-							If (Err.Number <> 0) Then
-								sErrorDescription = "The Outlook Links Data could not be retrieved." & vbCrLf & FormatError(Err.Description)
-							End If
-							iRecNum = 0
-											
-							If Len(sErrorDescription) = 0 Then
-								If mrstEventData.Rows.Count > 0 Then
-									%>
-									<tr>
-										<td colspan="2" style="font-weight: bold; font-size: small; border-bottom: 1px solid gray">Outlook Calendar Links</td>
-									</tr>
-									<%
-										For Each objRow As DataRow In mrstEventData.Rows
-									%>
-									<tr>
-										<td colspan="2" style="font-weight: normal; font-size: small"><%=Trim(objRow(2).ToString())%></td>
-									</tr>
-									<%
-										iRecNum += 1
-									Next
-								End If
+                                   Err.Clear()
+                                   Dim mrstEventData = objDiaryEvents.GetDiaryData(False, Now.Date, Now.Date)
+
+                                   If (Err.Number() <> 0) Then
+                                      sErrorDescription = "The Event Data could not be retrieved." & vbCrLf & FormatError(Err.Description)
+                                   End If
+                                   iRecNum = 0
+
+                                   If sErrorDescription.Length = 0 Then
+                                      If mrstEventData.Rows.Count Then
+									   %>
+									   <tr>
+										   <td colspan="2" style="font-weight: bold; font-size: small; border-bottom: 1px solid gray">Diary Links</td>
+									   </tr>
+									   <%             For Each objRow As DataRow In mrstEventData.Rows
+
+									   %>
+									   <tr>
+										   <td colspan="2" style="font-weight: normal; font-size: small"><%=objRow(3).ToString%></td>
+									   </tr>
+									   <%                iRecNum = iRecNum + 1
+                                         Next
+                                      End If
+
+                                   End If
+
+                                   iNumberOfEvents += iRecNum
+
+                                   ' ----------------------- OUTLOOK LINKS -----------------------------
+                                   ' Create the reference to the DLL
+                                   Dim objOutlookEvents As HR.Intranet.Server.clsOutlookLinks = New HR.Intranet.Server.clsOutlookLinks
+                                   objOutlookEvents.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
+                                   Err.Clear()
+                                   mrstEventData = objOutlookEvents.GetOutlookLinks()
+
+                                   If (Err.Number <> 0) Then
+                                      sErrorDescription = "The Outlook Links Data could not be retrieved." & vbCrLf & FormatError(Err.Description)
+                                   End If
+                                   iRecNum = 0
+
+                                   If Len(sErrorDescription) = 0 Then
+                                      If mrstEventData.Rows.Count > 0 Then
+									   %>
+									   <tr>
+										   <td colspan="2" style="font-weight: bold; font-size: small; border-bottom: 1px solid gray">Outlook Calendar Links</td>
+									   </tr>
+									   <%             For Each objRow As DataRow In mrstEventData.Rows
+									   %>
+									   <tr>
+										   <td colspan="2" style="font-weight: normal; font-size: small"><%=Trim(objRow(2).ToString())%></td>
+									   </tr>
+									   <%    iRecNum += 1
+                                         Next
+                                      End If
 
 
-							End If
-									
-							iNumberOfEvents += iRecNum
-											
+                                   End If
 
-							' ----------------------- TODAY'S ABSENCES -----------------------------
-							' Create the reference to the DLL
-							Dim objTodaysEvents As clsTodaysAbsence = New clsTodaysAbsence
-							objTodaysEvents.SessionInfo = CType(Session("SessionContext"), SessionInfo)
-				
-							Err.Clear()
-							mrstEventData = objTodaysEvents.GetTodaysAbsences(CleanNumeric(Session("TopLevelRecID")))
-							iRecNum = 0
-											
-							If Len(sErrorDescription) = 0 And Not mrstEventData Is Nothing Then
-								If mrstEventData.Rows.Count > 0 Then
-									%>
-									<tr>
-										<td colspan="2" style="font-weight: bold; font-size: small; border-bottom: 1px solid gray">Today's Absences</td>
-									</tr>
-									<%             
-												
-										For Each objRow As DataRow In mrstEventData.Rows
-													
-									%>
-									<tr>
-										<td colspan="2" style="font-weight: normal; font-size: small"><%=Trim(objRow(0).ToString)%></td>
-									</tr>
-									<%                
-										iRecNum = iRecNum + 1
-									Next
-								End If
-								iNumberOfEvents += iRecNum
-																																
-							End If
-									%>
-								</table>
-							</div>
+                                   iNumberOfEvents += iRecNum
 
-							<div class="linkspagebuttontileIcon"><span>
-								<p><%=iNumberOfEvents%></p>
-								<p style="font-size: small;">Event<%If iNumberOfEvents <> 1 Then%>s<%End If%></p>
-							</span></div>
+
+                                   ' ----------------------- TODAY'S ABSENCES -----------------------------
+                                   ' Create the reference to the DLL
+                                   Dim objTodaysEvents As clsTodaysAbsence = New clsTodaysAbsence
+                                   objTodaysEvents.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
+                                   Err.Clear()
+                                   mrstEventData = objTodaysEvents.GetTodaysAbsences(CleanNumeric(Session("TopLevelRecID")))
+                                   iRecNum = 0
+
+                                   If Len(sErrorDescription) = 0 And Not mrstEventData Is Nothing Then
+                                      If mrstEventData.Rows.Count > 0 Then
+									   %>
+									   <tr>
+										   <td colspan="2" style="font-weight: bold; font-size: small; border-bottom: 1px solid gray">Today's Absences</td>
+									   </tr>
+									   <%             For Each objRow As DataRow In mrstEventData.Rows
+
+									   %>
+									   <tr>
+										   <td colspan="2" style="font-weight: normal; font-size: small"><%=Trim(objRow(0).ToString)%></td>
+									   </tr>
+									   <%                iRecNum = iRecNum + 1
+                                         Next
+                                      End If
+                                      iNumberOfEvents += iRecNum
+
+                                   End If
+									   %>
+								   </table>
+							   </div>
+
+							   <div class="linkspagebuttontileIcon"><span>
+								   <p><%=iNumberOfEvents%></p>
+								   <p style="font-size: small;">Event<%If iNumberOfEvents <> 1 Then%>s<%End If%></p>
+							   </span></div>
+                     </div>
 						</li>
 						<%
 							iRowNum += 1
@@ -1063,15 +1068,21 @@
 						Case ElementType.OrgChart
 							sOnClick = "loadPartialView('OrgChart', 'home', 'workframe')"%>
 						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
-							<a style="<%:sTileForeColourStyle%>" href="#"><%: navlink.Text %></a>
-							<p class="linkspagebuttontileIcon"><i class="icon-sitemap"></i></p>
+                     <div>
+							   <a style="<%:sTileForeColourStyle%>" href="#"><%: navlink.Text %></a>
+							   <p class="linkspagebuttontileIcon"><i class="icon-sitemap"></i></p>
+                     </div>
 						</li>
 						<%iRowNum += 1%>
 						
 						<%Case Else%>
-						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>"
-							class="linkspagebuttontext <%=sTileColourClass%> displayonly"><a style="<%:sTileForeColourStyle%>" href="#">
-								<%: navlink.Text %></a></li>
+                  <li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" style="<%: sTileBackColourStyle%><%:sTileForeColourStyle%>"
+                     class="linkspagebuttontext <%=sTileColourClass%> displayonly">
+                     <div>
+                        <a style="<%: sTileForeColourStyle%>" href="#">
+                           <%: navlink.Text %></a>
+                     </div>
+                  </li>
 						<%iRowNum += 1
 
 					End Select
@@ -1148,8 +1159,10 @@
 						%>
 						<li class="linkspagebuttontext Colour4" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
 							data-sizex="1" data-sizey="1" onclick="goURL('<%=sDestination%>', 0, false)">
-							<a class="linkspagebutton-displaytype linkspagebuttontext-alignment linkspagebutton-colourtheme" href="#"><%=sText%></a>
-							<p class="linkspagebuttontileIcon"><i class="icon-external-link-sign"></i></p>
+                     <div>
+							   <a class="linkspagebutton-displaytype linkspagebuttontext-alignment linkspagebutton-colourtheme" href="#"><%=sText%></a>
+							   <p class="linkspagebuttontileIcon"><i class="icon-external-link-sign"></i></p>
+                     </div>
 						</li>
 						<%
 							iRowNum += 1
@@ -1242,18 +1255,20 @@
 					<%End If%>
 					<li class="dropdownlinktext <%=sTileColourClass%>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
 						data-sizey="1" onclick="<%=sOnclick%>">
-						<p class="dropdownlinktileIcon">
-							<i class="icon-external-link"></i>
-						</p>
-						<p>
-							<a href="#" data-ddlvalue="<%:sValue%>">
-								<%If navlink.Text.Length > 30 Then
-										navlink.Text = navlink.Text.Substring(0, 30) + "..."
-									End If
-									%>
-								<%: navlink.Text %>
-							</a>
-						</p>
+                  <div>
+						   <p class="dropdownlinktileIcon">
+							   <i class="icon-external-link"></i>
+						   </p>
+						   <p>
+							   <a href="#" data-ddlvalue="<%:sValue%>">
+								   <%If navlink.Text.Length > 30 Then
+                                 navlink.Text = navlink.Text.Substring(0, 30) + "..."
+                              End If
+									   %>
+								   <%: navlink.Text %>
+							   </a>
+						   </p>
+                  </div>
 					</li>
 					<%iRowNum += 1
 
@@ -1303,13 +1318,15 @@
 						<%End If%>
 					<li class="dropdownlinktext Colour4" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
 						data-sizey="1" onclick="<%=sOnClick%>">
-						<p class="dropdownlinktileIcon">
-							<i class="icon-external-link"></i>
-						</p>
-						<p>
-							<a href="#" data-ddlvalue="<%:sValue%>">
-								<%=sText %></a>
-						</p>
+                  <div>
+						   <p class="dropdownlinktileIcon">
+							   <i class="icon-external-link"></i>
+						   </p>
+						   <p>
+							   <a href="#" data-ddlvalue="<%:sValue%>">
+								   <%=sText %></a>
+						   </p>
+                  </div>
 					</li>					
 						<%
 							iRowNum += 1
@@ -1366,18 +1383,20 @@
 					<%End If%>
 					<li class="docdisplaylinktext <%=sTileColourClass%>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
 						data-sizey="1" onclick="<%=sOnclick%>">
-						<p class="docdisplaylinktileIcon">
-							<i class="icon-external-link"></i>
-						</p>
-						<p>
-							<a href="#" data-ddlvalue="<%:sValue%>">
-								<%If navlink.Text.Length > 30 Then
-										navlink.Text = navlink.Text.Substring(0, 30) + "..."
-									End If
-									%>
-								<%: navlink.Text %>
-							</a>
-						</p>
+                  <div>
+						   <p class="docdisplaylinktileIcon">
+							   <i class="icon-external-link"></i>
+						   </p>
+						   <p>
+							   <a href="#" data-ddlvalue="<%:sValue%>">
+								   <%If navlink.Text.Length > 30 Then
+                                 navlink.Text = navlink.Text.Substring(0, 30) + "..."
+                              End If
+									   %>
+								   <%: navlink.Text %>
+							   </a>
+						   </p>
+                  </div>
 					</li>
 					<%iRowNum += 1
 
@@ -1591,6 +1610,8 @@
 			$('.DashContent').addClass("ui-widget ui-widget-content");
 			//$('.ViewDescription').addClass('ui-widget ui-widget-content');
 
+		   //remove hover over displayonly elements
+			$('.nomenuitem').removeClass('ui-menu-item-wrapper').css('padding', '3px 1em 3px .4em');
 		}
 
 		// This replaces the big fat grey scrollbar with the nice thin dark one. (HRPRO-2952)

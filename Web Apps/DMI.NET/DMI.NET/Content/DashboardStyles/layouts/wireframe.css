@@ -83,7 +83,7 @@ div.officetab li div.button .disabled {
 	 border-width: 2px;*/
 }
 															
-.hypertextlinkseparatorframe ul {padding: 0 0 0 10px;}
+.hypertextlinkseparatorframe ul { padding: 0; }
 
 .hypertextlink-displaytype
 {
@@ -102,10 +102,9 @@ div.officetab li div.button .disabled {
 		
 .hypertextlinktext a 
 {
-	line-height: 2;
+	line-height: 1.5;
 	text-decoration: none;
-	/*margin-left: 10px;*/
-	}
+}
 
 .hypertextlinktext {
 	white-space: nowrap;
@@ -172,7 +171,7 @@ div.officetab li div.button .disabled {
 		list-style-image: none; 
 		}
 
-.linkspagebuttontext {padding-left: 10px; position: relative;line-height: 2em;}
+.linkspagebuttontext {position: relative;line-height: 1.5em;}
 
 .linkspagebuttontext a 
 {
@@ -192,13 +191,11 @@ div.officetab li div.button .disabled {
 
 .DBValueScroller  
 {
+position: absolute;
+	right: 0px;
 	padding-right: 10px;
-   float: right;
 }
 
-.DBValueCaptionContainer {
-   float:left;
-}
 .DBVSpinner 
 {
 	height: 16px;

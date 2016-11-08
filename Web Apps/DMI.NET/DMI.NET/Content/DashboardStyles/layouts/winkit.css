@@ -131,7 +131,7 @@ body
 	 /*height: 99.5%;*/
 }
 															
-.hypertextlinkseparatorframe ul {padding: 0 0 0 10px;}
+.hypertextlinkseparatorframe ul { padding: 0; }
 
 .hypertextlink-displaytype
 {
@@ -150,10 +150,9 @@ body
 		
 .hypertextlinktext a 
 {
-	line-height: 2;
+	line-height: 1.5;
 	text-decoration: none;
-	/*margin-left: 10px;*/
-	}
+}
 
 .hypertextlinktext {
 	white-space: nowrap;
@@ -221,8 +220,7 @@ body
 		}
 
 .linkspagebuttontext {
-	line-height: 2;
-   padding-left: 10px;
+	line-height: 1.5;
    position: relative;
 }
 
@@ -246,17 +244,11 @@ body
 
 .DBValueScroller  
 {
+   position: absolute;
+	right: 0px;
 	padding-right: 10px;
-   float: right;
 }
 
-.DBValueCaptionContainer {
-   float: left;
-}
-
-.DBValue {
-	line-height: 2;
-}
 
 .DBVSpinner 
 {
