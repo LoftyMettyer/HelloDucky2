@@ -43,7 +43,7 @@
         </tr>
     </table>
                              
-    <div class="copyright">Copyright © Advanced Business Software and Solutions Ltd 2012</div>
+    <div class="copyright">Copyright © Advanced</div>
 
 </asp:Content>
 
