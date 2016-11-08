@@ -6142,7 +6142,7 @@ Namespace Controllers
                                .EmployeeStaffNo = objRow("Post_ID").ToString().Replace(" ", "_"),
                                .LineManagerStaffNo = objRow("Reports_To_Post_ID").ToString().Replace(" ", "_"),
                                .HierarchyLevel = CInt(objRow("HierarchyLevel")),
-                               .ReportColumnItemList = ProcessColumnsForOrgReport(cloneList, IsPostBasedSystem),
+                               .ReportColumnItemList = cloneList,
                                .NodeTypeClass = HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(additionalClasses))}
 
                      If (CBool(objRow("IsGhostNode") OrElse CBool(objRow("IsFilteredNode")))) Then 'If GhostNode or FilterNode then clear PostID
@@ -6155,13 +6155,16 @@ Namespace Controllers
                                .EmployeeStaffNo = objRow("Staff_Number").ToString().Replace(" ", "_"),
                                .LineManagerStaffNo = objRow("Reports_To_Staff_Number").ToString().Replace(" ", "_"),
                                .HierarchyLevel = CInt(objRow("HierarchyLevel")),
-                               .ReportColumnItemList = ProcessColumnsForOrgReport(cloneList, IsPostBasedSystem),
+                               .ReportColumnItemList = cloneList,
                                .NodeTypeClass = HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(additionalClasses))}
 
                      If (CBool(objRow("IsGhostNode") OrElse CBool(objRow("IsFilteredNode")))) Then 'If GhostNode or FilterNode then clear EmployeeID
                         orgReportObj.EmployeeID = 0
                      End If
 
+                  End If
+                  If Not (CBool(objRow("IsGhostNode"))) OrElse (CInt(objRow("EmployeeID")) = iLoggedInUser) Then 'Add Prefix suffix to non GhostNode and loggedinUser but ignore prefix suffix if GhostNode
+                     orgReportObj.ReportColumnItemList = ProcessColumnsForOrgReport(cloneList, IsPostBasedSystem)
                   End If
                   orgCharts.Add(orgReportObj)
                Next
