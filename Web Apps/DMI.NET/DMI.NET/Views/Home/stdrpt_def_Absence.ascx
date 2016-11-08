@@ -624,7 +624,7 @@
 													<input id="optDefOutputFormat1" name="optDefOutputFormat" onclick="formatAbsenceClick(1);" style="width: 20px" type="radio" value="1" />
 												</td>
 												<td style="text-align: left; white-space: nowrap">
-													<label class="ui-state-error-text" for="optDefOutputFormat1" tabindex="-1">CSV File</label>
+													<label class="DataManagerOnly" for="optDefOutputFormat1" tabindex="-1">CSV File</label>
 												</td>
 												<td></td>
 											</tr>
@@ -644,7 +644,7 @@
 													<label
 														tabindex="-1"
 														for="optDefOutputFormat2"
-														class="radio ui-state-error-text">
+														class="radio DataManagerOnly">
 														HTML Document
 													</label>
 												</td>
@@ -663,7 +663,7 @@
 													<label
 														tabindex="-1"
 														for="optDefOutputFormat3"
-														class="radio ui-state-error-text">
+														class="radio DataManagerOnly">
 														Word Document
 													</label>
 												</td>
@@ -788,7 +788,7 @@
 						<tr>
 							<td  colspan="1">
 							<td>
-								<label class="ui-state-error-text">If file exists :</label>
+								<label class="DataManagerOnly">If file exists :</label>
 							</td>
 							<td colspan="2">
 								<select id="cboSaveExisting" name="cboSaveExisting">
@@ -844,7 +844,7 @@
 
 				<tr>
 					<td></td>
-					<td colspan="3"><span class="DataManagerOnly ui-state-error-text">Note: Options marked in red are unavailable in OpenHR Web.</span></td>
+					<td colspan="3"><span class="DataManagerOnly">Note: Options marked in red are unavailable in OpenHR Web.</span></td>
 				</tr>
 			</table>
 		</div>
