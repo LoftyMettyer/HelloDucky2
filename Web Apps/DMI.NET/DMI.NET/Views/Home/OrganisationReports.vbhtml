@@ -171,6 +171,30 @@
       setTimeout(function () {
          $(".divMultiline").dotdotdot({ wrap: 'letter', fallbackToLetter: true });
       }, 1);
+
+      // Enable pan & zoom on org chart
+      $('.jOrgChart').panzoom({ 
+         disablePan: false,
+         $zoomRange: $(".orgChart-slider-vertical"),
+         minScale: 0.2,
+         maxScale: 1,
+         contain: true
+      });
+     
+      var $panzoom = $('.jOrgChart').panzoom();
+   
+      //Mousewheel zoom
+      $panzoom.parent().on('mousewheel.focal', function( e ) {
+         e.preventDefault();
+         var delta = e.delta || e.originalEvent.wheelDelta;
+         var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
+         $panzoom.panzoom('zoom', zoomOut, {
+            animate: false,
+            focal: e
+         });
+      });     
+      // End - Enable pan & zoom on org chart
+
    }); //--------------End Ready ---------------
 
    function showExpandNodeIcons() {
@@ -186,7 +210,7 @@
 
    }
 
-   function centreMe(fSelf) {
+   function centreMe(fSelf) {      
       try {
 
          //If not highlighted node found  then return.
@@ -650,6 +674,7 @@
    </div>
 
    <div id="chart" class="orgChart"></div>
+
 
    <div id="noData" class="ui-widget-content" style="width: 50%; margin: 0 auto; padding: 20px; border: none;display: none;">
       <h2 class="centered">Cannot display the Organisation Report</h2>

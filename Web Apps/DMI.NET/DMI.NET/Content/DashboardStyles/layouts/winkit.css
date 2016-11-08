@@ -821,9 +821,9 @@ div.officetab li div.textboxlist li {
 }
 
 div.officetab li div.separator {
-	border-left: 1px solid #9DBFDB;
+	/*border-left: 1px solid #9DBFDB;
 	padding-left: 6px;
-	margin-left: 6px;
+	margin-left: 6px;*/
 }
 
 div.officetab li div.textboxlist img {

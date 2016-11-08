@@ -858,3 +858,7 @@ select.readonly {
 .searchResultNormalFont {
 	font-weight: normal !important;
 }
+
+.orgChart {
+   overflow: auto !important;
+}

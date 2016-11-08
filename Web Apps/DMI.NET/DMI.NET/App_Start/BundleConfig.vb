@@ -46,7 +46,8 @@ Namespace App_Start
 				"~/Scripts/FormScripts/general.js",
 				"~/Scripts/FormScripts/menu.js",
 				"~/Scripts/ctl_SetStyles.js",
-				"~/Scripts/jquery/jquery.hotkeys.js"))
+				"~/Scripts/jquery/jquery.hotkeys.js",
+            "~/Scripts/jquery.panzoom.min.js"))
 
 			' SignalR
 			bundles.Add(New ScriptBundle("~/bundles/SignalR").Include(
