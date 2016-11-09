@@ -172,29 +172,6 @@
          $(".divMultiline").dotdotdot({ wrap: 'letter', fallbackToLetter: true });
       }, 1);
 
-      // Enable pan & zoom on org chart
-      $('.jOrgChart').panzoom({ 
-         disablePan: false,
-         $zoomRange: $(".orgChart-slider-vertical"),
-         minScale: 0.2,
-         maxScale: 1,
-         contain: true
-      });
-     
-      var $panzoom = $('.jOrgChart').panzoom();
-   
-      //Mousewheel zoom
-      $panzoom.parent().on('mousewheel.focal', function( e ) {
-         e.preventDefault();
-         var delta = e.delta || e.originalEvent.wheelDelta;
-         var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
-         $panzoom.panzoom('zoom', zoomOut, {
-            animate: false,
-            focal: e
-         });
-      });     
-      // End - Enable pan & zoom on org chart
-
    }); //--------------End Ready ---------------
 
    function showExpandNodeIcons() {

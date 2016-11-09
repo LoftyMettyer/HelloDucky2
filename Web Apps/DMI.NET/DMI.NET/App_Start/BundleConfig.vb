@@ -42,15 +42,14 @@ Namespace App_Start
 
          ' OpenHR core
          bundles.Add(New ScriptBundle("~/bundles/OpenHR_General").Include(
-				"~/Scripts/openHR.js",
-				"~/Scripts/FormScripts/general.js",
-				"~/Scripts/FormScripts/menu.js",
-				"~/Scripts/ctl_SetStyles.js",
-				"~/Scripts/jquery/jquery.hotkeys.js",
-            "~/Scripts/jquery.panzoom.min.js"))
+            "~/Scripts/openHR.js",
+            "~/Scripts/FormScripts/general.js",
+            "~/Scripts/FormScripts/menu.js",
+            "~/Scripts/ctl_SetStyles.js",
+            "~/Scripts/jquery/jquery.hotkeys.js"))
 
-			' SignalR
-			bundles.Add(New ScriptBundle("~/bundles/SignalR").Include(
+         ' SignalR
+         bundles.Add(New ScriptBundle("~/bundles/SignalR").Include(
 				"~/Scripts/jquery.signalR-{version}.js",
 				"~/signalr/hubs"))
 

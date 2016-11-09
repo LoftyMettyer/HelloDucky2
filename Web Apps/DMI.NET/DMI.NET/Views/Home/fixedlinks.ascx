@@ -1207,17 +1207,7 @@
                                         Merge</h6>
                                 </a>
                             </div>
-                        </li>
-                       <li>
-                          <span>Zoom</span>
-                          <div class="textboxlist">
-                             <ul>
-                                <li>
-                                   20%<input type="range" class="orgChart-slider-vertical">100%
-                                </li>
-                             </ul>
-                          </div>
-                       </li>
+                        </li>                    
                     </ul>
                 </li>
 
