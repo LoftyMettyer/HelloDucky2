@@ -2939,6 +2939,7 @@ Namespace Controllers
                         Next
                      End If
 
+                     Dim lastValue As String = String.Empty
                      For Each objRow As DataRow In objCrossTab.PivotData.Rows
 
                         If objCrossTab.PageBreakColumn Then
@@ -2954,15 +2955,21 @@ Namespace Controllers
 
                               If strPageValue <> vbNullString Then
 
-                                 ClientDLL.AddPage(objCrossTab.Name, strPageValue)
-                                 ClientDLL.ArrayDim(UBound(strOutput, 1), UBound(strOutput, 2))
-                                 For lngCol = 0 To UBound(strOutput, 1)
-                                    For lngRow = 0 To UBound(strOutput, 2)
-                                       ClientDLL.ArrayAddTo(lngCol, lngRow, strOutput(lngCol, lngRow))
-                                    Next
-                                 Next
+                                 'Gets all distinct value for the PAGE BREAK column (pgb) to create the worksheet name
+                                 If ((lastValue.Equals(Trim(strPageValue), StringComparison.CurrentCultureIgnoreCase) = False)) Then
 
-                                 ClientDLL.DataArray()
+                                    lastValue = Trim(strPageValue)
+
+                                    ClientDLL.AddPage(objCrossTab.Name, strPageValue)
+                                    ClientDLL.ArrayDim(UBound(strOutput, 1), UBound(strOutput, 2))
+                                    For lngCol = 0 To UBound(strOutput, 1)
+                                       For lngRow = 0 To UBound(strOutput, 2)
+                                          ClientDLL.ArrayAddTo(lngCol, lngRow, strOutput(lngCol, lngRow))
+                                       Next
+                                    Next
+
+                                    ClientDLL.DataArray()
+                                 End If
 
                               End If
 
