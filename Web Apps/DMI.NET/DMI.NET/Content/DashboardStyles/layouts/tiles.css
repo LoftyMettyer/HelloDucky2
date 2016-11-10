@@ -703,6 +703,7 @@ div#pwfs {
 
 /* Org Chart scrollbar for tiles only*/
 .orgChart {
+   max-height: 85%;
 	width: 100%;
 	overflow: auto;
 }
