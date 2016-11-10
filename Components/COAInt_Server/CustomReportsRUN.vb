@@ -525,14 +525,15 @@ Public Class Report
 
 	End Function
 
-	Public Function MergeSQLStrings() As Boolean
+   Public Function MergeSQLStrings() As Boolean
 
-		mstrSQL = mstrSQLSelect & " FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & " " & mstrSQLOrderBy
-		Return True
+      mstrSQL = mstrSQLSelect & " FROM " & mstrSQLFrom & IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere)
 
-	End Function
+      Return True
 
-	Public Function ExecuteSql() As Boolean
+   End Function
+
+   Public Function ExecuteSql() As Boolean
 
 		Try
 			DB.ExecuteSql(mstrSQL)
@@ -1043,7 +1044,7 @@ Public Class Report
 			End If
 
 			' Start off the select statement
-			mstrSQLSelect = "SELECT TOP 1000000000000 "
+			mstrSQLSelect = "SELECT "
 
 			' Dimension an array of tables/views joined to the base table/view
 			' Column 1 = 0 if this row is for a table, 1 if it is for a view
@@ -1693,7 +1694,7 @@ Public Class Report
 
 			'************ Re-Order the data using the defined sort orders. ******************
 			aryInsertStatements.Add(String.Format("DELETE FROM {0};{1}", mstrTempTableName, vbNewLine))
-			aryInsertStatements.Add(String.Format("INSERT INTO [{0}] SELECT * FROM [{1}] ORDER BY [{2}] ASC;", mstrTempTableName, sMCTempTable, lng_SEQUENCECOLUMNNAME))
+			aryInsertStatements.Add(String.Format("INSERT INTO [{0}] SELECT * FROM [{1}];", mstrTempTableName, sMCTempTable))
 
 			sSQL = Join(aryInsertStatements.ToArray())
 
@@ -2472,12 +2473,7 @@ Public Class Report
 				sSQL = "SELECT * FROM [" & mstrTempTableName & "]"
 				sSQL = sSQL & " ORDER BY [" & lng_SEQUENCECOLUMNNAME & "] ASC"
 			Else
-				sSQL = "SELECT * FROM " & mstrTempTableName
-
-				If mbIsBradfordIndexReport Then
-					sSQL = sSQL & mstrSQLOrderBy
-				End If
-
+				sSQL = "SELECT * FROM " & mstrTempTableName & " " & mstrSQLOrderBy
 			End If
 
 			mrstCustomReportsOutput = DB.GetDataTable(sSQL)

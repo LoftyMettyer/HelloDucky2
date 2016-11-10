@@ -176,11 +176,10 @@ Private mbUseSequence As Boolean
 
 ' Array holding the User Defined functions that are needed for this report
 Private mastrUDFsRequired() As String
-Private Function AddPageBreakValue(pintRowIndex As Integer, pvarValue As String)
 
+Private Function AddPageBreakValue(pintRowIndex As Long, pvarValue As String)
   ReDim Preserve mvarPageBreak(pintRowIndex)
   mvarPageBreak(pintRowIndex) = pvarValue
-  
 End Function
 
 Private Function GetMostChildsForParent(avChildRecs() As Recordset, iParentCount As Integer) As Integer
@@ -604,15 +603,10 @@ Private Function CreateMutipleChildTempTable() As Boolean
  
 '************ Re-Order the data using the defined sort orders. ******************
   sSQL = "DELETE FROM [" & mstrTempTableName & "]"
-    
+
   mclsData.ExecuteSql sSQL
  
   sSQL = "INSERT INTO [" & mstrTempTableName & "] SELECT * FROM [" & sMCTempTable & "]"
-
-' Order the entire recordset.
-  'TM20020409 Fault 3746 - Order the code as it is iserted back into the original temp table.
-  sSQL = sSQL & " ORDER BY [" & lng_SEQUENCECOLUMNNAME & "] ASC"
-  
   mclsData.ExecuteSql sSQL
 
 
@@ -896,8 +890,7 @@ Private Function MergeSQLStrings() As Boolean
             " FROM " & _
             mstrSQLFrom & _
             IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & _
-            IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & _
-            " " & mstrSQLOrderBy
+            IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere)
 
   MergeSQLStrings = True
   Exit Function
@@ -977,7 +970,7 @@ Private Function GetCustomReportDefinition() As Boolean
     Else
       mlngCustomReportsFilterID = !Filter
       mlngCustomReportsPickListID = !picklist
-    End If
+    End If       
     mlngCustomReportsParent1Table = !parent1table
     mstrCustomReportsParent1TableName = datGeneral.GetTableName(mlngCustomReportsParent1Table)
     mlngCustomReportsParent1FilterID = !parent1filter
@@ -1449,11 +1442,15 @@ Private Function GenerateSQLSelect() As Boolean
   
   ' COWBOY ALERT RE-REVISTITED !!!!!!
   ' JDM - 17/09/2014 - TFS-9973 - Well, well, well, here we go again.
-  If glngSQLVersion = 9 Or glngSQLVersion >= 10.5 Then
-    mstrSQLSelect = "SELECT TOP 1000000000000 "
-  Else
-    mstrSQLSelect = "SELECT "
-  End If
+  
+  ' COWBOY ALERT RE-RE-REVISITED !!!!!!
+  ' JDM - 9/11/2016 - TFS-25065 - Commented out as hack no longer worked on large datasets that retrieved data from multiple tables
+  '                               Moved the order by clause to where the data is retrieved from the temp table.
+  'If glngSQLVersion = 9 Or glngSQLVersion >= 10.5 Then
+  '  mstrSQLSelect = "SELECT TOP 1000000000000 "
+  'Else
+  mstrSQLSelect = "SELECT "
+  'End If
   
   ' Dimension an array of tables/views joined to the base table/view
   ' Column 1 = 0 if this row is for a table, 1 if it is for a view
@@ -1486,7 +1483,7 @@ Private Function GenerateSQLSelect() As Boolean
             mstrAbsenceRealSource = mstrRealSource
           End If
         End If
-        
+               
         pblnColumnOK = mobjColumnPrivileges.IsValid(pstrTempColumnName)
           
         If pblnColumnOK Then
@@ -2708,17 +2705,18 @@ Private Function CheckRecordSet() As Boolean
   
 '  Set mrstCustomReportsOutput = mclsData.OpenRecordset("SELECT * FROM " & mstrTempTableName, adOpenStatic, adLockReadOnly)
   
+  
+  ' Order the entire recordset.
+  'TM20020409 Fault 3746 - Order the code as it is iserted back into the original temp table.
+'  sSQL = sSQL & " ORDER BY [" & lng_SEQUENCECOLUMNNAME & "] ASC"
+
+  
   'TM20020429 Fault 3764
   If mbUseSequence Then
     sSQL = "SELECT * FROM [" & mstrTempTableName & "]"
     sSQL = sSQL & " ORDER BY [" & lng_SEQUENCECOLUMNNAME & "] ASC"
   Else
-    sSQL = "SELECT * FROM " & mstrTempTableName
-    
-    If mbIsBradfordIndexReport Then
-      sSQL = sSQL & mstrSQLOrderBy
-    End If
-    
+    sSQL = "SELECT * FROM " & mstrTempTableName & " " & mstrSQLOrderBy
   End If
   
   Set mrstCustomReportsOutput = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
@@ -5049,7 +5047,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
   Dim objOutput As clsOutputRun
   Dim lngIndex As Long
   
-  Dim iRow As Integer
+  Dim iRow As Long
   Dim icol As Integer
   Dim bm As Variant
   Dim sAddString As String

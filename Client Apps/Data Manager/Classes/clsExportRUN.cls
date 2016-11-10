@@ -541,8 +541,7 @@ Private Function MergeSQLStrings() As Boolean
             " FROM " & _
             mstrSQLFrom & _
             IIf(Len(mstrSQLJoin) = 0, "", " " & mstrSQLJoin) & _
-            IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere) & _
-            " " & mstrSQLOrderBy
+            IIf(Len(mstrSQLWhere) = 0, "", " " & mstrSQLWhere)
 
   MergeSQLStrings = True
   Exit Function
@@ -703,7 +702,7 @@ Private Function GetExportDefinition() As Boolean
     mstrLinkedCatalog = IIf(IsNull(!LinkedCatalog), "", !LinkedCatalog)
     mstrLinkedTable = IIf(IsNull(!LinkedTable), "", !LinkedTable)
 
-    mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!userName)))
+    mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
     mbAuditChangesOnly = IIf(IsNull(!AuditChangesOnly), False, !AuditChangesOnly)
 
     If Not IsRecordSelectionValid Then
@@ -1057,11 +1056,15 @@ Private Function GenerateSQLSelect() As Boolean
   
   ' COWBOY ALERT RE-REVISTITED !!!!!!
   ' JDM - 17/09/2014 - TFS-9973 - Well, well, well, here we go again.
-  If glngSQLVersion = 9 Or glngSQLVersion >= 10.5 Then
-    mstrSQLSelect = "SELECT TOP 1000000000000 "
-  Else
-    mstrSQLSelect = "SELECT "
-  End If
+  
+  ' COWBOY ALERT RE-RE-REVISITED !!!!!!
+  ' JDM - 9/11/2016 - TFS-25065 - Commented out as hack no longer worked on large datasets that retrieved data from multiple tables
+  '                               Moved the order by clause to where the data is retrieved from the temp table.
+  'If glngSQLVersion = 9 Or glngSQLVersion >= 10.5 Then
+  '  mstrSQLSelect = "SELECT TOP 1000000000000 "
+  'Else
+  mstrSQLSelect = "SELECT "
+  'End If
   
   ' Dimension an array of tables/views joined to the base table/view
   ' Column 1 = 0 if this row is for a table, 1 if it is for a view
@@ -2054,7 +2057,7 @@ Private Function CheckRecordSet() As Boolean
     Exit Function
   End If
 
-  Set mrstExportOutput = mclsData.OpenRecordset("SELECT * FROM " & mstrTempTableName, adOpenStatic, adLockReadOnly)
+  Set mrstExportOutput = mclsData.OpenRecordset("SELECT * FROM " & mstrTempTableName & " " & mstrSQLOrderBy, adOpenStatic, adLockReadOnly)
 
   If mrstExportOutput.BOF And mrstExportOutput.EOF Then
     
@@ -3386,8 +3389,8 @@ Private Function ReadDataIntoArray() As Boolean
 
   ' Open the export table as a recordset.
   'Set prstReadyToExport = mclsGeneral.GetRecords("SELECT * FROM [" & mstrTempTableName & "]")
-  'Set prstReadyToExport = mclsData.OpenRecordset("SELECT * FROM [" & mstrTempTableName & "]", adOpenForwardOnly, adLockReadOnly)
-  Set prstReadyToExport = mclsData.OpenTableDirect("[" & mstrTempTableName & "]", adOpenForwardOnly, adLockReadOnly)
+  Set prstReadyToExport = mclsData.OpenRecordset("SELECT * FROM [" & mstrTempTableName & "] " & mstrSQLOrderBy, adOpenForwardOnly, adLockReadOnly)
+  'Set prstReadyToExport = mclsData.OpenTableDirect("[" & mstrTempTableName & "]", adOpenForwardOnly, adLockReadOnly)
 
   If (prstReadyToExport.BOF And prstReadyToExport.EOF) Then
     mstrErrorString = "No records to export."
