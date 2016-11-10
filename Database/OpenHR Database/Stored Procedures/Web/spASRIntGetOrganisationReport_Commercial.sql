@@ -12,6 +12,7 @@ BEGIN
 		@sBaseViewName		varchar(255),
 		@sBaseViewTableName	nvarchar(255),
 		@singleRecordViewName nvarchar(255),
+		@sortColumns		nvarchar(MAX) = '',
 		@topLevelRootID		integer,
 		@topLevelReports_To	nvarchar(MAX) = '',
 		@staffNoDataType	tinyint;
@@ -41,10 +42,16 @@ BEGIN
 		INNER JOIN ASRSysViews v ON v.ViewID = sv.ViewID
 	WHERE SingleRecordView = 1
 
+	-- Build the sort columns
+	SELECT @sortColumns = @sortColumns + ', [' + c.ColumnName + '**' + convert(varchar(8), oc.ColumnID) + ']'
+		FROM ASRSysOrganisationColumns oc
+		INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId
+		WHERE oc.OrganisationID = @piReportID AND c.datatype <> -3;
+
 	-- Build the column selection definition
 	SELECT @sColumnList = @sColumnList + ', base.[' + c.ColumnName + '] AS [' + c.ColumnName + '**' + convert(varchar(8), oc.ColumnID) + ']' + CHAR(13)
 		FROM ASRSysOrganisationColumns oc
-		INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId		
+		INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId
 		WHERE oc.OrganisationID = @piReportID;
 
 	-- Build the filter definition
@@ -185,7 +192,7 @@ BEGIN
 		+ ' FROM ' + @singleRecordViewName + ' base 
 			RIGHT JOIN @allNodes nodes ON nodes.EmployeeID = base.id 
 			WHERE ID = @piRootID
-		ORDER BY HierarchyLevel';
+		ORDER BY HierarchyLevel ASC' + @sortColumns;
 
 
 	EXECUTE AS CALLER;
