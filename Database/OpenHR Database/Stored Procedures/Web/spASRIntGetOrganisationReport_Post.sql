@@ -312,7 +312,7 @@ BEGIN
 					@sPostAllocationViewName + '.' + @sPostAllocationStartDateColumn + '<=' + '''' + CONVERT(varchar(50),@dTodayDate) + '''' 
 					+ @sFilterWhereCondition;
 
-				SET @sSQL = @sSQL + ' WHERE UPPER(' + @sBaseViewName+ '.' + @sHierarchyReportsToColumn + ') = ''' + UPPER(CONVERT(varchar(100),@sPost_ID)) + ''' AND ' + @sWhereConditionSql 					
+				SET @sSQL = @sSQL + ' WHERE UPPER(' + @sBaseViewName+ '.' + @sHierarchyReportsToColumn + ') = ''' + UPPER(CONVERT(varchar(100),ISNULL(@sPost_ID,''))) + ''' AND ' + @sWhereConditionSql 					
 					
 				SET @sUnionAllSQL = @sUnionAllSQL + ' WHERE ' + @sWhereConditionSql
 					
