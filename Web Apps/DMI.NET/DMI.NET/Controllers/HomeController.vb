@@ -5955,6 +5955,7 @@ Namespace Controllers
                               , New SqlParameter("@piOrganisationID", SqlDbType.Int) With {.Value = value.ID} _
                               , New SqlParameter("@psOrganisationReportType", SqlDbType.VarChar) With {.Value = IIf(isPostBasedSystem, "POSTBASE", "COMMERCIAL")})
 
+            Dim invalidColumnList As List(Of String) = New List(Of String)
 
             For Each objRow As DataRow In OrgReportRecords.Rows
                columnName = HttpUtility.HtmlEncode(objRow("ColumnName").ToString())
@@ -5962,13 +5963,37 @@ Namespace Controllers
                Dim isValidColumn = objSession.ValidateColumnPermissions(tableOrViewName, columnName)
                If (isValidColumn = False) Then
                   isInvalidColumnFound = True
-                  columnsString += columnName + ", "
+                  invalidColumnList.Add(columnName)
                End If
             Next
 
-            If isInvalidColumnFound = True AndAlso columnsString.Length > 2 Then
-               columnsString = columnsString.Substring(0, columnsString.Length - 2)
-               responseMessage = New ErrMsgJsonAjaxResponse() With {.ErrorMessage = "You do not have permission to see the column(s) : " & columnsString & "." & vbNewLine}
+            'if invalid column found than format the message and return
+            If isInvalidColumnFound = True AndAlso invalidColumnList.Count > 0 Then
+               Dim count = 0
+               Dim columnIndex = 0
+               Dim messageToDisplay = String.Empty
+
+               For Each column As String In invalidColumnList
+                  count = count + 1
+
+                  'Format the message. If columns are more than 4 then add <br> after each 4 columns.
+                  If (columnIndex = invalidColumnList.Count - 1) Then
+                     messageToDisplay += invalidColumnList(columnIndex)
+                  ElseIf (count = 4) Then
+                     count = 0
+                     messageToDisplay += invalidColumnList(columnIndex) + ", " + "<br>"
+                  Else
+                     messageToDisplay += invalidColumnList(columnIndex) + ", "
+                  End If
+
+                  columnIndex = columnIndex + 1
+               Next
+
+               If (messageToDisplay.LastIndexOf(", ") = messageToDisplay.Length) Then
+                  messageToDisplay = messageToDisplay.Substring(0, messageToDisplay.Length - 2)
+               End If
+
+               responseMessage = New ErrMsgJsonAjaxResponse() With {.ErrorMessage = "You do not have permission to see the column(s) : <br>" + messageToDisplay + "." & vbNewLine}
                objErrorLog.AddHeader(EventLog_Type.eltOrgReporting, value.Name)
                objErrorLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
                objErrorLog.AddDetailEntry(responseMessage.ErrorMessage)
