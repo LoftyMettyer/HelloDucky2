@@ -521,7 +521,7 @@
                   newWin.document.write('<div class="orgChart" id="chart">');
                   newWin.document.write('<div class="jOrgChart">');
                   newWin.document.write('<table border="0">');
-                  if (pageNo > 1) newWin.document.write('<h2 style="width: 400px;">Organisation Reports</h2>');
+                  if (pageNo > 1) newWin.document.write('<h2>Organisation Reports : ' + '@Session("utilname")' + '</h2>');
 
                   divToPrint = document.getElementById('currentlyPrinting');
                   newWin.document.write(divToPrint.innerHTML);
