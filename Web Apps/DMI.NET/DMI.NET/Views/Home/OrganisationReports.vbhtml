@@ -187,7 +187,7 @@
 
    }
 
-   function centreMe(fSelf) {      
+   function centreMe(fSelf) {
       try {
 
          //If not highlighted node found  then return.
@@ -204,20 +204,25 @@
          //Find the closest div with .node class
          var nodeDive = $(classToCentre).closest('.node');
 
-         var myNodePos = nodeDive.offset().left;
+         var CurrentNodeLeftPos = nodeDive.offset().left;
+         var CurrentNodeTopPos = nodeDive.offset().top;
+
          var workframeWidth = workframe.width();
+         var workframeHeight = workframe.height();
          workframeWidth += menuWidth;
 
-         if ((myNodePos > workframeWidth) || (myNodePos < menuWidth)) {
-            workframe.animate({ scrollLeft: 0 }, 0);
-            myNodePos = nodeDive.offset().left;
+         if ((CurrentNodeLeftPos > workframeWidth) || (CurrentNodeLeftPos < menuWidth)) {
+            workframe.animate({ scrollLeft: 0, scrollTop: 0 }, 0);
             workframeWidth = workframe.width();
+            workframeHeight = workframe.height();
 
+            CurrentNodeLeftPos = nodeDive.offset().left;
+            CurrentNodeTopPos = nodeDive.offset().top;
             //Calculate the top position of highlighted node.
-            var scrollTopNewPos = $("#banner").height() +$("#fixedlinks").height()+nodeDive.height()-50;
+            var scrollTopNewPos = CurrentNodeTopPos -((workframeHeight/2) + $("#banner").height() +$("#fixedlinks").height()) +100;
 
             //Calculate the left position of highlighted node.
-            var scrollLeftNewPos = myNodePos - ((workframeWidth / 2) + menuWidth) + 48;
+            var scrollLeftNewPos = CurrentNodeLeftPos - ((workframeWidth / 2) + 150) ;
 
             //Reposition the main containter div according to left and top position of highlighted node.
             workframe.animate({ scrollLeft: scrollLeftNewPos, scrollTop: scrollTopNewPos }, 2000);
@@ -281,6 +286,8 @@
                if($("#chart").first("table").prop('scrollWidth')>8000 && '@Model.IsPostBasedSystem'=='True'){
 
                   //In case of IE first save only root and first level nodes.
+                  //Unselect all check boxes.
+                  $("#chart").find(".printSelect").attr('checked', false);
 
                   //Collapsed first level nodes.
                   $("#chart .expandNode[hierarchyLevel='1']").each(function() {
@@ -288,7 +295,9 @@
                   });
 
                   //Copy the root level chart into div.
-                  $("#divSaveToFileContainer").append($("#chart").clone());
+                  var cloneDiv = $("#chart").clone();
+                  cloneDiv.attr("id","SaveChart");
+                  $("#divSaveToFileContainer").append(cloneDiv);
 
                   //Expand the first level nodes.
                   $("#chart .expandNode[hierarchyLevel='1']").each(function() {
@@ -296,7 +305,7 @@
                   });
 
                   //Unselect root level node.
-                  $("#chart").find(".printSelect").first().click();
+                  $("#chart").find(".printSelect").first().attr('checked', false);
 
                   //Now Select all node which are on first level.
                   $("#chart .printSelect[hierarchyLevel='1']").each(function() {
@@ -325,7 +334,7 @@
                      }
                   });
 
-                  $("#chart").find(".printSelect").first().click();
+                  //$("#chart").find(".printSelect").first().click();
                }
                else{
                   //Save whole chart at onces.
@@ -377,6 +386,16 @@
       setTimeout(function(){
 
          $('#divSaveToFileParent').show();
+         if($('#divSaveToFileContainer').prop('scrollWidth')>32000){
+            window.console.log("Canvas IndexSizeError: Index or size is negative or greater than the allowed amount.");
+
+            if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ){
+               $("body").removeClass("loading");
+               $('#divSaveToFileParent').hide();
+               return false;
+            }
+         }
+
          $("#divSaveToFileContainer .printSelect").hide();
          $('#divSaveToFileContainer').scrollTop(0).scrollLeft(0);
          $('#workframeset').scrollTop(0).scrollLeft(0);
@@ -422,15 +441,13 @@
 
                   //First Checking Condition Works For IE & Firefox
                   //Second Checking Condition Works For Chrome
-                  if (newWin == null || typeof(newWin)=='undefined') { 
+                  if (newWin == null || typeof(newWin)=='undefined') {
                      OpenHR.modalMessage("Please disable your pop-up blocker and click the 'Save To File' button again.");
                      return;
                   }
 
-                  newWin.document.title = 'Organisation Report : Save to File' ;
-                  newWin.document.body.innerHTML = 'Right-click on the image to save it.';
-                  newWin.document.body.appendChild(div);
-                  div.appendChild(img);
+                  //Open image in new tab window.
+                  newWin.location.href = canvas.toDataURL();
 
                   $('#divSaveToFileParent').hide();
                   $('#workframeset').scrollTop(divTop).scrollLeft(divLeft);
@@ -469,7 +486,7 @@
       var fPrintAll = ($('.printSelect').css('display') == "none");
       var divToPrint;
       var untickedItemsCount = $('.printSelect:not(:checked)').length;
-      
+
       if (($('.printSelect:checked:enabled').length === 0) && (!fPrintAll)) {
          OpenHR.modalMessage("No nodes selected to print.");
       } else {
@@ -618,15 +635,15 @@
 
             <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
                @For Each childitem In item.PostWiseNodeList  'Create internal boxes for each employee.
-                        @<div style="min-width:180px;display:table-cell;" class="centered">
-                           @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
-                        @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
-                           @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
+               @<div style="min-width:180px;display:table-cell;" class="centered">
+                  @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
+               @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
+                  @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
                         Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
                      Next
-                        </div>
-                           End If
-                        </div>
+               </div>
+                  End If
+               </div>
                Next
             </div>
 
@@ -660,7 +677,7 @@
       <p class="centered">Please contact your system administrator.</p>
    </div>
 </div>
-<div id="divSaveToFileParent" style="display:none;position:absolute;z-index:-10000;">
+<div id="divSaveToFileParent" style="display:none;position:absolute;z-index:-10000;background-color:white;">
    <h2 style="margin-left:20px;">Organisation Report : @Session("utilname")</h2>
    <div id="divSaveToFileContainer">
    </div>
