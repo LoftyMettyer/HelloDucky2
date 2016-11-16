@@ -2,8 +2,8 @@
 	    @piReportID				integer
 	   ,@piRootID					integer
 	   ,@psOrganisationReportType	varchar(50)
-      ,@psPostAllocationViewName	varchar(500)
-)		
+      ,@psPostAllocationViewName	varchar(500))		
+WITH EXECUTE AS OWNER
 AS		
 BEGIN		
 	SET NOCOUNT ON;
@@ -35,6 +35,8 @@ BEGIN
 			   @sHierarchyLevel					      varchar(50)	  = '1 AS HierarchyLevel',
 			   @sPersonnelTableName				      varchar(MAX),
 			   @iPersonnelTableID					   integer,			 
+			   @sPostTableName				      varchar(MAX),
+			   @iPostTableID					   integer,
 			   @sPersonnelCTEColumn				      varchar(MAX),
 			   @sHierarchyTableName				      varchar(MAX),
 			   @sPostAllocationTableName			   varchar(MAX),
@@ -44,7 +46,6 @@ BEGIN
 			   @sHierarchyCTEColumn				      varchar(MAX),
 			   @sPostAllocationStartDateColumn	   varchar(MAX),
 			   @sPostAllocationEndDateColumn		   varchar(MAX),
-            @sPersonnelJobTitle                 varchar(MAX),
             @sReportsToPostIDColumn				   varchar(MAX),				
             @sBaseViewName					         varchar(MAX),
 				@sBaseViewTableName					   varchar(MAX),
@@ -58,7 +59,8 @@ BEGIN
             @sExcludeSql					         nvarchar(MAX)='',
             @sViewName 					            nvarchar(MAX)='',
 				@sPersonnelTableViewName			   varchar(max),
-				@sVacantColumnString					   varchar(MAX) = '';
+			@sVacantColumnString					   varchar(MAX) = '',
+			@insertLineManagerNode bit = 1;
 
 	--Assigned postallocation view name 
 	SET @sPostAllocationViewName = @psPostAllocationViewName;
@@ -74,6 +76,9 @@ BEGIN
 
 	SELECT  @iPersonnelTableID=t.tableID, @sPersonnelTableName = t.TableName FROM ASRSysModuleSetup s 	 
 	   INNER JOIN ASRSysTables t ON s.ParameterValue = t.tableID WHERE s.parameterKey like 'Param_Table%' AND s.moduleKey = 'MODULE_PERSONNEL';
+	
+	SELECT  @iPostTableID=t.tableID, @sPostTableName = t.TableName FROM ASRSysModuleSetup s 	 
+	   INNER JOIN ASRSysTables t ON s.ParameterValue = t.tableID WHERE s.parameterKey like 'Param_PostTable%' AND s.moduleKey = 'MODULE_POST';
 	
 	-- Get module setup parameters
 	SELECT	 @iHierarchyTableID = t.tableID
@@ -115,18 +120,17 @@ BEGIN
 	   AND UPPER(s.ParameterKey) = 'PARAM_FIELDENDDATE'; 
 
 	   --Fetch PostID value of root id 
-	   DECLARE @sPost_IDColumnVal TABLE (columnVal nvarchar(100));
-	   DECLARE @sPost_IDTemp nvarchar(500),@sPost_ID NVARCHAR(100);		  
-	   SET @sPost_IDTemp = N'Select '+ @sBaseViewName +'.'+@sHierarchyIdentifierColumn + ' FROM ' +     
-						   @sBaseViewName +' INNER JOIN ' + @sPostAllocationViewName +	 ' ON ' +  
-						   @sBaseViewName + '.ID = ' + @sPostAllocationViewName + '.ID_'+ CONVERT(varchar(10),@iHierarchyTableID) +
-						   ' WHERE ' +  @sPostAllocationViewName + '.ID_'+ CONVERT(varchar(10),@iPersonnelTableID) +'=' + CONVERT(varchar(20),@RootID);	
+	   DECLARE @sPost_IDTemp nvarchar(500)
+			,@sPost_ID nvarchar(100);
 		
-	   INSERT @sPost_IDColumnVal  EXEC sp_executesql @sPost_IDTemp;
-	   SET @sPost_ID = (SELECT * FROM @sPost_IDColumnVal);		
+	   SET @sPost_IDTemp = N'SELECT TOP 1 @sPost_ID =' + @sHierarchyIdentifierColumn + ' FROM ' + @sPostAllocationTableName +
+						   ' WHERE ID_'+ CONVERT(varchar(10),@iPersonnelTableID) +'=' + CONVERT(varchar(20),@RootID);	
+	   EXEC sp_executesql @sPost_IDTemp, N'@sPost_ID nvarchar(MAX) OUTPUT', @sPost_ID=@sPost_ID output;
 		
 	   SET @sSQL = 'WITH Emp_CTE AS (' + CHAR(13) + ' SELECT '+ @sHierarchyLevel + ',' + @sBaseViewName +'.ID AS HierarchyID' + ',' +
 					   @sBaseViewName+'.'+@sHierarchyIdentifierColumn + ',' +  @sBaseViewName+'.'+@sHierarchyReportsToColumn;	
+
+
 
        --Fetch personnel table view name to build final  columns selection  and wherecondition string.
 	   SELECT @sPersonnelTableViewName=v.ViewName  
@@ -330,6 +334,40 @@ BEGIN
 									@sPostAllocationViewName + '.' + @sPostAllocationStartDateColumn + '<=' + '''' + CONVERT(varchar(50),@dTodayDate) + '''' 
 									+ CHAR(13) + @sFilterWhereCondition;
 					
+	-- We need to append in the top level node for line manager because is unlkely to be part of the base view
+	IF @insertLineManagerNode = 1
+	BEGIN
+
+		IF @sPersonnelTableViewName IS NOT NULL
+			SET @sColumnString = REPLACE(' ' + @sColumnString, ' ' + @sPersonnelTableViewName + '.', ' pr.');
+
+		SET @sColumnString = REPLACE(' ' + @sColumnString, ' ' + @sBaseViewName + '.', ' po.');
+
+  		IF @sPostAllocationViewName IS NOT NULL
+			SET @sColumnString = REPLACE(' ' + @sColumnString, ' ' + @sPostAllocationViewName + '.', ' a.');
+
+		DECLARE @insertNodeSQL nvarchar(MAX) = '',
+			@callerName nvarchar(MAX);
+
+		EXECUTE AS CALLER;
+		SET @callerName = SUSER_NAME();
+		REVERT;
+
+		SET @sSQL = ' SELECT 0 AS HierarchyLevel, po.ID AS HierarchyID, po.Post_ID AS Post_ID, '''' AS Reports_To_Post_ID, 0 AS EmployeeID, ' +
+		  @sColumnString + '
+		  INTO #OrgLineManagerTemp
+		  FROM ' + @sPostAllocationTableName + ' a
+			  INNER JOIN ' + @sPersonnelTableName + ' pr ON pr.ID = a.ID_' + CONVERT(varchar(10), @iPersonnelTableID) + '
+			  INNER JOIN ' + @sPostTableName + ' po ON po.id = a.ID_' + CONVERT(varchar(10), @iHierarchyTableID) + '
+			  WHERE pr.id = ' + CONVERT(varchar(10), @piRootID) + ';
+
+			EXECUTE AS USER=''' + @callerName + ''';
+			' + @sSQL + 'UNION ALL SELECT * FROM #OrgLineManagerTemp'
+
+
+	END
+
+					
 				SET @sFinalOrgReportSql =   @sSQL + CHAR(13) + ' UNION ALL '	+ CHAR(13) + @sUnionAllSQL	+ ')' 
 									+ CHAR(13) +' SELECT * INTO #OrgReportTemp FROM ( '
 									+ CHAR(13) +' SELECT p.* FROM Emp_CTE p' + CHAR(13)
@@ -346,9 +384,9 @@ BEGIN
                            /* End of fetching vacant post */
 									+ CHAR(13) + ' SELECT 0 AS IsGhostNode, 0 AS IsFilteredNode, * FROM #OrgReportTemp  ORDER BY  hierarchylevel, ' + REPLACE(@sHierarchyReportsToColumn,@sHierarchyTableName+'.','');			
 				
+	EXEC sp_executeSQL @sFinalOrgReportSql;
+	SELECT 'unused table?';
 		
-		EXEC (@sFinalOrgReportSql);
-      EXEC (@sExcludeSql);
 		IF OBJECT_ID('tempdb..#OrgReportTemp') IS NOT NULL
 		BEGIN
 			DROP TABLE #NoAppointmentForPostID;
