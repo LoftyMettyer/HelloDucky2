@@ -1578,3 +1578,7 @@ div#sessionWarning {
 .dropdownDisable{
      background-color: #EBEBE4;
 }
+
+.jOrgChart .node {
+   margin-bottom: -5px!important;
+}
