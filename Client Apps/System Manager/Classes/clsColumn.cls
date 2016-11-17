@@ -1479,6 +1479,7 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   ' Is used as the archive column
   If GetSystemSetting("overnight", "archivecolumn", 0) = gLngColumnID Then
     mfrmUse.AddToList ("Overnight Configuration : Cut-off Date")
+    fUsed = True
   End If
   
   
