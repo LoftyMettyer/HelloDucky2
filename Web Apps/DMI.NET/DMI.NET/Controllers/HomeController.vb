@@ -6165,6 +6165,11 @@ Namespace Controllers
                      End If
                   Next
 
+                  Dim IsActAsGhostNode = CBool(objRow("IsGhostNode"))
+                  If (CInt(objRow("EmployeeID")) = iLoggedInUser) Then
+                     IsActAsGhostNode = False
+                  End If
+
                   Dim orgReportObj
 
                   If (IsPostBasedSystem) Then
@@ -6174,7 +6179,7 @@ Namespace Controllers
                                .EmployeeStaffNo = objRow("Post_ID").ToString().Replace(" ", "_"),
                                .LineManagerStaffNo = objRow("Reports_To_Post_ID").ToString().Replace(" ", "_"),
                                .HierarchyLevel = CInt(objRow("HierarchyLevel")),
-                               .ReportColumnItemList = cloneList,
+                               .ReportColumnItemList = ProcessColumnsForOrgReport(cloneList, IsPostBasedSystem, IsActAsGhostNode),
                                .NodeTypeClass = HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(additionalClasses))}
 
                      If (CBool(objRow("IsGhostNode") OrElse CBool(objRow("IsFilteredNode")))) Then 'If GhostNode or FilterNode then clear PostID
@@ -6182,22 +6187,21 @@ Namespace Controllers
                      End If
 
                   Else
+
                      orgReportObj = New OrgReportChartNode() With {
-                               .EmployeeID = CInt(objRow("EmployeeID")),
-                               .EmployeeStaffNo = objRow("Staff_Number").ToString().Replace(" ", "_"),
-                               .LineManagerStaffNo = objRow("Reports_To_Staff_Number").ToString().Replace(" ", "_"),
-                               .HierarchyLevel = CInt(objRow("HierarchyLevel")),
-                               .ReportColumnItemList = cloneList,
-                               .NodeTypeClass = HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(additionalClasses))}
+                                 .EmployeeID = CInt(objRow("EmployeeID")),
+                                 .EmployeeStaffNo = objRow("Staff_Number").ToString().Replace(" ", "_"),
+                                 .LineManagerStaffNo = objRow("Reports_To_Staff_Number").ToString().Replace(" ", "_"),
+                                 .HierarchyLevel = CInt(objRow("HierarchyLevel")),
+                                 .ReportColumnItemList = ProcessColumnsForOrgReport(cloneList, IsPostBasedSystem, IsActAsGhostNode),
+                                 .NodeTypeClass = HttpUtility.HtmlEncode(HttpUtility.HtmlEncode(additionalClasses))}
 
                      If (CBool(objRow("IsGhostNode") OrElse CBool(objRow("IsFilteredNode")))) Then 'If GhostNode or FilterNode then clear EmployeeID
                         orgReportObj.EmployeeID = 0
                      End If
 
                   End If
-                  If Not (CBool(objRow("IsGhostNode"))) OrElse (CInt(objRow("EmployeeID")) = iLoggedInUser) Then 'Add Prefix suffix to non GhostNode and loggedinUser but ignore prefix suffix if GhostNode
-                     orgReportObj.ReportColumnItemList = ProcessColumnsForOrgReport(cloneList, IsPostBasedSystem)
-                  End If
+
                   orgCharts.Add(orgReportObj)
                Next
 
@@ -6273,7 +6277,7 @@ Namespace Controllers
 
       End Function
 
-      Friend Function ProcessColumnsForOrgReport(Columns As List(Of ReportColumnItem), IsPostBasedSystem As Boolean) As List(Of ReportColumnItem)
+      Friend Function ProcessColumnsForOrgReport(Columns As List(Of ReportColumnItem), IsPostBasedSystem As Boolean, Optional IsActAsGhostNode As Boolean = False) As List(Of ReportColumnItem)
          Dim space As String = " "
          Dim count As Integer
          Dim ignoreNextItem As Boolean = False
@@ -6316,16 +6320,22 @@ Namespace Controllers
             Else
                item.ColumnValue = (item.ColumnValue).Trim
                count = count + 1
-
             End If
 
-            PreviewColumnList.Add(item)
-
+            'When the display value's length is greater than 200 character then truncate it with first 200 character and show as tooltip.
             If (item.ColumnValue.Length > 200) Then
                item.ColumnTitle = item.ColumnValue.Substring(0, 200) + "..."
             Else
                item.ColumnTitle = item.ColumnValue
             End If
+
+            'Clear the ColumnValue and ColumnTitle properties when the node is GhostNode.
+            If (IsActAsGhostNode) Then
+               item.ColumnValue = String.Empty
+               item.ColumnTitle = String.Empty
+            End If
+
+            PreviewColumnList.Add(item)
 
          End While
 
