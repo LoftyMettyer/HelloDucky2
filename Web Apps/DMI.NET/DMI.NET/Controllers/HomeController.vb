@@ -6085,7 +6085,9 @@ Namespace Controllers
                   additionalClasses = " ui-corner-all"
 
                   ' highlight the current user's node
-                  If CInt(objRow("EmployeeID")) = iLoggedInUser Then
+                  If CInt(objRow("EmployeeID")) = iLoggedInUser AndAlso IsFilteredNode = True Then
+                     additionalClasses &= " ui-state-highlight ui-state-disabled" 'disabled the current user's node if it is filtered
+                  ElseIf CInt(objRow("EmployeeID")) = iLoggedInUser Then
                      additionalClasses &= " ui-state-highlight"
                   Else
                      If IsFilteredNode = True AndAlso IsGhostNode = True Then
