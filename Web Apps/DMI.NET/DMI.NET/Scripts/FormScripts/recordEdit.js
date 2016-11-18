@@ -424,9 +424,13 @@ function insertUpdateDef() {
 
 					else if (objScreenControl.ControlType == 32) {
 						//TypeOf objControl Is COA_Spinner Then
-						//	' Integer field from an spinner (INT type column). Save the value from the spinner.
-						asColumnsToAdd[1] = $.trim($(objControl).val());
-						asColumnsToAdd[3] = $.trim($(objControl).val());
+					   //	' Integer field from an spinner (INT type column). Save the value from the spinner.					   
+					   var spinnerVal = $.trim($(objControl).val());
+					   
+                  //TFS Bug 25111 - default to 0 if empty. NB. No need to set minval, as the control itself takes care of that scenario.
+					   if (spinnerVal === "") spinnerVal = 0;
+						asColumnsToAdd[1] = spinnerVal;
+						asColumnsToAdd[3] = spinnerVal;
 					}
 						//	'JPD 20040714 Fault 8333
 						//	'ElseIf TypeOf objControl Is GTMaskDate.GTMaskDate Then
