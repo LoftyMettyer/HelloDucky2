@@ -119,30 +119,30 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
   ' AE20080218 Fault #12834, 12859
   If fOK Then
 
-    Dim frmChangedPlatform As frmChangedPlatform
-    Dim mavValidationMessages() As String
-    
-    Set frmChangedPlatform = New frmChangedPlatform
-    frmChangedPlatform.ResetList
-    frmChangedPlatform.Width = frmChangedPlatform.lblUsageMSG.Width
-
-    
-    ' 0 = Message
-    ' 1 = Old Value
-    ' 2 = New Value
-    ReDim mavValidationMessages(3, 0)
-    
-    ' Database is too old for the application. Try to update the database.
-    If (App.Major > iMajorAppVersion) Or _
-      ((App.Major = iMajorAppVersion) And (App.Minor > iMinorAppVersion)) Or _
-      ((App.Major = iMajorAppVersion) And (App.Minor = iMinorAppVersion) And (App.Revision > iRevisionAppVersion And Not blnNewStyleVersionNo)) Then
+      Dim frmChangedPlatform As frmChangedPlatform
+      Dim mavValidationMessages() As String
       
-      If bIsSQLSystemAdmin Then
-        ReDim Preserve mavValidationMessages(3, UBound(mavValidationMessages, 2) + 1)
-        mavValidationMessages(0, UBound(mavValidationMessages, 2)) = "Database is out of date"
-        mavValidationMessages(1, UBound(mavValidationMessages, 2)) = sDBVersion
-        mavValidationMessages(2, UBound(mavValidationMessages, 2)) = CStr(App.Major) & "." & CStr(App.Minor)
-        mavValidationMessages(3, UBound(mavValidationMessages, 2)) = "The database is out of date"
+      Set frmChangedPlatform = New frmChangedPlatform
+      frmChangedPlatform.ResetList
+      frmChangedPlatform.Width = frmChangedPlatform.lblUsageMSG.Width
+
+      
+      ' 0 = Message
+      ' 1 = Old Value
+      ' 2 = New Value
+      ReDim mavValidationMessages(3, 0)
+      
+      ' Database is too old for the application. Try to update the database.
+      If (App.Major > iMajorAppVersion) Or _
+        ((App.Major = iMajorAppVersion) And (App.Minor > iMinorAppVersion)) Or _
+        ((App.Major = iMajorAppVersion) And (App.Minor = iMinorAppVersion) And (App.Revision > iRevisionAppVersion And Not blnNewStyleVersionNo)) Then
+        
+        If bIsSQLSystemAdmin Then
+          ReDim Preserve mavValidationMessages(3, UBound(mavValidationMessages, 2) + 1)
+          mavValidationMessages(0, UBound(mavValidationMessages, 2)) = "Database is out of date"
+          mavValidationMessages(1, UBound(mavValidationMessages, 2)) = sDBVersion
+          mavValidationMessages(2, UBound(mavValidationMessages, 2)) = CStr(App.Major) & "." & CStr(App.Minor)
+          mavValidationMessages(3, UBound(mavValidationMessages, 2)) = "The database is out of date"
         
         ReDim Preserve mavValidationMessages(3, UBound(mavValidationMessages, 2) + 1)
         mavValidationMessages(0, UBound(mavValidationMessages, 2)) = "Licence key must be entered"
@@ -151,103 +151,103 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
         mavValidationMessages(3, UBound(mavValidationMessages, 2)) = "Licence key must be entered"
         
         bLicenceKeyRequired = True
-        fVersionOK = True
-      Else
-        fVersionOK = False
-        MsgBox "The database is out of date." & vbNewLine & _
-          "A System Administrator must log into the System Manager to update the database." & vbNewLine & vbNewLine & _
-          "Database Name : " & gsDatabaseName & vbNewLine & _
-          "Database Version : " & sDBVersion & vbNewLine & vbNewLine & _
-          "Application Version : " & CStr(App.Major) & "." & CStr(App.Minor), _
-          vbExclamation + vbOKOnly, Application.Name
-      End If
-      fOK = fVersionOK
-    End If
-    
-    ' AE20090211 Fault #13550
-    If fOK Then
-      mstrCurrentServerName = GetServerName()
-      mstrOldServerName = GetOldServerName()
-
-      If mstrOldServerName <> mstrCurrentServerName Then
-        fOK = False
-        blnReRunCurrent = True
-        
-        MsgBox "The Microsoft SQL Server has been renamed but the operation is incomplete." & vbNewLine & vbNewLine & _
-          "Old Server Name : " & mstrOldServerName & vbNewLine & _
-          "New Server Name : " & mstrCurrentServerName & vbNewLine & vbNewLine & _
-          "Please contact your System Administrator before logging in to System Manager.", _
+          fVersionOK = True
+        Else
+          fVersionOK = False
+          MsgBox "The database is out of date." & vbNewLine & _
+            "A System Administrator must log into the System Manager to update the database." & vbNewLine & vbNewLine & _
+            "Database Name : " & gsDatabaseName & vbNewLine & _
+            "Database Version : " & sDBVersion & vbNewLine & vbNewLine & _
+            "Application Version : " & CStr(App.Major) & "." & CStr(App.Minor), _
             vbExclamation + vbOKOnly, Application.Name
-      End If
-    End If
-    
-    If fOK Then
-      mstrLastSQLServerVersion = GetSystemSetting("Platform", "SQLServerVersion", 0)
-      mstrLastDatabaseName = UCase$(GetSystemSetting("Platform", "DatabaseName", ""))
-      mstrLastServerName = UCase$(GetSystemSetting("Platform", "ServerName", ""))
-      If mstrLastServerName = "." Then mstrLastServerName = UCase$(UI.GetHostName)
-      mstrCurrentDatabaseName = GetDBName()
-      
-      ' AE20090128 #Fault 13514
-      'If Val(mstrLastSQLServerVersion) <> glngSQLVersion Then
-      ' AE20090623 Fault #13661
-      '    - Reversal of 13514 as now fixed in SEC
-      'If mstrLastSQLServerVersion <> gstrSQLFullVersion Then
-      If val(mstrLastSQLServerVersion) <> glngSQLVersion Then
-        ReDim Preserve mavValidationMessages(3, UBound(mavValidationMessages, 2) + 1)
-        mavValidationMessages(0, UBound(mavValidationMessages, 2)) = "Microsoft SQL Version Upgraded"
-        mavValidationMessages(1, UBound(mavValidationMessages, 2)) = mstrLastSQLServerVersion
-        ' AE20080311 Fault #13001
-        'mavValidationMessages(2, UBound(mavValidationMessages, 2)) = glngSQLVersion
-        mavValidationMessages(2, UBound(mavValidationMessages, 2)) = gstrSQLFullVersion
-        mavValidationMessages(3, UBound(mavValidationMessages, 2)) = "The Microsoft SQL Version has been upgraded."
-        blnReRunCurrent = True
+        End If
+        fOK = fVersionOK
       End If
       
-      If mstrLastServerName <> mstrCurrentServerName Then
-        gfDatabaseServerChanged = True
-        ReDim Preserve mavValidationMessages(3, UBound(mavValidationMessages, 2) + 1)
-        mavValidationMessages(0, UBound(mavValidationMessages, 2)) = "Database moved to different Microsoft SQL Server"
-        mavValidationMessages(1, UBound(mavValidationMessages, 2)) = mstrLastServerName
-        mavValidationMessages(2, UBound(mavValidationMessages, 2)) = mstrCurrentServerName
-        mavValidationMessages(3, UBound(mavValidationMessages, 2)) = "The database has moved to a different Microsoft SQL Server."
-        blnReRunCurrent = True
+      ' AE20090211 Fault #13550
+      If fOK Then
+        mstrCurrentServerName = GetServerName()
+        mstrOldServerName = GetOldServerName()
+
+        If mstrOldServerName <> mstrCurrentServerName Then
+          fOK = False
+          blnReRunCurrent = True
+          
+          MsgBox "The Microsoft SQL Server has been renamed but the operation is incomplete." & vbNewLine & vbNewLine & _
+            "Old Server Name : " & mstrOldServerName & vbNewLine & _
+            "New Server Name : " & mstrCurrentServerName & vbNewLine & vbNewLine & _
+            "Please contact your System Administrator before logging in to System Manager.", _
+              vbExclamation + vbOKOnly, Application.Name
+        End If
       End If
       
-      If mstrLastDatabaseName <> mstrCurrentDatabaseName Then
-        gfDatabaseServerChanged = True
-        ReDim Preserve mavValidationMessages(3, UBound(mavValidationMessages, 2) + 1)
-        mavValidationMessages(0, UBound(mavValidationMessages, 2)) = "Database name has changed"
-        mavValidationMessages(1, UBound(mavValidationMessages, 2)) = mstrLastDatabaseName
-        mavValidationMessages(2, UBound(mavValidationMessages, 2)) = mstrCurrentDatabaseName
-        mavValidationMessages(3, UBound(mavValidationMessages, 2)) = "The database name has changed."
-        blnReRunCurrent = True
-      End If
-      
-    End If
-    
-    If fOK Then
-      Dim i As Integer
-      If UBound(mavValidationMessages, 2) > 0 And bIsSQLSystemAdmin Then
-        For i = 1 To UBound(mavValidationMessages, 2)
-          frmChangedPlatform.AddToList CStr(mavValidationMessages(0, i)), _
-                              CStr(mavValidationMessages(1, i)), _
-                              CStr(mavValidationMessages(2, i))
-        Next i
+      If fOK Then
+        mstrLastSQLServerVersion = GetSystemSetting("Platform", "SQLServerVersion", 0)
+        mstrLastDatabaseName = UCase$(GetSystemSetting("Platform", "DatabaseName", ""))
+        mstrLastServerName = UCase$(GetSystemSetting("Platform", "ServerName", ""))
+        If mstrLastServerName = "." Then mstrLastServerName = UCase$(UI.GetHostName)
+        mstrCurrentDatabaseName = GetDBName()
         
+        ' AE20090128 #Fault 13514
+        'If Val(mstrLastSQLServerVersion) <> glngSQLVersion Then
+        ' AE20090623 Fault #13661
+        '    - Reversal of 13514 as now fixed in SEC
+        'If mstrLastSQLServerVersion <> gstrSQLFullVersion Then
+        If val(mstrLastSQLServerVersion) <> glngSQLVersion Then
+          ReDim Preserve mavValidationMessages(3, UBound(mavValidationMessages, 2) + 1)
+          mavValidationMessages(0, UBound(mavValidationMessages, 2)) = "Microsoft SQL Version Upgraded"
+          mavValidationMessages(1, UBound(mavValidationMessages, 2)) = mstrLastSQLServerVersion
+          ' AE20080311 Fault #13001
+          'mavValidationMessages(2, UBound(mavValidationMessages, 2)) = glngSQLVersion
+          mavValidationMessages(2, UBound(mavValidationMessages, 2)) = gstrSQLFullVersion
+          mavValidationMessages(3, UBound(mavValidationMessages, 2)) = "The Microsoft SQL Version has been upgraded."
+          blnReRunCurrent = True
+        End If
+        
+        If mstrLastServerName <> mstrCurrentServerName Then
+          gfDatabaseServerChanged = True
+          ReDim Preserve mavValidationMessages(3, UBound(mavValidationMessages, 2) + 1)
+          mavValidationMessages(0, UBound(mavValidationMessages, 2)) = "Database moved to different Microsoft SQL Server"
+          mavValidationMessages(1, UBound(mavValidationMessages, 2)) = mstrLastServerName
+          mavValidationMessages(2, UBound(mavValidationMessages, 2)) = mstrCurrentServerName
+          mavValidationMessages(3, UBound(mavValidationMessages, 2)) = "The database has moved to a different Microsoft SQL Server."
+          blnReRunCurrent = True
+        End If
+        
+        If mstrLastDatabaseName <> mstrCurrentDatabaseName Then
+          gfDatabaseServerChanged = True
+          ReDim Preserve mavValidationMessages(3, UBound(mavValidationMessages, 2) + 1)
+          mavValidationMessages(0, UBound(mavValidationMessages, 2)) = "Database name has changed"
+          mavValidationMessages(1, UBound(mavValidationMessages, 2)) = mstrLastDatabaseName
+          mavValidationMessages(2, UBound(mavValidationMessages, 2)) = mstrCurrentDatabaseName
+          mavValidationMessages(3, UBound(mavValidationMessages, 2)) = "The database name has changed."
+          blnReRunCurrent = True
+        End If
+        
+      End If
+      
+      If fOK Then
+        Dim i As Integer
+        If UBound(mavValidationMessages, 2) > 0 And bIsSQLSystemAdmin Then
+          For i = 1 To UBound(mavValidationMessages, 2)
+            frmChangedPlatform.AddToList CStr(mavValidationMessages(0, i)), _
+                                CStr(mavValidationMessages(1, i)), _
+                                CStr(mavValidationMessages(2, i))
+          Next i
+          
         ' Platform has changed therefore there can't/shouldn't be any logged in users.
         ClearDownCurrentSessions
         
-        ' AE20080219 Fault #12902
-        iPointer = Screen.MousePointer
-        Screen.MousePointer = vbDefault
-        
+          ' AE20080219 Fault #12902
+          iPointer = Screen.MousePointer
+          Screen.MousePointer = vbDefault
+          
         frmChangedPlatform.LicenceKeyRequired = bLicenceKeyRequired
-        frmChangedPlatform.ShowMessage
-        
-        Screen.MousePointer = iPointer
-        
-        If frmChangedPlatform.Choice = vbYes Then
+          frmChangedPlatform.ShowMessage
+          
+          Screen.MousePointer = iPointer
+          
+          If frmChangedPlatform.Choice = vbYes Then
                
           If bLicenceKeyRequired Then
             SaveSystemSetting "Licence", "Key", frmChangedPlatform.LicenceKey
@@ -255,36 +255,36 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
             gobjLicence.LicenceKey = frmChangedPlatform.LicenceKey
           End If
 
-          ' AE20080415 Fault #13098
-          'fOK = UpdateDatabase(sConnect, False)
-          'fOK = UpdateDatabase(sConnect, True, True)
-          fOK = UpdateDatabase(sConnect, blnReRunCurrent, True)
+            ' AE20080415 Fault #13098
+            'fOK = UpdateDatabase(sConnect, False)
+            'fOK = UpdateDatabase(sConnect, True, True)
+            fOK = UpdateDatabase(sConnect, blnReRunCurrent, True)
 
-        ElseIf ASRDEVELOPMENT Then
-          fOK = True
-        Else
+          ElseIf ASRDEVELOPMENT Then
+            fOK = True
+          Else
+            fOK = False
+          End If
+        
+        ' AE20080415 Fault #13099
+        ElseIf UBound(mavValidationMessages, 2) > 0 Then
+          MsgBox mavValidationMessages(3, 1) & vbCrLf & _
+            "Please ask the System Administrator to update the database in the System Manager.", _
+            vbOKOnly + vbExclamation, Application.Name
+          
           fOK = False
         End If
-      
-      ' AE20080415 Fault #13099
-      ElseIf UBound(mavValidationMessages, 2) > 0 Then
-        MsgBox mavValidationMessages(3, 1) & vbCrLf & _
-          "Please ask the System Administrator to update the database in the System Manager.", _
-          vbOKOnly + vbExclamation, Application.Name
-        
-        fOK = False
       End If
-    End If
-    
-    UnLoad frmChangedPlatform
-    Set frmChangedPlatform = Nothing
+      
+      UnLoad frmChangedPlatform
+      Set frmChangedPlatform = Nothing
   
   End If
-
+  
   If (fReRunScript Or gblnAutomaticScript) And bIsSQLSystemAdmin Then
     fVersionOK = UpdateDatabase(sConnect, fReRunScript)
   End If
-  
+
   If fOK Then
     ' Check if a new version of the application is required due to an Intranet update
     
@@ -312,7 +312,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
       End If
     End If
   End If
-        
+   
   ' Do we enable UDF functions on this installation
   gbEnableUDFFunctions = EnableUDFFunctions
 
@@ -325,7 +325,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
   If fOK Then
     fOK = CheckFrameworkVersion()
   End If
-    
+  
   ' Upload scripts
   If fOK Then
     fOK = UploadHotfixes
@@ -803,7 +803,7 @@ Private Function UpdateDatabase( _
       bRegenerateProc = True
     End If
   End If
-           
+  
   UnlockDatabase lckSaving
 
   gobjProgress.CloseProgress
@@ -1202,7 +1202,7 @@ Private Function CreateUDF_SQLVersion() As Boolean
     "RETURNS integer" & vbNewLine & _
     "AS" & vbNewLine & _
     "BEGIN" & vbNewLine & _
-    "  RETURN convert(numeric(3,1), convert(nvarchar(4), SERVERPROPERTY('ProductVersion')))" & vbNewLine & _
+    "  RETURN convert(numeric(3,1), convert(nvarchar(4), SERVERPROPERTY('ProductVersion')));" & vbNewLine & _
     "END"
 
   gADOCon.Execute sUDFSQL, , adExecuteNoRecords
