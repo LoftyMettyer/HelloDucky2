@@ -23,8 +23,6 @@ BEGIN
 	   LEFT JOIN ASRSysViews v ON oc.ViewID = v.ViewID
 	WHERE oc.OrganisationID = @piReportID;      
    
-   SELECT Name As DefinitionName FROM ASRSysOrganisationReport WHERE ID = @piReportID
-    
    UPDATE ASRSysUtilAccessLog SET 
             RunBy = system_user, 
             RunDate = getdate(), 

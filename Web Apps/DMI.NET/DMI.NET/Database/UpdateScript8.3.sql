@@ -62794,8 +62794,6 @@ BEGIN
 	   INNER JOIN ASRSysTables t ON c.tableID = t.tableID		
 	   LEFT JOIN ASRSysViews v ON oc.ViewID = v.ViewID
 	WHERE oc.OrganisationID = @piReportID;      
-   
-   SELECT Name As DefinitionName FROM ASRSysOrganisationReport WHERE ID = @piReportID
     
    UPDATE ASRSysUtilAccessLog SET 
             RunBy = system_user, 
@@ -62940,7 +62938,10 @@ BEGIN
 				WHERE oc.OrganisationID = @piOrganisationID;
 		END
 
-		-- Update the utility access log.
+      --Return DefinitionName
+      SELECT Name As DefinitionName FROM ASRSysOrganisationReport WHERE ID = @piOrganisationID
+
+		-- Update the utility access log for last run access details.
 		UPDATE ASRSysUtilAccessLog SET 
 		RunBy = system_user, 
 		RunDate = getdate(), 

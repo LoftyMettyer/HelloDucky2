@@ -5902,7 +5902,6 @@ Namespace Controllers
          Try
             Session("utiltype") = CInt(value.UtilType)
             Session("utilid") = value.ID              'Selected org report ID
-            Session("utilname") = value.Name          'Org report Name
             Session("action") = "run"
 
             'Check if system is PostBase or Commercial
@@ -5912,7 +5911,7 @@ Namespace Controllers
                model.IsPostBasedSystem = False
             End If
 
-            objErrorLog.AddHeader(EventLog_Type.eltOrgReporting, value.Name)
+            objErrorLog.AddHeader(EventLog_Type.eltOrgReporting, Session("utilname"))
 
             model.OrgReportChartNodeList = LoadDataForOrganisationReport(model.IsPostBasedSystem)
 
@@ -5951,13 +5950,18 @@ Namespace Controllers
 
          Try
 
-            Dim OrgReportRecords = objDataAccess.GetFromSP("spASRIntGetAllRequiredOrganisationColumns" _
+            Dim OrgReportRecords = objDataAccess.GetDataSet("spASRIntGetAllRequiredOrganisationColumns" _
                               , New SqlParameter("@piOrganisationID", SqlDbType.Int) With {.Value = value.ID} _
                               , New SqlParameter("@psOrganisationReportType", SqlDbType.VarChar) With {.Value = IIf(isPostBasedSystem, "POSTBASE", "COMMERCIAL")})
 
             Dim invalidColumnList As List(Of String) = New List(Of String)
 
-            For Each objRow As DataRow In OrgReportRecords.Rows
+            'Get report definition name and set Session("utilname") to display definition name in SSI.
+            If OrgReportRecords.Tables(1).Rows.Count = 1 Then
+               Session("utilname") = HttpUtility.HtmlDecode(OrgReportRecords.Tables(1).Rows(0)("DefinitionName").ToString())
+            End If
+
+            For Each objRow As DataRow In OrgReportRecords.Tables(0).Rows
                columnName = HttpUtility.HtmlEncode(objRow("ColumnName").ToString())
                tableOrViewName = objRow("TableOrViewName").ToString()
                Dim isValidColumn = objSession.ValidateColumnPermissions(tableOrViewName, columnName)
@@ -5994,7 +5998,7 @@ Namespace Controllers
                End If
 
                responseMessage = New ErrMsgJsonAjaxResponse() With {.ErrorMessage = "You do not have permission to see the column(s) : <br>" + messageToDisplay + "." & vbNewLine}
-               objErrorLog.AddHeader(EventLog_Type.eltOrgReporting, value.Name)
+               objErrorLog.AddHeader(EventLog_Type.eltOrgReporting, Session("utilname"))
                objErrorLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
                objErrorLog.AddDetailEntry(responseMessage.ErrorMessage)
                Return Json(responseMessage, JsonRequestBehavior.AllowGet)
@@ -6002,7 +6006,7 @@ Namespace Controllers
 
          Catch ex As Exception
             responseMessage = New ErrMsgJsonAjaxResponse() With {.ErrorMessage = "Some problem occured during columns security checks. Please contact your administrator." & vbNewLine}
-            objErrorLog.AddHeader(EventLog_Type.eltOrgReporting, value.Name)
+            objErrorLog.AddHeader(EventLog_Type.eltOrgReporting, Session("utilname"))
             objErrorLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
             objErrorLog.AddDetailEntry(responseMessage.ErrorMessage)
             Return Json(responseMessage, JsonRequestBehavior.AllowGet)
@@ -6042,11 +6046,6 @@ Namespace Controllers
                             , New SqlParameter("psOrganisationReportType", SqlDbType.VarChar) With {.Value = IIf(IsPostBasedSystem, "POSTBASE", "COMMERCIAL")})
 
             Dim additionalClasses As String
-
-            'Get report definition name and override Session("utilname") to display definition name in SSI.
-            If OrgReportRecords.Tables(3).Rows.Count = 1 Then
-               Session("utilname") = HttpUtility.HtmlDecode(OrgReportRecords.Tables(3).Rows(0)("DefinitionName").ToString())
-            End If
 
             If OrgReportRecords.Tables(0).Rows.Count = 0 Then
                ' No records returned

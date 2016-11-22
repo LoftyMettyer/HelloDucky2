@@ -128,7 +128,10 @@ BEGIN
 				WHERE oc.OrganisationID = @piOrganisationID;
 		END
 
-		-- Update the utility access log.
+      --Return DefinitionName
+      SELECT Name As DefinitionName FROM ASRSysOrganisationReport WHERE ID = @piOrganisationID
+
+		-- Update the utility access log for last run access details.
 		UPDATE ASRSysUtilAccessLog SET 
 		RunBy = system_user, 
 		RunDate = getdate(), 
