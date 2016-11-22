@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("OpenHR Outlook Calendar Service 2")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Advanced Business Software and Solutions Limited")]
+[assembly: AssemblyCompany("Advanced")]
 [assembly: AssemblyProduct("OpenHR Outlook Calendar Service 2")]
-[assembly: AssemblyCopyright("Copyright Advanced Business Software and Solutions Limited 2015")]
+[assembly: AssemblyCopyright("Copyright Advanced")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("8.3.0")]
-[assembly: AssemblyFileVersion("8.3.0")]
+[assembly: AssemblyVersion("8.3.6")]
+[assembly: AssemblyFileVersion("8.3.6")]

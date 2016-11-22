@@ -10,9 +10,9 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("OpenHR Outlook Calendar Service")> 
 <Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("Advanced Business Software and Solutions Limited")> 
+<Assembly: AssemblyCompany("Advanced")> 
 <Assembly: AssemblyProduct("OpenHR Outlook Calendar Service")> 
-<Assembly: AssemblyCopyright("Copyright Advanced Business Software and Solutions Limited 2000-2015")> 
+<Assembly: AssemblyCopyright("Copyright Advanced")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("8.3.0")> 
-<Assembly: AssemblyFileVersion("8.3.0")> 
+<Assembly: AssemblyVersion("8.3.6")> 
+<Assembly: AssemblyFileVersion("8.3.6")> 
