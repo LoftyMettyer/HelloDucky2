@@ -189,6 +189,10 @@ div.officetab li div.button .disabled {
 	border: none;
 }
 
+.DBValueCaptionContainer {
+   display: block;
+}
+
 .DBValueScroller  
 {
 position: absolute;

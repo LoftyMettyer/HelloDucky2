@@ -242,6 +242,10 @@ body
 
 .linkspagebuttonseparator-bordercolour { border-bottom: none!important;}
 
+.DBValueCaptionContainer {
+   display: block;
+}
+
 .DBValueScroller  
 {
    position: absolute;
