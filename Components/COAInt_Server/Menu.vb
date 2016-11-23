@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports System.Collections.ObjectModel
 Imports System.Collections.Generic
+Imports System.Linq
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
@@ -38,9 +39,7 @@ Public Class Menu
 
 		'Sort the menu items; note that I'm sorting in descending order because the code that actually creates the menu adds the item in inverse order (don't ask me why),
 		'so the net effect is that the menu is sorted
-		HistoryScreensList.Sort(Function(item1 As HistoryScreen, item2 As HistoryScreen)
-																Return item1.childScreenName > item2.childScreenName
-															End Function)
+      HistoryScreensList = HistoryScreensList.OrderByDescending(Function(x) x.childScreenName).ToList()
 
 		Return HistoryScreensList
 
