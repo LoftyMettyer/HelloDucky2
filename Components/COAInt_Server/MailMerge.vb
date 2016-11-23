@@ -697,171 +697,175 @@ Public Class MailMerge
                                     End If
                                 Next iNextIndex
 
-                                If Not fFound Then
-                                    ' The view has not yet been added to the join code, so add it to the array and the join code.
+                        If Not fFound Then
+                           ' The view has not yet been added to the join code, so add it to the array and the join code.
 
-                                    iNextIndex = UBound(mlngTableViews, 2) + 1
-                                    ReDim Preserve mlngTableViews(2, iNextIndex)
-                                    mlngTableViews(1, iNextIndex) = 1
-                                    mlngTableViews(2, iNextIndex) = objTableView.ViewID
+                           iNextIndex = UBound(mlngTableViews, 2) + 1
+                           ReDim Preserve mlngTableViews(2, iNextIndex)
+                           mlngTableViews(1, iNextIndex) = 1
+                           mlngTableViews(2, iNextIndex) = objTableView.ViewID
 
-                                    If objTableView.TableID = mlngDefBaseTableID Then
-                                        sBaseIDColumn = mstrSQLFrom & ".ID"
-                                    Else
-                                        sBaseIDColumn = mstrSQLFrom & ".ID_" & CStr(objTableView.TableID)
-                                    End If
+                           If objTableView.TableID = mlngDefBaseTableID Then
+                              sBaseIDColumn = mstrSQLFrom & ".ID"
+                           Else
+                              sBaseIDColumn = mstrSQLFrom & ".ID_" & CStr(objTableView.TableID)
+                           End If
 
-                                    mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & sBaseIDColumn & " = " & sSource & ".ID"
+                           mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & sBaseIDColumn & " = " & sSource & ".ID"
 
-                                    mstrWhereIDs = mstrWhereIDs & IIf(mstrWhereIDs <> "", " OR ", "").ToString() & sBaseIDColumn & " IN (SELECT ID FROM " & sSource & ")" & " OR (ISNULL(" & sBaseIDColumn & ", 0) = 0)"
+                           mstrWhereIDs = mstrWhereIDs & IIf(mstrWhereIDs <> "", " OR ", "").ToString() & sBaseIDColumn & " IN (SELECT ID FROM " & sSource & ")" & " OR (ISNULL(" & sBaseIDColumn & ", 0) = 0)"
 
-                                End If
-                            End If
-                            '=== End of Join Code ===
-
-
-                            'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-                            objColumnPrivileges = Nothing
                         End If
+                     End If
+                     '=== End of Join Code ===
 
-                    End If
-                Next objTableView
-                'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-                objTableView = Nothing
 
-                ' The current user does have permission to 'read' the column through a/some view(s) on the
-                ' table.
-                If UBound(asViews) = 0 Then
-                    mstrStatusMessage = "You do not have permission to see the column '" & objColumn.Name & "' " & "either directly or through any views."
-                    fOK = False
-                    Exit Sub
+                     'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+                     objColumnPrivileges = Nothing
+                  End If
 
-                Else
-                    ' Add the column to the column list.
-                    sCaseStatement = "CASE"
-                    sWhereColumn = vbNullString
-                    For iNextIndex = 1 To UBound(asViews)
-                        sCaseStatement &= " WHEN NOT " & asViews(iNextIndex) & "." & objColumn.Name & " IS NULL THEN " & asViews(iNextIndex) & "." & objColumn.Name & vbNewLine
-                    Next iNextIndex
+               End If
+            Next objTableView
+            'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+            objTableView = Nothing
 
-                    If Len(sCaseStatement) > 0 Then
-                        sCaseStatement &= " ELSE NULL END"
+            ' The current user does have permission to 'read' the column through a/some view(s) on the
+            ' table.
+            If UBound(asViews) = 0 Then
+               mstrStatusMessage = "You do not have permission to see the column '" & objColumn.Name & "' " & "either directly or through any views."
+               fOK = False
+               Exit Sub
 
-                        If columnAlias <> vbNullString Then
-                            sCaseStatement &= " AS " & "[" & columnAlias & "]"
-                        End If
+            Else
+               ' Add the column to the column list.
+               sCaseStatement = "CASE"
+               sWhereColumn = vbNullString
+               For iNextIndex = 1 To UBound(asViews)
+                  sCaseStatement &= " WHEN NOT " & asViews(iNextIndex) & "." & objColumn.Name & " IS NULL THEN " & asViews(iNextIndex) & "." & objColumn.Name & vbNewLine
+               Next iNextIndex
 
-                        sColumnList = sColumnList & IIf(Len(sColumnList) > 0, ", ", "").ToString() & vbNewLine & sCaseStatement
+               If Len(sCaseStatement) > 0 Then
+                  sCaseStatement &= " ELSE NULL END"
 
-                        If sWhereColumn <> vbNullString Then
-                            mstrSQLWhere &= IIf(Len(mstrSQLWhere) > 0, " AND ", vbNullString).ToString() & "((" & sWhereColumn & "))"
-                        End If
+                  If columnAlias <> vbNullString Then
+                     sCaseStatement &= " AS " & "[" & columnAlias & "]"
+                  End If
 
-                    End If
-                End If
+                  sColumnList = sColumnList & IIf(Len(sColumnList) > 0, ", ", "").ToString() & vbNewLine & sCaseStatement
+
+                  If sWhereColumn <> vbNullString Then
+                     mstrSQLWhere &= IIf(Len(mstrSQLWhere) > 0, " AND ", vbNullString).ToString() & "((" & sWhereColumn & "))"
+                  End If
+
+               End If
+            End If
+         End If
+
+      Catch ex As Exception
+         mstrStatusMessage = "Error building SQL Statement"
+         Logs.AddDetailEntry(mstrStatusMessage)
+         fOK = False
+
+      End Try
+
+   End Sub
+
+   Private Sub SQLOrderByClause()
+
+      Dim rsTemp As DataTable
+      Dim strSQL As String
+
+      Try
+
+         For Each objOrder In OrderColumns
+            SQLAddColumn(mstrSQLOrder, objOrder, vbNullString)
+            mstrSQLOrder &= " " & objOrder.SortOrder
+         Next
+
+         If mstrSQLOrder <> vbNullString Then
+            mstrSQLOrder = " ORDER BY " & mstrSQLOrder
+         End If
+
+      Catch ex As Exception
+         mstrStatusMessage = "Error building 'Order By' clause"
+         fOK = False
+
+      End Try
+
+   End Sub
+
+   Private Sub SQLAddCalculation(lngExpID As Integer, strColCode As String, Size As Long, Decimals As Integer)
+
+      Dim lngCalcViews(,) As Integer
+      Dim objCalcExpr As clsExprExpression
+      Dim intCount As Integer
+      Dim blnFound As Boolean
+      Dim intNextIndex As Integer
+      Dim sCalcCode As String = ""
+      Dim sSource As String
+      Dim lngTestTableID As Integer
+      Dim objTableView As TablePrivilege
+
+      ReDim lngCalcViews(2, 0)
+      objCalcExpr = NewExpression()
+      fOK = objCalcExpr.Initialise(mlngDefBaseTableID, lngExpID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+      If fOK Then
+         fOK = objCalcExpr.RuntimeCalculationCode(lngCalcViews, sCalcCode, mastrUDFsRequired, True, False, mvarPrompts)
+      End If
+
+      If fOK = False Then
+         mstrStatusMessage = "You do not have permission to use the '" & Trim(objCalcExpr.Name) & "' calculation."
+         Exit Sub
+      End If
+
+      If objCalcExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_NUMERIC And (Decimals > 0 Or Size > 0) Then
+         mstrSQLSelect = mstrSQLSelect & IIf(mstrSQLSelect <> vbNullString, ", ", vbNullString) & String.Format("CAST({0} AS DECIMAL({2},{3})) AS [{1}]", sCalcCode, strColCode, Size, Decimals)
+      ElseIf objCalcExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_CHARACTER And Size > 0 Then
+         mstrSQLSelect = mstrSQLSelect & IIf(mstrSQLSelect <> vbNullString, ", ", vbNullString) & String.Format("SUBSTRING({0},1,{2}) AS [{1}]", sCalcCode, strColCode, Size)
+      Else
+         mstrSQLSelect = mstrSQLSelect & IIf(mstrSQLSelect <> vbNullString, ", ", vbNullString) & String.Format("{0} AS [{1}]", sCalcCode, strColCode)
+      End If
+
+
+      ' Add the required views to the JOIN code.
+      For intCount = 1 To UBound(lngCalcViews, 2)
+         If lngCalcViews(1, intCount) = 1 Then
+            ' Check if view has already been added to the array
+            blnFound = False
+            For intNextIndex = 1 To UBound(mlngTableViews, 2)
+               If mlngTableViews(1, intNextIndex) = 1 And mlngTableViews(2, intNextIndex) = lngCalcViews(2, intCount) Then
+                  blnFound = True
+                  Exit For
+               End If
+            Next intNextIndex
+
+            If Not blnFound Then
+               ' View hasnt yet been added, so add it !
+               intNextIndex = UBound(mlngTableViews, 2) + 1
+               ReDim Preserve mlngTableViews(2, intNextIndex)
+               mlngTableViews(1, intNextIndex) = 1
+               mlngTableViews(2, intNextIndex) = lngCalcViews(2, intCount)
+
+               lngTestTableID = lngCalcViews(2, intCount)
+
+               objTableView = gcoTablePrivileges.FindViewID(lngCalcViews(2, intCount))
+               sSource = objTableView.RealSource
+
+               'TM20020904 Fault 4364 - depending on whether the table that is about to
+               '                        joined is a Parent or Child denotes which ID
+               '                        columns are used to establish the join.
+               If IsAParentOf((objTableView.TableID), mlngDefBaseTableID) Then
+                  'Table/View is parent of Base Table.
+                  mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID_" & CStr(objTableView.TableID) & " = " & sSource & ".ID"
+               ElseIf objTableView.TableID = mlngDefBaseTableID Then
+                  'Add “Left outer join” to the views 
+                  mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID" & " = " & sSource & ".ID"
+                  mstrWhereIDs = mstrWhereIDs & IIf(mstrWhereIDs <> "", " OR ", "").ToString() & mstrSQLFrom & ".ID IN (SELECT ID FROM " & sSource & ")" & " OR (ISNULL(" & mstrSQLFrom & ".ID, 0) = 0)"
+               End If
+
             End If
 
-        Catch ex As Exception
-            mstrStatusMessage = "Error building SQL Statement"
-            Logs.AddDetailEntry(mstrStatusMessage)
-            fOK = False
-
-        End Try
-
-    End Sub
-
-    Private Sub SQLOrderByClause()
-
-        Dim rsTemp As DataTable
-        Dim strSQL As String
-
-        Try
-
-            For Each objOrder In OrderColumns
-                SQLAddColumn(mstrSQLOrder, objOrder, vbNullString)
-                mstrSQLOrder &= " " & objOrder.SortOrder
-            Next
-
-            If mstrSQLOrder <> vbNullString Then
-                mstrSQLOrder = " ORDER BY " & mstrSQLOrder
-            End If
-
-        Catch ex As Exception
-            mstrStatusMessage = "Error building 'Order By' clause"
-            fOK = False
-
-        End Try
-
-    End Sub
-
-    Private Sub SQLAddCalculation(lngExpID As Integer, strColCode As String, Size As Long, Decimals As Integer)
-
-        Dim lngCalcViews(,) As Integer
-        Dim objCalcExpr As clsExprExpression
-        Dim intCount As Integer
-        Dim blnFound As Boolean
-        Dim intNextIndex As Integer
-        Dim sCalcCode As String = ""
-        Dim sSource As String
-        Dim lngTestTableID As Integer
-        Dim objTableView As TablePrivilege
-
-        ReDim lngCalcViews(2, 0)
-        objCalcExpr = NewExpression()
-        fOK = objCalcExpr.Initialise(mlngDefBaseTableID, lngExpID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
-        If fOK Then
-            fOK = objCalcExpr.RuntimeCalculationCode(lngCalcViews, sCalcCode, mastrUDFsRequired, True, False, mvarPrompts)
-        End If
-
-        If fOK = False Then
-            mstrStatusMessage = "You do not have permission to use the '" & Trim(objCalcExpr.Name) & "' calculation."
-            Exit Sub
-        End If
-
-        If objCalcExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_NUMERIC And (Decimals > 0 Or Size > 0) Then
-            mstrSQLSelect = mstrSQLSelect & IIf(mstrSQLSelect <> vbNullString, ", ", vbNullString) & String.Format("CAST({0} AS DECIMAL({2},{3})) AS [{1}]", sCalcCode, strColCode, Size, Decimals)
-        ElseIf objCalcExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_CHARACTER And Size > 0 Then
-            mstrSQLSelect = mstrSQLSelect & IIf(mstrSQLSelect <> vbNullString, ", ", vbNullString) & String.Format("SUBSTRING({0},1,{2}) AS [{1}]", sCalcCode, strColCode, Size)
-        Else
-            mstrSQLSelect = mstrSQLSelect & IIf(mstrSQLSelect <> vbNullString, ", ", vbNullString) & String.Format("{0} AS [{1}]", sCalcCode, strColCode)
-        End If
-
-
-        ' Add the required views to the JOIN code.
-        For intCount = 1 To UBound(lngCalcViews, 2)
-            If lngCalcViews(1, intCount) = 1 Then
-                ' Check if view has already been added to the array
-                blnFound = False
-                For intNextIndex = 1 To UBound(mlngTableViews, 2)
-                    If mlngTableViews(1, intNextIndex) = 1 And mlngTableViews(2, intNextIndex) = lngCalcViews(2, intCount) Then
-                        blnFound = True
-                        Exit For
-                    End If
-                Next intNextIndex
-
-                If Not blnFound Then
-                    ' View hasnt yet been added, so add it !
-                    intNextIndex = UBound(mlngTableViews, 2) + 1
-                    ReDim Preserve mlngTableViews(2, intNextIndex)
-                    mlngTableViews(1, intNextIndex) = 1
-                    mlngTableViews(2, intNextIndex) = lngCalcViews(2, intCount)
-
-                    lngTestTableID = lngCalcViews(2, intCount)
-
-                    objTableView = gcoTablePrivileges.FindViewID(lngCalcViews(2, intCount))
-                    sSource = objTableView.RealSource
-
-                    'TM20020904 Fault 4364 - depending on whether the table that is about to
-                    '                        joined is a Parent or Child denotes which ID
-                    '                        columns are used to establish the join.
-                    If IsAParentOf((objTableView.TableID), mlngDefBaseTableID) Then
-                        'Table/View is parent of Base Table.
-                        mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID_" & CStr(objTableView.TableID) & " = " & sSource & ".ID"
-                    End If
-
-                End If
-
-            ElseIf lngCalcViews(1, intCount) = 0 Then
+         ElseIf lngCalcViews(1, intCount) = 0 Then
                 ' Check if table has already been added to the array
                 blnFound = False
                 For intNextIndex = 1 To UBound(mlngTableViews, 2)
