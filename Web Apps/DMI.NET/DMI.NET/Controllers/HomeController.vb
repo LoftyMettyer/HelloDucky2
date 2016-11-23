@@ -6085,18 +6085,18 @@ Namespace Controllers
 
                   ' highlight the current user's node
                   If CInt(objRow("EmployeeID")) = iLoggedInUser AndAlso IsFilteredNode = True Then
-                     additionalClasses &= " ui-state-highlight ui-state-disabled" 'disabled the current user's node if it is filtered
+                     additionalClasses &= " ui-state-highlight filteredNode" 'Add CSS Classes for filtered nodes (runtime filters) if it is current user's node.
                   ElseIf CInt(objRow("EmployeeID")) = iLoggedInUser Then
                      additionalClasses &= " ui-state-highlight"
                   Else
                      If IsFilteredNode = True AndAlso IsGhostNode = True Then
-                        ' Add CSS Classes for filtered nodes (runtime filters) and ghost nodes
-                        additionalClasses &= " filteredNode ghostNode"
+                        ' Add CSS Classes for ghost nodes.
+                        additionalClasses &= " ghostNode"
                      ElseIf IsFilteredNode = True Then
-                        ' Add CSS Classes for filtered nodes (runtime filters)
-                        additionalClasses &= " ui-state-disabled filteredNode"
+                        ' Add CSS Classes for filtered nodes (runtime filters).
+                        additionalClasses &= " filteredNode"
                      ElseIf IsGhostNode = True Then
-                        ' Add CSS Classes for ghost nodes
+                        ' Add CSS Classes for ghost nodes.
                         additionalClasses &= " ghostNode"
                      Else
                         additionalClasses &= " ui-state-default"

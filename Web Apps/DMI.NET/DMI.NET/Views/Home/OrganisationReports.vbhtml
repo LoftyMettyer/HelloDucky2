@@ -40,8 +40,16 @@
       visibility: hidden;
    }
 
-   .jOrgChart .ui-state-disabled {
+   .jOrgChart .filteredNode > :not([type=checkbox]) {
       opacity: 0.20;
+   }
+
+   .jOrgChart .filteredNode > .expandNode {
+      opacity: 1;
+   }
+
+   .jOrgChart .filteredNode {
+      border: 1px solid lightgray;
    }
 </style>
 <script>
@@ -156,7 +164,7 @@
          //Set up Save To File option on ribbon
          $(document).off('click', '.clsSaveRecordOrgReports').on('click', '.clsSaveRecordOrgReports', function () { SaveRecordOrgReports(true); });
 
-         $(document).off('click', 'div.node').on('click', 'div.node', function () {
+         $(document).off('click', 'div.node:not(.filteredNode)').on('click', 'div.node:not(.filteredNode)', function () {
             $('div.node.ui-state-active').removeClass('ui-state-active').addClass('ui-state-default');
             $(this).removeClass('ui-state-default').addClass('ui-state-active');
          });
@@ -518,6 +526,9 @@
          newWin.document.write('.jOrgChart .ui-state-disabled { opacity: 0.20 }');
          newWin.document.write('.truncate {white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}');
          newWin.document.write('.expandNode {bottom: 4px;right: 4px;}');
+         newWin.document.write('.jOrgChart .filteredNode > :not([type=checkbox]) { opacity: 0.20; }');
+         newWin.document.write('.jOrgChart .filteredNode > .expandNode { opacity: 1; }');
+         newWin.document.write('.jOrgChart .filteredNode { border: 1px solid lightgray; }');
          newWin.document.write('</sty');
          newWin.document.write('le>');
          newWin.document.write('<h1>Organisation Reports : ' + '@Session("utilname")' +' </h1>');
@@ -609,51 +620,51 @@
       @Code For Each item In Model.OrgReportChartNodeList
             'Commercial Based System
             If Model.IsPostBasedSystem = False Then
-      @<li hierarchyLevel="@item.HierarchyLevel"
-           id="@item.LineManagerStaffNo"
-           class="@item.NodeTypeClass">
-         <div style="overflow-x:hidden;overflow-y: hidden;" id="divMainContainer" class="centered">
-            @For Each childitem In item.ReportColumnItemList        'Render all columns form defination.
-               Html.RenderPartial("_OrganisationReportColumnNode", childitem)
-            Next
-         </div>
-         <input type="checkbox" class="printSelect" employeeid="@item.EmployeeID" hierarchyLevel="@item.HierarchyLevel" />
-         <img title="expand/contract this node" class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' hierarchyLevel="@item.HierarchyLevel" />
-         <ul id="@item.EmployeeStaffNo" />
-      </li>
+            @<li hierarchyLevel="@item.HierarchyLevel"
+                 id="@item.LineManagerStaffNo"
+                 class="@item.NodeTypeClass">
+               <div style="overflow-x:hidden;overflow-y: hidden;" id="divMainContainer" class="centered">
+                  @For Each childitem In item.ReportColumnItemList        'Render all columns form defination.
+                     Html.RenderPartial("_OrganisationReportColumnNode", childitem)
+                  Next
+               </div>
+               <input type="checkbox" class="printSelect" employeeid="@item.EmployeeID" hierarchyLevel="@item.HierarchyLevel" />
+               <img title="expand/contract this node" class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' hierarchyLevel="@item.HierarchyLevel" />
+               <ul id="@item.EmployeeStaffNo" />
+            </li>
             Else
                ''Post based system goes here...
-      @<li hierarchyLevel="@item.HierarchyLevel"
-           id="@item.LineManagerStaffNo"
-           class="ui-corner-all ui-state-default">
-         <div style="overflow-x:hidden;overflow-y: hidden;padding-right: 0px;padding-left: 0px;" id="divMainContainer" class="centered">
-            <div id="divPostColumns">
-               @For Each colitem In item.ReportColumnItemList.Where(Function(m) m.TableID = Model.Hierarchy_TableID)  'Render only basedview columns.
+               @<li hierarchyLevel="@item.HierarchyLevel"
+                    id="@item.LineManagerStaffNo"
+                    class="ui-corner-all ui-state-default">
+                  <div style="overflow-x:hidden;overflow-y: hidden;padding-right: 0px;padding-left: 0px;" id="divMainContainer" class="centered">
+                     <div id="divPostColumns">
+                        @For Each colitem In item.ReportColumnItemList.Where(Function(m) m.TableID = Model.Hierarchy_TableID)  'Render only basedview columns.
                   Html.RenderPartial("_OrganisationReportColumnNode", colitem)
                Next
-            </div>
+                     </div>
 
-            <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
-               @For Each childitem In item.PostWiseNodeList  'Create internal boxes for each employee.
+                     <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
+                        @For Each childitem In item.PostWiseNodeList  'Create internal boxes for each employee.
                @<div style="min-width:180px;display:table-cell;" class="centered">
                   @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
-               @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
-                  @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
+                           @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
+                              @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
                         Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
                      Next
-               </div>
+                           </div>
                   End If
                </div>
-               Next
-            </div>
+                        Next
+                     </div>
 
-         </div>
-         @If item.IsVacantPost = False Then       'Show Select checkbox option only for non-vacant post.
-      @<input type="checkbox" Class="printSelect" postid="@item.PostID" hierarchyLevel="@item.HierarchyLevel" />
-         End If
-         <img title="expand/contract this node" Class="expandNode" hierarchyLevel="@item.HierarchyLevel" src='@Url.Content("~/Content/images/minus.gif")' />
-         <ul id="@item.EmployeeStaffNo" />
-      </li>
+                  </div>
+                  @If item.IsVacantPost = False Then       'Show Select checkbox option only for non-vacant post.
+         @<input type="checkbox" Class="printSelect" postid="@item.PostID" hierarchyLevel="@item.HierarchyLevel" />
+                  End If
+                  <img title="expand/contract this node" Class="expandNode" hierarchyLevel="@item.HierarchyLevel" src='@Url.Content("~/Content/images/minus.gif")' />
+                  <ul id="@item.EmployeeStaffNo" />
+               </li>
             End If
          Next
       End Code
