@@ -408,12 +408,6 @@
          $('#divSaveToFileContainer').scrollTop(0).scrollLeft(0);
          $('#workframeset').scrollTop(0).scrollLeft(0);
 
-         //Remove any highlighted node.
-         $(".ui-state-active").each(function () {
-            $(this).addClass("ui-state-default");
-            $(this).removeClass("ui-state-active");
-         });
-
          var useWidth = $('#divSaveToFileParent').prop('scrollWidth') + 500;
          var useHeight = $('#divSaveToFileParent').prop('scrollHeight') + 300;
 
@@ -620,51 +614,51 @@
       @Code For Each item In Model.OrgReportChartNodeList
             'Commercial Based System
             If Model.IsPostBasedSystem = False Then
-            @<li hierarchyLevel="@item.HierarchyLevel"
-                 id="@item.LineManagerStaffNo"
-                 class="@item.NodeTypeClass">
-               <div style="overflow-x:hidden;overflow-y: hidden;" id="divMainContainer" class="centered">
-                  @For Each childitem In item.ReportColumnItemList        'Render all columns form defination.
-                     Html.RenderPartial("_OrganisationReportColumnNode", childitem)
-                  Next
-               </div>
-               <input type="checkbox" class="printSelect" employeeid="@item.EmployeeID" hierarchyLevel="@item.HierarchyLevel" />
-               <img title="expand/contract this node" class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' hierarchyLevel="@item.HierarchyLevel" />
-               <ul id="@item.EmployeeStaffNo" />
-            </li>
+      @<li hierarchyLevel="@item.HierarchyLevel"
+           id="@item.LineManagerStaffNo"
+           class="@item.NodeTypeClass">
+         <div style="overflow-x:hidden;overflow-y: hidden;" id="divMainContainer" class="centered">
+            @For Each childitem In item.ReportColumnItemList        'Render all columns form defination.
+               Html.RenderPartial("_OrganisationReportColumnNode", childitem)
+            Next
+         </div>
+         <input type="checkbox" class="printSelect" employeeid="@item.EmployeeID" hierarchyLevel="@item.HierarchyLevel" />
+         <img title="expand/contract this node" class="expandNode" src='@Url.Content("~/Content/images/minus.gif")' hierarchyLevel="@item.HierarchyLevel" />
+         <ul id="@item.EmployeeStaffNo" />
+      </li>
             Else
                ''Post based system goes here...
-               @<li hierarchyLevel="@item.HierarchyLevel"
-                    id="@item.LineManagerStaffNo"
-                    class="ui-corner-all ui-state-default">
-                  <div style="overflow-x:hidden;overflow-y: hidden;padding-right: 0px;padding-left: 0px;" id="divMainContainer" class="centered">
-                     <div id="divPostColumns">
-                        @For Each colitem In item.ReportColumnItemList.Where(Function(m) m.TableID = Model.Hierarchy_TableID)  'Render only basedview columns.
+      @<li hierarchyLevel="@item.HierarchyLevel"
+           id="@item.LineManagerStaffNo"
+           class="ui-corner-all ui-state-default">
+         <div style="overflow-x:hidden;overflow-y: hidden;padding-right: 0px;padding-left: 0px;" id="divMainContainer" class="centered">
+            <div id="divPostColumns">
+               @For Each colitem In item.ReportColumnItemList.Where(Function(m) m.TableID = Model.Hierarchy_TableID)  'Render only basedview columns.
                   Html.RenderPartial("_OrganisationReportColumnNode", colitem)
                Next
-                     </div>
+            </div>
 
-                     <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
-                        @For Each childitem In item.PostWiseNodeList  'Create internal boxes for each employee.
-               @<div style="min-width:180px;display:table-cell;" class="centered">
-                  @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
-                           @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
-                              @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
+            <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
+               @For Each childitem In item.PostWiseNodeList  'Create internal boxes for each employee.
+                        @<div style="min-width:180px;display:table-cell;" class="centered">
+                           @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
+                        @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
+                           @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
                         Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
                      Next
-                           </div>
-                  End If
-               </div>
-                        Next
-                     </div>
+                        </div>
+                           End If
+                        </div>
+               Next
+            </div>
 
-                  </div>
-                  @If item.IsVacantPost = False Then       'Show Select checkbox option only for non-vacant post.
-         @<input type="checkbox" Class="printSelect" postid="@item.PostID" hierarchyLevel="@item.HierarchyLevel" />
-                  End If
-                  <img title="expand/contract this node" Class="expandNode" hierarchyLevel="@item.HierarchyLevel" src='@Url.Content("~/Content/images/minus.gif")' />
-                  <ul id="@item.EmployeeStaffNo" />
-               </li>
+         </div>
+         @If item.IsVacantPost = False Then       'Show Select checkbox option only for non-vacant post.
+      @<input type="checkbox" Class="printSelect" postid="@item.PostID" hierarchyLevel="@item.HierarchyLevel" />
+         End If
+         <img title="expand/contract this node" Class="expandNode" hierarchyLevel="@item.HierarchyLevel" src='@Url.Content("~/Content/images/minus.gif")' />
+         <ul id="@item.EmployeeStaffNo" />
+      </li>
             End If
          Next
       End Code
