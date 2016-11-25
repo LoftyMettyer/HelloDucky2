@@ -41,7 +41,7 @@
    }
 
    .jOrgChart .filteredNode > :not([type=checkbox]) {
-      opacity: 0.20;
+      opacity: 0.40;
    }
 
    .jOrgChart .filteredNode > .expandNode {
@@ -50,6 +50,7 @@
 
    .jOrgChart .filteredNode {
       border: 1px solid lightgray;
+      background-color: rgba(255, 255, 255,0.5);
    }
 </style>
 <script>
