@@ -65,7 +65,7 @@
 %>
 
 <script type="text/javascript">
-
+   
    var isNewPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "NEW").ToString.ToLower%>");
 	var isEditPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "EDIT").ToString.ToLower%>");
 	var isViewPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "VIEW").ToString.ToLower%>");
@@ -155,7 +155,7 @@
 	function defsel_window_onload() {	
 		
 		var frmDefSel = document.getElementById('frmDefSel');
-
+		
 		// Expand the option frame and hide the work frame.
 		if ( (parseInt($("#txtSingleRecordID").val()) > 0) || (parseInt($("#txtMultipleRecordIDs").val().length) > 0 ) )  {
 			$("#optionframe").attr("data-framesource", "DEFSEL");
@@ -263,10 +263,10 @@
 	}
 
 	function refreshControls() {
-
+   
 		//show the Defsel-Find menu block.
 		disableNonDefselTabs();		
-		var fFromMenu = !((parseInt($("#txtSingleRecordID").val()) > 0) || (parseInt($("#txtMultipleRecordIDs").val()) > 0));				
+		var fFromMenu = !((parseInt($("#txtSingleRecordID").val()) > 0) || (parseInt($("#txtMultipleRecordIDs").val()) > 0) || (parseInt($("#txtMultipleRecordIDs").val()) == 0));				
 		var fHasRows = (rowCount() > 0);
 		var isRunOnly = (defSelType === "utlWorkflow" || defSelType === "utlDataTransfer");
 
@@ -555,7 +555,7 @@
 
 	function setcancel() {
 
-		if ( (parseInt($("#txtSingleRecordID").val()) > 0) || (parseInt($("#txtMultipleRecordIDs").val()) > 0) ) {			
+	   if ( (parseInt($("#txtSingleRecordID").val()) > 0) || (parseInt($("#txtMultipleRecordIDs").val()) > 0) || (parseInt($("#txtMultipleRecordIDs").val()) == 0) ) {			
 			refreshData();
 			menu_disableMenu();
 
@@ -1029,7 +1029,7 @@
 				// Refresh ribbon toolbar for the bradford factor and absence breakdown reports 			
 				$("#toolbarReportFind").parent().show();
 				$("#toolbarReportFind").click();
-
+				
 				// Sets the ribbon buttons
 				SetsRibbonButtonsForAbsenceBreakdownAndBradfordFactor();
 			} 

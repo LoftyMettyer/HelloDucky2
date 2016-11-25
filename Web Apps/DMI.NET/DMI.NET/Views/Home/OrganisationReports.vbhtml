@@ -332,7 +332,7 @@
          $('#divSaveToFileParent').show();
          if ((isIEOrEdgeBrowser()==true && $('#divSaveToFileContainer').prop('scrollWidth')>=8000) ||
              ($('#divSaveToFileContainer').prop('scrollWidth')>=32000)) {
-            
+
             OpenHR.modalMessage("Selected nodes exceeds the limit of file, Please select lesser number of nodes.");
             window.console.log("Canvas IndexSizeError: Index or size is negative or greater than the allowed amount.");
 
@@ -521,14 +521,14 @@
          $('.printSelect:checked').each(function() {
             SelectedIds.push($(this).attr("postid"));
          });
-         $("#txtSelectedRecordsInFindGrid")[0].value = SelectedIds;
+         $("#txtSelectedRecordsInFindGrid")[0].value = SelectedIds.sort(function(a, b){return b-a});
          $("#txtOrgReportTableID")[0].value = @Model.Hierarchy_TableID;
       }
       else{
          $('.printSelect:checked').each(function () {
             SelectedIds.push($(this).attr("employeeid"));
          });
-         $("#txtSelectedRecordsInFindGrid")[0].value = SelectedIds;
+         $("#txtSelectedRecordsInFindGrid")[0].value = SelectedIds.sort(function(a, b){return b-a});
          $("#txtOrgReportTableID")[0].value = @Model.Hierarchy_TableID;
       }
    }
@@ -578,15 +578,15 @@
 
             <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
                @For Each childitem In item.PostWiseNodeList  'Create internal boxes for each employee.
-                        @<div style="min-width:180px;display:table-cell;" class="centered">
-                           @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
-                        @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
-                           @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
+               @<div style="min-width:180px;display:table-cell;" class="centered">
+                  @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
+               @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
+                  @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
                         Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
                      Next
-                        </div>
-                           End If
-                        </div>
+               </div>
+                  End If
+               </div>
                Next
             </div>
 
