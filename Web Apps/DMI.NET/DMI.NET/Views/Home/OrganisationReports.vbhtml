@@ -288,72 +288,8 @@
             });
          } else {
 
-            //If browser is IE or Edge
-            if (isIEOrEdgeBrowser()==true){
-
-               if($("#chart").first("table").prop('scrollWidth')>8000 && '@Model.IsPostBasedSystem'=='True'){
-
-                  //In case of IE first save only root and first level nodes.
-                  //Unselect all check boxes.
-                  $("#chart").find(".printSelect").attr('checked', false);
-
-                  //Collapsed first level nodes.
-                  $("#chart .expandNode[hierarchyLevel='1']").each(function() {
-                     $(this).click();
-                  });
-
-                  //Copy the root level chart into div.
-                  var cloneDiv = $("#chart").clone();
-                  cloneDiv.attr("id","SaveChart");
-                  $("#divSaveToFileContainer").append(cloneDiv);
-
-                  //Expand the first level nodes.
-                  $("#chart .expandNode[hierarchyLevel='1']").each(function() {
-                     $(this).click();
-                  });
-
-                  //Unselect root level node.
-                  $("#chart").find(".printSelect").first().attr('checked', false);
-
-                  //Now Select all node which are on first level.
-                  $("#chart .printSelect[hierarchyLevel='1']").each(function() {
-                     $(this).click();
-                  });
-
-                  //Save nodes first level onwards.
-                  $("#chart .printSelect[hierarchyLevel='1']:checked:enabled").closest('table').each(function () {
-                     if ($(this).parent().parent().css('visibility') !== "hidden") {
-
-                        //get a handle on the parent table.
-                        $(this).parent().attr('id', 'currentlyPrinting');
-
-                        var divToPrint = document.getElementById('currentlyPrinting');
-
-                        var divnode = $('<div class="jOrgChart"></div>');
-                        divnode.append(divToPrint.innerHTML);
-                        divnode.wrap('<div class="orgChart"></div>');
-
-                        $("#divSaveToFileContainer").append(divnode);
-                        $("#divSaveToFileContainer").append($("<br />"));
-                        $("#divSaveToFileContainer").append($("<br />"));
-
-                        // remove handle for the next branch.
-                        $(this).parent().attr('id', '');
-                     }
-                  });
-
-                  //$("#chart").find(".printSelect").first().click();
-               }
-               else{
-                  //Save whole chart at onces.
-                  $("#divSaveToFileContainer").append($("#chart").clone());
-               }
-            }
-            else
-            {
-               //If browser othere then IE then save whole chart at onces.
-               $("#divSaveToFileContainer").append($("#chart").clone());
-            }
+            //Save whole chart at onces.
+            $("#divSaveToFileContainer").append($("#chart").clone());
          }
 
          $('#divSaveToFileContainer .printSelect').hide(); //hide the selection tickboxes.
@@ -394,14 +330,16 @@
       setTimeout(function(){
 
          $('#divSaveToFileParent').show();
-         if($('#divSaveToFileContainer').prop('scrollWidth')>32000){
+         if ((isIEOrEdgeBrowser()==true && $('#divSaveToFileContainer').prop('scrollWidth')>=8000) ||
+             ($('#divSaveToFileContainer').prop('scrollWidth')>=32000)) {
+            
+            OpenHR.modalMessage("Selected nodes exceeds the limit of file, Please select lesser number of nodes.");
             window.console.log("Canvas IndexSizeError: Index or size is negative or greater than the allowed amount.");
 
-            if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ){
-               $("body").removeClass("loading");
-               $('#divSaveToFileParent').hide();
-               return false;
-            }
+            $("body").removeClass("loading");
+            $('#divSaveToFileParent').hide();
+
+            return false;
          }
 
          $("#divSaveToFileContainer .printSelect").hide();
