@@ -702,7 +702,7 @@ Private Function GetExportDefinition() As Boolean
     mstrLinkedCatalog = IIf(IsNull(!LinkedCatalog), "", !LinkedCatalog)
     mstrLinkedTable = IIf(IsNull(!LinkedTable), "", !LinkedTable)
 
-    mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
+    mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!userName)))
     mbAuditChangesOnly = IIf(IsNull(!AuditChangesOnly), False, !AuditChangesOnly)
 
     If Not IsRecordSelectionValid Then
@@ -1098,12 +1098,12 @@ Private Function GenerateSQLSelect() As Boolean
       
       ' Check permission on that column
       Set mobjColumnPrivileges = GetColumnPrivileges(pstrTempTableName)
-      mstrRealSource = gcoTablePrivileges.Item(pstrTempTableName).RealSource
+      mstrRealSource = gcoTablePrivileges.item(pstrTempTableName).RealSource
       
       pblnColumnOK = mobjColumnPrivileges.IsValid(pstrTempColumnName)
         
       If pblnColumnOK Then
-        pblnColumnOK = mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect
+        pblnColumnOK = mobjColumnPrivileges.item(pstrTempColumnName).AllowSelect
       End If
       
       If pblnColumnOK Then
@@ -1159,14 +1159,14 @@ Private Function GenerateSQLSelect() As Boolean
           (mobjTableView.AllowSelect) Then
           
             pstrSource = mobjTableView.ViewName
-            mstrRealSource = gcoTablePrivileges.Item(pstrSource).RealSource
+            mstrRealSource = gcoTablePrivileges.item(pstrSource).RealSource
             
             ' Get the column permission for the view
             Set mobjColumnPrivileges = GetColumnPrivileges(pstrSource)
             
             ' If we can see the column from this view
             If mobjColumnPrivileges.IsValid(pstrTempColumnName) Then
-              If mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect Then
+              If mobjColumnPrivileges.item(pstrTempColumnName).AllowSelect Then
                 
                 ReDim Preserve mstrViews(UBound(mstrViews) + 1)
                 mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
@@ -1426,7 +1426,7 @@ Private Function GenerateSQLFrom() As Boolean
   
   Set pobjTableView = New CTablePrivilege
   
-    mstrSQLFrom = gcoTablePrivileges.Item(mstrExportBaseTableName).RealSource
+    mstrSQLFrom = gcoTablePrivileges.item(mstrExportBaseTableName).RealSource
   
 '  Else
 '
@@ -1635,7 +1635,7 @@ Private Function DoChildOrderString(rsTemp As Recordset, ByRef psJoinCode As Str
       ' Check if the user can read the column.
       Set pobjOrderCol = gcoTablePrivileges.FindTableID(rsTemp!TableID)
       Set objColumnPrivileges = GetColumnPrivileges(pobjOrderCol.TableName)
-      fColumnOK = objColumnPrivileges.Item(rsTemp!ColumnName).AllowSelect
+      fColumnOK = objColumnPrivileges.item(rsTemp!ColumnName).AllowSelect
       Set objColumnPrivileges = Nothing
       
       If fColumnOK Then
@@ -1690,13 +1690,13 @@ Private Function DoChildOrderString(rsTemp As Recordset, ByRef psJoinCode As Str
               (objTableView.AllowSelect) Then
 
               sSource = objTableView.ViewName
-              sRealSource = gcoTablePrivileges.Item(sSource).RealSource
+              sRealSource = gcoTablePrivileges.item(sSource).RealSource
 
               ' Get the column permission for the view.
               Set objColumnPrivileges = GetColumnPrivileges(sSource)
 
               If objColumnPrivileges.IsValid(rsTemp!ColumnName) Then
-                If objColumnPrivileges.Item(rsTemp!ColumnName).AllowSelect Then
+                If objColumnPrivileges.item(rsTemp!ColumnName).AllowSelect Then
                   ' Add the view info to an array to be put into the column list or order code below.
                   iNextIndex = UBound(asViews) + 1
                   ReDim Preserve asViews(iNextIndex)
@@ -3639,7 +3639,7 @@ Private Function SendArrayToOutputOptions()
   Dim sExtension As String
   Dim sFileName As String
   Dim aryOutputData() As String
-
+  
   Set objOutput = New clsOutputRun
 
   ' How many files required for this export?
@@ -3675,7 +3675,15 @@ Private Function SendArrayToOutputOptions()
     End If
 
     ' Process the file name
-    sFileName = ReplaceFormatExpressions(mstrOutputFileName, intBlockLoop, UBound(aryOutputData, 2) + 1, True)
+    Dim blockRecordCount As Long
+    
+    If GetArrayLength(aryOutputData) = -1 Then
+      blockRecordCount = 0
+    Else
+      blockRecordCount = UBound(aryOutputData, 2) + 1
+    End If
+    
+    sFileName = ReplaceFormatExpressions(mstrOutputFileName, intBlockLoop, blockRecordCount, True)
   
     If objOutput.SetOptions _
         (False, mlngOutputFormat, False, _
@@ -3826,4 +3834,13 @@ Private Function OutputArrayBlock(ByVal intBlockNumber As Integer) As String()
 ArrayExceeded:
   OutputArrayBlock = aryOutput
 
+End Function
+
+Private Function GetArrayLength(ArrayName) As Integer
+    On Error GoTo ErrHandler
+        GetArrayLength = UBound(ArrayName)
+    Exit Function
+    
+ErrHandler:
+    GetArrayLength = -1
 End Function
