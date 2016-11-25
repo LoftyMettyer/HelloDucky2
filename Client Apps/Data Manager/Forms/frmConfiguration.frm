@@ -304,6 +304,7 @@ Begin VB.Form frmConfiguration
             Left            =   4320
             TabIndex        =   114
             Top             =   1080
+            Visible         =   0   'False
             Width           =   1920
          End
          Begin VB.CheckBox chkOmitSpacerCol 
@@ -312,6 +313,7 @@ Begin VB.Form frmConfiguration
             Left            =   4320
             TabIndex        =   115
             Top             =   1380
+            Visible         =   0   'False
             Width           =   2175
          End
          Begin VB.ComboBox cboExcelFormat 
