@@ -716,7 +716,7 @@
 		<table id="LookupForEditableGrid_Table"></table>
 	</div>
 
-	<div id="dialog-confirm" style="display:none;">
+	<div id="dialog-confirm" style="display:none;max-width:700px;">
 		<p><span class="ui-icon ui-icon-help" style="float: left; margin: 0 7px 20px 0;"></span></p>
 	</div>
 

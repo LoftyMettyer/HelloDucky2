@@ -5980,12 +5980,8 @@ Namespace Controllers
                For Each column As String In invalidColumnList
                   count = count + 1
 
-                  'Format the message. If columns are more than 4 then add <br> after each 4 columns.
                   If (columnIndex = invalidColumnList.Count - 1) Then
                      messageToDisplay += invalidColumnList(columnIndex)
-                  ElseIf (count = 4) Then
-                     count = 0
-                     messageToDisplay += invalidColumnList(columnIndex) + ", " + "<br>"
                   Else
                      messageToDisplay += invalidColumnList(columnIndex) + ", "
                   End If
@@ -5999,10 +5995,10 @@ Namespace Controllers
 
                responseMessage = New ErrMsgJsonAjaxResponse() With {.ErrorMessage = "You do not have permission to see the column(s) : <br>" + messageToDisplay + "." & vbNewLine}
 
-               Dim ErrorMessage = Replace(responseMessage.ErrorMessage, "<br>", "") 'Removed text <br> from message string.
+               Dim eventLogMessage = Replace(responseMessage.ErrorMessage, "<br>", "") 'Removed text <br> from message string.
                objErrorLog.AddHeader(EventLog_Type.eltOrgReporting, Session("utilname"))
                objErrorLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
-               objErrorLog.AddDetailEntry(ErrorMessage)
+               objErrorLog.AddDetailEntry(eventLogMessage)
                Return Json(responseMessage, JsonRequestBehavior.AllowGet)
             End If
 
