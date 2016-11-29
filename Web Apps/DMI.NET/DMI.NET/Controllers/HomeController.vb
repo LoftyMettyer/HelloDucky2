@@ -5998,9 +5998,11 @@ Namespace Controllers
                End If
 
                responseMessage = New ErrMsgJsonAjaxResponse() With {.ErrorMessage = "You do not have permission to see the column(s) : <br>" + messageToDisplay + "." & vbNewLine}
+
+               Dim ErrorMessage = Replace(responseMessage.ErrorMessage, "<br>", "") 'Removed text <br> from message string.
                objErrorLog.AddHeader(EventLog_Type.eltOrgReporting, Session("utilname"))
                objErrorLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
-               objErrorLog.AddDetailEntry(responseMessage.ErrorMessage)
+               objErrorLog.AddDetailEntry(ErrorMessage)
                Return Json(responseMessage, JsonRequestBehavior.AllowGet)
             End If
 
