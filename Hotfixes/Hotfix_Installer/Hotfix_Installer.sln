@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenHR 8.2 Patch for 20488418", "Hotfix_Installer\Hotfix_Installer.vdproj", "{F822A192-91AB-4CBD-9CED-F92069E80023}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Default = Debug|Default
+		Release|Default = Release|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F822A192-91AB-4CBD-9CED-F92069E80023}.Debug|Default.ActiveCfg = Debug
+		{F822A192-91AB-4CBD-9CED-F92069E80023}.Debug|Default.Build.0 = Debug
+		{F822A192-91AB-4CBD-9CED-F92069E80023}.Release|Default.ActiveCfg = Release
+		{F822A192-91AB-4CBD-9CED-F92069E80023}.Release|Default.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Hotfix_Installer\\Hotfix_Installer.vdproj
+		SccProjectName1 = Hotfix_Installer
+		SccLocalPath1 = Hotfix_Installer
+	EndGlobalSection
+EndGlobal
