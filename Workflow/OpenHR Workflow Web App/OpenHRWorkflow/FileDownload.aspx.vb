@@ -270,10 +270,10 @@ Partial Class FileDownload
 				End If
 
 				Response.Clear()
-				Response.ClearHeaders()
-				Response.AddHeader("content-disposition", "attachment; filename='" + sFileName + "'")
-				Response.ClearContent()
-				Response.ContentEncoding = Encoding.UTF8
+            Response.ClearHeaders()
+            Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", sFileName))
+            Response.ClearContent()
+            Response.ContentEncoding = Encoding.UTF8
 				Response.ContentType = sContentType
 				Response.OutputStream.Write(abtImage, iOffset, abtImage.Length - iOffset)
 				Response.Flush()
