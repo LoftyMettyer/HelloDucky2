@@ -301,8 +301,8 @@ PRINT 'Step - Workflow additions'
 				@fSaveForLater			bit,
 				@fResult	bit;
 		
-			SELECT @iSQLVersion = convert(float,substring(@@version,charindex(''-'',@@version)+2,2));
-		
+   	   SET @iSQLVersion = dbo.udfASRSQLVersion();
+
 			DECLARE @succeedingElements table(elementID int);
 			DECLARE	@outputTable table (id int NOT NULL);
 		
@@ -763,7 +763,7 @@ PRINT 'Step - Workflow additions'
 				userName = @sActualLoginName
 			WHERE ASRSysWorkflowInstanceSteps.ID IN (SELECT stepID FROM @succeedingSteps)
 		
-		END';
+		END'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRMobileInstantiateWorkflow]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spASRMobileInstantiateWorkflow];
@@ -817,9 +817,9 @@ PRINT 'Step - Workflow additions'
 				@iFailureFlows			integer,
 				@fSaveForLater			bit,
 				@fResult	bit;
-		
-			SELECT @iSQLVersion = convert(float,substring(@@version,charindex(''-'',@@version)+2,2));
-		
+			
+         SELECT @iSQLVersion = dbo.udfASRSQLVersion();
+
 			DECLARE @succeedingElements table(elementID int);
 			DECLARE	@outputTable table (id int NOT NULL);
 		
@@ -1277,7 +1277,7 @@ PRINT 'Step - Workflow additions'
 				userName = @sActualLoginName
 			WHERE ASRSysWorkflowInstanceSteps.ID IN (SELECT stepID FROM @succeedingSteps)
 		
-		END';
+		END'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRInstantiateTriggeredWorkflows]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spASRInstantiateTriggeredWorkflows];
@@ -1491,7 +1491,7 @@ PRINT 'Step - Workflow additions'
 		SET @iDEADLOCKERRORNUMBER = 1205;
 		SET @iMAXRETRIES = 5;
 					
-		SELECT @iSQLVersion = convert(float,substring(@@version,charindex(''-'',@@version)+2,2));
+	   SELECT @iSQLVersion = dbo.udfASRSQLVersion();
 					
 		DECLARE @elements table
 		(
@@ -2723,6 +2723,122 @@ PRINT 'Step - Talent Reports'
 
 	IF NOT EXISTS(SELECT Name FROM sysindexes WHERE id = object_id(N'ASRSysTalentReportDetails') AND name = N'IDX_TalentReportID')
 		EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_TalentReportID] ON ASRSysTalentReportDetails ([TalentReportID])'
+
+
+/* ------------------------------------------------------- */
+PRINT 'Step - SQL Version numbering fix'
+/* ------------------------------------------------------- */
+
+	EXEC sp_executesql N'ALTER PROCEDURE [dbo].[spASRGetActualUserDetails]
+	(
+			@psUserName sysname OUTPUT,
+			@psUserGroup sysname OUTPUT,
+			@piUserGroupID integer OUTPUT,
+			@piModuleKey varchar(20)
+	)
+	AS
+	BEGIN
+		DECLARE @iFound		int
+		DECLARE @sSQLVersion int
+
+	   SET @sSQLVersion = convert(numeric(3,1), convert(nvarchar(4), SERVERPROPERTY(''ProductVersion'')));
+
+		SELECT @iFound = COUNT(*) 
+		FROM sysusers usu 
+		LEFT OUTER JOIN	(sysmembers mem INNER JOIN sysusers usg ON mem.groupuid = usg.uid) ON usu.uid = mem.memberuid
+		LEFT OUTER JOIN master.dbo.syslogins lo ON usu.sid = lo.sid
+		WHERE (usu.islogin = 1 AND usu.isaliased = 0 AND usu.hasdbaccess = 1) 
+			AND (usg.issqlrole = 1 OR usg.uid IS null)
+			AND lo.loginname = system_user
+			AND CASE
+				WHEN (usg.uid IS null) THEN null
+				ELSE usg.name
+			END NOT LIKE ''ASRSys%'' AND usg.name NOT LIKE ''db_owner''
+
+		IF (@iFound > 0)
+		BEGIN
+			SELECT	@psUserName = usu.name,
+				@psUserGroup = CASE 
+					WHEN (usg.uid IS null) THEN null
+					ELSE usg.name
+				END,
+				@piUserGroupID = usg.gid
+			FROM sysusers usu 
+			LEFT OUTER JOIN (sysmembers mem INNER JOIN sysusers usg ON mem.groupuid = usg.uid) ON usu.uid = mem.memberuid
+			LEFT OUTER JOIN master.dbo.syslogins lo ON usu.sid = lo.sid
+			WHERE (usu.islogin = 1 AND usu.isaliased = 0 AND usu.hasdbaccess = 1) 
+				AND (usg.issqlrole = 1 OR usg.uid IS null)
+				AND lo.loginname = system_user
+				AND CASE 
+					WHEN (usg.uid IS null) THEN null
+					ELSE usg.name
+					END NOT LIKE ''ASRSys%'' AND usg.name NOT LIKE ''db_owner''
+				AND CASE 
+					WHEN (usg.uid IS null) THEN null
+					ELSE usg.name
+					END IN (
+								SELECT [groupName]
+								FROM dbo.[ASRSysGroupPermissions]
+								WHERE itemID IN (
+																	SELECT [itemID]
+																	FROM dbo.[ASRSysPermissionItems]
+																	WHERE categoryID = 1
+																	AND itemKey LIKE @piModuleKey + ''%''
+																)  
+								AND [permitted] = 1
+		)
+		END
+		ELSE
+		BEGIN
+			SELECT @psUserName = usu.name, 
+				@psUserGroup = CASE
+					WHEN (usg.uid IS null) THEN null
+					ELSE usg.name
+				END,
+				@piUserGroupID = usg.gid
+			FROM sysusers usu 
+			LEFT OUTER JOIN (sysmembers mem INNER JOIN sysusers usg ON mem.groupuid = usg.uid) ON usu.uid = mem.memberuid
+			LEFT OUTER JOIN master.dbo.syslogins lo ON usu.sid = lo.sid
+			WHERE (usu.islogin = 1 AND usu.isaliased = 0 AND usu.hasdbaccess = 1) 
+				AND (usg.issqlrole = 1 OR usg.uid IS null)
+				AND is_member(lo.loginname) = 1
+				AND CASE
+					WHEN (usg.uid IS null) THEN null
+					ELSE usg.name
+				END NOT LIKE ''ASRSys%'' AND usg.name NOT LIKE ''db_owner''
+				AND CASE 
+					WHEN (usg.uid IS null) THEN null
+					ELSE usg.name
+					END IN (
+								SELECT [groupName]
+								FROM dbo.[ASRSysGroupPermissions]
+								WHERE itemID IN (
+																	SELECT [itemID]
+																	FROM dbo.[ASRSysPermissionItems]
+																	WHERE categoryID = 1
+																	AND itemKey LIKE @piModuleKey + ''%''
+																)  
+								AND [permitted] = 1
+		)
+		END
+
+		IF @psUserGroup <> ''''
+		BEGIN
+			DELETE FROM [ASRSysUserGroups] 
+			WHERE [UserName] = SUSER_NAME()
+
+			INSERT INTO [ASRSysUserGroups] 
+			VALUES 
+			(
+				CASE
+					WHEN @sSQLVersion <= 8 THEN USER_NAME()
+					ELSE SUSER_NAME()
+				END,
+				@psUserGroup
+			)
+		END
+
+	END';
 
 
 
