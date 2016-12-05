@@ -62389,6 +62389,7 @@ BEGIN
 			@sJoinList						nvarchar(MAX) = '',
 			@sWhereCondition				varchar(MAX)  = '',
 			@sOrderCondition				nvarchar(MAX) = '',
+			@sVacantPost					nvarchar(MAX) = '0 AS IsPostVacant',
 			@dTodayDate						datetime = DATEADD(dd, 0, DATEDIFF(dd, 0,  getdate())),
 			@sPersonnelTableName			varchar(MAX),
 			@iPersonnelTableID				integer,			 
@@ -62547,6 +62548,7 @@ BEGIN
 			' AND (app.' + @sPostAllocationEndDateColumn + ' IS NULL OR '  +
 			'app.' + @sPostAllocationEndDateColumn +'>= ''' + CONVERT(varchar(50),@dTodayDate) + ''') AND ' +  
 			'app.' + @sPostAllocationStartDateColumn + '<=' + '''' + CONVERT(varchar(50),@dTodayDate) + '''';
+		SET @sVacantPost = 'CASE WHEN app.ID IS NULL THEN 1 ELSE 0 END AS IsPostVacant'
 	END
 
 	IF @UsePersonnel = 1
@@ -62624,9 +62626,10 @@ BEGIN
 		SET @sFilterList = 'CASE WHEN ' + REPLACE(@sFilterList, CHAR(39), CHAR(39)) + ' THEN 0 ELSE 1 END';
 	ELSE
 		SET @sFilterList = '0';
+	
 
 	-- Merge in the selected data columns
-	SET @sSQL = 'SELECT CASE WHEN app.ID IS NULL THEN 1 ELSE 0 END AS IsPostVacant, nodes.IsGhostNode, nodes.HierarchyLevel, nodes.EmployeeID AS HierarchyID, nodes.Staff_Number AS Post_ID, nodes.Reports_To_Staff_Number AS Reports_To_Post_ID
+	SET @sSQL = 'SELECT ' + @sVacantPost + ', nodes.IsGhostNode, nodes.HierarchyLevel, nodes.EmployeeID AS HierarchyID, nodes.Staff_Number AS Post_ID, nodes.Reports_To_Staff_Number AS Reports_To_Post_ID
 		, nodes.EmployeeID ' 
 		+ @sColumnList	
 		+ ', ' + @sFilterList + ' AS [IsFilteredNode] '
@@ -62641,8 +62644,7 @@ BEGIN
 	REVERT;
 
 	SELECT 'unused table?';
-		
-
+	
 END
 GO
 
