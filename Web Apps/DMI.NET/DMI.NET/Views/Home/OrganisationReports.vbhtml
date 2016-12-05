@@ -119,7 +119,7 @@
 
          setTimeout('centreMe(true)', 500);
 
-         $("#chart").find("#divMainContainer").each(function () {
+         $("#chart").find(".divMainContainer").each(function () {
 
             //Get total number of employees in one post.
             var totalEmpDiv = $(this).find("#divPostEmployees").children().length;
@@ -554,7 +554,7 @@
       @<li hierarchyLevel="@item.HierarchyLevel"
            id="@item.LineManagerStaffNo"
            class="@item.NodeTypeClass">
-         <div style="overflow-x:hidden;overflow-y: hidden;" id="divMainContainer" class="centered">
+         <div style="overflow-x:hidden;overflow-y: hidden;" class="divMainContainer centered">
             @For Each childitem In item.ReportColumnItemList        'Render all columns form defination.
                Html.RenderPartial("_OrganisationReportColumnNode", childitem)
             Next
@@ -564,11 +564,12 @@
          <ul id="@item.EmployeeStaffNo" />
       </li>
             Else
-               ''Post based system goes here...
+               ''Post based system goes here...   
+               Dim ParentNodeClass = item.PostWiseNodeList.FirstOrDefault.NodeTypeClass.ToString
       @<li hierarchyLevel="@item.HierarchyLevel"
            id="@item.LineManagerStaffNo"
-           class="ui-corner-all ui-state-default">
-         <div style="overflow-x:hidden;overflow-y: hidden;padding-right: 0px;padding-left: 0px;" id="divMainContainer" class="centered">
+           class="@ParentNodeClass ui-corner-all ui-state-default">
+         <div style="overflow-x:hidden;overflow-y: hidden;padding-right: 0px;padding-left: 0px;" class="divMainContainer centered">
             <div id="divPostColumns">
                @For Each colitem In item.ReportColumnItemList.Where(Function(m) m.TableID = Model.Hierarchy_TableID)  'Render only basedview columns.
                   Html.RenderPartial("_OrganisationReportColumnNode", colitem)
@@ -579,10 +580,10 @@
                @For Each childitem In item.PostWiseNodeList  'Create internal boxes for each employee.
                @<div style="min-width:180px;display:table-cell;" class="centered">
                   @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
-               @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="@childitem.NodeTypeClass centered" EmployeeID="@childitem.EmployeeID">
+               @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="centered" EmployeeID="@childitem.EmployeeID">
                   @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
-                        Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
-                     Next
+                     Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
+                  Next
                </div>
                   End If
                </div>
