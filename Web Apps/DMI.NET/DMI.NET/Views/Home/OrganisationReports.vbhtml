@@ -168,11 +168,6 @@
          //Set up Save To File option on ribbon
          $(document).off('click', '.clsSaveRecordOrgReports').on('click', '.clsSaveRecordOrgReports', function () { SaveRecordOrgReports(true); });
 
-         $(document).off('click', 'div.node:not(.filteredNode)').on('click', 'div.node:not(.filteredNode)', function () {
-            $('div.node.ui-state-active').removeClass('ui-state-active').addClass('ui-state-default');
-            $(this).removeClass('ui-state-default').addClass('ui-state-active');
-         });
-
          //Show the click to expand plus/minus icon
          showExpandNodeIcons();
 
