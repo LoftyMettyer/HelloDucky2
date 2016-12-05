@@ -14,385 +14,266 @@ BEGIN
 		2) Result Dataset for respected organisationReport column's parameters like prefix,suffix,fontsize etc.
 	*/
 
-	DECLARE  @RootID								      integer,
-			   @iColumnID							      integer,
-			   @iTableID							      integer,			 
-			   @sColumnName						      varchar(MAX),
-			   @sTableName							      varchar(MAX),
-			   @sSQL								         nvarchar(MAX) = '',
-			   @sUnionAllSql						      nvarchar(MAX) = '',
-			   @sUnionSql							      nvarchar(MAX) = '',
-			   @sFinalOrgReportSql					   nvarchar(MAX) = '',
-			   @sWhereConditionSql					   nvarchar(MAX) = '',
-			   @sColumnString						      varchar(MAX)  = '',
-			   @sTableString						      varchar(MAX)  = '',
-			   @sFilterWhereCondition				   varchar(MAX)  = '',
-			   @sWhereCondition					      varchar(MAX)  = '',
-			   @sPreviousTableName					   varchar(MAX)   = '',
-			   @sNextTableName						   varchar(MAX)   = '',
-			   @sOrgColumnTableName				      varchar(50)	  = 'ASRSysOrganisationColumns',
-			   @dTodayDate							      datetime	  = DATEADD(dd, 0, DATEDIFF(dd, 0,  getdate())),
-			   @sHierarchyLevel					      varchar(50)	  = '1 AS HierarchyLevel',
-			   @sPersonnelTableName				      varchar(MAX),
-			   @iPersonnelTableID					   integer,			 
-			   @sPostTableName				      varchar(MAX),
-			   @iPostTableID					   integer,
-			   @sPersonnelCTEColumn				      varchar(MAX),
-			   @sHierarchyTableName				      varchar(MAX),
-			   @sPostAllocationTableName			   varchar(MAX),
-            @sPostAllocationViewName			   varchar(MAX),
-			   @sHierarchyIdentifierColumn		   varchar(MAX),
-			   @sHierarchyReportsToColumn			   varchar(MAX),
-			   @sHierarchyCTEColumn				      varchar(MAX),
-			   @sPostAllocationStartDateColumn	   varchar(MAX),
-			   @sPostAllocationEndDateColumn		   varchar(MAX),
-            @sReportsToPostIDColumn				   varchar(MAX),				
-            @sBaseViewName					         varchar(MAX),
-				@sBaseViewTableName					   varchar(MAX),
-			   @iHierarchyTableID					   integer,
-			   @iPostAllocationTableID				   integer,
-			   @iHierarchyIdentifierColumnID		   integer,
-			   @iHierarchyReportsToColumnID		   integer,
-			   @iPostAllocationStartDateColumnID	integer,
-			   @iPostAllocationEndDateColumnID		integer,
-            @sFromString                        nvarchar(MAX) ='',
-            @sExcludeSql					         nvarchar(MAX)='',
-            @sViewName 					            nvarchar(MAX)='',
-				@sPersonnelTableViewName			   varchar(max),
-			@sVacantColumnString					   varchar(MAX) = '',
-			@insertLineManagerNode bit = 1;
+	DECLARE @topLevelPostID					integer,
+			@topLevelEmployeeID				integer,
+			@sSQL							nvarchar(MAX) = '',
+			@sColumnList					varchar(MAX)  = '',
+			@sFilterList					nvarchar(max) = '',
+			@sJoinList						nvarchar(MAX) = '',
+			@sWhereCondition				varchar(MAX)  = '',
+			@sOrderCondition				nvarchar(MAX) = '',
+			@dTodayDate						datetime = DATEADD(dd, 0, DATEDIFF(dd, 0,  getdate())),
+			@sPersonnelTableName			varchar(MAX),
+			@iPersonnelTableID				integer,			 
+			@sPostTableName					varchar(MAX),
+			@iPostTableID					integer,
+			@sPostAllocationTableName		varchar(MAX),
+            @sPostAllocationViewName		varchar(MAX),
+			@sHierarchyIdentifierColumn		varchar(MAX),
+			@sHierarchyReportsToColumn		varchar(MAX),
+			@sPostAllocationStartDateColumn	varchar(MAX),
+			@sPostAllocationEndDateColumn	varchar(MAX),
+			@iBaseTableId					integer,
+            @sBaseViewName					varchar(MAX),
+			@iHierarchyTableID				integer,
+			@iPostAllocationTableID			integer,
+			@sPersonnelTableViewName		varchar(max),
+			@sVacantColumnString			varchar(MAX) = '',
+			@UseAppointment					bit = 0,
+			@UsePersonnel					bit = 0;
+	DECLARE @allNodes OrgChartRelation,
+			@ghostNodes OrgChartRelation;
+
 
 	--Assigned postallocation view name 
 	SET @sPostAllocationViewName = @psPostAllocationViewName;
-	-- Get RootID of top level based on loggedIn userID from user defined scalar function udfASRIntOrgChartGetTopLevelID.
-	SELECT @RootID = dbo.udfASRIntOrgChartGetTopLevelID(@piRootID); 
 
    -- Get BaseViewName, BaseViewTableName base on organisationID
-	SELECT  @sBaseViewName =v.ViewName			
+	SELECT @sBaseViewName =v.ViewName, @iBaseTableId = t.TableID
 	   FROM ASRSysOrganisationReport AS r
 	   INNER JOIN ASRSysViews v ON  r.BaseViewID = v.ViewID
 	   INNER JOIN ASRSysTables t ON v.ViewTableID = t.tableID
 	   WHERE r.ID = @piReportID;
 
-	SELECT  @iPersonnelTableID=t.tableID, @sPersonnelTableName = t.TableName FROM ASRSysModuleSetup s 	 
+	-- Get module setup parameters
+	SELECT @iPersonnelTableID=t.tableID, @sPersonnelTableName = t.TableName FROM ASRSysModuleSetup s 	 
 	   INNER JOIN ASRSysTables t ON s.ParameterValue = t.tableID WHERE s.parameterKey like 'Param_Table%' AND s.moduleKey = 'MODULE_PERSONNEL';
 	
-	SELECT  @iPostTableID=t.tableID, @sPostTableName = t.TableName FROM ASRSysModuleSetup s 	 
+	SELECT @iPostTableID=t.tableID, @sPostTableName = t.TableName FROM ASRSysModuleSetup s 	 
 	   INNER JOIN ASRSysTables t ON s.ParameterValue = t.tableID WHERE s.parameterKey like 'Param_PostTable%' AND s.moduleKey = 'MODULE_POST';
 	
-	-- Get module setup parameters
-	SELECT	 @iHierarchyTableID = t.tableID
-				,@sHierarchyTableName = t.TableName 
-	   FROM  ASRSysModuleSetup s INNER JOIN ASRSysTables t ON s.ParameterValue = t.tableID 
-	   WHERE s.parameterKey LIKE 'Param_Table%' AND s.moduleKey = 'MODULE_HIERARCHY' AND UPPER(s.ParameterKey) = 'PARAM_TABLEHIERARCHY'; 
-   		
-	SELECT    @sHierarchyIdentifierColumn = c.ColumnName
-				,@sHierarchyCTEColumn = 'ecte'+ '.' + c.ColumnName
-				,@iHierarchyIdentifierColumnID = c.columnID
+	SELECT @sHierarchyIdentifierColumn = c.ColumnName
 	   FROM ASRSysModuleSetup s INNER JOIN ASRSysColumns c ON s.ParameterValue = c.columnID
 	   INNER JOIN ASRSysTables t ON c.tableID = t.tableID 	WHERE s.moduleKey = 'MODULE_HIERARCHY' 
 	   AND UPPER(s.ParameterKey) = 'PARAM_FIELDIDENTIFIER'; 
 
-	SELECT    @sHierarchyReportsToColumn = c.ColumnName
-				,@iHierarchyReportsToColumnID = c.columnID
-            ,@sReportsToPostIDColumn = c.ColumnName
+	SELECT @sHierarchyReportsToColumn = c.ColumnName
 	   FROM ASRSysModuleSetup s INNER JOIN ASRSysColumns c ON s.ParameterValue = c.columnID
 	   INNER JOIN ASRSysTables t ON c.tableID = t.tableID 	WHERE s.moduleKey = 'MODULE_HIERARCHY' 
 	   AND UPPER(s.ParameterKey) = 'PARAM_FIELDREPORTSTO'; 		
 
     --Get postallocation table name
-	SELECT    @iPostAllocationTableID = t.TableID
+	SELECT @iPostAllocationTableID = t.TableID
 				,@sPostAllocationTableName = t.TableName 
 	   FROM ASRSysModuleSetup s INNER JOIN ASRSysTables t ON s.ParameterValue = t.tableID 
 	   WHERE s.parameterKey LIKE 'Param_Table%' AND s.moduleKey = 'MODULE_HIERARCHY' 
 	   AND UPPER(s.ParameterKey) = 'PARAM_TABLEPOSTALLOCATION';
 
-	SELECT   @sPostAllocationStartDateColumn = c.ColumnName
-			,@iPostAllocationStartDateColumnID = c.columnID
+	SELECT @sPostAllocationStartDateColumn = c.ColumnName
 	   FROM ASRSysModuleSetup s INNER JOIN ASRSysColumns c ON s.ParameterValue = c.columnID
 	   INNER JOIN ASRSysTables t ON c.tableID = t.tableID 	WHERE s.moduleKey = 'MODULE_HIERARCHY'
 	   AND UPPER(s.ParameterKey) = 'PARAM_FIELDSTARTDATE'; 
 
-	SELECT    @sPostAllocationEndDateColumn = c.ColumnName
-				,@iPostAllocationEndDateColumnID = c.columnID
+	SELECT @sPostAllocationEndDateColumn = c.ColumnName
 	   FROM ASRSysModuleSetup s INNER JOIN ASRSysColumns c ON s.ParameterValue = c.columnID
 	   INNER JOIN ASRSysTables t ON c.tableID = t.tableID 	WHERE s.moduleKey = 'MODULE_HIERARCHY' 
 	   AND UPPER(s.ParameterKey) = 'PARAM_FIELDENDDATE'; 
 
-	   --Fetch PostID value of root id 
-	   DECLARE @sPost_IDTemp nvarchar(500)
-			,@sPost_ID nvarchar(100);
+	-- Calculate the post ID of the root employee
+	SELECT @topLevelEmployeeID = dbo.udfASRIntOrgChartGetTopLevelID(@piRootID); 
+	SET @sSQL = N'SELECT TOP 1 @topLevelPostID = ID_' + CONVERT(varchar(10),@iPostTableID) + ' FROM ' + @sPostAllocationTableName +
+						   ' WHERE ID_'+ CONVERT(varchar(10),@iPersonnelTableID) +'=' + CONVERT(varchar(10), @topLevelEmployeeID);	
+	EXECUTE sp_executesql @sSQL, N'@topLevelPostID integer OUTPUT', @topLevelPostID=@topLevelPostID output;
+
+	-- Are appointment columns referenced?
+	IF EXISTS (SELECT * FROM ASRSysOrganisationColumns oc
+			INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId	
+			WHERE c.tableID = @iPostAllocationTableID AND oc.OrganisationID = @piReportID)
+		SET @UseAppointment = 1;
+
+	-- Are personnel columns referenced?
+	IF EXISTS (SELECT * FROM ASRSysOrganisationColumns oc
+			INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId	
+			WHERE c.tableID = @iPersonnelTableID AND oc.OrganisationID = @piReportID)
+		SET @UsePersonnel = 1;
+
+    -- Fetch personnel table view name to build final  columns selection  and wherecondition string.
+	SELECT @sPersonnelTableViewName=v.ViewName  
+	    FROM  ASRSysOrganisationColumns oc   
+	    INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId		
+	    INNER JOIN ASRSysTables t ON c.tableID = t.tableID	
+	    INNER JOIN ASRSysViews v ON oc.ViewID = v.ViewID	   
+	    WHERE oc.OrganisationID = @piReportID AND UPPER(t.TableName) = UPPER(@sPersonnelTableName);			
 		
-	   SET @sPost_IDTemp = N'SELECT TOP 1 @sPost_ID =' + @sHierarchyIdentifierColumn + ' FROM ' + @sPostAllocationTableName +
-						   ' WHERE ID_'+ CONVERT(varchar(10),@iPersonnelTableID) +'=' + CONVERT(varchar(20),@RootID);	
-	   EXEC sp_executesql @sPost_IDTemp, N'@sPost_ID nvarchar(MAX) OUTPUT', @sPost_ID=@sPost_ID output;
-		
-	   SET @sSQL = 'WITH Emp_CTE AS (' + CHAR(13) + ' SELECT '+ @sHierarchyLevel + ',' + @sBaseViewName +'.ID AS HierarchyID' + ',' +
-					   @sBaseViewName+'.'+@sHierarchyIdentifierColumn + ',' +  @sBaseViewName+'.'+@sHierarchyReportsToColumn;	
+    -- Build a filter string based on filters selected on filter tab.
+  	SELECT @sFilterList = @sFilterList + CASE WHEN LEN(@sFilterList) > 0 THEN ' AND (' ELSE ' (' END +
+		CASE t.TableID
+			WHEN @iBaseTableId THEN 'base' WHEN @iPersonnelTableID THEN 'emp' ELSE 'app'
+			END + '.[' + c.columnName + ']' +
+		CASE WHEN c.datatype = -7 THEN /* Logic column (must be the equals operator).	*/								
+			CASE WHEN  oc.Operator = 1 THEN ' = ' + CASE WHEN  UPPER(oc.Value) = 'TRUE' THEN '1'ELSE '0' END
+			END	+ ')'
+		WHEN (c.datatype = 2) OR (c.datatype = 4)  THEN /* Numeric/Integer column. */
+			CASE oc.Operator
+				WHEN 1 THEN ' = '  + oc.Value
+				WHEN 2 THEN ' <> ' + oc.Value
+				WHEN 3 THEN ' <= ' + oc.Value
+				WHEN 4 THEN ' >= ' + oc.Value
+				WHEN 5 THEN ' > '  + oc.Value
+				WHEN 6 THEN ' < '  + oc.Value
+			END	+ ')'
+		WHEN (c.datatype = 11) THEN /* Date column. */
+			CASE
+					WHEN oc.Operator = 1 THEN CASE WHEN  LEN(oc.Value) > 0 THEN ' = '''  + oc.Value + '''' ELSE ' IS NULL' END
+					WHEN oc.Operator = 2 THEN CASE WHEN  LEN(oc.Value) > 0 THEN ' <> ''' + oc.Value + '''' ELSE ' IS NOT NULL' END
+					WHEN oc.Operator = 3 THEN CASE WHEN  LEN(oc.Value) > 0 THEN ' <= ''' + oc.Value + ''' OR ' 
+						+ CASE t.TableID WHEN @iBaseTableId THEN 'base' WHEN @iPersonnelTableID THEN 'emp' ELSE 'app' END + '.[' + c.columnName + ']'
+						+ ' IS NULL' ELSE ' IS NULL)' END
+					WHEN oc.Operator = 4 THEN CASE WHEN  LEN(oc.Value) > 0 THEN ' >= ''' + oc.Value + '''' ELSE ' IS NULL OR [' 
+						+ CASE t.TableID WHEN @iBaseTableId THEN 'base' WHEN @iPersonnelTableID THEN 'emp' ELSE 'app' END + '.[' + c.columnName + ']'
+						+ ' IS NOT NULL)' END
+					WHEN oc.Operator = 5 THEN CASE WHEN  LEN(oc.Value) > 0 THEN ' > '''  + oc.Value + '''' ELSE ' IS NOT NULL' END
+					WHEN oc.Operator = 6 THEN CASE WHEN  LEN(oc.Value) > 0 THEN ' < '''  + oc.Value + ''' OR ' 
+						+ CASE t.TableID WHEN @iBaseTableId THEN 'base' WHEN @iPersonnelTableID THEN 'emp' ELSE 'app' END + '.[' + c.columnName + ']'
+						+ ' IS NULL' ELSE ' IS NULL AND ' 
+						+ CASE t.TableID WHEN @iBaseTableId THEN 'base' WHEN @iPersonnelTableID THEN 'emp' ELSE 'app' END + '.[' + c.columnName + ']'
+						+ ' IS NOT NULL)' END
+			END	+ ')'
+		WHEN ((c.datatype <> -7) AND (c.datatype <> 2) AND (c.datatype <> 4) AND (c.datatype <> 11)) THEN /* Character/Working Pattern column. */
+			CASE
+				WHEN oc.Operator = 1 THEN CASE WHEN  LEN(oc.Value) = 0 THEN ' = '''' OR ' 
+					+ CASE t.TableID WHEN @iBaseTableId THEN 'base' WHEN @iPersonnelTableID THEN 'emp' ELSE 'app' END + '.[' + c.columnName + ']'
+					+ ' IS NULL' ELSE ' LIKE ''' + replace(replace(replace(oc.Value, '''', ''''''), '*ALL', '%'),'?', '_' ) + '''' END + ')'
+				WHEN oc.Operator = 2 THEN CASE WHEN  LEN(oc.Value) = 0 THEN ' <> '''' AND ' 
+					+ CASE t.TableID WHEN @iBaseTableId THEN 'base' WHEN @iPersonnelTableID THEN 'emp' ELSE 'app' END + '.[' + c.columnName + ']'
+					+ ' IS NOT NULL' ELSE ' NOT LIKE ''' + replace(replace(replace(oc.Value, '''', ''''''), '*ALL', '%'),'?', '_' ) + '''' END + ')'
+				WHEN oc.Operator = 7 THEN CASE WHEN  LEN(oc.Value) = 0 THEN ' IS NULL OR ' 
+					+ CASE t.TableID WHEN @iBaseTableId THEN 'base' WHEN @iPersonnelTableID THEN 'emp' ELSE 'app' END + '.[' + c.columnName + ']'
+					+ ' IS NOT NULL' ELSE ' LIKE ''%' + replace(oc.Value, '''', '''''') + '%'''  END + ')'
+				WHEN oc.Operator = 8 THEN CASE WHEN  LEN(oc.Value) = 0 THEN ' IS NULL AND ' 
+					+ CASE t.TableID WHEN @iBaseTableId THEN 'base' WHEN @iPersonnelTableID THEN 'emp' ELSE 'app' END + '.[' + c.columnName + ']'
+					+ ' IS NOT NULL' ELSE ' NOT LIKE ''%' +  replace(oc.Value, '''', '''''') + '%'''  END + ')'
+			END
+			END 
+		FROM  ASRSysOrganisationReport orpt 
+		INNER JOIN ASRSysOrganisationReportFilters oc ON orpt.ID = oc.OrganisationID
+		INNER JOIN ASRSysColumns c ON oc.FieldID = c.columnId
+		INNER JOIN ASRSysTables t  ON c.tableID = t.tableID	
+		INNER JOIN ASRSysViews v   ON  orpt.BaseViewID = v.ViewID	
+		WHERE oc.OrganisationID = @piReportID
+		ORDER BY t.TableName;
 
-
-
-       --Fetch personnel table view name to build final  columns selection  and wherecondition string.
-	   SELECT @sPersonnelTableViewName=v.ViewName  
-	      FROM  ASRSysOrganisationColumns oc   
-	      INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId		
-	      INNER JOIN ASRSysTables t ON c.tableID = t.tableID	
-	      INNER JOIN ASRSysViews v ON oc.ViewID = v.ViewID	   
-	      WHERE oc.OrganisationID = @piReportID AND UPPER(t.TableName) = UPPER(@sPersonnelTableName);			
-			
-	   IF (@sPersonnelTableViewName IS NOT NULL)
-	   BEGIN
-		   SET @sSQL = @sSQL  + ',' + @sPersonnelTableViewName+'.ID AS EmployeeID';
-	   END
-	   ELSE
-	   BEGIN
-		   SET @sSQL = @sSQL  + ', 0 AS EmployeeID';
-	   END	  
-
-      -- Build a filter string based on filters selected on filter tab.
-		DECLARE filtercolumn_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT				
-					CASE WHEN c.datatype = -7 THEN /* Logic column (must be the equals operator).	*/								
-                        CASE WHEN  oc.Operator = 1 THEN  '(' + v.ViewName + '.'+ c.ColumnName + ' = ' + CASE WHEN  UPPER(oc.Value) = 'TRUE' THEN '1'ELSE '0' END + ')'
-								END	
-						  WHEN (c.datatype = 2) OR (c.datatype = 4)  THEN /* Numeric/Integer column. */
-								CASE
-									   WHEN oc.Operator = 1 THEN '(' + v.ViewName + '.'+ c.ColumnName + ' = '  + oc.Value + ')'	/* Equals. */
-									   WHEN oc.Operator = 2	THEN '(' + v.ViewName + '.'+ c.ColumnName + ' <> ' + oc.Value	+ ')'/* Not Equal To. */
-									   WHEN oc.Operator = 3	THEN '(' + v.ViewName + '.'+ c.ColumnName + ' <= ' + oc.Value + ')'/* Less than or Equal To. */
-									   WHEN oc.Operator = 4 THEN '(' + v.ViewName + '.'+ c.ColumnName + ' >= ' + oc.Value + ')'/* Greater than or Equal To. */
-									   WHEN oc.Operator = 5 THEN '(' + v.ViewName + '.'+ c.ColumnName + ' > '  + oc.Value + ')'/* Greater than. */
-									   WHEN oc.Operator = 6 THEN '(' + v.ViewName + '.'+ c.ColumnName + ' < '  + oc.Value	+ ')'/* Less than.*/
-								END
-						 WHEN (c.datatype = 11) THEN /* Date column. */
-								CASE
-									   WHEN oc.Operator = 1 THEN '(' + v.ViewName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' = '''  + oc.Value + '''' ELSE ' IS NULL' END + ')'	
-									   WHEN oc.Operator = 2	THEN '(' + v.ViewName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' <> ''' + oc.Value + '''' ELSE ' IS NOT NULL' END + ')'	
-									   WHEN oc.Operator = 3	THEN '(' + v.ViewName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' <= ''' + oc.Value + ''' OR ' + v.ViewName + '.'+ c.ColumnName + ' IS NULL' ELSE ' IS NULL' END + ')'	
-									   WHEN oc.Operator = 4 THEN '(' + v.ViewName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' >= ''' + oc.Value + '''' ELSE ' IS NULL OR ' + v.ViewName + '.'+ c.ColumnName + ' IS NOT NULL' END + ')'	
-									   WHEN oc.Operator = 5 THEN '(' + v.ViewName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' > '''  + oc.Value + '''' ELSE ' IS NOT NULL' END + ')'	
-									   WHEN oc.Operator = 6 THEN '(' + v.ViewName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) > 0 THEN ' < '''  + oc.Value + ''' OR ' + v.ViewName + '.'+ c.ColumnName + ' IS NULL' ELSE ' IS NULL AND ' + v.ViewName + '.'+ c.ColumnName + ' IS NOT NULL' END + ')'		
-								END
-						 WHEN ((c.datatype <> -7) AND (c.datatype <> 2) AND (c.datatype <> 4) AND (c.datatype <> 11)) THEN /* Character/Working Pattern column. */
-								CASE
-									   WHEN oc.Operator = 1 THEN '(' + v.ViewName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' = '''' OR ' + v.ViewName + '.'+ c.ColumnName + ' IS NULL' ELSE ' LIKE ''' + replace(replace(replace(oc.Value, '''', ''''''), '*ALL', '%'),'?', '_' ) + '''' END + 	+ ')'									  
-									   WHEN oc.Operator = 2	THEN '(' + v.ViewName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' <> '''' AND ' + v.ViewName + '.'+ c.ColumnName + ' IS NOT NULL' ELSE ' NOT LIKE ''' + replace(replace(replace(oc.Value, '''', ''''''), '*ALL', '%'),'?', '_' ) + '''' END  	+ ')'
-									   WHEN oc.Operator = 7	THEN '(' + v.ViewName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' IS NULL OR ' + v.ViewName + '.'+ c.ColumnName + ' IS NOT NULL' ELSE ' LIKE ''%' + replace(oc.Value, '''', '''''') + '%'''  END 	+ ')'
-									   WHEN oc.Operator = 8 THEN '(' + v.ViewName + '.'+ c.ColumnName + CASE WHEN  LEN(oc.Value) = 0 THEN ' IS NULL AND ' + v.ViewName + '.'+ c.ColumnName + ' IS NOT NULL' ELSE ' NOT LIKE ''%' +  replace(oc.Value, '''', '''''') + '%'''  END  + ')'					   					   
-								END
-									
-					  END		AS WhereCondition
-			  
-			FROM  ASRSysOrganisationReport orpt 
-			INNER JOIN ASRSysOrganisationReportFilters oc ON orpt.ID = oc.OrganisationID
-			INNER JOIN ASRSysColumns c ON oc.FieldID = c.columnId
-			INNER JOIN ASRSysTables t  ON c.tableID = t.tableID	
-			INNER JOIN ASRSysViews v   ON  orpt.BaseViewID = v.ViewID	
-			WHERE oc.OrganisationID =@piReportID
-			ORDER BY t.TableName;
-
-			OPEN filtercolumn_cursor;
-					FETCH NEXT FROM filtercolumn_cursor INTO @sWhereCondition;
-					WHILE (@@fetch_status = 0)
-					BEGIN
-					IF (@sWhereCondition <> '' AND @sFilterWhereCondition ='')
-						SET @sFilterWhereCondition =+ ' AND ' +  CONVERT(varchar(MAX), @sWhereCondition);
-					ELSE IF (@sWhereCondition <> '')
-						SET @sFilterWhereCondition = @sFilterWhereCondition + ' AND ' + CONVERT(varchar(MAX), @sWhereCondition);
-
-					FETCH NEXT FROM filtercolumn_cursor INTO @sWhereCondition;
-					END
-			
-			CLOSE filtercolumn_cursor;		
-			DEALLOCATE filtercolumn_cursor;
-
-
-         -- Build a Column string based on columns selection on column tab.
-	   DECLARE columnnames_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		   SELECT	 oc.ColumnID
-				   ,c.ColumnName
-				   , t.TableName + '#' + CONVERT(varchar(MAX),t.TableID)  As TableName
-				   ,v.ViewName				   			
-		   FROM  ASRSysOrganisationColumns oc
-		   INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId		
-		   INNER JOIN ASRSysTables t ON c.tableID = t.tableID		
-		   LEFT JOIN ASRSysViews v ON oc.ViewID = v.ViewID
-		   WHERE oc.OrganisationID =@piReportID
-		   ORDER BY t.TableName;
-
-		OPEN columnnames_cursor;
-			FETCH NEXT FROM columnnames_cursor INTO @iColumnID,@sColumnName,@sTableName,@sViewName;
-			WHILE (@@fetch_status = 0)
-			BEGIN
-			
-				IF @sColumnString =''
-					BEGIN 					
-						SET @sColumnString = CASE WHEN  @sViewName IS NULL THEN CONVERT(varchar(MAX), @sTableName) ELSE CONVERT(varchar(MAX), @sViewName) END  + '.' + CONVERT(varchar(MAX), @sColumnName)+ ' AS ' + '''' + CONVERT(varchar(MAX), @sColumnName) + '**' + CONVERT(varchar(50), @iColumnID)  +'''';
-						/*For vacant post we need to fetch values of those columns which are selected from post allocation view */
-						IF @sViewName IS NOT NULL AND UPPER(@sViewName) = UPPER(@sBaseViewName)
-							SET @sVacantColumnString= @sColumnString;
-						ELSE
-							SET @sVacantColumnString= '{Replace with null} AS' + '''' + CONVERT(varchar(MAX), @sColumnName) + '**' +  CONVERT(varchar(50), @iColumnID) +''''; 
-					END
-				ELSE
-					BEGIN
-						SET @sColumnString = @sColumnString + ', ' + CASE WHEN  @sViewName IS NULL THEN CONVERT(varchar(MAX), @sTableName) ELSE CONVERT(varchar(MAX), @sViewName) END + '.' + CONVERT(varchar(MAX), @sColumnName) + ' AS ' + '''' + CONVERT(varchar(MAX), @sColumnName) + '**' +  CONVERT(varchar(50), @iColumnID) +'''';
-						IF @sViewName IS NOT NULL AND UPPER(@sViewName) = UPPER(@sBaseViewName)													
-							BEGIN							
-								SET @sVacantColumnString= @sVacantColumnString +',' + CONVERT(varchar(MAX), @sViewName) + '.' + CONVERT(varchar(MAX), @sColumnName) + ' AS ' + '''' + CONVERT(varchar(MAX), @sColumnName) + '**' +  CONVERT(varchar(50), @iColumnID) +'''';
-							END
-							ELSE
-								SET @sVacantColumnString= @sVacantColumnString +',' + '{Replace with null} AS' + '''' + CONVERT(varchar(MAX), @sColumnName) + '**' +  CONVERT(varchar(50), @iColumnID) +''''; 
-					END	
-
-				IF @sTableString = ''
-					BEGIN
-						SET @sTableString =  CASE WHEN  @sViewName IS NULL THEN CONVERT(varchar(MAX), @sTableName) ELSE CONVERT(varchar(MAX), @sViewName) END;	
-						SET @sPreviousTableName = CASE WHEN  @sViewName IS NULL THEN CONVERT(varchar(MAX), @sTableName) ELSE CONVERT(varchar(MAX), @sViewName) END;
-					END
-				ELSE
-					BEGIN				
-					IF @sPreviousTableName <> @sNextTableName				
-						SET @sTableString =  @sTableString + ', ' + CASE WHEN  @sViewName IS NULL THEN CONVERT(varchar(MAX), @sTableName) ELSE CONVERT(varchar(MAX), @sViewName) END;
-					END
-
-				SET @sPreviousTableName =  CASE WHEN  @sViewName IS NULL THEN CONVERT(varchar(MAX), @sTableName) ELSE CONVERT(varchar(MAX), @sViewName) END;
-				FETCH NEXT FROM columnnames_cursor INTO @iColumnID, @sColumnName,@sTableName,@sViewName;
-				SET @sNextTableName = CASE WHEN  @sViewName IS NULL THEN CONVERT(varchar(MAX), @sTableName) ELSE CONVERT(varchar(MAX), @sViewName) END;
-			END	
-
-
-			/* Whilst saving org def we don't have view id for selected columns which are selected from postallocation table.
-            So we are replacing postallocation table with postallocation view. for eg: 'Appointment#3' with  ASRSysCV3#APPOINTMENTS#Administrators*/        
-			SET @sColumnString =  REPLACE (@sColumnString, (@sPostAllocationTableName + '#' + CONVERT(varchar(MAX),@iPostAllocationTableID)) ,@sPostAllocationViewName);
-			SET @sTableString = REPLACE (@sTableString, (@sPostAllocationTableName + '#' + CONVERT(varchar(MAX),@iPostAllocationTableID)) ,@sPostAllocationViewName);			
-		
-
-			IF @sColumnString <> ''
-				BEGIN					
-					SET @sUnionAllSQL = REPLACE(REPLACE(@sSQL, @sHierarchyLevel ,'ecte.HierarchyLevel + 1 AS HierarchyLevel'),'WITH Emp_CTE AS (','')  + ' ,' + @sColumnString + ' FROM '+ @sTableString;
-					SET @sUnionSql= REPLACE(REPLACE(@sSQL, @sHierarchyLevel ,'0 AS HierarchyLevel'),'WITH Emp_CTE AS (','')  + ' ,' + @sColumnString + ' FROM '+ @sTableString ;
-					SET @sSQL = @sSQL  + ' ,' + @sColumnString + ' FROM '+ @sTableString ;
-				END		
-		
-			--Add postallocation view name, if no postallocation table column is in selection column list.
-			IF CHARINDEX(UPPER(@sPostAllocationViewName), UPPER(@sTableString)) = 0
-				BEGIN				
-					SET @sSQL = @sSQL  + ' ,' + @sPostAllocationViewName;
-					SET @sUnionAllSQL = @sUnionAllSQL  + ' ,' + @sPostAllocationViewName;
-					SET @sUnionSql = @sUnionSql  + ' ,' + @sPostAllocationViewName;
-				END
-			
-			--Add base view name, if no base view name column is in selection column list.
-			IF CHARINDEX(UPPER(@sBaseViewName), UPPER(@sTableString)) = 0
-				BEGIN
-					SET @sSQL = @sSQL  + ' ,' + @sBaseViewName;						
-					SET @sUnionAllSQL = @sUnionAllSQL  +  ' ,(' + @sBaseViewName 
-										+ ' INNER JOIN Emp_CTE ecte ON '+ UPPER(@sHierarchyCTEColumn) + ' = ' + @sBaseViewName + '.'+ UPPER(@sHierarchyReportsToColumn) + ')' ;
-					SET @sUnionSql = @sUnionSql  + ' ,' + @sBaseViewName;
-				END
-			ELSE IF CHARINDEX(UPPER(@sBaseViewName), UPPER(@sTableString)) > 0
-				BEGIN							
-					SET @sFromString = SUBSTRING ( @sUnionAllSQL ,CHARINDEX(' FROM ', UPPER(@sUnionAllSQL)) , LEN(@sUnionAllSQL) );
-					SET @sUnionAllSQL = REPLACE(@sUnionAllSQL, @sFromString,'');
-					SET @sFromString = REPLACE(UPPER(@sFromString) , @sBaseViewName ,' (' + @sBaseViewName + 
-										' INNER JOIN Emp_CTE ecte ON '+ UPPER(@sHierarchyCTEColumn) + ' = ' + @sBaseViewName + '.' + UPPER(@sHierarchyReportsToColumn) + ')' ) ;							
-					SET @sUnionAllSQL = @sUnionAllSQL + @sFromString;
-				END					
-			
-				
-				IF (@sPersonnelTableViewName IS NOT NULL)
-				   BEGIN						
-					   SET @sWhereConditionSql = '(' + @sPersonnelTableViewName + '.ID = ' + @sPostAllocationViewName + '.ID_'+CONVERT(varchar(10),@iPersonnelTableID)+') 
-					   AND (' + @sBaseViewName + '.ID = ' + @sPostAllocationViewName + '.ID_'+ CONVERT(varchar(10),@iHierarchyTableID)+')' 							
-				   END
-				   ELSE
-				   BEGIN					 
-					   SET @sWhereConditionSql = '(' + @sBaseViewName + '.ID = ' + @sPostAllocationViewName + '.ID_'+ CONVERT(varchar(10),@iHierarchyTableID)+')' 
-				   END
-					
-				SET @sWhereConditionSql =@sWhereConditionSql +  ' AND (' + @sPostAllocationViewName + '.' + @sPostAllocationEndDateColumn + ' IS NULL OR '  +
-					@sPostAllocationViewName + '.' + @sPostAllocationEndDateColumn +'>= ''' + CONVERT(varchar(50),@dTodayDate) + ''') AND ' +  
-					@sPostAllocationViewName + '.' + @sPostAllocationStartDateColumn + '<=' + '''' + CONVERT(varchar(50),@dTodayDate) + '''' 
-					+ @sFilterWhereCondition;
-
-				SET @sSQL = @sSQL + ' WHERE UPPER(' + @sBaseViewName+ '.' + @sHierarchyReportsToColumn + ') = ''' + UPPER(CONVERT(varchar(100),ISNULL(@sPost_ID,''))) + ''' AND ' + @sWhereConditionSql 					
-					
-				SET @sUnionAllSQL = @sUnionAllSQL + ' WHERE ' + @sWhereConditionSql
-					
-					
-				SET @sUnionSql = @sUnionSql + '  WHERE ' +  @sPostAllocationViewName + '.ID_'+ CONVERT(varchar(10),@iPersonnelTableID) +'=' + CONVERT(varchar(20),@RootID)
-								+ ' AND (' + @sBaseViewName + '.ID = ' + @sPostAllocationViewName + '.ID_'+ CONVERT(varchar(10),@iHierarchyTableID)+')' 
-				IF (@sPersonnelTableViewName IS NOT NULL) 
-					SET @sUnionSql = @sUnionSql + ' AND (' + @sPersonnelTableViewName + '.ID = ' + @sPostAllocationViewName + '.ID_'+CONVERT(varchar(10),@iPersonnelTableID)+')' 
-
-            /* Data return from @sExcludeSql is use only to check whether we have to display hierachy level 0's data or not on org report.
-					If hierachy level 0's data match filter criteria and also there is no subordinate(child) level to it then we show hierachy level 0. */
-				SET @sExcludeSql = REPLACE(@sUnionSql,'0 AS HierarchyLevel','-1 AS HierarchyLevel') 
-								+ ' AND (' + @sPostAllocationViewName + '.' + + @sPostAllocationEndDateColumn + ' IS NULL OR '  +
-									@sPostAllocationViewName + '.' + @sPostAllocationEndDateColumn +'>= ''' + CONVERT(varchar(50),@dTodayDate) + ''') AND ' +  
-									@sPostAllocationViewName + '.' + @sPostAllocationStartDateColumn + '<=' + '''' + CONVERT(varchar(50),@dTodayDate) + '''' 
-									+ CHAR(13) + @sFilterWhereCondition;
-					
-	-- We need to append in the top level node for line manager because is unlkely to be part of the base view
-	IF @insertLineManagerNode = 1
+	-- Join the associated tables
+	IF @UseAppointment = 1 OR @UsePersonnel = 1
 	BEGIN
-
-		IF @sPersonnelTableViewName IS NOT NULL
-			SET @sColumnString = REPLACE(' ' + @sColumnString, ' ' + @sPersonnelTableViewName + '.', ' pr.');
-
-		SET @sColumnString = REPLACE(' ' + @sColumnString, ' ' + @sBaseViewName + '.', ' po.');
-
-  		IF @sPostAllocationViewName IS NOT NULL
-			SET @sColumnString = REPLACE(' ' + @sColumnString, ' ' + @sPostAllocationViewName + '.', ' a.');
-
-		DECLARE @insertNodeSQL nvarchar(MAX) = '',
-			@callerName nvarchar(MAX);
-
-		EXECUTE AS CALLER;
-		SET @callerName = SUSER_NAME();
-		REVERT;
-
-		SET @sSQL = ' SELECT 0 AS HierarchyLevel, po.ID AS HierarchyID, po.Post_ID AS Post_ID, '''' AS Reports_To_Post_ID, 0 AS EmployeeID, ' +
-		  @sColumnString + '
-		  INTO #OrgLineManagerTemp
-		  FROM ' + @sPostAllocationTableName + ' a
-			  INNER JOIN ' + @sPersonnelTableName + ' pr ON pr.ID = a.ID_' + CONVERT(varchar(10), @iPersonnelTableID) + '
-			  INNER JOIN ' + @sPostTableName + ' po ON po.id = a.ID_' + CONVERT(varchar(10), @iHierarchyTableID) + '
-			  WHERE pr.id = ' + CONVERT(varchar(10), @piRootID) + ';
-
-			EXECUTE AS USER=''' + @callerName + ''';
-			' + @sSQL + 'UNION ALL SELECT * FROM #OrgLineManagerTemp'
-
-
+		SET @sJoinList = ' LEFT JOIN ' + @sPostAllocationViewName + ' app ON app.ID_' + convert(varchar(10), @iPostTableID) + ' = base.ID' +
+			' AND (app.' + @sPostAllocationEndDateColumn + ' IS NULL OR '  +
+			'app.' + @sPostAllocationEndDateColumn +'>= ''' + CONVERT(varchar(50),@dTodayDate) + ''') AND ' +  
+			'app.' + @sPostAllocationStartDateColumn + '<=' + '''' + CONVERT(varchar(50),@dTodayDate) + '''';
 	END
 
-					
-				SET @sFinalOrgReportSql =   @sSQL + CHAR(13) + ' UNION ALL '	+ CHAR(13) + @sUnionAllSQL	+ ')' 
-									+ CHAR(13) +' SELECT * INTO #OrgReportTemp FROM ( '
-									+ CHAR(13) +' SELECT p.* FROM Emp_CTE p' + CHAR(13)
-									+ 'UNION ' + @sUnionSql + CHAR(13)
-									+ ') orgRpt'  + CHAR(13)
-                           /* Query for fetching vacant post */
-									+ ' SELECT * INTO #NoAppointmentForPostID  FROM ( '+ CHAR(13) + 'SELECT DISTINCT  ot.HierarchyLevel,ot.'+@sReportsToPostIDColumn+' FROM #OrgReportTemp  ot WHERE ot.'+@sReportsToPostIDColumn+' IN' + CHAR(13)+ '( ' + CHAR(13)
-									+ ' SELECT ' + @sHierarchyReportsToColumn + ' FROM ' + @sBaseViewName 
-									+ CHAR(13) + ' WHERE '+ @sHierarchyIdentifierColumn + ' NOT IN ( Select ' + @sPostAllocationViewName + '.' + @sHierarchyIdentifierColumn + ' FROM ' + @sPostAllocationViewName +' ))' + CHAR(13)+')a'
-                           + CHAR(13) +' INSERT INTO #OrgReportTemp '+ CHAR(13)
-									+ CHAR(13) + ' SELECT nafp.' + REPLACE(@sHierarchyLevel,'1 AS ', '') + ', 0 AS HierarchyID,' + @sBaseViewName +'.' + @sHierarchyIdentifierColumn + ',' + @sBaseViewName +'.' + @sHierarchyReportsToColumn + ',0,'+  REPLACE(@sVacantColumnString,'{Replace with null}','NULL')										
-									+ CHAR(13) + ' FROM ' + @sBaseViewName  + ' INNER JOIN #NoAppointmentForPostID nafp ON nafp.'+@sReportsToPostIDColumn +'='+ @sBaseViewName +'.'+ @sReportsToPostIDColumn
-									+ CHAR(13) + ' WHERE '+ @sHierarchyIdentifierColumn + ' NOT IN ( Select ' + @sPostAllocationViewName + '.' + @sHierarchyIdentifierColumn + ' FROM ' + @sPostAllocationViewName +' )'
-                           /* End of fetching vacant post */
-									+ CHAR(13) + ' SELECT 0 AS IsGhostNode, 0 AS IsFilteredNode, * FROM #OrgReportTemp  ORDER BY  hierarchylevel, ' + REPLACE(@sHierarchyReportsToColumn,@sHierarchyTableName+'.','');			
-				
-	EXEC sp_executeSQL @sFinalOrgReportSql;
+	IF @UsePersonnel = 1
+		SET @sJoinList = @sJoinList + ' LEFT JOIN ' + @sPersonnelTableViewName + ' emp ON emp.ID = app.ID_' + CONVERT(varchar(10), @iPersonnelTableID);
+
+	-- Selecting columns
+	SELECT @sColumnList = @sColumnList + ', ' + CASE t.TableID WHEN @iBaseTableId THEN 'base' WHEN @iPersonnelTableID THEN 'emp' ELSE 'app' END
+		+ '.[' + c.ColumnName + '] AS [' + c.ColumnName + '**' + convert(varchar(8), oc.ColumnID) + ']' + CHAR(13)
+		FROM ASRSysOrganisationColumns oc
+		INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId
+		INNER JOIN ASRSysTables t ON t.TableID = c.tableID
+		WHERE oc.OrganisationID = @piReportID
+		ORDER BY oc.ColumnID;
+
+	-- Ordering report
+	SELECT @sOrderCondition = @sOrderCondition + ', [' + c.ColumnName + '**' + convert(varchar(8), oc.ColumnID) + ']'
+		FROM ASRSysOrganisationColumns oc
+		INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId
+		WHERE oc.OrganisationID = @piReportID AND c.datatype <> -3;
+
+
+	EXECUTE AS CALLER;
+	SET @sSQL = 'SELECT 0, ID, '
+		+  @sHierarchyIdentifierColumn + ', ' + @sHierarchyReportsToColumn + 
+		+ ' FROM ' + @sBaseViewName;
+	INSERT @allNodes (IsGhostNode, EmployeeID, Staff_Number, Reports_To_Staff_Number)
+		EXECUTE sp_executeSQL @sSQL;
+	REVERT;
+
+	-- Generate all the missing nodes (manager records that exist but are not contained in the selected base view)
+	SET @sSQL = 'SELECT DISTINCT 1, nodes.Reports_To_Staff_Number, pr.' + @sHierarchyReportsToColumn + ' , ISNULL(pr.ID, 0) 
+				 FROM @allNodes nodes
+				 LEFT JOIN ' + @sPostTableName + ' pr ON pr.' + @sHierarchyIdentifierColumn + ' = nodes.Reports_To_Staff_Number
+				 WHERE nodes.Reports_To_Staff_Number NOT IN (SELECT Staff_Number FROM @allNodes)
+					AND nodes.EmployeeID <> ' + convert(varchar(10), @topLevelPostID);
+
+	WHILE 1=1
+	BEGIN
+
+		INSERT @ghostNodes (IsGhostNode, Staff_Number, Reports_To_Staff_Number, EmployeeID)
+			EXECUTE sp_executeSQL @sSQL, N'@allNodes OrgChartRelation READONLY, @topLevelPostID int', @allNodes=@allNodes, @topLevelPostID=@topLevelPostID;
+
+		SELECT TOP 1 @topLevelPostID = EmployeeID FROM @ghostNodes;
+		INSERT @allNodes
+			SELECT * FROM @ghostNodes
+
+		IF @@ROWCOUNT < 2
+			BREAK;
+	END
+
+
+	-- Calculate the hierarchy levels
+	DECLARE @outputNodes OrgChartRelation;
+	WITH posts AS (	
+		SELECT [IsGhostNode], 0 HierarchyLevel
+			, [Staff_Number]
+			, [EmployeeID]
+			, [Reports_To_Staff_Number]	
+		FROM @allNodes WHERE EmployeeID = @topLevelPostID
+		UNION ALL
+		SELECT nodes.IsGhostNode
+			, subs.HierarchyLevel + 1
+			, nodes.[Staff_Number]
+			, nodes.EmployeeID
+			, nodes.[Reports_To_Staff_Number]
+		FROM @allNodes nodes
+			INNER JOIN posts subs ON subs.[Staff_Number] = nodes.Reports_To_Staff_Number )	
+	INSERT @outputNodes (IsGhostNode, ManagerRoot, HierarchyLevel, EmployeeID, Staff_Number, Reports_To_Staff_Number)
+		SELECT DISTINCT IsGhostNode
+			,@topLevelPostID AS ManagerRoot, HierarchyLevel, EmployeeID, Staff_Number, Reports_To_Staff_Number
+		FROM posts p;
+
+
+	IF LEN(@sFilterList) > 0
+		SET @sFilterList = 'CASE WHEN ' + REPLACE(@sFilterList, CHAR(39), CHAR(39)) + ' THEN 0 ELSE 1 END';
+	ELSE
+		SET @sFilterList = '0';
+
+	-- Merge in the selected data columns
+	SET @sSQL = 'SELECT CASE WHEN app.ID IS NULL THEN 1 ELSE 0 END AS IsPostVacant, nodes.IsGhostNode, nodes.HierarchyLevel, nodes.EmployeeID AS HierarchyID, nodes.Staff_Number AS Post_ID, nodes.Reports_To_Staff_Number AS Reports_To_Post_ID
+		, nodes.EmployeeID ' 
+		+ @sColumnList	
+		+ ', ' + @sFilterList + ' AS [IsFilteredNode] '
+		+ ' FROM ' + @sBaseViewName + ' base '
+		+ @sJoinList
+		+ ' RIGHT JOIN @outputNodes nodes ON nodes.EmployeeID = base.id '
+		+ ' ORDER BY HierarchyLevel ASC ' + @sOrderCondition;
+
+	EXECUTE AS CALLER;
+		EXEC sp_executesql @sSQL,  N'@outputNodes OrgChartRelation READONLY, @piRootID int'
+		, @outputNodes=@outputNodes, @piRootID = @piRootID;
+	REVERT;
+
 	SELECT 'unused table?';
 		
-		IF OBJECT_ID('tempdb..#OrgReportTemp') IS NOT NULL
-		BEGIN
-			DROP TABLE #NoAppointmentForPostID;
-			DROP TABLE #OrgReportTemp;
-		END  
-		CLOSE columnnames_cursor;		
-		DEALLOCATE columnnames_cursor;
 
 END
