@@ -124,6 +124,8 @@ function InitialiseWindow() {
 		jQuery("img[src^='Image.ashx'], span:not([id]), span[id^='ctl']").css("pointer-events", "none");
       //Exclude span element children from change as e.g. checkboxes are rendered in spans
 		jQuery("span:not([id])").children().css("pointer-events", "auto");
+	   //Exclude overrideWarnings link
+		jQuery("span[id='overrideWarning']").children().css("pointer-events", "auto");
 
 	}
 	catch (e) { }
@@ -439,7 +441,8 @@ function showMessage() {
 	jQuery("img[src^='Image.ashx'], span:not([id]), span[id^='ctl']").css("pointer-events", "none");
    //Exclude span element children from change as e.g. checkboxes are rendered in spans
 	jQuery("span:not([id])").children().css("pointer-events", "auto");
-
+   //Exclude overrideWarnings link
+	jQuery("span[id='overrideWarning']").children().css("pointer-events", "auto");
 
 }
 
