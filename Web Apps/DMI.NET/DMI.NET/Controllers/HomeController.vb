@@ -6003,7 +6003,7 @@ Namespace Controllers
             End If
 
          Catch ex As Exception
-            responseMessage = New ErrMsgJsonAjaxResponse() With {.ErrorMessage = "Some problem occured during columns security checks. Please contact your administrator." & vbNewLine}
+            responseMessage = New ErrMsgJsonAjaxResponse() With {.ErrorMessage = "A problem occurred checking column security. Please contact your administrator." & vbNewLine}
             objErrorLog.AddHeader(EventLog_Type.eltOrgReporting, Session("utilname"))
             objErrorLog.ChangeHeaderStatus(EventLog_Status.elsFailed)
             objErrorLog.AddDetailEntry(responseMessage.ErrorMessage)
@@ -6087,6 +6087,8 @@ Namespace Controllers
                   ElseIf CInt(objRow("EmployeeID")) = iLoggedInUser Then
                      additionalClasses &= " ui-state-highlight"
                   Else
+                     additionalClasses &= " ui-state-default"
+
                      If IsFilteredNode = True AndAlso IsGhostNode = True Then
                         ' Add CSS Classes for ghost nodes.
                         additionalClasses &= " ghostNode"
@@ -6096,8 +6098,6 @@ Namespace Controllers
                      ElseIf IsGhostNode = True Then
                         ' Add CSS Classes for ghost nodes.
                         additionalClasses &= " ghostNode"
-                     Else
-                        additionalClasses &= " ui-state-default"
                      End If
                   End If
 
