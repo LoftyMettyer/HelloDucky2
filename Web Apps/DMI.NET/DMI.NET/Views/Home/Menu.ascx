@@ -440,11 +440,16 @@
 		</div>
 </div>
 <div class="ui-dialog-titlebar ui-widget-header" style="min-width:300px; font-size: 14pt; font-weight: normal; padding: 2px;">
-	<div style="width:300px;">
-		Search : <input id="menuSearch" style="font-size: small;width:50%" type="text" />
-		<img id="ReportsAndMailMergeSearch" class="searchBoxIcons ui-corner-all" src="<%: Url.Content("~/Scripts/officebar/winkit/Document Find-WF.png")%>" title="Run Report/Mail Merge" />
-		<img id="MenuItemSearch" class="searchBoxIcons ui-corner-all" src="<%: Url.Content("~/Scripts/officebar/winkit/Data-Find.png")%>" title="Menu" />
+	<div class="menuSearchTools" style="width:300px;">
+      <span>Search :
+         <input id="menuSearch" style="font-size: small; width: 50%" type="text" />
+         <span class="searchBoxIconToolbar">
+            <button id="MenuItemSearch" class="searchBoxIcons" title="Menu"><i class="icon-indent-right"></i></button>
+            <button id="ReportsAndMailMergeSearch" class="searchBoxIcons" title="Run Report/Mail Merge"><i class="icon-file-text"></i></button>
+         </span>
+      </span>
 	</div>
+   
 </div>
 <div class="accessibility ui-accordion-header ui-helper-reset ui-state-default ui-corner-all">
 	<ul>
@@ -473,12 +478,13 @@
 		});
 
 		// Set Accordian menu search ON by default
-		$('#MenuItemSearch').addClass('searchBoxActiveIcon');
+		$('#MenuItemSearch').addClass('ui-state-active searchBoxActiveIcon');
 
 	}
 
 	$(document).ready(function() {
-		setTimeout("documentReady()", 500);
+	   setTimeout("documentReady()", 500);
+	   $(".searchBoxIconToolbar").controlgroup();
 	});
 
 
@@ -503,9 +509,9 @@
 
 	// Switch the search selection betweeen Menu and Run Reports & Mail Merge
 	$(".searchBoxIcons").click(function () {
-		$("#menuSearch")[0].value = "";
-		$(".searchBoxIcons").removeClass('searchBoxActiveIcon');
-		$(this).addClass('searchBoxActiveIcon');
+	   $("#menuSearch")[0].value = "";	   
+	   $(".searchBoxIcons").removeClass('searchBoxActiveIcon ui-state-active');
+	   $(this).addClass('ui-state-active searchBoxActiveIcon');
 	});
 	
 </script>
