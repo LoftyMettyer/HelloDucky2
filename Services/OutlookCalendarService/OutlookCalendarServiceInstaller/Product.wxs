@@ -29,8 +29,8 @@
       <Property Id="ARPPRODUCTICON" Value="Application_Icon" />
 
       <!-- Set some properties for the MSI installer -->
-      <Property Id="ARPHELPLINK">http://webfirst.advancedcomputersoftware.com</Property> <!-- This property appears as the "Help link" in the "Programs and Features" Windows screen -->
-      <Property Id="ARPURLINFOABOUT">http://www.advancedcomputersoftware.com/abs</Property> <!-- This property appears as the "Support link" in the "Programs and Features" Windows screen -->
+		<Property Id="ARPHELPLINK">https://customers.oneadvanced.com</Property> <!-- This property appears as the "Help link" in the "Programs and Features" Windows screen -->
+		<!--<Property Id="ARPURLINFOABOUT">http://www.advancedcomputersoftware.com/abs</Property> --><!-- This property appears as the "Support link" in the "Programs and Features" Windows screen -->
 
       <!-- Define the directory structure -->
       <Directory Id="TARGETDIR" Name="SourceDir">
