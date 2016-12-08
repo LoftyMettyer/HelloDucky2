@@ -177,26 +177,30 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
     strOutput = vbNullString
     
     iEndColumn = UBound(strArray, 1)
-'    If mblnDisableSeparatorInHeaderAndFooter And lngGridRow = 0 Then
-'      iEndColumn = 0
-'    End If
+         
+    If mblnDisableSeparatorInHeaderAndFooter And lngGridRow = 0 Then
+      strOutput = strArray(lngGridCol, lngGridRow)
+         
+    Else
     
-    For lngGridCol = 0 To iEndColumn
-      
-      strTemp = strArray(lngGridCol, lngGridRow)
-
-      blnQuoteRequired = InStr(strTemp, Chr(34))
-      If mstrDelim <> vbNullString Then
-        blnQuoteRequired = (blnQuoteRequired Or (InStr(strTemp, mstrDelim) > 0 And Not mblnDisableDelimiterCheck))
-      End If
-
-      If mblnQuotes Or blnQuoteRequired Then
-        strTemp = Chr(34) & Replace(strTemp, String(1, 34), String(2, 34)) & Chr(34)
-      End If
-
-      strOutput = IIf(lngGridCol > 0, strOutput & mstrDelim, "") & strTemp
-
-    Next
+      For lngGridCol = 0 To iEndColumn
+        
+        strTemp = strArray(lngGridCol, lngGridRow)
+  
+        blnQuoteRequired = InStr(strTemp, Chr(34))
+        If mstrDelim <> vbNullString Then
+          blnQuoteRequired = (blnQuoteRequired Or (InStr(strTemp, mstrDelim) > 0 And Not mblnDisableDelimiterCheck))
+        End If
+  
+        If mblnQuotes Or blnQuoteRequired Then
+          strTemp = Chr(34) & Replace(strTemp, String(1, 34), String(2, 34)) & Chr(34)
+        End If
+  
+        strOutput = IIf(lngGridCol > 0, strOutput & mstrDelim, "") & strTemp
+  
+      Next
+    
+    End If
     
     If gobjProgress.Visible And gobjProgress.Cancelled Then
       mstrErrorMessage = "Cancelled by User"

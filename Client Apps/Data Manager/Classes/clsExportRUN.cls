@@ -3717,7 +3717,7 @@ Private Function SendArrayToOutputOptions()
         objOutput.EncloseInQuotes = mblnExportQuotes
         If Not mblnNoRecords Then
           objOutput.DisableDelimiterCheck = False
-          objOutput.DisableSeparatorInHeaderAndFooter = (mintExportHeader <> 1)
+          objOutput.DisableSeparatorInHeaderAndFooter = False
           objOutput.UpdateProgressPerRow = True
           objOutput.DataArray aryOutputData
           objOutput.UpdateProgressPerRow = False
@@ -3726,6 +3726,7 @@ Private Function SendArrayToOutputOptions()
   
         If mblnFooter Then
           objOutput.DisableDelimiterCheck = True
+          objOutput.DisableSeparatorInHeaderAndFooter = (mintExportFooter <> 1)
           objOutput.DataArray mstrArrayFooter
         End If
   
