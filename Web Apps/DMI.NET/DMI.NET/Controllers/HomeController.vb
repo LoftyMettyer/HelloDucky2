@@ -6013,6 +6013,7 @@ Namespace Controllers
          Return Json(responseMessage)
       End Function
 
+      
       Private Function LoadDataForOrganisationReport(IsPostBasedSystem As Boolean) As List(Of OrgReportChartNode)
 
          Dim iLoggedInUser As Integer = CInt(CleanNumeric(Session("LoggedInUserRecordID")))
@@ -6081,11 +6082,11 @@ Namespace Controllers
 
                   additionalClasses = " ui-corner-all"
 
-                  ' highlight the current user's node
+                  ' Jump to the current user's node
                   If CInt(objRow("EmployeeID")) = iLoggedInUser AndAlso IsFilteredNode = True Then
-                     additionalClasses &= " ui-state-highlight filteredNode" 'Add CSS Classes for filtered nodes (runtime filters) if it is current user's node.
+                     additionalClasses &= " currentNode filteredNode" 'Add CSS Classes for filtered nodes (runtime filters) if it is current user's node.
                   ElseIf CInt(objRow("EmployeeID")) = iLoggedInUser Then
-                     additionalClasses &= " ui-state-highlight"
+                     additionalClasses &= " currentNode"
                   Else
                      additionalClasses &= " ui-state-default"
 
@@ -6169,12 +6170,13 @@ Namespace Controllers
                      IsActAsGhostNode = False
                   End If
 
-                  Dim orgReportObj
+                  Dim orgReportObj As OrgReportChartNode
 
                   If (IsPostBasedSystem) Then
                      orgReportObj = New OrgReportChartNode() With {
-                               .EmployeeID = CInt(objRow("HierarchyID")),
+                               .EmployeeID = CInt(objRow("EmployeeID")),
                                .PostID = CInt(objRow("HierarchyID")),
+                               .IsVacantPost = CBool(objRow("IsVacantPost")),
                                .EmployeeStaffNo = objRow("Post_ID").ToString().Replace(" ", "_"),
                                .LineManagerStaffNo = objRow("Reports_To_Post_ID").ToString().Replace(" ", "_"),
                                .HierarchyLevel = CInt(objRow("HierarchyLevel")),
@@ -6211,33 +6213,22 @@ Namespace Controllers
                   Dim postList = orgCharts.OrderBy(Function(s) s.EmployeeStaffNo) _
                                                 .GroupBy(Function(a) a.EmployeeStaffNo) _
                                                 .Select(Function(x) New OrgReportChartNode() With
-                                                                    {
-                                                                        .EmployeeStaffNo = x.Key,
-                                                                        .PostWiseNodeList = x.ToList()
-                                                                    }).ToList()
+                                                         {
+                                                            .EmployeeStaffNo = x.Key,
+                                                            .PostWiseNodeList = x.ToList()
+                                                         }).ToList()
 
                   For Each item As OrgReportChartNode In postList
-                     'For Vacant
-                     'When there is only one employee data available and its EmployeeID is Zero Then it is considered as Vacant
-                     If IsDBNull(item.PostWiseNodeList) = False AndAlso item.PostWiseNodeList.Count = 1 Then
-                        Dim firstEmp = item.PostWiseNodeList.FirstOrDefault()
-                        If firstEmp.EmployeeID = 0 Then
-                           item.IsVacantPost = True
-                           If (IsDBNull(firstEmp.ReportColumnItemList) = False AndAlso firstEmp.ReportColumnItemList.Count > 0) Then
-                              For Each column In firstEmp.ReportColumnItemList.Where(Function(s) s.TableID <> SettingsConfig.Hierarchy_TableID)
-                                 column.ColumnTitle = String.Empty
 
-                                 If (column.DataType <> ColumnDataType.sqlVarBinary) Then
-                                    column.ColumnValue = String.Empty
-                                 Else
-                                    column.ColumnValue = "../Content/images/vacant-post.png"
-                                 End If
-                              Next
-                           End If
-                        End If
-                     End If
+                     'For Each node In item.PostWiseNodeList.Where(Function(n) n.IsVacantPost)
+                     '   For Each column In node.ReportColumnItemList.Where(Function(s) s.TableID <> SettingsConfig.Post_TableID)
+                     '      If (column.DataType = ColumnDataType.sqlVarBinary) Then
+                     '         column.ColumnValue = "../Content/images/vacant-post.png"
+                     '      End If
+                     '   Next
+                     'Next
 
-                     'Set all Node related columns from first employee object.
+                     ' Set all Node related columns from first employee object.
                      If IsDBNull(item.PostWiseNodeList) = False AndAlso item.PostWiseNodeList.Count > 0 Then
                         Dim firstEmp = item.PostWiseNodeList.FirstOrDefault()
 
@@ -6252,6 +6243,7 @@ Namespace Controllers
                   orgCharts = postList.OrderBy(Function(s) s.HierarchyLevel).ToList()
                End If
 #End Region
+
             End If
 
          Catch ex As SqlException
@@ -6275,7 +6267,7 @@ Namespace Controllers
          Return orgCharts
 
       End Function
-
+      
       Friend Function ProcessColumnsForOrgReport(Columns As List(Of ReportColumnItem), IsPostBasedSystem As Boolean, Optional IsActAsGhostNode As Boolean = False) As List(Of ReportColumnItem)
          Dim space As String = " "
          Dim count As Integer

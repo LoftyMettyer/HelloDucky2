@@ -18,7 +18,7 @@ Namespace Models
         Public Property NodeTypeClass() As String
         Public Property PostTitle() As String
         Public Property PostWiseNodeList As New List(Of OrgReportChartNode)
-        Public Property IsVacantPost() As Boolean = False
+        Public Property IsVacantPost As Boolean
         Public Property PostID As Integer
 
     End Class

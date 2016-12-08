@@ -106,8 +106,8 @@
          });
 
          //Add a class to collapse all peer trees.
-         $("#org li.ui-state-highlight").siblings().addClass("collapsed");
-         $("#org li.ui-state-highlight").parents('li').siblings().addClass("collapsed");
+         $("#org li.currentNode").siblings().addClass("collapsed");
+         $("#org li.currentNode").parents('li').siblings().addClass("collapsed");
 
          $('#workframe').attr('overflow', 'auto');
 
@@ -198,11 +198,11 @@
       try {
 
          //If not highlighted node found  then return.
-         if($("#chart .ui-state-highlight").length ==0){
+         if($("#chart .currentNode").length ==0){
             return;
          }
 
-         var classToCentre = '#chart .ui-state-highlight';
+         var classToCentre = '#chart .currentNode';
          var menuWidth = 0;
          if (!window.menu_isSSIMode()) menuWidth = $('#menuframe').width();
          var workframe = $('#workframeset');

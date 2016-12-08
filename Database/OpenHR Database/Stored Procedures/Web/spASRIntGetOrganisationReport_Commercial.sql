@@ -179,7 +179,7 @@ BEGIN
 
 
 	-- Merge in the selected data columns
-	SET @sSQL = 'SELECT 0 AS IsPostVacant, nodes.* ,' 
+	SET @sSQL = 'SELECT 0 AS IsVacantPost, nodes.* ,' 
 	+ @sFilterList + ' AS [IsFilteredNode]'
 	+ @sColumnList
 	+ ' FROM ' +  @sBaseViewName + ' base

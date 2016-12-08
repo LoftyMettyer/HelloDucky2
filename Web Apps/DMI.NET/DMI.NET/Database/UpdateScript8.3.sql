@@ -62328,7 +62328,7 @@ BEGIN
 
 
 	-- Merge in the selected data columns
-	SET @sSQL = 'SELECT 0 AS IsPostVacant, nodes.* ,' 
+	SET @sSQL = 'SELECT 0 AS IsVacantPost, nodes.* ,' 
 	+ @sFilterList + ' AS [IsFilteredNode]'
 	+ @sColumnList
 	+ ' FROM ' +  @sBaseViewName + ' base
@@ -62389,8 +62389,9 @@ BEGIN
 			@sJoinList						nvarchar(MAX) = '',
 			@sWhereCondition				varchar(MAX)  = '',
 			@sOrderCondition				nvarchar(MAX) = '',
-			@sVacantPost					nvarchar(MAX) = '0 AS IsPostVacant',
-			@dTodayDate						datetime = DATEADD(dd, 0, DATEDIFF(dd, 0,  getdate())),
+			@sVacantPost					nvarchar(MAX) = '0 AS IsVacantPost',
+			@sEmployeeInfo					nvarchar(MAX) = '0 AS EmployeeID',
+			@sTodayDate						varchar(50) = CONVERT(varchar(50),DATEADD(dd, 0, DATEDIFF(dd, 0,  getdate()))),
 			@sPersonnelTableName			varchar(MAX),
 			@iPersonnelTableID				integer,			 
 			@sPostTableName					varchar(MAX),
@@ -62406,7 +62407,6 @@ BEGIN
 			@iHierarchyTableID				integer,
 			@iPostAllocationTableID			integer,
 			@sPersonnelTableViewName		varchar(max),
-			@sVacantColumnString			varchar(MAX) = '',
 			@UseAppointment					bit = 0,
 			@UsePersonnel					bit = 0;
 	DECLARE @allNodes OrgChartRelation,
@@ -62546,10 +62546,13 @@ BEGIN
 	BEGIN
 		SET @sJoinList = ' LEFT JOIN ' + @sPostAllocationViewName + ' app ON app.ID_' + convert(varchar(10), @iPostTableID) + ' = base.ID' +
 			' AND (app.' + @sPostAllocationEndDateColumn + ' IS NULL OR '  +
-			'app.' + @sPostAllocationEndDateColumn +'>= ''' + CONVERT(varchar(50),@dTodayDate) + ''') AND ' +  
-			'app.' + @sPostAllocationStartDateColumn + '<=' + '''' + CONVERT(varchar(50),@dTodayDate) + '''';
-		SET @sVacantPost = 'CASE WHEN app.ID IS NULL THEN 1 ELSE 0 END AS IsPostVacant'
+			'app.' + @sPostAllocationEndDateColumn +'>= ''' + @sTodayDate + ''') AND ' +  
+			'ISNULL(app.' + @sPostAllocationStartDateColumn + ', ''' + @sTodayDate + ''') <=' + '''' + @sTodayDate + '''';
+		SET @sVacantPost = 'CASE WHEN app.ID_' + CONVERT(varchar(10), @iPersonnelTableID) + ' = 0 OR app.ID IS NULL THEN 1 ELSE 0 END AS IsVacantPost';
+		SET @sEmployeeInfo = 'ISNULL(emp.ID, 0) AS EmployeeID';
+
 	END
+
 
 	IF @UsePersonnel = 1
 		SET @sJoinList = @sJoinList + ' LEFT JOIN ' + @sPersonnelTableViewName + ' emp ON emp.ID = app.ID_' + CONVERT(varchar(10), @iPersonnelTableID);
@@ -62592,6 +62595,7 @@ BEGIN
 			EXECUTE sp_executeSQL @sSQL, N'@allNodes OrgChartRelation READONLY, @topLevelPostID int', @allNodes=@allNodes, @topLevelPostID=@topLevelPostID;
 
 		SELECT TOP 1 @topLevelPostID = EmployeeID FROM @ghostNodes;
+
 		INSERT @allNodes
 			SELECT * FROM @ghostNodes
 
@@ -62629,8 +62633,8 @@ BEGIN
 	
 
 	-- Merge in the selected data columns
-	SET @sSQL = 'SELECT ' + @sVacantPost + ', nodes.IsGhostNode, nodes.HierarchyLevel, nodes.EmployeeID AS HierarchyID, nodes.Staff_Number AS Post_ID, nodes.Reports_To_Staff_Number AS Reports_To_Post_ID
-		, nodes.EmployeeID ' 
+	SET @sSQL = 'SELECT ' + @sVacantPost + ', nodes.IsGhostNode, nodes.HierarchyLevel, nodes.EmployeeID AS HierarchyID, nodes.Staff_Number AS Post_ID, nodes.Reports_To_Staff_Number AS Reports_To_Post_ID, '
+		+ @sEmployeeInfo
 		+ @sColumnList	
 		+ ', ' + @sFilterList + ' AS [IsFilteredNode] '
 		+ ' FROM ' + @sBaseViewName + ' base '
