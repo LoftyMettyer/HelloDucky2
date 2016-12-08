@@ -62397,13 +62397,13 @@ BEGIN
 			@sPostTableName					varchar(MAX),
 			@iPostTableID					integer,
 			@sPostAllocationTableName		varchar(MAX),
-            @sPostAllocationViewName		varchar(MAX),
+         @sPostAllocationViewName		varchar(MAX),
 			@sHierarchyIdentifierColumn		varchar(MAX),
 			@sHierarchyReportsToColumn		varchar(MAX),
 			@sPostAllocationStartDateColumn	varchar(MAX),
 			@sPostAllocationEndDateColumn	varchar(MAX),
 			@iBaseTableId					integer,
-            @sBaseViewName					varchar(MAX),
+         @sBaseViewName					varchar(MAX),
 			@iHierarchyTableID				integer,
 			@iPostAllocationTableID			integer,
 			@sPersonnelTableViewName		varchar(max),
@@ -62549,13 +62549,14 @@ BEGIN
 			'app.' + @sPostAllocationEndDateColumn +'>= ''' + @sTodayDate + ''') AND ' +  
 			'ISNULL(app.' + @sPostAllocationStartDateColumn + ', ''' + @sTodayDate + ''') <=' + '''' + @sTodayDate + '''';
 		SET @sVacantPost = 'CASE WHEN app.ID_' + CONVERT(varchar(10), @iPersonnelTableID) + ' = 0 OR app.ID IS NULL THEN 1 ELSE 0 END AS IsVacantPost';
-		SET @sEmployeeInfo = 'ISNULL(emp.ID, 0) AS EmployeeID';
 
 	END
 
-
 	IF @UsePersonnel = 1
+	BEGIN
 		SET @sJoinList = @sJoinList + ' LEFT JOIN ' + @sPersonnelTableViewName + ' emp ON emp.ID = app.ID_' + CONVERT(varchar(10), @iPersonnelTableID);
+		SET @sEmployeeInfo = 'ISNULL(emp.ID, 0) AS EmployeeID';
+	END
 
 	-- Selecting columns
 	SELECT @sColumnList = @sColumnList + ', ' + CASE t.TableID WHEN @iBaseTableId THEN 'base' WHEN @iPersonnelTableID THEN 'emp' ELSE 'app' END
