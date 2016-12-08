@@ -30,7 +30,7 @@
       pointer-events: auto !important;
    }
 
-   .ghostNode > div {
+   .ghostNode > div:first-child {
       background: url("../Content/images/ghostNodeImage.jpg");
       background-repeat: no-repeat;
       background-position: center;
