@@ -24,7 +24,7 @@ Namespace App_Start
          ' JQuery UI
          bundles.Add(New ScriptBundle("~/bundles/jQueryUI7").Include(
             "~/Scripts/jquery-{version}.js",
-            "~/Scripts/jquery-ui-{version}.js",
+            "~/Scripts/jquery-ui-{version}_MODIFIED.js",
             "~/Scripts/jquery.jqGrid.js",
             "~/Scripts/jquery.jqGrid.setColWidth.js",
             "~/Scripts/jquery/grid.locale-en.js",
