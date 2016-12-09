@@ -89,14 +89,17 @@ Public Class MvcApplication
 
       Session("ui-dynamic-themes") = arrThemes
 
-      ' get the TILES theme out of web config.
-      Session("ui-tiles-theme") = ApplicationSettings.UI_Tiles_Theme
-      If Session("ui-tiles-theme") Is Nothing Or Len(Session("ui-tiles-theme")) <= 0 Then Session("ui-tiles-theme") = "start"
+      ' TFS Bug 25298 - Hard code the tiles theme to match new branding
+      '' get the TILES theme out of web config.
+      'Session("ui-tiles-theme") = ApplicationSettings.UI_Tiles_Theme
+      'If Session("ui-tiles-theme") Is Nothing Or Len(Session("ui-tiles-theme")) <= 0 Then Session("ui-tiles-theme") = "start"
 
-      ' Check for a valid themename, then default to start if not valid.
-      If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-tiles-theme").ToString() & "/jquery-ui.min.css")) Then
-         Session("ui-tiles-theme") = "start"
-      End If
+      '' Check for a valid themename, then default to start if not valid.
+      'If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-tiles-theme").ToString() & "/jquery-ui.min.css")) Then
+      '   Session("ui-tiles-theme") = "start"
+      'End If
+
+      Session("ui-tiles-theme") = "oneAdvanced"
 
       ' get the WIREFRAME theme out the web config.
       Session("ui-wireframe-theme") = ApplicationSettings.UI_Wireframe_Theme
