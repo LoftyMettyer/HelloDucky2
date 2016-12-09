@@ -186,7 +186,7 @@ BEGIN
 			RIGHT JOIN @allNodes nodes ON nodes.EmployeeID = base.id 
 			WHERE EmployeeID <> @piRootID
 		UNION
-		SELECT nodes.* ,' 
+		SELECT 0 AS IsVacantPost, nodes.* ,' 
 		+ @sFilterList + ' AS [IsFilteredNode]'
 		+ @sColumnList	
 		+ ' FROM ' + @singleRecordViewName + ' base 
