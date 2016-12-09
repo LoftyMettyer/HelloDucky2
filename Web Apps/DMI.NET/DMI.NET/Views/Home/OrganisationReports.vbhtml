@@ -31,7 +31,7 @@
    }
 
    .ghostNode > div:first-child {
-      background: url("../Content/images/ghostNodeImage.jpg");
+      background: url("../Content/images/ghostNodeImage.png");
       background-repeat: no-repeat;
       background-position: center;
    }
@@ -465,7 +465,7 @@
          newWin.document.write('#divPostColumns div {margin-top:1px !important;}');
          newWin.document.write('#divPostColumns div {margin-bottom:0px !important;}');
          newWin.document.write('#divPostColumns div {height:auto !important;}');
-         newWin.document.write('.ghostNode > div { background: url("../Content/images/ghostNodeImage.jpg"); background-repeat: no-repeat; background-position: center;}');
+         newWin.document.write('.ghostNode > div:first-child { background: url("../Content/images/ghostNodeImage.png"); background-repeat: no-repeat; background-position: center;}');
          newWin.document.write('.ghostNode img, .rootNode img { visibility: hidden; }');
          newWin.document.write('.jOrgChart .ui-state-disabled { opacity: 0.20 }');
          newWin.document.write('.truncate {white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}');

@@ -421,7 +421,7 @@
     <Content Include="Content\images\Captcha\captcha7.jpg" />
     <Content Include="Content\images\Chart_Popout.png" />
     <Content Include="Content\images\error.jpg" />
-    <Content Include="Content\images\ghostNodeImage.jpg" />
+    <Content Include="Content\images\GhostNodeImage.png" />
     <Content Include="Content\images\greenLightIcon.png" />
     <Content Include="Content\images\Logo.ico" />
     <Content Include="Content\images\minus.gif" />
