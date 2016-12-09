@@ -3674,7 +3674,7 @@ PRINT 'Step - Image rebranding updates'
 	
 	IF EXISTS(SELECT * FROM ASRSysPictures p  
 		INNER JOIN tbsys_mobileformlayout m ON m.HeaderLogoID = p.PictureID
-		WHERE p.Name = 'absHeader.png')
+		WHERE (p.Name = 'absHeader.png' OR p.name = 'AdvBS_WHITE.png'))
 	BEGIN
 		UPDATE m
 		SET HeaderBackColor = 16777215,
@@ -3691,7 +3691,7 @@ PRINT 'Step - Image rebranding updates'
 			FooterPictureLocation = 3
 		FROM tbsys_mobileformlayout m
 		INNER JOIN ASRSysPictures p ON m.HeaderLogoID = p.PictureID
-		WHERE p.Name = 'absHeader.png'
+		WHERE (p.Name = 'absHeader.png' OR p.name = 'AdvBS_WHITE.png')
 	END; 
 
 	
