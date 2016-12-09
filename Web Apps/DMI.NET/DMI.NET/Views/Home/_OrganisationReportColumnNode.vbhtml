@@ -15,6 +15,10 @@ Else
       className = "divMultiline"
    End If
    @<div class="@className" style="min-height:20px;height:@Model.Height.ToString()px;text-align: center;margin:2px;">
-      <span title="@Model.ColumnTitle" style="font-size:@Model.FontSize.ToString()px;">@Model.ColumnValue</span>
+      @If Model.ColumnValue = String.Empty Then
+      @<span style="font-size:@Model.FontSize.ToString()px;">&nbsp;</span>
+      Else
+      @<span title="@Model.ColumnTitle" style="font-size:@Model.FontSize.ToString()px;">@Model.ColumnValue</span>
+      End If
    </div>
 End If

@@ -55,6 +55,19 @@
    .jOrgChart .filteredNode{
       border: 1px solid lightgray;
    }
+
+   .jOrgChart div.vacantNode:before {
+      content: "";
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      z-index: -1;
+      background: url("../Content/images/vacancytext.png") 0 0 repeat;
+      background-size: 70px;
+      transform: rotate(-45deg);
+   }
 </style>
 <script>
 
@@ -566,6 +579,7 @@
             Else
                ''Post based system goes here...   
                Dim ParentNodeClass = item.PostWiseNodeList.FirstOrDefault.NodeTypeClass.ToString
+               Dim ChildNodeClass As String = ""
       @<li hierarchyLevel="@item.HierarchyLevel"
            id="@item.LineManagerStaffNo"
            class="@ParentNodeClass ui-corner-all ui-state-default">
@@ -578,9 +592,14 @@
 
             <div style="display:table;padding: 0px 5px;margin-bottom:15px;" id="divPostEmployees">
                @For Each childitem In item.PostWiseNodeList  'Create internal boxes for each employee.
+                  If childitem.IsVacantPost Then
+                     ChildNodeClass = "vacantNode"
+                  Else
+                     ChildNodeClass = ""
+                  End If
                @<div style="min-width:180px;display:table-cell;" class="centered">
                   @If (childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID).Count > 0) Then
-               @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;" Class="centered" EmployeeID="@childitem.EmployeeID">
+               @<div Style="margin-right:5px;border:1px solid gray;padding:6px;max-width:180px;width:176px;position: relative; overflow: hidden;" Class="centered @ChildNodeClass" EmployeeID="@childitem.EmployeeID">
                   @For Each nonePostItm In childitem.ReportColumnItemList.Where(Function(m) m.TableID <> Model.Hierarchy_TableID)
                      Html.RenderPartial("_OrganisationReportColumnNode", nonePostItm)
                   Next

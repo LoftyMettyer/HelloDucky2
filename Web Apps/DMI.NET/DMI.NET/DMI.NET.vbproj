@@ -439,6 +439,7 @@
     <Content Include="Content\images\TopLeftBannerImage.png" />
     <Content Include="Content\images\ui-bg_glass_75_d0e5f5_1x400.png" />
     <Content Include="Content\images\Utilities.gif" />
+    <Content Include="Content\images\vacancytext.png" />
     <Content Include="Content\images\vacant-post.png" />
     <Content Include="Content\images\warning.png" />
     <Content Include="Content\jquery.gridster.min.css" />
