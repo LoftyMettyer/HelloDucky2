@@ -30,13 +30,13 @@ BEGIN
 			@sPostTableName					varchar(MAX),
 			@iPostTableID					integer,
 			@sPostAllocationTableName		varchar(MAX),
-         @sPostAllocationViewName		varchar(MAX),
+            @sPostAllocationViewName		varchar(MAX),
 			@sHierarchyIdentifierColumn		varchar(MAX),
 			@sHierarchyReportsToColumn		varchar(MAX),
 			@sPostAllocationStartDateColumn	varchar(MAX),
 			@sPostAllocationEndDateColumn	varchar(MAX),
 			@iBaseTableId					integer,
-         @sBaseViewName					varchar(MAX),
+            @sBaseViewName					varchar(MAX),
 			@iHierarchyTableID				integer,
 			@iPostAllocationTableID			integer,
 			@sPersonnelTableViewName		varchar(max),
@@ -181,8 +181,7 @@ BEGIN
 			' AND (app.' + @sPostAllocationEndDateColumn + ' IS NULL OR '  +
 			'app.' + @sPostAllocationEndDateColumn +'>= ''' + @sTodayDate + ''') AND ' +  
 			'ISNULL(app.' + @sPostAllocationStartDateColumn + ', ''' + @sTodayDate + ''') <=' + '''' + @sTodayDate + '''';
-		SET @sVacantPost = 'CASE WHEN app.ID_' + CONVERT(varchar(10), @iPersonnelTableID) + ' = 0 OR app.ID IS NULL THEN 1 ELSE 0 END AS IsVacantPost';
-
+		SET @sVacantPost = 'CASE WHEN (app.ID_' + CONVERT(varchar(10), @iPersonnelTableID) + ' = 0 OR app.ID IS NULL) AND nodes.IsGhostNode = 0 THEN 1 ELSE 0 END AS IsVacantPost';
 	END
 
 	IF @UsePersonnel = 1
@@ -206,7 +205,6 @@ BEGIN
 		INNER JOIN ASRSysColumns c ON oc.ColumnID = c.columnId
 		WHERE oc.OrganisationID = @piReportID AND c.datatype <> -3;
 
-
 	EXECUTE AS CALLER;
 	SET @sSQL = 'SELECT 0, ID, '
 		+  @sHierarchyIdentifierColumn + ', ' + @sHierarchyReportsToColumn + 
@@ -214,7 +212,7 @@ BEGIN
 	INSERT @allNodes (IsGhostNode, EmployeeID, Staff_Number, Reports_To_Staff_Number)
 		EXECUTE sp_executeSQL @sSQL;
 	REVERT;
-
+	
 	-- Generate all the missing nodes (manager records that exist but are not contained in the selected base view)
 	SET @sSQL = 'SELECT DISTINCT 1, nodes.Reports_To_Staff_Number, pr.' + @sHierarchyReportsToColumn + ' , ISNULL(pr.ID, 0) 
 				 FROM @allNodes nodes
@@ -222,20 +220,28 @@ BEGIN
 				 WHERE nodes.Reports_To_Staff_Number NOT IN (SELECT Staff_Number FROM @allNodes)
 					AND nodes.EmployeeID <> ' + convert(varchar(10), @topLevelPostID);
 
+	DECLARE @iRowCount int = 0
+
 	WHILE 1=1
 	BEGIN
 
+		DELETE FROM @ghostNodes;
 		INSERT @ghostNodes (IsGhostNode, Staff_Number, Reports_To_Staff_Number, EmployeeID)
 			EXECUTE sp_executeSQL @sSQL, N'@allNodes OrgChartRelation READONLY, @topLevelPostID int', @allNodes=@allNodes, @topLevelPostID=@topLevelPostID;
 
-		SELECT TOP 1 @topLevelPostID = EmployeeID FROM @ghostNodes;
+		SET @iRowCount = @@ROWCOUNT;
 
 		INSERT @allNodes
 			SELECT * FROM @ghostNodes
 
-		IF @@ROWCOUNT < 2
+		IF @iRowCount < 2
 			BREAK;
+
 	END
+
+	-- Calculate the top node
+	SELECT TOP 1 @topLevelPostID = EmployeeID FROM @allNodes WHERE Reports_To_Staff_Number 
+		NOT IN (Select Staff_Number FROM @allNodes)
 
 
 	-- Calculate the hierarchy levels
@@ -259,12 +265,11 @@ BEGIN
 			,@topLevelPostID AS ManagerRoot, HierarchyLevel, EmployeeID, Staff_Number, Reports_To_Staff_Number
 		FROM posts p;
 
-
 	IF LEN(@sFilterList) > 0
 		SET @sFilterList = 'CASE WHEN ' + REPLACE(@sFilterList, CHAR(39), CHAR(39)) + ' THEN 0 ELSE 1 END';
 	ELSE
 		SET @sFilterList = '0';
-	
+
 
 	-- Merge in the selected data columns
 	SET @sSQL = 'SELECT ' + @sVacantPost + ', nodes.IsGhostNode, nodes.HierarchyLevel, nodes.EmployeeID AS HierarchyID, nodes.Staff_Number AS Post_ID, nodes.Reports_To_Staff_Number AS Reports_To_Post_ID, '
