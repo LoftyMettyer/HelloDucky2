@@ -6080,7 +6080,7 @@ Namespace Controllers
                   Dim IsGhostNode = CBool(objRow("IsGhostNode"))
                   Dim IsFilteredNode = CBool(objRow("IsFilteredNode"))
 
-                  additionalClasses = " ui-corner-all"
+                  additionalClasses = " ui-corner-all ui-state-default"
 
                   ' Jump to the current user's node
                   If CInt(objRow("EmployeeID")) = iLoggedInUser AndAlso IsFilteredNode = True Then
@@ -6088,8 +6088,6 @@ Namespace Controllers
                   ElseIf CInt(objRow("EmployeeID")) = iLoggedInUser Then
                      additionalClasses &= " currentNode"
                   Else
-                     additionalClasses &= " ui-state-default"
-
                      If IsFilteredNode = True AndAlso IsGhostNode = True Then
                         ' Add CSS Classes for ghost nodes.
                         additionalClasses &= " ghostNode"
