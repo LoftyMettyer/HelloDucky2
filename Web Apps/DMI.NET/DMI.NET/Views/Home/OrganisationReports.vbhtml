@@ -144,6 +144,7 @@
                $(this).parent().css("min-width", totalEmpDiv * 200);
                $(this).find("#divPostTitle").css("max-width", totalEmpDiv * 170);
                $(this).find("#divPostTitle").css("min-width", totalEmpDiv * 170);
+               $(this).find("#divPostColumns").css("display", "inline-table");
                $(this).find("#divPostColumns div").css("width", totalEmpDiv * 180);
                $(this).find("#divPostColumns div").css("display", "inline-block");
                $(this).find("#divPostColumns div").css("margin-top", 1);
