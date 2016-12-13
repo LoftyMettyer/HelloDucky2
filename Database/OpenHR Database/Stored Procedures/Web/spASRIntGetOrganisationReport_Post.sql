@@ -170,7 +170,6 @@ BEGIN
 		INNER JOIN ASRSysOrganisationReportFilters oc ON orpt.ID = oc.OrganisationID
 		INNER JOIN ASRSysColumns c ON oc.FieldID = c.columnId
 		INNER JOIN ASRSysTables t  ON c.tableID = t.tableID	
-		INNER JOIN ASRSysViews v   ON  orpt.BaseViewID = v.ViewID	
 		WHERE oc.OrganisationID = @piReportID
 		ORDER BY t.TableName;
 
