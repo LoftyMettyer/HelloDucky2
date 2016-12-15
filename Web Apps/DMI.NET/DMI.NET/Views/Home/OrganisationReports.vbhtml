@@ -48,10 +48,6 @@
         opacity: 1;
     }
 
-    .jOrgChart .filteredNode :not(.ui-state-highlight) {
-        background-color: rgba(255, 255, 255, 0.5);
-    }
-
     .jOrgChart .filteredNode {
         border: 1px solid lightgray;
     }
