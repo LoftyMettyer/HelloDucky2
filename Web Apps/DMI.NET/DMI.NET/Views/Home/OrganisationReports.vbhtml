@@ -587,6 +587,12 @@
                     @For Each childitem In item.PostWiseNodeList  'Create internal boxes for each employee.
                         If childitem.IsVacantPost Then
                             ChildNodeStyle = "background:url('../Content/images/vacancytext.png');"
+                            For Each column In childitem.ReportColumnItemList.Where(Function(s) s.TableID <> SettingsConfig.Hierarchy_TableID) 'Clear non baseview columns for the vacant post.
+                                column.ColumnTitle = String.Empty
+                                If (column.DataType <> ColumnDataType.sqlVarBinary) Then
+                                    column.ColumnValue = String.Empty
+                                End If
+                            Next
                         Else
                             ChildNodeStyle = ""
                         End If
