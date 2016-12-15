@@ -1105,20 +1105,20 @@ Namespace Controllers
             End If
 
             For Each columnItem As ReportColumnItem In objModel.Columns
-                  ' Check the column font size has value in range.
-                  If (columnItem.FontSize < 6) AndAlso (columnItem.FontSize > 30) AndAlso (columnItem.FontSize = Nothing) Then
-                     ModelState.AddModelError("IsFontSizeEmpty", "The '" & columnItem.Name & "' column does not have valid font size.")
-                  End If
+                    ' Check the column font size has value in range.
+                    If (columnItem.FontSize < 6 OrElse columnItem.FontSize > 30 OrElse columnItem.FontSize = Nothing) Then
+                        ModelState.AddModelError("IsFontSizeEmpty", "The '" & columnItem.Name & "' column does not have valid font size.")
+                    End If
 
-                  ' Check the column height has value in range.
-                  If (columnItem.DataType = -3) AndAlso (columnItem.Height < 3) AndAlso (columnItem.Height > 6) AndAlso (columnItem.Height = Nothing) Then
-                     ModelState.AddModelError("IsHeightEmpty", "The '" & columnItem.Name & "' column does not have valid Height (Rows).")
-                  End If
+                    ' Check the column height has value in range.
+                    If ((columnItem.DataType = -3) AndAlso (columnItem.Height < 3 OrElse columnItem.Height > 6 OrElse columnItem.Height = Nothing)) Then
+                        ModelState.AddModelError("IsHeightEmpty", "The '" & columnItem.Name & "' column does not have valid Height (Rows).")
+                    End If
 
-                  If (columnItem.DataType <> -3) AndAlso (columnItem.Height < 1) AndAlso (columnItem.Height > 6) AndAlso (columnItem.Height = Nothing) Then
-                     ModelState.AddModelError("IsHeightEmpty", "The '" & columnItem.Name & "' column does not have valid Height (Rows).")
-                  End If
-               Next
+                    If ((columnItem.DataType <> -3) AndAlso (columnItem.Height < 1 OrElse columnItem.Height > 6 OrElse columnItem.Height = Nothing)) Then
+                        ModelState.AddModelError("IsHeightEmpty", "The '" & columnItem.Name & "' column does not have valid Height (Rows).")
+                    End If
+                Next
 
             End If
 
@@ -1296,30 +1296,30 @@ Namespace Controllers
 
                   ' Check the column font size has value in range.
                   For Each columnItem As ReportColumnItem In columns
-                     If (columnItem.FontSize < 6) AndAlso (columnItem.FontSize > 30) AndAlso (columnItem.FontSize = Nothing) Then
-                        isValidSelection = False
-                        Response.StatusCode = System.Net.HttpStatusCode.BadRequest
-                        Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = "Error", .ErrorMessage = "The '" & columnItem.Name & "' column does not have valid font size."}
-                        Return Json(data)
-                        Exit For
-                     End If
+                            If (columnItem.FontSize < 6 OrElse columnItem.FontSize > 30 OrElse columnItem.FontSize = Nothing) Then
+                                isValidSelection = False
+                                Response.StatusCode = System.Net.HttpStatusCode.BadRequest
+                                Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = "Error", .ErrorMessage = "The '" & columnItem.Name & "' column does not have valid font size."}
+                                Return Json(data)
+                                Exit For
+                            End If
 
-                     If (columnItem.DataType = -3) AndAlso (columnItem.Height < 3) AndAlso (columnItem.Height > 6) AndAlso (columnItem.Height = Nothing) Then
-                        isValidSelection = False
-                        Response.StatusCode = System.Net.HttpStatusCode.BadRequest
-                        Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = "Error", .ErrorMessage = "The '" & columnItem.Name & "' column does not have valid Height (Rows)."}
-                        Return Json(data)
-                        Exit For
-                     End If
+                            If ((columnItem.DataType = -3) AndAlso (columnItem.Height < 3 OrElse columnItem.Height > 6 OrElse columnItem.Height = Nothing)) Then
+                                isValidSelection = False
+                                Response.StatusCode = System.Net.HttpStatusCode.BadRequest
+                                Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = "Error", .ErrorMessage = "The '" & columnItem.Name & "' column does not have valid Height (Rows)."}
+                                Return Json(data)
+                                Exit For
+                            End If
 
-                     If (columnItem.DataType <> -3) AndAlso (columnItem.Height < 1) AndAlso (columnItem.Height > 6) AndAlso (columnItem.Height = Nothing) Then
-                        isValidSelection = False
-                        Response.StatusCode = System.Net.HttpStatusCode.BadRequest
-                        Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = "Error", .ErrorMessage = "The '" & columnItem.Name & "' column does not have valid Height (Rows)."}
-                        Return Json(data)
-                        Exit For
-                     End If
-                  Next
+                            If ((columnItem.DataType <> -3) AndAlso (columnItem.Height < 1 OrElse columnItem.Height > 6 OrElse columnItem.Height = Nothing)) Then
+                                isValidSelection = False
+                                Response.StatusCode = System.Net.HttpStatusCode.BadRequest
+                                Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = "Error", .ErrorMessage = "The '" & columnItem.Name & "' column does not have valid Height (Rows)."}
+                                Return Json(data)
+                                Exit For
+                            End If
+                        Next
 
                End If
             End If

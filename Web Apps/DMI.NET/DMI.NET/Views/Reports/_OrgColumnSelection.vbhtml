@@ -656,11 +656,11 @@
       if (dataRow.Decimals == "") { dataRow.Decimals = 0 }; //If Decimals is empty then set to 0
 
       dataRow.Height = $("#SelectedColumnHeight").val();
-      if (dataRow.Height == "" && dataRow.DataType != -3) { dataRow.Height = 1 }; //If Height is empty then set to 1
-      if (dataRow.Height == "" && dataRow.DataType == -3) { dataRow.Height = 4 };
+      if ((dataRow.DataType != -3) && (dataRow.Height == "" || dataRow.Height < 1 || dataRow.Height > 6 )) { dataRow.Height = 1 }; // Set height default to 1 if column is not photograph & height is not valid.
+      if ((dataRow.DataType == -3) && (dataRow.Height == "" || dataRow.Height < 3 || dataRow.Height > 6 )) { dataRow.Height = 4 }; // Set height default to 4 if column is photograph & height is not valid.
 
       dataRow.FontSize = $("#SelectedColumnFontSize").val();
-      if (dataRow.FontSize == "") { dataRow.FontSize = 11 }; //If fontSize is empty then set to 1
+      if (dataRow.FontSize == "" || dataRow.FontSize < 6 || dataRow.FontSize > 30) { dataRow.FontSize = 11 }; // Set fontsize default to 11 if it is invalid.
 
       dataRow.Suffix = $("#SelectedColumnSuffix").val();
       dataRow.Prefix = $("#SelectedColumnPrefix").val();
