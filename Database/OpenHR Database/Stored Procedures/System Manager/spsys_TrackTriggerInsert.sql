@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spsys_TrackTriggerInsert](@TableFromID integer, @NestLevel tinyint, @actionType tinyint)
+﻿CREATE PROCEDURE [dbo].[spsys_TrackTriggerInsert](@TableFromID integer, @actionType tinyint, @NestLevel tinyint)
 AS
 BEGIN
 

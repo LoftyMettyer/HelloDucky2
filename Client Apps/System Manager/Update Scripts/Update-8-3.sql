@@ -3341,7 +3341,7 @@ PRINT 'Step - Performance Improvements'
 	   FROM dbo.udfsysGetContextTable()';
 
 
-	EXEC sp_executesql N'CREATE PROCEDURE [dbo].[spsys_TrackTriggerInsert](@TableFromID integer, @NestLevel tinyint, @actionType tinyint)
+	EXEC sp_executesql N'CREATE PROCEDURE [dbo].[spsys_TrackTriggerInsert](@TableFromID integer, @actionType tinyint, @NestLevel tinyint)
 	AS
 	BEGIN
 
