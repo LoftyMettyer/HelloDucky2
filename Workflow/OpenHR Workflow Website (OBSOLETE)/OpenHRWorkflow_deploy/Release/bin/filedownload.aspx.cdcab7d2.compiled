@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<preserve resultType="3" virtualPath="/HRProWorkflow/FileDownload.aspx" hash="ffffffff45559949" filehash="57a41684affad83c" flags="110000" assembly="OpenHRWorkflow" type="ASP.filedownload_aspx">
-  <filedeps>
-    <filedep name="/HRProWorkflow/FileDownload.aspx" />
-    <filedep name="/HRProWorkflow/FileDownload.aspx.vb" />
-  </filedeps>
-</preserve>

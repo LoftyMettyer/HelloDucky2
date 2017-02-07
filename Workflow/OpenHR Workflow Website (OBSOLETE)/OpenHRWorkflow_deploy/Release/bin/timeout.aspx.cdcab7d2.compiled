@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<preserve resultType="3" virtualPath="/HRProWorkflow/timeout.aspx" hash="ffffffff45559949" filehash="bf22c0e4756ecaf0" flags="110000" assembly="OpenHRWorkflow" type="ASP.timeout_aspx">
-  <filedeps>
-    <filedep name="/HRProWorkflow/timeout.aspx" />
-    <filedep name="/HRProWorkflow/timeout.aspx.vb" />
-  </filedeps>
-</preserve>
